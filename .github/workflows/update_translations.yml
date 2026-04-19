@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false  # Important: useremo GITHUB_TOKEN manualmente
+        # with:
+          # persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -44,8 +44,13 @@ jobs:
       - name: Commit and push changes
         run: |
           git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git diff --cached --quiet || git commit -m "Update translations via workflow"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git pull --rebase origin main
-          git push origin main
+          git config user.email "actions@github.com"
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "Update translations via workflow"
+                                                                                                                  
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
