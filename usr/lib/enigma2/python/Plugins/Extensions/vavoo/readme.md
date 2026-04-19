@@ -1,18 +1,24 @@
-# 🎬 Vavoo Stream Live - Enigma2 Plugin
+<h1 align="center">🎬 Vavoo Stream Live</h1>
 
-[![Python package](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml)
-[![Version](https://img.shields.io/badge/Version-1.61-blue.svg)](https://github.com/Belfagor2005/vavoo)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+![Visitors](https://komarev.com/ghpvc/?username=Belfagor2005&label=Repository%20Views&color=blueviolet)
+[![Version](https://img.shields.io/badge/Version-1.63-blue.svg)](https://github.com/Belfagor2005/vavoo)
+[![Enigma2](https://img.shields.io/badge/Enigma2-Plugin-ff6600.svg)](https://www.enigma2.net)
 [![Python](https://img.shields.io/badge/Python-2.7%2F3.x-yellow.svg)](https://python.org)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+                                                                                         
+[![Python package](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml)
+[![Ruff Status](https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml/badge.svg)](https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml)
+[![Donate](https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge)](Maintainers.md#maintainers "Donate")
+
 
 ## 📌 Overview
 Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousands of live TV channels from multiple countries. It features a built-in local proxy for improved reliability, automatic bouquet updates, EPG integration, real-time notifications, satellite priority matching, and seamless integration with your Enigma2 receiver.
 
 ## 🖼️ Screenshots
 
-|-------------------------------------------|
+                                             
 | <img src="https://raw.githubusercontent.com/Belfagor2005/vavoo/main/screen/screen9.gif" width="400"> |
-|-------------------------------------------|
+                                             
 
 ## ✨ Key Features
 - **Live TV Streaming** – Watch live channels from various countries
