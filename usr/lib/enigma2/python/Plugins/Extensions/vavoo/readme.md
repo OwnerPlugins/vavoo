@@ -8,7 +8,7 @@
                                                                                          
 [![Python package](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml)
 [![Ruff Status](https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml/badge.svg)](https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml)
-[![Donate](https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge)](Maintainers.md#maintainers "Donate")
+[![Donate](https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge)](https://ko-fi.com/lululla)
 
 
 ## 📌 Overview
