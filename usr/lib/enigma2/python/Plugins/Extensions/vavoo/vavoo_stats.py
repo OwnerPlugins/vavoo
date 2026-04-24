@@ -108,7 +108,7 @@ class AnonymousStats:
             "event": "heartbeat",
             "session_id": self._session_id,
             "plugin_name": "vavoo",
-            "plugin_version": "1.64",
+            "plugin_version": __version__,
             "timestamp": int(time.time()),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
@@ -146,7 +146,7 @@ class AnonymousStats:
                     "event": "plugin_startup",
                     "session_id": self._session_id,
                     "plugin_name": "vavoo",
-                    "plugin_version": "1.64",
+                    "plugin_version": __version__,
                     "timestamp": int(time.time()),
                     "date": time.strftime("%Y-%m-%d")
                 }
