@@ -36,11 +36,11 @@ def _http_post(url, payload):
     except ImportError:
         # Python 2
         from urllib2 import Request, urlopen
-    
+
     data = json.dumps(payload).encode('utf-8')
     headers = {'Content-Type': 'application/json'}
     req = Request(url, data=data, headers=headers)
-    
+
     try:
         response = urlopen(req, timeout=10)
         return response.read()
@@ -53,14 +53,19 @@ class AnonymousStats:
     def __init__(self):
         self._session_id = None
         self._send_timer = None
-    
+
     def _get_anonymous_session_id(self):
-        seed = "{}_{}_{}".format(time.time(), os.getpid(), random.randint(1, 1000000))
+        seed = "{}_{}_{}".format(
+            time.time(),
+            os.getpid(),
+            random.randint(
+                1,
+                1000000))
         return hashlib.md5(seed.encode('utf-8')).hexdigest()[:16]
-    
+
     def _is_disabled(self):
         return os.path.exists(STATS_DISABLE_FILE)
-    
+
     def _should_send_for_session(self):
         if os.path.exists(SESSION_ID_FILE):
             try:
@@ -69,7 +74,7 @@ class AnonymousStats:
             except Exception:
                 pass
         return False
-    
+
     def _mark_session_sent(self):
         try:
             dirname = os.path.dirname(SESSION_ID_FILE)
@@ -81,11 +86,13 @@ class AnonymousStats:
             pass
 
     def start_heartbeat(self):
-        if self._is_disabled() or hasattr(self, '_heartbeat_active') and self._heartbeat_active:
+        if self._is_disabled() or hasattr(
+                self, '_heartbeat_active') and self._heartbeat_active:
             return
-        
+
         self._heartbeat_active = True
-        debug("Heartbeat started for session: {}".format(self._session_id[:16]))
+        debug("Heartbeat started for session: {}".format(
+            self._session_id[:16]))
         self._send_heartbeat()
 
     def _send_heartbeat(self):
@@ -93,7 +100,7 @@ class AnonymousStats:
         if not getattr(self, '_heartbeat_active', False):
             print("[Stats] Heartbeat non attivo, esco")
             return
-        
+
         payload = {
             "event": "heartbeat",
             "session_id": self._session_id,
@@ -102,21 +109,21 @@ class AnonymousStats:
             "timestamp": int(time.time()),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
-        
+
         print("[Stats] Sending heartbeat...")
         _http_post(STATS_SERVER_URL, payload)
-        
+
         if self._heartbeat_active:
             self._heartbeat_timer = eTimer()
             self._heartbeat_timer.callback.append(self._send_heartbeat)
             self._heartbeat_timer.start(60000, True)
-    
+
     def stop_heartbeat(self):
         self._heartbeat_active = False
         if hasattr(self, '_heartbeat_timer') and self._heartbeat_timer:
             try:
                 self._heartbeat_timer.stop()
-            except:
+            except BaseException:
                 pass
             self._heartbeat_timer = None
         debug("Heartbeat stopped")
@@ -127,11 +134,11 @@ class AnonymousStats:
                 if self._is_disabled():
                     debug("Stats disabled by user")
                     return
-                
+
                 if self._should_send_for_session():
                     debug("Stats already sent for this session")
                     return
-                
+
                 payload = {
                     "event": "plugin_startup",
                     "session_id": self._session_id,
@@ -140,34 +147,38 @@ class AnonymousStats:
                     "timestamp": int(time.time()),
                     "date": time.strftime("%Y-%m-%d")
                 }
-                
+
                 debug("Sending stats to {}...".format(STATS_SERVER_URL))
-                debug("Payload: event={}, session={}, version={}".format(
-                    payload['event'], payload['session_id'], payload['plugin_version']))
-                
+                debug(
+                    "Payload: event={}, session={}, version={}".format(
+                        payload['event'],
+                        payload['session_id'],
+                        payload['plugin_version']))
+
                 result = _http_post(STATS_SERVER_URL, payload)
-                
+
                 if result:
                     self._mark_session_sent()
                     debug("Stats sent successfully!")
                 else:
                     error("Stats send failed - no response")
-                    
+
             except Exception as e:
                 error("Stats send error: {}".format(e))
                 import traceback
                 error(traceback.format_exc())
-        
+
         t = threading.Thread(target=_send)
         t.daemon = True
         t.start()
-    
+
     def record_startup(self):
         if self._is_disabled():
             debug("Stats disabled")
             return
         self._session_id = self._get_anonymous_session_id()
-        debug("Recording startup - Session ID: {}".format(self._session_id[:16]))
+        debug(
+            "Recording startup - Session ID: {}".format(self._session_id[:16]))
         self._send_in_background()
 
 
