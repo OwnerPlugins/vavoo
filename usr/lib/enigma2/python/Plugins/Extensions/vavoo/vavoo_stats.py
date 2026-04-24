@@ -25,7 +25,7 @@ except ImportError:
 
 # Config
 # STATS_SERVER_URL = "https://eok6mh4569lds82.m.pipedream.net/"
-STATS_SERVER_URL = "https://script.google.com/macros/s/AKfycby8SExUI_I4N_10Fo8mtQFUEqK8EEogiXkfJ-u4zxXSCsKRAyZylhCMyST98ctb6HAlMA/exec"
+STATS_SERVER_URL = "https://script.google.com/macros/s/AKfycbz2xuo6WrL9JpVK_YMKDdndQjFrH12K0SzPCd2M7lH7tZzxMGUrtWEm-B9cxy4trU1agQ/exec"
 SESSION_ID_FILE = "/tmp/vavoo_session_id"
 STATS_DISABLE_FILE = "/etc/enigma2/disable_vavoo_stats"
 
