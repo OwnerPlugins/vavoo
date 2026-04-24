@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version='1.64'
+version='1.65'
 changelog="
 - Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - Performance improvements
