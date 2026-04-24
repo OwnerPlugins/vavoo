@@ -1,12 +1,10 @@
 #!/bin/bash
 
-version='1.63'
+version='1.64'
 changelog="
-- Request DNS
+- Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - Performance improvements
-
-Improved EPG
-Offer coffee please :)
+--> Offer coffee please :)
 "
 echo "$changelog"
 TMPPATH=/tmp/vavoo-install

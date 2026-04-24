@@ -92,6 +92,7 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat, get_stats_collector
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -1561,6 +1562,23 @@ class MainVavoo(Screen):
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
 
+        if is_stats_enabled():
+            record_anonymous_startup()
+            start_heartbeat()
+            """
+            === TEST DIRETTO ===
+            def test_direct():
+                time.sleep(2)
+                print("[TEST] Provo a inviare heartbeat manuale")
+                collector = get_stats_collector()
+                if collector._session_id:
+                    collector._send_heartbeat()
+                else:
+                    print("[TEST] Nessun session_id trovato")
+            t = threading.Thread(target=test_direct)
+            t.daemon = True
+            t.start()
+            """
         self._initialize_labels()
         self._initialize_actions()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
@@ -1763,6 +1781,9 @@ class MainVavoo(Screen):
 
     def closex(self):
         print("[DEBUG] Exit from plugin. Cleaning up plugin timers...")
+        if is_stats_enabled():
+            stop_heartbeat()
+            print("[Stats] Heartbeat fermato")
 
         try:
             if hasattr(self, 'proxy_monitor_timer'):
@@ -1773,8 +1794,7 @@ class MainVavoo(Screen):
             print("[Close] Error stopping timers: %s" % str(e))
 
         try:
-            cleaned = cleanup_old_temp_files(
-                max_age_hours=1)  # Clean ALL temp files
+            cleaned = cleanup_old_temp_files(max_age_hours=1)
             print("[Cleanup] Removed %d temporary files" % cleaned)
         except Exception as e:
             print("[Cleanup] Error: %s" % str(e))
