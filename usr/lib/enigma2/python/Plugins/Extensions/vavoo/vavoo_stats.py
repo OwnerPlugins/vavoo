@@ -12,6 +12,7 @@ from enigma import eTimer
 
 from . import __version__
 
+
 try:
     from .vUtils import debug, error
 except ImportError:
@@ -24,7 +25,7 @@ except ImportError:
 
 # Config
 # STATS_SERVER_URL = "https://eok6mh4569lds82.m.pipedream.net/"
-STATS_SERVER_URL = "https://script.google.com/macros/s/AKfycbzy1MFaagUQcJOWrLlqYvDH2ohRhGK6XfMm-laC7lggcE_RC_QakFKsWJAtbNW9e877vA/exec"
+STATS_SERVER_URL = "https://script.google.com/macros/s/AKfycbwB2mcWVDvEU7qWEHE40xhIWPUgGhJU0fk3YQ3es68eaE0UG0odh1YDChoU_FGM2Hw6ig/exec"
 SESSION_ID_FILE = "/tmp/vavoo_session_id"
 STATS_DISABLE_FILE = "/etc/enigma2/disable_vavoo_stats"
 
@@ -101,15 +102,17 @@ class AnonymousStats:
             print("[Stats] Heartbeat non attivo, esco")
             return
 
+        # TEST: __version__
+        # print("[DEBUG] _send_heartbeat __version__ vale:", __version__)
         payload = {
             "event": "heartbeat",
             "session_id": self._session_id,
             "plugin_name": "vavoo",
-            "plugin_version": __version__,
+            "plugin_version": "1.64",
             "timestamp": int(time.time()),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
-
+        # print("[DEBUG] _send_heartbeat Payload plugin_version:", payload["plugin_version"])
         print("[Stats] Sending heartbeat...")
         _http_post(STATS_SERVER_URL, payload)
 
@@ -143,7 +146,7 @@ class AnonymousStats:
                     "event": "plugin_startup",
                     "session_id": self._session_id,
                     "plugin_name": "vavoo",
-                    "plugin_version": __version__,
+                    "plugin_version": "1.64",
                     "timestamp": int(time.time()),
                     "date": time.strftime("%Y-%m-%d")
                 }
