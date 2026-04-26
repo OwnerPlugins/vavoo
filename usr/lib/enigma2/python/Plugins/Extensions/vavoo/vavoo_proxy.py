@@ -1439,7 +1439,10 @@ def start_proxy():
 
 
 def run_proxy_in_background():
-    """Start the proxy in background only if it is not already running"""
+    """
+    Start the proxy in a background thread without blocking the main thread.
+    Returns True if the start request was accepted, False if already starting.
+    """
     global _starting
     with _starting_lock:
         if _starting:
@@ -1448,47 +1451,31 @@ def run_proxy_in_background():
         _starting = True
 
     try:
-        # If already running, perform a health check
+        # If proxy is already running, perform a quick non‑blocking health check
         if is_proxy_running():
-            from os import system
-            try:
-                response = requests.get(
-                    PROXY_STATUS_URL, timeout=2)
-                if response.status_code == 200:
-                    return True
-                else:
-                    # Proxy is running but not responding, kill it
-                    print(" Proxy is running but not responding, killing...")
-                    system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
-                    time.sleep(2)
-            except BaseException:
-                # Proxy not responding, kill it
-                system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
-                time.sleep(2)
-
-        # Start new proxy
-        proxy_thread = threading.Thread(target=start_proxy)
-        proxy_thread.setDaemon(True)
-        proxy_thread.start()
-
-        # Wait for startup with longer timeout
-        for i in range(30):  # 30 attempts
-            if is_proxy_running():
+            # Spawn a worker thread to check and possibly restart
+            def health_check_worker():
                 try:
-                    # Health check
-                    response = requests.get(
-                        PROXY_STATUS_URL, timeout=2)
-                    if response.status_code == 200:
-                        data = response.json()
-                        if data.get("initialized", False):
-                            print(" Started and initialized successfully")
-                            return True
-                except BaseException:
+                    resp = requests.get(PROXY_STATUS_URL, timeout=2)
+                    if resp.status_code == 200:
+                        return
+                except Exception:
                     pass
-            time.sleep(1)
+                # Proxy not responding -> kill and restart
+                import subprocess
+                subprocess.call(["pkill", "-f", "python.*vavoo_proxy"],
+                                stderr=subprocess.DEVNULL)
+                time.sleep(2)          # This sleep is in a worker thread, safe
+                start_proxy()
+            t = threading.Thread(target=health_check_worker, daemon=True)
+            t.start()
+            return True
 
-        print(" Failed to start within timeout")
-        return False
+        # Start a fresh proxy thread
+        proxy_thread = threading.Thread(target=start_proxy, daemon=True)
+        proxy_thread.start()
+        return True
+
     finally:
         with _starting_lock:
             _starting = False

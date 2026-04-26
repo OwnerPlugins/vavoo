@@ -119,7 +119,7 @@ class AnonymousStats:
         if self._heartbeat_active:
             self._heartbeat_timer = eTimer()
             self._heartbeat_timer.callback.append(self._send_heartbeat)
-            self._heartbeat_timer.start(60000, True)
+            self._heartbeat_timer.start(300000, True)
 
     def stop_heartbeat(self):
         self._heartbeat_active = False

@@ -14,6 +14,7 @@ from sys import version_info
 from enigma import eDVBDB
 import xml.etree.ElementTree as ET
 import datetime
+from twisted.internet import reactor
 
 
 try:
@@ -92,7 +93,7 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat, get_stats_collector
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat  # , get_stats_collector
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -1420,6 +1421,8 @@ class vavoo_config(Screen, ConfigListScreen):
             if self.old_proxy_enabled != cfg.proxy_enabled.value:
                 if cfg.proxy_enabled.value:
                     run_proxy_in_background()
+                    # Schedule a non‑blocking status check after 1 second
+                    reactor.callLater(1, self._check_proxy_started)
                 else:
                     shutdown_proxy()
                 self.old_proxy_enabled = cfg.proxy_enabled.value
@@ -1427,9 +1430,9 @@ class vavoo_config(Screen, ConfigListScreen):
             # Manage EPG source
             if cfg.epg_enabled.value and not is_proxy_running():
                 run_proxy_in_background()
-                time.sleep(2)
+                # No sleep here – the proxy will become ready asynchronously
 
-            # If auto-update is enabled, schedule the EPG update
+            # If auto‑update is enabled, schedule the EPG update
             if cfg.epg_enabled.value and cfg.epg_auto_update.value:
                 self.schedule_epg_update()
 
@@ -1455,6 +1458,15 @@ class vavoo_config(Screen, ConfigListScreen):
             )
 
             self.close()
+
+    def _check_proxy_started(self):
+        """Callback to verify proxy has started (non‑blocking)."""
+        if cfg.proxy_enabled.value and not is_proxy_running():
+            print("[Config] Proxy not yet ready, will check later")
+            # Optionally schedule another check after 2 seconds
+            reactor.callLater(2, self._check_proxy_started)
+        else:
+            print("[Config] Proxy is ready")
 
     def _safe_config_reload(self):
         """Safe configuration reload"""
@@ -2019,54 +2031,59 @@ class MainVavoo(Screen):
                 )
 
     def start_vavoo_proxy(self):
-        """Start the proxy only if it is not already running"""
-        try:
-            if not cfg.proxy_enabled.value:
-                return
-            if is_proxy_running():
-                print("[MainVavoo] Proxy already running")
-                return True
+        if not cfg.proxy_enabled.value:
+            return False
+        if is_proxy_running():
+            print("[MainVavoo] Proxy already running")
+            return True
 
-            print("[MainVavoo] Starting proxy...")
-            success = run_proxy_in_background()
-
-            if success:
-                print("[MainVavoo] Proxy started")
-                return True
-            else:
-                print("[MainVavoo] Proxy start error")
-                return False
-
-        except Exception as e:
-            print("[MainVavoo] Error: {0}".format(e))
+        print("[MainVavoo] Starting proxy...")
+        success = run_proxy_in_background()
+        if not success:
+            print("[MainVavoo] Proxy start error")
             return False
 
+        # Non‑blocking readiness check
+        self._proxy_ready_attempts = 0
+        self._check_proxy_ready()
+        return True
+
+    def _check_proxy_ready(self):
+        if is_proxy_ready(timeout=0.5):
+            print("[MainVavoo] Proxy ready")
+            self._update_proxy_status_display()
+            return
+        self._proxy_ready_attempts += 1
+        if self._proxy_ready_attempts < 20:      # 20 * 0.5 = 10 seconds max
+            reactor.callLater(0.5, self._check_proxy_ready)
+        else:
+            print("[MainVavoo] Proxy not ready after timeout")
+
     def _restart_proxy(self):
-        """Restart the proxy if it is stuck"""
+        """Restart the proxy asynchronously."""
         try:
-            # Try to stop the existing proxy
+            # 1. Try to shut down existing proxy (non‑blocking request)
             try:
                 if requests is not None:
                     requests.get(PROXY_SHUTDOWN_URL, timeout=2)
                 else:
-                    req = UrlRequest(
-                        PROXY_SHUTDOWN_URL,
-                        headers={
-                            'User-Agent': vUtils.RequestAgent()})
+                    req = UrlRequest(PROXY_SHUTDOWN_URL,
+                                     headers={'User-Agent': vUtils.RequestAgent()})
                     urlopen(req, timeout=2)
-                time.sleep(3)
-            except BaseException:
+            except Exception:
                 pass
 
-            # Kill python processes that could be the proxy
+            # 2. Kill any remaining python processes
             os_system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
-            time.sleep(2)
 
-            # Restart
-            return run_proxy_in_background()
+            # 3. Wait 2 seconds without blocking, then do the restart
+            reactor.callLater(2, self._do_restart_proxy)
+        except Exception as e:
+            print("[Restart] Error: {0}".format(e))
 
-        except BaseException:
-            return False
+    def _do_restart_proxy(self):
+        """Actually start the proxy after the delay."""
+        run_proxy_in_background()
 
     def cat(self):
         if not cfg.proxy_enabled.value:
@@ -3085,38 +3102,29 @@ class vavoo(Screen):
             return status
 
     def _try_proxy_recovery(self):
-        """Try to recover proxy connection"""
+        """Attempt to recover proxy connection asynchronously."""
         if not cfg.proxy_enabled.value:
             return False
-        try:
-            print("[vavoo] Attempting proxy recovery...")
 
-            # 1. Try token refresh
+        print("[vavoo] Attempting proxy recovery...")
+
+        # 1. Try token refresh in a background thread (getUrl is blocking)
+        def do_refresh():
             try:
-                refresh_url = PROXY_REFRESH_URL
-                getUrl(refresh_url, timeout=3)
-                print("[vavoo] Token refresh attempted")
+                getUrl(PROXY_REFRESH_URL, timeout=3)
             except Exception:
                 pass
+        threading.Thread(target=do_refresh, daemon=True).start()
 
-            # 2. Try proxy restart
-            if not is_proxy_ready(timeout=2):
-                print("[vavoo] Restarting proxy...")
-                success = run_proxy_in_background()
+        # 2. If proxy is not ready, schedule a restart
+        if not is_proxy_ready(timeout=1):
+            reactor.callLater(1, self._restart_proxy_and_reload)
+        return False
 
-                if success:
-                    # Wait for initialization
-                    for i in range(5):
-                        if is_proxy_ready(timeout=2):
-                            print("[vavoo] Proxy restarted successfully")
-                            return True
-                        time.sleep(1)
-
-            return False
-
-        except Exception as e:
-            print("[vavoo] Recovery error: " + str(e))
-            return False
+    def _restart_proxy_and_reload(self):
+        run_proxy_in_background()
+        # Reload channel list after 3 seconds (enough for proxy to start)
+        reactor.callLater(3, self.cat)
 
     def _show_proxy_error(self, status):
         """Show proxy error message"""
@@ -4293,14 +4301,11 @@ class Playstream2(
             self.restartAfterEOF()
 
     def restartAfterEOF(self):
-        """Callback to restart stream after EOF"""
-        try:
-            print("[Playstream2] Restarting stream after EOF")
-            self.stopStream()
-            time.sleep(0.5)
-            self.startStream(force=True)
-        except Exception as e:
-            print("[Playstream2] Error restarting after EOF: " + str(e))
+        """Callback to restart stream after EOF (non‑blocking)."""
+        print("[Playstream2] Restarting stream after EOF")
+        self.stopStream()
+        # Instead of time.sleep(0.5), schedule the start after 500 ms
+        reactor.callLater(0.5, lambda: self.startStream(force=True))
 
     def get_current_epg(self):
         """
