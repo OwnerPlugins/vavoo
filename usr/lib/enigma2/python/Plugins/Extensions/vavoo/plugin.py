@@ -93,7 +93,8 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat  # , get_stats_collector
+# , get_stats_collector
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -2067,8 +2068,9 @@ class MainVavoo(Screen):
                 if requests is not None:
                     requests.get(PROXY_SHUTDOWN_URL, timeout=2)
                 else:
-                    req = UrlRequest(PROXY_SHUTDOWN_URL,
-                                     headers={'User-Agent': vUtils.RequestAgent()})
+                    req = UrlRequest(
+                        PROXY_SHUTDOWN_URL, headers={
+                            'User-Agent': vUtils.RequestAgent()})
                     urlopen(req, timeout=2)
             except Exception:
                 pass

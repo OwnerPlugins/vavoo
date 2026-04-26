@@ -1451,7 +1451,8 @@ def run_proxy_in_background():
         _starting = True
 
     try:
-        # If proxy is already running, perform a quick non‑blocking health check
+        # If proxy is already running, perform a quick non‑blocking health
+        # check
         if is_proxy_running():
             # Spawn a worker thread to check and possibly restart
             def health_check_worker():
