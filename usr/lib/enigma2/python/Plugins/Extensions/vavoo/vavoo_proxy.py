@@ -1551,14 +1551,16 @@ def run_proxy_in_background():
     if is_proxy_booting():
         print("[Proxy] Another proxy is booting, waiting up to 10 seconds...")
         waited = 0
-        while waited < 100 and (is_proxy_booting() or not is_proxy_port_listening()):
+        while waited < 100 and (
+                is_proxy_booting() or not is_proxy_port_listening()):
             select.select([], [], [], 0.1)
             waited += 1
         if is_proxy_port_listening():
             print("[Proxy] Proxy is now running after waiting")
             return True
         else:
-            print("[Proxy] Still not running after waiting, proceeding to start a new proxy")
+            print(
+                "[Proxy] Still not running after waiting, proceeding to start a new proxy")
 
     if is_proxy_running() and is_proxy_port_listening():
         print("[Proxy] Already running and listening, skipping start")
