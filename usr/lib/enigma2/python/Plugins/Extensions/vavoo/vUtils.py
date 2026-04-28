@@ -7,6 +7,7 @@ import io
 import six
 import socket
 import ssl
+import select
 import threading
 import types
 import urllib3
@@ -428,8 +429,6 @@ def b64decoder(data):
 
 def getUrl(url, timeout=30, retries=3, backoff=2):
     """Fetch URL with exponential backoff retry logic"""
-    import time
-
     # detect 451
     HTTP_451_SENTINEL = "__HTTP451__"
 
@@ -489,7 +488,7 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 print(
                     "HTTP error {0} on attempt {1}, retrying in {2} seconds...".format(
                         code, i + 1, wait_time))
-                time.sleep(wait_time)
+                select.select([], [], [], wait_time)
                 continue
             print(
                 "Failed after {0} attempts for URL: {1}".format(
@@ -514,7 +513,7 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 print(
                     "Attempt {0} failed, retrying in {1} seconds...".format(
                         i + 1, wait_time))
-                time.sleep(wait_time)
+                select.select([], [], [], wait_time)
             else:
                 print(
                     "Failed after {0} attempts for URL: {1}".format(
@@ -529,7 +528,7 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                     "Unexpected error on attempt {0}, retrying in {1} seconds...".format(
                         i + 1, wait_time))
                 print("Error: {0}".format(e))
-                time.sleep(wait_time)
+                select.select([], [], [], wait_time)
                 continue
 
             print(
@@ -730,7 +729,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) + \
+            print("Getting channels for '" + str(country_name) +
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode

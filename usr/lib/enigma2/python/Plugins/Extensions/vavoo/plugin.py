@@ -15,7 +15,7 @@ from enigma import eDVBDB
 import xml.etree.ElementTree as ET
 import datetime
 from twisted.internet import reactor
-
+import select
 
 try:
     import requests
@@ -93,8 +93,7 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-# , get_stats_collector
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat  # , get_stats_collector
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -103,6 +102,7 @@ from . import (
     FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
 )
 from . import PY2, PY3, vUtils  # , CACHE_FILE
+from .epg_manager import EPGManager
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -671,33 +671,6 @@ def show_list(name, link, is_category=False, is_channel=False):
     return list(res)
 
 
-# proxy
-"""
-def start_proxy_at_boot():
-    try:
-        # Check if proxy is already running
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = s.connect_ex((PROXY_HOST, PORT))
-        s.close()
-
-        if result != 0:  # Port not in use
-            print("[Vavoo] Starting proxy at system boot...")
-            # Start proxy
-            proxy_script = join(PLUGIN_PATH, "vavoo_proxy.py")
-            cmd = ["python", proxy_script, "&"]
-            subprocess.Popen(cmd, shell=False)
-            time.sleep(2)
-        else:
-            print("[Vavoo] Proxy already running at boot")
-    except:
-        pass
-
-
-# start_proxy_at_boot()
-"""
-
-
 def is_port_in_use(port):
     import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -714,7 +687,6 @@ def get_proxy_stream_url(channel_id):
 
 def keep_proxy_alive():
     """Keep proxy alive by periodically checking it"""
-    import threading
 
     def monitor_proxy():
         while True:
@@ -731,7 +703,7 @@ def keep_proxy_alive():
             except Exception as e:
                 print("[Proxy Monitor] Error: " + str(e))
 
-            time.sleep(60)
+            select.select([], [], [], 60)
 
     # Start monitor thread
     monitor_thread = threading.Thread(target=monitor_proxy)
@@ -1269,7 +1241,7 @@ class vavoo_config(Screen, ConfigListScreen):
             for i in range(10):
                 if is_proxy_ready():
                     return True
-                time.sleep(1)
+                select.select([], [], [], 1)
 
             return False
 
@@ -1578,20 +1550,7 @@ class MainVavoo(Screen):
         if is_stats_enabled():
             record_anonymous_startup()
             start_heartbeat()
-            """
-            === TEST DIRETTO ===
-            def test_direct():
-                time.sleep(2)
-                print("[TEST] Provo a inviare heartbeat manuale")
-                collector = get_stats_collector()
-                if collector._session_id:
-                    collector._send_heartbeat()
-                else:
-                    print("[TEST] Nessun session_id trovato")
-            t = threading.Thread(target=test_direct)
-            t.daemon = True
-            t.start()
-            """
+
         self._initialize_labels()
         self._initialize_actions()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
@@ -2034,20 +1993,45 @@ class MainVavoo(Screen):
     def start_vavoo_proxy(self):
         if not cfg.proxy_enabled.value:
             return False
+
+        # If the proxy is already active and working, do nothing
+        if is_proxy_running() and is_proxy_ready(timeout=1):
+            print("[MainVavoo] Proxy already ready")
+            self._update_proxy_status_display()
+            return True
+
+        # If it is running but not ready, let it stabilize
         if is_proxy_running():
-            print("[MainVavoo] Proxy already running")
+            print("[MainVavoo] Proxy running but not ready, waiting...")
+            self._wait_for_proxy()
             return True
 
         print("[MainVavoo] Starting proxy...")
         success = run_proxy_in_background()
-        if not success:
-            print("[MainVavoo] Proxy start error")
-            return False
+        if success:
+            self._wait_for_proxy()
+        return success
 
-        # Non‑blocking readiness check
-        self._proxy_ready_attempts = 0
-        self._check_proxy_ready()
-        return True
+    def _wait_for_proxy(self, attempts=0):
+        """Wait non-blockingly until the proxy is ready"""
+        if attempts > 30:  # 30 * 0.5 = 15 seconds
+            print("[MainVavoo] Proxy not ready after timeout")
+            return
+        if is_proxy_ready(timeout=0.5):
+            print("[MainVavoo] Proxy ready")
+            self._update_proxy_status_display()
+        else:
+            reactor.callLater(0.5, lambda: self._wait_for_proxy(attempts + 1))
+
+    def _check_proxy_ready_async(self, attempts=0):
+        if attempts > 20:
+            print("[MainVavoo] Proxy not ready after timeout")
+            return
+        if is_proxy_ready(timeout=0.5):
+            print("[MainVavoo] Proxy ready")
+            self._update_proxy_status_display()
+        else:
+            reactor.callLater(0.5, lambda: self._check_proxy_ready_async(attempts + 1))
 
     def _check_proxy_ready(self):
         if is_proxy_ready(timeout=0.5):
@@ -2068,9 +2052,8 @@ class MainVavoo(Screen):
                 if requests is not None:
                     requests.get(PROXY_SHUTDOWN_URL, timeout=2)
                 else:
-                    req = UrlRequest(
-                        PROXY_SHUTDOWN_URL, headers={
-                            'User-Agent': vUtils.RequestAgent()})
+                    req = UrlRequest(PROXY_SHUTDOWN_URL,
+                                     headers={'User-Agent': vUtils.RequestAgent()})
                     urlopen(req, timeout=2)
             except Exception:
                 pass
@@ -2171,8 +2154,6 @@ class MainVavoo(Screen):
             # print(
             # "[BG] Proxy background start non-critical: %s" %
             # str(bg_e))
-
-            # import threading
             # bg_thread = threading.Thread(
             # target=start_bg_proxy)
             # bg_thread.setDaemon(True)
@@ -2448,7 +2429,6 @@ class MainVavoo(Screen):
                     finally:
                         self['name'].setText(_("Ready"))
 
-                import threading
                 thread = threading.Thread(target=update_thread)
                 thread.setDaemon(True)
                 thread.start()
@@ -2991,7 +2971,7 @@ class vavoo(Screen):
             if i == 0:
                 self['name'].setText(_("Waiting for proxy..."))
 
-            time.sleep(1)
+            select.select([], [], [], 1)
 
         self.session.open(
             MessageBox,
@@ -3178,7 +3158,7 @@ class vavoo(Screen):
                 if is_proxy_ready(timeout=1):
                     print("[MainVavoo] Proxy ready")
                     return True
-                time.sleep(1)
+                select.select([], [], [], 1)
             print("[MainVavoo] Proxy started but not ready after 10s")
         else:
             print("[MainVavoo] Proxy start error")
@@ -3875,8 +3855,28 @@ class TvInfoBarShowHide():
                 print("[Update Proxy Overlay] Error: " + str(e))
 
     def get_current_epg(self):
-        """Method to be overridden by the child class (Playstream2)"""
-        return "EPG not available"
+        """Get current EPG using local EPGManager"""
+        try:
+            from .epg_manager import EPGManager
+            
+            if not hasattr(self, '_epg_manager'):
+                self._epg_manager = EPGManager()
+                self._epg_manager.load_all()
+            
+            clean_name = decodeHtml(self.name)
+            clean_name = remove_parentheses(clean_name)
+            
+            # Cerca programma
+            channel = self._epg_manager.get_channel_by_name(clean_name)
+            if channel:
+                title, desc, start, stop = self._epg_manager.get_current_program(channel.id)
+                if title:
+                    return f"{title} - {desc}" if desc else title
+            
+            return "EPG not available"
+        except Exception as e:
+            print(f"[EPG] Error: {e}")
+            return "EPG not available"
 
     def show_help_overlay(self):
         """Show the overlays with controls and EPG."""
@@ -4025,7 +4025,8 @@ class Playstream2(
         self.session = session
         init_notification_system(session)
         self.skinName = 'MoviePlayer'
-
+        self._epg_manager = None
+        self._init_epg_manager()
         self.stream_running = False
         self.is_streaming = False
         self.currentindex = index
@@ -4306,14 +4307,44 @@ class Playstream2(
         """Callback to restart stream after EOF (non‑blocking)."""
         print("[Playstream2] Restarting stream after EOF")
         self.stopStream()
-        # Instead of time.sleep(0.5), schedule the start after 500 ms
         reactor.callLater(0.5, lambda: self.startStream(force=True))
+
+    def _init_epg_manager(self):
+        """Initialize EPG manager in background"""
+        try:
+            self._epg_manager = EPGManager()
+
+            def load():
+                self._epg_manager.load_all()
+                print("[EPG] Manager loaded")
+            t = threading.Thread(target=load)
+            t.daemon = True
+            t.start()
+        except Exception as e:
+            print("[EPG] Failed to init manager: {}".format(e))
+            self._epg_manager = None
 
     def get_current_epg(self):
         """
         Get current EPG program for the playing channel.
         Results are cached for 5 minutes to avoid repeated lookups.
         """
+        try:
+            if not hasattr(self, '_local_epg'):
+                self._local_epg = EPGManager()
+                self._local_epg.load_all()
+            
+            clean_name = decodeHtml(self.name)
+            clean_name = remove_parentheses(clean_name)
+            
+            channel = self._local_epg.get_channel_by_name(clean_name)
+            if channel:
+                title, desc, start, stop = self._local_epg.get_current_program(channel.id)
+                if title and title != "No Info Available":
+                    return "{} - {}".format(title, desc) if desc else title
+        except Exception as e:
+            print("[EPG] Local fallback failed: {}".format(e))
+        
         start_time = time.time()
 
         try:
@@ -4769,7 +4800,7 @@ class AutoStartTimer:
                 if is_proxy_ready(timeout=3):
                     break
                 print("[AutoStartTimer] Waiting for proxy (" + str(i + 1) + "/10)")
-                time.sleep(1)
+                select.select([], [], [], 1)
 
             # 4. Update each bouquet
             successful_updates = 0
@@ -4826,9 +4857,11 @@ def delayed_boot_tasks():
     global auto_start_timer
     try:
         if cfg.proxy_enabled.value:
-            if not is_proxy_running() or not is_proxy_ready(timeout=2):
+            if not is_proxy_running():
+                print("[Vavoo] Starting proxy at boot...")
                 run_proxy_in_background()
-
+            else:
+                print("[Vavoo] Proxy already running at boot")
         if cfg.autobouquetupdate.value and cfg.proxy_enabled.value:
             if auto_start_timer is None:
                 auto_start_timer = AutoStartTimer()

@@ -6,6 +6,7 @@ import time
 import glob
 import threading
 import urllib3
+import select
 from json import loads
 from os import listdir, remove
 from os.path import exists as file_exists, isfile, join, basename
@@ -13,6 +14,7 @@ from re import compile, search
 from enigma import eTimer
 from Components.config import config
 from Tools.Directories import SCOPE_PLUGINS, resolveFilename
+
 from .vUtils import (
     decodeHtml,
     getUrl,
@@ -284,7 +286,7 @@ def convert_bouquet_sync(
         for i in range(15):
             if is_proxy_ready(timeout=2):
                 break
-            time.sleep(1)
+            select.select([], [], [], 1)
         else:
             print("[Bouquet] Proxy not ready")
             return 0
@@ -609,42 +611,13 @@ def process_epg_matching_background(
                     'original_url': ch['url'],
                     'original_sref': ch.get('fallback_sref', "4097:0:0:0:0:0:0:0:0:0:")
                 })
-            time.sleep(0.001)
+            select.select([], [], [], 0.001)
 
         # Save callback and matched count AFTER the loop
         saved_matched = len(matched)
         saved_callback = callback
 
         # 3. Update cache files (only matched channels go to main cache)
-        """
-        # Load existing main cache
-        complete_cache = {}
-        if file_exists(CACHE_FILE):
-            try:
-                with open(CACHE_FILE, 'r') as f:
-                    complete_cache = load(f)
-            except BaseException:
-                complete_cache = {}
-
-        # Add matched channels (only these go to main cache)
-        for m in matched:
-            key = "%s_%s" % (m['name'], country_code)
-            complete_cache[key] = {
-                'id': m['rytec_id'],
-                'sref': m['dvb_ref'],
-                'name': m['name'],
-                'country': country_code,
-                'matched': True,
-                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-            }
-            print("[Cache] Added matched: %s -> %s" % (key, m['rytec_id']))
-
-        # Save main cache
-        with open(CACHE_FILE, 'w') as f:
-            dump(complete_cache, f, indent=2, sort_keys=True)
-        print("[EPGBackground] Updated main cache with %d matched entries" % len(matched))
-        """
-
         # Handle unmatched channels: save them to unmatched cache with their
         # original sref
         for u in unmatched:
@@ -890,7 +863,7 @@ def create_fallback_bouquet_sync(
         for i in range(15):
             if is_proxy_ready(timeout=2):
                 break
-            time.sleep(1)
+            select.select([], [], [], 1)
         else:
             print("[FallbackBouquet] Proxy not ready")
             return 0, "", [], ""

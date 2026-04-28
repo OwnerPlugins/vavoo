@@ -9,7 +9,7 @@ import gzip
 import io
 import logging
 import requests
-import time
+import select
 import xml.etree.ElementTree as ET
 
 from . import PY2
@@ -293,7 +293,7 @@ class EPGDownloader(object):
                     "Download failed (attempt {}): {}".format(
                         attempt + 1, e))
                 if attempt < self.MAX_RETRIES - 1:
-                    time.sleep(delay)
+                    select.select([], [], [], delay)
                     delay *= self.RETRY_BACKOFF
 
         return None
