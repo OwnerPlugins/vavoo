@@ -93,8 +93,7 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-# , get_stats_collector
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat  # , get_stats_collector
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -103,7 +102,7 @@ from . import (
     FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
 )
 from . import PY2, PY3, vUtils  # , CACHE_FILE
-from .epg_manager import EPGManager
+# from .epg_manager import EPGManager
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -3859,29 +3858,8 @@ class TvInfoBarShowHide():
                 print("[Update Proxy Overlay] Error: " + str(e))
 
     def get_current_epg(self):
-        """Get current EPG using local EPGManager"""
-        try:
-            from .epg_manager import EPGManager
-
-            if not hasattr(self, '_epg_manager'):
-                self._epg_manager = EPGManager()
-                self._epg_manager.load_all()
-
-            clean_name = decodeHtml(self.name)
-            clean_name = remove_parentheses(clean_name)
-
-            # Cerca programma
-            channel = self._epg_manager.get_channel_by_name(clean_name)
-            if channel:
-                title, desc, start, stop = self._epg_manager.get_current_program(
-                    channel.id)
-                if title:
-                    return f"{title} - {desc}" if desc else title
-
-            return "EPG not available"
-        except Exception as e:
-            print(f"[EPG] Error: {e}")
-            return "EPG not available"
+        """Method to be overridden by the child class (Playstream2)"""
+        return "EPG not available"
 
     def show_help_overlay(self):
         """Show the overlays with controls and EPG."""
@@ -4030,8 +4008,7 @@ class Playstream2(
         self.session = session
         init_notification_system(session)
         self.skinName = 'MoviePlayer'
-        self._epg_manager = None
-        self._init_epg_manager()
+
         self.stream_running = False
         self.is_streaming = False
         self.currentindex = index
@@ -4314,43 +4291,11 @@ class Playstream2(
         self.stopStream()
         reactor.callLater(0.5, lambda: self.startStream(force=True))
 
-    def _init_epg_manager(self):
-        """Initialize EPG manager in background"""
-        try:
-            self._epg_manager = EPGManager()
-
-            def load():
-                self._epg_manager.load_all()
-                print("[EPG] Manager loaded")
-            t = threading.Thread(target=load)
-            t.daemon = True
-            t.start()
-        except Exception as e:
-            print("[EPG] Failed to init manager: {}".format(e))
-            self._epg_manager = None
-
     def get_current_epg(self):
         """
         Get current EPG program for the playing channel.
         Results are cached for 5 minutes to avoid repeated lookups.
         """
-        try:
-            if not hasattr(self, '_local_epg'):
-                self._local_epg = EPGManager()
-                self._local_epg.load_all()
-
-            clean_name = decodeHtml(self.name)
-            clean_name = remove_parentheses(clean_name)
-
-            channel = self._local_epg.get_channel_by_name(clean_name)
-            if channel:
-                title, desc, start, stop = self._local_epg.get_current_program(
-                    channel.id)
-                if title and title != "No Info Available":
-                    return "{} - {}".format(title, desc) if desc else title
-        except Exception as e:
-            print("[EPG] Local fallback failed: {}".format(e))
-
         start_time = time.time()
 
         try:
@@ -4444,14 +4389,14 @@ class Playstream2(
 
                     try:
                         # Parse dates without timezone for speed
-                        start_dt = datetime.datetime.strptime(
-                            start_str.split(' ')[0], "%Y%m%d%H%M%S")
-                        stop_dt = datetime.datetime.strptime(
-                            stop_str.split(' ')[0], "%Y%m%d%H%M%S")
+                        import calendar
+                        start_clean = start_str.split(' ')[0]
+                        stop_clean = stop_str.split(' ')[0]
+                        start_dt = datetime.datetime.strptime(start_clean, "%Y%m%d%H%M%S")
+                        stop_dt = datetime.datetime.strptime(stop_clean, "%Y%m%d%H%M%S")
 
-                        # Convert to timestamps
-                        start_ts = time.mktime(start_dt.timetuple())
-                        stop_ts = time.mktime(stop_dt.timetuple())
+                        start_ts = calendar.timegm(start_dt.timetuple())
+                        stop_ts = calendar.timegm(stop_dt.timetuple())
 
                         if start_ts <= now <= stop_ts:
                             current_prog = prog

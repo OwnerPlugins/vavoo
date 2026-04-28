@@ -1,7 +1,16 @@
 #!/bin/bash
 
-version='1.67'
+version='1.68'
 changelog="
+- epg fixed : utc time
+- Proxy starting 12 times simultaneously
+- GUI freezing at startup
+- Token monitor blocking the thread
+- Non-interruptible health monitor
+- Infinite restart loops
+- Larger buffer = fewer interruptions
+- Longer timeouts = fewer premature disconnections
+- Larger chunk size = fewer network calls
 - Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - Performance improvements
 --> Offer coffee please :)

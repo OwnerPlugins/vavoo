@@ -169,6 +169,8 @@ GEOIP_URL = "https://www.vavoo.tv/geoip"
 PING_URL = "https://www.lokke.app/api/app/ping"
 PING_URL2 = "https://www.vavoo.tv/api/app/ping"
 PID_FILE = "/tmp/vavoo_proxy.pid"
+BOOTING_FILE = "/tmp/vavoo_proxy_booting"
+
 # Primary + mirror. Some regions get HTTP 451 from the primary.
 
 HEADERS = {
@@ -177,6 +179,27 @@ HEADERS = {
     "Accept-Encoding": "gzip, deflate",
     "Connection": "close",
 }
+
+
+def is_proxy_booting():
+    """Check if another proxy instance is currently starting up."""
+    return os.path.exists(BOOTING_FILE)
+
+
+def write_booting_file():
+    try:
+        with open(BOOTING_FILE, 'w') as f:
+            f.write(str(os.getpid()))
+    except:
+        pass
+
+
+def remove_booting_file():
+    try:
+        if os.path.exists(BOOTING_FILE):
+            os.unlink(BOOTING_FILE)
+    except:
+        pass
 
 
 def decode_response(resp):
@@ -1416,6 +1439,10 @@ def start_proxy():
 
     # Write the PID file for this instance
     write_pid_file()
+
+    # Indicate that we are booting
+    write_booting_file()
+
     STOP_EVENT.clear()
     max_restarts = 3
     restart_count = 0
@@ -1439,6 +1466,9 @@ def start_proxy():
                     return False
 
             server = ThreadedHTTPServer(('0.0.0.0', PORT), VavooHTTPHandler)
+            # Boot completed, remove booting file
+            remove_booting_file()
+
             server.timeout = 30
             server.request_queue_size = 64
             proxy.server = server
@@ -1512,17 +1542,44 @@ def start_proxy():
     return False
 
 
+def is_proxy_port_listening():
+    """Check if proxy is actually listening on PORT."""
+    import socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex(('127.0.0.1', PORT))
+    sock.close()
+    return result == 0
+
+
 def run_proxy_in_background():
-    """
-    Start the proxy in a background thread without blocking the main thread.
-    Returns True if the start request was accepted, False if already starting.
-    """
     global _starting
 
-    # Simple check: if proxy is running, assume it's OK (don't restart)
-    if is_proxy_running():
-        print("[Proxy] Already running, skipping")
+    if is_proxy_booting():
+        print("[Proxy] Another proxy is booting, waiting up to 10 seconds...")
+        waited = 0
+        while waited < 100 and (is_proxy_booting() or not is_proxy_port_listening()):
+            select.select([], [], [], 0.1)
+            waited += 1
+        if is_proxy_port_listening():
+            print("[Proxy] Proxy is now running after waiting")
+            return True
+        else:
+            print("[Proxy] Still not running after waiting, proceeding to start a new proxy")
+
+    if is_proxy_running() and is_proxy_port_listening():
+        print("[Proxy] Already running and listening, skipping start")
         return True
+
+    if os.path.exists(PID_FILE) and not is_proxy_port_listening():
+        try:
+            with open(PID_FILE) as f:
+                pid = int(f.read().strip())
+            os.kill(pid, 0)
+            os.kill(pid, 9)
+            time.sleep(0.2)
+            os.unlink(PID_FILE)
+        except Exception:
+            pass
 
     with _starting_lock:
         if _starting:
@@ -1531,8 +1588,6 @@ def run_proxy_in_background():
         _starting = True
 
     try:
-        # Start a fresh proxy thread
-        import threading
         proxy_thread = threading.Thread(target=start_proxy, daemon=True)
         proxy_thread.start()
         return True
