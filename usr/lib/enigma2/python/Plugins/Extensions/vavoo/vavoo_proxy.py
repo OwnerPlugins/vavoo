@@ -187,19 +187,13 @@ def is_proxy_booting():
 
 
 def write_booting_file():
-    try:
-        with open(BOOTING_FILE, 'w') as f:
-            f.write(str(os.getpid()))
-    except:
-        pass
+    with open(BOOTING_FILE, 'w') as f:
+        f.write(str(os.getpid()))
 
 
 def remove_booting_file():
-    try:
-        if os.path.exists(BOOTING_FILE):
-            os.unlink(BOOTING_FILE)
-    except:
-        pass
+    if os.path.exists(BOOTING_FILE):
+        os.unlink(BOOTING_FILE)
 
 
 def decode_response(resp):
