@@ -337,7 +337,8 @@ class ProxyHealthMonitor:
             proxy = VavooProxy()
 
             if proxy.initialize_proxy():
-                server = ThreadedHTTPServer(('0.0.0.0', PORT), VavooHTTPHandler)
+                server = ThreadedHTTPServer(
+                    ('0.0.0.0', PORT), VavooHTTPHandler)
                 proxy.server = server
                 server_thread = threading.Thread(target=server.serve_forever)
                 server_thread.setDaemon(True)
@@ -488,7 +489,9 @@ class VavooProxy:
                     token_age = now - \
                         self.addon_sig_data["ts"] if self.addon_sig_data["sig"] else 0
                     if self.addon_sig_data["sig"] and token_age > TOKEN_REFRESH_AGE:
-                        print("[Token Monitor] Token old ({}s), refreshing...".format(int(token_age)))
+                        print(
+                            "[Token Monitor] Token old ({}s), refreshing...".format(
+                                int(token_age)))
                         self.refresh_addon_sig_if_needed(force=True)
                     self.last_heartbeat = now
                 except Exception as e:
@@ -1071,7 +1074,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
                     # 2. Connect to upstream with streaming (timeout aumentato)
                     upstream = proxy.session.get(
-                        stream_url, stream=True, timeout=(10, 90))  # (connect, read) 10s/90s
+                        stream_url, stream=True, timeout=(
+                            10, 90))  # (connect, read) 10s/90s
                     upstream.raise_for_status()
 
                     # 3. Send headers to player
@@ -1087,7 +1091,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_header('Cache-Control', 'no-cache, no-store')
                     self.end_headers()
 
-                    # 4. Forward data with timeout monitoring (chunk size aumentato)
+                    # 4. Forward data with timeout monitoring (chunk size
+                    # aumentato)
                     last_data_time = time.time()
                     try:
                         # Aumenta chunk size da 65536 a 262144 (256KB)

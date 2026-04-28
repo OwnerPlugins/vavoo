@@ -93,7 +93,8 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat  # , get_stats_collector
+# , get_stats_collector
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -2031,7 +2032,9 @@ class MainVavoo(Screen):
             print("[MainVavoo] Proxy ready")
             self._update_proxy_status_display()
         else:
-            reactor.callLater(0.5, lambda: self._check_proxy_ready_async(attempts + 1))
+            reactor.callLater(
+                0.5, lambda: self._check_proxy_ready_async(
+                    attempts + 1))
 
     def _check_proxy_ready(self):
         if is_proxy_ready(timeout=0.5):
@@ -2052,8 +2055,9 @@ class MainVavoo(Screen):
                 if requests is not None:
                     requests.get(PROXY_SHUTDOWN_URL, timeout=2)
                 else:
-                    req = UrlRequest(PROXY_SHUTDOWN_URL,
-                                     headers={'User-Agent': vUtils.RequestAgent()})
+                    req = UrlRequest(
+                        PROXY_SHUTDOWN_URL, headers={
+                            'User-Agent': vUtils.RequestAgent()})
                     urlopen(req, timeout=2)
             except Exception:
                 pass
@@ -3858,21 +3862,22 @@ class TvInfoBarShowHide():
         """Get current EPG using local EPGManager"""
         try:
             from .epg_manager import EPGManager
-            
+
             if not hasattr(self, '_epg_manager'):
                 self._epg_manager = EPGManager()
                 self._epg_manager.load_all()
-            
+
             clean_name = decodeHtml(self.name)
             clean_name = remove_parentheses(clean_name)
-            
+
             # Cerca programma
             channel = self._epg_manager.get_channel_by_name(clean_name)
             if channel:
-                title, desc, start, stop = self._epg_manager.get_current_program(channel.id)
+                title, desc, start, stop = self._epg_manager.get_current_program(
+                    channel.id)
                 if title:
                     return f"{title} - {desc}" if desc else title
-            
+
             return "EPG not available"
         except Exception as e:
             print(f"[EPG] Error: {e}")
@@ -4333,18 +4338,19 @@ class Playstream2(
             if not hasattr(self, '_local_epg'):
                 self._local_epg = EPGManager()
                 self._local_epg.load_all()
-            
+
             clean_name = decodeHtml(self.name)
             clean_name = remove_parentheses(clean_name)
-            
+
             channel = self._local_epg.get_channel_by_name(clean_name)
             if channel:
-                title, desc, start, stop = self._local_epg.get_current_program(channel.id)
+                title, desc, start, stop = self._local_epg.get_current_program(
+                    channel.id)
                 if title and title != "No Info Available":
                     return "{} - {}".format(title, desc) if desc else title
         except Exception as e:
             print("[EPG] Local fallback failed: {}".format(e))
-        
+
         start_time = time.time()
 
         try:
