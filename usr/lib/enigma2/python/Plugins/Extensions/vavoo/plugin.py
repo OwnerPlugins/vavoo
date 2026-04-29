@@ -93,8 +93,7 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-# , get_stats_collector
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
+from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat  # , get_stats_collector
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -4393,10 +4392,8 @@ class Playstream2(
                         import calendar
                         start_clean = start_str.split(' ')[0]
                         stop_clean = stop_str.split(' ')[0]
-                        start_dt = datetime.datetime.strptime(
-                            start_clean, "%Y%m%d%H%M%S")
-                        stop_dt = datetime.datetime.strptime(
-                            stop_clean, "%Y%m%d%H%M%S")
+                        start_dt = datetime.datetime.strptime(start_clean, "%Y%m%d%H%M%S")
+                        stop_dt = datetime.datetime.strptime(stop_clean, "%Y%m%d%H%M%S")
 
                         start_ts = calendar.timegm(start_dt.timetuple())
                         stop_ts = calendar.timegm(stop_dt.timetuple())
