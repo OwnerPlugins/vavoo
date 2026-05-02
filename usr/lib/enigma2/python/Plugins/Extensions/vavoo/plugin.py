@@ -67,7 +67,6 @@ from Components.config import (
 from enigma import (
     RT_HALIGN_LEFT,
     RT_VALIGN_CENTER,
-    # eDVBDB,
     eListboxPythonMultiContent,
     ePicLoad,
     eServiceReference,
@@ -75,7 +74,6 @@ from enigma import (
     gFont,
     getDesktop,
     iPlayableService,
-    # iServiceInformation,
     loadPNG,
 )
 
@@ -93,7 +91,6 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-# , get_stats_collector
 from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
@@ -102,7 +99,7 @@ from . import (
     PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, PROXY_SHUTDOWN_URL,
     FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
 )
-from . import PY2, PY3, vUtils  # , CACHE_FILE
+from . import PY2, PY3, vUtils
 # from .epg_manager import EPGManager
 from .bouquet_manager import (
     convert_bouquet,
@@ -112,16 +109,6 @@ from .bouquet_manager import (
     export_bouquet_async
 )
 from .vUtils import (
-    # error,
-    # log,
-    # debug,
-    # warning,
-    # log_exception,
-    # load_flag_to_widget,
-    # preload_country_flags,
-    # download_flag_with_size,
-    # generate_epg_files,
-    # migrate_cache_to_normalized,
     make_print,
     update_epg_sources,
     get_epg_matcher,
@@ -148,7 +135,7 @@ from .vUtils import (
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260315                              #
+#  Last Modified: 20260501                              #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #

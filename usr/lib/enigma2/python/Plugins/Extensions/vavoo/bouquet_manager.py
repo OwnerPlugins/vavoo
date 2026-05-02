@@ -35,10 +35,6 @@ from .vUtils import (
 )
 from .vavoo_proxy import run_proxy_in_background
 from . import (
-    # CACHE_FILE,
-    # UNMATCHED_FILE,
-    # SREF_MAP_FILE,
-    # export_lock,
     PY3,
     PORT,
     PLUGIN_ROOT,
@@ -54,7 +50,7 @@ from . import (
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260315                              #
+#  Last Modified: 20260501                              #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #

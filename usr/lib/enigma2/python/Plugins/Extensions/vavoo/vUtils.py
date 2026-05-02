@@ -11,6 +11,7 @@ import select
 import threading
 import types
 import urllib3
+
 from collections import OrderedDict
 from difflib import SequenceMatcher
 from json import dump, load, loads
@@ -28,6 +29,8 @@ from time import sleep, time, strftime, localtime
 from unicodedata import normalize
 
 from . import (
+    __version__,
+    country_codes,
     PY2,
     PY3,
     PORT,
@@ -39,11 +42,7 @@ from . import (
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
-    __version__,
-    # ENIGMA_PATH,
-    # SREF_MAP_FILE,
     HOST_MAIN,
-    country_codes,
     ALIAS_FILE
 )
 """
@@ -53,7 +52,7 @@ from . import (
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260320                              #
+#  Last Modified: 20260501                              #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #
@@ -2704,95 +2703,6 @@ def fix_cache_format(
         print("[Cache] Error: %s" % e)
         trace_error()
         return 0, 0
-
-
-"""
-def fix_cache_format(remove_duplicates=True):
-    try:
-        if not exists(CACHE_FILE):
-            print("[Cache] No cache file found")
-            return 0, 0
-
-        with open(CACHE_FILE, 'r') as f:
-            cache = load(f)
-
-        modified = 0
-        removed = 0
-
-        def is_valid_sref(sref):
-            # Sref is valid if it's not the empty fallback
-            return sref and sref != "4097:0:0:0:0:0:0:0:0:0:"
-
-        for key, value in list(cache.items()):
-            changed = False
-
-            # Field 'name'
-            if 'name' not in value or not value['name']:
-                value['name'] = key
-                changed = True
-
-            # Field 'country'
-            if 'country' not in value or not value['country']:
-                parts = key.rsplit('_', 1)
-                value['country'] = parts[-1] if len(parts) > 1 else ''
-                changed = True
-
-            # Field 'timestamp'
-            if 'timestamp' not in value:
-                from time import strftime, localtime
-                value['timestamp'] = strftime('%Y-%m-%d %H:%M:%S', localtime())
-                changed = True
-
-            # Field 'id'
-            current_id = value.get('id')
-            if not current_id or current_id == 'null' or current_id == '':
-                # Use original name as fallback
-                value['id'] = key
-                changed = True
-                current_id = key
-
-            # Field 'sref'
-            current_sref = value.get('sref', '')
-            if not current_sref:
-                value['sref'] = "4097:0:0:0:0:0:0:0:0:0:"
-                changed = True
-                current_sref = value['sref']
-
-            # Field 'matched': TRUE if id is valid OR sref is valid
-            current_matched = value.get('matched', False)
-            correct_matched = VavooEPGMatcher.is_valid_rytec_id(
-                current_id) or is_valid_sref(current_sref)
-            if current_matched != correct_matched:
-                value['matched'] = correct_matched
-                changed = True
-
-            if changed:
-                modified += 1
-
-        # If you want to remove duplicates, you can do it here, but not
-        # required for now
-        if remove_duplicates:
-            # possible duplicate removal logic, if needed
-            pass
-
-        if modified > 0:
-            with open(CACHE_FILE, 'w') as f:
-                dump(cache, f, indent=4, sort_keys=True)
-            # Update the matcher with the new cache
-            matcher = get_epg_matcher()
-            matcher.cache = cache
-            matcher._build_normalized_index()
-            print("[Cache] FIXED {} entries".format(modified))
-        else:
-            print("[Cache] No changes needed.")
-
-        return modified, removed
-
-    except Exception as e:
-        print("[Cache] Error: {}".format(e))
-        trace_error()
-        return 0, 0
-"""
 
 
 def returnIMDB(text_clear, session):

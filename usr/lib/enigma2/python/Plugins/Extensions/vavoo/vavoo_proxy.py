@@ -15,9 +15,6 @@ import os
 from json import loads, load, dumps
 
 from . import (
-    # PRIMARY_BASE_URL,
-    # FALLBACK_BASE_URL,
-    # PROXY_BASE_URL,
     PORT,
     PROXY_HOST,
     PROXY_STATUS_URL,
@@ -29,11 +26,6 @@ from . import (
 )
 
 from .vUtils import (
-    # log,
-    # debug,
-    # warning,
-    # error,
-    # log_exception,
     _starting_lock,
     is_proxy_running,
     make_print,
@@ -73,11 +65,9 @@ socket.setdefaulttimeout(30)
 
 try:
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-    # from urlparse import urlparse, parse_qs
     print(" Python 2 detected")
 except ImportError:
     from http.server import BaseHTTPRequestHandler, HTTPServer
-    # from urllib.parse import urlparse, parse_qs
     print(" Python 3 detected")
 
 
@@ -106,7 +96,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260315                              #
+#  Last Modified: 20260501                              #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #
