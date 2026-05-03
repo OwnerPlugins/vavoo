@@ -19,6 +19,7 @@ from Components.config import config
 from Components.NimManager import nimmanager
 from os import listdir, makedirs, remove, system, unlink, rename
 from os.path import basename, exists, getmtime, getsize, isfile, join, splitext
+from enigma import eTimer
 from random import choice
 from re import IGNORECASE, compile, findall, search, sub
 from shutil import copy2
@@ -52,7 +53,7 @@ from . import (
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260501                              #
+#  Last Modified: 202600503                             #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #
@@ -932,27 +933,40 @@ def MemClean():
         pass
 
 
-def ReloadBouquets(delay=2000):
-    """Reload Enigma2 bouquets and service lists after a delay (in ms)"""
-    from enigma import eDVBDB, eTimer
-    try:
-        def do_reload():
-            try:
-                db = eDVBDB.getInstance()
-                db.reloadBouquets()
-                db.reloadServicelist()
-                print("Bouquets reloaded successfully")
-            except Exception as e:
-                print("Error during service reload: " + str(e))
+def ReloadBouquets(delay=500):
+    """Reload bouquets after delay (non‑blocking in main thread)."""
+    from enigma import eDVBDB
 
-        reload_timer = eTimer()
+    def do_reload():
         try:
-            reload_timer.callback.append(do_reload)
-        except BaseException:
-            reload_timer.timeout.connect(do_reload)
-        reload_timer.start(delay, True)
-    except Exception as e:
-        print("Error setting up service reload: " + str(e))
+            db = eDVBDB.getInstance()
+            db.reloadBouquets()
+            db.reloadServicelist()
+            print("Bouquets reloaded successfully")
+        except Exception as e:
+            print("Error during service reload: " + str(e))
+
+    if delay <= 0:
+        do_reload()
+        return
+
+    # If in main thread, use non‑blocking timer
+    if threading.current_thread() is threading.main_thread():
+        try:
+            from twisted.internet import reactor
+            if reactor.running:
+                reactor.callLater(delay / 1000.0, do_reload)
+                return
+        except Exception:
+            pass
+        # Fallback: eTimer
+        timer = eTimer()
+        timer.callback.append(do_reload)
+        timer.start(delay, True)
+    else:
+        # Background thread: safe to sleep
+        import time
+        time.sleep(delay / 1000.0)
         do_reload()
 
 
@@ -1500,7 +1514,6 @@ def preload_country_flags(country_list, cache_dir=FLAG_CACHE_DIR):
     Each chunk of countries is downloaded in a separate daemon thread.
     Compatible with Python 2 and 3.
     """
-    import threading
 
     def download_flags_worker(countries):
         for country in countries:

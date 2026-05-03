@@ -96,7 +96,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260501                              #
+#  Last Modified: 202600503                              #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #
@@ -1094,22 +1094,21 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             'Content-Type',
                             'video/mp2t'))
                     self.send_header('Connection', 'keep-alive')
-                    # Aggiungi header per prevenire caching
+                    # Add headers to prevent caching
                     self.send_header('Cache-Control', 'no-cache, no-store')
                     self.end_headers()
 
-                    # 4. Forward data with timeout monitoring (chunk size
-                    # aumentato)
+                    # 4. Forward data with timeout monitoring (chunk size increased)
                     last_data_time = time.time()
                     try:
-                        # Aumenta chunk size da 65536 a 262144 (256KB)
+                        # Increase chunk size from 65536 to 262144 (256KB)
                         for chunk in upstream.iter_content(chunk_size=262144):
                             if chunk:
                                 self.wfile.write(chunk)
                                 self.wfile.flush()
                                 last_data_time = time.time()
                             else:
-                                if time.time() - last_data_time > 15:  # aumentato da 10 a 15s
+                                if time.time() - last_data_time > 15:  # increased from 10 to 15s
                                     print(
                                         "[Proxy Stream] Upstream timeout for channel: " + channel_id)
                                     break

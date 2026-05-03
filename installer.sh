@@ -1,7 +1,8 @@
 #!/bin/bash
 
-version='1.68'
+version='1.69'
 changelog="
+- code lint
 - epg fixed : utc time
 - Proxy starting 12 times simultaneously
 - GUI freezing at startup

@@ -135,7 +135,7 @@ from .vUtils import (
 #  Created by Lululla (https://github.com/Belfagor2005) #
 #  License: CC BY-NC-SA 4.0                             #
 #  https://creativecommons.org/licenses/by-nc-sa/4.0    #
-#  Last Modified: 20260501                              #
+#  Last Modified: 202600503                              #
 #                                                       #
 #  Credits:                                             #
 #  - Original concept by Lululla                        #
@@ -4384,10 +4384,8 @@ class Playstream2(
                             start_clean, "%Y%m%d%H%M%S")
                         stop_dt = datetime.datetime.strptime(
                             stop_clean, "%Y%m%d%H%M%S")
-
                         start_ts = calendar.timegm(start_dt.timetuple())
                         stop_ts = calendar.timegm(stop_dt.timetuple())
-
                         if start_ts <= now <= stop_ts:
                             current_prog = prog
                             break

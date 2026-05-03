@@ -13,13 +13,8 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 msgid "! Proxy Expiring"
-msgstr ""
+msgstr "! Ο proxy λήγει"
 
-# vavoo translations
-# Copyright (C) 2025 Lululla Team
-# This file is distributed under the same license as the Lululla package.
-# [lululla] <ekekaz@gmail.com>, 2025.
-#
 msgid "(%d channels)?"
 msgstr "(%d κανάλια);"
 
@@ -27,7 +22,7 @@ msgid "(%s files deleted)"
 msgstr "(%s αρχεία διαγράφηκαν)"
 
 msgid "- Add missing fields to all entries"
-msgstr ""
+msgstr "- Προσθήκη των πεδίων που λείπουν σε όλες τις καταχωρήσεις"
 
 msgid "- Auto token refresh every 9 minutes"
 msgstr "- Αυτόματη ανανέωση token κάθε 9 λεπτά"
@@ -42,7 +37,7 @@ msgid "- Category bouquets"
 msgstr "- Μπουκέτα κατηγορίας"
 
 msgid "- Clean up the cache file"
-msgstr ""
+msgstr "- Εκκαθάριση του αρχείου cache"
 
 msgid "- Commercial use is strictly prohibited"
 msgstr "- Απαγορεύεται αυστηρά η εμπορική χρήση"
@@ -75,7 +70,7 @@ msgid "- Redistribution must maintain attribution"
 msgstr "- Η αναδιανομή πρέπει να διατηρεί την αναφορά στον δημιουργό"
 
 msgid "- Remove duplicate entries"
-msgstr ""
+msgstr "- Αφαίρεση των διπλότυπων καταχωρήσεων"
 
 msgid "- Service references: 4097, 5001, 5002"
 msgstr "- Αναφορές υπηρεσιών: 4097, 5001, 5002"
@@ -90,16 +85,16 @@ msgid "- Technical support: Qu4k3, @KiddaC, @giorbak"
 msgstr "- Τεχνική υποστήριξη: Qu4k3, @KiddaC, @giorbak"
 
 msgid "- {} duplicate entries removed"
-msgstr ""
+msgstr "- Αφαιρέθηκαν {} διπλότυπες καταχωρήσεις"
 
 msgid "- {} entries updated"
-msgstr ""
+msgstr "- Ενημερώθηκαν {} καταχωρήσεις"
 
 msgid "? Proxy Status"
-msgstr ""
+msgstr "? Κατάσταση proxy"
 
 msgid "? Proxy Unknown"
-msgstr ""
+msgstr "? Άγνωστος proxy"
 
 msgid "Active Automatic Bouquet Update"
 msgstr "Ενεργοποίηση αυτόματης ενημέρωσης μπουκέτου"
@@ -132,28 +127,28 @@ msgid "Bottom"
 msgstr "Κάτω"
 
 msgid "Bouquet Position in List"
-msgstr "Θέση του μπουκέτου στη λίστα"
+msgstr "Θέση των μπουκέτων στη λίστα"
 
 msgid "Bouquet creation error: {}"
 msgstr "Σφάλμα δημιουργίας μπουκέτου: {}"
 
 msgid "Bouquet ready with {} channels"
-msgstr ""
+msgstr "Το μπουκέτο είναι έτοιμο με {} κανάλια"
 
 msgid "Bouquets reload scheduled."
-msgstr ""
+msgstr "Η επαναφόρτωση των μπουκέτων προγραμματίστηκε."
 
 msgid "Bouquets reorganized successfully!"
 msgstr "Η αναδιοργάνωση των μπουκέτων ολοκληρώθηκε με επιτυχία!"
 
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit"
-msgstr ""
+msgstr "CH±=Αλλαγή | OK=Εναλλαγή | INFO=IMDb | STOP=Έξοδος"
 
 msgid "Cache format fix completed:"
-msgstr ""
+msgstr "Η διόρθωση μορφής cache ολοκληρώθηκε:"
 
 msgid "Cache is already in correct format. No changes needed."
-msgstr ""
+msgstr "Η cache είναι ήδη στη σωστή μορφή. Δεν απαιτούνται αλλαγές."
 
 msgid "Cancel"
 msgstr "Άκυρο"
@@ -165,7 +160,7 @@ msgid "Case: {}"
 msgstr "Περίπτωση: {}"
 
 msgid "Channels"
-msgstr ""
+msgstr "Κανάλια"
 
 msgid "Channels: %d"
 msgstr "Κανάλια: %d"
@@ -219,16 +214,16 @@ msgid "Do you want to export this bouquet?"
 msgstr "Θέλετε να εξάγετε αυτό το μπουκέτο;"
 
 msgid "Do you want to fix the cache format?"
-msgstr ""
+msgstr "Θέλετε να διορθωθεί η μορφή της cache;"
 
 msgid "EPG Similarity Threshold (%)"
-msgstr ""
+msgstr "Όριο ομοιότητας EPG (%)"
 
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Το EPG είναι απενεργοποιημένο. Παρακαλώ ενεργοποιήστε το πρώτα στις ρυθμίσεις Vavoo."
 
 msgid "EPG processing completed (no matches)"
-msgstr ""
+msgstr "Η επεξεργασία EPG ολοκληρώθηκε (χωρίς αντιστοιχίσεις)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Η επεξεργασία EPG ολοκληρώθηκε για {} κανάλια"
@@ -246,19 +241,19 @@ msgid "Enable Vavoo EPG"
 msgstr "Ενεργοποίηση Vavoo EPG"
 
 msgid "Enable or disable proxy."
-msgstr "Ενεργοποίηση ή απενεργοποίηση proxy."
+msgstr "Ενεργοποίηση ή απενεργοποίηση του proxy."
 
 msgid "Enter text to search..."
 msgstr "Εισάγετε κείμενο για αναζήτηση..."
 
 msgid "Error"
-msgstr ""
+msgstr "Σφάλμα"
 
 msgid "Error fixing cache: {}"
-msgstr ""
+msgstr "Σφάλμα κατά τη διόρθωση της cache: {}"
 
 msgid "Error parsing data"
-msgstr ""
+msgstr "Σφάλμα ανάλυσης δεδομένων"
 
 msgid "Error starting EPG update: {}"
 msgstr "Σφάλμα κατά την εκκίνηση της ενημέρωσης EPG: {}"
@@ -294,10 +289,10 @@ msgid "Failed: %(failed)d"
 msgstr "Απέτυχαν: %(failed)d"
 
 msgid "Fix Cache"
-msgstr ""
+msgstr "Διόρθωση cache"
 
 msgid "Fixing cache format..."
-msgstr ""
+msgstr "Διόρθωση μορφής cache..."
 
 msgid "Force proxy refresh?"
 msgstr "Εξαναγκασμένη ανανέωση proxy;"
@@ -318,13 +313,13 @@ msgid "Generate .m3u files and save to device %s?"
 msgstr "Να γίνει δημιουργία αρχείων .m3u και να αποθηκευτούν στη συσκευή %s;"
 
 msgid "Generate .m3u files for ALL %d countries?"
-msgstr "Δημιουργία αρχείων .m3u για ΟΛΕΣ τις %d χώρες;"
+msgstr "Να γίνει δημιουργία αρχείων .m3u για ΟΛΕΣ τις %d χώρες;"
 
 msgid "Hide/Show"
 msgstr "Απόκρυψη/Εμφάνιση"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Πότε θα γίνεται αυτόματη ενημέρωση EPG (απαιτείται προγραμματιστής EPGImport)"
+msgstr "Πόσο συχνά θα γίνεται αυτόματη ενημέρωση του EPG (απαιτείται προγραμματιστής EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Σημαντικές σημειώσεις:"
@@ -345,7 +340,7 @@ msgid "Link in Main Menu"
 msgstr "Σύνδεσμος στο κύριο μενού"
 
 msgid "Lower = less interruption but more refreshes"
-msgstr "Χαμηλό = λίγες διακοπές, πολλές ανανεώσεις"
+msgstr "Χαμηλότερα = λίγες διακοπές, πολλές ανανεώσεις"
 
 msgid "M3U file generated successfully!"
 msgstr "Το αρχείο M3U δημιουργήθηκε με επιτυχία!"
@@ -357,13 +352,13 @@ msgid "M3U generation error: %s"
 msgstr "Σφάλμα δημιουργίας M3U: %s"
 
 msgid "Minimum similarity for matching channels (higher = stricter)."
-msgstr ""
+msgstr "Ελάχιστη ομοιότητα για αντιστοίχιση καναλιών (υψηλότερη τιμή = πιο αυστηρή)."
 
 msgid "Movie Services Reference"
 msgstr "Αναφορά υπηρεσιών ταινιών"
 
 msgid "No IMDb/TMDB plugin found"
-msgstr ""
+msgstr "Δεν βρέθηκε πρόσθετο IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Δεν εντοπίστηκε σύνδεση στο Διαδίκτυο. Παρακαλώ ελέγξτε το δίκτυό σας."
@@ -378,13 +373,13 @@ msgid "No channels found in search!!!"
 msgstr "Δεν βρέθηκαν κανάλια στην αναζήτηση!!!"
 
 msgid "No items available"
-msgstr ""
+msgstr "Δεν υπάρχουν διαθέσιμα στοιχεία"
 
 msgid "No programme info available"
-msgstr ""
+msgstr "Δεν υπάρχουν διαθέσιμες πληροφορίες προγράμματος"
 
 msgid "No selection"
-msgstr ""
+msgstr "Καμία επιλογή"
 
 msgid "No valid channels for: %s"
 msgstr "Δεν υπάρχουν έγκυρα κανάλια για: %s"
@@ -411,13 +406,13 @@ msgid "Proxy Enabled"
 msgstr "Proxy ενεργοποιημένος"
 
 msgid "Proxy Error:"
-msgstr ""
+msgstr "Σφάλμα proxy:"
 
 msgid "Proxy disabled"
 msgstr "Ο proxy είναι απενεργοποιημένος"
 
 msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
-msgstr "Ο proxy είναι απενεργοποιημένος. Παρακαλώ ενεργοποιήστε πρώτα τον Proxy. -- Μενού ρυθμίσεων --"
+msgstr "Ο proxy είναι απενεργοποιημένος. Παρακαλώ ενεργοποιήστε πρώτα τον proxy. -- Μενού ρυθμίσεων --"
 
 msgid "Proxy is disabled. Please enable it in the configuration."
 msgstr "Ο proxy είναι απενεργοποιημένος. Παρακαλώ ενεργοποιήστε τον στις ρυθμίσεις."
@@ -444,7 +439,7 @@ msgid "Really close without saving settings?"
 msgstr "Θέλετε πραγματικά να κλείσετε χωρίς αποθήκευση των ρυθμίσεων;"
 
 msgid "Recommended: 5-8 minutes"
-msgstr "Προτείνεται: 5-8 λεπτά"
+msgstr "Προτείνονται: 5-8 λεπτά"
 
 msgid "Refresh stream (minutes):"
 msgstr "Ανανέωση ροής (λεπτά):"
@@ -453,22 +448,22 @@ msgid "Refresh stream every X minutes (1-15)"
 msgstr "Ανανέωση ροής κάθε X λεπτά (1-15)"
 
 msgid "Reload Bouqet"
-msgstr "Φορτώστε μπουκέτα"
+msgstr "Φόρτωση μπουκέτων"
 
 msgid "Reload bouquets and service list?"
-msgstr ""
+msgstr "Να γίνει επαναφόρτωση των μπουκέτων και της λίστας υπηρεσιών;"
 
 msgid "Remove"
 msgstr "Αφαίρεση"
 
 msgid "Remove ALL Vavoo bouquets?"
-msgstr "Αφαίρεση ΟΛΩΝ των μπουκέτων Vavoo;"
+msgstr "Να γίνει αφαίρεση ΟΛΩΝ των μπουκέτων Vavoo;"
 
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
 msgid "Restarting..."
-msgstr ""
+msgstr "Επανεκκίνηση..."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ΕΠΙΛΕΞΤΕ ΤΗΝ ΕΠΙΛΟΓΗ ΣΑΣ"
@@ -537,7 +532,7 @@ msgid "This will remove:"
 msgstr "Αυτό θα αφαιρέσει:"
 
 msgid "This will:"
-msgstr ""
+msgstr "Αυτό θα κάνει:"
 
 msgid "Time to start update:"
 msgstr "Ώρα έναρξης ενημέρωσης:"
@@ -588,7 +583,7 @@ msgid "Waiting for proxy..."
 msgstr "Αναμονή για τον proxy..."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
-msgstr "Καλώς ήρθατε στο Vavoo Proxy με υποστήριξη EPG"
+msgstr "Καλώς ήρθατε στοn Vavoo proxy με υποστήριξη EPG"
 
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Μπορείτε να τον εκκινήσετε από το μενού ή πατώντας το κουμπί TEXT."
@@ -606,31 +601,25 @@ msgid "seconds"
 msgstr "δευτερόλεπτα"
 
 msgid "✓ Proxy ({0}s)"
-msgstr ""
+msgstr "✓ Proxy ({0}s)"
 
 msgid "✓ Proxy OK"
-msgstr ""
+msgstr "✓ Proxy OK"
 
 msgid "✓ Restarted"
-msgstr ""
+msgstr "✓ Επανεκκινήθηκε"
 
 msgid "✗ Error"
-msgstr ""
+msgstr "✗ Σφάλμα"
 
 msgid "✗ Proxy Error"
-msgstr ""
+msgstr "✗ Σφάλμα proxy"
 
 msgid "✗ Proxy Expired"
-msgstr ""
+msgstr "✗ Ο proxy έληξε"
 
 msgid "✗ Proxy Offline"
-msgstr ""
+msgstr "✗ Ο proxy είναι εκτός σύνδεσης"
 
 msgid "✗ Restart Failed"
-msgstr ""
-
-#~ msgid "Active or Disactive Ipv6."
-#~ msgstr "Ενεργοποίηση ή απενεργοποίηση IPv6."
-
-#~ msgid "Ipv6 State Of Lan (On/Off)"
-#~ msgstr "Κατάσταση Lan Ipv6 (On/Off)"
+msgstr "✗ Η επανεκκίνηση απέτυχε"
