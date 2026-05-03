@@ -1098,8 +1098,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_header('Cache-Control', 'no-cache, no-store')
                     self.end_headers()
 
-                    # 4. Forward data with timeout monitoring (chunk size
-                    # increased)
+                    # 4. Forward data with timeout monitoring (chunk size increased)
                     last_data_time = time.time()
                     try:
                         # Increase chunk size from 65536 to 262144 (256KB)
@@ -1538,35 +1537,37 @@ def is_proxy_port_listening():
 def run_proxy_in_background():
     global _starting
 
+    # Wait up to 15 seconds if another proxy is still booting
     if is_proxy_booting():
-        print("[Proxy] Another proxy is booting, waiting up to 10 seconds...")
-        waited = 0
-        while waited < 100 and (
-                is_proxy_booting() or not is_proxy_port_listening()):
-            select.select([], [], [], 0.1)
-            waited += 1
-        if is_proxy_port_listening():
-            print("[Proxy] Proxy is now running after waiting")
-            return True
-        else:
-            print(
-                "[Proxy] Still not running after waiting, proceeding to start a new proxy")
+        print("[Proxy] Another proxy is booting, waiting up to 15 seconds...")
+        for xs in range(30):  # 30 * 0.5 = 15 seconds
+            if not is_proxy_booting() and is_proxy_port_listening():
+                print("[Proxy] Proxy boot completed, instance is running")
+                return True
+            select.select([], [], [], 0.5)
+        print("[Proxy] Boot file still present after timeout, will attempt to start")
 
+    # Final check: if already active and listening, exit
     if is_proxy_running() and is_proxy_port_listening():
         print("[Proxy] Already running and listening, skipping start")
         return True
 
+    # Stale PID file? Clean it up
     if os.path.exists(PID_FILE) and not is_proxy_port_listening():
         try:
             with open(PID_FILE) as f:
                 pid = int(f.read().strip())
-            os.kill(pid, 0)
-            os.kill(pid, 9)
-            time.sleep(0.2)
+            os.kill(pid, 0)          # verify process exists
+            os.kill(pid, 9)          # kill if it exists but is not listening
+            select.select([], [], [], 0.2)
+        except Exception:
+            pass
+        try:
             os.unlink(PID_FILE)
         except Exception:
             pass
 
+    # Acquire lock for atomic startup
     with _starting_lock:
         if _starting:
             print("[Proxy] Already starting, skipping...")

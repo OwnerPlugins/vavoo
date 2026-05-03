@@ -933,6 +933,31 @@ def MemClean():
         pass
 
 
+"""
+# def ReloadBouquets(delay=2000):
+    # from enigma import eDVBDB, eTimer
+    # try:
+        # def do_reload():
+            # try:
+                # db = eDVBDB.getInstance()
+                # db.reloadBouquets()
+                # db.reloadServicelist()
+                # print("Bouquets reloaded successfully")
+            # except Exception as e:
+                # print("Error during service reload: " + str(e))
+
+        # reload_timer = eTimer()
+        # try:
+            # reload_timer.callback.append(do_reload)
+        # except BaseException:
+            # reload_timer.timeout.connect(do_reload)
+        # reload_timer.start(delay, True)
+    # except Exception as e:
+        # print("Error setting up service reload: " + str(e))
+        # do_reload()
+"""
+
+
 def ReloadBouquets(delay=500):
     """Reload bouquets after delay (non‑blocking in main thread)."""
     from enigma import eDVBDB

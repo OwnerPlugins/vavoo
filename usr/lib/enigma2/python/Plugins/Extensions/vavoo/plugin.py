@@ -4796,14 +4796,20 @@ def delayed_boot_tasks():
     global auto_start_timer
     try:
         if cfg.proxy_enabled.value:
+            # If the plugin has already been opened, do not start the proxy here
+            if _session is not None:
+                print("[Vavoo] Plugin already opened, boot tasks skipped")
+                return
             if not is_proxy_running():
                 print("[Vavoo] Starting proxy at boot...")
                 run_proxy_in_background()
             else:
                 print("[Vavoo] Proxy already running at boot")
+
         if cfg.autobouquetupdate.value and cfg.proxy_enabled.value:
             if auto_start_timer is None:
                 auto_start_timer = AutoStartTimer()
+
     except Exception as e:
         print("[Vavoo] Delayed boot tasks error: " + str(e))
 

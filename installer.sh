@@ -1,7 +1,8 @@
 #!/bin/bash
 
-version='1.69'
+version='1.70'
 changelog="
+- fix loop proxy start
 - code lint
 - epg fixed : utc time
 - Proxy starting 12 times simultaneously

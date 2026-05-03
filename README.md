@@ -1,7 +1,7 @@
 <h1 align="center">🎬 Vavoo Stream Live</h1>
 
 ![Visitors](https://komarev.com/ghpvc/?username=Belfagor2005&label=Repository%20Views&color=blueviolet)
-[![Version](https://img.shields.io/badge/Version-1.69-blue.svg)](https://github.com/Belfagor2005/vavoo)
+[![Version](https://img.shields.io/badge/Version-1.70-blue.svg)](https://github.com/Belfagor2005/vavoo)
 [![Enigma2](https://img.shields.io/badge/Enigma2-Plugin-ff6600.svg)](https://www.enigma2.net)
 [![Python](https://img.shields.io/badge/Python-2.7%2F3.x-yellow.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
