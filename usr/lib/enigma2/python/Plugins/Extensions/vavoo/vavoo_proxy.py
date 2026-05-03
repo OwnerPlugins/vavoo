@@ -1098,7 +1098,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_header('Cache-Control', 'no-cache, no-store')
                     self.end_headers()
 
-                    # 4. Forward data with timeout monitoring (chunk size increased)
+                    # 4. Forward data with timeout monitoring (chunk size
+                    # increased)
                     last_data_time = time.time()
                     try:
                         # Increase chunk size from 65536 to 262144 (256KB)
