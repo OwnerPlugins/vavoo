@@ -473,7 +473,7 @@ cfg.list_position = ConfigSelection(
 )
 cfg.search_text = ConfigSearchText(default="")
 cfg.proxy_startup_timeout = ConfigSelectionNumber(
-    default=30, min=15, max=120, stepwidth=5)
+    default=120, min=15, max=300, stepwidth=5)
 
 
 def normalize_language_code(language):
@@ -1578,7 +1578,7 @@ class MainVavoo(Screen):
                     self._proxy_watchdog_check
                 )
 
-            self.proxy_watchdog_timer.start(60000)
+            self.proxy_watchdog_timer.start(180000)
 
             # Monitor timer - check proxy status every 10 seconds
             self.proxy_monitor_timer = eTimer()

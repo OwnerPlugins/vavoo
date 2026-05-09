@@ -983,7 +983,7 @@ class VavooProxy:
                             self.catalog_url,
                             json=catalog_payload,
                             headers=catalog_headers,
-                            timeout=30,
+                            timeout=90,
                             verify=False
                         )
 
@@ -997,7 +997,7 @@ class VavooProxy:
                                 self.catalog_url,
                                 json=catalog_payload,
                                 headers=catalog_headers,
-                                timeout=30
+                                timeout=90
                             )
 
                         if r_catalog.status_code == 502:
