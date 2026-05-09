@@ -323,6 +323,9 @@ msgstr "Kuinka usein EPG päivitetään automaattisesti (vaatii EPGImport-ajasti
 msgid "Important Notes:"
 msgstr "Tärkeitä huomautuksia:"
 
+msgid "Increase if proxy takes long due to VPN or slow connection."
+msgstr ""
+
 msgid "Keyboard"
 msgstr "Näppäimistö"
 
@@ -427,6 +430,9 @@ msgstr "Välityspalvelin ei vastaa jälkeen"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Välityspalvelin käynnistetään uudelleen... Odota"
+
+msgid "Proxy startup timeout (seconds)"
+msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "Välityspalvelimen token päivitetty onnistuneesti"

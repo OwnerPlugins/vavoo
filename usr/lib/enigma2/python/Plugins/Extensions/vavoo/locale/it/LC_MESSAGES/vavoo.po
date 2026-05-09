@@ -326,6 +326,9 @@ msgstr "Con quale frequenza aggiornare automaticamente l'EPG (richiede scheduler
 msgid "Important Notes:"
 msgstr "Note importanti:"
 
+msgid "Increase if proxy takes long due to VPN or slow connection."
+msgstr ""
+
 msgid "Keyboard"
 msgstr "Tastiera"
 
@@ -430,6 +433,9 @@ msgstr "Il proxy non risponde dopo"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Riavvio del proxy... Attendi"
+
+msgid "Proxy startup timeout (seconds)"
+msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "Token proxy aggiornato correttamente"

@@ -334,6 +334,9 @@ msgstr "自动更新 EPG 的频率（需要 EPGImport 调度程序）"
 msgid "Important Notes:"
 msgstr "重要说明:"
 
+msgid "Increase if proxy takes long due to VPN or slow connection."
+msgstr ""
+
 msgid "Keyboard"
 msgstr "键盘"
 
@@ -438,6 +441,9 @@ msgstr "代理在以下时间后无响应"
 
 msgid "Proxy restarting... Please wait"
 msgstr "代理正在重启... 请等待"
+
+msgid "Proxy startup timeout (seconds)"
+msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "代理令牌刷新成功"

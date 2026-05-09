@@ -340,6 +340,9 @@ msgstr "Jak często automatycznie aktualizować EPG (wymaga harmonogramu EPGImpo
 msgid "Important Notes:"
 msgstr "Ważne uwagi:"
 
+msgid "Increase if proxy takes long due to VPN or slow connection."
+msgstr ""
+
 msgid "Keyboard"
 msgstr "Klawiatura"
 
@@ -444,6 +447,9 @@ msgstr "Proxy nie odpowiada po"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Restartowanie proxy... Proszę czekać"
+
+msgid "Proxy startup timeout (seconds)"
+msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "Token proxy odświeżony pomyślnie"

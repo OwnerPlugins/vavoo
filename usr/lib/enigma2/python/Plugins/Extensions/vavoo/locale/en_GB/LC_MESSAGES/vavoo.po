@@ -338,6 +338,9 @@ msgstr ""
 msgid "Important Notes:"
 msgstr "Important Notes:"
 
+msgid "Increase if proxy takes long due to VPN or slow connection."
+msgstr ""
+
 msgid "Keyboard"
 msgstr "Keyboard"
 
@@ -441,6 +444,9 @@ msgid "Proxy not responding after"
 msgstr ""
 
 msgid "Proxy restarting... Please wait"
+msgstr ""
+
+msgid "Proxy startup timeout (seconds)"
 msgstr ""
 
 #, fuzzy
