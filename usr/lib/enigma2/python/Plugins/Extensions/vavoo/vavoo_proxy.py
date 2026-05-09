@@ -1815,7 +1815,8 @@ def run_proxy_in_background(startup_timeout=30):
     global _starting
 
     if is_proxy_booting():
-        print("[Proxy] Another proxy is booting, waiting up to {} seconds...".format(startup_timeout))
+        print("[Proxy] Another proxy is booting, waiting up to {} seconds...".format(
+            startup_timeout))
         max_attempts = startup_timeout * 2
         for attempt in range(max_attempts):
             if not is_proxy_booting() and is_proxy_port_listening():

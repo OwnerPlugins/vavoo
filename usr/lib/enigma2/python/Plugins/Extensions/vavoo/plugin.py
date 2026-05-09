@@ -472,7 +472,8 @@ cfg.list_position = ConfigSelection(
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
 )
 cfg.search_text = ConfigSearchText(default="")
-cfg.proxy_startup_timeout = ConfigSelectionNumber(default=30, min=15, max=120, stepwidth=5)
+cfg.proxy_startup_timeout = ConfigSelectionNumber(
+    default=30, min=15, max=120, stepwidth=5)
 
 
 def normalize_language_code(language):
@@ -2012,7 +2013,8 @@ class MainVavoo(Screen):
         timeout_secs = cfg.proxy_startup_timeout.value
         max_attempts = timeout_secs * 2   # ogni 0.5 sec
         if attempts > max_attempts:
-            print("[MainVavoo] Proxy not ready after {} seconds".format(timeout_secs))
+            print(
+                "[MainVavoo] Proxy not ready after {} seconds".format(timeout_secs))
             return
         if is_proxy_ready(timeout=0.5):
             print("[MainVavoo] Proxy ready")
