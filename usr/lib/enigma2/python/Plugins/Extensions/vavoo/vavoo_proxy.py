@@ -279,7 +279,9 @@ class ProxyHealthMonitor:
                 self.stop_event.wait(60)
 
             except Exception:
-                log_exception("[Health Monitor] Unexpected error", area="PROXY")
+                log_exception(
+                    "[Health Monitor] Unexpected error",
+                    area="PROXY")
 
             except Exception:
                 log_exception(

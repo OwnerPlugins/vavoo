@@ -734,7 +734,9 @@ def keep_proxy_alive():
                 # else: all good
 
             except Exception:
-                log_exception("[Proxy Monitor] Unexpected error", area="PLUGIN")
+                log_exception(
+                    "[Proxy Monitor] Unexpected error",
+                    area="PLUGIN")
 
             except Exception:
                 log_exception(
