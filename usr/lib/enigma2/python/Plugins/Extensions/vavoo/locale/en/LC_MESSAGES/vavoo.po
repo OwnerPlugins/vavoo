@@ -338,9 +338,6 @@ msgstr ""
 msgid "Important Notes:"
 msgstr "Important Notes:"
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr ""
-
 msgid "Keyboard"
 msgstr "Keyboard"
 
@@ -355,6 +352,10 @@ msgstr "License: CC BY-NC-SA 4.0"
 
 msgid "Link in Main Menu"
 msgstr "Link in Main Menu"
+
+#, fuzzy
+msgid "Loading..."
+msgstr "Restart"
 
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lower = less interruption but more refreshes"
@@ -444,9 +445,6 @@ msgid "Proxy not responding after"
 msgstr ""
 
 msgid "Proxy restarting... Please wait"
-msgstr ""
-
-msgid "Proxy startup timeout (seconds)"
 msgstr ""
 
 #, fuzzy
@@ -635,9 +633,6 @@ msgstr ""
 #, fuzzy
 msgid "✓ Restarted"
 msgstr "Restart"
-
-msgid "✗ Error"
-msgstr ""
 
 msgid "✗ Proxy Error"
 msgstr ""

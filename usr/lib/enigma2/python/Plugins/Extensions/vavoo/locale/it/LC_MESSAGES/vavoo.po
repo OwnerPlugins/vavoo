@@ -326,9 +326,6 @@ msgstr "Con quale frequenza aggiornare automaticamente l'EPG (richiede scheduler
 msgid "Important Notes:"
 msgstr "Note importanti:"
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr "Aumentare se il proxy impiega molto tempo a causa della VPN o della connessione lenta."
-
 msgid "Keyboard"
 msgstr "Tastiera"
 
@@ -343,6 +340,10 @@ msgstr "Licenza: CC BY-NC-SA 4.0"
 
 msgid "Link in Main Menu"
 msgstr "Mostra in Menu Principale"
+
+#, fuzzy
+msgid "Loading..."
+msgstr "Riavvio in corso..."
 
 msgid "Lower = less interruption but more refreshes"
 msgstr "Inferiore = meno interruzioni ma più aggiornamenti"
@@ -433,9 +434,6 @@ msgstr "Il proxy non risponde dopo"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Riavvio del proxy... Attendi"
-
-msgid "Proxy startup timeout (seconds)"
-msgstr "Timeout di avvio proxy (secondi)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Token proxy aggiornato correttamente"
@@ -617,9 +615,6 @@ msgstr "✓ Proxy OK"
 msgid "✓ Restarted"
 msgstr "✓ Riavviato"
 
-msgid "✗ Error"
-msgstr "✗ Errore"
-
 msgid "✗ Proxy Error"
 msgstr "✗ Proxy Errore"
 
@@ -631,6 +626,15 @@ msgstr "✗ Proxy Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Riavvio non riuscito"
+
+#~ msgid "Increase if proxy takes long due to VPN or slow connection."
+#~ msgstr "Aumentare se il proxy impiega molto tempo a causa della VPN o della connessione lenta."
+
+#~ msgid "Proxy startup timeout (seconds)"
+#~ msgstr "Timeout di avvio proxy (secondi)"
+
+#~ msgid "✗ Error"
+#~ msgstr "✗ Errore"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Attivare o disattivare Ipv6."

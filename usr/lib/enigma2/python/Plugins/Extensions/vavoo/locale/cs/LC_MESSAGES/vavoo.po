@@ -339,9 +339,6 @@ msgstr "Jak často automaticky aktualizovat EPG (vyžaduje plánovač EPGImport)
 msgid "Important Notes:"
 msgstr ""
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr ""
-
 msgid "Keyboard"
 msgstr ""
 
@@ -355,6 +352,9 @@ msgid "License: CC BY-NC-SA 4.0"
 msgstr ""
 
 msgid "Link in Main Menu"
+msgstr ""
+
+msgid "Loading..."
 msgstr ""
 
 msgid "Lower = less interruption but more refreshes"
@@ -447,9 +447,6 @@ msgstr "Proxy neodpovídá po"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Proxy se restartuje... Prosím čekejte"
-
-msgid "Proxy startup timeout (seconds)"
-msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token úspěšně obnoven"
@@ -634,9 +631,6 @@ msgid "✓ Proxy OK"
 msgstr ""
 
 msgid "✓ Restarted"
-msgstr ""
-
-msgid "✗ Error"
 msgstr ""
 
 msgid "✗ Proxy Error"

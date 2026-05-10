@@ -338,9 +338,6 @@ msgstr ""
 msgid "Important Notes:"
 msgstr "Dôležité poznámky:"
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr ""
-
 msgid "Keyboard"
 msgstr "Klávesnica"
 
@@ -355,6 +352,10 @@ msgstr "Licencia: CC BY-NC-SA 4.0"
 
 msgid "Link in Main Menu"
 msgstr "Odkaz v hlavnom menu"
+
+#, fuzzy
+msgid "Loading..."
+msgstr "Reštart"
 
 msgid "Lower = less interruption but more refreshes"
 msgstr "Nižšia = menej prerušení, ale viac osviežení"
@@ -444,9 +445,6 @@ msgid "Proxy not responding after"
 msgstr ""
 
 msgid "Proxy restarting... Please wait"
-msgstr ""
-
-msgid "Proxy startup timeout (seconds)"
 msgstr ""
 
 #, fuzzy
@@ -639,9 +637,6 @@ msgstr ""
 #, fuzzy
 msgid "✓ Restarted"
 msgstr "Reštart"
-
-msgid "✗ Error"
-msgstr ""
 
 msgid "✗ Proxy Error"
 msgstr ""

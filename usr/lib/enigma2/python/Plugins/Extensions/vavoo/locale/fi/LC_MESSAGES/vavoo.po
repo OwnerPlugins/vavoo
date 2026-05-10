@@ -323,9 +323,6 @@ msgstr "Kuinka usein EPG päivitetään automaattisesti (vaatii EPGImport-ajasti
 msgid "Important Notes:"
 msgstr "Tärkeitä huomautuksia:"
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr ""
-
 msgid "Keyboard"
 msgstr "Näppäimistö"
 
@@ -340,6 +337,9 @@ msgstr "Lisenssi: CC BY-NC-SA 4.0"
 
 msgid "Link in Main Menu"
 msgstr "Linkki päävalikossa"
+
+msgid "Loading..."
+msgstr ""
 
 msgid "Lower = less interruption but more refreshes"
 msgstr "Pienempi = vähemmän keskeytyksiä mutta enemmän päivityksiä"
@@ -430,9 +430,6 @@ msgstr "Välityspalvelin ei vastaa jälkeen"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Välityspalvelin käynnistetään uudelleen... Odota"
-
-msgid "Proxy startup timeout (seconds)"
-msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "Välityspalvelimen token päivitetty onnistuneesti"
@@ -612,9 +609,6 @@ msgid "✓ Proxy OK"
 msgstr ""
 
 msgid "✓ Restarted"
-msgstr ""
-
-msgid "✗ Error"
 msgstr ""
 
 msgid "✗ Proxy Error"

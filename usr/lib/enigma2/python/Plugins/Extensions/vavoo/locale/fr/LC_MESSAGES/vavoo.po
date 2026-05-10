@@ -344,9 +344,6 @@ msgstr "Fréquence de mise à jour automatique de l'EPG (nécessite le planifica
 msgid "Important Notes:"
 msgstr "Notes importantes :"
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr ""
-
 msgid "Keyboard"
 msgstr "Clavier"
 
@@ -362,6 +359,10 @@ msgstr "Licence : CC BY-NC-SA 4.0"
 
 msgid "Link in Main Menu"
 msgstr "Lien dans le menu principal"
+
+#, fuzzy
+msgid "Loading..."
+msgstr "Redémarrer"
 
 msgid "Lower = less interruption but more refreshes"
 msgstr "Valeur basse = moins d'interruptions mais plus d'actualisations"
@@ -453,9 +454,6 @@ msgstr "Le proxy ne répond pas après"
 
 msgid "Proxy restarting... Please wait"
 msgstr "Redémarrage du proxy... Veuillez patienter"
-
-msgid "Proxy startup timeout (seconds)"
-msgstr ""
 
 msgid "Proxy token refreshed successfully"
 msgstr "Jeton du proxy actualisé avec succès"
@@ -644,9 +642,6 @@ msgstr ""
 #, fuzzy
 msgid "✓ Restarted"
 msgstr "Redémarrer"
-
-msgid "✗ Error"
-msgstr ""
 
 msgid "✗ Proxy Error"
 msgstr ""

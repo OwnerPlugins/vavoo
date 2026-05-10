@@ -338,9 +338,6 @@ msgstr ""
 msgid "Important Notes:"
 msgstr "Fontos megjegyzések:"
 
-msgid "Increase if proxy takes long due to VPN or slow connection."
-msgstr ""
-
 msgid "Keyboard"
 msgstr "Billentyűzet"
 
@@ -355,6 +352,10 @@ msgstr "Licenc: CC BY-NC-SA 4.0"
 
 msgid "Link in Main Menu"
 msgstr "Link a főmenüben"
+
+#, fuzzy
+msgid "Loading..."
+msgstr "Újraindítás"
 
 msgid "Lower = less interruption but more refreshes"
 msgstr "Alacsonyabb = kevesebb megszakítás, de több frissítés"
@@ -444,9 +445,6 @@ msgid "Proxy not responding after"
 msgstr ""
 
 msgid "Proxy restarting... Please wait"
-msgstr ""
-
-msgid "Proxy startup timeout (seconds)"
 msgstr ""
 
 #, fuzzy
@@ -641,9 +639,6 @@ msgstr ""
 #, fuzzy
 msgid "✓ Restarted"
 msgstr "Újraindítás"
-
-msgid "✗ Error"
-msgstr ""
 
 msgid "✗ Proxy Error"
 msgstr ""
