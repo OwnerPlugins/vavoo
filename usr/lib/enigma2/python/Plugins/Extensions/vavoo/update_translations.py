@@ -374,8 +374,8 @@ def update_pot_file(xml_strings, py_strings):
 
             # Write all strings
             for msgid in all_strings:
-                #f.write('\n')
-                f.write('\nmsgid "{}"\n'.format(msgid)) #Fix empty line 
+                # f.write('\n')
+                f.write('\nmsgid "{}"\n'.format(msgid))  # Fix empty line
                 f.write(
                     'msgstr "{}"\n'.format(
                         existing_translations.get(
