@@ -110,6 +110,7 @@ from .bouquet_manager import (
 )
 from .vUtils import (
     make_print,
+    debug,
     update_epg_sources,
     get_epg_matcher,
     get_proxy_status,
@@ -123,6 +124,7 @@ from .vUtils import (
     initialize_cache_with_local_flags,
     is_proxy_ready,
     is_proxy_running,
+    log_exception,
     returnIMDB,
     remove_parentheses,
     ReloadBouquets,
@@ -155,13 +157,36 @@ try:
     from .notification_system import init_notification_system, quick_notify
     NOTIFICATION_AVAILABLE = True
 except ImportError as e:
-    print("[DEBUG] Notification system not available:", e)
+    debug("Notification system not available:", e, area="PLUGIN")
     NOTIFICATION_AVAILABLE = False
 
     def quick_notify(*args, **kwargs):
         pass
 
 print = make_print("PLUGIN")
+
+# HTTP 451 sentinel: getUrl() returns b"" on 451, so this is b"".
+# Kept as a named constant so all existing callers work without changes.
+HTTP_451_SENTINEL = b""
+
+# Skin file cache – avoids re-reading from disk on every screen open.
+# Key = absolute path, value = skin XML string.
+_SKIN_CACHE = {}
+
+
+def _load_skin_cached(path):
+    """Read skin XML from disk once, return from cache on subsequent calls."""
+    if path in _SKIN_CACHE:
+        return _SKIN_CACHE[path]
+    try:
+        import codecs as _codecs
+        with _codecs.open(path, "r", encoding="utf-8") as f:
+            data = f.read()
+        _SKIN_CACHE[path] = data
+        return data
+    except Exception as e:
+        print("[_load_skin_cached] Error reading %s: %s" % (path, e))
+        return ""
 
 
 try:
@@ -356,7 +381,6 @@ print('folder back: ', BackPath)
 stripurl = 'aHR0cHM6Ly92YXZvby50by9jaGFubmVscw=='
 # If vavoo.to returns HTTP 451 (Unavailable For Legal Reasons),
 # fall back to this mirror.
-HTTP_451_SENTINEL = "__HTTP451__"
 keyurl = 'aHR0cDovL3BhdGJ1d2ViLmNvbS92YXZvby92YXZvb2tleQ=='
 myser = [(PRIMARY_BASE_URL, "vavoo"), ("https://oha.tooha-tv", "oha"),
          (FALLBACK_BASE_URL, "kool"), ("https://huhu.to", "huhu")]
@@ -472,8 +496,6 @@ cfg.list_position = ConfigSelection(
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
 )
 cfg.search_text = ConfigSearchText(default="")
-cfg.proxy_startup_timeout = ConfigSelectionNumber(
-    default=120, min=15, max=300, stepwidth=5)
 
 
 def normalize_language_code(language):
@@ -524,8 +546,7 @@ def raises(url):
             r.raise_for_status()
 
             if r.status_code == requests.codes.ok:
-                for xc in r.iter_content(1024):
-                    pass
+                # Just check status; no need to download the body
                 r.close()
                 return True
         else:
@@ -577,6 +598,25 @@ class m2list(MenuList):
     def buildEntry(self, entry):
         """Build list entry - entry should be [ (name, link), icon, text ]"""
         return entry
+
+
+# Module-level PNG cache for show_list().
+# loadPNG() is expensive (disk I/O + decoding); caching avoids O(n) loads
+# per list rebuild.  Key = absolute icon path, value = enigma2 PNG object.
+_PNG_CACHE = {}
+
+
+def _load_png_cached(path):
+    """Load a PNG via enigma2's loadPNG, with a module-level cache."""
+    if path in _PNG_CACHE:
+        return _PNG_CACHE[path]
+    try:
+        data = loadPNG(path)
+        if data:
+            _PNG_CACHE[path] = data
+        return data
+    except Exception:
+        return None
 
 
 def show_list(name, link, is_category=False, is_channel=False):
@@ -634,14 +674,10 @@ def show_list(name, link, is_category=False, is_channel=False):
         text_size = (380, 50)
         text_pos = (icon_size[0] + 20, 0)
 
-    # Load PNG
-    try:
-        png_data = loadPNG(icon_path)
-    except Exception:
-        try:
-            png_data = loadPNG(default_icon)
-        except Exception:
-            png_data = None
+    # Load PNG (cached – avoids re-reading disk on every list rebuild)
+    png_data = _load_png_cached(icon_path)
+    if not png_data:
+        png_data = _load_png_cached(default_icon)
 
     if png_data:
         res.append(MultiContentEntryPixmapAlphaTest(
@@ -662,45 +698,61 @@ def show_list(name, link, is_category=False, is_channel=False):
 
 
 def is_port_in_use(port):
+    """Py2/3 compatible port check (no 'with socket' context manager in Py2)."""
     import socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
         return s.connect_ex((PROXY_HOST, port)) == 0
+    finally:
+        try:
+            s.close()
+        except Exception:
+            pass
 
 
-def get_proxy_stream_url(channel_id):
-    """Get the stream URL via proxy"""
-    local_ip = PROXY_HOST
-    # port = PORT
-    return "http://" + str(local_ip) + ":" + str(PORT) + \
-        "/vavoo?channel=" + str(channel_id)
+# get_proxy_stream_url is defined in vUtils – use vUtils.get_proxy_stream_url()
+
+
+# Module-level stop event for the proxy watchdog thread
+_proxy_monitor_stop = threading.Event()
 
 
 def keep_proxy_alive():
-    """Keep proxy alive by periodically checking it"""
+    """Keep proxy alive by periodically checking it.
+    Returns the monitor thread; call stop_proxy_monitor() to shut it down cleanly.
+    """
+    _proxy_monitor_stop.clear()
 
     def monitor_proxy():
-        while True:
+        while not _proxy_monitor_stop.is_set():
             try:
                 if not is_proxy_running():
-                    print(
-                        "[Proxy Monitor] Proxy not running, attempting to restart...")
-
-                    timeout = cfg.proxy_startup_timeout.value
-                    run_proxy_in_background(startup_timeout=timeout)
+                    print("[Proxy Monitor] Proxy not running, attempting restart...")
+                    run_proxy_in_background()
                 elif not is_proxy_ready():
-                    print("[Proxy Monitor] Proxy running but not ready")
-                # else: proxy is running and ready
+                    print("[Proxy Monitor] Proxy running but not ready yet")
+                # else: all good
 
-            except Exception as e:
-                print("[Proxy Monitor] Error: " + str(e))
+            except Exception:
+                log_exception("[Proxy Monitor] Unexpected error", area="PLUGIN")
 
-            select.select([], [], [], 60)
+            except Exception:
+                log_exception(
+                    "[Proxy Monitor] Unexpected error",
+                    area="PLUGIN")
 
-    # Start monitor thread
+            # Interruptible sleep: wakes immediately when stop is set
+            _proxy_monitor_stop.wait(60)
+
     monitor_thread = threading.Thread(target=monitor_proxy)
     monitor_thread.setDaemon(True)
     monitor_thread.start()
     return monitor_thread
+
+
+def stop_proxy_monitor():
+    """Signal the watchdog thread to exit cleanly."""
+    _proxy_monitor_stop.set()
 
 
 class vavoo_config(Screen, ConfigListScreen):
@@ -710,8 +762,7 @@ class vavoo_config(Screen, ConfigListScreen):
         skin = join(skin_path, 'vavoo_config.xml')
         if isfile('/var/lib/dpkg/status'):
             skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin = _load_skin_cached(skin)
         self.setup_title = ('Vavoo Config')
 
         self.old_proxy_enabled = cfg.proxy_enabled.value
@@ -771,10 +822,7 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Enable or disable proxy.")
             )
         )
-        self.list.append(getConfigListEntry(
-            _("Proxy startup timeout (seconds)"),
-            cfg.proxy_startup_timeout,
-            _("Increase if proxy takes long due to VPN or slow connection.")))
+
         self.list.append(
             getConfigListEntry(
                 _("Default View"),
@@ -1256,9 +1304,10 @@ class vavoo_config(Screen, ConfigListScreen):
         return []
 
     def manage_epg_source(self):
-        # Just call the static function from vUtils
-        # This will generate EPG from all existing bouquets
-        # return generate_epg_files()
+        """Generate/update EPG sources. Only runs when EPG is enabled."""
+        if not cfg.epg_enabled.value:
+            print("[EPG] manage_epg_source: EPG disabled in config, skipping")
+            return False
         return update_epg_sources()
 
     def setInfo(self):
@@ -1385,10 +1434,9 @@ class vavoo_config(Screen, ConfigListScreen):
             for x in self["config"].list:
                 x[1].save()
 
-            timeout = cfg.proxy_startup_timeout.value
             if self.old_proxy_enabled != cfg.proxy_enabled.value:
                 if cfg.proxy_enabled.value:
-                    run_proxy_in_background(startup_timeout=timeout)
+                    run_proxy_in_background()
                     # Schedule a non‑blocking status check after 1 second
                     reactor.callLater(1, self._check_proxy_started)
                 else:
@@ -1397,7 +1445,7 @@ class vavoo_config(Screen, ConfigListScreen):
 
             # Manage EPG source
             if cfg.epg_enabled.value and not is_proxy_running():
-                run_proxy_in_background(startup_timeout=timeout)
+                run_proxy_in_background()
                 # No sleep here – the proxy will become ready asynchronously
 
             # If auto‑update is enabled, schedule the EPG update
@@ -1470,8 +1518,7 @@ class startVavoo(Screen):
         first = True
         Screen.__init__(self, session)
         skin = join(skin_path, 'Plgnstrt.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin = _load_skin_cached(skin)
         self["poster"] = Pixmap()
         self["version"] = Label()
         self['actions'] = ActionMap(
@@ -1539,8 +1586,7 @@ class MainVavoo(Screen):
         skin = join(skin_path, 'defaultListScreen.xml')
         if isfile('/var/lib/dpkg/status'):
             skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin = _load_skin_cached(skin)
 
         if is_stats_enabled():
             record_anonymous_startup()
@@ -1578,7 +1624,7 @@ class MainVavoo(Screen):
                     self._proxy_watchdog_check
                 )
 
-            self.proxy_watchdog_timer.start(180000)
+            self.proxy_watchdog_timer.start(60000)
 
             # Monitor timer - check proxy status every 10 seconds
             self.proxy_monitor_timer = eTimer()
@@ -1591,7 +1637,8 @@ class MainVavoo(Screen):
                     self._check_and_update_proxy_status
                 )
 
-            self.proxy_monitor_timer.start(10000)
+            # 30s is sufficient; 10s was too aggressive
+            self.proxy_monitor_timer.start(30000)
 
         else:
             print("[MainVavoo] Proxy disabled by configuration")
@@ -1666,7 +1713,7 @@ class MainVavoo(Screen):
             return
 
         if not result:
-            print("[DEBUG] fix_cache_format cancelled by user")
+            debug("fix_cache_format cancelled by user", area="PLUGIN")
             return
 
         try:
@@ -1702,7 +1749,7 @@ class MainVavoo(Screen):
                     fixed, removed))
 
         except Exception as e:
-            print("[DEBUG] Error in fix_cache_format: {}".format(e))
+            debug("Error in fix_cache_format: {}".format(e), area="PLUGIN")
             self.session.open(
                 MessageBox,
                 _("Error fixing cache: {}").format(str(e)),
@@ -1712,7 +1759,7 @@ class MainVavoo(Screen):
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
-        print("[DEBUG] reload_bouquets_with_popup called")
+        debug("reload_bouquets_with_popup called", area="PLUGIN")
         self.session.openWithCallback(
             self._confirm_reload_bouquets,
             MessageBox,
@@ -1725,7 +1772,7 @@ class MainVavoo(Screen):
     def _confirm_reload_bouquets(self, result):
         """Callback after user confirmation"""
         if result:
-            print("[DEBUG] User confirmed reload")
+            debug("User confirmed reload", area="PLUGIN")
             try:
                 db = eDVBDB.getInstance()
                 db.reloadBouquets()
@@ -1744,10 +1791,10 @@ class MainVavoo(Screen):
             except Exception as e:
                 print("[MessageBox] Error:", e)
         else:
-            print("[DEBUG] User cancelled reload")
+            debug("User cancelled reload", area="PLUGIN")
 
     def closex(self):
-        print("[DEBUG] Exit from plugin. Cleaning up plugin timers...")
+        debug("Exit from plugin. Cleaning up plugin timers...", area="PLUGIN")
         if is_stats_enabled():
             stop_heartbeat()
             print("[Stats] Heartbeat fermato")
@@ -1779,59 +1826,58 @@ class MainVavoo(Screen):
         self.close()
 
     def preload_flags_for_visible_countries(self):
-        """Preload flags for visible countries"""
+        """Download all country flags in a single background thread.
+        No synchronous downloads – the main thread is never blocked.
+        The UI refreshes via flag_refresh_timer after the first batch completes.
+        """
         try:
             if not hasattr(self, 'all_data'):
                 return
 
-            countries = set()
-            for entry in self.all_data:
-                country = url_unquote(entry["country"]).strip("\r\n")
-                if "➾" not in country:
-                    countries.add(country)
-
-            countries_list = sorted(list(countries))
+            countries_list = self._get_countries_list()
+            if not countries_list:
+                return
 
             print(
-                "[MainVavoo] Preloading flags for %d countries" %
+                "[MainVavoo] Preloading flags for %d countries (background)" %
                 len(countries_list))
 
-            # Preload first 8 flags SYNCHRONOUSLY
-            downloaded = 0
-            for i, country in enumerate(countries_list[:8]):  # First 8
-                try:
-                    success, _ = download_flag_online(
-                        country, screen_width=screen_width)
-                    if success:
-                        downloaded += 1
-                        print("[Preload] OK: %s" % country)
-                except Exception as e:
-                    print("[Preload] Error %s: %s" % (country, str(e)))
+            def _download_all():
+                first_batch_done = [False]
+                for i, country in enumerate(countries_list):
+                    try:
+                        download_flag_online(
+                            country, screen_width=screen_width)
+                    except Exception as e:
+                        print("[Preload] Error %s: %s" % (country, str(e)))
+                    # After first 8, trigger a UI refresh so visible flags
+                    # appear quickly
+                    if i == 7 and not first_batch_done[0]:
+                        first_batch_done[0] = True
 
-            print("[MainVavoo] Downloaded %d flags synchronously" % downloaded)
+                        def _trigger_refresh(ref=self):
+                            try:
+                                if hasattr(ref, 'flag_refresh_timer'):
+                                    ref.flag_refresh_timer.start(200, True)
+                            except Exception:
+                                pass
+                        reactor.callLater(0, _trigger_refresh)
+                print("[Background] All flags downloaded")
 
-            # Start timer for refresh after 1 second
-            if downloaded > 0:
-                self.flag_refresh_timer.start(1000, True)
-
-            # Download remaining in background
-            if len(countries_list) > 8:
-
-                def download_rest():
-                    for country in countries_list[8:]:
-                        try:
-                            download_flag_online(
-                                country, screen_width=screen_width)
-                        except BaseException:
-                            pass
-
-                    print("[Background] Finished downloading remaining flags")
-                thread = threading.Thread(target=download_rest)
-                thread.setDaemon(True)
-                thread.start()
+            t = threading.Thread(target=_download_all)
+            t.setDaemon(True)
+            t.start()
 
         except Exception as e:
             print("[MainVavoo] Error preloading flags: %s" % str(e))
+
+    def _on_flags_first_batch_done(self):
+        """Fallback: called if reactor callback resolves to this method."""
+        try:
+            if hasattr(self, 'flag_refresh_timer'):
+                self.flag_refresh_timer.start(200, True)
+        except Exception:
+            pass
 
     def refresh_list_with_flags(self):
         """Refresh list to show downloaded flags (Python 2/3 compatible)"""
@@ -1862,8 +1908,7 @@ class MainVavoo(Screen):
                 self['proxy_status'].setText(_(" Restarting..."))
 
                 # Try restart
-                timeout = cfg.proxy_startup_timeout.value
-                success = run_proxy_in_background(startup_timeout=timeout)
+                success = run_proxy_in_background()
 
                 if success:
                     print("[Watchdog] Proxy restarted successfully")
@@ -1898,45 +1943,55 @@ class MainVavoo(Screen):
         self._update_proxy_status_display()
 
     def _update_proxy_status_display(self):
-        """Internal method to update proxy status display"""
-        try:
-            if not cfg.proxy_enabled.value:
-                self['proxy_status'].setText(_("Proxy Disabled"))
-                return
-            if is_proxy_running():
-                try:
-                    response = getUrl(
-                        PROXY_STATUS_URL, timeout=5)
-                    if response:
-                        status_data = loads(response)
+        """Update proxy status label WITHOUT blocking the Enigma2 main thread.
+        The HTTP call runs in a daemon thread; the UI label is updated via
+        reactor.callLater(0, ...) so it always executes on the main thread.
+        """
+        if not cfg.proxy_enabled.value:
+            self['proxy_status'].setText(_("Proxy Disabled"))
+            return
 
-                        if status_data.get(
-                                "initialized", False) and status_data.get(
-                                "addon_sig_valid", False):
-                            token_age = status_data.get("addon_sig_age", 0)
+        def _fetch():
+            """Background thread: fetch proxy status, return display string."""
+            try:
+                if not is_proxy_running():
+                    return "✗ Proxy Offline"
+                response = getUrl(PROXY_STATUS_URL, timeout=3)
+                if not response:
+                    return "? Proxy Unknown"
+                if isinstance(response, (bytes, bytearray)):
+                    response = response.decode("utf-8", "ignore")
+                status_data = loads(response)
+                if status_data.get(
+                        "initialized",
+                        False) and status_data.get(
+                        "addon_sig_valid",
+                        False):
+                    token_age = status_data.get("addon_sig_age", 0)
+                    if token_age < 300:
+                        return "✓ Proxy OK"
+                    elif token_age < 540:
+                        return "✓ Proxy (%ds)" % int(600 - token_age)
+                    return "⚠ Proxy (expiring)"
+                return "✗ Proxy Error"
+            except Exception as e:
+                print("[ProxyStatus] fetch error: " + str(e))
+                return "✓ Proxy Running"  # process alive but status unreachable
 
-                            if token_age < 300:
-                                status_text = "✓ Proxy OK"
-                            elif token_age < 540:
-                                ttl = 600 - token_age
-                                status_text = "✓ Proxy (" + \
-                                    str(int(ttl)) + "s)"
-                            else:
-                                status_text = "Proxy (expiring)"
-                        else:
-                            status_text = "✗ Proxy Error"
-                    else:
-                        status_text = "? Proxy Unknown"
-                except Exception:
-                    status_text = "✓ Proxy Running"
-            else:
-                status_text = "✗ Proxy Offline"
+        def _apply(text):
+            """Main thread: safely update the label."""
+            try:
+                self['proxy_status'].setText(text)
+            except Exception:
+                pass
 
-            self['proxy_status'].setText(status_text)
+        def _worker():
+            text = _fetch()
+            reactor.callLater(0, lambda t=text: _apply(t))
 
-        except Exception as e:
-            print("[MainVavoo] Error updating proxy status: " + str(e))
-            self['proxy_status'].setText(_("✗ Error"))
+        t = threading.Thread(target=_worker)
+        t.setDaemon(True)
+        t.start()
 
     def refresh_proxy(self):
         """Force proxy refresh"""
@@ -2003,18 +2058,15 @@ class MainVavoo(Screen):
             return True
 
         print("[MainVavoo] Starting proxy...")
-        timeout = cfg.proxy_startup_timeout.value
-        success = run_proxy_in_background(startup_timeout=timeout)
+        success = run_proxy_in_background()
         if success:
             self._wait_for_proxy()
         return success
 
     def _wait_for_proxy(self, attempts=0):
-        timeout_secs = cfg.proxy_startup_timeout.value
-        max_attempts = timeout_secs * 2   # ogni 0.5 sec
-        if attempts > max_attempts:
-            print(
-                "[MainVavoo] Proxy not ready after {} seconds".format(timeout_secs))
+        """Wait non-blockingly until the proxy is ready"""
+        if attempts > 30:  # 30 * 0.5 = 15 seconds
+            print("[MainVavoo] Proxy not ready after timeout")
             return
         if is_proxy_ready(timeout=0.5):
             print("[MainVavoo] Proxy ready")
@@ -2070,8 +2122,7 @@ class MainVavoo(Screen):
 
     def _do_restart_proxy(self):
         """Actually start the proxy after the delay."""
-        timeout = cfg.proxy_startup_timeout.value
-        run_proxy_in_background(startup_timeout=timeout)
+        run_proxy_in_background()
 
     def cat(self):
         if not cfg.proxy_enabled.value:
@@ -2117,22 +2168,8 @@ class MainVavoo(Screen):
                     "[MainVavoo] Found %d valid countries" %
                     len(countries_list))
 
-                # Preload flags for first countries
-                for country in countries_list[:5]:
-                    try:
-                        country_code = get_country_code(country)
-                        if country_code:
-                            success, tx = download_flag_online(
-                                country,
-                                cache_dir=FLAG_CACHE_DIR,
-                                screen_width=1920
-                            )
-                            if success:
-                                print("✓ Preloaded flag for: %s" % country)
-                    except Exception as e:
-                        print(
-                            "Flag preload error for %s: %s" %
-                            (country, str(e)))
+                # Flag preloading is handled by preload_flags_for_visible_countries()
+                # in a background thread – no synchronous downloads here
 
                 # Show countries view
                 self.show_countries_view()
@@ -2193,6 +2230,7 @@ class MainVavoo(Screen):
 
             data = loads(content)
             self.all_data = data
+            self._invalidate_view_cache()
 
             countries = set()
             for entry in self.all_data:
@@ -2272,6 +2310,35 @@ class MainVavoo(Screen):
             self["name"].setText(_("Error parsing data"))
             return None
 
+    def _invalidate_view_cache(self):
+        """Call this whenever self.all_data is replaced."""
+        self._cached_countries_list = None
+        self._cached_categories_list = None
+        self._cached_countries_cat = None
+        self._cached_categories_cat = None
+
+    def _get_countries_list(self):
+        """Return sorted country list, rebuilding only when all_data changed."""
+        if getattr(self, '_cached_countries_list', None) is None:
+            countries = set()
+            for entry in self.all_data:
+                country = url_unquote(entry["country"]).strip("\r\n")
+                if "➾" not in country and country.lower() != "default" and len(country) > 1:
+                    countries.add(country)
+            self._cached_countries_list = sorted(countries)
+        return self._cached_countries_list
+
+    def _get_categories_list(self):
+        """Return sorted category list, rebuilding only when all_data changed."""
+        if getattr(self, '_cached_categories_list', None) is None:
+            categories = set()
+            for entry in self.all_data:
+                country = url_unquote(entry["country"]).strip("\r\n")
+                if "➾" in country:
+                    categories.add(country)
+            self._cached_categories_list = sorted(categories)
+        return self._cached_categories_list
+
     def show_categories_view(self):
         """Show only categories (without main countries) - SINGLE FILE EXPORT"""
         if not cfg.proxy_enabled.value:
@@ -2284,50 +2351,50 @@ class MainVavoo(Screen):
             return
 
         self.current_view = "categories"
-        self.cat_list = []
+
+        # Use cached cat_list if the view hasn't changed and data is the same
+        if getattr(self, '_cached_categories_cat', None) is not None:
+            self.cat_list = self._cached_categories_cat
+            self._update_ui()
+            return
 
         if not hasattr(self, 'all_data'):
             return
 
-        categories = set()
-        for entry in self.all_data:
-            country = url_unquote(entry["country"]).strip("\r\n")
-            if "➾" in country:
-                categories.add(country)
-
-        categories_list = sorted(list(categories))
-
-        for category in categories_list:
-            self.cat_list.append(show_list(category, self.url, True))
-
+        self.cat_list = [
+            show_list(cat, self.url, True)
+            for cat in self._get_categories_list()
+        ]
+        self._cached_categories_cat = self.cat_list
         self._update_ui()
 
     def show_countries_view(self):
         """Show only main countries"""
         self.current_view = "countries"
-        self.cat_list = []
+
+        # Use cached cat_list if available
+        if getattr(self, '_cached_countries_cat', None) is not None:
+            self.cat_list = self._cached_countries_cat
+            self._update_ui()
+            return
 
         if not hasattr(self, 'all_data'):
             return
 
-        countries = set()
-        for entry in self.all_data:
-            country = url_unquote(entry["country"]).strip("\r\n")
-            if "➾" not in country:
-                countries.add(country)
-
-        countries_list = sorted(list(countries))
-
-        for country in countries_list:
-            self.cat_list.append(show_list(country, self.url))
-
+        self.cat_list = [
+            show_list(country, self.url)
+            for country in self._get_countries_list()
+        ]
+        self._cached_countries_cat = self.cat_list
         self._update_ui()
 
     def ok(self):
         try:
             current_item = self['menulist'].getCurrent()
             if not current_item or len(current_item) == 0:
-                print("DEBUG: No current item selected or item is empty")
+                debug(
+                    "No current item selected or item is empty",
+                    area="PLUGIN")
                 return
 
             name = current_item[0][0]  # Country name (e.g., "Italy")
@@ -2527,7 +2594,8 @@ class MainVavoo(Screen):
 
                 # (Re)start them
                 self.proxy_watchdog_timer.start(60000)
-                self.proxy_monitor_timer.start(10000)
+                # 30s is sufficient; 10s was too aggressive
+                self.proxy_monitor_timer.start(30000)
 
                 # Refresh labels + list
                 self["proxy_status"].setText(_("Checking proxy..."))
@@ -2687,7 +2755,7 @@ class vavoo(Screen):
                         self.current_view)
                     break
         except Exception as e:
-            print("DEBUG: Error getting current_view: " + str(e))
+            debug("Error getting current_view: " + str(e), area="PLUGIN")
 
         # Do NOT try to initialize proxy here - it should already be running
         # Just verify it's ready
@@ -2715,8 +2783,7 @@ class vavoo(Screen):
     def _load_skin(self):
         """Load the skin file."""
         skin = join(skin_path, 'defaultListScreen.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin = _load_skin_cached(skin)
 
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
@@ -2806,148 +2873,159 @@ class vavoo(Screen):
             status_url = PROXY_STATUS_URL
             status = getUrl(status_url, timeout=3)
             if status:
-                print("[DEBUG] Proxy Status: " + status[:200])
+                debug("Proxy Status: " + status[:200], area="PLUGIN")
 
             # 2. Check countries list
             countries_url = PROXY_COUNTRIES_URL
             countries = getUrl(countries_url, timeout=3)
             if countries:
-                print("[DEBUG] Available countries: " + countries[:200])
+                debug("Available countries: " + countries[:200], area="PLUGIN")
 
             # 3. Try to get channels
             test_url = PROXY_BASE_URL + "/channels?country=Italy"
             channels = getUrl(test_url, timeout=5)
-            print("[DEBUG] Channels response length: " +
-                  str(len(channels) if channels else 0))
+            debug("[Channels response length: " +
+                  str(len(channels) if channels else 0), area="PLUGIN")
             if channels and len(channels) < 500:
-                print("[DEBUG] Channels data: " + channels)
+                debug("Channels data: " + channels, area="PLUGIN")
 
             print("=" * 60)
         except Exception as e:
-            print("[DEBUG] Error checking proxy: " + str(e))
+            debug("Error checking proxy: " + str(e), area="PLUGIN")
 
     def cat(self):
-        """Load channels for the selected country with proxy verification and fallback"""
-        print("[DEBUG] vavoo.cat() called for country: " + str(self.country_name))
+        """Load channels in a background thread so the reactor stays responsive."""
+        debug("vavoo.cat() called for country: " +
+              str(self.country_name), area="PLUGIN")
+        self["name"].setText(_("Loading..."))
+
         if not cfg.proxy_enabled.value:
-            print("[vavoo] Proxy disabled, using fallback directly")
-            self._fallback_to_original_method()
-            return
-        try:
-            # 1. TRY THE PROXY FIRST
-            try:
-                country_encoded = url_quote(self.country_name)
-                proxy_url = PROXY_BASE_URL + \
-                    "/channels?country={}".format(country_encoded)
-                print("[DEBUG] Fetching from proxy: " + proxy_url)
+            def _run():
+                return self._fetch_fallback()
 
-                content = getUrl(proxy_url, timeout=10)
-
-                if content and content.strip() and content != "null":
-                    channels_data = loads(content)
-                    self._build_channel_list(channels_data)
-                    return
+            def _done(result):
+                if result:
+                    self._build_channel_list(result)
                 else:
-                    print(
-                        "[DEBUG] Proxy returned empty response, trying fallback...")
-            except Exception as proxy_error:
-                print("[DEBUG] Proxy error: " + str(proxy_error))
+                    self._fallback_to_original_method()
+        else:
+            def _run():
+                try:
+                    country_encoded = url_quote(self.country_name)
+                    proxy_url = PROXY_BASE_URL + \
+                        "/channels?country={}".format(country_encoded)
+                    debug("Fetching from proxy: " + proxy_url, area="PLUGIN")
+                    content = getUrl(proxy_url, timeout=10)
+                    if isinstance(content, (bytes, bytearray)):
+                        content = content.decode("utf-8", "ignore")
+                    if content and content.strip() and content.strip() != "null":
+                        return loads(content)
+                except Exception as proxy_error:
+                    debug("Proxy error: " + str(proxy_error), area="PLUGIN")
+                return None
 
-            # 2. FALLBACK: use the original method
-            self._fallback_to_original_method()
+            def _done(result):
+                if result:
+                    self._build_channel_list(result)
+                else:
+                    debug(
+                        "Proxy returned empty response, trying fallback...",
+                        area="PLUGIN")
+                    self._fallback_to_original_method()
 
-        except Exception as e:
-            print("[ERROR] CRITICAL in cat(): " + str(e))
-            trace_error()
-            self._handle_cat_error(e)
+        def _worker():
+            try:
+                result = _run()
+            except Exception as e:
+                print("[cat] worker error: " + str(e))
+                result = None
+            reactor.callLater(0, lambda r=result: _done(r))
 
-    def _fallback_to_original_method(self):
-        """Fallback to the original method without using the proxy"""
+        t = threading.Thread(target=_worker)
+        t.setDaemon(True)
+        t.start()
+
+    def _fetch_fallback(self):
+        """Fetch channel data from original source (runs in background thread)."""
         try:
-            print("[Fallback] Using original data source...")
-
-            # Retrieve data directly from vavoo.to
             url = vUtils.b64decoder(stripurl)
             content = getUrl(url, timeout=10)
-
-            # 451-aware mirror fallback
-            if (not content) or (content == HTTP_451_SENTINEL):
-                fb = url.replace(PRIMARY_BASE_URL, FALLBACK_BASE_URL)
-                print(
-                    "[Fallback] Primary source blocked/empty, trying mirror: %s" %
-                    fb)
-                content = getUrl(fb, timeout=10)
-                if content == HTTP_451_SENTINEL:
-                    content = ""
-
             if not content:
-                self['name'].setText(to_string("Error: No data received"))
-                return
-
+                fb = url.replace(PRIMARY_BASE_URL, FALLBACK_BASE_URL)
+                content = getUrl(fb, timeout=10)
+            if isinstance(content, (bytes, bytearray)):
+                content = content.decode("utf-8", "ignore")
+            if not content:
+                return None
             data = loads(content)
-            self.cat_list = []
-
+            result = []
             for entry in data:
                 country = url_unquote(entry.get("country", "")).strip("\r\n")
-                if self.country_name in country:  # Partial match
+                if self.country_name in country:
                     name = entry.get("name", "")
-                    url = entry.get("url", "")
+                    url2 = entry.get("url", "")
+                    if name and url2:
+                        result.append((name, url2))
+            return result
+        except Exception as e:
+            print("[_fetch_fallback] Error: " + str(e))
+            return None
 
-                    if name and url:
-                        self.cat_list.append(
-                            show_list(name, url, is_channel=True)
-                        )
-
-            if not self.cat_list:
-                self['name'].setText(
-                    to_string("No channels found for " + self.country_name)
-                )
+    def _fallback_to_original_method(self):
+        """Fallback using _fetch_fallback() in a background thread."""
+        def _done(result):
+            if not result:
+                self["name"].setText(to_string("Error: No data received"))
                 return
-
+            self.cat_list = [
+                show_list(name, url, is_channel=True) for name, url in result
+            ]
+            if not self.cat_list:
+                self["name"].setText(
+                    to_string("No channels found for " + self.country_name))
+                return
             self.itemlist = [
-                item[0][0] + "###" + item[0][1]
-                for item in self.cat_list
+                item[0][0] + "###" + item[0][1] for item in self.cat_list
             ]
             self.update_menu()
-            print(
-                "[Fallback] Loaded " +
-                str(len(self.cat_list)) +
-                " channels"
-            )
+            print("[Fallback] Loaded %d channels" % len(self.cat_list))
 
-        except Exception as e:
-            print("[Fallback] Error: " + str(e))
-            self['name'].setText(
-                to_string("Error loading channels")
-            )
+        def _worker():
+            result = self._fetch_fallback()
+            reactor.callLater(0, lambda r=result: _done(r))
+
+        t = threading.Thread(target=_worker)
+        t.setDaemon(True)
+        t.start()
 
     def _build_channel_list(self, channels_data):
-        """Build channel list from proxy data"""
-        self.cat_list = []
-
+        """Build channel list from proxy data using a list comprehension
+        (faster than per-item .append() in both Py2 and Py3)."""
         if not isinstance(channels_data, list):
             print("[vavoo] Invalid channels data type: " +
                   str(type(channels_data)))
             return
 
-        for channel in channels_data:
-            if isinstance(channel, dict):
-                channel_name = channel.get("name", "Unknown")
-                channel_url = channel.get("url", "")
-
-                self.cat_list.append(
-                    show_list(channel_name, channel_url, is_channel=True)
-                )
+        self.cat_list = [
+            show_list(
+                ch.get("name", "Unknown"),
+                ch.get("url", ""),
+                is_channel=True
+            )
+            for ch in channels_data
+            if isinstance(ch, dict)
+        ]
 
         if not self.cat_list:
             self['name'].setText(to_string("No proxy URLs built."))
             return
 
-        self.itemlist = [
-            item[0][0] + "###" + item[0][1] for item in self.cat_list
-        ]
+        self.itemlist = [item[0][0] + "###" + item[0][1]
+                         for item in self.cat_list]
         self.update_menu()
-        print("[DEBUG] List built with " + str(len(self.cat_list)) + " items.")
+        debug("List built with " +
+              str(len(self.cat_list)) +
+              " items.", area="PLUGIN")
 
     def _handle_cat_error(self, e):
         """Handle cat() method errors"""
@@ -2988,45 +3066,50 @@ class vavoo(Screen):
         return False
 
     def _update_proxy_status_display(self):
-        """Internal method to update proxy status display"""
-        try:
-            if not cfg.proxy_enabled.value:
-                self['proxy_status'].setText(_("Proxy Disabled"))
-                return
-            if is_proxy_running():
-                try:
-                    response = getUrl(
-                        PROXY_STATUS_URL, timeout=5)
-                    if response:
-                        status_data = loads(response)
+        """Update proxy status label WITHOUT blocking the Enigma2 main thread.
+        Identical to MainVavoo._update_proxy_status_display – HTTP call runs in
+        a daemon thread; UI update delivered via reactor.callLater(0, ...).
+        """
+        if not cfg.proxy_enabled.value:
+            self['proxy_status'].setText(_("Proxy Disabled"))
+            return
 
-                        if status_data.get(
-                                "initialized", False) and status_data.get(
-                                "addon_sig_valid", False):
-                            token_age = status_data.get("addon_sig_age", 0)
+        def _fetch():
+            try:
+                if not is_proxy_running():
+                    return "✗ Proxy Offline"
+                response = getUrl(PROXY_STATUS_URL, timeout=3)
+                if not response:
+                    return "? Proxy Unknown"
+                if isinstance(response, (bytes, bytearray)):
+                    response = response.decode("utf-8", "ignore")
+                status_data = loads(response)
+                if status_data.get("initialized", False) and \
+                        status_data.get("addon_sig_valid", False):
+                    token_age = status_data.get("addon_sig_age", 0)
+                    if token_age < 300:
+                        return "✓ Proxy OK"
+                    elif token_age < 540:
+                        return "✓ Proxy (%ds)" % int(600 - token_age)
+                    return "⚠ Proxy (expiring)"
+                return "✗ Proxy Error"
+            except Exception as e:
+                print("[ProxyStatus/vavoo] fetch error: " + str(e))
+                return "✓ Proxy Running"
 
-                            if token_age < 300:
-                                status_text = "✓ Proxy OK"
-                            elif token_age < 540:
-                                ttl = 600 - token_age
-                                status_text = "✓ Proxy (" + \
-                                    str(int(ttl)) + "s)"
-                            else:
-                                status_text = "Proxy (expiring)"
-                        else:
-                            status_text = "✗ Proxy Error"
-                    else:
-                        status_text = "? Proxy Unknown"
-                except Exception:
-                    status_text = "✓ Proxy Running"
-            else:
-                status_text = "✗ Proxy Offline"
+        def _apply(text):
+            try:
+                self['proxy_status'].setText(text)
+            except Exception:
+                pass
 
-            self['proxy_status'].setText(status_text)
+        def _worker():
+            text = _fetch()
+            reactor.callLater(0, lambda t=text: _apply(t))
 
-        except Exception as e:
-            print("[MainVavoo] Error updating proxy status: " + str(e))
-            self['proxy_status'].setText(_("✗ Error"))
+        t = threading.Thread(target=_worker)
+        t.setDaemon(True)
+        t.start()
 
     def _check_and_ensure_proxy_ready(self):
         """Check proxy status and try to fix issues if needed"""
@@ -3107,8 +3190,7 @@ class vavoo(Screen):
         return False
 
     def _restart_proxy_and_reload(self):
-        timeout = cfg.proxy_startup_timeout.value
-        run_proxy_in_background(startup_timeout=timeout)
+        run_proxy_in_background()
         # Reload channel list after 3 seconds (enough for proxy to start)
         reactor.callLater(3, self.cat)
 
@@ -3131,8 +3213,8 @@ class vavoo(Screen):
         """Callback for proxy restart"""
         if result:
             print("[vavoo] User requested proxy restart")
-            timeout = cfg.proxy_startup_timeout.value
-            run_proxy_in_background(startup_timeout=timeout)
+            run_proxy_in_background()
+
             # Wait and retry
             self.session.open(
                 MessageBox,
@@ -3156,8 +3238,7 @@ class vavoo(Screen):
             return True
 
         print("[MainVavoo] Starting proxy...")
-        timeout = cfg.proxy_startup_timeout.value
-        success = run_proxy_in_background(startup_timeout=timeout)
+        success = run_proxy_in_background()
         if success:
             for i in range(10):
                 if is_proxy_ready(timeout=1):
@@ -3299,14 +3380,18 @@ class vavoo(Screen):
             # Success - two cases:
             if message == "Bouquet created":
                 # First callback - base bouquet ready
-                print("[DEBUG] Bouquet ready with {} channels".format(ch_count))
+                debug(
+                    "Bouquet ready with {} channels".format(ch_count),
+                    area="PLUGIN")
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed
-                print("[DEBUG] EPG completed for {} channels".format(ch_count))
+                debug(
+                    "EPG completed for {} channels".format(ch_count),
+                    area="PLUGIN")
                 if NOTIFICATION_AVAILABLE:
                     if ch_count > 0:
                         quick_notify(
@@ -3317,7 +3402,7 @@ class vavoo(Screen):
 
             else:
                 # Other messages
-                print("[DEBUG] Export completed: {}".format(message))
+                debug("Export completed: {}".format(message), area="PLUGIN")
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(message, 3)
 
@@ -3454,8 +3539,7 @@ class VavooSearch(Screen):
         skin = join(skin_path, 'vavoo_search.xml')
         if isfile('/var/lib/dpkg/status'):
             skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin = _load_skin_cached(skin)
         Screen.__init__(self, session)
         self["search_label"] = Label(_("Search Channels:"))
         self["search_text"] = Label("")
@@ -3710,12 +3794,12 @@ class VavooSearch(Screen):
 
     def onPlayerClosed(self, result=None):
         """Callback called when the player is closed"""
-        print("DEBUG: Player closed, returning to Vavoo main screen")
+        debug("Player closed, returning to Vavoo main screen", area="PLUGIN")
         self.close()
 
     def onCancel(self):
         """Return to the Vavoo screen without opening the player"""
-        print("DEBUG: Search cancelled, returning to Vavoo main screen")
+        debug("Search cancelled, returning to Vavoo main screen", area="PLUGIN")
         self.close()
 
     def close(self, *args, **kwargs):
@@ -3896,9 +3980,12 @@ class TvInfoBarShowHide():
             self["helpOverlay"].setText(help_text)
             self["helpOverlay"].show()
 
-            epg_text = self.get_current_epg()
-            self["epgOverlay"].setText(epg_text)
-            self["epgOverlay"].show()
+            if cfg.epg_enabled.value:
+                epg_text = self.get_current_epg()
+                self["epgOverlay"].setText(epg_text)
+                self["epgOverlay"].show()
+            else:
+                self["epgOverlay"].hide()
 
             # Update proxy status every 30 seconds while the overlay is visible
             if not self.proxy_update_timer.isActive():
@@ -4086,9 +4173,9 @@ class Playstream2(
 
     def showIMDB(self):
         try:
-            epg_text = self.get_current_epg()
+            epg_text = self.get_current_epg() if cfg.epg_enabled.value else ""
             if epg_text and epg_text not in [
-                    "EPG not available", "No programme found"]:
+                    "EPG not available", "No programme found", ""]:
                 if " - " in epg_text:
                     title = epg_text.split(" - ")[0].strip()
                     if " " in title and title[2] == ":":
@@ -4297,7 +4384,12 @@ class Playstream2(
         """
         Get current EPG program for the playing channel.
         Results are cached for 5 minutes to avoid repeated lookups.
+        Returns empty string immediately if EPG is disabled in config.
         """
+        # Hard gate: respect the user's EPG setting
+        if not cfg.epg_enabled.value:
+            return ""
+
         start_time = time.time()
 
         try:
@@ -4349,26 +4441,41 @@ class Playstream2(
             epg_url = "http://{}:{}/epg/{}.xml".format(
                 PROXY_HOST, PORT, self.country_code or "")
 
-            # Fetch XML data
-            fetch_start = time.time()
-            # Reduced timeout to 3 seconds
-            xml_data = getUrl(epg_url, timeout=3)
-            fetch_time = time.time() - fetch_start
+            # --- XML root cache (5 min TTL) ----------------------------------
+            # Parsing the same country XML for every channel navigation is
+            # expensive (network + ET.fromstring). Cache the root per URL.
+            _XML_CACHE_TTL = 300  # seconds
+            if not hasattr(self, '_xml_root_cache'):
+                self._xml_root_cache = {}  # {url: (timestamp, ET.Element)}
 
-            if fetch_time > 0.5:
-                print(
-                    "[EPG] Slow fetch from {}: {:.3f}s".format(
-                        epg_url, fetch_time))
+            cached = self._xml_root_cache.get(epg_url)
+            if cached and (time.time() - cached[0]) < _XML_CACHE_TTL:
+                root = cached[1]
+            else:
+                fetch_start = time.time()
+                xml_data = getUrl(epg_url, timeout=3)
+                fetch_time = time.time() - fetch_start
+                if fetch_time > 0.5:
+                    print(
+                        "[EPG] Slow fetch {}: {:.3f}s".format(
+                            epg_url, fetch_time))
+                if not xml_data:
+                    result = "EPG not available"
+                    self._epg_cache[cache_key] = (time.time(), result)
+                    return result
+                try:
+                    root = ET.fromstring(xml_data)
+                    self._xml_root_cache[epg_url] = (time.time(), root)
+                except Exception as parse_err:
+                    print("[EPG] XML parse error: " + str(parse_err))
+                    result = "EPG not available"
+                    self._epg_cache[cache_key] = (time.time(), result)
+                    return result
+            # ------------------------------------------------------------------
 
-            if not xml_data:
-                result = "EPG not available"
-                self._epg_cache[cache_key] = (time.time(), result)
-                return result
-
-            # Parse XML
+            # Parse XML (root already obtained/cached above)
             parse_start = time.time()
             try:
-                root = ET.fromstring(xml_data)
                 now = time.time()
 
                 def id_match(epg_id, rid):
@@ -4590,7 +4697,8 @@ class Playstream2(
         try:
             for screen in self.session.dialog_stack:
                 if hasattr(screen[0], 'proxy_monitor_timer'):
-                    screen[0].proxy_monitor_timer.start(10000)
+                    # consistent with main 30s interval
+                    screen[0].proxy_monitor_timer.start(30000)
                     print("[Playstream2] Restarted proxy monitor timer")
                 if hasattr(screen[0], 'proxy_watchdog_timer'):
                     screen[0].proxy_watchdog_timer.start(60000)
@@ -4748,12 +4856,13 @@ class AutoStartTimer:
                     print("[AutoStartTimer] Failed to start proxy")
                     return
 
-            # 3. Wait for proxy to be ready
+            # 3. Wait for proxy to be ready (max 10s total; non-blocking via
+            # select)
             for i in range(10):
-                if is_proxy_ready(timeout=3):
+                if is_proxy_ready(timeout=1):
                     break
                 print("[AutoStartTimer] Waiting for proxy (" + str(i + 1) + "/10)")
-                select.select([], [], [], 1)
+                select.select([], [], [], 1)  # 1s interruptible sleep
 
             # 4. Update each bouquet
             successful_updates = 0
@@ -4817,8 +4926,7 @@ def delayed_boot_tasks():
                 return
             if not is_proxy_running():
                 print("[Vavoo] Starting proxy at boot...")
-                timeout = cfg.proxy_startup_timeout.value
-                run_proxy_in_background(startup_timeout=timeout)
+                run_proxy_in_background()
             else:
                 print("[Vavoo] Proxy already running at boot")
 
@@ -4881,15 +4989,21 @@ def cfgmain(menuid, **kwargs):
 
 
 def checkInternet():
+    """Quick internet check. Uses a private socket so the global default
+    timeout is not affected. Socket is always closed. Py2/3 compatible."""
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        import socket
-        socket.setdefaulttimeout(0.5)
-        socket.socket(
-            socket.AF_INET, socket.SOCK_STREAM).connect(
-            ('8.8.8.8', 53))
+        s.settimeout(2)
+        s.connect(('8.8.8.8', 53))
         return True
-    except BaseException:
+    except Exception:
         return False
+    finally:
+        try:
+            s.close()
+        except Exception:
+            pass
 
 
 def main(session, **kwargs):

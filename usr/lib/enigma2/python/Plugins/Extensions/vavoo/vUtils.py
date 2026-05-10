@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+from datetime import datetime as _datetime
+import os as _os
 import base64
 import glob
 import io
@@ -46,6 +48,7 @@ from . import (
     HOST_MAIN,
     ALIAS_FILE
 )
+
 """
 #########################################################
 #                                                       #
@@ -106,76 +109,216 @@ except ImportError:
 _epg_lock = threading.Lock()
 _starting_lock = threading.Lock()
 
-LOG_MAX_BYTES = 1024 * 1024
-DEBUG_ENABLED = str(
-    __import__("os").environ.get(
-        "VAVOO_DEBUG",
-        "0")).lower() in (
-            "1",
-            "true",
-            "yes",
-    "on")
+
+class Http451Error(Exception):
+    """Raised when a URL returns HTTP 451 (Unavailable For Legal Reasons)."""
+
+    def __init__(self, url=""):
+        self.url = url
+        super(Http451Error, self).__init__(
+            "HTTP 451 Unavailable For Legal Reasons: {}".format(url)
+        )
 
 
-def _rotate_log_if_needed():
+# =============================================================================
+#  Vavoo Logger  –  fully rewritten
+#
+#  Fixes vs original:
+#   1. Async write queue  – disk I/O in a background thread (never blocks caller)
+#   2. Thread-safe        – single _log_lock guards every write
+#   3. Rotation           – 2 backups (.1 .2), size checked every 50 writes
+#   4. Level filter       – LOG_LEVEL env var / runtime-settable minimum level
+#   5. DEBUG_ENABLED      – re-read on every debug() call (can change at runtime)
+#   6. Console gated      – stdout only for WARNING+ (or when VAVOO_DEBUG=1)
+#   7. Traceback batched  – log_exception writes one block, not N separate calls
+#   8. datetime cached    – imported once at module level
+#   9. No redundant open  – file opened once per batch by the background thread
+# =============================================================================
+
+# ── Level constants ─────────────────────────────────────────────────────
+LOG_DEBUG = 10
+LOG_INFO = 20
+LOG_WARNING = 30
+LOG_ERROR = 40
+
+_LEVEL_NAMES = {
+    LOG_DEBUG: "DEBUG",
+    LOG_INFO: "INFO",
+    LOG_WARNING: "WARNING",
+    LOG_ERROR: "ERROR",
+}
+_NAME_TO_LEVEL = {v: k for k, v in _LEVEL_NAMES.items()}
+
+# ── Configuration (can be overridden at runtime) ────────────────────────
+LOG_MAX_BYTES = 1024 * 1024        # 1 MB per file
+LOG_KEEP_BACKUPS = 2                # .1 and .2
+
+
+def _env_level():
+    """Read LOG_LEVEL env var, default INFO."""
+    raw = _os.environ.get("VAVOO_LOG_LEVEL", "INFO").upper().strip()
+    return _NAME_TO_LEVEL.get(raw, LOG_INFO)
+
+
+# ── Internal state ──────────────────────────────────────────────────────
+_log_lock = threading.Lock()
+_write_queue = []                # buffered lines waiting for disk
+_write_event = threading.Event()
+_writes_since_rotate = 0
+# check file size every N writes (not every call)
+_ROTATE_CHECK_EVERY = 50
+
+# ── Async writer thread ─────────────────────────────────────────────────
+
+
+def _log_writer_loop():
+    """Background thread: drains _write_queue to disk in batches."""
+    while True:
+        _write_event.wait(timeout=2)
+        _write_event.clear()
+        with _log_lock:
+            if not _write_queue:
+                continue
+            batch = _write_queue[:]
+            del _write_queue[:]
+
+        _flush_batch(batch)
+
+
+def _flush_batch(batch):
+    global _writes_since_rotate
     try:
-        if isfile(LOG_FILE) and getsize(LOG_FILE) >= LOG_MAX_BYTES:
-            backup = LOG_FILE + ".1"
+        _writes_since_rotate += len(batch)
+        if _writes_since_rotate >= _ROTATE_CHECK_EVERY:
+            _writes_since_rotate = 0
+            _rotate_if_needed()
+        with open(LOG_FILE, "a") as fh:
+            fh.write("\n".join(batch) + "\n")
+    except Exception:
+        pass  # never let logging crash the plugin
+
+
+def _rotate_if_needed():
+    """Keep LOG_KEEP_BACKUPS rolling backups."""
+    try:
+        if not isfile(LOG_FILE) or getsize(LOG_FILE) < LOG_MAX_BYTES:
+            return
+        # Shift: .2 ← .1 ← current
+        for i in range(LOG_KEEP_BACKUPS, 0, -1):
+            src = LOG_FILE + (".{}".format(i - 1) if i > 1 else "")
+            dest = LOG_FILE + ".{}".format(i)
             try:
-                if isfile(backup):
-                    remove(backup)
+                if isfile(dest):
+                    remove(dest)
+                if isfile(src):
+                    rename(src, dest)
             except Exception:
                 pass
-            try:
-                __import__("os").rename(LOG_FILE, backup)
-            except Exception:
-                pass
     except Exception:
         pass
 
 
-def _safe_console_write(line):
-    try:
-        import sys
-        sys.stdout.write(line + "\n")
-        sys.stdout.flush()
-    except Exception:
-        pass
+# Writer thread is started lazily on the first log() call (not at import time).
+# This avoids Enigma2 import-time threading issues.
+_writer_thread = None
+_writer_thread_lock = threading.Lock()
 
 
-def _append_to_log(line):
-    try:
-        _rotate_log_if_needed()
-        with open(LOG_FILE, "a") as log_file:
-            log_file.write(line + "\n")
-    except Exception:
-        pass
+def _ensure_writer_running():
+    """Start the background log writer thread on first use."""
+    global _writer_thread
+    if _writer_thread is not None and _writer_thread.is_alive():
+        return
+    with _writer_thread_lock:
+        if _writer_thread is not None and _writer_thread.is_alive():
+            return
+        _writer_thread = threading.Thread(target=_log_writer_loop)
+        _writer_thread.setDaemon(True)
+        _writer_thread.start()
+
+# ── Public API ──────────────────────────────────────────────────────────
 
 
 def log(msg, level="INFO", area="VUTILS"):
-    from datetime import datetime
+    """Queue a log line for async disk write.
+
+    Args:
+        msg:   Message string (bytes are decoded automatically).
+        level: "DEBUG" | "INFO" | "WARNING" | "ERROR"  (default "INFO")
+        area:  Module tag shown in brackets (e.g. "PLUGIN", "PROXY")
+    Returns:
+        The formatted log line string.
+    """
+    # Resolve numeric or string level
+    if isinstance(level, int):
+        numeric = level
+        level_name = _LEVEL_NAMES.get(level, "INFO")
+    else:
+        level_name = level.upper()
+        numeric = _NAME_TO_LEVEL.get(level_name, LOG_INFO)
+
+    # Runtime minimum level filter (re-read every call so it can be changed)
+    min_level = _env_level()
+    if numeric < min_level:
+        return ""
+
+    # Normalise message – use a local fallback so log() works before
+    # ensure_str is defined (log() is defined early in the module).
     try:
-        msg = ensure_str(msg, errors='ignore')
-    except Exception:
-        try:
+        if isinstance(msg, bytes):
+            msg = msg.decode("utf-8", "ignore")
+        elif not isinstance(msg, str):
             msg = str(msg)
-        except Exception:
-            msg = '<unprintable message>'
-    line = "[{0}] [{1}] [{2}] {3}".format(
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        level,
-        area,
-        msg
+    except Exception:
+        msg = "<unprintable>"
+
+    line = "[{ts}] [{lvl:<7}] [{area}] {msg}".format(
+        ts=_datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        lvl=level_name,
+        area=area,
+        msg=msg,
     )
-    _safe_console_write(line)
-    _append_to_log(line)
+
+    # Ensure background writer is running (lazy start, safe at any import
+    # stage)
+    _ensure_writer_running()
+
+    # Queue for async disk write
+    with _log_lock:
+        _write_queue.append(line)
+    _write_event.set()
+
+    # Console: only WARNING+ (or any level when debug mode is on)
+    _debug_on = _os.environ.get(
+        "VAVOO_DEBUG",
+        "0").lower() in (
+        "1",
+        "true",
+        "yes",
+        "on")
+    if _debug_on or numeric >= LOG_WARNING:
+        try:
+            import sys
+            sys.stdout.write(line + "\n")
+            sys.stdout.flush()
+        except Exception:
+            pass
+
     return line
 
 
 def debug(msg, area="VUTILS"):
-    if DEBUG_ENABLED:
+    """Write a DEBUG line – gated by VAVOO_DEBUG env var or LOG_LEVEL=DEBUG."""
+    _debug_on = _os.environ.get(
+        "VAVOO_DEBUG",
+        "0").lower() in (
+        "1",
+        "true",
+        "yes",
+        "on")
+    if _debug_on or _env_level() <= LOG_DEBUG:
         return log(msg, level="DEBUG", area=area)
-    return None
+    return ""
 
 
 def warning(msg, area="VUTILS"):
@@ -187,46 +330,79 @@ def error(msg, area="VUTILS"):
 
 
 def log_exception(msg="", area="VUTILS"):
+    """Log an exception + full traceback as a single batched write."""
     import traceback
+    lines = []
     if msg:
-        error(msg, area=area)
+        lines.append("[EXCEPTION] " + str(msg))
     try:
         tb = traceback.format_exc()
         if not tb or tb.strip() == "NoneType: None":
             tb = "".join(traceback.format_stack()[:-1])
-        for line in tb.rstrip().splitlines():
-            error(line, area=area)
-    except Exception as e:
-        error("Failed to capture traceback: {0}".format(e), area=area)
+        lines.extend(tb.rstrip().splitlines())
+    except Exception as capture_err:
+        lines.append("Failed to capture traceback: {}".format(capture_err))
+
+    # Write all lines as a single batch (one file open, not N)
+    ts = _datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    formatted = [
+        "[{ts}] [{lvl:<7}] [{area}] {line}".format(
+            ts=ts, lvl="ERROR", area=area, line=line)
+        for line in lines
+    ]
+    _ensure_writer_running()
+    with _log_lock:
+        _write_queue.extend(formatted)
+    _write_event.set()
+
+    # Always print exceptions to console
+    try:
+        import sys
+        sys.stdout.write("\n".join(formatted) + "\n")
+        sys.stdout.flush()
+    except Exception:
+        pass
 
 
 def trace_error(prefix="", area="VUTILS"):
+    """Alias for log_exception (backward compatibility)."""
     log_exception(prefix, area=area)
 
 
 def plugin_print(*args, **kwargs):
-    sep = kwargs.get('sep', ' ')
-    end = kwargs.get('end', '\n')
-    level = kwargs.get('level', 'INFO')
-    area = kwargs.get('area', 'VUTILS')
+    sep = kwargs.get("sep", " ")
+    level = kwargs.get("level", "INFO")
+    area = kwargs.get("area", "VUTILS")
     try:
-        msg = sep.join([ensure_str(x, errors='ignore') for x in args])
+        parts = []
+        for x in args:
+            if isinstance(x, bytes):
+                parts.append(x.decode("utf-8", "ignore"))
+            else:
+                parts.append(str(x))
+        msg = sep.join(parts)
     except Exception:
-        try:
-            msg = sep.join([str(x) for x in args])
-        except Exception:
-            msg = '<print formatting error>'
-    if end and msg.endswith('\n'):
-        msg = msg.rstrip('\n')
-    return log(msg, level=level, area=area)
+        msg = "<print formatting error>"
+    return log(msg.rstrip("\n"), level=level, area=area)
 
 
 def make_print(area, level="INFO"):
+    """Return a drop-in print() replacement that routes through log()."""
     def _module_print(*args, **kwargs):
-        kwargs.setdefault('area', area)
-        kwargs.setdefault('level', level)
+        kwargs.setdefault("area", area)
+        kwargs.setdefault("level", level)
         return plugin_print(*args, **kwargs)
     return _module_print
+
+
+# Keep old name alive for any external callers
+DEBUG_ENABLED = _os.environ.get(
+    "VAVOO_DEBUG",
+    "0").lower() in (
+        "1",
+        "true",
+        "yes",
+    "on")
 
 
 PLUGIN_PATH = PLUGIN_ROOT
@@ -255,29 +431,35 @@ log("===== Vavoo session start =====", area="VUTILS")
 
 
 def getDNSinfo():
-    dns_box = None
-    dns_external = None
+    """Return (local_dns, external_dns). Never raises – returns 'n/a' on failure."""
+    dns_box = "n/a"
+    dns_external = "n/a"
     try:
         with open("/etc/resolv.conf", "r") as f:
             for line in f:
                 if line.startswith("nameserver"):
                     dns_box = line.split()[1]
                     break
-    except BaseException:
-        dns_box = "n/a"
+    except Exception:
+        pass
 
-    data = urlopen("https://1.1.1.1/cdn-cgi/trace", timeout=5).read()
-    data = data.decode("utf-8")
-    for line in data.split("\n"):
-        if line.startswith("h="):
-            dns_external = line.split("=")[1]
-            break
-        else:
-            dns_external = "n/a"
+    try:
+        data = urlopen("https://1.1.1.1/cdn-cgi/trace", timeout=5).read()
+        data = data.decode("utf-8")
+        for line in data.split("\n"):
+            if line.startswith("h="):
+                dns_external = line.split("=")[1].strip()
+                break
+    except Exception:
+        pass
+
     return dns_box, dns_external
 
 
-dns_box, dns_ext = getDNSinfo()
+try:
+    dns_box, dns_ext = getDNSinfo()
+except Exception:
+    dns_box, dns_ext = "n/a", "n/a"
 print("Vavoo Version: ", __version__)
 print("DNS box:", dns_box)
 print("DNS out:", dns_ext)
@@ -427,10 +609,26 @@ def b64decoder(data):
         return ""
 
 
-def getUrl(url, timeout=30, retries=3, backoff=2):
-    """Fetch URL with exponential backoff retry logic"""
-    # detect 451
-    HTTP_451_SENTINEL = "__HTTP451__"
+def getUrl(url, timeout=30, retries=3, backoff=2, raise_on_451=False):
+    """Fetch URL with exponential backoff retry logic.
+
+    Args:
+        url:          Target URL (http or https).
+        timeout:      Socket timeout in seconds.
+        retries:      Max attempts before giving up.
+        backoff:      Exponential backoff base (seconds).
+        raise_on_451: If True, raise Http451Error on HTTP 451.
+                      If False (default), return b"" silently —
+                      safe for all existing callers.
+    Raises:
+        Http451Error: only when raise_on_451=True and server returns 451.
+        ValueError:   if URL is empty or has no scheme.
+    Returns:
+        bytes on success, b"" on failure.
+    """
+    # Hosts whose SSL certificates we skip verification for (geo-blocked,
+    # self-signed)
+    _NO_VERIFY_HOSTS = ("vavoo.to", "kool.to", "lokke.app", "www.vavoo.tv")
 
     headers = {'User-Agent': RequestAgent()}
 
@@ -442,31 +640,31 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
     if not url.startswith(("http://", "https://")):
         raise ValueError("Invalid URL (missing scheme): %s" % url)
 
+    needs_no_verify = any(h in url for h in _NO_VERIFY_HOSTS)
+
     for i in range(retries):
         try:
             socket.setdefaulttimeout(timeout)
             request = Request(url, headers=headers)
 
             if PY3:
-                import ssl
-                unverified_context = ssl.create_default_context()
-                unverified_context.check_hostname = False
-                unverified_context.verify_mode = ssl.CERT_NONE
-                response = urlopen(
-                    request,
-                    timeout=timeout,
-                    context=unverified_context)
+                import ssl as _ssl
+                if needs_no_verify:
+                    ctx = _ssl.create_default_context()
+                    ctx.check_hostname = False
+                    ctx.verify_mode = _ssl.CERT_NONE
+                else:
+                    ctx = _ssl.create_default_context()
+                response = urlopen(request, timeout=timeout, context=ctx)
             else:
-                # Python 2: prova a usare ssl se disponibile, altrimenti
-                # fallback
+                # Python 2.7.9+ supports ssl._create_unverified_context
                 try:
-                    import ssl
-                    # Python 2.7.9+ supporta ssl._create_unverified_context
-                    unverified_context = ssl._create_unverified_context() if hasattr(
-                        ssl, '_create_unverified_context') else None
-                    if unverified_context:
+                    import ssl as _ssl
+                    if needs_no_verify and hasattr(
+                            _ssl, '_create_unverified_context'):
+                        ctx = _ssl._create_unverified_context()
                         response = urlopen(
-                            request, timeout=timeout, context=unverified_context)
+                            request, timeout=timeout, context=ctx)
                     else:
                         response = urlopen(request, timeout=timeout)
                 except ImportError:
@@ -476,25 +674,24 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
             return data
 
         except HTTPError as e:
-
-            # detect 451
             code = getattr(e, 'code', None)
             if code == 451:
                 print("HTTP 451 for URL: {0}".format(url))
-                return HTTP_451_SENTINEL
+                if raise_on_451:
+                    raise Http451Error(url)
+                return b""
 
             if i < retries - 1:
                 wait_time = backoff ** i
                 print(
-                    "HTTP error {0} on attempt {1}, retrying in {2} seconds...".format(
+                    "HTTP error {0} on attempt {1}, retrying in {2}s...".format(
                         code, i + 1, wait_time))
                 select.select([], [], [], wait_time)
                 continue
             print(
-                "Failed after {0} attempts for URL: {1}".format(
-                    retries, url))
-            print("HTTPError: {0}".format(e))
-            return ""
+                "Failed after {0} attempts for URL: {1} – HTTPError: {2}".format(
+                    retries, url, e))
+            return b""
 
         except (URLError, socket.timeout, socket.error) as e:
             err_no = getattr(e, 'errno', None)
@@ -509,37 +706,32 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 e, socket.error) or is_retryable_socket
 
             if is_retryable and i < retries - 1:
-                wait_time = backoff ** i  # Exponential backoff
-                print(
-                    "Attempt {0} failed, retrying in {1} seconds...".format(
-                        i + 1, wait_time))
+                wait_time = backoff ** i
+                print("Attempt {0} failed ({1}), retrying in {2}s...".format(
+                    i + 1, e, wait_time))
                 select.select([], [], [], wait_time)
             else:
                 print(
-                    "Failed after {0} attempts for URL: {1}".format(
-                        retries, url))
-                print("Error: {0}".format(e))
-                return ""
+                    "Failed after {0} attempts for URL: {1} – Error: {2}".format(
+                        retries, url, e))
+                return b""
+
+        except Http451Error:
+            raise  # propagate when raise_on_451=True
 
         except Exception as e:
             if i < retries - 1:
                 wait_time = backoff ** i
                 print(
-                    "Unexpected error on attempt {0}, retrying in {1} seconds...".format(
-                        i + 1, wait_time))
-                print("Error: {0}".format(e))
+                    "Unexpected error on attempt {0} ({1}), retrying in {2}s...".format(
+                        i + 1, e, wait_time))
                 select.select([], [], [], wait_time)
                 continue
-
             print(
-                "Failed after {0} attempts for URL: {1}".format(
-                    retries, url))
-            print("Unexpected error: {0}".format(e))
-            try:
-                trace_error()
-            except BaseException:
-                pass
-            return ""
+                "Failed after {0} attempts for URL: {1} – Unexpected: {2}".format(
+                    retries, url, e))
+            trace_error()
+            return b""
 
 
 def get_external_ip():
@@ -668,10 +860,26 @@ def _write_json_file(file_path, data):
         dump(data, f, indent=4, ensure_ascii=False)
 
 
+_cached_external_ip = None
+_cached_external_ip_ts = 0
+_EXTERNAL_IP_TTL = 300  # re-check every 5 minutes
+
+
+def _get_cached_external_ip():
+    """Return external IP with TTL caching to avoid spawning a subprocess on every cache lookup."""
+    global _cached_external_ip, _cached_external_ip_ts
+    now_ts = time()
+    if _cached_external_ip is None or (
+            now_ts - _cached_external_ip_ts) > _EXTERNAL_IP_TTL:
+        _cached_external_ip = get_external_ip()
+        _cached_external_ip_ts = now_ts
+    return _cached_external_ip
+
+
 def _is_cache_valid(data):
     return (
         data.get('sigValidUntil', 0) > int(time())
-        and data.get('ip', "") == get_external_ip()
+        and data.get('ip', "") == _get_cached_external_ip()
     )
 
 
@@ -680,8 +888,18 @@ def _is_cache_valid(data):
 # ============================================================================
 
 def getAuthSignature():
-    """Get authentication - ALWAYS use proxy"""
-    print("Using proxy authentication system")
+    """Get authentication signature.
+    Always uses the proxy system when available, with fallback.
+    This is the single, canonical implementation (no duplicates).
+    """
+    print("getAuthSignature called...")
+    try:
+        if is_proxy_running():
+            print("Proxy active, using proxy auth")
+            return "PROXY_AUTH"
+    except Exception:
+        log_exception("getAuthSignature check failed", area="VUTILS")
+    print("Proxy not running, returning PROXY_ACTIVE fallback")
     return "PROXY_ACTIVE"
 
 
@@ -708,7 +926,7 @@ def get_new_auth_signature():
             from .vavoo_proxy import run_proxy_in_background
             print("Starting proxy in background...")
             run_proxy_in_background()
-            sleep(5)
+            select.select([], [], [], 5)
             return "PROXY_STARTED"
         except Exception as e:
             trace_error()
@@ -729,7 +947,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) +
+            print("Getting channels for '" + str(country_name) + \
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
@@ -739,7 +957,8 @@ def get_proxy_channels(country_name):
             # Build URL
             proxy_url = PROXY_BASE_URL + \
                 "/channels?country={}".format(encoded_country)
-            # Fetch with timeout
+            # Fetch with timeout (Http451Error won't be raised with default
+            # raise_on_451=False)
             response = getUrl(proxy_url, timeout=15)
             print("Request URL: " + proxy_url)
 
@@ -751,6 +970,8 @@ def get_proxy_channels(country_name):
                 continue
 
             # Parse JSON
+            if isinstance(response, (bytes, bytearray)):
+                response = response.decode("utf-8", "ignore")
             channels = loads(response)
 
             if not isinstance(channels, list):
@@ -823,7 +1044,9 @@ def get_proxy_status():
             response = urlopen(req, timeout=3)
             if response.getcode() == 200:
                 return loads(response.read().decode('utf-8', 'ignore'))
-    except BaseException:
+    except Exception as e:
+        log("get_proxy_status error: {}".format(
+            e), level="WARNING", area="VUTILS")
         return None
     return None
 
@@ -846,32 +1069,15 @@ def is_proxy_ready(timeout=2):
     try:
         response = getUrl(PROXY_STATUS_URL, timeout=timeout)
         if response:
+            if isinstance(response, (bytes, bytearray)):
+                response = response.decode("utf-8", "ignore")
             data = loads(response)
             return data.get("initialized", False)
         return False
-    except BaseException:
+    except Exception as e:
+        log("is_proxy_ready error: {}".format(
+            e), level="WARNING", area="VUTILS")
         return False
-
-
-_original_getAuthSignature = getAuthSignature
-
-
-def getAuthSignature():
-    """
-    Wrapper that uses the proxy first, then falls back to the old system
-    """
-    print("getAuthSignature called...")
-
-    try:
-        if is_proxy_running():
-            print("Proxy active, using new system")
-            return "PROXY_AUTH"
-    except BaseException:
-        trace_error()
-        pass
-
-    print("Falling back to old authentication system")
-    return _original_getAuthSignature()
 
 
 # ===================================
@@ -887,12 +1093,10 @@ def fetch_vec_list():
             vec_list = response.json()
         else:
             # Fallback to urllib
-            req = Request(url)
-            response = urlopen(req, timeout=10)
-            data = response.read()
-            if isinstance(data, bytes):
-                data = data.decode('utf-8', 'ignore')
-            vec_list = loads(data)
+            response = getUrl(url, timeout=10)
+            if isinstance(response, (bytes, bytearray)):
+                response = response.decode("utf-8", "ignore")
+            vec_list = loads(response) if response else None
 
         set_cache("vec_list", vec_list, 3600)
         print(
@@ -976,7 +1180,12 @@ def ReloadBouquets(delay=500):
         return
 
     # If in main thread, use non‑blocking timer
-    if threading.current_thread() is threading.main_thread():
+    # threading.main_thread() is Py3.4+ only; use _MainThread check for Py2
+    # compat
+    _main = (getattr(threading, "main_thread", lambda: None)() or
+             next((t for t in threading.enumerate()
+                   if isinstance(t, threading._MainThread)), None))
+    if threading.current_thread() is _main:
         try:
             from twisted.internet import reactor
             if reactor.running:
@@ -1040,6 +1249,13 @@ def sanitizeFilename(filename):
 
 
 def decodeHtml(text):
+    """Unescape all HTML entities.
+
+    html.unescape (Py3) and HTMLParser.unescape (Py2) handle the full set of
+    named and numeric entities, so the manual replacement table is redundant
+    and has been removed to avoid double-processing issues.
+    The only extras kept are non-standard ones that the stdlib misses.
+    """
     text = ensure_str(text, errors='ignore')
 
     if PY3:
@@ -1049,16 +1265,16 @@ def decodeHtml(text):
         h = html_parser.HTMLParser()
         text = h.unescape(text)
 
-    replacements = {
-        '&amp;': '&', '&apos;': "'", '&lt;': '<', '&gt;': '>', '&ndash;': '-',
-        '&quot;': '"', '&ntilde;': '~', '&rsquo;': "'", '&nbsp;': ' ',
-        '&equals;': '=', '&quest;': '?', '&comma;': ',', '&period;': '.',
-        '&colon;': ':', '&lpar;': '(', '&rpar;': ')', '&excl;': '!',
-        '&dollar;': '$', '&num;': '#', '&ast;': '*', '&lowbar;': '_',
-        '&lsqb;': '[', '&rsqb;': ']', '&half;': '1/2', '&DiacriticalTilde;': '~',
-        '&OpenCurlyDoubleQuote;': '"', '&CloseCurlyDoubleQuote;': '"'
+    # Non-standard entities not covered by the stdlib unescaper
+    _extra = {
+        '&ndash;': '-',
+        '&rsquo;': "'",
+        '&half;': '1/2',
+        '&DiacriticalTilde;': '~',
+        '&OpenCurlyDoubleQuote;': '"',
+        '&CloseCurlyDoubleQuote;': '"',
     }
-    for entity, char in replacements.items():
+    for entity, char in _extra.items():
         text = text.replace(entity, char)
 
     return text.strip()
@@ -1223,24 +1439,16 @@ def download_flag_online(
                 "Warning: Flag file too small (%d bytes)" %
                 len(flag_data))
 
-        # 11. Save to cache
+        # 11. Validate PNG header in memory BEFORE writing (no double file
+        # open)
+        if flag_data[:8] != b'\x89PNG\r\n\x1a\n':
+            print("ERROR: Downloaded data is not a valid PNG file!")
+            return False, "Invalid PNG file downloaded"
+
+        # 12. Save to cache
         try:
-            f = open(cache_file, 'wb')
-            f.write(flag_data)
-            f.close()
-
-            # Verify PNG header
-            f = open(cache_file, 'rb')
-            header = f.read(8)
-            f.close()
-            if header != b'\x89PNG\r\n\x1a\n':
-                print("ERROR: Not a valid PNG file!")
-                try:
-                    unlink(cache_file)
-                except Exception:
-                    pass
-                return False, "Invalid PNG file downloaded"
-
+            with open(cache_file, 'wb') as f:
+                f.write(flag_data)
             print("Flag %dx%d saved: %s (%d bytes)" %
                   (width, height, cache_file, len(flag_data)))
             return True, cache_file
@@ -1279,8 +1487,8 @@ def download_flag_with_size(
             width, height = 40, 30
 
         # URL with fixed size w/h
-        url = "https://flagcdn.com/w%d/h%d/%s.png" % (
-            width, height, country_code.lower())
+        # flagcdn.com API: /w{width}/{code}.png  (width-only endpoint)
+        url = "https://flagcdn.com/w%d/%s.png" % (width, country_code.lower())
 
         print("Downloading %s flag %dx%d from: %s" %
               (country_name, width, height, url))
@@ -1361,100 +1569,28 @@ def get_country_code(country_name):
     if len(country_name) < 2:
         return ""
 
-    special_mapping = {
-        'America': 'us',
-        'Arabia': 'sa',
-        'Balkans': 'bk',
-        'Baltic': 'baltic',
-        'Czech Republic': 'cz',
-        'Czech': 'cz',
-        'Global': 'internat',
-        'Great Britain': 'gb',
-        'Holy See': 'va',
-        'Internat': 'internat',
-        'International': 'internat',
-        'Internaz': 'internat',
-        'North Korea': 'kp',
-        'Russia': 'ru',
-        'Russian Federation': 'ru',
-        'Scandinavia': 'scandinavia',
-        'Slovak Republic': 'sk',
-        'Slovakia': 'sk',
-        'South Korea': 'kr',
-        'UAE': 'ae',
-        'UK': 'gb',
-        'USA': 'us',
-        'United Arab Emirates': 'ae',
-        'United Kingdom': 'gb',
-        'United States': 'us',
-        'Vatican City': 'va',
-        'World': 'internat',
-    }
+    # Use the single authoritative country_codes dict from __init__.py (100+ entries).
+    # Exact match (case-sensitive)
+    if country_name in country_codes:
+        return country_codes[country_name]
 
-    if country_name in special_mapping:
-        return special_mapping[country_name]
-
-    # Full country map
-    country_map = {
-        # Europe
-        'Albania': 'al',
-        'Arabia': 'sa',
-        'Austria': 'at',
-        'Balkans': 'bk',
-        'Belgium': 'be',
-        'Bulgaria': 'bg',
-        'Croatia': 'hr',
-        'Czech Republic': 'cz',
-        'France': 'fr',
-        'Germany': 'de',
-        'Greece': 'gr',
-        'Hungary': 'hu',
-        'Italy': 'it',
-        'Netherlands': 'nl',
-        'Poland': 'pl',
-        'Portugal': 'pt',
-        'Romania': 'ro',
-        'Russia': 'ru',
-        'Slovakia': 'sk',
-        'Slovenia': 'si',
-        'Spain': 'es',
-        'Switzerland': 'ch',
-        'Turkey': 'tr',
-        'UK': 'gb',
-        'United Kingdom': 'gb',
-
-        # Special cases
-        'Global': 'internat',
-        'Internat': 'internat',
-        'International': 'internat',
-        'Internaz': 'internat',
-        'World': 'internat',
-
-        'Italia': 'it',
-        'Italiana': 'it',
-        'Italian': 'it',
-        'German': 'de',
-        'French': 'fr',
-        'Spanish': 'es',
-        'English': 'gb',
-        'British': 'gb',
-
-        # Default
-        'default': 'us'
-    }
-
-    # Exact match
-    if country_name in country_map:
-        return country_map[country_name]
-
-    # Case-insensitive
+    # Case-insensitive exact match
     name_lower = country_name.lower()
-    for key, code in country_map.items():
+    for key, code in country_codes.items():
         if key.lower() == name_lower:
             return code
 
-    # Partial match
-    for key, code in country_map.items():
+    # Language/adjective aliases not in country_codes
+    _adjective_map = {
+        'italian': 'it', 'italiana': 'it',
+        'german': 'de', 'french': 'fr',
+        'spanish': 'es', 'english': 'gb', 'british': 'gb',
+    }
+    if name_lower in _adjective_map:
+        return _adjective_map[name_lower]
+
+    # Partial match (last resort)
+    for key, code in country_codes.items():
         if key.lower() in name_lower or name_lower in key.lower():
             return code
 
@@ -1933,12 +2069,7 @@ class VavooEPGMatcher:
                         continue
             # If country_code is None, we do not filter by country
 
-            # Calculate base similarity
-            score = calculate_similarity(clean_input, clean_entry)
-            if score < self.similarity_threshold:
-                continue
-
-            # Calculate base similarity
+            # Calculate base similarity (single call – duplicate removed)
             score = calculate_similarity(clean_input, clean_entry)
             if score < self.similarity_threshold:
                 continue
@@ -2304,7 +2435,7 @@ def cleanup_cache_matched_flag():
                 value['matched'] = False
                 changed = True
     if changed:
-        with open(CACHE_FILE, 'w') as f:
+        with io.open(CACHE_FILE, 'w', encoding='utf-8') as f:
             dump(cache, f, indent=2)
         print("[Cache] Cleaned matched flags for invalid IDs.")
 
@@ -2670,7 +2801,6 @@ def fix_cache_format(
 
             # timestamp
             if 'timestamp' not in value:
-                from time import strftime, localtime
                 value['timestamp'] = strftime('%Y-%m-%d %H:%M:%S', localtime())
                 changed = True
 

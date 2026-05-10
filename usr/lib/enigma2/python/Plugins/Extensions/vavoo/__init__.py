@@ -5,7 +5,7 @@ __author__ = "Lululla"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "CC BY-NC-SA 4.0"
-__version__ = "1.71"
+__version__ = "1.70"
 
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
@@ -72,11 +72,26 @@ ALIAS_FILE = os.path.join(ENIGMA_PATH, "channel_alias.json")
 
 
 def _init_log(msg, level="INFO"):
+    """Bootstrap logger used during import (before vUtils is fully loaded).
+    Writes directly to LOG_FILE so early startup messages are never lost.
+    Once vUtils.log() is available, use that instead.
+    """
     from datetime import datetime
-    line = "[{0}] [{1}] [INIT] {2}".format(
+    line = "[{0}] [{1:<7}] [INIT] {2}".format(
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"), level, msg)
     try:
-        print(line)
+        # Try vUtils first (may not be imported yet during early init)
+        from .vUtils import log as _vlog
+        _vlog(msg, level=level, area="INIT")
+        return
+    except Exception:
+        pass
+    # Fallback: direct file write (safe even before vUtils loads)
+    try:
+        import sys
+        if level in ("WARNING", "ERROR"):
+            sys.stdout.write(line + "\n")
+            sys.stdout.flush()
     except Exception:
         pass
     try:
@@ -134,22 +149,160 @@ except Exception:
     pass
 
 country_codes = {
-    "Albania": "al",
+    # Africa
+    "Africa": "africa",
+    "Algeria": "dz",
+    "Egypt": "eg",
+    "Ethiopia": "et",
+    "Ghana": "gh",
+    "Kenya": "ke",
+    "Libya": "ly",
+    "Morocco": "ma",
+    "Nigeria": "ng",
+    "South Africa": "za",
+    "Sudan": "sd",
+    "Tanzania": "tz",
+    "Tunisia": "tn",
+    "Uganda": "ug",
+
+    # Americas
+    "America": "us",
+    "Argentina": "ar",
+    "Bolivia": "bo",
+    "Brazil": "br",
+    "Canada": "ca",
+    "Chile": "cl",
+    "Colombia": "co",
+    "Costa Rica": "cr",
+    "Cuba": "cu",
+    "Dominican Republic": "do",
+    "Ecuador": "ec",
+    "Guatemala": "gt",
+    "Honduras": "hn",
+    "Jamaica": "jm",
+    "Mexico": "mx",
+    "Nicaragua": "ni",
+    "Panama": "pa",
+    "Paraguay": "py",
+    "Peru": "pe",
+    "Puerto Rico": "pr",
+    "Salvador": "sv",
+    "El Salvador": "sv",
+    "Uruguay": "uy",
+    "USA": "us",
+    "United States": "us",
+    "Venezuela": "ve",
+
+    # Asia
+    "Afghanistan": "af",
     "Arabia": "sa",
+    "Azerbaijan": "az",
+    "Bangladesh": "bd",
+    "China": "cn",
+    "Georgia": "ge",
+    "Hong Kong": "hk",
+    "India": "in",
+    "Indonesia": "id",
+    "Iran": "ir",
+    "Iraq": "iq",
+    "Israel": "il",
+    "Japan": "jp",
+    "Jordan": "jo",
+    "Kazakhstan": "kz",
+    "Kuwait": "kw",
+    "Lebanon": "lb",
+    "Malaysia": "my",
+    "Mongolia": "mn",
+    "Myanmar": "mm",
+    "Nepal": "np",
+    "North Korea": "kp",
+    "Oman": "om",
+    "Pakistan": "pk",
+    "Palestine": "ps",
+    "Philippines": "ph",
+    "Qatar": "qa",
+    "Saudi Arabia": "sa",
+    "Singapore": "sg",
+    "South Korea": "kr",
+    "Sri Lanka": "lk",
+    "Syria": "sy",
+    "Taiwan": "tw",
+    "Thailand": "th",
+    "UAE": "ae",
+    "United Arab Emirates": "ae",
+    "Uzbekistan": "uz",
+    "Vietnam": "vn",
+    "Yemen": "ye",
+
+    # Europe
+    "Albania": "al",
+    "Andorra": "ad",
+    "Austria": "at",
     "Balkans": "bk",
+    "Baltic": "baltic",
+    "Belarus": "by",
+    "Belgium": "be",
+    "Bosnia": "ba",
+    "Bosnia Herzegovina": "ba",
     "Bulgaria": "bg",
     "Croatia": "hr",
+    "Cyprus": "cy",
+    "Czech": "cz",
+    "Czech Republic": "cz",
+    "Denmark": "dk",
+    "Estonia": "ee",
+    "Finland": "fi",
     "France": "fr",
     "Germany": "de",
+    "Greece": "gr",
+    "Holy See": "va",
+    "Hungary": "hu",
+    "Iceland": "is",
+    "Ireland": "ie",
     "Italy": "it",
+    "Kosovo": "xk",
+    "Latvia": "lv",
+    "Liechtenstein": "li",
+    "Lithuania": "lt",
+    "Luxembourg": "lu",
+    "Malta": "mt",
+    "Moldova": "md",
+    "Monaco": "mc",
+    "Montenegro": "me",
     "Netherlands": "nl",
+    "North Macedonia": "mk",
+    "Norway": "no",
     "Poland": "pl",
     "Portugal": "pt",
     "Romania": "ro",
     "Russia": "ru",
+    "Russian Federation": "ru",
+    "San Marino": "sm",
+    "Scandinavia": "scandinavia",
+    "Serbia": "rs",
+    "Slovak Republic": "sk",
+    "Slovakia": "sk",
+    "Slovenia": "si",
     "Spain": "es",
+    "Sweden": "se",
+    "Switzerland": "ch",
     "Turkey": "tr",
-    "United Kingdom": "gb"
+    "UK": "gb",
+    "Ukraine": "ua",
+    "United Kingdom": "gb",
+    "Vatican City": "va",
+
+    # International / Catch-all
+    "Global": "internat",
+    "Great Britain": "gb",
+    "Internat": "internat",
+    "International": "internat",
+    "Internaz": "internat",
+    "World": "internat",
+
+    # Oceania
+    "Australia": "au",
+    "New Zealand": "nz",
 }
 
 

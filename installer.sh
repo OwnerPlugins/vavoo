@@ -1,20 +1,8 @@
 #!/bin/bash
 
-version='1.71'
+version='1.72'
 changelog="
-- add in config timeout proxy
-- fix loop proxy start
-- code lint
-- epg fixed : utc time
-- Proxy starting 12 times simultaneously
-- GUI freezing at startup
-- Token monitor blocking the thread
-- Non-interruptible health monitor
-- Infinite restart loops
-- Larger buffer = fewer interruptions
-- Longer timeouts = fewer premature disconnections
-- Larger chunk size = fewer network calls
-- Vavoo sends **anonymous** startup notifications to help improve the plugin.
+- Many Fixs
 - Performance improvements
 --> Offer coffee please :)
 "
