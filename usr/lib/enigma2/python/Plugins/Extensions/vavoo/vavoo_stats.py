@@ -29,6 +29,8 @@ STATS_SERVER_URL = "https://script.google.com/macros/s/AKfycbz2xuo6WrL9JpVK_YMKD
 SESSION_ID_FILE = "/tmp/vavoo_session_id"
 STATS_DISABLE_FILE = "/etc/enigma2/disable_vavoo_stats"
 
+_HTTP_TIMEOUT = 8
+
 
 def _http_post(url, payload):
     try:
@@ -43,7 +45,7 @@ def _http_post(url, payload):
     req = Request(url, data=data, headers=headers)
 
     try:
-        response = urlopen(req, timeout=10)
+        response = urlopen(req, timeout=_HTTP_TIMEOUT)
         return response.read()
     except Exception as e:
         error("HTTP POST error: {}".format(e))
@@ -62,7 +64,7 @@ class AnonymousStats:
             random.randint(
                 1,
                 1000000))
-        return hashlib.md5(seed.encode('utf-8')).hexdigest()[:16]
+        return hashlib.md5(seed.encode("utf-8")).hexdigest()[:16]
 
     def _is_disabled(self):
         return os.path.exists(STATS_DISABLE_FILE)
@@ -70,7 +72,7 @@ class AnonymousStats:
     def _should_send_for_session(self):
         if os.path.exists(SESSION_ID_FILE):
             try:
-                with open(SESSION_ID_FILE, 'r') as f:
+                with open(SESSION_ID_FILE, "r") as f:
                     return f.read().strip() == self._session_id
             except Exception:
                 pass
@@ -81,10 +83,67 @@ class AnonymousStats:
             dirname = os.path.dirname(SESSION_ID_FILE)
             if dirname and not os.path.exists(dirname):
                 os.makedirs(dirname)
-            with open(SESSION_ID_FILE, 'w') as f:
+            with open(SESSION_ID_FILE, "w") as f:
                 f.write(self._session_id)
         except Exception:
             pass
+
+    # ── Startup stats ─────────────────────────────────────────────────────────
+
+    def record_startup(self):
+        if self._is_disabled():
+            debug("Stats disabled")
+            return
+        self._session_id = self._get_anonymous_session_id()
+        debug(
+            "Recording startup - Session ID: {}".format(self._session_id[:16]))
+        self._send_in_background()
+
+    def _send_in_background(self):
+        def _send():
+            try:
+                if self._is_disabled():
+                    debug("Stats disabled by user")
+                    return
+
+                if self._should_send_for_session():
+                    debug("Stats already sent for this session")
+                    return
+
+                payload = {
+                    "event": "plugin_startup",
+                    "session_id": self._session_id,
+                    "plugin_name": "vavoo",
+                    "plugin_version": __version__,
+                    "timestamp": int(time.time()),
+                    "date": time.strftime("%Y-%m-%d")
+                }
+
+                debug("Sending stats to {}...".format(STATS_SERVER_URL))
+                debug(
+                    "Payload: event={}, session={}, version={}".format(
+                        payload['event'],
+                        payload['session_id'],
+                        payload['plugin_version']))
+
+                result = _http_post(STATS_SERVER_URL, payload)
+
+                if result:
+                    self._mark_session_sent()
+                    debug("Stats sent successfully!")
+                else:
+                    error("Stats send failed - no response")
+
+            except Exception as e:
+                error("Stats send error: {}".format(e))
+                import traceback
+                error(traceback.format_exc())
+
+        t = threading.Thread(target=_send)
+        t.daemon = True
+        t.start()
+
+    # ── Heartbeat ─────────────────────────────────────────────────────────────
 
     def start_heartbeat(self):
         if self._is_disabled() or hasattr(
@@ -131,61 +190,10 @@ class AnonymousStats:
             self._heartbeat_timer = None
         debug("Heartbeat stopped")
 
-    def _send_in_background(self):
-        def _send():
-            try:
-                if self._is_disabled():
-                    debug("Stats disabled by user")
-                    return
 
-                if self._should_send_for_session():
-                    debug("Stats already sent for this session")
-                    return
-
-                payload = {
-                    "event": "plugin_startup",
-                    "session_id": self._session_id,
-                    "plugin_name": "vavoo",
-                    "plugin_version": __version__,
-                    "timestamp": int(time.time()),
-                    "date": time.strftime("%Y-%m-%d")
-                }
-
-                debug("Sending stats to {}...".format(STATS_SERVER_URL))
-                debug(
-                    "Payload: event={}, session={}, version={}".format(
-                        payload['event'],
-                        payload['session_id'],
-                        payload['plugin_version']))
-
-                result = _http_post(STATS_SERVER_URL, payload)
-
-                if result:
-                    self._mark_session_sent()
-                    debug("Stats sent successfully!")
-                else:
-                    error("Stats send failed - no response")
-
-            except Exception as e:
-                error("Stats send error: {}".format(e))
-                import traceback
-                error(traceback.format_exc())
-
-        t = threading.Thread(target=_send)
-        t.daemon = True
-        t.start()
-
-    def record_startup(self):
-        if self._is_disabled():
-            debug("Stats disabled")
-            return
-        self._session_id = self._get_anonymous_session_id()
-        debug(
-            "Recording startup - Session ID: {}".format(self._session_id[:16]))
-        self._send_in_background()
+# ── Singleton API ─────────────────────────────────────────────────────────────
 
 
-# Singleton
 _stats_instance = None
 
 
@@ -209,7 +217,7 @@ def start_heartbeat():
     if collector._session_id:
         collector.start_heartbeat()
     else:
-        debug("Cannot start heartbeat: no session yet")
+        debug("Cannot start heartbeat: no session yet", area="STATS")
 
 
 def stop_heartbeat():

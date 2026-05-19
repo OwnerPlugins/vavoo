@@ -23,7 +23,8 @@ from . import (
     PROXY_SHUTDOWN_URL,
     BASE_SITES,
     HOST_GIT,
-    SREF_MAP_FILE
+    SREF_MAP_FILE,
+    __version__
 )
 
 from .vUtils import (
@@ -688,7 +689,7 @@ class VavooProxy:
         self.local_ip = None
         self.refresh_timer = None
         self.resolve_cache = OrderedDict()
-        self.resolve_cache = {}
+        # self.resolve_cache = {}
         self.resolve_cache_ttl = 300
         self.server = None
         self.start_time = time.time()
@@ -1739,7 +1740,7 @@ def start_proxy():
     while restart_count < max_restarts:
         try:
             print("=" * 50)
-            print("VAVOO PROXY v1.0 (Attempt " +
+            print("VAVOO PROXY v" + str(__version__) + " (Attempt " +
                   str(restart_count + 1) + "/" + str(max_restarts) + ")")
             print("=" * 50)
 

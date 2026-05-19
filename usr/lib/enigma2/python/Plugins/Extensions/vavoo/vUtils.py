@@ -11,7 +11,8 @@ import select
 import threading
 import types
 import urllib3
-
+import os as _os
+from datetime import datetime as _datetime
 from collections import OrderedDict
 from difflib import SequenceMatcher
 from json import dump, load, loads
@@ -222,9 +223,10 @@ def plugin_print(*args, **kwargs):
 
 
 def make_print(area, level="INFO"):
+    """Return a drop-in print() replacement that routes through log()."""
     def _module_print(*args, **kwargs):
-        kwargs.setdefault('area', area)
-        kwargs.setdefault('level', level)
+        kwargs.setdefault("area", area)
+        kwargs.setdefault("level", level)
         return plugin_print(*args, **kwargs)
     return _module_print
 
@@ -255,8 +257,9 @@ log("===== Vavoo session start =====", area="VUTILS")
 
 
 def getDNSinfo():
-    dns_box = None
-    dns_external = None
+    """Return (local_dns, external_dns). Never raises – returns 'n/a' on failure."""
+    dns_box = "n/a"
+    dns_external = "n/a"
     try:
         with open("/etc/resolv.conf", "r") as f:
             for line in f:
@@ -266,18 +269,23 @@ def getDNSinfo():
     except BaseException:
         dns_box = "n/a"
 
-    data = urlopen("https://1.1.1.1/cdn-cgi/trace", timeout=5).read()
-    data = data.decode("utf-8")
-    for line in data.split("\n"):
-        if line.startswith("h="):
-            dns_external = line.split("=")[1]
-            break
-        else:
-            dns_external = "n/a"
+    try:
+        data = urlopen("https://1.1.1.1/cdn-cgi/trace", timeout=5).read()
+        data = data.decode("utf-8")
+        for line in data.split("\n"):
+            if line.startswith("h="):
+                dns_external = line.split("=")[1].strip()
+                break
+    except Exception:
+        pass
+
     return dns_box, dns_external
 
 
-dns_box, dns_ext = getDNSinfo()
+try:
+    dns_box, dns_ext = getDNSinfo()
+except Exception:
+    dns_box, dns_ext = "n/a", "n/a"
 print("Vavoo Version: ", __version__)
 print("DNS box:", dns_box)
 print("DNS out:", dns_ext)
@@ -708,7 +716,7 @@ def get_new_auth_signature():
             from .vavoo_proxy import run_proxy_in_background
             print("Starting proxy in background...")
             run_proxy_in_background()
-            sleep(5)
+            select.select([], [], [], 5)
             return "PROXY_STARTED"
         except Exception as e:
             trace_error()
@@ -813,13 +821,12 @@ def get_proxy_playlist_url():
 def get_proxy_status():
     """Get detailed proxy status"""
     try:
-        status_url = PROXY_STATUS_URL
         if requests is not None:
-            response = requests.get(status_url, timeout=3)
+            response = requests.get(PROXY_STATUS_URL, timeout=3)
             if response.status_code == 200:
                 return response.json()
         else:
-            req = Request(status_url)
+            req = Request(PROXY_STATUS_URL)
             response = urlopen(req, timeout=3)
             if response.getcode() == 200:
                 return loads(response.read().decode('utf-8', 'ignore'))
@@ -926,7 +933,7 @@ def purge(directory, pattern):
 def MemClean():
     """Clear system memory cache"""
     try:
-        system('sync')
+        # system('sync')
         for i in range(1, 4):
             system("echo " + str(i) + " > /proc/sys/vm/drop_caches")
     except Exception:
@@ -1223,24 +1230,15 @@ def download_flag_online(
                 "Warning: Flag file too small (%d bytes)" %
                 len(flag_data))
 
-        # 11. Save to cache
+        # 11. Validate PNG header in memory BEFORE writing (no double file open)
+        if flag_data[:8] != b'\x89PNG\r\n\x1a\n':
+            print("ERROR: Downloaded data is not a valid PNG file!")
+            return False, "Invalid PNG file downloaded"
+
+        # 12. Save to cache
         try:
-            f = open(cache_file, 'wb')
-            f.write(flag_data)
-            f.close()
-
-            # Verify PNG header
-            f = open(cache_file, 'rb')
-            header = f.read(8)
-            f.close()
-            if header != b'\x89PNG\r\n\x1a\n':
-                print("ERROR: Not a valid PNG file!")
-                try:
-                    unlink(cache_file)
-                except Exception:
-                    pass
-                return False, "Invalid PNG file downloaded"
-
+            with open(cache_file, 'wb') as f:
+                f.write(flag_data)
             print("Flag %dx%d saved: %s (%d bytes)" %
                   (width, height, cache_file, len(flag_data)))
             return True, cache_file
@@ -2670,7 +2668,6 @@ def fix_cache_format(
 
             # timestamp
             if 'timestamp' not in value:
-                from time import strftime, localtime
                 value['timestamp'] = strftime('%Y-%m-%d %H:%M:%S', localtime())
                 changed = True
 
