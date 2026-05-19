@@ -737,7 +737,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) +
+            print("Getting channels for '" + str(country_name) + \
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
@@ -1230,7 +1230,8 @@ def download_flag_online(
                 "Warning: Flag file too small (%d bytes)" %
                 len(flag_data))
 
-        # 11. Validate PNG header in memory BEFORE writing (no double file open)
+        # 11. Validate PNG header in memory BEFORE writing (no double file
+        # open)
         if flag_data[:8] != b'\x89PNG\r\n\x1a\n':
             print("ERROR: Downloaded data is not a valid PNG file!")
             return False, "Invalid PNG file downloaded"

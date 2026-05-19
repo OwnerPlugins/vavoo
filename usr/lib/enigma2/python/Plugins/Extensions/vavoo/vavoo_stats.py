@@ -88,7 +88,7 @@ class AnonymousStats:
         except Exception:
             pass
 
-    # ── Startup stats ─────────────────────────────────────────────────────────
+    # ── Startup stats ───────────────────────────────────────────────────────
 
     def record_startup(self):
         if self._is_disabled():
@@ -143,7 +143,7 @@ class AnonymousStats:
         t.daemon = True
         t.start()
 
-    # ── Heartbeat ─────────────────────────────────────────────────────────────
+    # ── Heartbeat ───────────────────────────────────────────────────────────
 
     def start_heartbeat(self):
         if self._is_disabled() or hasattr(
@@ -191,7 +191,7 @@ class AnonymousStats:
         debug("Heartbeat stopped")
 
 
-# ── Singleton API ─────────────────────────────────────────────────────────────
+# ── Singleton API ───────────────────────────────────────────────────────
 
 
 _stats_instance = None
