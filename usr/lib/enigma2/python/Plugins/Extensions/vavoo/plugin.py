@@ -1391,7 +1391,8 @@ class vavoo_config(Screen, ConfigListScreen):
 
             if self.old_proxy_enabled != cfg.proxy_enabled.value:
                 if cfg.proxy_enabled.value:
-                    run_proxy_in_background(startup_timeout=cfg.proxy_startup_timeout.value)
+                    run_proxy_in_background(
+                        startup_timeout=cfg.proxy_startup_timeout.value)
                     # Schedule a non‑blocking status check after 1 second
                     reactor.callLater(1, self._check_proxy_started)
                 else:
@@ -1400,7 +1401,8 @@ class vavoo_config(Screen, ConfigListScreen):
 
             # Manage EPG source
             if cfg.epg_enabled.value and not is_proxy_running():
-                run_proxy_in_background(startup_timeout=cfg.proxy_startup_timeout.value)
+                run_proxy_in_background(
+                    startup_timeout=cfg.proxy_startup_timeout.value)
                 # No sleep here – the proxy will become ready asynchronously
 
             # If auto‑update is enabled, schedule the EPG update
@@ -1468,11 +1470,11 @@ class vavoo_config(Screen, ConfigListScreen):
 class startVavoo(Screen):
     # ── animated splash configuration ────────────────────────────────────────
     STATUS_STEPS = [
-        (0,   "Connecting to 127.0.0.1:4323 ..."),
-        (18,  "Loading channel catalog ..."),
-        (42,  "Authenticating Vavoo servers ..."),
-        (68,  "Renewing stream tokens ..."),
-        (86,  "EPG sync ready ..."),
+        (0, "Connecting to 127.0.0.1:4323 ..."),
+        (18, "Loading channel catalog ..."),
+        (42, "Authenticating Vavoo servers ..."),
+        (68, "Renewing stream tokens ..."),
+        (86, "EPG sync ready ..."),
         (100, "Proxy online  \u2713"),
     ]
     TOTAL_MS = 2400   # total animation duration in ms
@@ -1516,7 +1518,7 @@ class startVavoo(Screen):
 
         self.onLayoutFinish.append(self.loadDefaultImage)
 
-    # ── image decode (DreamOS-compatible, unchanged logic) ────────────────────
+    # ── image decode (DreamOS-compatible, unchanged logic) ──────────────────
     def decodeImage(self):
         try:
             pixmapx = self.fldpng
@@ -1542,7 +1544,7 @@ class startVavoo(Screen):
         except Exception:
             pass
 
-    # ── smoothstep progress tick ──────────────────────────────────────────────
+    # ── smoothstep progress tick ────────────────────────────────────────────
     def _tick(self):
         self._tick_no += 1
         t = min(1.0, self._tick_no / float(self._steps))
@@ -1568,7 +1570,7 @@ class startVavoo(Screen):
             self._anim_timer.stop()
             self._hold_timer.start(self.HOLD_MS, True)   # single-shot hold
 
-    # ── timer setup (called once layout is ready) ─────────────────────────────
+    # ── timer setup (called once layout is ready) ───────────────────────────
     def loadDefaultImage(self):
         self.fldpng = resolveFilename(
             SCOPE_PLUGINS,
@@ -4833,11 +4835,13 @@ class AutoStartTimer:
             # 2. Ensure proxy is running
             if not is_proxy_running():
                 print("[AutoStartTimer] Starting proxy...")
-                if not run_proxy_in_background(startup_timeout=cfg.proxy_startup_timeout.value):
+                if not run_proxy_in_background(
+                        startup_timeout=cfg.proxy_startup_timeout.value):
                     print("[AutoStartTimer] Failed to start proxy")
                     return
 
-            # 3. Wait for proxy to be ready (max 10s total; non-blocking via select)
+            # 3. Wait for proxy to be ready (max 10s total; non-blocking via
+            # select)
             for i in range(10):
                 if is_proxy_ready(timeout=3):
                     break
@@ -4899,13 +4903,15 @@ def delayed_boot_tasks():
     global auto_start_timer
     try:
         if cfg.proxy_enabled.value:
-            # If the plugin has already been opened, do not start the proxy here
+            # If the plugin has already been opened, do not start the proxy
+            # here
             if _session is not None:
                 print("[Vavoo] Plugin already opened, boot tasks skipped")
                 return
             if not is_proxy_running():
                 print("[Vavoo] Starting proxy at boot...")
-                run_proxy_in_background(startup_timeout=cfg.proxy_startup_timeout.value)
+                run_proxy_in_background(
+                    startup_timeout=cfg.proxy_startup_timeout.value)
             else:
                 print("[Vavoo] Proxy already running at boot")
 

@@ -41,6 +41,7 @@ if PY2:
 
     class _UTC(_tzinfo):
         """UTC timezone for Python 2 compatibility."""
+
         def utcoffset(self, dt):
             return timedelta(0)
 
@@ -57,16 +58,16 @@ else:
     UTC = timezone.utc
 
 
-# ── Pre-compiled regex patterns (module level – compiled once) ────────────────
+# ── Pre-compiled regex patterns (module level – compiled once) ──────────
 _RE_COUNTRY_PREFIX = re_compile(r'^(IT|CH)\s*-\s*', IGNORECASE)
 _RE_QUALITY_SUFFIX = re_compile(r'\s+(HD|FHD|SD|HEVC|H265|4K).*', IGNORECASE)
 _RE_SPECIAL_CHARS = re_compile(r'[^A-Z0-9]')
 
-# ── normalize_name cache ──────────────────────────────────────────────────────
+# ── normalize_name cache ────────────────────────────────────────────────
 _NORM_CACHE = {}  # {raw_name: normalized}
 _NORM_CACHE_LOCK = threading.Lock()
 
-# ── parse_xmltv_date cache ────────────────────────────────────────────────────
+# ── parse_xmltv_date cache ──────────────────────────────────────────────
 _DATE_CACHE = {}  # {date_str: datetime}
 _DATE_CACHE_LOCK = threading.Lock()
 
@@ -74,6 +75,7 @@ _DATE_CACHE_LOCK = threading.Lock()
 # ─────────────────────────────────────────────────────────────────────────────
 class EPGSource(object):
     """Configuration for an EPG source."""
+
     def __init__(self, name, url, backup_url=None, enabled=True,
                  priority=0, country_code=""):
         self.name = name
@@ -86,6 +88,7 @@ class EPGSource(object):
 
 class ChannelInfo(object):
     """EPG channel information."""
+
     def __init__(self, id, display_name, icon=None,
                  normalized_name="", country_code=""):
         self.id = id
@@ -120,7 +123,7 @@ class Program(object):
         return self.stop > now
 
 
-# ── EPGCache ──────────────────────────────────────────────────────────────────
+# ── EPGCache ────────────────────────────────────────────────────────────
 class EPGCache(object):
     """Manages local EPG cache on disk.
 
@@ -240,7 +243,7 @@ class EPGCache(object):
                         pass
 
 
-# ── EPGDownloader ─────────────────────────────────────────────────────────────
+# ── EPGDownloader ───────────────────────────────────────────────────────
 class EPGDownloader(object):
     """Handles EPG download with retry and streaming decompression.
 
@@ -346,7 +349,7 @@ class EPGDownloader(object):
             return None
 
 
-# ── EPGParser ─────────────────────────────────────────────────────────────────
+# ── EPGParser ───────────────────────────────────────────────────────────
 class EPGParser(object):
     """Efficient XMLTV parser.
 
@@ -463,7 +466,8 @@ class EPGParser(object):
                             continue
 
                     icon_elem = elem.find('icon')
-                    icon = icon_elem.get('src') if icon_elem is not None else None
+                    icon = icon_elem.get(
+                        'src') if icon_elem is not None else None
 
                     channels[channel_id] = ChannelInfo(
                         id=channel_id,
@@ -526,7 +530,7 @@ class EPGParser(object):
         return channels, programs
 
 
-# ── EPGManager ────────────────────────────────────────────────────────────────
+# ── EPGManager ──────────────────────────────────────────────────────────
 class EPGManager(object):
     """Main EPG management class.
 
@@ -535,41 +539,251 @@ class EPGManager(object):
     """
 
     DEFAULT_SOURCES = [
-        EPGSource("Italy",          "https://epgshare01.online/epgshare01/epg_ripper_IT1.xml.gz",   "https://iptv-epg.org/files/epg-it.xml.gz",  priority=0, enabled=True, country_code="it"),
-        EPGSource("France",         "https://epgshare01.online/epgshare01/epg_ripper_FR1.xml.gz",   "https://iptv-epg.org/files/epg-fr.xml.gz",  priority=1, enabled=True, country_code="fr"),
-        EPGSource("Germany",        "https://epgshare01.online/epgshare01/epg_ripper_DE1.xml.gz",   "https://iptv-epg.org/files/epg-de.xml.gz",  priority=1, enabled=True, country_code="de"),
-        EPGSource("Balkans",        "https://raw.githubusercontent.com/Belfagor2005/vavoo-player/refs/heads/master/epg_bk.xml.gz", "https://raw.githubusercontent.com/Belfagor2005/vavoo-player/refs/heads/master/epg_bk.xml.gz", priority=1, enabled=True, country_code="bk"),
-        EPGSource("Spain",          "https://epgshare01.online/epgshare01/epg_ripper_ES1.xml.gz",   "https://iptv-epg.org/files/epg-es.xml.gz",  priority=1, enabled=True, country_code="es"),
-        EPGSource("United Kingdom", "https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz",   "https://iptv-epg.org/files/epg-gb.xml.gz",  priority=1, enabled=True, country_code="gb"),
-        EPGSource("Portugal",       "https://epgshare01.online/epgshare01/epg_ripper_PT1.xml.gz",   "https://iptv-epg.org/files/epg-pt.xml.gz",  priority=1, enabled=True, country_code="pt"),
-        EPGSource("Netherlands",    "https://epgshare01.online/epgshare01/epg_ripper_NL1.xml.gz",   "https://iptv-epg.org/files/epg-nl.xml.gz",  priority=1, enabled=True, country_code="nl"),
-        EPGSource("Belgium",        "https://epgshare01.online/epgshare01/epg_ripper_BE2.xml.gz",   "https://iptv-epg.org/files/epg-be.xml.gz",  priority=1, enabled=True, country_code="be"),
-        EPGSource("Austria",        "https://epgshare01.online/epgshare01/epg_ripper_AT1.xml.gz",   "https://iptv-epg.org/files/epg-at.xml.gz",  priority=1, enabled=True, country_code="at"),
-        EPGSource("Switzerland",    "https://epgshare01.online/epgshare01/epg_ripper_CH1.xml.gz",   "https://iptv-epg.org/files/epg-ch.xml.gz",  priority=1, enabled=True, country_code="ch"),
-        EPGSource("Poland",         "https://epgshare01.online/epgshare01/epg_ripper_PL1.xml.gz",   "https://iptv-epg.org/files/epg-pl.xml.gz",  priority=1, enabled=True, country_code="pl"),
-        EPGSource("Romania",        "https://epgshare01.online/epgshare01/epg_ripper_RO1.xml.gz",   "https://iptv-epg.org/files/epg-ro.xml.gz",  priority=1, enabled=True, country_code="ro"),
-        EPGSource("Albania",        "https://epgshare01.online/epgshare01/epg_ripper_AL1.xml.gz",   "https://iptv-epg.org/files/epg-al.xml.gz",  priority=1, enabled=True, country_code="al"),
-        EPGSource("Bulgaria",       "https://epgshare01.online/epgshare01/epg_ripper_BG1.xml.gz",   "https://iptv-epg.org/files/epg-bg.xml.gz",  priority=1, enabled=True, country_code="bg"),
-        EPGSource("Croatia",        "https://epgshare01.online/epgshare01/epg_ripper_HR1.xml.gz",   "https://iptv-epg.org/files/epg-hr.xml.gz",  priority=1, enabled=True, country_code="hr"),
-        EPGSource("Serbia",         "https://epgshare01.online/epgshare01/epg_ripper_RS1.xml.gz",   "https://iptv-epg.org/files/epg-rs.xml.gz",  priority=1, enabled=True, country_code="rs"),
-        EPGSource("Bosnia",         "https://epgshare01.online/epgshare01/epg_ripper_BA1.xml.gz",   "https://iptv-epg.org/files/epg-ba.xml.gz",  priority=1, enabled=True, country_code="ba"),
-        EPGSource("Czech Republic", "https://epgshare01.online/epgshare01/epg_ripper_CZ1.xml.gz",   "https://iptv-epg.org/files/epg-cz.xml.gz",  priority=1, enabled=True, country_code="cz"),
-        EPGSource("Slovakia",       "https://epgshare01.online/epgshare01/epg_ripper_SK1.xml.gz",   "https://iptv-epg.org/files/epg-sk.xml.gz",  priority=1, enabled=True, country_code="sk"),
-        EPGSource("Hungary",        "https://epgshare01.online/epgshare01/epg_ripper_HU1.xml.gz",   "https://iptv-epg.org/files/epg-hu.xml.gz",  priority=1, enabled=True, country_code="hu"),
-        EPGSource("Greece",         "https://epgshare01.online/epgshare01/epg_ripper_GR1.xml.gz",   "https://iptv-epg.org/files/epg-gr.xml.gz",  priority=1, enabled=True, country_code="gr"),
-        EPGSource("Turkey",         "https://epgshare01.online/epgshare01/epg_ripper_TR1.xml.gz",   "https://iptv-epg.org/files/epg-tr.xml.gz",  priority=1, enabled=True, country_code="tr"),
-        EPGSource("Denmark",        "https://epgshare01.online/epgshare01/epg_ripper_DK1.xml.gz",   "https://iptv-epg.org/files/epg-dk.xml.gz",  priority=1, enabled=True, country_code="dk"),
-        EPGSource("Sweden",         "https://epgshare01.online/epgshare01/epg_ripper_SE1.xml.gz",   "https://iptv-epg.org/files/epg-se.xml.gz",  priority=1, enabled=True, country_code="se"),
-        EPGSource("Norway",         "https://epgshare01.online/epgshare01/epg_ripper_NO1.xml.gz",   "https://iptv-epg.org/files/epg-no.xml.gz",  priority=1, enabled=True, country_code="no"),
-        EPGSource("Finland",        "https://epgshare01.online/epgshare01/epg_ripper_FI1.xml.gz",   "https://iptv-epg.org/files/epg-fi.xml.gz",  priority=1, enabled=True, country_code="fi"),
-        EPGSource("Russia",         "https://epgshare01.online/epgshare01/epg_ripper_viva-russia.ru.xml.gz", "https://iptv-epg.org/files/epg-ru.xml.gz", priority=1, enabled=True, country_code="ru"),
-        EPGSource("USA",            "https://epgshare01.online/epgshare01/epg_ripper_US2.xml.gz",   "https://iptv-epg.org/files/epg-us.xml.gz",  priority=1, enabled=True, country_code="us"),
-        EPGSource("Canada",         "https://epgshare01.online/epgshare01/epg_ripper_CA2.xml.gz",   "https://iptv-epg.org/files/epg-ca.xml.gz",  priority=1, enabled=True, country_code="ca"),
-        EPGSource("Australia",      "https://epgshare01.online/epgshare01/epg_ripper_AU1.xml.gz",   "https://iptv-epg.org/files/epg-au.xml.gz",  priority=1, enabled=True, country_code="au"),
-        EPGSource("Japan",          "https://epgshare01.online/epgshare01/epg_ripper_JP1.xml.gz",   "https://iptv-epg.org/files/epg-jp.xml.gz",  priority=1, enabled=True, country_code="jp"),
-        EPGSource("India",          "https://epgshare01.online/epgshare01/epg_ripper_IN1.xml.gz",   "https://iptv-epg.org/files/epg-in.xml.gz",  priority=1, enabled=True, country_code="in"),
-        EPGSource("Brazil",         "https://epgshare01.online/epgshare01/epg_ripper_BR1.xml.gz",   "https://iptv-epg.org/files/epg-br.xml.gz",  priority=1, enabled=True, country_code="br"),
-        EPGSource("Mexico",         "https://epgshare01.online/epgshare01/epg_ripper_MX1.xml.gz",   "https://iptv-epg.org/files/epg-mx.xml.gz",  priority=1, enabled=True, country_code="mx"),
+        EPGSource(
+            "Italy",
+            "https://epgshare01.online/epgshare01/epg_ripper_IT1.xml.gz",
+            "https://iptv-epg.org/files/epg-it.xml.gz",
+            priority=0,
+            enabled=True,
+            country_code="it"),
+        EPGSource(
+            "France",
+            "https://epgshare01.online/epgshare01/epg_ripper_FR1.xml.gz",
+            "https://iptv-epg.org/files/epg-fr.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="fr"),
+        EPGSource(
+            "Germany",
+            "https://epgshare01.online/epgshare01/epg_ripper_DE1.xml.gz",
+            "https://iptv-epg.org/files/epg-de.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="de"),
+        EPGSource(
+            "Balkans",
+            "https://raw.githubusercontent.com/Belfagor2005/vavoo-player/refs/heads/master/epg_bk.xml.gz",
+            "https://raw.githubusercontent.com/Belfagor2005/vavoo-player/refs/heads/master/epg_bk.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="bk"),
+        EPGSource(
+            "Spain",
+            "https://epgshare01.online/epgshare01/epg_ripper_ES1.xml.gz",
+            "https://iptv-epg.org/files/epg-es.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="es"),
+        EPGSource(
+            "United Kingdom",
+            "https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz",
+            "https://iptv-epg.org/files/epg-gb.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="gb"),
+        EPGSource(
+            "Portugal",
+            "https://epgshare01.online/epgshare01/epg_ripper_PT1.xml.gz",
+            "https://iptv-epg.org/files/epg-pt.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="pt"),
+        EPGSource(
+            "Netherlands",
+            "https://epgshare01.online/epgshare01/epg_ripper_NL1.xml.gz",
+            "https://iptv-epg.org/files/epg-nl.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="nl"),
+        EPGSource(
+            "Belgium",
+            "https://epgshare01.online/epgshare01/epg_ripper_BE2.xml.gz",
+            "https://iptv-epg.org/files/epg-be.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="be"),
+        EPGSource(
+            "Austria",
+            "https://epgshare01.online/epgshare01/epg_ripper_AT1.xml.gz",
+            "https://iptv-epg.org/files/epg-at.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="at"),
+        EPGSource(
+            "Switzerland",
+            "https://epgshare01.online/epgshare01/epg_ripper_CH1.xml.gz",
+            "https://iptv-epg.org/files/epg-ch.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="ch"),
+        EPGSource(
+            "Poland",
+            "https://epgshare01.online/epgshare01/epg_ripper_PL1.xml.gz",
+            "https://iptv-epg.org/files/epg-pl.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="pl"),
+        EPGSource(
+            "Romania",
+            "https://epgshare01.online/epgshare01/epg_ripper_RO1.xml.gz",
+            "https://iptv-epg.org/files/epg-ro.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="ro"),
+        EPGSource(
+            "Albania",
+            "https://epgshare01.online/epgshare01/epg_ripper_AL1.xml.gz",
+            "https://iptv-epg.org/files/epg-al.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="al"),
+        EPGSource(
+            "Bulgaria",
+            "https://epgshare01.online/epgshare01/epg_ripper_BG1.xml.gz",
+            "https://iptv-epg.org/files/epg-bg.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="bg"),
+        EPGSource(
+            "Croatia",
+            "https://epgshare01.online/epgshare01/epg_ripper_HR1.xml.gz",
+            "https://iptv-epg.org/files/epg-hr.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="hr"),
+        EPGSource(
+            "Serbia",
+            "https://epgshare01.online/epgshare01/epg_ripper_RS1.xml.gz",
+            "https://iptv-epg.org/files/epg-rs.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="rs"),
+        EPGSource(
+            "Bosnia",
+            "https://epgshare01.online/epgshare01/epg_ripper_BA1.xml.gz",
+            "https://iptv-epg.org/files/epg-ba.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="ba"),
+        EPGSource(
+            "Czech Republic",
+            "https://epgshare01.online/epgshare01/epg_ripper_CZ1.xml.gz",
+            "https://iptv-epg.org/files/epg-cz.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="cz"),
+        EPGSource(
+            "Slovakia",
+            "https://epgshare01.online/epgshare01/epg_ripper_SK1.xml.gz",
+            "https://iptv-epg.org/files/epg-sk.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="sk"),
+        EPGSource(
+            "Hungary",
+            "https://epgshare01.online/epgshare01/epg_ripper_HU1.xml.gz",
+            "https://iptv-epg.org/files/epg-hu.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="hu"),
+        EPGSource(
+            "Greece",
+            "https://epgshare01.online/epgshare01/epg_ripper_GR1.xml.gz",
+            "https://iptv-epg.org/files/epg-gr.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="gr"),
+        EPGSource(
+            "Turkey",
+            "https://epgshare01.online/epgshare01/epg_ripper_TR1.xml.gz",
+            "https://iptv-epg.org/files/epg-tr.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="tr"),
+        EPGSource(
+            "Denmark",
+            "https://epgshare01.online/epgshare01/epg_ripper_DK1.xml.gz",
+            "https://iptv-epg.org/files/epg-dk.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="dk"),
+        EPGSource(
+            "Sweden",
+            "https://epgshare01.online/epgshare01/epg_ripper_SE1.xml.gz",
+            "https://iptv-epg.org/files/epg-se.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="se"),
+        EPGSource(
+            "Norway",
+            "https://epgshare01.online/epgshare01/epg_ripper_NO1.xml.gz",
+            "https://iptv-epg.org/files/epg-no.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="no"),
+        EPGSource(
+            "Finland",
+            "https://epgshare01.online/epgshare01/epg_ripper_FI1.xml.gz",
+            "https://iptv-epg.org/files/epg-fi.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="fi"),
+        EPGSource(
+            "Russia",
+            "https://epgshare01.online/epgshare01/epg_ripper_viva-russia.ru.xml.gz",
+            "https://iptv-epg.org/files/epg-ru.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="ru"),
+        EPGSource(
+            "USA",
+            "https://epgshare01.online/epgshare01/epg_ripper_US2.xml.gz",
+            "https://iptv-epg.org/files/epg-us.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="us"),
+        EPGSource(
+            "Canada",
+            "https://epgshare01.online/epgshare01/epg_ripper_CA2.xml.gz",
+            "https://iptv-epg.org/files/epg-ca.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="ca"),
+        EPGSource(
+            "Australia",
+            "https://epgshare01.online/epgshare01/epg_ripper_AU1.xml.gz",
+            "https://iptv-epg.org/files/epg-au.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="au"),
+        EPGSource(
+            "Japan",
+            "https://epgshare01.online/epgshare01/epg_ripper_JP1.xml.gz",
+            "https://iptv-epg.org/files/epg-jp.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="jp"),
+        EPGSource(
+            "India",
+            "https://epgshare01.online/epgshare01/epg_ripper_IN1.xml.gz",
+            "https://iptv-epg.org/files/epg-in.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="in"),
+        EPGSource(
+            "Brazil",
+            "https://epgshare01.online/epgshare01/epg_ripper_BR1.xml.gz",
+            "https://iptv-epg.org/files/epg-br.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="br"),
+        EPGSource(
+            "Mexico",
+            "https://epgshare01.online/epgshare01/epg_ripper_MX1.xml.gz",
+            "https://iptv-epg.org/files/epg-mx.xml.gz",
+            priority=1,
+            enabled=True,
+            country_code="mx"),
     ]
 
     # Maximum parallel download threads
@@ -588,7 +802,7 @@ class EPGManager(object):
         self.name_to_id = {}           # normalized_name → [ch_id, ...]
         self._merge_lock = threading.Lock()
 
-    # ── Public API ────────────────────────────────────────────────────────────
+    # ── Public API ──────────────────────────────────────────────────────────
     def load_all(self, force_refresh=False):
         """Load all enabled EPG sources in parallel (MAX_WORKERS at a time).
 
@@ -743,7 +957,7 @@ class EPGManager(object):
         self.cache.clear()
 
 
-# ── Convenience function ──────────────────────────────────────────────────────
+# ── Convenience function ────────────────────────────────────────────────
 def load_epg_data(user_agent=None, cache_dir=None, force_refresh=False):
     """Load EPG data and return manager instance."""
     manager = EPGManager(
