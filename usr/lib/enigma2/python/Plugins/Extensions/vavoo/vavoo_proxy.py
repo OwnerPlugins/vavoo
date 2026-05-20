@@ -621,7 +621,7 @@ class ProxyHealthMonitor:
             # Remove the old PID file
             remove_pid_file()
 
-            # 2. Kill any zombie processes still holding the port ───────────────
+            # 2. Kill any zombie processes still holding the port ─────────────
             try:
                 import subprocess
                 with open('/dev/null', 'w') as devnull:
@@ -691,8 +691,10 @@ class VavooProxy:
         self.last_heartbeat = time.time()
         self.local_ip = None
         self.refresh_timer = None
-        self.resolve_cache = OrderedDict()  # ordered for deterministic LRU eviction (Py2+3)
-        self.resolve_cache_ttl = 300  # stream URLs valid for ~5min; was 30s (too aggressive)
+        # ordered for deterministic LRU eviction (Py2+3)
+        self.resolve_cache = OrderedDict()
+        # stream URLs valid for ~5min; was 30s (too aggressive)
+        self.resolve_cache_ttl = 300
         self.server = None
         self.start_time = time.time()
 
@@ -748,7 +750,8 @@ class VavooProxy:
 
         try:
             # SINGLE REQUEST, no infinite retries
-            # Call the real Session.request, bypassing our override to avoid recursion
+            # Call the real Session.request, bypassing our override to avoid
+            # recursion
             response = requests.Session.request(
                 self.session, method, url, **kwargs)
             return response
@@ -962,7 +965,8 @@ class VavooProxy:
                 "accept": "*/*",
                 "Accept-Language": self.current_language,
                 "Accept-Encoding": "gzip, deflate",
-                # Connection: close is intentional for short-lived catalog requests
+                # Connection: close is intentional for short-lived catalog
+                # requests
             }
 
             all_channels = []
@@ -1219,7 +1223,8 @@ class VavooProxy:
                 if stream_url:
                     self.resolve_cache[channel_url] = {
                         "url": stream_url, "ts": time.time()}
-                    # Evict oldest 500 entries (OrderedDict preserves insertion order in Py2+3)
+                    # Evict oldest 500 entries (OrderedDict preserves insertion
+                    # order in Py2+3)
                     if len(self.resolve_cache) > 1000:
                         keys = list(self.resolve_cache.keys())[:-500]
                         for key in keys:
