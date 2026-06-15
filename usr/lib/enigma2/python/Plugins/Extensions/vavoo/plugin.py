@@ -1244,7 +1244,7 @@ class vavoo_config(Screen, ConfigListScreen):
             return False
 
         except Exception as e:
-            print("[M3U Export] Proxy error: %s" % str(e))
+            print("[M3U Export][check_and_start_proxy] Proxy error: %s" % str(e))
             return False
 
     def get_countries_from_proxy(self):
@@ -1986,7 +1986,7 @@ class MainVavoo(Screen):
             self._update_proxy_status_display()
             # self.update_proxy_status_display()
         except Exception as e:
-            print("[MainVavoo] Error in proxy monitor: " + str(e))
+            print("[MainVavoo][_check_and_update_proxy_status] Error in proxy monitor: " + str(e))
             self['proxy_status'].setText(_("✗ Proxy Error"))
 
     def update_proxy_status(self):
@@ -2047,7 +2047,7 @@ class MainVavoo(Screen):
                 _("This will refresh the authentication token."),
                 MessageBox.TYPE_YESNO)
         except Exception as e:
-            print("[MainVavoo] Refresh proxy error: " + str(e))
+            print("[MainVavoo][refresh_proxy] Refresh proxy error: " + str(e))
 
     def _refresh_proxy_callback(self, result):
         """Callback for proxy refresh"""
@@ -2945,9 +2945,9 @@ class vavoo(Screen):
                     return
                 else:
                     print(
-                        "[DEBUG] Proxy returned empty response, trying fallback...")
+                        "[DEBUG][cat] Proxy returned empty response, trying fallback...")
             except Exception as proxy_error:
-                print("[DEBUG] Proxy error: " + str(proxy_error))
+                print("[DEBUG][cat] Proxy error: " + str(proxy_error))
 
             # 2. FALLBACK: use the original method
             self._fallback_to_original_method()
@@ -3443,11 +3443,11 @@ class vavoo(Screen):
         if result:
             try:
                 self.cat_list = []
-                search = result
+                search_filter = result
                 for item in self.itemlist:
                     name = item.split('###')[0]
                     url = item.split('###')[1]
-                    if search.lower() in str(name).lower():
+                    if search_filter.lower() in str(name).lower():
                         search_ok = True
                         namex = name
                         urlx = url.replace('%0a', '').replace('%0A', '')
@@ -4555,8 +4555,8 @@ class Playstream2(
             # Extract channel ID from URL
             channel_id = None
 
-            if "/vavoo?channel=" in self.url:
-                channel_id = self.url.split("/vavoo?channel=")[1]
+            if "vavoo?channel=" in self.url:
+                channel_id = self.url.split("vavoo?channel=")[1]
 
             # Clean up any extra parameters
             if channel_id and '?' in channel_id:
@@ -4576,7 +4576,7 @@ class Playstream2(
 
             # Build proxy URL WITHOUT extra parameters
             proxy_url = "http://" + \
-                str(proxy_host) + "/vavoo?channel=" + str(channel_id)
+                str(proxy_host) + "/vavoo?channel=" + str(channel_id) + "&direct=1"
             print("[Playstream2] Clean proxy URL: " + proxy_url)
 
             # Add User-Agent as fragment
@@ -4611,16 +4611,13 @@ class Playstream2(
             # Play the stream
             self.session.nav.stopService()
             self.session.nav.playService(self.sref)
-
             print("[Playstream2] Proxy stream started successfully")
 
         except Exception as e:
-            error_msg = str(e)
-            print("[Playstream2] playProxyStream error: " + error_msg)
-
+            print("[Playstream2] playProxyStream error: " + str(e))
+            # self.playOldSystem()
             # Fallback to old system
             trace_error()
-            self.playOldSystem()
 
     def playOldSystem(self):
         """Fallback to old playback system"""

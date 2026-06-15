@@ -1,12 +1,9 @@
 #!/bin/bash
 
-version='1.73'
+version='1.74'
 changelog="
-- Add animations
 - fix proxy improved
-- screen updates
-- Performance improvements
- - Many thank's @Qu4k3
+- fix search re
 --> Offer coffee please :)
 "
 echo "$changelog"

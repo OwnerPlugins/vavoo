@@ -435,8 +435,8 @@ or:
 TOKEN_ADDON_SIG = 600  # 10 minutes - TOKEN EXPIRES EVERY 10 MINUTES!
 TOKEN_REFRESH_AGE = 480
 GEOIP_URL = "https://www.vavoo.tv/geoip"
-PING_URL = "https://www.lokke.app/api/app/ping"
-PING_URL2 = "https://www.vavoo.tv/api/app/ping"
+PING_URL = "https://www.vavoo.tv/api/app/ping"
+PING_URL2 = "https://www.lokke.app/api/app/ping"
 PID_FILE = "/tmp/vavoo_proxy.pid"
 BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
@@ -444,7 +444,8 @@ BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
 HEADERS = {
     "accept": "*/*",
-    "user-agent": RequestAgent(),
+    # "user-agent": RequestAgent(),
+    "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
     "Accept-Encoding": "gzip, deflate",
     # NOTE: do NOT set "Connection": "close" here – it disables keep-alive
     # for the entire session including streaming upstream connections.
@@ -1297,7 +1298,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             else:
                 self.send_response(code)
         except (BrokenPipeError, ConnectionResetError):
-            print(" Client disconnected during response - ignoring")
+            print("[DEBUG][VAVOO_PROXY][safe_send_response] Client disconnected during response - ignoring")
             return False
         return True
 
@@ -1336,11 +1337,11 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_header('Location', stream_url)
                     self.end_headers()
                     print(
-                        " 302 Redirect to upstream stream for channel: " +
+                        "[DEBUG][VAVOO_PROXY][do_GET] 302 Redirect to upstream stream for channel: " +
                         channel_id)
 
                 except Exception as e:
-                    print(" Error in /vavoo handler: " + str(e))
+                    print("[DEBUG][VAVOO_PROXY][do_GET] Error in /vavoo handler: " + str(e))
                     self.send_error(500, "Internal proxy error")
 
             elif parsed_path.path == '/stream':
