@@ -33,7 +33,7 @@ from .vUtils import (
     log_exception,
     make_print,
     trace_error,
-    RequestAgent
+    # RequestAgent
 )
 
 _starting = False
