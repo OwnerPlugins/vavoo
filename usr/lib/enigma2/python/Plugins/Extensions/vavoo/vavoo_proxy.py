@@ -443,12 +443,12 @@ BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 # Primary + mirror. Some regions get HTTP 451 from the primary.
 
 # HEADERS = {
-    # "accept": "*/*",
-    # # "user-agent": RequestAgent(),
-    # "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
-    # "Accept-Encoding": "gzip, deflate",
-    # # NOTE: do NOT set "Connection": "close" here – it disables keep-alive
-    # # for the entire session including streaming upstream connections.
+# "accept": "*/*",
+# # "user-agent": RequestAgent(),
+# "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
+# "Accept-Encoding": "gzip, deflate",
+# # NOTE: do NOT set "Connection": "close" here – it disables keep-alive
+# # for the entire session including streaming upstream connections.
 # }
 HEADERS = {
     "accept": "*/*",
@@ -834,53 +834,47 @@ class VavooProxy:
                             "brand": "google",
                             "model": "Nexus",
                             "name": "21081111RG",
-                            "uniqueId": unique_id
-                        },
+                            "uniqueId": unique_id},
                         "os": {
                             "name": "android",
                             "version": "7.1.2",
                             "abis": ["arm64-v8a"],
-                            "host": "android"
-                        },
+                            "host": "android"},
                         "app": {
                             "platform": "android",
                             "version": "1.1.0",
                             "buildId": "97215000",
                             "engine": "hbc85",
                             "signatures": ["6e8a975e3cbf07d5de823a760d4c2547f86c1403105020adee5de67ac510999e"],
-                            "installer": "com.android.vending"
-                        },
+                            "installer": "com.android.vending"},
                         "version": {
                             "package": "app.lokke.main",
                             "binary": "1.1.0",
-                            "js": "1.1.0"
-                        }
-                    },
+                            "js": "1.1.0"}},
                     "appFocusTime": 0,
                     "playerActive": False,
                     "playDuration": 0,
-                    "devMode": True,
-                    "hasAddon": True,
-                    "castConnected": False,
-                    "package": "app.lokke.main",
-                    "version": "1.1.0",
-                    "process": "app",
-                    "firstAppStart": current_timestamp - 86400000,
-                    "lastAppStart": current_timestamp,
-                    "ipLocation": None,
-                    "adblockEnabled": False,
-                    "proxy": {
-                        "supported": ["ss", "openvpn"],
+                        "devMode": True,
+                        "hasAddon": True,
+                        "castConnected": False,
+                        "package": "app.lokke.main",
+                        "version": "1.1.0",
+                        "process": "app",
+                        "firstAppStart": current_timestamp - 86400000,
+                        "lastAppStart": current_timestamp,
+                        "ipLocation": None,
+                        "adblockEnabled": False,
+                        "proxy": {
+                            "supported": [
+                                "ss",
+                                "openvpn"],
                         "engine": "openvpn",
                         "ssVersion": 1,
                         "enabled": False,
                         "autoServer": True,
-                        "id": "fi-hel"
-                    },
+                        "id": "fi-hel"},
                     "iap": {
-                        "supported": True
-                    }
-                }
+                        "supported": True}}
 
                 # User-Agent Kodi
                 headers = {
@@ -891,7 +885,8 @@ class VavooProxy:
                 }
 
                 # Usa PING_URL2 (vavoo.tv) prima, poi lokke.app
-                urls = [PING_URL, PING_URL2]  # PING_URL2 = vavoo.tv, PING_URL = lokke.app
+                # PING_URL2 = vavoo.tv, PING_URL = lokke.app
+                urls = [PING_URL, PING_URL2]
                 sig = None
                 for url in urls:
                     try:

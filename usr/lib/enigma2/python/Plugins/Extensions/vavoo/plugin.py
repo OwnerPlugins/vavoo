@@ -2199,7 +2199,9 @@ class MainVavoo(Screen):
             response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
             if response:
                 countries = loads(response)
-                print("[MainVavoo] Got {} countries from proxy".format(len(countries)))
+                print(
+                    "[MainVavoo] Got {} countries from proxy".format(
+                        len(countries)))
                 for country in sorted(countries):
                     self.cat_list.append(show_list(country, country))
                 self._update_ui()
