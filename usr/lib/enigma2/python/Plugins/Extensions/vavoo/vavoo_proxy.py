@@ -4,7 +4,7 @@ from __future__ import absolute_import, print_function
 
 import gzip
 import requests
-import uuid
+# import uuid
 import time
 import threading
 import socket
@@ -442,13 +442,20 @@ BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
 # Primary + mirror. Some regions get HTTP 451 from the primary.
 
+# HEADERS = {
+    # "accept": "*/*",
+    # # "user-agent": RequestAgent(),
+    # "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
+    # "Accept-Encoding": "gzip, deflate",
+    # # NOTE: do NOT set "Connection": "close" here – it disables keep-alive
+    # # for the entire session including streaming upstream connections.
+# }
 HEADERS = {
     "accept": "*/*",
-    # "user-agent": RequestAgent(),
-    "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
+    "user-agent": "MediaHubMX/2",
+    "Accept-Language": "de",
     "Accept-Encoding": "gzip, deflate",
-    # NOTE: do NOT set "Connection": "close" here – it disables keep-alive
-    # for the entire session including streaming upstream connections.
+    "Connection": "close",
 }
 
 
@@ -805,85 +812,112 @@ class VavooProxy:
         print(" Token monitor started")
 
     def refresh_addon_sig_if_needed(self, force=False):
-        """Refresh the addonSig if needed with better error handling"""
         with self.addon_sig_lock:
             now = time.time()
             if not force and self.addon_sig_data["sig"] and (
-                    now - self.addon_sig_data["ts"] < 300):  # 8 minutes
+                    now - self.addon_sig_data["ts"] < 300):
                 return self.addon_sig_data["sig"]
 
             try:
+                import uuid
                 unique_id = str(uuid.uuid4())
                 current_timestamp = int(time.time() * 1000)
 
+                # PAYLOAD DI KODI
                 payload = {
                     "reason": "app-focus",
                     "locale": self.current_language,
                     "theme": "dark",
                     "metadata": {
                         "device": {
-                            "type": "desktop",
-                            "uniqueId": unique_id},
+                            "type": "Handset",
+                            "brand": "google",
+                            "model": "Nexus",
+                            "name": "21081111RG",
+                            "uniqueId": unique_id
+                        },
                         "os": {
-                            "name": "win32",
-                            "version": "Windows 10 Pro",
-                            "abis": ["x64"],
-                            "host": "Lenovo"},
+                            "name": "android",
+                            "version": "7.1.2",
+                            "abis": ["arm64-v8a"],
+                            "host": "android"
+                        },
                         "app": {
-                            "platform": "electron"},
+                            "platform": "android",
+                            "version": "1.1.0",
+                            "buildId": "97215000",
+                            "engine": "hbc85",
+                            "signatures": ["6e8a975e3cbf07d5de823a760d4c2547f86c1403105020adee5de67ac510999e"],
+                            "installer": "com.android.vending"
+                        },
                         "version": {
-                            "package": "tv.vavoo.app",
-                            "binary": "3.1.8",
-                            "js": "3.1.8"}},
+                            "package": "app.lokke.main",
+                            "binary": "1.1.0",
+                            "js": "1.1.0"
+                        }
+                    },
                     "appFocusTime": 0,
                     "playerActive": False,
                     "playDuration": 0,
-                        "devMode": False,
-                        "hasAddon": True,
-                        "castConnected": False,
-                        "package": "tv.vavoo.app",
-                        "version": "3.1.8",
-                        "process": "app",
-                        "firstAppStart": current_timestamp,
-                        "lastAppStart": current_timestamp,
-                        "ipLocation": None,
-                        "adblockEnabled": True,
-                        "proxy": {
-                            "supported": ["ss"],
-                            "engine": "Mu",
-                            "enabled": False,
-                            "autoServer": True},
+                    "devMode": True,
+                    "hasAddon": True,
+                    "castConnected": False,
+                    "package": "app.lokke.main",
+                    "version": "1.1.0",
+                    "process": "app",
+                    "firstAppStart": current_timestamp - 86400000,
+                    "lastAppStart": current_timestamp,
+                    "ipLocation": None,
+                    "adblockEnabled": False,
+                    "proxy": {
+                        "supported": ["ss", "openvpn"],
+                        "engine": "openvpn",
+                        "ssVersion": 1,
+                        "enabled": False,
+                        "autoServer": True,
+                        "id": "fi-hel"
+                    },
                     "iap": {
-                        "supported": False}}
+                        "supported": True
+                    }
+                }
 
-                # Use the robust request method
-                urls = [PING_URL, PING_URL2]
+                # User-Agent Kodi
+                headers = {
+                    "accept": "application/json",
+                    "content-type": "application/json; charset=utf-8",
+                    "user-agent": "okhttp/4.11.0",
+                    "Accept-Language": self.current_language,
+                }
+
+                # Usa PING_URL2 (vavoo.tv) prima, poi lokke.app
+                urls = [PING_URL, PING_URL2]  # PING_URL2 = vavoo.tv, PING_URL = lokke.app
                 sig = None
                 for url in urls:
                     try:
-                        r = self._robust_request(
-                            "POST", url, json=payload, timeout=15)
-                        r.raise_for_status()
-                        data = decode_response(r)
-                        sig = data.get("addonSig")
-                        if sig:
-                            break  # Found, exit loop
-                        else:
-                            print(
-                                "[AddonSig] No addonSig received from {}".format(url))
+                        r = self.session.post(
+                            url, json=payload, headers=headers, timeout=15)
+                        if r.status_code == 200:
+                            data = r.json()
+                            sig = data.get("addonSig")
+                            if sig:
+                                break
+                            else:
+                                print(
+                                    "[AddonSig] No addonSig received from {}".format(url))
                     except Exception as e:
                         print(
                             "[AddonSig] Request to {} failed: {}".format(
                                 url, e))
-
+                        continue
                 if sig:
                     self.addon_sig_data["sig"] = sig
                     self.addon_sig_data["ts"] = now
+                    print("[AddonSig] Token obtained successfully")
+                    return sig
                 else:
-                    print("[AddonSig] Unable to obtain addonSig from any URL")
-
-                print(" Token refreshed successfully")
-                return sig
+                    print("[AddonSig] Unable to obtain token from any URL")
+                    return None
 
             except Exception as e:
                 print(" Error updating addonSig: " + str(e))
@@ -1331,20 +1365,14 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         self.send_error(404, "Stream not resolved")
                         return
 
-                    # Return the redirect immediately to reduce startup latency
-                    if not self.safe_send_response(302):
-                        return
-
+                    # Redirect 302 all'URL dello stream
+                    self.send_response(302)
                     self.send_header('Location', stream_url)
                     self.end_headers()
-                    print(
-                        "[DEBUG][VAVOO_PROXY][do_GET] 302 Redirect to upstream stream for channel: " +
-                        channel_id)
+                    print("[Proxy] Redirect to: " + stream_url[:100])
 
                 except Exception as e:
-                    print(
-                        "[DEBUG][VAVOO_PROXY][do_GET] Error in /vavoo handler: " +
-                        str(e))
+                    print("[Proxy] /vavoo error: " + str(e))
                     self.send_error(500, "Internal proxy error")
 
             elif parsed_path.path == '/stream':

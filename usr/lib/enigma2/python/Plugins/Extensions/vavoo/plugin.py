@@ -2174,141 +2174,75 @@ class MainVavoo(Screen):
         run_proxy_in_background(startup_timeout=timeout)
 
     def cat(self):
+        """
+        Load and display the country list.
+        Uses the local proxy if available, otherwise waits and retries.
+        """
         if not cfg.proxy_enabled.value:
             self['name'].setText(_("Proxy disabled"))
             return
+
         self.cat_list = []
         self.items_tmp = []
 
+        # If proxy is not ready yet, schedule a retry after 1 second
+        if not is_proxy_ready(timeout=0.5):
+            print("[MainVavoo] Proxy not ready, will retry in 1s")
+            if not hasattr(self, '_country_retry_timer'):
+                self._country_retry_timer = eTimer()
+                self._country_retry_timer.callback.append(self.cat)
+            self._country_retry_timer.start(1000, True)
+            return
+
         try:
-            # === 1. LOAD DATA ONLY FROM ORIGINAL METHOD (vavoo.to) ===
-            print("[MainVavoo] Loading countries from original source...")
+            # Fetch countries from the proxy
+            response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
+            if response:
+                countries = loads(response)
+                print("[MainVavoo] Got {} countries from proxy".format(len(countries)))
+                for country in sorted(countries):
+                    self.cat_list.append(show_list(country, country))
+                self._update_ui()
+                self["version"].setText(to_string("V." + __version__))
+                # Clear the retry timer if it exists
+                if hasattr(self, '_country_retry_timer'):
+                    self._country_retry_timer.stop()
+                    del self._country_retry_timer
+                return
+            else:
+                print("[MainVavoo] Proxy countries request failed")
+                # Fallback to original method (may fail, but we try)
+                self._load_countries_from_original_source()
+        except Exception as e:
+            print("[MainVavoo] Error in cat(): %s" % str(e))
+            trace_error()
+            self["name"].setText(to_string("Error loading data"))
+
+    def _load_countries_from_original_source(self):
+        """Fallback: load countries from the original source (may fail if blocked)."""
+        try:
             content = self._get_content()
             if PY3:
                 content = vUtils.ensure_str(content)
-
             if not content:
                 self["name"].setText(to_string("Error: No data received"))
                 return
-
             data = self._parse_json(content)
             if data is None:
                 self["name"].setText(to_string("Error: Invalid data format"))
                 return
-
             self.all_data = data
-            print(
-                "[MainVavoo] Loaded %d channels from original source" % len(
-                    self.all_data))
-
-            # === 2. EXTRACT AND DISPLAY COUNTRIES (NO PROXY DEPENDENCY) ===
-            if cfg.default_view.value == "countries":
-                # Extract ONLY main countries (exclude ➾ categories)
-                countries = set()
-                for entry in self.all_data:
-                    country = url_unquote(entry["country"]).strip("\r\n")
-                    # CRITICAL FILTER: exclude "default" and problematic
-                    # strings
-                    if "➾" not in country and country.lower() != "default" and len(country) > 1:
-                        countries.add(country)
-
-                countries_list = sorted(list(countries))
-                print(
-                    "[MainVavoo] Found %d valid countries" %
-                    len(countries_list))
-
-                # Preload flags for first countries
-                for country in countries_list[:5]:
-                    try:
-                        country_code = get_country_code(country)
-                        if country_code:
-                            success, tx = download_flag_online(
-                                country,
-                                cache_dir=FLAG_CACHE_DIR,
-                                screen_width=1920
-                            )
-                            if success:
-                                print("✓ Preloaded flag for: %s" % country)
-                    except Exception as e:
-                        print(
-                            "Flag preload error for %s: %s" %
-                            (country, str(e)))
-
-                # Show countries view
-                self.show_countries_view()
-            else:
-                # Show categories view
-                self.show_categories_view()
-
-            # === 3. UPDATE INTERFACE ===
-            self._update_ui()
-
-            # # === 4. START PROXY IN BACKGROUND (ONLY FOR NEXT PHASE) ===
-            # # Does NOT block UI, handles its own errors internally
-            # if not hasattr(self, '_proxy_bg_started'):
-            # def start_bg_proxy():
-            # try:
-            # print(
-            # "[BG] Starting proxy for future channel resolution...")
-            # # Important: do not call initialize_for_country("default")!
-            # # Let the proxy start with its base configuration.
-            # self.start_vavoo_proxy()
-            # except Exception as bg_e:
-            # print(
-            # "[BG] Proxy background start non-critical: %s" %
-            # str(bg_e))
-            # bg_thread = threading.Thread(
-            # target=start_bg_proxy)
-            # bg_thread.setDaemon(True)
-            # bg_thread.start()
-            # self._proxy_bg_started = True
-
-        except Exception as e:
-            print("[MainVavoo] Critical error in cat(): %s" % str(e))
-            trace_error()
-            self["name"].setText(to_string("Error loading data"))
-
-        self["version"].setText(to_string("V." + __version__))
-
-    def _fallback_to_original_countries(self):
-        """Fallback to the original method of getting countries"""
-        try:
-            content = getUrl(self.url)
-            if PY3:
-                content = ensure_str(content)
-
-            # 451-aware mirror fallback
-            if (not content) or (content == HTTP_451_SENTINEL):
-                fb = self.url.replace(PRIMARY_BASE_URL, FALLBACK_BASE_URL)
-                print("[PROXY] HTTP 451: trying mirror %s" % fb)
-                content = getUrl(fb)
-                if PY3:
-                    content = ensure_str(content)
-                if content == HTTP_451_SENTINEL:
-                    content = ""
-
-            if not content:
-                self["name"].setText(to_string("Error: No data received"))
-                return
-
-            data = loads(content)
-            self.all_data = data
-
             countries = set()
             for entry in self.all_data:
                 country = url_unquote(entry["country"]).strip("\r\n")
-                if "➾" not in country:
+                if "➾" not in country and country.lower() != "default" and len(country) > 1:
                     countries.add(country)
-
-            countries_list = sorted(list(countries))
-
-            for country in countries_list:
+            for country in sorted(countries):
                 self.cat_list.append(show_list(country, country))
-
             self._update_ui()
-
+            self["version"].setText(to_string("V." + __version__))
         except Exception as e:
-            print("[MainVavoo] Error in fallback: %s" % e)
+            print("[MainVavoo] Fallback error: %s" % str(e))
             self["name"].setText(to_string("Error loading data"))
 
     def _parse_select_options(self, html_content):
@@ -4597,7 +4531,6 @@ class Playstream2(
                 encoded_name
             )
             print("[Playstream2] Service reference: " + ref)
-
             sref = eServiceReference(ref)
             sref.setName(self.name)
             self.sref = sref
