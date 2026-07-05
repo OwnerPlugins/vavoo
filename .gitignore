@@ -1,2 +1,4 @@
 
 usr/lib/enigma2/python/Plugins/Extensions/vavoo/plugin~.py
+__pycache__/
+*.pyc
