@@ -847,9 +847,22 @@ def is_proxy_running():
 
 
 def is_proxy_ready(timeout=2):
-    """Check if the proxy is ready to receive requests"""
+    """Check if the proxy is ready to receive requests.
+
+    The proxy's HTTP server only binds its port after the full channel
+    catalog has loaded, so while that is in progress every connection is
+    refused. getUrl() retries refused connections with exponential
+    backoff (seconds of blocking per call) which is fine for a one-off
+    fetch but far too slow for a readiness poll called every few hundred
+    ms from the UI/reactor thread. Check the port cheaply first (a plain
+    connect_ex, effectively instant) and only pay for the HTTP round trip
+    - with a single attempt, since we already know the port is open -
+    once it is actually listening.
+    """
     try:
-        response = getUrl(PROXY_STATUS_URL, timeout=timeout)
+        if not is_proxy_running():
+            return False
+        response = getUrl(PROXY_STATUS_URL, timeout=timeout, retries=1)
         if response:
             data = loads(response)
             return data.get("initialized", False)

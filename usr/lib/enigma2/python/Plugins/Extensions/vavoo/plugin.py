@@ -1596,11 +1596,20 @@ class startVavoo(Screen):
             self._finish()
             return
 
-        try:
-            response = getUrl(PROXY_STATUS_URL, timeout=0.5)
-            data = loads(response) if response else None
-        except Exception:
-            data = None
+        # The proxy's HTTP port only opens once the whole catalog has
+        # loaded, so every connection is refused until then. Check the
+        # port cheaply first (near-instant) and only pay for the HTTP
+        # round trip - with a single attempt, no retry/backoff - once it
+        # is actually listening. Skipping this would make every poll
+        # block for seconds at a time via getUrl()'s retry logic, on the
+        # reactor thread, for the entire catalog-load duration.
+        data = None
+        if is_proxy_running():
+            try:
+                response = getUrl(PROXY_STATUS_URL, timeout=0.5, retries=1)
+                data = loads(response) if response else None
+            except Exception:
+                data = None
 
         if data and data.get("initialized"):
             self._channels_count = data.get("channels_count", 0) or 0
