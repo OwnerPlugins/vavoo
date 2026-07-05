@@ -437,6 +437,13 @@ TOKEN_REFRESH_AGE = 480
 GEOIP_URL = "https://www.vavoo.tv/geoip"
 PING_URL = "https://www.vavoo.tv/api/app/ping"
 PING_URL2 = "https://www.vypn.net/api/app/ping"
+# Real VYPN app identity (from APK metadata: package net.vypn.app,
+# versionName 1.4.1, versionCode 100830000). The APK signing certificate
+# hash used below is still the old app.lokke.main one - it wasn't
+# available - so the signature check server-side may still fail.
+VYPN_PACKAGE = "net.vypn.app"
+VYPN_VERSION = "1.4.1"
+VYPN_VERSION_CODE = "100830000"
 PID_FILE = "/tmp/vavoo_proxy.pid"
 BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
@@ -865,23 +872,23 @@ class VavooProxy:
                             "host": "android"},
                         "app": {
                             "platform": "android",
-                            "version": "1.1.0",
-                            "buildId": "97215000",
+                            "version": VYPN_VERSION,
+                            "buildId": VYPN_VERSION_CODE,
                             "engine": "hbc85",
                             "signatures": ["6e8a975e3cbf07d5de823a760d4c2547f86c1403105020adee5de67ac510999e"],
                             "installer": "com.android.vending"},
                         "version": {
-                            "package": "app.lokke.main",
-                            "binary": "1.1.0",
-                            "js": "1.1.0"}},
+                            "package": VYPN_PACKAGE,
+                            "binary": VYPN_VERSION,
+                            "js": VYPN_VERSION}},
                     "appFocusTime": 0,
                     "playerActive": False,
                     "playDuration": 0,
                         "devMode": True,
                         "hasAddon": True,
                         "castConnected": False,
-                        "package": "app.lokke.main",
-                        "version": "1.1.0",
+                        "package": VYPN_PACKAGE,
+                        "version": VYPN_VERSION,
                         "process": "app",
                         "firstAppStart": current_timestamp - 86400000,
                         "lastAppStart": current_timestamp,
