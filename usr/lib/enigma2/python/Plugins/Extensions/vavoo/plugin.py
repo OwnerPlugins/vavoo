@@ -1471,17 +1471,24 @@ class vavoo_config(Screen, ConfigListScreen):
 
 class startVavoo(Screen):
     # ── animated splash configuration ────────────────────────────────────────
+    # These messages are cosmetic progress flavor only; the screen does not
+    # actually close until the proxy reports itself ready (or the
+    # configured startup timeout elapses) - see _check_ready()/_finish().
     STATUS_STEPS = [
         (0, "Connecting to 127.0.0.1:4323 ..."),
         (18, "Loading channel catalog ..."),
         (42, "Authenticating Vavoo servers ..."),
         (68, "Renewing stream tokens ..."),
         (86, "EPG sync ready ..."),
-        (100, "Proxy online  \u2713"),
     ]
-    TOTAL_MS = 2400   # total animation duration in ms
+    TOTAL_MS = 1200   # time for the cosmetic bar to reach SOFT_CAP
     TICK_MS = 30     # timer interval in ms
-    HOLD_MS = 700    # pause at 100 % before closing
+    HOLD_MS = 250    # pause at 100 % before closing
+    POLL_MS = 400    # how often we check real proxy readiness
+    # Cosmetic progress never claims 100% on its own - only once the proxy
+    # actually reports "initialized" (or we give up after the timeout) do
+    # we jump to 100% and close.
+    SOFT_CAP = 92
 
     def __init__(self, session):
 
@@ -1518,6 +1525,16 @@ class startVavoo(Screen):
         self._steps = max(1, int(self.TOTAL_MS / self.TICK_MS))
         self._tick_no = 0
 
+        # real-readiness state
+        self._elapsed_ms = 0
+        self._channels_count = 0
+        max_wait_secs = 30
+        try:
+            max_wait_secs = int(cfg.proxy_startup_timeout.value)
+        except Exception:
+            pass
+        self._max_wait_ms = max(1000, max_wait_secs * 1000)
+
         self.onLayoutFinish.append(self.loadDefaultImage)
 
     # ── image decode (DreamOS-compatible, unchanged logic) ──────────────────
@@ -1546,12 +1563,12 @@ class startVavoo(Screen):
         except Exception:
             pass
 
-    # ── smoothstep progress tick ────────────────────────────────────────────
+    # ── smoothstep progress tick (cosmetic only, capped at SOFT_CAP) ────────
     def _tick(self):
         self._tick_no += 1
         t = min(1.0, self._tick_no / float(self._steps))
         smooth = t * t * (3.0 - 2.0 * t)          # ease-in-out curve
-        self._pct = int(round(smooth * 100))
+        self._pct = min(self.SOFT_CAP, int(round(smooth * self.SOFT_CAP)))
 
         try:
             self["progress"].instance.setValue(self._pct)
@@ -1567,16 +1584,91 @@ class startVavoo(Screen):
                 self._msg_idx += 1
             else:
                 break
+        # Completion is decided by _check_ready(), not by this cosmetic
+        # timer - it just stops advancing once it hits SOFT_CAP.
 
-        if self._pct >= 100:
+    # ── real readiness check (drives when the splash actually closes) ──────
+    def _check_ready(self):
+        self._elapsed_ms += self.POLL_MS
+
+        if not cfg.proxy_enabled.value:
+            # Nothing to wait for - proceed right away.
+            self._finish()
+            return
+
+        # The proxy's HTTP port only opens once the whole catalog has
+        # loaded, so every connection is refused until then. Check the
+        # port cheaply first (near-instant) and only pay for the HTTP
+        # round trip - with a single attempt, no retry/backoff - once it
+        # is actually listening. Skipping this would make every poll
+        # block for seconds at a time via getUrl()'s retry logic, on the
+        # reactor thread, for the entire catalog-load duration.
+        data = None
+        if is_proxy_running():
+            try:
+                response = getUrl(PROXY_STATUS_URL, timeout=0.5, retries=1)
+                data = loads(response) if response else None
+            except Exception:
+                data = None
+
+        if data and data.get("initialized"):
+            self._channels_count = data.get("channels_count", 0) or 0
+            self._finish()
+            return
+
+        if self._elapsed_ms >= self._max_wait_ms:
+            print(
+                "[startVavoo] Proxy not ready after {}s, continuing anyway".format(
+                    self._max_wait_ms // 1000))
+            self._finish(timed_out=True)
+
+    def _finish(self, timed_out=False):
+        try:
+            self._ready_timer.stop()
+        except Exception:
+            pass
+        try:
             self._anim_timer.stop()
-            self._hold_timer.start(self.HOLD_MS, True)   # single-shot hold
+        except Exception:
+            pass
+
+        self._pct = 100
+        try:
+            self["progress"].instance.setValue(100)
+        except Exception:
+            pass
+        self["progress_pct"].setText("100 %")
+
+        if timed_out:
+            msg = _("Continuing, proxy still syncing...")
+        elif self._channels_count:
+            msg = _("Proxy online - {} channels  ✓").format(
+                self._channels_count)
+        else:
+            msg = "Proxy online  ✓"
+        self["status"].setText(msg)
+
+        self._hold_timer.start(self.HOLD_MS, True)   # single-shot hold
+
+    # ── proxy kickoff (non-blocking - see run_proxy_in_background) ──────────
+    def _start_proxy_if_needed(self):
+        try:
+            if not cfg.proxy_enabled.value:
+                return
+            if is_proxy_running() and is_proxy_ready(timeout=0.5):
+                return
+            run_proxy_in_background(
+                startup_timeout=cfg.proxy_startup_timeout.value)
+        except Exception as e:
+            print("[startVavoo] proxy start error: " + str(e))
 
     # ── timer setup (called once layout is ready) ───────────────────────────
     def loadDefaultImage(self):
         self.fldpng = resolveFilename(
             SCOPE_PLUGINS,
             "Extensions/{}/skin/pics/presplash.png".format('vavoo'))
+
+        self._start_proxy_if_needed()
 
         # image-decode timer (unchanged, fires once at 500 ms)
         self.timer = eTimer()
@@ -1586,7 +1678,7 @@ class startVavoo(Screen):
             self.timer.callback.append(self.decodeImage)
         self.timer.start(500, True)
 
-        # animation tick timer (repeating, 30 ms interval)
+        # animation tick timer (repeating, 30 ms interval, cosmetic only)
         try:
             self["progress"].instance.setValue(0)
         except Exception:
@@ -1598,7 +1690,15 @@ class startVavoo(Screen):
             self._anim_timer.callback.append(self._tick)
         self._anim_timer.start(self.TICK_MS, False)
 
-        # hold timer – single-shot, started by _tick when progress hits 100 %
+        # readiness-poll timer – repeating, decides when we actually finish
+        self._ready_timer = eTimer()
+        if isfile('/var/lib/dpkg/status'):
+            self._ready_timer.timeout.connect(self._check_ready)
+        else:
+            self._ready_timer.callback.append(self._check_ready)
+        self._ready_timer.start(self.POLL_MS, False)
+
+        # hold timer – single-shot, started by _finish() once actually ready
         self._hold_timer = eTimer()
         if isfile('/var/lib/dpkg/status'):
             self._hold_timer.timeout.connect(self.clsgo)
@@ -1610,6 +1710,10 @@ class startVavoo(Screen):
         # stop any running timers safely
         try:
             self._anim_timer.stop()
+        except Exception:
+            pass
+        try:
+            self._ready_timer.stop()
         except Exception:
             pass
         try:
@@ -2185,13 +2289,17 @@ class MainVavoo(Screen):
         self.cat_list = []
         self.items_tmp = []
 
-        # If proxy is not ready yet, schedule a retry after 1 second
+        # If proxy is not ready yet, schedule a quick retry
         if not is_proxy_ready(timeout=0.5):
-            print("[MainVavoo] Proxy not ready, will retry in 1s")
+            print("[MainVavoo] Proxy not ready, will retry shortly")
             if not hasattr(self, '_country_retry_timer'):
                 self._country_retry_timer = eTimer()
-                self._country_retry_timer.callback.append(self.cat)
-            self._country_retry_timer.start(1000, True)
+                try:
+                    self._country_retry_timer.callback.append(self.cat)
+                except Exception:
+                    # Fallback in case the callback attribute does not exist
+                    self._country_retry_timer.timeout.connect(self.cat)
+            self._country_retry_timer.start(500, True)
             return
 
         try:

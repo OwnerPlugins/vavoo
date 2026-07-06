@@ -5,7 +5,7 @@ __author__ = "Lululla"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "CC BY-NC-SA 4.0"
-__version__ = "1.75"
+__version__ = "1.76"
 
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
@@ -38,8 +38,7 @@ FLAG_CACHE_DIR = "/tmp/vavoo_flags"
 LOG_FILE = "/tmp/vavoo.log"
 PRIMARY_BASE_URL = "https://vavoo.to"
 FALLBACK_BASE_URL = "https://kool.to"
-# BASE_SITES = [PRIMARY_BASE_URL, FALLBACK_BASE_URL]
-BASE_SITES = [PRIMARY_BASE_URL]
+BASE_SITES = [PRIMARY_BASE_URL, FALLBACK_BASE_URL]
 START_PROXY_SCRIPT = os.path.join(PLUGIN_ROOT, "start_proxy.sh")
 PY2 = version_info[0] == 2
 PY3 = version_info[0] == 3

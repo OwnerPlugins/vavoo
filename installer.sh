@@ -1,7 +1,9 @@
 #!/bin/bash
 
-version='1.75'
-changelog="--- R.I.P. ---"
+version='1.76'
+changelog="- Fixed streams showing a 'download VYPN' screen instead of playing
+- Faster, more reliable plugin startup (fixed UI freezes and proxy restart loops)
+- Other stability fixes (anonymous stats, timers)"
 echo "$changelog"
 TMPPATH=/tmp/vavoo-install
 FILEPATH=/tmp/vavoo-main.tar.gz

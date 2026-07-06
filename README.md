@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/Belfagor2005/vavoo">
-    <img src="https://img.shields.io/badge/Version-1.75-blue.svg" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.76-blue.svg" alt="Version">
   </a>
 
   <a href="https://www.enigma2.net">
@@ -333,4 +333,4 @@ https://creativecommons.org/licenses/by-nc-sa/4.0
 **For modifications and redistribution, please maintain this credit header.**
 
 ---
-*Last Modified: 2026-03-19*
+*Last Modified: 2026-07-06*

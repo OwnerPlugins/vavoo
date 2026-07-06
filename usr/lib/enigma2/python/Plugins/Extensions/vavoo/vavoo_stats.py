@@ -29,7 +29,7 @@ STATS_SERVER_URL = "https://script.google.com/macros/s/AKfycbz2xuo6WrL9JpVK_YMKD
 SESSION_ID_FILE = "/tmp/vavoo_session_id"
 STATS_DISABLE_FILE = "/etc/enigma2/disable_vavoo_stats"
 
-_HTTP_TIMEOUT = 8
+_HTTP_TIMEOUT = 20
 
 
 def _http_post(url, payload):
@@ -161,8 +161,6 @@ class AnonymousStats:
             print("[Stats] Heartbeat non attivo, esco")
             return
 
-        # TEST: __version__
-        # print("[DEBUG] _send_heartbeat __version__ vale:", __version__)
         payload = {
             "event": "heartbeat",
             "session_id": self._session_id,
@@ -171,13 +169,22 @@ class AnonymousStats:
             "timestamp": int(time.time()),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
-        # print("[DEBUG] _send_heartbeat Payload plugin_version:", payload["plugin_version"])
         print("[Stats] Sending heartbeat...")
-        _http_post(STATS_SERVER_URL, payload)
+        # _http_post blocks for up to _HTTP_TIMEOUT on a slow/unreachable
+        # server. The first call runs synchronously from start_heartbeat()
+        # (called from MainVavoo.__init__ on the UI/reactor thread), and
+        # later calls run from this same eTimer callback every 5 minutes -
+        # so send it in a background thread to avoid freezing the UI.
+        t = threading.Thread(target=_http_post, args=(STATS_SERVER_URL, payload))
+        t.daemon = True
+        t.start()
 
         if self._heartbeat_active:
             self._heartbeat_timer = eTimer()
-            self._heartbeat_timer.callback.append(self._send_heartbeat)
+            if os.path.exists('/var/lib/dpkg/status'):
+                self._heartbeat_timer.timeout.connect(self._send_heartbeat)
+            else:
+                self._heartbeat_timer.callback.append(self._send_heartbeat)
             self._heartbeat_timer.start(300000, True)
 
     def stop_heartbeat(self):

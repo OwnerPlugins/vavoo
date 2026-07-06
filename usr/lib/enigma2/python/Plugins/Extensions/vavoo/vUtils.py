@@ -847,9 +847,22 @@ def is_proxy_running():
 
 
 def is_proxy_ready(timeout=2):
-    """Check if the proxy is ready to receive requests"""
+    """Check if the proxy is ready to receive requests.
+
+    The proxy's HTTP server only binds its port after the full channel
+    catalog has loaded, so while that is in progress every connection is
+    refused. getUrl() retries refused connections with exponential
+    backoff (seconds of blocking per call) which is fine for a one-off
+    fetch but far too slow for a readiness poll called every few hundred
+    ms from the UI/reactor thread. Check the port cheaply first (a plain
+    connect_ex, effectively instant) and only pay for the HTTP round trip
+    - with a single attempt, since we already know the port is open -
+    once it is actually listening.
+    """
     try:
-        response = getUrl(PROXY_STATUS_URL, timeout=timeout)
+        if not is_proxy_running():
+            return False
+        response = getUrl(PROXY_STATUS_URL, timeout=timeout, retries=1)
         if response:
             data = loads(response)
             return data.get("initialized", False)
@@ -991,7 +1004,10 @@ def ReloadBouquets(delay=500):
             pass
         # Fallback: eTimer
         timer = eTimer()
-        timer.callback.append(do_reload)
+        try:
+            timer.callback.append(do_reload)
+        except AttributeError:
+            timer.timeout.connect(do_reload)
         timer.start(delay, True)
     else:
         # Background thread: safe to sleep
@@ -1093,12 +1109,22 @@ def getserviceinfo(service_ref):
 # FLAG DOWNLOAD FUNCTIONS
 # ============================================================================
 def initialize_cache_with_local_flags():
-    """Copy all local flags from skin/cowntry/ to cache directory"""
+    """Copy all local flags from skin/cowntry/ to cache directory.
+
+    Skips the copy if a previous run in this boot session already
+    populated the (tmpfs) cache dir, since FLAG_CACHE_DIR contents only
+    disappear on reboot and the source files never change without one.
+    """
     local_dir = join(PLUGIN_PATH, 'skin/cowntry')
     cache_dir = FLAG_CACHE_DIR
 
     if not exists(local_dir):
         print("Local flags directory not found: %s" % local_dir)
+        return 0
+
+    marker = join(cache_dir, '.flags_initialized')
+    if exists(marker):
+        print("Flag cache already initialized, skipping copy")
         return 0
 
     # Python 2 compatible directory creation
@@ -1128,6 +1154,11 @@ def initialize_cache_with_local_flags():
                 print("Error copying %s: %s" % (filename, e))
 
     print("Initialized cache with %d local flags" % copied)
+    try:
+        with open(marker, 'wb') as f:
+            f.write(b'1')
+    except Exception:
+        pass
     return copied
 
 

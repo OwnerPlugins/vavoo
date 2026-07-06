@@ -383,7 +383,10 @@ def export_bouquet_async(
                         print("[Bouquet] Error in callback: %s" % cb_e)
 
                 timer = eTimer()
-                timer.callback.append(do_callback)
+                try:
+                    timer.callback.append(do_callback)
+                except AttributeError:
+                    timer.timeout.connect(do_callback)
                 timer.start(0, True)
                 return
 
@@ -396,7 +399,10 @@ def export_bouquet_async(
                     print("[Bouquet] Error reloading services: %s" % e)
 
             reload_timer = eTimer()
-            reload_timer.callback.append(do_reload)
+            try:
+                reload_timer.callback.append(do_reload)
+            except AttributeError:
+                reload_timer.timeout.connect(do_reload)
             reload_timer.start(500, True)   # 500 ms di delay
             # -------------------------------------------------
 
@@ -414,7 +420,10 @@ def export_bouquet_async(
                     print("[Bouquet] Error in first callback: %s" % cb_e)
 
             timer = eTimer()
-            timer.callback.append(do_first_callback)
+            try:
+                timer.callback.append(do_first_callback)
+            except AttributeError:
+                timer.timeout.connect(do_first_callback)
             timer.start(0, True)
 
             # PHASE 2: Process EPG matching in background (same thread)
@@ -446,7 +455,10 @@ def export_bouquet_async(
                     print("[Bouquet] Error in error callback: %s" % cb_e)
 
             timer = eTimer()
-            timer.callback.append(do_callback)
+            try:
+                timer.callback.append(do_callback)
+            except AttributeError:
+                timer.timeout.connect(do_callback)
             timer.start(0, True)
 
         finally:
