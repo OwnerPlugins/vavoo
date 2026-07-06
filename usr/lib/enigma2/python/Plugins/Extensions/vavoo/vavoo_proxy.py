@@ -63,6 +63,10 @@ try:
     ConnectionResetError
 except NameError:  # Python 2
     ConnectionResetError = IOError
+try:
+    ConnectionError
+except NameError:  # Python 2
+    ConnectionError = IOError
 
 # Global stop flag used for clean shutdown (prevents restart loop)
 STOP_EVENT = threading.Event()
@@ -1779,6 +1783,14 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
         """Setup with timeout"""
         BaseHTTPRequestHandler.setup(self)
         self.request.settimeout(self.timeout)
+        # Streaming writes are flushed per-chunk (see the /stream handler);
+        # without this, Nagle's algorithm can hold small/odd-sized writes
+        # briefly waiting to coalesce them, adding needless latency.
+        try:
+            self.request.setsockopt(
+                socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        except (socket.error, OSError, AttributeError):
+            pass
 
     def log_message(self, format, *args):
         pass
