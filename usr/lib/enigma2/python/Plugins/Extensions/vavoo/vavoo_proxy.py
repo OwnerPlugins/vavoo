@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
+import base64
 import gzip
 import requests
 # import uuid
@@ -29,6 +30,7 @@ from . import (
 
 from .vUtils import (
     _starting_lock,
+    get_external_ip,
     is_proxy_running,
     log_exception,
     make_print,
@@ -437,13 +439,10 @@ TOKEN_REFRESH_AGE = 480
 GEOIP_URL = "https://www.vavoo.tv/geoip"
 PING_URL = "https://www.vavoo.tv/api/app/ping"
 PING_URL2 = "https://www.vypn.net/api/app/ping"
-# Real VYPN app identity, pulled from its APK: package net.vypn.app,
-# versionName 1.4.1, versionCode 100830000, and the APK signing
-# certificate's SHA-256 fingerprint (StampCertSha256, hex-encoded).
+# Real VYPN app identity (package/version from its APK metadata),
+# matching a confirmed-working ping payload for this endpoint.
 VYPN_PACKAGE = "net.vypn.app"
 VYPN_VERSION = "1.4.1"
-VYPN_VERSION_CODE = "100830000"
-VYPN_CERT_SHA256 = "3257d599a49d2c961a471ca9843f59d341a405884583fc087df4237b733bbd6d"
 PID_FILE = "/tmp/vavoo_proxy.pid"
 BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
@@ -519,6 +518,44 @@ def decode_response(resp):
         return resp.json()
     except ValueError:
         return loads(resp.content.decode('utf-8', 'ignore'))
+
+
+def _rewrite_addon_sig_ip(sig, client_ip):
+    """Rewrite the client IP embedded inside a base64-encoded addonSig.
+
+    The token is base64(JSON) where the JSON has a "data" field that is
+    itself a JSON string carrying an "ips"/"ip" pair. Point those at our
+    own public IP so the resolved stream matches where our requests
+    actually come from, matching a confirmed-working reference
+    implementation. Falls back to the original, unmodified sig if the
+    token doesn't have the expected shape.
+    """
+    try:
+        padded = sig + '=' * (-len(sig) % 4)
+        decoded = base64.b64decode(padded)
+        if isinstance(decoded, bytes):
+            decoded = decoded.decode('utf-8')
+        sig_obj = loads(decoded)
+        if not isinstance(sig_obj, dict) or "data" not in sig_obj:
+            return sig
+
+        data_obj = loads(sig_obj["data"])
+        current_ips = data_obj.get("ips")
+        if not isinstance(current_ips, list):
+            current_ips = []
+        data_obj["ips"] = [client_ip] + \
+            [ip for ip in current_ips if ip and ip != client_ip]
+        if isinstance(data_obj.get("ip"), (str, unicode)):
+            data_obj["ip"] = client_ip
+
+        sig_obj["data"] = dumps(data_obj)
+        new_sig = base64.b64encode(dumps(sig_obj).encode('utf-8'))
+        if isinstance(new_sig, bytes):
+            new_sig = new_sig.decode('ascii')
+        return new_sig
+    except Exception as e:
+        print("[AddonSig] IP rewrite failed, keeping original sig: {}".format(e))
+        return sig
 
 
 def is_proxy_already_running():
@@ -725,6 +762,7 @@ class VavooProxy:
         self.countries_list = []
         self.current_language = "en"
         self.current_region = "US"
+        self.external_ip = None
         self.initialized = False
         self.last_heartbeat = time.time()
         self.local_ip = None
@@ -841,6 +879,20 @@ class VavooProxy:
         self._token_monitor_thread.start()
         print(" Token monitor started")
 
+    def _get_cached_external_ip(self):
+        """Public IP of this box, cached for the process lifetime.
+
+        Used to rewrite the IP embedded in the addonSig token so it
+        matches where our actual resolve/stream requests come from,
+        instead of whatever the ping endpoint saw or guessed.
+        """
+        if not self.external_ip:
+            try:
+                self.external_ip = get_external_ip()
+            except Exception:
+                self.external_ip = None
+        return self.external_ip
+
     def refresh_addon_sig_if_needed(self, force=False):
         with self.addon_sig_lock:
             now = time.time()
@@ -853,30 +905,27 @@ class VavooProxy:
                 unique_id = str(uuid.uuid4())
                 current_timestamp = int(time.time() * 1000)
 
-                # PAYLOAD DI KODI
+                # Matches a confirmed-working VYPN ping payload exactly -
+                # the previous version carried extra fields (buildId,
+                # engine, signatures, installer, devMode=True, ...) copied
+                # from an older reverse-engineered client that this
+                # endpoint no longer accepts as a real free-tier client.
                 payload = {
+                    "token": "",
                     "reason": "app-focus",
                     "locale": self.current_language,
                     "theme": "dark",
                     "metadata": {
                         "device": {
-                            "type": "Handset",
-                            "brand": "google",
-                            "model": "Nexus",
-                            "name": "21081111RG",
+                            "type": "phone",
                             "uniqueId": unique_id},
                         "os": {
                             "name": "android",
-                            "version": "7.1.2",
+                            "version": "14",
                             "abis": ["arm64-v8a"],
                             "host": "android"},
                         "app": {
-                            "platform": "android",
-                            "version": VYPN_VERSION,
-                            "buildId": VYPN_VERSION_CODE,
-                            "engine": "hbc85",
-                            "signatures": [VYPN_CERT_SHA256],
-                            "installer": "com.android.vending"},
+                            "platform": "android"},
                         "version": {
                             "package": VYPN_PACKAGE,
                             "binary": VYPN_VERSION,
@@ -884,34 +933,34 @@ class VavooProxy:
                     "appFocusTime": 0,
                     "playerActive": False,
                     "playDuration": 0,
-                        "devMode": True,
-                        "hasAddon": True,
-                        "castConnected": False,
-                        "package": VYPN_PACKAGE,
-                        "version": VYPN_VERSION,
-                        "process": "app",
-                        "firstAppStart": current_timestamp - 86400000,
-                        "lastAppStart": current_timestamp,
-                        "ipLocation": None,
-                        "adblockEnabled": False,
-                        "proxy": {
-                            "supported": [
-                                "ss",
-                                "openvpn"],
-                        "engine": "openvpn",
-                        "ssVersion": 1,
+                    "devMode": False,
+                    "hasAddon": True,
+                    "castConnected": False,
+                    "package": VYPN_PACKAGE,
+                    "version": VYPN_VERSION,
+                    "process": "app",
+                    "firstAppStart": current_timestamp - 86400000,
+                    "lastAppStart": current_timestamp,
+                    "ipLocation": None,
+                    "adblockEnabled": True,
+                    "migrationApplied": False,
+                    "migrationTargetInstalled": False,
+                    "proxy": {
+                        "supported": ["ss"],
+                        "engine": "Mu",
+                        "ssVersion": "2022",
                         "enabled": False,
                         "autoServer": True,
-                        "id": "fi-hel"},
+                        "id": ""},
                     "iap": {
-                        "supported": True}}
+                        "supported": False,
+                        "error": ""}}
 
-                # User-Agent Kodi
                 headers = {
+                    "user-agent": "okhttp/4.11.0",
                     "accept": "application/json",
                     "content-type": "application/json; charset=utf-8",
-                    "user-agent": "okhttp/4.11.0",
-                    "Accept-Language": self.current_language,
+                    "accept-encoding": "gzip",
                 }
 
                 # Try PING_URL (vavoo.tv) first, then PING_URL2 (vypn.net)
@@ -923,7 +972,7 @@ class VavooProxy:
                             url, json=payload, headers=headers, timeout=15)
                         if r.status_code == 200:
                             data = r.json()
-                            sig = data.get("addonSig")
+                            sig = data.get("addonSig") or data.get("mhub")
                             if sig:
                                 break
                             else:
@@ -935,6 +984,9 @@ class VavooProxy:
                                 url, e))
                         continue
                 if sig:
+                    client_ip = self._get_cached_external_ip()
+                    if client_ip:
+                        sig = _rewrite_addon_sig_ip(sig, client_ip)
                     self.addon_sig_data["sig"] = sig
                     self.addon_sig_data["ts"] = now
                     print("[AddonSig] Token obtained successfully")
