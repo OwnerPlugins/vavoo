@@ -175,7 +175,9 @@ class AnonymousStats:
         # (called from MainVavoo.__init__ on the UI/reactor thread), and
         # later calls run from this same eTimer callback every 5 minutes -
         # so send it in a background thread to avoid freezing the UI.
-        t = threading.Thread(target=_http_post, args=(STATS_SERVER_URL, payload))
+        t = threading.Thread(
+            target=_http_post, args=(
+                STATS_SERVER_URL, payload))
         t.daemon = True
         t.start()
 
