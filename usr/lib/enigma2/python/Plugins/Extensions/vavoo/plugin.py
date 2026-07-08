@@ -4043,8 +4043,15 @@ class TvInfoBarShowHide():
             self["helpOverlay"].setText(help_text)
             self["helpOverlay"].show()
 
-            epg_text = self.get_current_epg()
-            self["epgOverlay"].setText(epg_text)
+            # get_current_epg() can block for seconds (fetching/parsing a
+            # country's EPG file on a cache miss). Show a placeholder and
+            # start the hide timer now instead of after that call returns -
+            # otherwise the overlay appears stuck/unresponsive for however
+            # long the fetch takes, and the 5s auto-hide only starts
+            # counting down once it's done. Fetch in the background and
+            # fill in the real text if the overlay is still up when it
+            # completes.
+            self["epgOverlay"].setText(_("Loading EPG..."))
             self["epgOverlay"].show()
 
             # Update proxy status every 30 seconds while the overlay is visible
@@ -4052,6 +4059,23 @@ class TvInfoBarShowHide():
                 self.proxy_update_timer.start(30000, True)
 
             self.hideTimer.start(5000, True)  # 5 seconds
+
+            def _fetch_epg_async():
+                try:
+                    epg_text = self.get_current_epg()
+                except Exception as e:
+                    print("[Show Help] Async EPG fetch error: " + str(e))
+                    return
+
+                def _apply_epg_text():
+                    try:
+                        if self["helpOverlay"].visible:
+                            self["epgOverlay"].setText(epg_text)
+                    except Exception:
+                        pass
+                reactor.callFromThread(_apply_epg_text)
+
+            threading.Thread(target=_fetch_epg_async, daemon=True).start()
         except Exception as e:
             print("[Show Help] Error: " + str(e))
 
