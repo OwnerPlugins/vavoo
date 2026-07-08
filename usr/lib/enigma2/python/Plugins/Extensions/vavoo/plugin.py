@@ -4490,30 +4490,52 @@ class Playstream2(
                 self._epg_cache[cache_key] = (time.time(), result)
                 return result
 
-            # Build EPG URL
-            epg_url = "http://{}:{}/epg/{}.xml".format(
-                PROXY_HOST, PORT, self.country_code or "")
+            # The whole country's EPG document (all channels, potentially
+            # hundreds of <programme> entries) is what's slow to fetch and
+            # parse - not the per-channel lookup. Reuse a recently parsed
+            # copy across channels in the same country instead of
+            # re-downloading and re-parsing it on every single channel
+            # view, which is what made switching channels feel slow.
+            if not hasattr(self, '_epg_xml_cache'):
+                self._epg_xml_cache = {}
 
-            # Fetch XML data
-            fetch_start = time.time()
-            # Reduced timeout to 3 seconds
-            xml_data = getUrl(epg_url, timeout=3)
-            fetch_time = time.time() - fetch_start
+            xml_cached = self._epg_xml_cache.get(self.country_code)
+            if xml_cached and (time.time() - xml_cached[0] < 300):
+                root = xml_cached[1]
+            else:
+                # Build EPG URL
+                epg_url = "http://{}:{}/epg/{}.xml".format(
+                    PROXY_HOST, PORT, self.country_code or "")
 
-            if fetch_time > 0.5:
-                print(
-                    "[EPG] Slow fetch from {}: {:.3f}s".format(
-                        epg_url, fetch_time))
+                # Fetch XML data
+                fetch_start = time.time()
+                # Reduced timeout to 3 seconds
+                xml_data = getUrl(epg_url, timeout=3)
+                fetch_time = time.time() - fetch_start
 
-            if not xml_data:
-                result = "EPG not available"
-                self._epg_cache[cache_key] = (time.time(), result)
-                return result
+                if fetch_time > 0.5:
+                    print(
+                        "[EPG] Slow fetch from {}: {:.3f}s".format(
+                            epg_url, fetch_time))
+
+                if not xml_data:
+                    result = "EPG not available"
+                    self._epg_cache[cache_key] = (time.time(), result)
+                    return result
+
+                try:
+                    root = ET.fromstring(xml_data)
+                except Exception as e:
+                    print("[EPG] XML parsing error: {}".format(e))
+                    result = "EPG parsing error"
+                    self._epg_cache[cache_key] = (time.time(), result)
+                    return result
+
+                self._epg_xml_cache[self.country_code] = (time.time(), root)
 
             # Parse XML
             parse_start = time.time()
             try:
-                root = ET.fromstring(xml_data)
                 now = time.time()
 
                 def id_match(epg_id, rid):
@@ -4584,7 +4606,7 @@ class Playstream2(
                 return result
 
             except Exception as e:
-                print("[EPG] XML parsing error: {}".format(e))
+                print("[EPG] Programme matching error: {}".format(e))
                 result = "EPG parsing error"
                 self._epg_cache[cache_key] = (time.time(), result)
                 return result
