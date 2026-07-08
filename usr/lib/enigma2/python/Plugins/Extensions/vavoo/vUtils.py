@@ -1851,15 +1851,20 @@ class VavooEPGMatcher:
 
     def _build_normalized_index(self):
         self.normalized_index = {}
-        for key, value in self.cache.items():
-            if '_' in key:
-                name_part = key.rsplit('_', 1)[0]
-                country_part = key.rsplit('_', 1)[1]
-            else:
-                name_part = key
-                country_part = ''
-            norm_key = self._normalize_key(name_part, country_part)
-            self.normalized_index[norm_key] = key
+        for key in self.cache:
+            self._index_cache_key(key)
+
+    def _index_cache_key(self, key):
+        """Add/update a single cache key in normalized_index without
+        rescanning the whole cache - see find_match(), which calls this
+        once per matched channel and would otherwise turn a bulk export
+        into an O(n^2) scan as the cache grows over time."""
+        if '_' in key:
+            name_part, country_part = key.rsplit('_', 1)
+        else:
+            name_part, country_part = key, ''
+        norm_key = self._normalize_key(name_part, country_part)
+        self.normalized_index[norm_key] = key
 
     def _get_signal_priority(self, service_ref, country_code=None):
         """
@@ -1960,11 +1965,6 @@ class VavooEPGMatcher:
                     if entry_country != country_code:
                         continue
             # If country_code is None, we do not filter by country
-
-            # Calculate base similarity
-            score = calculate_similarity(clean_input, clean_entry)
-            if score < self.similarity_threshold:
-                continue
 
             # Calculate base similarity
             score = calculate_similarity(clean_input, clean_entry)
@@ -2107,8 +2107,13 @@ class VavooEPGMatcher:
             new_entry = cached.copy()
             new_entry['name'] = channel_name   # original name
             self.cache[search_key] = new_entry
-            self._build_normalized_index()
-            save_cache(self.cache)
+            self._index_cache_key(search_key)
+            # Deferred to save_cache() (called once per batch by callers,
+            # e.g. after a whole bouquet export) instead of writing the
+            # full cache file here - this branch fires per matched
+            # channel, and a full rewrite per channel turns a bulk export
+            # into many redundant whole-file writes as the cache grows.
+            self.new_matches[search_key] = new_entry
             return cached.get('id'), cached.get('sref')
 
         # 3. Live matching
@@ -2158,7 +2163,12 @@ class VavooEPGMatcher:
                     if existing_entry.get('matched', True) is not False:
                         existing_entry['matched'] = False
                         self.cache[search_key] = existing_entry
-                        self._build_normalized_index()
+                        self._index_cache_key(search_key)
+                        # Not deferred to new_matches/save_cache(): that
+                        # method always writes matched=True, which would
+                        # be wrong here. This branch is rare (only when a
+                        # previously-matched channel stops live-matching),
+                        # so an eager write is an acceptable tradeoff.
                         save_cache(self.cache)
                     return existing_entry.get('id'), existing_sref
             # Otherwise, no match and no valid sref
