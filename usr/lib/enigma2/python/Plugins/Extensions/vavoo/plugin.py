@@ -4267,7 +4267,7 @@ class Playstream2(
 
     def nextitem(self):
         """Switch to next channel"""
-        self.stopStream()
+        self.stopStream(restore_original=False)
         currentindex = int(self.currentindex) + 1
         if currentindex == self.itemscount:
             currentindex = 0
@@ -4280,7 +4280,7 @@ class Playstream2(
 
     def previousitem(self):
         """Switch to previous channel"""
-        self.stopStream()
+        self.stopStream(restore_original=False)
         currentindex = int(self.currentindex) - 1
         if currentindex < 0:
             currentindex = self.itemscount - 1
@@ -4387,6 +4387,15 @@ class Playstream2(
         self.stream_running = True
         self.is_streaming = True
 
+        if not force:
+            # Fresh channel selection - start its EOF/retry tracking clean.
+            # A force=True call is an EOF-triggered restart of the SAME
+            # channel (see restartAfterEOF); eof_count must survive that,
+            # or the "give up after N quick retries" limit never engages
+            # since every retry would reset its own counter to 0 first.
+            self.eof_count = 0
+            self.last_eof_time = 0
+
         # Clean up URL
         if "/live2/play/" in self.url and self.url.endswith(".ts"):
             print("[Playstream2] Converting to proxy format")
@@ -4426,7 +4435,7 @@ class Playstream2(
     def restartAfterEOF(self):
         """Callback to restart stream after EOF (non‑blocking)."""
         print("[Playstream2] Restarting stream after EOF")
-        self.stopStream()
+        self.stopStream(restore_original=False)
         reactor.callLater(0.5, lambda: self.startStream(force=True))
 
     def get_current_epg(self):
@@ -4634,10 +4643,6 @@ class Playstream2(
             sref.setName(self.name)
             self.sref = sref
 
-            # Reset EOF counter
-            self.eof_count = 0
-            self.last_eof_time = 0
-
             try:
                 proxy.stream_started()
                 print("[Playstream2] Notified proxy: stream started")
@@ -4683,8 +4688,15 @@ class Playstream2(
             print("[Playstream2] playOldSystem error: " + str(e))
             trace_error()
 
-    def stopStream(self):
-        """Stop the stream and cleanup"""
+    def stopStream(self, restore_original=True):
+        """Stop the stream and cleanup.
+
+        restore_original=False is used when this is a transient stop
+        (switching to another Vavoo channel, or an EOF auto-restart) that
+        will immediately start a new stream - restoring srefInit (the
+        channel that was playing before this player opened) here would
+        otherwise briefly flash back to it on every channel change/retry.
+        """
         if self.stream_running:
             self.stream_running = False
             self.is_streaming = False
@@ -4702,7 +4714,7 @@ class Playstream2(
         # Stop current service
         try:
             self.session.nav.stopService()
-            if self.srefInit:
+            if restore_original and self.srefInit:
                 self.session.nav.playService(self.srefInit)
         except BaseException:
             pass
