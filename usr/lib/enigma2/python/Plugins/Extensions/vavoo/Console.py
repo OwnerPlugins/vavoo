@@ -31,26 +31,36 @@ def isHD():
 
 class Console(Screen):
     if isHD():
-        skin = '''<screen position="17,center" size="1245,681" title="Command execution..." backgroundColor="#16000000" flags="wfNoBorder">
-            <widget name="text" position="9,48" size="1237,587" backgroundColor="#16000000" foregroundColor="#00ffffff" font="Console;24"/>
-            <eLabel text="Command execution..." font="Regular;30" size="1000,40" position="8,3" foregroundColor="#00ffffff" backgroundColor="#16000000" zPosition="4"/>
-            <eLabel position="10,674" size="165,5" backgroundColor="#00ff2525" zPosition="1"/>
-            <eLabel position="238,674" size="165,5" backgroundColor="#00389416" zPosition="1"/>
-            <eLabel position="1068,674" size="165,5" backgroundColor="#000080ff" zPosition="1"/>
-            <eLabel text="Cancel" position="10,646" zPosition="2" size="165,30" font="Regular;24" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
-            <eLabel text="Hide/Show" position="238,646" zPosition="2" size="165,30" font="Regular;24" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
-            <eLabel text="Restart GUI" position="1068,646" zPosition="2" size="165,30" font="Regular;24" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
+        skin = '''<screen position="17,center" size="1245,681" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
+            <eLabel position="0,0" size="1245,681" backgroundColor="#0a0510" zPosition="-10"/>
+            <eLabel position="0,0" size="1245,1" backgroundColor="#bf5fff" zPosition="2"/>
+            <eLabel position="0,680" size="1245,1" backgroundColor="#bf5fff" zPosition="2"/>
+            <eLabel position="0,0" size="1,681" backgroundColor="#bf5fff" zPosition="2"/>
+            <eLabel position="1244,0" size="1,681" backgroundColor="#bf5fff" zPosition="2"/>
+            <widget name="text" position="9,48" size="1237,587" backgroundColor="#0e0518" foregroundColor="#e0d0f0" font="Console;24"/>
+            <eLabel text="Command execution..." font="Regular;30" size="1000,40" position="8,3" foregroundColor="#f0e0ff" backgroundColor="#0a0510" zPosition="4"/>
+            <eLabel position="10,674" size="165,5" backgroundColor="#c0392b" zPosition="1"/>
+            <eLabel position="238,674" size="165,5" backgroundColor="#9970bb" zPosition="1"/>
+            <eLabel position="1068,674" size="165,5" backgroundColor="#27ae60" zPosition="1"/>
+            <eLabel text="Cancel" position="10,646" zPosition="2" size="165,30" font="Regular;24" halign="center" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <eLabel text="Hide/Show" position="238,646" zPosition="2" size="165,30" font="Regular;24" halign="center" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <eLabel text="Restart GUI" position="1068,646" zPosition="2" size="165,30" font="Regular;24" halign="center" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
         </screen>'''
     else:
-        skin = '''<screen position="center,center" size="1886,1051" title="Command execution..." backgroundColor="#16000000" flags="wfNoBorder">
-            <widget name="text" position="9,93" size="1868,897" backgroundColor="#16000000" foregroundColor="#00ffffff" font="Console;33"/>
-            <eLabel text="Command execution..." font="Regular;45" size="1163,80" position="8,3" foregroundColor="#00ffffff" backgroundColor="#16000000" zPosition="4"/>
-            <eLabel position="10,1043" size="250,5" backgroundColor="#00ff2525" zPosition="1"/>
-            <eLabel position="353,1043" size="250,5" backgroundColor="#00389416" zPosition="1"/>
-            <eLabel position="1626,1043" size="250,5" backgroundColor="#000080ff" zPosition="1"/>
-            <eLabel text="Cancel" position="10,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
-            <eLabel text="Hide/Show" render="Label" position="353,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
-            <eLabel text="Restart GUI" position="1626,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
+        skin = '''<screen position="center,center" size="1886,1051" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
+            <eLabel position="0,0" size="1886,1051" backgroundColor="#0a0510" zPosition="-10"/>
+            <eLabel position="0,0" size="1886,2" backgroundColor="#bf5fff" zPosition="2"/>
+            <eLabel position="0,1049" size="1886,2" backgroundColor="#bf5fff" zPosition="2"/>
+            <eLabel position="0,0" size="2,1051" backgroundColor="#bf5fff" zPosition="2"/>
+            <eLabel position="1884,0" size="2,1051" backgroundColor="#bf5fff" zPosition="2"/>
+            <widget name="text" position="9,93" size="1868,897" backgroundColor="#0e0518" foregroundColor="#e0d0f0" font="Console;33"/>
+            <eLabel text="Command execution..." font="Regular;45" size="1163,80" position="8,3" foregroundColor="#f0e0ff" backgroundColor="#0a0510" zPosition="4"/>
+            <eLabel position="10,1043" size="250,5" backgroundColor="#c0392b" zPosition="1"/>
+            <eLabel position="353,1043" size="250,5" backgroundColor="#9970bb" zPosition="1"/>
+            <eLabel position="1626,1043" size="250,5" backgroundColor="#27ae60" zPosition="1"/>
+            <eLabel text="Cancel" position="10,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <eLabel text="Hide/Show" render="Label" position="353,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <eLabel text="Restart GUI" position="1626,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
         </screen>'''
 
     def __init__(

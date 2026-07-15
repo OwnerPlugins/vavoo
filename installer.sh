@@ -171,7 +171,7 @@ cat <<EOF
 #                developed by LULULLA                   #
 #               https://corvoboys.org                   #
 #########################################################
-#           your Device will RESTART Now                #
+#         Enigma2 GUI will RESTART now (box stays on)   #
 #########################################################
 ^^^^^^^^^^Debug information:
 BOX MODEL: $box_type
@@ -181,5 +181,12 @@ IMAGE NAME: ${distro_value:-Unknown}
 IMAGE VERSION: ${distro_version:-Unknown}
 PLUGIN VERSION: $version
 EOF
+
+# Restart just the Enigma2 GUI process (not the whole box) so the newly
+# installed plugin files are picked up. Enigma2 is supervised on every
+# image (sysvinit, systemd, or a custom wrapper) and gets automatically
+# respawned once killed - no separate "start" command needed.
+sleep 3
+killall -9 enigma2 2>/dev/null
 
 exit 0

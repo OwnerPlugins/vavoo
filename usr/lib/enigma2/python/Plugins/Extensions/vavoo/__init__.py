@@ -34,6 +34,7 @@ PROXY_SHUTDOWN_URL = PROXY_BASE_URL + "/shutdown"
 
 HOST_MAIN = 'https://raw.githubusercontent.com/Belfagor2005/vavoo/main'
 HOST_GIT = "https://raw.githubusercontent.com/Belfagor2005"
+INSTALLER_URL = HOST_MAIN + "/installer.sh"
 FLAG_CACHE_DIR = "/tmp/vavoo_flags"
 LOG_FILE = "/tmp/vavoo.log"
 PRIMARY_BASE_URL = "https://vavoo.to"

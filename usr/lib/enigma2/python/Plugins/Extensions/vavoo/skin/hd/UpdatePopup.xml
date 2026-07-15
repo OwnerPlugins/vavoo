@@ -1,0 +1,70 @@
+<screen name="UpdatePopup" position="center,center" size="800,460" backgroundColor="#ff0a0510" flags="wfNoBorder">
+
+	<!-- ── full-screen dark background ── -->
+	<eLabel position="0,0" size="800,460" backgroundColor="#0a0510" zPosition="-10"/>
+
+	<!-- ── outer glow border ── -->
+	<eLabel position="0,0"   size="800,1" backgroundColor="#bf5fff" zPosition="2"/>
+	<eLabel position="0,459" size="800,1" backgroundColor="#bf5fff" zPosition="2"/>
+	<eLabel position="0,0"   size="1,460" backgroundColor="#bf5fff" zPosition="2"/>
+	<eLabel position="799,0" size="1,460" backgroundColor="#bf5fff" zPosition="2"/>
+
+	<!-- ── corner L-brackets ── -->
+	<eLabel position="1,1" size="26,3" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="1,1" size="3,26" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="773,1" size="26,3" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="796,1" size="3,26" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="1,457" size="26,3" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="1,433" size="3,26" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="773,457" size="26,3" backgroundColor="#8b2fc9" zPosition="3"/>
+	<eLabel position="796,433" size="3,26" backgroundColor="#8b2fc9" zPosition="3"/>
+
+	<!-- ── title ── -->
+	<widget name="title" position="30,26" size="740,40"
+		font="Regular;28" halign="center" valign="center"
+		foregroundColor="#f0e0ff" backgroundColor="#0a0510"
+		transparent="1" zPosition="5"/>
+
+	<!-- ── version line ── -->
+	<widget name="subtitle" position="30,68" size="740,26"
+		font="Regular;17" halign="center" valign="center"
+		foregroundColor="#bf5fff" backgroundColor="#0a0510"
+		transparent="1" zPosition="5"/>
+
+	<!-- ── divider ── -->
+	<eLabel position="30,102" size="740,1" backgroundColor="#3a1a5a" zPosition="4"/>
+
+	<!-- ── changelog header ── -->
+	<widget name="changelog_label" position="30,112" size="740,22"
+		font="Regular;16" halign="left" valign="center"
+		foregroundColor="#9970bb" backgroundColor="#0a0510"
+		transparent="1" zPosition="5"/>
+
+	<!-- ── changelog card ── -->
+	<eLabel position="30,138" size="740,220" backgroundColor="#0e0518" zPosition="1"/>
+	<eLabel position="30,138" size="740,1" backgroundColor="#2a0a3a" zPosition="2"/>
+	<eLabel position="30,357" size="740,1" backgroundColor="#2a0a3a" zPosition="2"/>
+	<eLabel position="30,138" size="1,220" backgroundColor="#2a0a3a" zPosition="2"/>
+	<eLabel position="769,138" size="1,220" backgroundColor="#2a0a3a" zPosition="2"/>
+	<widget name="changelog" position="44,150" size="712,196"
+		font="Regular;16" halign="left" valign="top"
+		foregroundColor="#e0d0f0" backgroundColor="#0e0518"
+		transparent="1" zPosition="5"/>
+
+	<!-- ── footer separator ── -->
+	<eLabel position="30,374" size="740,1" backgroundColor="#3a1a5a" zPosition="4"/>
+
+	<!-- ── buttons ── -->
+	<eLabel position="30,398" size="28,28" backgroundColor="#c0392b" zPosition="4"/>
+	<widget name="key_red" position="66,398" size="320,28"
+		font="Regular;18" halign="left" valign="center"
+		foregroundColor="#f0e0ff" backgroundColor="#0a0510"
+		transparent="1" zPosition="5"/>
+
+	<eLabel position="450,398" size="28,28" backgroundColor="#27ae60" zPosition="4"/>
+	<widget name="key_green" position="486,398" size="284,28"
+		font="Regular;18" halign="left" valign="center"
+		foregroundColor="#f0e0ff" backgroundColor="#0a0510"
+		transparent="1" zPosition="5"/>
+
+</screen>

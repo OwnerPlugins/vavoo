@@ -21,7 +21,7 @@ from os import listdir, makedirs, remove, system, unlink, rename
 from os.path import basename, exists, getmtime, getsize, isfile, join, splitext
 from enigma import eTimer
 from random import choice
-from re import IGNORECASE, compile, findall, search, sub
+from re import DOTALL, IGNORECASE, compile, findall, search, sub
 from shutil import copy2
 from sys import maxsize
 from six import iteritems, unichr
@@ -44,7 +44,8 @@ from . import (
     CACHE_FILE,
     UNMATCHED_FILE,
     HOST_MAIN,
-    ALIAS_FILE
+    ALIAS_FILE,
+    INSTALLER_URL
 )
 """
 #########################################################
@@ -921,6 +922,61 @@ def fetch_vec_list():
     except Exception as e:
         print("[Fetch] Vector list error: {}".format(str(e)))
         return None
+
+
+def _version_tuple(version_str):
+    """Turn '1.9' / '1.10' into comparable (1, 9) / (1, 10) tuples -
+    plain string comparison would wrongly say '1.9' > '1.10'."""
+    parts = []
+    for chunk in sub(r'[^0-9.]', '', version_str or '').split('.'):
+        try:
+            parts.append(int(chunk))
+        except ValueError:
+            parts.append(0)
+    return tuple(parts) if parts else (0,)
+
+
+def is_remote_version_newer(local_version, remote_version):
+    """True if remote_version is numerically greater than local_version."""
+    return _version_tuple(remote_version) > _version_tuple(local_version)
+
+
+def check_remote_installer_version():
+    """Fetch installer.sh from GitHub and pull out its version and
+    changelog. Returns (version, changelog, raw_content), any/all of
+    which are None on failure.
+
+    installer.sh is expected to contain lines shaped like:
+        version='1.76'
+        changelog="- line one
+        - line two"
+
+    raw_content is returned too so callers that want to actually run the
+    installer don't need a second fetch.
+    """
+    try:
+        content = getUrl(INSTALLER_URL, timeout=10, retries=2)
+        if not content:
+            print("[Update] Could not fetch installer.sh")
+            return None, None, None
+        content = ensure_str(content, errors='ignore')
+
+        version_match = search(r"version\s*=\s*['\"]([^'\"]+)['\"]", content)
+        if not version_match:
+            print("[Update] Could not find version= in installer.sh")
+            return None, None, None
+        remote_version = version_match.group(1).strip()
+
+        changelog_match = search(
+            r'changelog\s*=\s*"(.*?)"', content, IGNORECASE | DOTALL)
+        changelog = changelog_match.group(
+            1).strip() if changelog_match else ""
+
+        return remote_version, changelog, content
+
+    except Exception as e:
+        print("[Update] Error checking installer.sh version: {}".format(e))
+        return None, None, None
 
 
 def remove_parentheses(text):

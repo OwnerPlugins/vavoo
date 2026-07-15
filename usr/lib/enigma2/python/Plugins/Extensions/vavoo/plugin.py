@@ -115,6 +115,7 @@ from .vUtils import (
     get_epg_matcher,
     get_proxy_status,
     cleanup_old_temp_files,
+    check_remote_installer_version,
     decodeHtml,
     download_flag_online,
     ensure_str,
@@ -124,11 +125,13 @@ from .vUtils import (
     initialize_cache_with_local_flags,
     is_proxy_ready,
     is_proxy_running,
+    is_remote_version_newer,
     returnIMDB,
     remove_parentheses,
     ReloadBouquets,
     trace_error
 )
+from .Console import Console
 """
 #########################################################
 #                                                       #
@@ -314,6 +317,43 @@ proxy_instance = None
 proxy_thread = None
 search_ok = False
 tmlast = None
+
+# Auto-update check state, shared between startVavoo (kicks off the
+# background check) and MainVavoo (shows the popup once, after the main
+# menu is open). See _start_update_check() / MainVavoo._check_update_popup_tick().
+_update_check_started = False
+_update_check_done = False
+_update_check_result = None
+_update_popup_shown = False
+
+
+def _start_update_check():
+    """Check installer.sh on GitHub for a newer plugin version, in the
+    background, once per plugin launch.
+
+    Called from startVavoo so the check overlaps with the splash screen
+    instead of adding to perceived load time. The result is only surfaced
+    as a popup once MainVavoo (the main menu) is actually open - see
+    MainVavoo._check_update_popup_tick().
+    """
+    global _update_check_started
+    if _update_check_started:
+        print("[Update] _start_update_check() called again, already started - skipping")
+        return
+    _update_check_started = True
+    print("[Update] Starting background version check (local v{})".format(__version__))
+
+    def _worker():
+        global _update_check_result, _update_check_done
+        _update_check_result = check_remote_installer_version()
+        version, changelog, content = _update_check_result
+        print("[Update] Check finished: remote_version={} changelog_len={} content_len={}".format(
+            version, len(changelog) if changelog else 0,
+            len(content) if content else 0))
+        _update_check_done = True
+
+    threading.Thread(target=_worker, daemon=True).start()
+
 
 # screen
 HALIGN = RT_HALIGN_LEFT
@@ -1669,6 +1709,7 @@ class startVavoo(Screen):
             "Extensions/{}/skin/pics/presplash.png".format('vavoo'))
 
         self._start_proxy_if_needed()
+        _start_update_check()
 
         # image-decode timer (unchanged, fires once at 500 ms)
         self.timer = eTimer()
@@ -1724,6 +1765,46 @@ class startVavoo(Screen):
             first = False
             self.session.open(MainVavoo)
         self.close()
+
+
+class UpdatePopup(Screen):
+    """Yes/No dialog for a newly-found plugin update, skinned to match
+    the splash screen (Plgnstrt.xml) instead of a generic MessageBox."""
+
+    def __init__(self, session, remote_version, changelog):
+        Screen.__init__(self, session)
+        skin = join(skin_path, 'UpdatePopup.xml')
+        with codecs.open(skin, "r", encoding="utf-8") as f:
+            self.skin = f.read()
+
+        self["title"] = Label(_("Update Available"))
+        self["subtitle"] = Label(
+            _("v{} -> v{}").format(__version__, remote_version))
+        self["changelog_label"] = Label(_("Changelog:"))
+        # A plain Label, not ScrollLabel: the changelog text is always
+        # short (a handful of lines from installer.sh), and ScrollLabel's
+        # setText() depends on a pageHeight computed during skin binding
+        # that doesn't reliably come out non-zero across images - Label
+        # (used for title/subtitle above) renders correctly everywhere.
+        self["changelog"] = Label(changelog or _("No changelog provided."))
+        self["key_red"] = Label(_("Cancel"))
+        self["key_green"] = Label(_("Yes, update now"))
+
+        self["actions"] = ActionMap(
+            ["OkCancelActions", "ColorActions"],
+            {
+                "ok": self.confirm,
+                "green": self.confirm,
+                "cancel": self.deny,
+                "red": self.deny,
+            }, -1
+        )
+
+    def confirm(self):
+        self.close(True)
+
+    def deny(self):
+        self.close(False)
 
 
 class MainVavoo(Screen):
@@ -1803,6 +1884,18 @@ class MainVavoo(Screen):
 
         self['proxy_status'].setText(_("Checking proxy..."))
         self.cat()
+
+        # Poll for the update check started during the splash screen to
+        # finish, then show the popup (if a newer version was found) now
+        # that the main menu is actually open - see _check_update_popup_tick().
+        self._update_popup_timer = eTimer()
+        if isfile('/var/lib/dpkg/status'):
+            self._update_popup_timer.timeout.connect(
+                self._check_update_popup_tick)
+        else:
+            self._update_popup_timer.callback.append(
+                self._check_update_popup_tick)
+        self._update_popup_timer.start(1000, False)
 
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
@@ -1959,6 +2052,8 @@ class MainVavoo(Screen):
                 self.proxy_monitor_timer.stop()
             if hasattr(self, 'proxy_watchdog_timer'):
                 self.proxy_watchdog_timer.stop()
+            if hasattr(self, '_update_popup_timer'):
+                self._update_popup_timer.stop()
         except Exception as e:
             print("[Close] Error stopping timers: %s" % str(e))
 
@@ -2189,6 +2284,87 @@ class MainVavoo(Screen):
                     MessageBox.TYPE_ERROR,
                     timeout=3
                 )
+
+    def _check_update_popup_tick(self):
+        """Poll for the background update check (kicked off during the
+        splash screen by _start_update_check()) to finish, then show the
+        popup - once per launch, and only if an actual update is found -
+        now that the main menu is open. Silent otherwise: no "already
+        latest" / "check failed" noise on every plugin start.
+        """
+        global _update_popup_shown
+        if not _update_check_done:
+            return
+        self._update_popup_timer.stop()
+        if _update_popup_shown:
+            print("[Update] Popup tick fired but popup already shown - skipping")
+            return
+        _update_popup_shown = True
+
+        remote_version, changelog, content = _update_check_result or (
+            None, None, None)
+        newer = bool(remote_version) and is_remote_version_newer(
+            __version__, remote_version)
+        print("[Update] Popup tick: local=v{} remote={} newer={}".format(
+            __version__, remote_version, newer))
+        if not newer:
+            return
+        print("[Update] Opening update popup")
+
+        # Stashed for _on_update_confirmed() so a Yes doesn't need a
+        # second fetch of the same file.
+        self._pending_installer_content = content
+        try:
+            self.session.openWithCallback(
+                self._on_update_confirmed,
+                UpdatePopup,
+                remote_version,
+                changelog
+            )
+        except Exception as e:
+            # UpdatePopup's skin file may be missing/corrupt on this
+            # install (e.g. a manually-deployed copy that skipped the
+            # skin/ folder) - fall back to a plain MessageBox rather than
+            # taking down the main menu over a cosmetic dialog.
+            print("[Update] UpdatePopup failed to open ({}), falling back to MessageBox".format(e))
+            message = _("New version available: v{}").format(remote_version)
+            message += "\n" + _("(you have v{})").format(__version__)
+            if changelog:
+                message += "\n\n" + _("Changelog:") + "\n" + changelog
+            message += "\n\n" + _("Update now?")
+            self.session.openWithCallback(
+                self._on_update_confirmed,
+                MessageBox,
+                message,
+                MessageBox.TYPE_YESNO,
+                default=False
+            )
+
+    def _on_update_confirmed(self, result):
+        content = getattr(self, '_pending_installer_content', None)
+        self._pending_installer_content = None
+        if not result or not content:
+            return
+
+        installer_path = "/tmp/vavoo_installer_update.sh"
+        try:
+            with open(installer_path, 'w') as f:
+                f.write(content)
+        except Exception as e:
+            print("[MainVavoo] Error writing installer script: " + str(e))
+            self.session.open(
+                MessageBox,
+                _("Could not save the installer script."),
+                MessageBox.TYPE_ERROR,
+                timeout=5
+            )
+            return
+
+        self.session.open(
+            Console,
+            title=_("Updating Vavoo Stream Live..."),
+            cmdlist=["chmod +x '{0}' && '{0}'".format(installer_path)]
+        )
 
     def start_vavoo_proxy(self):
         if not cfg.proxy_enabled.value:
