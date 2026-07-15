@@ -186,7 +186,7 @@ EOF
 # installed plugin files are picked up. Enigma2 is supervised on every
 # image (sysvinit, systemd, or a custom wrapper) and gets automatically
 # respawned once killed - no separate "start" command needed.
-sleep 3
-killall -9 enigma2 2>/dev/null
+#sleep 3
+#killall -9 enigma2 2>/dev/null
 
 exit 0
