@@ -33,7 +33,7 @@ class Console(Screen):
     # a near-fullscreen console, so the install flow feels like one
     # continuous popup instead of two different-looking screens.
     if isHD():
-        skin = '''<screen name="Console" position="center,center" size="800,460" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
+        skin = '''<screen name="VavooInstallerConsole" position="center,center" size="800,460" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
             <eLabel position="0,0" size="800,460" backgroundColor="#0a0510" zPosition="-10"/>
             <eLabel position="0,0"   size="800,1" backgroundColor="#bf5fff" zPosition="2"/>
             <eLabel position="0,459" size="800,1" backgroundColor="#bf5fff" zPosition="2"/>
@@ -64,7 +64,7 @@ class Console(Screen):
             <eLabel text="Restart GUI" position="622,408" zPosition="2" size="150,24" font="Regular;16" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
         </screen>'''
     else:
-        skin = '''<screen name="Console" position="center,center" size="1200,690" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
+        skin = '''<screen name="VavooInstallerConsole" position="center,center" size="1200,690" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
             <eLabel position="0,0" size="1200,690" backgroundColor="#0a0510" zPosition="-10"/>
             <eLabel position="0,0"   size="1200,2" backgroundColor="#bf5fff" zPosition="2"/>
             <eLabel position="0,688" size="1200,2" backgroundColor="#bf5fff" zPosition="2"/>
@@ -112,8 +112,14 @@ class Console(Screen):
         self.finishedCallback = finishedCallback
         self.closeOnSuccess = closeOnSuccess
         self.showStartStopText = showStartStopText
-        if skin:
-            self.skinName = [skin, 'Console']
+        # "Console" is a generic, widely-reused screen name across many
+        # Enigma2 plugins - some installed skins/themes ship their own
+        # <screen name="Console"> override, which the skin engine prefers
+        # over this class's inline skin string. Use a name unique to this
+        # plugin so our own skin always wins, unless a caller explicitly
+        # asked for a specific skin variant.
+        self.skinName = [skin, 'VavooInstallerConsole'] if skin else [
+            'VavooInstallerConsole']
         self.errorOcurred = False
         self._text_buffer = ''
         # Plain Label, not ScrollLabel: ScrollLabel's setText() depends on
