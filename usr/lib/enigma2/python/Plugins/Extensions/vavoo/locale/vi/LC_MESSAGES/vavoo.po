@@ -21,6 +21,9 @@ msgstr "(%d kênh)?"
 msgid "(%s files deleted)"
 msgstr "(%s tập tin đã bị xóa)"
 
+msgid "(you have v{})"
+msgstr "(bạn có v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Thêm các trường còn thiếu vào tất cả các mục"
 
@@ -159,6 +162,10 @@ msgstr "Hủy thực thi?"
 msgid "Case: {}"
 msgstr "Trường hợp: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kênh"
+
 msgid "Channels"
 msgstr "Kênh"
 
@@ -191,6 +198,9 @@ msgstr "Bảng điều khiển"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Tiếp tục, proxy vẫn đang đồng bộ hóa..."
+
+msgid "Could not save the installer script."
+msgstr "Không thể lưu tập lệnh cài đặt."
 
 msgid "Countries"
 msgstr "Quốc gia"
@@ -345,6 +355,10 @@ msgstr "Giấy phép: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Liên kết trong Menu chính"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Đang cập nhật EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Thấp hơn = ít bị gián đoạn hơn nhưng được làm mới nhiều hơn"
 
@@ -363,11 +377,19 @@ msgstr "Độ tương tự tối thiểu đối với các kênh phù hợp (cao
 msgid "Movie Services Reference"
 msgstr "Tham khảo dịch vụ phim"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Không có mặt hàng nào"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Không tìm thấy plugin IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Không có kết nối Internet được phát hiện. Vui lòng kiểm tra mạng của bạn."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Không tìm thấy kênh nào"
 
 msgid "No channels found"
 msgstr "Không tìm thấy kênh nào"
@@ -558,14 +580,26 @@ msgstr "Tổng số kênh: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "CHỮ HOA"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Không có mặt hàng nào"
+
 msgid "Update interval (hours)"
 msgstr "Khoảng thời gian cập nhật (giờ)"
 
 msgid "Update interval (minutes):"
 msgstr "Khoảng thời gian cập nhật (phút):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Bắt đầu cập nhật EPG ngay bây giờ?"
+
 msgid "Updating EPG..."
 msgstr "Đang cập nhật EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream trực tiếp"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Nguồn Vavoo EPG không được bật trong EPGImport. Vui lòng kích hoạt nó trong cài đặt EPGImport."
@@ -597,6 +631,10 @@ msgstr "Đang chờ proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Chào mừng bạn đến với Vavoo Proxy với sự hỗ trợ EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Bắt đầu cập nhật EPG ngay bây giờ?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Bạn có thể bắt đầu nó từ menu hoặc bằng cách nhấn nút TEXT."
 
@@ -611,6 +649,9 @@ msgstr "chữ thường"
 
 msgid "seconds"
 msgstr "giây"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0})"

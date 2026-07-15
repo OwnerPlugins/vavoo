@@ -21,6 +21,9 @@ msgstr "(%d kanaler)?"
 msgid "(%s files deleted)"
 msgstr "(%s filer raderade)"
 
+msgid "(you have v{})"
+msgstr "(du har v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Lägg till saknade fält i alla poster"
 
@@ -159,6 +162,10 @@ msgstr "Avbryta körningen?"
 msgid "Case: {}"
 msgstr "Fall: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanaler"
+
 msgid "Channels"
 msgstr "Kanaler"
 
@@ -191,6 +198,9 @@ msgstr "Trösta"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Fortsätter, proxy synkroniserar fortfarande..."
+
+msgid "Could not save the installer script."
+msgstr "Det gick inte att spara installationsskriptet."
 
 msgid "Countries"
 msgstr "Länder"
@@ -345,6 +355,10 @@ msgstr "Licens: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Länk i huvudmenyn"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Uppdaterar EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lägre = mindre avbrott men mer uppdateras"
 
@@ -363,11 +377,19 @@ msgstr "Minsta likhet för matchande kanaler (högre = striktare)."
 msgid "Movie Services Reference"
 msgstr "Filmtjänster referens"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Inga artiklar tillgängliga"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Ingen IMDb/TMDB-plugin hittades"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Ingen internetanslutning upptäcktes. Kontrollera ditt nätverk."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Inga kanaler hittades"
 
 msgid "No channels found"
 msgstr "Inga kanaler hittades"
@@ -558,14 +580,26 @@ msgstr "Totalt antal kanaler: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "VERSAL"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Inga artiklar tillgängliga"
+
 msgid "Update interval (hours)"
 msgstr "Uppdateringsintervall (timmar)"
 
 msgid "Update interval (minutes):"
 msgstr "Uppdateringsintervall (minuter):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Starta EPG-uppdatering nu?"
+
 msgid "Updating EPG..."
 msgstr "Uppdaterar EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Streama Live"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG-källa är inte aktiverad i EPGImport. Vänligen aktivera det i EPGImport-inställningarna."
@@ -597,6 +631,10 @@ msgstr "Väntar på proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Välkommen till Vavoo Proxy med EPG-stöd"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Starta EPG-uppdatering nu?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Du kan starta den från menyn eller genom att trycka på TEXT-knappen."
 
@@ -611,6 +649,9 @@ msgstr "gemener"
 
 msgid "seconds"
 msgstr "sekunder"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr ""

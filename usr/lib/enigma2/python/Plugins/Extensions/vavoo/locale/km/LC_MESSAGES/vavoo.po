@@ -20,6 +20,9 @@ msgstr "(%d ប៉ុស្តិ៍)?"
 msgid "(%s files deleted)"
 msgstr "(ឯកសារ %s ត្រូវបានលុប)"
 
+msgid "(you have v{})"
+msgstr "(អ្នកមាន v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- បន្ថែមវាលដែលបាត់ទៅធាតុទាំងអស់។"
 
@@ -158,6 +161,10 @@ msgstr "បោះបង់​ការ​អនុវត្ត?"
 msgid "Case: {}"
 msgstr "ករណី៖ {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "ឆានែល"
+
 msgid "Channels"
 msgstr "ឆានែល"
 
@@ -190,6 +197,9 @@ msgstr "កុងសូល។"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "កំពុងបន្ត ប្រូកស៊ីនៅតែធ្វើសមកាលកម្ម..."
+
+msgid "Could not save the installer script."
+msgstr "មិនអាចរក្សាទុកស្គ្រីបកម្មវិធីដំឡើងបានទេ។"
 
 msgid "Countries"
 msgstr "ប្រទេស"
@@ -344,6 +354,10 @@ msgstr "អាជ្ញាប័ណ្ណ៖ CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "តំណភ្ជាប់នៅក្នុងម៉ឺនុយមេ"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "កំពុងអាប់ដេត EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ទាប = ការរំខានតិច ប៉ុន្តែធ្វើឱ្យស្រស់កាន់តែច្រើន"
 
@@ -362,11 +376,19 @@ msgstr "ភាពស្រដៀងគ្នាអប្បបរមាសម្
 msgid "Movie Services Reference"
 msgstr "ឯកសារយោងសេវាកម្មភាពយន្ត"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "មិនមានធាតុដែលអាចប្រើបានទេ។"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "រកមិនឃើញកម្មវិធីជំនួយ IMDb/TMDB ទេ។"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "រកមិនឃើញការតភ្ជាប់អ៊ីនធឺណិតទេ។ សូមពិនិត្យមើលបណ្តាញរបស់អ្នក។"
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "រកមិនឃើញឆានែលទេ។"
 
 msgid "No channels found"
 msgstr "រកមិនឃើញឆានែលទេ។"
@@ -557,14 +579,26 @@ msgstr "ប៉ុស្តិ៍សរុប៖ %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "ករណីខាងលើ"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "មិនមានធាតុដែលអាចប្រើបានទេ។"
+
 msgid "Update interval (hours)"
 msgstr "ធ្វើបច្ចុប្បន្នភាពចន្លោះពេល (ម៉ោង)"
 
 msgid "Update interval (minutes):"
 msgstr "ចន្លោះពេលធ្វើបច្ចុប្បន្នភាព (នាទី)៖"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "ចាប់ផ្តើមអាប់ដេត EPG ឥឡូវនេះ?"
+
 msgid "Updating EPG..."
 msgstr "កំពុងអាប់ដេត EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream បានផ្សាយបន្តផ្ទាល់"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "ប្រភព Vavoo EPG មិនត្រូវបានបើកនៅក្នុង EPGImport ទេ។ សូមបើកវានៅក្នុងការកំណត់ EPGImport ។"
@@ -596,6 +630,10 @@ msgstr "កំពុងរង់ចាំប្រូកស៊ី..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "សូមស្វាគមន៍មកកាន់ Vavoo Proxy ជាមួយនឹងការគាំទ្រ EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "ចាប់ផ្តើមអាប់ដេត EPG ឥឡូវនេះ?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "អ្នកអាចចាប់ផ្តើមវាពីម៉ឺនុយ ឬដោយចុចប៊ូតុង TEXT ។"
 
@@ -610,6 +648,9 @@ msgstr "អក្សរតូច"
 
 msgid "seconds"
 msgstr "វិនាទី"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ប្រូកស៊ី ({0}s)"

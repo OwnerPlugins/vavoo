@@ -13,6 +13,7 @@
 
 
 
+
 msgid "! Proxy Expiring"
 msgstr ""
 
@@ -20,6 +21,9 @@ msgid "(%d channels)?"
 msgstr ""
 
 msgid "(%s files deleted)"
+msgstr ""
+
+msgid "(you have v{})"
 msgstr ""
 
 msgid "- Add missing fields to all entries"
@@ -160,6 +164,9 @@ msgstr ""
 msgid "Case: {}"
 msgstr ""
 
+msgid "Changelog:"
+msgstr ""
+
 msgid "Channels"
 msgstr ""
 
@@ -191,6 +198,9 @@ msgid "Console"
 msgstr ""
 
 msgid "Continuing, proxy still syncing..."
+msgstr ""
+
+msgid "Could not save the installer script."
 msgstr ""
 
 msgid "Countries"
@@ -346,6 +356,9 @@ msgstr ""
 msgid "Link in Main Menu"
 msgstr ""
 
+msgid "Loading EPG..."
+msgstr ""
+
 msgid "Lower = less interruption but more refreshes"
 msgstr ""
 
@@ -364,10 +377,16 @@ msgstr ""
 msgid "Movie Services Reference"
 msgstr ""
 
+msgid "New version available: v{}"
+msgstr ""
+
 msgid "No IMDb/TMDB plugin found"
 msgstr ""
 
 msgid "No Internet connection detected. Please check your network."
+msgstr ""
+
+msgid "No changelog provided."
 msgstr ""
 
 msgid "No channels found"
@@ -559,13 +578,22 @@ msgstr ""
 msgid "UPPERCASE"
 msgstr ""
 
+msgid "Update Available"
+msgstr ""
+
 msgid "Update interval (hours)"
 msgstr ""
 
 msgid "Update interval (minutes):"
 msgstr ""
 
+msgid "Update now?"
+msgstr ""
+
 msgid "Updating EPG..."
+msgstr ""
+
+msgid "Updating Vavoo Stream Live..."
 msgstr ""
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
@@ -598,6 +626,9 @@ msgstr ""
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr ""
 
+msgid "Yes, update now"
+msgstr ""
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr ""
 
@@ -611,6 +642,9 @@ msgid "lowercase"
 msgstr ""
 
 msgid "seconds"
+msgstr ""
+
+msgid "v{} -> v{}"
 msgstr ""
 
 msgid "✓ Proxy ({0}s)"

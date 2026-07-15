@@ -25,6 +25,9 @@ msgstr "(%d kanály)?"
 msgid "(%s files deleted)"
 msgstr "(%s souborů smazáno)"
 
+msgid "(you have v{})"
+msgstr "(máte v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Přidejte chybějící pole ke všem záznamům"
 
@@ -165,6 +168,10 @@ msgstr "Zrušit provedení?"
 msgid "Case: {}"
 msgstr "Případ: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanály"
+
 msgid "Channels"
 msgstr "Kanály"
 
@@ -198,6 +205,9 @@ msgstr "Utěšit"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Pokračuje se, server proxy se stále synchronizuje..."
+
+msgid "Could not save the installer script."
+msgstr "Nelze uložit instalační skript."
 
 msgid "Countries"
 msgstr "země"
@@ -360,6 +370,10 @@ msgstr "Licence: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Odkaz v hlavní nabídce"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Aktualizace EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Nižší = méně přerušení, ale více osvěžení"
 
@@ -379,11 +393,19 @@ msgstr "Minimální podobnost pro odpovídající kanály (vyšší = přísněj
 msgid "Movie Services Reference"
 msgstr "Reference filmových služeb"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Nejsou k dispozici žádné položky"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Nebyl nalezen žádný plugin IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Nebylo zjištěno žádné připojení k internetu. Zkontrolujte svou síť."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Nebyly nalezeny žádné kanály"
 
 msgid "No channels found"
 msgstr "Nebyly nalezeny žádné kanály"
@@ -577,6 +599,10 @@ msgstr "Celkový počet kanálů: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "VELKÁ PÍSMENA"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Nejsou k dispozici žádné položky"
+
 msgid "Update interval (hours)"
 msgstr "Interval aktualizace (hodiny)"
 
@@ -584,8 +610,16 @@ msgstr "Interval aktualizace (hodiny)"
 msgid "Update interval (minutes):"
 msgstr "Interval aktualizace (hodiny)"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Spustit aktualizaci EPG nyní?"
+
 msgid "Updating EPG..."
 msgstr "Aktualizace EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Živý přenos Vavoo"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Zdroj Vavoo EPG není v EPGImport povolen. Povolte jej v nastavení EPGImport."
@@ -618,6 +652,10 @@ msgstr "Čekání na proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Vítejte ve Vavoo Proxy s podporou EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Spustit aktualizaci EPG nyní?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Můžete jej spustit z nabídky nebo stisknutím tlačítka TEXT."
 
@@ -632,6 +670,9 @@ msgstr "malá písmena"
 
 msgid "seconds"
 msgstr "sekund"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0})"

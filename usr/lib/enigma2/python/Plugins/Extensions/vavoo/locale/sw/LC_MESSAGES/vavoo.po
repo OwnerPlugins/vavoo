@@ -20,6 +20,9 @@ msgstr "(vituo %d)?"
 msgid "(%s files deleted)"
 msgstr "(faili %s zimefutwa)"
 
+msgid "(you have v{})"
+msgstr "(una v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Ongeza sehemu zinazokosekana kwa maingizo yote"
 
@@ -158,6 +161,10 @@ msgstr "Ungependa kughairi utekelezaji?"
 msgid "Case: {}"
 msgstr "Kesi: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Vituo"
+
 msgid "Channels"
 msgstr "Vituo"
 
@@ -190,6 +197,9 @@ msgstr ""
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Inaendelea, proksi bado inasawazisha..."
+
+msgid "Could not save the installer script."
+msgstr "Haikuweza kuhifadhi hati ya kisakinishi."
 
 msgid "Countries"
 msgstr "Nchi"
@@ -344,6 +354,10 @@ msgstr "Leseni: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Unganisha kwenye Menyu kuu"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Inasasisha EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Chini = usumbufu kidogo lakini viburudisho zaidi"
 
@@ -362,11 +376,19 @@ msgstr "Kiwango cha chini cha kufanana kwa chaneli zinazolingana (juu = kali)."
 msgid "Movie Services Reference"
 msgstr "Rejea ya Huduma za Filamu"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Hakuna vipengee vinavyopatikana"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Hakuna programu-jalizi ya IMDb/TMDB iliyopatikana"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Hakuna muunganisho wa Mtandao uliogunduliwa. Tafadhali angalia mtandao wako."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Hakuna vituo vilivyopatikana"
 
 msgid "No channels found"
 msgstr "Hakuna vituo vilivyopatikana"
@@ -557,14 +579,26 @@ msgstr "Jumla ya vituo: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "KUBWA"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Hakuna vipengee vinavyopatikana"
+
 msgid "Update interval (hours)"
 msgstr "Sasisha muda (saa)"
 
 msgid "Update interval (minutes):"
 msgstr "Sasisha muda (dakika):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Ungependa kuanza kusasisha EPG sasa?"
+
 msgid "Updating EPG..."
 msgstr "Inasasisha EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Tiririsha Moja kwa Moja"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Chanzo cha Vavoo EPG hakijawezeshwa katika EPGIMport. Tafadhali iwashe katika mipangilio ya EPGIMport."
@@ -596,6 +630,10 @@ msgstr "Inasubiri proksi..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Karibu kwa Wakala wa Vavoo kwa usaidizi wa EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Ungependa kuanza kusasisha EPG sasa?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Unaweza kuianzisha kutoka kwa menyu au kwa kubonyeza kitufe cha TEXT."
 
@@ -610,6 +648,9 @@ msgstr "herufi ndogo"
 
 msgid "seconds"
 msgstr "sekunde"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Wakala ({0}s)"

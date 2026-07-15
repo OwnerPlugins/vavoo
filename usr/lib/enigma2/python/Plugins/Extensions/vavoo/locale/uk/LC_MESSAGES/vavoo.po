@@ -21,6 +21,9 @@ msgstr "(%d каналів)?"
 msgid "(%s files deleted)"
 msgstr "(%s файлів видалено)"
 
+msgid "(you have v{})"
+msgstr "(у вас є v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Додайте відсутні поля до всіх записів"
 
@@ -159,6 +162,10 @@ msgstr "Скасувати виконання?"
 msgid "Case: {}"
 msgstr "Регістр: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Канали"
+
 msgid "Channels"
 msgstr "Канали"
 
@@ -191,6 +198,9 @@ msgstr "Консоль"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Продовжується, проксі ще синхронізується..."
+
+msgid "Could not save the installer script."
+msgstr "Не вдалося зберегти сценарій інсталятора."
 
 msgid "Countries"
 msgstr "Країни"
@@ -345,6 +355,10 @@ msgstr "Ліцензія: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Посилання в головному меню"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Оновлення EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Нижче = менше перерв, але більше оновлень"
 
@@ -363,11 +377,19 @@ msgstr "Мінімальна схожість для відповідних ка
 msgid "Movie Services Reference"
 msgstr "Довідник кінослужб"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Немає доступних товарів"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Плагін IMDb/TMDB не знайдено"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Підключення до Інтернету не виявлено. Перевірте свою мережу."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Канали не знайдено"
 
 msgid "No channels found"
 msgstr "Канали не знайдено"
@@ -558,14 +580,26 @@ msgstr "Усього каналів: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "ВЕРХНИЙ РЕГІСТ"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Немає доступних товарів"
+
 msgid "Update interval (hours)"
 msgstr "Інтервал оновлення (годин)"
 
 msgid "Update interval (minutes):"
 msgstr "Інтервал оновлення (хвилини):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Почати оновлення EPG зараз?"
+
 msgid "Updating EPG..."
 msgstr "Оновлення EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Пряма трансляція Vavoo"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Джерело EPG Vavoo не ввімкнено в EPGImport. Увімкніть його в налаштуваннях EPGImport."
@@ -597,6 +631,10 @@ msgstr "Очікування проксі..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Ласкаво просимо до Vavoo Proxy із підтримкою EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Почати оновлення EPG зараз?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Ви можете запустити його з меню або натиснувши кнопку ТЕКСТ."
 
@@ -611,6 +649,9 @@ msgstr "нижній регістр"
 
 msgid "seconds"
 msgstr "секунд"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Проксі ({0})"

@@ -20,6 +20,9 @@ msgstr "(%d چینلونه)؟"
 msgid "(%s files deleted)"
 msgstr "(%s فایلونه حذف شوي)"
 
+msgid "(you have v{})"
+msgstr "(تاسو v{} لرئ)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- ټولو ننوتلو ته ورک شوي ساحې اضافه کړئ"
 
@@ -158,6 +161,10 @@ msgstr "اعدام لغوه کړئ؟"
 msgid "Case: {}"
 msgstr "قضیه: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "چینلونه"
+
 msgid "Channels"
 msgstr "چینلونه"
 
@@ -190,6 +197,9 @@ msgstr "کنسول"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "دوام لري، پراکسي لا هم همغږي کیږي..."
+
+msgid "Could not save the installer script."
+msgstr "د انسټالر سکریپټ خوندي نه شو."
 
 msgid "Countries"
 msgstr "هیوادونه"
@@ -344,6 +354,10 @@ msgstr "جواز: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "په مین مینو کې لینک"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "د EPG تازه کول..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ټیټ = لږ مداخله مګر ډیر تازه کوي"
 
@@ -362,11 +376,19 @@ msgstr "د سمون چینلونو لپاره لږترلږه ورته والی (
 msgid "Movie Services Reference"
 msgstr "د فلم خدماتو حواله"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "هیڅ توکي شتون نلري"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "هیڅ IMDb/TMDB پلگ ان ونه موندل شو"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "د انټرنیټ پیوستون ندی موندل شوی. مهرباني وکړئ خپل شبکه وګورئ."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "هیڅ چینل ونه موندل شو"
 
 msgid "No channels found"
 msgstr "هیڅ چینل ونه موندل شو"
@@ -557,14 +579,26 @@ msgstr "ټول چینلونه: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "پورته کیسه"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "هیڅ توکي شتون نلري"
+
 msgid "Update interval (hours)"
 msgstr "د تازه کولو وقفه (ساعتونه)"
 
 msgid "Update interval (minutes):"
 msgstr "د تازه کولو وقفه (دقیقې):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "اوس د EPG تازه کول پیل کړئ؟"
+
 msgid "Updating EPG..."
 msgstr "د EPG تازه کول..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "په ژوندۍ بڼه وایو"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "د Vavoo EPG سرچینه په EPGImport کې فعاله شوې نه ده. مهرباني وکړئ دا د EPGImport ترتیباتو کې فعال کړئ."
@@ -596,6 +630,10 @@ msgstr "د پراکسي په انتظار..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "د EPG ملاتړ سره Vavoo پراکسي ته ښه راغلاست"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "اوس د EPG تازه کول پیل کړئ؟"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "تاسو کولی شئ دا له مینو څخه پیل کړئ یا د متن تڼۍ فشارولو سره."
 
@@ -610,6 +648,9 @@ msgstr "کوچنی"
 
 msgid "seconds"
 msgstr "ثانیې"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ پراکسي ({0}s)"

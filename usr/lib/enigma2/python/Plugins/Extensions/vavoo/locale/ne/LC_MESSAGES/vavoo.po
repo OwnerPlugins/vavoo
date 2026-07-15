@@ -20,6 +20,9 @@ msgstr "(%d च्यानलहरू)?"
 msgid "(%s files deleted)"
 msgstr "(%s फाइलहरू मेटाइयो)"
 
+msgid "(you have v{})"
+msgstr "(तपाईसँग v{} छ)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- सबै प्रविष्टिहरूमा छुटेका क्षेत्रहरू थप्नुहोस्"
 
@@ -158,6 +161,10 @@ msgstr "कार्यान्वयन रद्द गर्ने हो?"
 msgid "Case: {}"
 msgstr "केस: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "च्यानलहरू"
+
 msgid "Channels"
 msgstr "च्यानलहरू"
 
@@ -190,6 +197,9 @@ msgstr "कन्सोल"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "जारी राख्दै, प्रोक्सी अझै सिङ्क गर्दै..."
+
+msgid "Could not save the installer script."
+msgstr "स्थापनाकर्ता स्क्रिप्ट बचत गर्न सकेन।"
 
 msgid "Countries"
 msgstr "देशहरू"
@@ -344,6 +354,10 @@ msgstr "इजाजतपत्र: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "मुख्य मेनुमा लिङ्क"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG अद्यावधिक गर्दै..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "तल्लो = कम अवरोध तर थप ताजा"
 
@@ -362,11 +376,19 @@ msgstr "मिल्दो च्यानलहरूको लागि न्
 msgid "Movie Services Reference"
 msgstr "चलचित्र सेवा सन्दर्भ"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "कुनै वस्तुहरू उपलब्ध छैनन्"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "कुनै IMDb/TMDB प्लगइन फेला परेन"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "इन्टरनेट जडान पत्ता लागेन। कृपया आफ्नो नेटवर्क जाँच गर्नुहोस्।"
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "कुनै च्यानल भेटिएन"
 
 msgid "No channels found"
 msgstr "कुनै च्यानल भेटिएन"
@@ -557,14 +579,26 @@ msgstr "कुल च्यानलहरू: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "अपरकेस"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "कुनै वस्तुहरू उपलब्ध छैनन्"
+
 msgid "Update interval (hours)"
 msgstr "अद्यावधिक अन्तराल (घण्टा)"
 
 msgid "Update interval (minutes):"
 msgstr "अद्यावधिक अन्तराल (मिनेट):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "अब EPG अद्यावधिक सुरु गर्ने हो?"
+
 msgid "Updating EPG..."
 msgstr "EPG अद्यावधिक गर्दै..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo स्ट्रिम लाइभ"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG स्रोत EPGImport मा सक्षम गरिएको छैन। कृपया यसलाई EPGImport सेटिङहरूमा सक्षम गर्नुहोस्।"
@@ -596,6 +630,10 @@ msgstr "प्रोक्सीको लागि प्रतिक्षा 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG समर्थनको साथ Vavoo Proxy मा स्वागत छ"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "अब EPG अद्यावधिक सुरु गर्ने हो?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "तपाइँ यसलाई मेनुबाट वा TEXT बटन थिचेर सुरु गर्न सक्नुहुन्छ।"
 
@@ -610,6 +648,9 @@ msgstr "सानो अक्षर"
 
 msgid "seconds"
 msgstr "सेकेन्ड"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ प्रोक्सी ({0}हरू)"

@@ -20,6 +20,9 @@ msgstr "(%d kanalen)?"
 msgid "(%s files deleted)"
 msgstr "(%s triemmen wiske)"
 
+msgid "(you have v{})"
+msgstr "(jo hawwe v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Foegje ûntbrekkende fjilden ta oan alle yngongen"
 
@@ -158,6 +161,10 @@ msgstr "Eksekúsje annulearje?"
 msgid "Case: {}"
 msgstr "Geval: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanalen: %d"
+
 msgid "Channels"
 msgstr ""
 
@@ -190,6 +197,9 @@ msgstr "Konsole"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Trochgean, proxy wurdt noch syngronisearje..."
+
+msgid "Could not save the installer script."
+msgstr "Koe it ynstallearderskript net bewarje."
 
 msgid "Countries"
 msgstr "Lannen"
@@ -344,6 +354,10 @@ msgstr "Lisinsje: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Link yn haadmenu"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG bywurkje..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Leger = minder ûnderbrekking mar mear verfrist"
 
@@ -362,11 +376,19 @@ msgstr "Minimum oerienkomst foar oerienkommende kanalen (heger = stranger)."
 msgid "Movie Services Reference"
 msgstr ""
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Gjin items beskikber"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Gjin IMDb/TMDB-plugin fûn"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Gjin ynternetferbining fûn. Kontrolearje asjebleaft jo netwurk."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Gjin kanalen fûn"
 
 msgid "No channels found"
 msgstr "Gjin kanalen fûn"
@@ -557,14 +579,25 @@ msgstr "Totaal kanalen: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "HOOFLETTERS"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Gjin items beskikber"
+
 msgid "Update interval (hours)"
 msgstr "Update ynterval (oeren)"
 
 msgid "Update interval (minutes):"
 msgstr "Update ynterval (minuten):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "EPG-fernijing no begjinne?"
+
 msgid "Updating EPG..."
 msgstr "EPG bywurkje..."
+
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream Live bywurkje..."
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG-boarne is net ynskeakele yn EPGImport. Aktivearje it asjebleaft yn EPGImport-ynstellingen."
@@ -596,6 +629,10 @@ msgstr "Wachtsje op proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Wolkom by Vavoo Proxy mei EPG-stipe"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "EPG-fernijing no begjinne?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Jo kinne it begjinne fanút it menu of troch op de TEXT-knop te drukken."
 
@@ -610,6 +647,9 @@ msgstr "lytse letters"
 
 msgid "seconds"
 msgstr "sekonden"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr ""

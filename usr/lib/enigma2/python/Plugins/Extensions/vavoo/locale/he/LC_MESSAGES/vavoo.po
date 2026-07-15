@@ -21,6 +21,9 @@ msgstr "(%d ערוצים)?"
 msgid "(%s files deleted)"
 msgstr "(%s קבצים נמחקו)"
 
+msgid "(you have v{})"
+msgstr "(יש לך v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- הוסף שדות חסרים לכל הערכים"
 
@@ -159,6 +162,10 @@ msgstr "לבטל את הביצוע?"
 msgid "Case: {}"
 msgstr "מקרה: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "ערוצים"
+
 msgid "Channels"
 msgstr "ערוצים"
 
@@ -191,6 +198,9 @@ msgstr "לְנַחֵם"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "ממשיך, פרוקסי עדיין מסתנכרן..."
+
+msgid "Could not save the installer script."
+msgstr "לא ניתן לשמור את סקריפט ההתקנה."
 
 msgid "Countries"
 msgstr "מדינות"
@@ -345,6 +355,10 @@ msgstr "רישיון: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "קישור בתפריט הראשי"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "מעדכן את ה-EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "נמוך יותר = פחות הפרעה אבל יותר מרענן"
 
@@ -363,11 +377,19 @@ msgstr "דמיון מינימלי לערוצים תואמים (גבוה יותר
 msgid "Movie Services Reference"
 msgstr "הפניה לשירותי סרטים"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "אין פריטים זמינים"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "לא נמצא תוסף IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "לא זוהה חיבור לאינטרנט. אנא בדוק את הרשת שלך."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "לא נמצאו ערוצים"
 
 msgid "No channels found"
 msgstr "לא נמצאו ערוצים"
@@ -558,14 +580,26 @@ msgstr "סך הערוצים: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "אותיות רישיות"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "אין פריטים זמינים"
+
 msgid "Update interval (hours)"
 msgstr "מרווח עדכון (שעות)"
 
 msgid "Update interval (minutes):"
 msgstr "מרווח עדכון (דקות):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "להתחיל את עדכון ה-EPG עכשיו?"
+
 msgid "Updating EPG..."
 msgstr "מעדכן את ה-EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "זרם Vavoo בשידור חי"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "מקור EPG של Vavoo אינו מופעל ב-EPGImport. אנא הפעל אותו בהגדרות EPGImport."
@@ -597,6 +631,10 @@ msgstr "ממתין ל-proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ברוכים הבאים ל-Vavoo Proxy עם תמיכה ב-EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "להתחיל את עדכון ה-EPG עכשיו?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "אתה יכול להפעיל אותו מהתפריט או על ידי לחיצה על כפתור הטקסט."
 
@@ -611,6 +649,9 @@ msgstr "אותיות קטנות"
 
 msgid "seconds"
 msgstr "שניות"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ פרוקסי ({0}ים)"

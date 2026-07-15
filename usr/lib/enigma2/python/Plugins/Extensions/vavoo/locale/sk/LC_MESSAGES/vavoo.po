@@ -21,6 +21,9 @@ msgstr "(%d kanálov)?"
 msgid "(%s files deleted)"
 msgstr "(Odstránených súborov: %s)"
 
+msgid "(you have v{})"
+msgstr "(máte v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Pridajte chýbajúce polia do všetkých záznamov"
 
@@ -165,6 +168,10 @@ msgid "Case: {}"
 msgstr "Prípad: {}"
 
 #, fuzzy
+msgid "Changelog:"
+msgstr "Kanály: %d"
+
+#, fuzzy
 msgid "Channels"
 msgstr "Kanály: %d"
 
@@ -198,6 +205,9 @@ msgstr "Konzola"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Pokračuje sa, server proxy sa stále synchronizuje..."
+
+msgid "Could not save the installer script."
+msgstr "Nepodarilo sa uložiť inštalačný skript."
 
 msgid "Countries"
 msgstr "Krajiny"
@@ -359,6 +369,10 @@ msgstr "Licencia: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Odkaz v hlavnom menu"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Aktualizácia EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Nižšia = menej prerušení, ale viac osviežení"
 
@@ -377,11 +391,19 @@ msgstr "Minimálna podobnosť pre zodpovedajúce kanály (vyššia = prísnejši
 msgid "Movie Services Reference"
 msgstr "Odkaz na filmové služby"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Nová verzia {version} je k dispozícii."
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Nebol nájdený žiadny doplnok IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Nebolo zistené žiadne internetové pripojenie. Skontrolujte svoju sieť."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Nenašli sa žiadne kanály: {}"
 
 msgid "No channels found"
 msgstr "Nenašli sa žiadne kanály: {}"
@@ -458,7 +480,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Ready"
@@ -580,14 +602,26 @@ msgid "UPPERCASE"
 msgstr "VEĽKÉ (UPPERCASE)"
 
 #, fuzzy
+msgid "Update Available"
+msgstr "Nie sú k dispozícii žiadne položky"
+
+#, fuzzy
 msgid "Update interval (hours)"
 msgstr "Interval aktualizácie (v minútach):"
 
 msgid "Update interval (minutes):"
 msgstr "Interval aktualizácie (v minútach):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Aktualizujte ma"
+
 msgid "Updating EPG..."
 msgstr "Aktualizácia EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Streamujte Vavoo naživo"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG zdroj nie je povolený v EPGImport. Povoľte ho v nastaveniach EPGImport."
@@ -606,7 +640,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -620,6 +654,10 @@ msgstr "Čaká sa na proxy..."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Vitajte vo Vavoo Proxy s podporou EPG"
+
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Spustiť aktualizáciu EPG teraz?"
 
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Môžete ho spustiť z ponuky alebo stlačením tlačidla TEXT."
@@ -635,6 +673,9 @@ msgstr "malé písmo"
 
 msgid "seconds"
 msgstr "sekúnd"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0})"
@@ -722,9 +763,6 @@ msgstr "✗ Reštart zlyhal"
 #~ msgid "Eg: Arabic or other language."
 #~ msgstr "Napr.: arabčina alebo iný jazyk."
 
-#~ msgid "New version {version} is available."
-#~ msgstr "Nová verzia {version} je k dispozícii."
-
 #~ msgid "No channels found for '%(name)s'"
 #~ msgstr "Pre '%(name)s' sa nenašli žiadne kanály"
 
@@ -739,9 +777,6 @@ msgstr "✗ Reštart zlyhal"
 
 #~ msgid "Update Aborted!"
 #~ msgstr "Aktualizácia prerušená!"
-
-#~ msgid "Update Me"
-#~ msgstr "Aktualizujte ma"
 
 #~ msgid "- - - -"
 #~ msgstr "- - - -"

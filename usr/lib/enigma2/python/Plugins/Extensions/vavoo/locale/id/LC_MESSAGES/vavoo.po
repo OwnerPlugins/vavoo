@@ -20,6 +20,9 @@ msgstr "(%d saluran)?"
 msgid "(%s files deleted)"
 msgstr "(%s file dihapus)"
 
+msgid "(you have v{})"
+msgstr "(kamu punya v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Tambahkan bidang yang hilang ke semua entri"
 
@@ -158,6 +161,10 @@ msgstr "Batalkan eksekusi?"
 msgid "Case: {}"
 msgstr "Kasus: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Saluran"
+
 msgid "Channels"
 msgstr "Saluran"
 
@@ -190,6 +197,9 @@ msgstr "Menghibur"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Melanjutkan, proxy masih disinkronkan..."
+
+msgid "Could not save the installer script."
+msgstr "Tidak dapat menyimpan skrip penginstal."
 
 msgid "Countries"
 msgstr "Negara"
@@ -344,6 +354,10 @@ msgstr "Lisensi: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Tautan di Menu Utama"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Memperbarui EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lebih rendah = lebih sedikit gangguan tetapi lebih banyak penyegaran"
 
@@ -362,11 +376,19 @@ msgstr "Kemiripan minimum untuk saluran yang cocok (lebih tinggi = lebih ketat).
 msgid "Movie Services Reference"
 msgstr "Referensi Layanan Film"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Tidak ada item yang tersedia"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Tidak ditemukan plugin IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Tidak ada koneksi Internet yang terdeteksi. Silakan periksa jaringan Anda."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Tidak ada saluran yang ditemukan"
 
 msgid "No channels found"
 msgstr "Tidak ada saluran yang ditemukan"
@@ -557,14 +579,26 @@ msgstr "Total saluran: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "HURUF BESAR"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Tidak ada item yang tersedia"
+
 msgid "Update interval (hours)"
 msgstr "Interval pembaruan (jam)"
 
 msgid "Update interval (minutes):"
 msgstr "Interval pembaruan (menit):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Mulai pembaruan EPG sekarang?"
+
 msgid "Updating EPG..."
 msgstr "Memperbarui EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Aliran Vavoo Langsung"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Sumber Vavoo EPG tidak diaktifkan di EPGImport. Silakan aktifkan di pengaturan EPGImport."
@@ -596,6 +630,10 @@ msgstr "Menunggu proksi..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Selamat datang di Vavoo Proxy dengan dukungan EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Mulai pembaruan EPG sekarang?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Anda dapat memulainya dari menu atau dengan menekan tombol TEXT."
 
@@ -610,6 +648,9 @@ msgstr "huruf kecil"
 
 msgid "seconds"
 msgstr "detik"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proksi ({0}s)"

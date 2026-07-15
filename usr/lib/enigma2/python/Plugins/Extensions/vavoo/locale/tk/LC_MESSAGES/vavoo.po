@@ -20,6 +20,9 @@ msgstr "(% d kanallar)?"
 msgid "(%s files deleted)"
 msgstr "(% s faýllar öçürildi)"
 
+msgid "(you have v{})"
+msgstr "(sizde v {} bar)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- missinghli ýazgylara ýiten meýdanlary goşuň"
 
@@ -158,6 +161,10 @@ msgstr "Executionerine ýetirmekligi ýatyrmalymy?"
 msgid "Case: {}"
 msgstr "Mesele: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanallar"
+
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -190,6 +197,9 @@ msgstr "Konsol"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Dowam edýär, proksi henizem sinhronlaýar ..."
+
+msgid "Could not save the installer script."
+msgstr "Gurnaýjy skriptini saklap bolmady"
 
 msgid "Countries"
 msgstr "Countriesurtlar"
@@ -344,6 +354,10 @@ msgstr "Ygtyýarnama: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Esasy menýuda baglanyşyk"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG täzelenmek ..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Aşaky = az arakesme, ýöne has täzelenýär"
 
@@ -362,11 +376,19 @@ msgstr "Gabat gelýän kanallar üçin iň az meňzeşlik (has ýokary = has ber
 msgid "Movie Services Reference"
 msgstr "Kino hyzmatlaryna salgylanma"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Hiç zat ýok"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb / TMDB plugin tapylmady"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Internet birikmesi tapylmady Toruňyzy barlaň."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Kanal tapylmady"
 
 msgid "No channels found"
 msgstr "Kanal tapylmady"
@@ -557,14 +579,26 @@ msgstr "Jemi kanallar:% (jemi_ kanallar) d"
 msgid "UPPERCASE"
 msgstr "ÜPJÜNÇILIK"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Hiç zat ýok"
+
 msgid "Update interval (hours)"
 msgstr "Aralygy täzeläň (sagat)"
 
 msgid "Update interval (minutes):"
 msgstr "Aralyk aralygy (minutlar):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "EPG täzelenmesini indi başlaň?"
+
 msgid "Updating EPG..."
 msgstr "EPG täzelenmek ..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Wavoo akymy göni ýaýlymda"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG çeşmesi EPGImport-da açyk däl. EPGImport sazlamalarynda işlediň."
@@ -596,6 +630,10 @@ msgstr "Proksi garaşmak ..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG goldawy bilen Vavoo Proxy-a hoş geldiňiz"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "EPG täzelenmesini indi başlaň?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Menýudan ýa-da TEXT düwmesini basyp başlap bilersiňiz."
 
@@ -610,6 +648,9 @@ msgstr "kiçi harp"
 
 msgid "seconds"
 msgstr "sekunt"
+
+msgid "v{} -> v{}"
+msgstr "v {} -> v {}"
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proksi ({0} s)"
