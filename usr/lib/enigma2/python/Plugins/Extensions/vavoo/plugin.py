@@ -320,7 +320,8 @@ tmlast = None
 
 # Auto-update check state, shared between startVavoo (kicks off the
 # background check) and MainVavoo (shows the popup once, after the main
-# menu is open). See _start_update_check() / MainVavoo._check_update_popup_tick().
+# menu is open). See _start_update_check() /
+# MainVavoo._check_update_popup_tick().
 _update_check_started = False
 _update_check_done = False
 _update_check_result = None
@@ -348,8 +349,7 @@ def _start_update_check():
         _update_check_result = check_remote_installer_version()
         version, changelog, content = _update_check_result
         print("[Update] Check finished: remote_version={} changelog_len={} content_len={}".format(
-            version, len(changelog) if changelog else 0,
-            len(content) if content else 0))
+            version, len(changelog) if changelog else 0, len(content) if content else 0))
         _update_check_done = True
 
     threading.Thread(target=_worker, daemon=True).start()
@@ -2326,7 +2326,8 @@ class MainVavoo(Screen):
             # install (e.g. a manually-deployed copy that skipped the
             # skin/ folder) - fall back to a plain MessageBox rather than
             # taking down the main menu over a cosmetic dialog.
-            print("[Update] UpdatePopup failed to open ({}), falling back to MessageBox".format(e))
+            print(
+                "[Update] UpdatePopup failed to open ({}), falling back to MessageBox".format(e))
             message = _("New version available: v{}").format(remote_version)
             message += "\n" + _("(you have v{})").format(__version__)
             if changelog:

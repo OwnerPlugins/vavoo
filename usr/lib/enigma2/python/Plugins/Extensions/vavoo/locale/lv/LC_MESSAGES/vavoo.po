@@ -21,6 +21,9 @@ msgstr "(%d kanāli)?"
 msgid "(%s files deleted)"
 msgstr "(%s faili izdzēsti)"
 
+msgid "(you have v{})"
+msgstr "(jums ir v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Pievienojiet trūkstošos laukus visiem ierakstiem"
 
@@ -159,6 +162,10 @@ msgstr "Vai atcelt izpildi?"
 msgid "Case: {}"
 msgstr "Lieta: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanāli"
+
 msgid "Channels"
 msgstr "Kanāli"
 
@@ -191,6 +198,9 @@ msgstr "Konsole"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Turpinās, starpniekserveris joprojām tiek sinhronizēts..."
+
+msgid "Could not save the installer script."
+msgstr "Nevarēja saglabāt instalēšanas skriptu."
 
 msgid "Countries"
 msgstr "valstis"
@@ -345,6 +355,10 @@ msgstr "Licence: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Saite galvenajā izvēlnē"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Notiek EPG atjaunināšana..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Zemāks = mazāk pārtraukumu, bet vairāk atsvaidzināšanas"
 
@@ -363,11 +377,19 @@ msgstr "Minimālā līdzība atbilstošiem kanāliem (augstāka = stingrāka)."
 msgid "Movie Services Reference"
 msgstr "Filmu pakalpojumu uzziņa"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Nav pieejams neviens vienums"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB spraudnis nav atrasts"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Nav atrasts interneta savienojums. Lūdzu, pārbaudiet savu tīklu."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Nav atrasts neviens kanāls"
 
 msgid "No channels found"
 msgstr "Nav atrasts neviens kanāls"
@@ -558,14 +580,26 @@ msgstr "Kopējais kanālu skaits: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "LIELAIS RAKSTS"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Nav pieejams neviens vienums"
+
 msgid "Update interval (hours)"
 msgstr "Atjaunināšanas intervāls (stundas)"
 
 msgid "Update interval (minutes):"
 msgstr "Atjaunināšanas intervāls (minūtes):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Vai sākt EPG atjaunināšanu tūlīt?"
+
 msgid "Updating EPG..."
 msgstr "Notiek EPG atjaunināšana..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo straume tiešraidē"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG avots nav iespējots programmā EPGImport. Lūdzu, iespējojiet to EPGImport iestatījumos."
@@ -597,6 +631,10 @@ msgstr "Gaida starpniekserveri..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Laipni lūdzam Vavoo Proxy ar EPG atbalstu"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Vai sākt EPG atjaunināšanu tūlīt?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "To var sākt no izvēlnes vai nospiežot pogu TEXT."
 
@@ -611,6 +649,9 @@ msgstr "mazie burti"
 
 msgid "seconds"
 msgstr "sekundes"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Starpniekserveris ({0} s)"

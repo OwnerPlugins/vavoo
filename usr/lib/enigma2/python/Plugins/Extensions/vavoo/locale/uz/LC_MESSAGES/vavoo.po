@@ -20,6 +20,9 @@ msgstr "(%d ta kanal)?"
 msgid "(%s files deleted)"
 msgstr "(%s fayl oʻchirildi)"
 
+msgid "(you have v{})"
+msgstr "(sizda v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Barcha yozuvlarga etishmayotgan maydonlarni qo'shing"
 
@@ -158,6 +161,10 @@ msgstr "Bajarish bekor qilinsinmi?"
 msgid "Case: {}"
 msgstr "Hodisa: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanallar"
+
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -190,6 +197,9 @@ msgstr "Konsol"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Davom etilmoqda, proksi-server hamon sinxronlanmoqda..."
+
+msgid "Could not save the installer script."
+msgstr "Oʻrnatish skriptini saqlab boʻlmadi."
 
 msgid "Countries"
 msgstr "Mamlakatlar"
@@ -344,6 +354,10 @@ msgstr "Litsenziya: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Asosiy menyuda havola"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG yangilanmoqda..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Pastroq = kamroq uzilish, lekin ko'proq yangilanish"
 
@@ -362,11 +376,19 @@ msgstr "Mos keladigan kanallar uchun minimal o'xshashlik (yuqori = qattiqroq)."
 msgid "Movie Services Reference"
 msgstr "Kino xizmatlari uchun ma'lumotnoma"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Hech narsa mavjud emas"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB plaginlari topilmadi"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Internet aloqasi aniqlanmadi. Tarmoqingizni tekshiring."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Hech qanday kanal topilmadi"
 
 msgid "No channels found"
 msgstr "Hech qanday kanal topilmadi"
@@ -557,14 +579,26 @@ msgstr "Jami kanallar: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "YTH"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Hech narsa mavjud emas"
+
 msgid "Update interval (hours)"
 msgstr "Yangilanish oralig'i (soat)"
 
 msgid "Update interval (minutes):"
 msgstr "Yangilash oralig'i (daqiqa):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "EPG yangilanishi hozir boshlansinmi?"
+
 msgid "Updating EPG..."
 msgstr "EPG yangilanmoqda..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream jonli plagin"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "EPGImportda Vavoo EPG manbasi yoqilmagan. Iltimos, uni EPGImport sozlamalarida yoqing."
@@ -596,6 +630,10 @@ msgstr "Proksi-server kutilmoqda..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG yordami bilan Vavoo Proksi-ga xush kelibsiz"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "EPG yangilanishi hozir boshlansinmi?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Siz uni menyudan yoki TEXT tugmasini bosish orqali boshlashingiz mumkin."
 
@@ -610,6 +648,9 @@ msgstr "kichik harf"
 
 msgid "seconds"
 msgstr "soniya"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proksi-server ({0}s)"

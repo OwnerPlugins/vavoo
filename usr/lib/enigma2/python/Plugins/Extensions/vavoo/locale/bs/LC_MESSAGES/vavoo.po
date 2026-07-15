@@ -20,6 +20,9 @@ msgstr "(%d kanala)?"
 msgid "(%s files deleted)"
 msgstr "(%s fajlova je izbrisano)"
 
+msgid "(you have v{})"
+msgstr "(imate v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Dodajte polja koja nedostaju svim unosima"
 
@@ -158,6 +161,10 @@ msgstr "Otkazati izvršenje?"
 msgid "Case: {}"
 msgstr "Slučaj: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanali"
+
 msgid "Channels"
 msgstr "Kanali"
 
@@ -190,6 +197,9 @@ msgstr "Konzola"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Nastavlja se, proxy se još uvijek sinhronizuje..."
+
+msgid "Could not save the installer script."
+msgstr "Nije moguće sačuvati skriptu za instalaciju."
 
 msgid "Countries"
 msgstr "Zemlje"
@@ -344,6 +354,10 @@ msgstr "Licenca: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Link u glavnom meniju"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Ažuriranje EPG-a..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Niže = manje prekida, ali više osvježavanja"
 
@@ -362,11 +376,19 @@ msgstr "Minimalna sličnost za podudarne kanale (veći = stroži)."
 msgid "Movie Services Reference"
 msgstr "Referenca za filmske usluge"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Nema dostupnih artikala"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Nije pronađen dodatak za IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Nije otkrivena internetska veza. Molimo provjerite svoju mrežu."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Nema pronađenih kanala"
 
 msgid "No channels found"
 msgstr "Nema pronađenih kanala"
@@ -557,14 +579,26 @@ msgstr "Ukupno kanala: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "VELIKA SLOVA"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Nema dostupnih artikala"
+
 msgid "Update interval (hours)"
 msgstr "Interval ažuriranja (sati)"
 
 msgid "Update interval (minutes):"
 msgstr "Interval ažuriranja (minuta):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Pokrenuti EPG ažuriranje sada?"
+
 msgid "Updating EPG..."
 msgstr "Ažuriranje EPG-a..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo prijenos uživo"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG izvor nije omogućen u EPGImportu. Omogućite ga u postavkama EPGImporta."
@@ -596,6 +630,10 @@ msgstr "Čeka se proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Dobrodošli u Vavoo Proxy sa EPG podrškom"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Pokrenuti EPG ažuriranje sada?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Možete ga pokrenuti iz menija ili pritiskom na dugme TEXT."
 
@@ -610,6 +648,9 @@ msgstr "mala slova"
 
 msgid "seconds"
 msgstr "sekundi"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proksi ({0}s)"

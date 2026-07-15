@@ -21,6 +21,9 @@ msgstr "(%d κανάλια);"
 msgid "(%s files deleted)"
 msgstr "(%s αρχεία διαγράφηκαν)"
 
+msgid "(you have v{})"
+msgstr "(έχετε v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Προσθήκη των πεδίων που λείπουν σε όλες τις καταχωρήσεις"
 
@@ -159,6 +162,10 @@ msgstr "Να γίνει ακύρωση της εκτέλεσης;"
 msgid "Case: {}"
 msgstr "Περίπτωση: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Κανάλια"
+
 msgid "Channels"
 msgstr "Κανάλια"
 
@@ -191,6 +198,9 @@ msgstr "Κονσόλα"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Συνέχεια, ο διακομιστής μεσολάβησης εξακολουθεί να συγχρονίζεται..."
+
+msgid "Could not save the installer script."
+msgstr "Δεν ήταν δυνατή η αποθήκευση του σεναρίου εγκατάστασης."
 
 msgid "Countries"
 msgstr "Χώρες"
@@ -345,6 +355,10 @@ msgstr "Άδεια χρήσης: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Σύνδεσμος στο κύριο μενού"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Ενημέρωση EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Χαμηλότερα = λίγες διακοπές, πολλές ανανεώσεις"
 
@@ -363,11 +377,19 @@ msgstr "Ελάχιστη ομοιότητα για αντιστοίχιση κα
 msgid "Movie Services Reference"
 msgstr "Αναφορά υπηρεσιών ταινιών"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Δεν υπάρχουν διαθέσιμα στοιχεία"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Δεν βρέθηκε πρόσθετο IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Δεν εντοπίστηκε σύνδεση στο Διαδίκτυο. Παρακαλώ ελέγξτε το δίκτυό σας."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Δεν βρέθηκαν κανάλια"
 
 msgid "No channels found"
 msgstr "Δεν βρέθηκαν κανάλια"
@@ -558,14 +580,26 @@ msgstr "Σύνολο καναλιών: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "ΚΕΦΑΛΑΙΑ"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Δεν υπάρχουν διαθέσιμα στοιχεία"
+
 msgid "Update interval (hours)"
 msgstr "Διάστημα ενημέρωσης (ώρες)"
 
 msgid "Update interval (minutes):"
 msgstr "Διάστημα ενημέρωσης (λεπτά)"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Να ξεκινήσει τώρα η ενημέρωση EPG;"
+
 msgid "Updating EPG..."
 msgstr "Ενημέρωση EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream Live"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Η πηγή Vavoo EPG δεν είναι ενεργοποιημένη στο EPGImport. Παρακαλώ ενεργοποιήστε την στις ρυθμίσεις του EPGImport."
@@ -597,6 +631,10 @@ msgstr "Αναμονή για τον proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Καλώς ήρθατε στοn Vavoo proxy με υποστήριξη EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Να ξεκινήσει τώρα η ενημέρωση EPG;"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Μπορείτε να τον εκκινήσετε από το μενού ή πατώντας το κουμπί TEXT."
 
@@ -611,6 +649,9 @@ msgstr "πεζά"
 
 msgid "seconds"
 msgstr "δευτερόλεπτα"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0}s)"

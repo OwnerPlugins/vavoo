@@ -23,6 +23,9 @@ msgstr "(%d canali)?"
 msgid "(%s files deleted)"
 msgstr "(%s file rimossi)"
 
+msgid "(you have v{})"
+msgstr "(hai v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Aggiungi i campi mancanti a tutte le voci"
 
@@ -161,6 +164,10 @@ msgstr "Annullare l'esecuzione?"
 msgid "Case: {}"
 msgstr "Caso: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Canali"
+
 msgid "Channels"
 msgstr "Canali"
 
@@ -193,6 +200,9 @@ msgstr "Consolle"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Continuando, il proxy è ancora in fase di sincronizzazione..."
+
+msgid "Could not save the installer script."
+msgstr "Impossibile salvare lo script di installazione."
 
 msgid "Countries"
 msgstr "Paesi"
@@ -347,6 +357,10 @@ msgstr "Licenza: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Mostra in Menu Principale"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Aggiornamento EPG in corso..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Inferiore = meno interruzioni ma più aggiornamenti"
 
@@ -365,11 +379,19 @@ msgstr "Somiglianza minima corrispondenza Canali (maggiore il valore, più rigor
 msgid "Movie Services Reference"
 msgstr "Service Reference del Player"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "È disponibile la nuova versione {version}."
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Nessun plugin IMDb/TMDB trovato"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Nessuna connessione Internet rilevata. Controlla la tua rete."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Nessun canale trovato"
 
 msgid "No channels found"
 msgstr "Nessun canale trovato"
@@ -560,14 +582,26 @@ msgstr "Canali totali: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "MAIUSCOLO"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Nessun articolo disponibile"
+
 msgid "Update interval (hours)"
 msgstr "Intervallo aggiornamento (ore)"
 
 msgid "Update interval (minutes):"
 msgstr "Intervallo di aggiornamento (minuti):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Aggiornami"
+
 msgid "Updating EPG..."
 msgstr "Aggiornamento EPG in corso..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo streaming in diretta"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "La sorgente Vavoo EPG non è abilitata in EPGImport. Si prega di abilitarla nelle impostazioni di EPGImport."
@@ -599,6 +633,10 @@ msgstr "In attesa del proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Benvenuti su Vavoo Proxy con supporto EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Avviare ora l'aggiornamento dell'EPG?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "È possibile avviarlo dal menu oppure premendo il pulsante TESTO."
 
@@ -613,6 +651,9 @@ msgstr "minuscola"
 
 msgid "seconds"
 msgstr "secondi"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0}s)"
@@ -689,9 +730,6 @@ msgstr "✗ Riavvio non riuscito"
 #~ msgid "Eg: Arabic or other language."
 #~ msgstr "Es: arabo o altra lingua."
 
-#~ msgid "New version {version} is available."
-#~ msgstr "È disponibile la nuova versione {version}."
-
 #~ msgid "No channels found for '%(name)s'"
 #~ msgstr "Nessun canale trovato per '%(name)s'"
 
@@ -706,9 +744,6 @@ msgstr "✗ Riavvio non riuscito"
 
 #~ msgid "Update Aborted!"
 #~ msgstr "Aggiornamento annullato!"
-
-#~ msgid "Update Me"
-#~ msgstr "Aggiornami"
 
 #~ msgid "Error starting stream via proxy"
 #~ msgstr "Errore durante l'avvio dello streaming tramite proxy"

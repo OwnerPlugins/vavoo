@@ -20,6 +20,9 @@ msgstr "(%d sianel)?"
 msgid "(%s files deleted)"
 msgstr "(%s ffeil wedi'u dileu)"
 
+msgid "(you have v{})"
+msgstr "(mae gennych v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Ychwanegu meysydd coll i bob cofnod"
 
@@ -158,6 +161,10 @@ msgstr "Canslo gweithrediad?"
 msgid "Case: {}"
 msgstr "Achos: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Sianeli"
+
 msgid "Channels"
 msgstr "Sianeli"
 
@@ -190,6 +197,9 @@ msgstr "Consol"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Yn parhau, dirprwy yn dal i gysoni..."
+
+msgid "Could not save the installer script."
+msgstr "Methu cadw'r sgript gosodwr."
 
 msgid "Countries"
 msgstr "Gwledydd"
@@ -344,6 +354,10 @@ msgstr "Trwydded: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Dolen yn y Brif Ddewislen"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Wrthi'n diweddaru EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Is = llai o ymyrraeth ond mwy o adnewyddu"
 
@@ -362,11 +376,19 @@ msgstr "Tebygrwydd lleiaf ar gyfer sianeli cyfatebol (uwch = llymach)."
 msgid "Movie Services Reference"
 msgstr "Cyfeirnod Gwasanaethau Ffilm"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Dim eitemau ar gael"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Ni chanfuwyd ategyn IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Dim cysylltiad Rhyngrwyd wedi'i ganfod. Gwiriwch eich rhwydwaith."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Heb ganfod sianeli"
 
 msgid "No channels found"
 msgstr "Heb ganfod sianeli"
@@ -557,14 +579,26 @@ msgstr "Cyfanswm sianeli: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "UCHAF"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Dim eitemau ar gael"
+
 msgid "Update interval (hours)"
 msgstr "Ysbaid diweddaru (oriau)"
 
 msgid "Update interval (minutes):"
 msgstr "Cyfnod diweddaru (munudau):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Dechrau diweddariad EPG nawr?"
+
 msgid "Updating EPG..."
 msgstr "Wrthi'n diweddaru EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Ategyn Vavoo Live Stream"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Nid yw ffynhonnell EPG Vavoo wedi'i galluogi yn EPGImport. Galluogwch ef mewn gosodiadau EPGImport."
@@ -596,6 +630,10 @@ msgstr "Aros am ddirprwy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Croeso i Vavoo Proxy gyda chefnogaeth EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Dechrau diweddariad EPG nawr?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Gallwch chi ei gychwyn o'r ddewislen neu drwy wasgu'r botwm TESTUN."
 
@@ -610,6 +648,9 @@ msgstr "llythrennau bach"
 
 msgid "seconds"
 msgstr "eiliadau"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Dirprwy ({0}au)"

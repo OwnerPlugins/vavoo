@@ -20,6 +20,9 @@ msgstr "(%d ఛానెల్‌లు)?"
 msgid "(%s files deleted)"
 msgstr "(%s ఫైల్‌లు తొలగించబడ్డాయి)"
 
+msgid "(you have v{})"
+msgstr "(మీకు v{} ఉంది)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- అన్ని ఎంట్రీలకు తప్పిపోయిన ఫీల్డ్‌లను జోడించండి"
 
@@ -158,6 +161,10 @@ msgstr "అమలును రద్దు చేయాలా?"
 msgid "Case: {}"
 msgstr "కేసు: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "ఛానెల్‌లు"
+
 msgid "Channels"
 msgstr "ఛానెల్‌లు"
 
@@ -190,6 +197,9 @@ msgstr "కన్సోల్"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "కొనసాగుతోంది, ప్రాక్సీ ఇప్పటికీ సమకాలీకరించబడుతోంది..."
+
+msgid "Could not save the installer script."
+msgstr "ఇన్‌స్టాలర్ స్క్రిప్ట్‌ను సేవ్ చేయడం సాధ్యపడలేదు."
 
 msgid "Countries"
 msgstr "దేశాలు"
@@ -344,6 +354,10 @@ msgstr "లైసెన్స్: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "ప్రధాన మెనూలో లింక్"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPGని నవీకరిస్తోంది..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "తక్కువ = తక్కువ అంతరాయం కానీ మరింత రిఫ్రెష్"
 
@@ -362,11 +376,19 @@ msgstr "సరిపోలే ఛానెల్‌లకు కనీస సా
 msgid "Movie Services Reference"
 msgstr "సినిమా సేవల సూచన"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "ఏ వస్తువులు అందుబాటులో లేవు"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB ప్లగిన్ కనుగొనబడలేదు"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "ఇంటర్నెట్ కనెక్షన్ కనుగొనబడలేదు. దయచేసి మీ నెట్‌వర్క్‌ని తనిఖీ చేయండి."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "ఛానెల్‌లు ఏవీ కనుగొనబడలేదు"
 
 msgid "No channels found"
 msgstr "ఛానెల్‌లు ఏవీ కనుగొనబడలేదు"
@@ -557,14 +579,26 @@ msgstr "మొత్తం ఛానెల్‌లు: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "పెద్ద అక్షరం"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "ఏ వస్తువులు అందుబాటులో లేవు"
+
 msgid "Update interval (hours)"
 msgstr "నవీకరణ విరామం (గంటలు)"
 
 msgid "Update interval (minutes):"
 msgstr "నవీకరణ విరామం (నిమిషాలు):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "ఇప్పుడు EPG అప్‌డేట్‌ను ప్రారంభించాలా?"
+
 msgid "Updating EPG..."
 msgstr "EPGని నవీకరిస్తోంది..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "వావూ స్ట్రీమ్ లైవ్"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "EPGImportలో Vavoo EPG మూలం ప్రారంభించబడలేదు. దయచేసి EPGImport సెట్టింగ్‌లలో దీన్ని ప్రారంభించండి."
@@ -596,6 +630,10 @@ msgstr "ప్రాక్సీ కోసం వేచి ఉంది..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG మద్దతుతో Vavoo ప్రాక్సీకి స్వాగతం"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "ఇప్పుడు EPG అప్‌డేట్‌ను ప్రారంభించాలా?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "మీరు దీన్ని మెను నుండి లేదా TEXT బటన్‌ను నొక్కడం ద్వారా ప్రారంభించవచ్చు."
 
@@ -610,6 +648,9 @@ msgstr "చిన్న అక్షరం"
 
 msgid "seconds"
 msgstr "సెకన్లు"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ ప్రాక్సీ ({0}లు)"

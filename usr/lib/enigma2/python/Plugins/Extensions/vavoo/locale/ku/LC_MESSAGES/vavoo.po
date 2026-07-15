@@ -20,6 +20,9 @@ msgstr "(%d kanal)?"
 msgid "(%s files deleted)"
 msgstr "(%s pel hatin jêbirin)"
 
+msgid "(you have v{})"
+msgstr "(te v{} heye)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Zeviyên winda li hemî navnîşan zêde bikin"
 
@@ -158,6 +161,10 @@ msgstr "îdamê betal bike?"
 msgid "Case: {}"
 msgstr "Mesele: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanal: %d"
+
 msgid "Channels"
 msgstr ""
 
@@ -190,6 +197,9 @@ msgstr "Konsolê"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Berdewam dike, proxy hîn jî hevdem dike..."
+
+msgid "Could not save the installer script."
+msgstr "Nekarî skrîpta sazkerê tomar bike."
 
 msgid "Countries"
 msgstr "Welatên"
@@ -344,6 +354,10 @@ msgstr "Lîsans: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Girêdana di menuya sereke de"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG nûvekirin..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Jêrîn = kêmbûnek lê bêtir nûvekirin"
 
@@ -362,11 +376,19 @@ msgstr "Wekheviya hindiktirîn ji bo kanalên lihevhatî (bilind = hişktir)."
 msgid "Movie Services Reference"
 msgstr "Çavkanî Xizmetên Movie"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Tiştek tune"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Pêveka IMDb/TMDB nehat dîtin"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Têkiliya Înternetê nehat dîtin. Ji kerema xwe tora xwe kontrol bikin."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Tu kanal nehat dîtin"
 
 msgid "No channels found"
 msgstr "Tu kanal nehat dîtin"
@@ -557,14 +579,26 @@ msgstr "Tevahiya kanalan: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr ""
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Tiştek tune"
+
 msgid "Update interval (hours)"
 msgstr "Navbera nûvekirinê (saet)"
 
 msgid "Update interval (minutes):"
 msgstr "Navbera nûvekirinê (deqe):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Nûvekirina EPG-ê nuha dest pê bike?"
+
 msgid "Updating EPG..."
 msgstr "EPG nûvekirin..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Pêveka Zindî ya Vavoo Stream"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Çavkaniya Vavoo EPG di EPGImport de neçalak e. Ji kerema xwe wê di mîhengên EPGImport de çalak bikin."
@@ -596,6 +630,10 @@ msgstr "Li benda proxy ..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Bi piştgiriya EPG-ê re bi xêr hatin Vavoo Proxy"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Nûvekirina EPG-ê nuha dest pê bike?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Hûn dikarin wê ji pêşek an bi tikandina bişkoka TEXT dest pê bikin."
 
@@ -609,6 +647,9 @@ msgid "lowercase"
 msgstr "tîpên biçûk"
 
 msgid "seconds"
+msgstr ""
+
+msgid "v{} -> v{}"
 msgstr ""
 
 msgid "✓ Proxy ({0}s)"

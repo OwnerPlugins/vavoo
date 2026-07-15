@@ -20,6 +20,9 @@ msgstr "(%d saluran)?"
 msgid "(%s files deleted)"
 msgstr "(%s fail dipadamkan)"
 
+msgid "(you have v{})"
+msgstr "(anda ada v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Tambahkan medan yang hilang pada semua entri"
 
@@ -158,6 +161,10 @@ msgstr "Batalkan pelaksanaan?"
 msgid "Case: {}"
 msgstr "Kes: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Saluran"
+
 msgid "Channels"
 msgstr "Saluran"
 
@@ -190,6 +197,9 @@ msgstr "Konsol"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Meneruskan, proksi masih menyegerak..."
+
+msgid "Could not save the installer script."
+msgstr "Tidak dapat menyimpan skrip pemasang."
 
 msgid "Countries"
 msgstr "negara"
@@ -344,6 +354,10 @@ msgstr "Lesen: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Pautan dalam Menu Utama"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Mengemas kini EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lebih rendah = kurang gangguan tetapi lebih banyak menyegarkan"
 
@@ -362,11 +376,19 @@ msgstr "Persamaan minimum untuk saluran yang sepadan (lebih tinggi = lebih ketat
 msgid "Movie Services Reference"
 msgstr "Rujukan Perkhidmatan Filem"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Tiada item tersedia"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Tiada pemalam IMDb/TMDB ditemui"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Tiada sambungan Internet dikesan. Sila semak rangkaian anda."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Tiada saluran ditemui"
 
 msgid "No channels found"
 msgstr "Tiada saluran ditemui"
@@ -557,14 +579,26 @@ msgstr "Jumlah saluran: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "HURUF BESAR"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Tiada item tersedia"
+
 msgid "Update interval (hours)"
 msgstr "Kemas kini selang (jam)"
 
 msgid "Update interval (minutes):"
 msgstr "Selang kemas kini (minit):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Mulakan kemas kini EPG sekarang?"
+
 msgid "Updating EPG..."
 msgstr "Mengemas kini EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream Langsung"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Sumber Vavoo EPG tidak didayakan dalam EPGImport. Sila dayakannya dalam tetapan EPGImport."
@@ -596,6 +630,10 @@ msgstr "Menunggu proksi..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Selamat datang ke Vavoo Proxy dengan sokongan EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Mulakan kemas kini EPG sekarang?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Anda boleh memulakannya dari menu atau dengan menekan butang TEKS."
 
@@ -610,6 +648,9 @@ msgstr "huruf kecil"
 
 msgid "seconds"
 msgstr "detik"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proksi ({0}s)"

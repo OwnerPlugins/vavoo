@@ -20,6 +20,9 @@ msgstr "(%d kanale)?"
 msgid "(%s files deleted)"
 msgstr "(%s lêers is uitgevee)"
 
+msgid "(you have v{})"
+msgstr "(jy het v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Voeg ontbrekende velde by alle inskrywings"
 
@@ -158,6 +161,10 @@ msgstr "Kanselleer uitvoering?"
 msgid "Case: {}"
 msgstr "Geval: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanale"
+
 msgid "Channels"
 msgstr "Kanale"
 
@@ -190,6 +197,9 @@ msgstr "Konsole"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Gaan voort, instaanbediener sinkroniseer steeds …"
+
+msgid "Could not save the installer script."
+msgstr "Kon nie die installeerderskrip stoor nie."
 
 msgid "Countries"
 msgstr "Lande"
@@ -344,6 +354,10 @@ msgstr "Lisensie: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Skakel in Hoofkieslys"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Dateer tans EPG op …"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Laer = minder onderbreking maar meer verfris"
 
@@ -362,11 +376,19 @@ msgstr "Minimum ooreenkoms vir bypassende kanale (hoër = strenger)."
 msgid "Movie Services Reference"
 msgstr "Filmdiensteverwysing"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Geen items beskikbaar nie"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Geen IMDb/TMDB-inprop gevind nie"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Geen internetverbinding bespeur nie. Gaan asseblief jou netwerk na."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Geen kanale gevind nie"
 
 msgid "No channels found"
 msgstr "Geen kanale gevind nie"
@@ -557,14 +579,26 @@ msgstr "Totale kanale: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "HOOFLETTERS"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Geen items beskikbaar nie"
+
 msgid "Update interval (hours)"
 msgstr "Opdateringsinterval (ure)"
 
 msgid "Update interval (minutes):"
 msgstr "Opdateringsinterval (minute):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Begin EPG-opdatering nou?"
+
 msgid "Updating EPG..."
 msgstr "Dateer tans EPG op …"
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stroom Regstreeks"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG-bron is nie in EPGImport geaktiveer nie. Aktiveer dit asseblief in EPGImport-instellings."
@@ -596,6 +630,10 @@ msgstr "Wag tans vir instaanbediener …"
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Welkom by Vavoo Proxy met EPG-ondersteuning"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Begin EPG-opdatering nou?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Jy kan dit vanaf die kieslys begin of deur die TEXT-knoppie te druk."
 
@@ -610,6 +648,9 @@ msgstr "kleinletters"
 
 msgid "seconds"
 msgstr "sekondes"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Volmag ({0}s)"

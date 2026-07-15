@@ -21,6 +21,9 @@ msgstr "(%d channels)?"
 msgid "(%s files deleted)"
 msgstr "(%s files deleted)"
 
+msgid "(you have v{})"
+msgstr ""
+
 msgid "- Add missing fields to all entries"
 msgstr ""
 
@@ -165,6 +168,10 @@ msgid "Case: {}"
 msgstr "Case: {}"
 
 #, fuzzy
+msgid "Changelog:"
+msgstr "Channels: %d"
+
+#, fuzzy
 msgid "Channels"
 msgstr "Channels: %d"
 
@@ -197,6 +204,9 @@ msgid "Console"
 msgstr "Console"
 
 msgid "Continuing, proxy still syncing..."
+msgstr ""
+
+msgid "Could not save the installer script."
 msgstr ""
 
 msgid "Countries"
@@ -359,6 +369,9 @@ msgstr "License: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Link in Main Menu"
 
+msgid "Loading EPG..."
+msgstr ""
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lower = less interruption but more refreshes"
 
@@ -377,11 +390,19 @@ msgstr ""
 msgid "Movie Services Reference"
 msgstr "Movie Services Reference"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "New version {version} is available."
+
 msgid "No IMDb/TMDB plugin found"
 msgstr ""
 
 msgid "No Internet connection detected. Please check your network."
 msgstr ""
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "No channels found"
 
 msgid "No channels found"
 msgstr "No channels found"
@@ -578,14 +599,26 @@ msgid "UPPERCASE"
 msgstr "UPPERCASE"
 
 #, fuzzy
+msgid "Update Available"
+msgstr "Update Aborted!"
+
+#, fuzzy
 msgid "Update interval (hours)"
 msgstr "Update interval (minutes):"
 
 msgid "Update interval (minutes):"
 msgstr "Update interval (minutes):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Update Me"
+
 msgid "Updating EPG..."
 msgstr ""
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream Live"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr ""
@@ -617,6 +650,9 @@ msgstr ""
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr ""
 
+msgid "Yes, update now"
+msgstr ""
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr ""
 
@@ -630,6 +666,9 @@ msgid "lowercase"
 msgstr "lowercase"
 
 msgid "seconds"
+msgstr ""
+
+msgid "v{} -> v{}"
 msgstr ""
 
 msgid "✓ Proxy ({0}s)"
@@ -714,9 +753,6 @@ msgstr ""
 #~ msgid "Eg: Arabic or other language."
 #~ msgstr "Eg: Arabic or other language."
 
-#~ msgid "New version {version} is available."
-#~ msgstr "New version {version} is available."
-
 #~ msgid "No channels found for '%(name)s'"
 #~ msgstr "No channels found for '%(name)s'"
 
@@ -729,12 +765,6 @@ msgstr ""
 
 #~ msgid "Select Fonts"
 #~ msgstr "Select Fonts"
-
-#~ msgid "Update Aborted!"
-#~ msgstr "Update Aborted!"
-
-#~ msgid "Update Me"
-#~ msgstr "Update Me"
 
 #~ msgid "- - - -"
 #~ msgstr "- - - -"

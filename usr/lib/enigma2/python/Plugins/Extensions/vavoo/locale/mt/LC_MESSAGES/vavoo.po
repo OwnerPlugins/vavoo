@@ -20,6 +20,9 @@ msgstr "(%d kanali)?"
 msgid "(%s files deleted)"
 msgstr "(%s fajls imħassra)"
 
+msgid "(you have v{})"
+msgstr "(għandek v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Żid oqsma nieqsa mal-entrati kollha"
 
@@ -158,6 +161,10 @@ msgstr "Ikkanċella l-eżekuzzjoni?"
 msgid "Case: {}"
 msgstr "Każ: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanali"
+
 msgid "Channels"
 msgstr "Kanali"
 
@@ -190,6 +197,9 @@ msgstr ""
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Tkompli, proxy għadu qed jissinkronizza..."
+
+msgid "Could not save the installer script."
+msgstr "Ma setgħetx issalva l-iskript tal-installatur."
 
 msgid "Countries"
 msgstr "Pajjiżi"
@@ -344,6 +354,10 @@ msgstr "Liċenzja: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Link fil-Menu Prinċipali"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Naġġorna l-EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lower = inqas interruzzjoni iżda aktar aġġornamenti"
 
@@ -362,11 +376,19 @@ msgstr "Xebh minimu għal kanali li jaqblu (ogħla = aktar stretti)."
 msgid "Movie Services Reference"
 msgstr "Referenza għas-Servizzi tal-films"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Ebda oġġetti disponibbli"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Ma nstab l-ebda plugin IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Ebda konnessjoni tal-Internet misjuba. Jekk jogħġbok iċċekkja n-netwerk tiegħek."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Ma nstab l-ebda kanal"
 
 msgid "No channels found"
 msgstr "Ma nstab l-ebda kanal"
@@ -557,14 +579,25 @@ msgstr "Total tal-kanali: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "MAJUSKU"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Ebda oġġetti disponibbli"
+
 msgid "Update interval (hours)"
 msgstr "Intervall tal-aġġornament (sigħat)"
 
 msgid "Update interval (minutes):"
 msgstr "Intervall tal-aġġornament (minuti):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Ibda l-aġġornament tal-EPG issa?"
+
 msgid "Updating EPG..."
 msgstr "Naġġorna l-EPG..."
+
+msgid "Updating Vavoo Stream Live..."
+msgstr "Naġġorna Vavoo Stream Live..."
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Is-sors ta' Vavoo EPG mhuwiex attivat f'EPGImport. Jekk jogħġbok ippermettiha fis-settings tal-EPGImport."
@@ -596,6 +629,10 @@ msgstr "Stennija għal prokura..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Merħba għal Vavoo Proxy b'appoġġ EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Ibda l-aġġornament tal-EPG issa?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Tista' tibda mill-menu jew billi tagħfas il-buttuna TEXT."
 
@@ -610,6 +647,9 @@ msgstr "minusura"
 
 msgid "seconds"
 msgstr "sekondi"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Prokura ({0}s)"

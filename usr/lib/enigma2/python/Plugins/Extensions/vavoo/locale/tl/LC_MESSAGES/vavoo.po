@@ -20,6 +20,9 @@ msgstr "(%d channel)?"
 msgid "(%s files deleted)"
 msgstr "(%s file ang tinanggal)"
 
+msgid "(you have v{})"
+msgstr "(mayroon kang v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Magdagdag ng mga nawawalang field sa lahat ng entry"
 
@@ -158,6 +161,10 @@ msgstr "Kanselahin ang pagpapatupad?"
 msgid "Case: {}"
 msgstr "Kaso: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Mga channel"
+
 msgid "Channels"
 msgstr "Mga channel"
 
@@ -190,6 +197,9 @@ msgstr ""
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Nagpapatuloy, nagsi-sync pa rin ang proxy..."
+
+msgid "Could not save the installer script."
+msgstr "Hindi ma-save ang script ng installer."
 
 msgid "Countries"
 msgstr "Mga bansa"
@@ -344,6 +354,10 @@ msgstr ""
 msgid "Link in Main Menu"
 msgstr "Link sa Main Menu"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Ina-update ang EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Mas mababa = mas kaunting pagkaantala ngunit mas maraming pag-refresh"
 
@@ -362,11 +376,19 @@ msgstr "Minimum na pagkakapareho para sa mga tumutugmang channel (mas mataas = m
 msgid "Movie Services Reference"
 msgstr "Sanggunian sa Mga Serbisyo ng Pelikula"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Walang available na item"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Walang nakitang IMDb/TMDB plugin"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Walang natukoy na koneksyon sa Internet. Pakisuri ang iyong network."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Walang nakitang mga channel"
 
 msgid "No channels found"
 msgstr "Walang nakitang mga channel"
@@ -557,14 +579,26 @@ msgstr "Kabuuang mga channel: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr ""
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Walang available na item"
+
 msgid "Update interval (hours)"
 msgstr "I-update ang pagitan (mga oras)"
 
 msgid "Update interval (minutes):"
 msgstr "I-update ang pagitan (minuto):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Simulan ang pag-update ng EPG ngayon?"
+
 msgid "Updating EPG..."
 msgstr "Ina-update ang EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Live na Stream ng Vavoo"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Ang pinagmulan ng Vavoo EPG ay hindi pinagana sa EPGImport. Mangyaring paganahin ito sa mga setting ng EPGImport."
@@ -596,6 +630,10 @@ msgstr "Naghihintay ng proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Maligayang pagdating sa Vavoo Proxy na may suporta sa EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Simulan ang pag-update ng EPG ngayon?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Maaari mo itong simulan mula sa menu o sa pamamagitan ng pagpindot sa pindutan ng TEXT."
 
@@ -610,6 +648,9 @@ msgstr "maliit na titik"
 
 msgid "seconds"
 msgstr "segundo"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr ""

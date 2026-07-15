@@ -25,6 +25,9 @@ msgstr "(%d kanal)?"
 msgid "(%s files deleted)"
 msgstr "(%s dosya silindi)"
 
+msgid "(you have v{})"
+msgstr "(v{}'niz var)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Tüm girişlere eksik alanları ekle"
 
@@ -163,6 +166,10 @@ msgstr "Çalıştırma iptal edilsin mi?"
 msgid "Case: {}"
 msgstr "Durum: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanallar"
+
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -195,6 +202,9 @@ msgstr "Konsol"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Devam ediyor, proxy hâlâ senkronize ediliyor..."
+
+msgid "Could not save the installer script."
+msgstr "Yükleyici komut dosyası kaydedilemedi."
 
 msgid "Countries"
 msgstr "Ülkeler"
@@ -349,6 +359,10 @@ msgstr "Lisans: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Ana Menüde Bağlantı"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG güncelleniyor..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Düşük = daha az kesinti ama daha fazla yenileme"
 
@@ -367,11 +381,19 @@ msgstr "Eşleşen kanallar için minimum benzerlik (yüksek = daha katı)."
 msgid "Movie Services Reference"
 msgstr "Film Servis Referansı"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Öğe mevcut değil"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB eklentisi bulunamadı"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "İnternet bağlantısı algılanamadı. Lütfen ağınızı kontrol edin."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Kanal bulunamadı"
 
 msgid "No channels found"
 msgstr "Kanal bulunamadı"
@@ -562,14 +584,26 @@ msgstr "Toplam kanal: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "BÜYÜK HARF"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Öğe mevcut değil"
+
 msgid "Update interval (hours)"
 msgstr "Güncelleme aralığı (saat)"
 
 msgid "Update interval (minutes):"
 msgstr "Güncelleme aralığı (dakika):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "EPG güncellemesi şimdi başlatılsın mı?"
+
 msgid "Updating EPG..."
 msgstr "EPG güncelleniyor..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Canlı Yayın"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG kaynağı EPGImport'ta etkin değil. Lütfen EPGImport ayarlarından etkinleştirin."
@@ -601,6 +635,10 @@ msgstr "Proxy bekleniyor..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG destekli Vavoo Proxy'ye hoş geldiniz"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "EPG güncellemesi şimdi başlatılsın mı?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Menüden veya TEXT tuşuna basarak başlatabilirsiniz."
 
@@ -615,6 +653,9 @@ msgstr "küçük harf"
 
 msgid "seconds"
 msgstr "saniye"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0}s)"

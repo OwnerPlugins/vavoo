@@ -20,6 +20,9 @@ msgstr "（%d 个频道）？"
 msgid "(%s files deleted)"
 msgstr "（%s 个文件已删除）"
 
+msgid "(you have v{})"
+msgstr "（你有 v{}）"
+
 msgid "- Add missing fields to all entries"
 msgstr "- 将缺失的字段添加到所有条目中"
 
@@ -158,6 +161,10 @@ msgstr "取消执行？"
 msgid "Case: {}"
 msgstr "案件： {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "渠道"
+
 msgid "Channels"
 msgstr "渠道"
 
@@ -190,6 +197,9 @@ msgstr "安慰"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "继续，代理仍在同步..."
+
+msgid "Could not save the installer script."
+msgstr "无法保存安装程序脚本。"
 
 msgid "Countries"
 msgstr "国家"
@@ -344,6 +354,10 @@ msgstr "许可证：CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "主菜单中的链接"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "正在更新电子节目指南..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "较低=中断较少但刷新较多"
 
@@ -362,11 +376,19 @@ msgstr "匹配通道的最小相似度（更高=更严格）。"
 msgid "Movie Services Reference"
 msgstr "电影服务参考"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "没有可用的项目"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "找不到 IMDb/TMDB 插件"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "未检测到互联网连接。请检查您的网络。"
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "没有找到频道"
 
 msgid "No channels found"
 msgstr "没有找到频道"
@@ -557,14 +579,26 @@ msgstr "频道总数：%(total_channels)d"
 msgid "UPPERCASE"
 msgstr "大写"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "没有可用的项目"
+
 msgid "Update interval (hours)"
 msgstr "更新间隔（小时）"
 
 msgid "Update interval (minutes):"
 msgstr "更新间隔（分钟）："
 
+#, fuzzy
+msgid "Update now?"
+msgstr "现在开始EPG更新吗？"
+
 msgid "Updating EPG..."
 msgstr "正在更新电子节目指南..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo 直播"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "EPGImport 中未启用 Vavoo EPG 源。请在 EGImport 设置中启用它。"
@@ -596,6 +630,10 @@ msgstr "等待代理..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "欢迎使用带有 EPG 支持的 Vavoo Proxy"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "现在开始EPG更新吗？"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "您可以从菜单或按文本按钮启动它。"
 
@@ -610,6 +648,9 @@ msgstr "小写"
 
 msgid "seconds"
 msgstr "秒"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ 代理（{0}）"

@@ -20,6 +20,9 @@ msgstr "(%d kanavaa)?"
 msgid "(%s files deleted)"
 msgstr "(%s tiedostoa poistettu)"
 
+msgid "(you have v{})"
+msgstr "(sinulla on v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Lisää puuttuvat kentät kaikkiin merkintöihin"
 
@@ -158,6 +161,10 @@ msgstr "Peruutetaanko suoritus?"
 msgid "Case: {}"
 msgstr "Kirjainkoko: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Kanavat"
+
 msgid "Channels"
 msgstr "Kanavat"
 
@@ -190,6 +197,9 @@ msgstr "Konsoli"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Jatkuu, välityspalvelinta synkronoidaan edelleen..."
+
+msgid "Could not save the installer script."
+msgstr "Asennusohjelman komentosarjaa ei voitu tallentaa."
 
 msgid "Countries"
 msgstr "Maat"
@@ -344,6 +354,10 @@ msgstr "Lisenssi: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Linkki päävalikossa"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Päivitetään EPG:tä..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Pienempi = vähemmän keskeytyksiä mutta enemmän päivityksiä"
 
@@ -362,11 +376,19 @@ msgstr "Minimi samankaltaisuus vastaaville kanaville (suurempi = tiukempi)."
 msgid "Movie Services Reference"
 msgstr "Elokuvapalveluiden viite"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Ei kohteita saatavilla"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB-laajennusta ei löytynyt"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Internet-yhteyttä ei havaittu. Tarkista verkkosi."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Kanavia ei löytynyt"
 
 msgid "No channels found"
 msgstr "Kanavia ei löytynyt"
@@ -557,14 +579,26 @@ msgstr "Kanavia yhteensä: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "SUURAAKKOSET"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Ei kohteita saatavilla"
+
 msgid "Update interval (hours)"
 msgstr "Päivitysväli (tunteina)"
 
 msgid "Update interval (minutes):"
 msgstr "Päivitysväli (minuutteina):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Käynnistetäänkö EPG-päivitys nyt?"
+
 msgid "Updating EPG..."
 msgstr "Päivitetään EPG:tä..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream Live"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG -lähde ei ole käytössä EPGImportissa. Ota se käyttöön EPGImport-asetuksista."
@@ -596,6 +630,10 @@ msgstr "Odotetaan välityspalvelinta..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Tervetuloa Vavoo Proxyyn EPG-tuella"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Käynnistetäänkö EPG-päivitys nyt?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Voit käynnistää sen valikosta tai painamalla TEXT-painiketta."
 
@@ -610,6 +648,9 @@ msgstr "pienaakkoset"
 
 msgid "seconds"
 msgstr "sekuntia"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Välityspalvelin ({0} s)"

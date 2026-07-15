@@ -21,6 +21,9 @@ msgstr "(%d csatorna)?"
 msgid "(%s files deleted)"
 msgstr "(%s fájl törölve)"
 
+msgid "(you have v{})"
+msgstr "(V{} van nálad)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Adja hozzá a hiányzó mezőket az összes bejegyzéshez"
 
@@ -165,6 +168,10 @@ msgid "Case: {}"
 msgstr "Ügy: {}"
 
 #, fuzzy
+msgid "Changelog:"
+msgstr "Csatornák: %d"
+
+#, fuzzy
 msgid "Channels"
 msgstr "Csatornák: %d"
 
@@ -198,6 +205,9 @@ msgstr "Konzol"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Folytatás, a proxy továbbra is szinkronizál..."
+
+msgid "Could not save the installer script."
+msgstr "Nem sikerült menteni a telepítő szkriptet."
 
 msgid "Countries"
 msgstr "Országok"
@@ -359,6 +369,10 @@ msgstr "Licenc: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Link a főmenüben"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG frissítése..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Alacsonyabb = kevesebb megszakítás, de több frissítés"
 
@@ -377,11 +391,19 @@ msgstr "Minimális hasonlóság az egyező csatornákhoz (nagyobb = szigorúbb).
 msgid "Movie Services Reference"
 msgstr "Filmszolgáltatások referencia"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Új verzió ({version}) érhető el."
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Nem található IMDb/TMDB bővítmény"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Nem észlelhető internetkapcsolat. Kérjük, ellenőrizze a hálózatát."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Nem található csatorna a következőhöz: {}"
 
 msgid "No channels found"
 msgstr "Nem található csatorna a következőhöz: {}"
@@ -458,7 +480,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -581,14 +603,26 @@ msgid "UPPERCASE"
 msgstr "NAGYBETŰS"
 
 #, fuzzy
+msgid "Update Available"
+msgstr "Nincsenek elérhető tételek"
+
+#, fuzzy
 msgid "Update interval (hours)"
 msgstr "Frissítési időköz (perc):"
 
 msgid "Update interval (minutes):"
 msgstr "Frissítési időköz (perc):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Frissítsen engem"
+
 msgid "Updating EPG..."
 msgstr "EPG frissítése..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo Stream élőben"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "A Vavoo EPG forrás nincs engedélyezve az EPGImportban. Kérjük, engedélyezze az EPGImport beállításainál."
@@ -607,7 +641,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -623,6 +657,10 @@ msgstr "Várakozás a proxyra..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Üdvözöljük az EPG-támogatással rendelkező Vavoo Proxyban"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Elkezdi most az EPG frissítést?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Indíthatja a menüből vagy a TEXT gomb megnyomásával."
 
@@ -637,6 +675,9 @@ msgstr "kisbetűk"
 
 msgid "seconds"
 msgstr "másodpercig"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Proxy ({0})"
@@ -724,9 +765,6 @@ msgstr "✗ Az újraindítás sikertelen"
 #~ msgid "Eg: Arabic or other language."
 #~ msgstr "Pl.: arab vagy más nyelv."
 
-#~ msgid "New version {version} is available."
-#~ msgstr "Új verzió ({version}) érhető el."
-
 #~ msgid "No channels found for '%(name)s'"
 #~ msgstr "Nem található csatorna a következőhöz: '%(name)s'"
 
@@ -741,9 +779,6 @@ msgstr "✗ Az újraindítás sikertelen"
 
 #~ msgid "Update Aborted!"
 #~ msgstr "Frissítés megszakítva!"
-
-#~ msgid "Update Me"
-#~ msgstr "Frissítsen engem"
 
 #~ msgid "- - - -"
 #~ msgstr "- - - - -"

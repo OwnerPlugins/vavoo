@@ -20,6 +20,9 @@ msgstr "(%d rásir)?"
 msgid "(%s files deleted)"
 msgstr "(%s skrám eytt)"
 
+msgid "(you have v{})"
+msgstr "(þú ert með v{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Bættu reitum sem vantar við allar færslur"
 
@@ -158,6 +161,10 @@ msgstr "Hætta við framkvæmd?"
 msgid "Case: {}"
 msgstr "Mál: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Rásir"
+
 msgid "Channels"
 msgstr "Rásir"
 
@@ -190,6 +197,9 @@ msgstr "Stjórnborð"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "Heldur áfram, proxy er enn að samstilla..."
+
+msgid "Could not save the installer script."
+msgstr "Gat ekki vistað uppsetningarforskriftina."
 
 msgid "Countries"
 msgstr "Lönd"
@@ -344,6 +354,10 @@ msgstr "Leyfi: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Tengill í aðalvalmynd"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Uppfærir EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lægri = minni truflun en meira hressandi"
 
@@ -362,11 +376,19 @@ msgstr "Lágmarkslíkindi fyrir samsvarandi rásir (hærra = strangara)."
 msgid "Movie Services Reference"
 msgstr "Tilvísun í kvikmyndaþjónustu"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Engir hlutir í boði"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Engin IMDb/TMDB viðbót fannst"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Engin internettenging fannst. Vinsamlegast athugaðu netið þitt."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Engar rásir fundust"
 
 msgid "No channels found"
 msgstr "Engar rásir fundust"
@@ -557,14 +579,25 @@ msgstr "Heildarrásir: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "Hástafir"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Engir hlutir í boði"
+
 msgid "Update interval (hours)"
 msgstr "Uppfærslubil (klst.)"
 
 msgid "Update interval (minutes):"
 msgstr "Uppfærslubil (mínútur):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Byrja EPG uppfærslu núna?"
+
 msgid "Updating EPG..."
 msgstr "Uppfærir EPG..."
+
+msgid "Updating Vavoo Stream Live..."
+msgstr "Uppfærir Vavoo Stream Live..."
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG uppspretta er ekki virkjuð í EPGImport. Vinsamlegast virkjaðu það í stillingum EPGImport."
@@ -596,6 +629,10 @@ msgstr "Bíður eftir proxy..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Velkomin í Vavoo Proxy með EPG stuðningi"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Byrja EPG uppfærslu núna?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Þú getur ræst það úr valmyndinni eða með því að ýta á TEXT hnappinn."
 
@@ -610,6 +647,9 @@ msgstr "lágstafir"
 
 msgid "seconds"
 msgstr "sekúndur"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Umboð ({0}s)"

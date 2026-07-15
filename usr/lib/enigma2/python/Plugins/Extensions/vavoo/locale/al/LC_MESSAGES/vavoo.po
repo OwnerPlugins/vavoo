@@ -30,6 +30,9 @@ msgstr ""
 msgid "(%s files deleted)"
 msgstr ""
 
+msgid "(you have v{})"
+msgstr ""
+
 msgid "- Add missing fields to all entries"
 msgstr ""
 
@@ -168,6 +171,9 @@ msgstr ""
 msgid "Case: {}"
 msgstr ""
 
+msgid "Changelog:"
+msgstr ""
+
 msgid "Channels"
 msgstr ""
 
@@ -199,6 +205,9 @@ msgid "Console"
 msgstr ""
 
 msgid "Continuing, proxy still syncing..."
+msgstr ""
+
+msgid "Could not save the installer script."
 msgstr ""
 
 msgid "Countries"
@@ -354,6 +363,9 @@ msgstr ""
 msgid "Link in Main Menu"
 msgstr "Linku në menyn time"
 
+msgid "Loading EPG..."
+msgstr ""
+
 msgid "Lower = less interruption but more refreshes"
 msgstr ""
 
@@ -372,10 +384,16 @@ msgstr ""
 msgid "Movie Services Reference"
 msgstr "Referenca e Shërbimeve të Filmit"
 
+msgid "New version available: v{}"
+msgstr ""
+
 msgid "No IMDb/TMDB plugin found"
 msgstr ""
 
 msgid "No Internet connection detected. Please check your network."
+msgstr ""
+
+msgid "No changelog provided."
 msgstr ""
 
 msgid "No channels found"
@@ -567,14 +585,26 @@ msgstr ""
 msgid "UPPERCASE"
 msgstr ""
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Freskimi u abortua"
+
 msgid "Update interval (hours)"
 msgstr ""
 
 msgid "Update interval (minutes):"
 msgstr "Intervali i përditësimit (minuta):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Më fresko"
+
 msgid "Updating EPG..."
 msgstr ""
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Transmetim direkt Vavoo"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr ""
@@ -606,6 +636,9 @@ msgstr ""
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr ""
 
+msgid "Yes, update now"
+msgstr ""
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr ""
 
@@ -619,6 +652,9 @@ msgid "lowercase"
 msgstr ""
 
 msgid "seconds"
+msgstr ""
+
+msgid "v{} -> v{}"
 msgstr ""
 
 msgid "✓ Proxy ({0}s)"
@@ -670,9 +706,3 @@ msgstr ""
 
 #~ msgid "Select Fonts"
 #~ msgstr "Vendose llion e shkrimit"
-
-#~ msgid "Update Aborted!"
-#~ msgstr "Freskimi u abortua"
-
-#~ msgid "Update Me"
-#~ msgstr "Më fresko"

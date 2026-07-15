@@ -21,6 +21,9 @@ msgstr "(%d チャンネル)?"
 msgid "(%s files deleted)"
 msgstr "(%s ファイルは削除されました)"
 
+msgid "(you have v{})"
+msgstr "(v{} を持っています)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- 不足しているフィールドをすべてのエントリに追加します"
 
@@ -159,6 +162,10 @@ msgstr "実行をキャンセルしますか?"
 msgid "Case: {}"
 msgstr "場合： {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "チャンネル"
+
 msgid "Channels"
 msgstr "チャンネル"
 
@@ -191,6 +198,9 @@ msgstr "コンソール"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "続行中、プロキシはまだ同期中です..."
+
+msgid "Could not save the installer script."
+msgstr "インストーラー スクリプトを保存できませんでした。"
 
 msgid "Countries"
 msgstr "国"
@@ -345,6 +355,10 @@ msgstr "ライセンス: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "メインメニューのリンク"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "EPG を更新中..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "低い = 中断は少なくなりますが、リフレッシュが多くなります"
 
@@ -363,11 +377,19 @@ msgstr "一致するチャネルの最小類似性 (高いほど厳密)。"
 msgid "Movie Services Reference"
 msgstr "映画サービスのリファレンス"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "利用可能なアイテムはありません"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB プラグインが見つかりません"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "インターネット接続が検出されませんでした。ネットワークを確認してください。"
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "チャンネルが見つかりません"
 
 msgid "No channels found"
 msgstr "チャンネルが見つかりません"
@@ -558,14 +580,26 @@ msgstr "合計チャンネル数: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "大文字"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "利用可能なアイテムはありません"
+
 msgid "Update interval (hours)"
 msgstr "更新間隔 (時間)"
 
 msgid "Update interval (minutes):"
 msgstr "更新間隔 (分):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "今すぐ EPG アップデートを開始しますか?"
+
 msgid "Updating EPG..."
 msgstr "EPG を更新中..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo ストリーム ライブ"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Vavoo EPG ソースが EPGImport で有効になっていません。 EPGImport 設定で有効にしてください。"
@@ -597,6 +631,10 @@ msgstr "プロキシを待っています..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG サポートを備えた Vavoo プロキシへようこそ"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "今すぐ EPG アップデートを開始しますか?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "メニューから、またはTEXTボタンを押して開始できます。"
 
@@ -611,6 +649,9 @@ msgstr "小文字"
 
 msgid "seconds"
 msgstr "秒"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ プロキシ ({0} 個)"

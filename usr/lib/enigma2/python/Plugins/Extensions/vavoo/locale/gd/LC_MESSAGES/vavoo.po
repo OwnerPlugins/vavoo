@@ -20,6 +20,9 @@ msgstr "(%d seanailean)?"
 msgid "(%s files deleted)"
 msgstr "(%s faidhle air a sguabadh às)"
 
+msgid "(you have v{})"
+msgstr "(tha v{} agad)"
+
 msgid "- Add missing fields to all entries"
 msgstr "- Cuir raointean a tha a dhìth ris a h-uile tagradh"
 
@@ -158,6 +161,10 @@ msgstr "Sguir dheth buileachadh?"
 msgid "Case: {}"
 msgstr "Cùis: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "Sianalan"
+
 msgid "Channels"
 msgstr "Sianalan"
 
@@ -190,6 +197,9 @@ msgstr ""
 
 msgid "Continuing, proxy still syncing..."
 msgstr "A’ leantainn, neach-ionaid fhathast a’ sioncronachadh..."
+
+msgid "Could not save the installer script."
+msgstr "Cha b' urrainn dhuinn an sgriobt stàlaichear a shàbhaladh."
 
 msgid "Countries"
 msgstr "Dùthchannan"
@@ -344,6 +354,10 @@ msgstr "Cead: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Ceangal sa phrìomh chlàr"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "Luchdaich a-nuas EPG.. ."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Nas ìsle = nas lugha de bhriseadh ach barrachd ùrachaidhean"
 
@@ -362,11 +376,19 @@ msgstr "Co-chosmhaileachd as ìsle airson seanalan a mhaidseadh (nas àirde = na
 msgid "Movie Services Reference"
 msgstr "Iomradh air seirbheisean film"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "Chan eil stuthan ri fhaighinn"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "Cha deach plugan IMDb/TMDB a lorg"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "Cha deach ceangal eadar-lìn a lorg. Feuch an toir thu sùil air an lìonra agad."
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "Cha deach sianalan a lorg"
 
 msgid "No channels found"
 msgstr "Cha deach sianalan a lorg"
@@ -557,14 +579,26 @@ msgstr "Seanalan slàn: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "URNAIGHEAN"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "Chan eil stuthan ri fhaighinn"
+
 msgid "Update interval (hours)"
 msgstr "Ùrachadh eadar-ama (uairean)"
 
 msgid "Update interval (minutes):"
 msgstr "Ùine ùrachaidh (mionaidean):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "Tòisich ùrachadh EPG a-nis?"
+
 msgid "Updating EPG..."
 msgstr "Luchdaich a-nuas EPG.. ."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Plugin Vavoo Stream Live"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "Chan eil stòr Vavoo EPG air a chomasachadh ann an EPGImport. Feuch an cuir thu an comas e ann an roghainnean EPGIimport."
@@ -596,6 +630,10 @@ msgstr "A' feitheamh ri neach-ionaid..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Fàilte gu Vavoo Proxy le taic EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "Tòisich ùrachadh EPG a-nis?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Faodaidh tu tòiseachadh bhon chlàr no le putadh air a’ phutan TEXT."
 
@@ -610,6 +648,9 @@ msgstr "litrichean beaga"
 
 msgid "seconds"
 msgstr "diog"
+
+msgid "v{} -> v{}"
+msgstr ""
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ Progsaidh ({0}an)"

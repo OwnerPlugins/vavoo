@@ -20,6 +20,9 @@ msgstr "(%d ช่อง)?"
 msgid "(%s files deleted)"
 msgstr "(ลบ %s ไฟล์แล้ว)"
 
+msgid "(you have v{})"
+msgstr "(คุณมี วี{})"
+
 msgid "- Add missing fields to all entries"
 msgstr "- เพิ่มช่องที่ขาดหายไปในทุกรายการ"
 
@@ -158,6 +161,10 @@ msgstr "ยกเลิกการดำเนินการใช่ไหม
 msgid "Case: {}"
 msgstr "กรณี: {}"
 
+#, fuzzy
+msgid "Changelog:"
+msgstr "ช่อง"
+
 msgid "Channels"
 msgstr "ช่อง"
 
@@ -190,6 +197,9 @@ msgstr "คอนโซล"
 
 msgid "Continuing, proxy still syncing..."
 msgstr "กำลังดำเนินการต่อ พร็อกซียังคงซิงค์..."
+
+msgid "Could not save the installer script."
+msgstr "ไม่สามารถบันทึกสคริปต์การติดตั้งได้"
 
 msgid "Countries"
 msgstr "ประเทศ"
@@ -344,6 +354,10 @@ msgstr "ใบอนุญาต: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "ลิงค์ในเมนูหลัก"
 
+#, fuzzy
+msgid "Loading EPG..."
+msgstr "กำลังอัปเดต EPG..."
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ต่ำ = การหยุดชะงักน้อยลง แต่รีเฟรชมากขึ้น"
 
@@ -362,11 +376,19 @@ msgstr "ความคล้ายคลึงกันขั้นต่ำส
 msgid "Movie Services Reference"
 msgstr "การอ้างอิงบริการภาพยนตร์"
 
+#, fuzzy
+msgid "New version available: v{}"
+msgstr "ไม่มีรายการที่มีอยู่"
+
 msgid "No IMDb/TMDB plugin found"
 msgstr "ไม่พบปลั๊กอิน IMDb/TMDB"
 
 msgid "No Internet connection detected. Please check your network."
 msgstr "ไม่พบการเชื่อมต่ออินเทอร์เน็ต โปรดตรวจสอบเครือข่ายของคุณ"
+
+#, fuzzy
+msgid "No changelog provided."
+msgstr "ไม่พบช่อง"
 
 msgid "No channels found"
 msgstr "ไม่พบช่อง"
@@ -557,14 +579,26 @@ msgstr "ช่องทั้งหมด: %(total_channels)d"
 msgid "UPPERCASE"
 msgstr "ตัวพิมพ์ใหญ่"
 
+#, fuzzy
+msgid "Update Available"
+msgstr "ไม่มีรายการที่มีอยู่"
+
 msgid "Update interval (hours)"
 msgstr "ช่วงเวลาการอัพเดต (ชั่วโมง)"
 
 msgid "Update interval (minutes):"
 msgstr "ช่วงเวลาการอัพเดต (นาที):"
 
+#, fuzzy
+msgid "Update now?"
+msgstr "เริ่มอัพเดต EPG ตอนนี้เลย?"
+
 msgid "Updating EPG..."
 msgstr "กำลังอัปเดต EPG..."
+
+#, fuzzy
+msgid "Updating Vavoo Stream Live..."
+msgstr "Vavoo สตรีมสด"
 
 msgid "Vavoo EPG source is not enabled in EPGImport. Please enable it in EPGImport settings."
 msgstr "แหล่งที่มา Vavoo EPG ไม่ได้เปิดใช้งานใน EPGImport โปรดเปิดใช้งานในการตั้งค่า EPGImport"
@@ -596,6 +630,10 @@ msgstr "กำลังรอพร็อกซี..."
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ยินดีต้อนรับสู่ Vavoo Proxy พร้อมการสนับสนุน EPG"
 
+#, fuzzy
+msgid "Yes, update now"
+msgstr "เริ่มอัพเดต EPG ตอนนี้เลย?"
+
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "คุณสามารถเริ่มจากเมนูหรือโดยการกดปุ่ม TEXT"
 
@@ -610,6 +648,9 @@ msgstr "ตัวพิมพ์เล็ก"
 
 msgid "seconds"
 msgstr "วินาที"
+
+msgid "v{} -> v{}"
+msgstr "วี{} -> วี{}"
 
 msgid "✓ Proxy ({0}s)"
 msgstr "✓ พร็อกซี ({0} วินาที)"
