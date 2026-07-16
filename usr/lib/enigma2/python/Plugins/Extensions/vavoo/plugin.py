@@ -330,18 +330,21 @@ _update_popup_shown = False
 
 def _start_update_check():
     """Check installer.sh on GitHub for a newer plugin version, in the
-    background, once per plugin launch.
+    background, every time the plugin is launched (i.e. every time the
+    splash screen runs, not just once per Enigma2 GUI process).
 
     Called from startVavoo so the check overlaps with the splash screen
     instead of adding to perceived load time. The result is only surfaced
     as a popup once MainVavoo (the main menu) is actually open - see
-    MainVavoo._check_update_popup_tick().
+    MainVavoo._check_update_popup_tick(). Resets the shared state on
+    every call so a closed-and-reopened plugin gets a fresh check and
+    can show the popup again, instead of only ever on the first launch.
     """
-    global _update_check_started
-    if _update_check_started:
-        print("[Update] _start_update_check() called again, already started - skipping")
-        return
+    global _update_check_started, _update_check_done, _update_check_result, _update_popup_shown
     _update_check_started = True
+    _update_check_done = False
+    _update_check_result = None
+    _update_popup_shown = False
     print("[Update] Starting background version check (local v{})".format(__version__))
 
     def _worker():
