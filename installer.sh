@@ -1,15 +1,12 @@
 #!/bin/bash
 
-version='1.78'
-changelog="
-Bump version to 1.78 and refactor TvInfoBarShowHide class to fix overlay display/hide timing issues:
-- Add delayed_start_timer and retry_start_timer to handle cases where execing is False
-- Implement _delayed_start(), _retry_start(), _do_show_all() helpers for reliable show sequence
-- Improve update_proxy_status_overlay() logic for cleaner proxy status display
-- Add extensive debug prints throughout for troubleshooting overlay behavior
-- Improve docstrings and code organization with clearer section comments
-- Enhance state tracking in doShow(), doHide(), startHideTimer(), doTimerHide()
-Custom overlays auto-hide after 5s while standard infobar remains until toggled off."
+version='1.79'
+changelog="- Fixed EPG matching for many Italian channels (alias system) and UK channels
+- Faster EPG matching and per-channel programme lookup
+- Auto-update check now runs every time you open the plugin
+- Redesigned installer console: auto-scrolling output, fixed Restart GUI button
+- Fixed a splash screen progress bar reliability issue
+- General stability and reliability fixes"
 
 
 echo "$changelog"
