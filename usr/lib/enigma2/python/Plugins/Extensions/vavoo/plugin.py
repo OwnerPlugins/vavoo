@@ -1621,10 +1621,12 @@ class startVavoo(Screen):
         smooth = t * t * (3.0 - 2.0 * t)          # ease-in-out curve
         self._pct = min(self.SOFT_CAP, int(round(smooth * self.SOFT_CAP)))
 
-        try:
-            self["progress"].instance.setValue(self._pct)
-        except Exception:
-            pass
+        # ProgressBar.setValue() already no-ops safely if its instance
+        # isn't bound yet - going through it (instead of the raw
+        # .instance.setValue() + silent try/except used before) means a
+        # real failure here can't silently freeze the bar while the
+        # percentage/status text next to it keeps advancing.
+        self["progress"].setValue(self._pct)
         self["progress_pct"].setText("%d %%" % self._pct)
 
         # advance status messages
@@ -1684,10 +1686,7 @@ class startVavoo(Screen):
             pass
 
         self._pct = 100
-        try:
-            self["progress"].instance.setValue(100)
-        except Exception:
-            pass
+        self["progress"].setValue(100)
         self["progress_pct"].setText("100 %")
 
         if timed_out:
@@ -1731,10 +1730,7 @@ class startVavoo(Screen):
         self.timer.start(500, True)
 
         # animation tick timer (repeating, 30 ms interval, cosmetic only)
-        try:
-            self["progress"].instance.setValue(0)
-        except Exception:
-            pass
+        self["progress"].setValue(0)
         self._anim_timer = eTimer()
         if isfile('/var/lib/dpkg/status'):
             self._anim_timer.timeout.connect(self._tick)
