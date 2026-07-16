@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Վստահված անձը սպառվում է"
-
 msgid "(%d channels)?"
 msgstr "(%d ալիք):"
 
@@ -91,9 +88,6 @@ msgstr "- {} կրկնօրինակ գրառումներ հեռացվեցին"
 
 msgid "- {} entries updated"
 msgstr "- {} գրառում թարմացվել է"
-
-msgid "? Proxy Status"
-msgstr "? Վստահված անձի կարգավիճակը"
 
 msgid "? Proxy Unknown"
 msgstr "? Անհայտ վստահված անձ"
@@ -674,3 +668,9 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Վստահված անձը սպառվում է"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Վստահված անձի կարգավիճակը"

@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy ferrint"
-
 msgid "(%d channels)?"
 msgstr "(%d kanalen)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} dûbele yngongen fuortsmiten"
 
 msgid "- {} entries updated"
 msgstr "- {} ynstjoerings bywurke"
-
-msgid "? Proxy Status"
-msgstr ""
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy Unbekend"
@@ -674,3 +668,6 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herstart mislearre"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy ferrint"

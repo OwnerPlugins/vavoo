@@ -11,9 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.9\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Platnost proxy vyprší"
-
 # vavoo translations
 # Copyright (C) 2025 Lululla Team
 # This file is distributed under the same license as the Lululla package.
@@ -96,9 +93,6 @@ msgstr "- Odstraněno {} duplicitních záznamů"
 
 msgid "- {} entries updated"
 msgstr "- Aktualizováno {} záznamů"
-
-msgid "? Proxy Status"
-msgstr "? Stav proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy neznámý"
@@ -698,6 +692,12 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restart se nezdařil"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Platnost proxy vyprší"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stav proxy"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Aktivovat nebo deaktivovat Ipv6."

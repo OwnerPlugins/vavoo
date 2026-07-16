@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Puhverserver aegub"
-
 msgid "(%d channels)?"
 msgstr "(%d kanalit)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} topeltkirjet on eemaldatud"
 
 msgid "- {} entries updated"
 msgstr "- {} kirjet värskendati"
-
-msgid "? Proxy Status"
-msgstr "? Puhverserveri olek"
 
 msgid "? Proxy Unknown"
 msgstr "? Puhverserver Tundmatu"
@@ -676,3 +670,9 @@ msgstr "✗ Puhverserver võrguühenduseta"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Taaskäivitamine ebaõnnestus"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Puhverserver aegub"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Puhverserveri olek"

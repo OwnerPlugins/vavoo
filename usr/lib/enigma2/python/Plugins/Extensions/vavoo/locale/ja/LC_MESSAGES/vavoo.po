@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid "! Proxy Expiring"
-msgstr "！プロキシの有効期限が切れます"
-
 msgid "(%d channels)?"
 msgstr "(%d チャンネル)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} 個の重複エントリが削除されました"
 
 msgid "- {} entries updated"
 msgstr "- {} エントリが更新されました"
-
-msgid "? Proxy Status"
-msgstr "?プロキシステータス"
 
 msgid "? Proxy Unknown"
 msgstr "?プロキシが不明"
@@ -676,3 +670,9 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "！プロキシの有効期限が切れます"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "?プロキシステータス"

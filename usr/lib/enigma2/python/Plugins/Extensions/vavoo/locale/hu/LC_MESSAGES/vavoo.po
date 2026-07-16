@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy lejár"
-
 msgid "(%d channels)?"
 msgstr "(%d csatorna)?"
 
@@ -93,9 +90,6 @@ msgstr "- {} ismétlődő bejegyzés eltávolítva"
 
 msgid "- {} entries updated"
 msgstr "- {} bejegyzés frissítve"
-
-msgid "? Proxy Status"
-msgstr "? Proxy állapota"
 
 msgid "? Proxy Unknown"
 msgstr "? Ismeretlen proxy"
@@ -480,7 +474,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -641,7 +635,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -703,6 +697,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Az újraindítás sikertelen"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy lejár"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Proxy állapota"
 
 #, fuzzy
 #~ msgid "Active or Disactive Ipv6."

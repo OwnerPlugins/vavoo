@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2;\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Seachfhreastalaí ag dul in éag"
-
 msgid "(%d channels)?"
 msgstr "(%d cainéal)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} iontrálacha dúblacha bainte"
 
 msgid "- {} entries updated"
 msgstr "- {} iontráil nuashonraithe"
-
-msgid "? Proxy Status"
-msgstr "? Stádas Seachfhreastalaí"
 
 msgid "? Proxy Unknown"
 msgstr "? Seachfhreastalaí Anaithnid"
@@ -676,3 +670,9 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Seachfhreastalaí ag dul in éag"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stádas Seachfhreastalaí"

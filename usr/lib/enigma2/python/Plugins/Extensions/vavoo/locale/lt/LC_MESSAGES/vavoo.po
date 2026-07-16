@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Baigiasi įgaliotojo serverio galiojimo laikas"
-
 msgid "(%d channels)?"
 msgstr "(%d kanalų)?"
 
@@ -92,9 +89,6 @@ msgstr "– Pašalinta {} pasikartojančių įrašų"
 
 msgid "- {} entries updated"
 msgstr "- Atnaujinti {} įrašai"
-
-msgid "? Proxy Status"
-msgstr "? Tarpinio serverio būsena"
 
 msgid "? Proxy Unknown"
 msgstr "? Tarpinis serveris nežinomas"
@@ -676,3 +670,9 @@ msgstr "✗ Tarpinis serveris neprisijungęs"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nepavyko paleisti iš naujo"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Baigiasi įgaliotojo serverio galiojimo laikas"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Tarpinio serverio būsena"

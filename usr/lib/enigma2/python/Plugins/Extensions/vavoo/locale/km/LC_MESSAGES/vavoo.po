@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! ប្រូកស៊ីផុតកំណត់"
-
 msgid "(%d channels)?"
 msgstr "(%d ប៉ុស្តិ៍)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} ធាតុស្ទួនត្រូវបានដកចេញ"
 
 msgid "- {} entries updated"
 msgstr "- ធាតុ {} បានធ្វើបច្ចុប្បន្នភាព"
-
-msgid "? Proxy Status"
-msgstr "? ស្ថានភាពប្រូកស៊ី"
 
 msgid "? Proxy Unknown"
 msgstr "? ប្រូកស៊ីមិនស្គាល់"
@@ -675,3 +669,9 @@ msgstr "✗ប្រូកស៊ីក្រៅបណ្តាញ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ការចាប់ផ្តើមឡើងវិញបានបរាជ័យ"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! ប្រូកស៊ីផុតកំណត់"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? ស្ថានភាពប្រូកស៊ី"

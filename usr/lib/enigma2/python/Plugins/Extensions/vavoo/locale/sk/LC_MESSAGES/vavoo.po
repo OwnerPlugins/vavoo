@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Platnosť proxy vyprší"
-
 msgid "(%d channels)?"
 msgstr "(%d kanálov)?"
 
@@ -93,9 +90,6 @@ msgstr "- {} odstránených duplicitných záznamov"
 
 msgid "- {} entries updated"
 msgstr "- Počet aktualizovaných záznamov: {}"
-
-msgid "? Proxy Status"
-msgstr "? Stav proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy neznámy"
@@ -480,7 +474,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Ready"
@@ -640,7 +634,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -701,6 +695,12 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reštart zlyhal"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Platnosť proxy vyprší"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stav proxy"
 
 #, fuzzy
 #~ msgid "Active or Disactive Ipv6."

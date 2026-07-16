@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy löper ut"
-
 msgid "(%d channels)?"
 msgstr "(%d kanaler)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} dubbletter har tagits bort"
 
 msgid "- {} entries updated"
 msgstr "- {} poster uppdaterade"
-
-msgid "? Proxy Status"
-msgstr "? Proxystatus"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy okänd"
@@ -676,3 +670,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart misslyckades"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy löper ut"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Proxystatus"

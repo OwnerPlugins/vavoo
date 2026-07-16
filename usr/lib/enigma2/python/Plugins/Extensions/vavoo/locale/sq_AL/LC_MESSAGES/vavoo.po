@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy skadon"
-
 msgid "(%d channels)?"
 msgstr "(%d kanale)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} hyrje të kopjuara u hoqën"
 
 msgid "- {} entries updated"
 msgstr "- {} hyrje u përditësuan"
-
-msgid "? Proxy Status"
-msgstr "? Statusi i përfaqësuesit"
 
 msgid "? Proxy Unknown"
 msgstr "? Përfaqësuesi i panjohur"
@@ -675,3 +669,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy skadon"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Statusi i përfaqësuesit"

@@ -11,9 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.9\n"
 
-msgid "! Proxy Expiring"
-msgstr "! انتهاء صلاحية الوكيل"
-
 msgid "(%d channels)?"
 msgstr "(%d قناة)؟"
 
@@ -91,9 +88,6 @@ msgstr "- تمت إزالة {} إدخالات مكررة"
 
 msgid "- {} entries updated"
 msgstr "- تم تحديث {} الإدخالات"
-
-msgid "? Proxy Status"
-msgstr "؟ حالة الوكيل"
 
 msgid "? Proxy Unknown"
 msgstr "؟ الوكيل غير معروف"
@@ -675,6 +669,12 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! انتهاء صلاحية الوكيل"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "؟ حالة الوكيل"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "تفعيل أو إلغاء تفعيل Ipv6."

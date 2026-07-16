@@ -16,9 +16,6 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy süresi doluyor"
-
 msgid "(%d channels)?"
 msgstr "(%d kanal)?"
 
@@ -96,9 +93,6 @@ msgstr "- {} yinelenen giriş kaldırıldı"
 
 msgid "- {} entries updated"
 msgstr "- {} giriş güncellendi"
-
-msgid "? Proxy Status"
-msgstr "? Proxy Durumu"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy Bilinmiyor"
@@ -680,3 +674,9 @@ msgstr "✗ Proxy çevrimdışı"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yeniden başlatma başarısız"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy süresi doluyor"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Proxy Durumu"

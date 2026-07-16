@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! പ്രോക്സി കാലഹരണപ്പെടുന്നു"
-
 msgid "(%d channels)?"
 msgstr "(%d ചാനലുകൾ)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} ഡ്യൂപ്ലിക്കേറ്റ് എൻട്രി
 
 msgid "- {} entries updated"
 msgstr "- {} എൻട്രികൾ അപ്ഡേറ്റ് ചെയ്തു"
-
-msgid "? Proxy Status"
-msgstr "? പ്രോക്സി നില"
 
 msgid "? Proxy Unknown"
 msgstr "? പ്രോക്സി അജ്ഞാതം"
@@ -675,3 +669,9 @@ msgstr "✗ പ്രോക്സി ഓഫ്‌ലൈൻ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ പുനരാരംഭിക്കൽ പരാജയപ്പെട്ടു"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! പ്രോക്സി കാലഹരണപ്പെടുന്നു"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? പ്രോക്സി നില"

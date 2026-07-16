@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr ""
-
 msgid "(%d channels)?"
 msgstr "(%d ሰርጦች)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} የተባዙ ግቤቶች ተወግደዋል"
 
 msgid "- {} entries updated"
 msgstr "- {} ግቤቶች ተዘምነዋል"
-
-msgid "? Proxy Status"
-msgstr "? የተኪ ሁኔታ"
 
 msgid "? Proxy Unknown"
 msgstr "? ፕሮክሲ ያልታወቀ"
@@ -675,3 +669,6 @@ msgstr "✗ ተኪ ከመስመር ውጭ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ዳግም ማስጀመር አልተሳካም።"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? የተኪ ሁኔታ"

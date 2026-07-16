@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Starpniekservera derīguma termiņš beidzas"
-
 msgid "(%d channels)?"
 msgstr "(%d kanāli)?"
 
@@ -92,9 +89,6 @@ msgstr "- Noņemti {} dublikāti"
 
 msgid "- {} entries updated"
 msgstr "- {} ieraksti atjaunināti"
-
-msgid "? Proxy Status"
-msgstr "? Starpniekservera statuss"
 
 msgid "? Proxy Unknown"
 msgstr "? Starpniekserveris nav zināms"
@@ -676,3 +670,9 @@ msgstr "✗ Starpniekserveris bezsaistē"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restartēšana neizdevās"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Starpniekservera derīguma termiņš beidzas"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Starpniekservera statuss"

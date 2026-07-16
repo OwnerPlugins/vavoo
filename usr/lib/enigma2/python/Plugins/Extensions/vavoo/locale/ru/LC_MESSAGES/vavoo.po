@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.9\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Срок действия прокси истекает"
-
 msgid "(%d channels)?"
 msgstr "(%d каналов)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} удалено повторяющихся записей."
 
 msgid "- {} entries updated"
 msgstr "- {} записей обновлено"
-
-msgid "? Proxy Status"
-msgstr "? Статус прокси"
 
 msgid "? Proxy Unknown"
 msgstr "? Прокси Неизвестен"
@@ -688,6 +682,12 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не удалось перезапустить"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Срок действия прокси истекает"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Статус прокси"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Включить или отключить IPv6."

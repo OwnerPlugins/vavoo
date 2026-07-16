@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "！代理到期"
-
 msgid "(%d channels)?"
 msgstr "（%d 个频道）？"
 
@@ -91,9 +88,6 @@ msgstr "- 删除了 {} 个重复条目"
 
 msgid "- {} entries updated"
 msgstr "- 更新了 {} 个条目"
-
-msgid "? Proxy Status"
-msgstr "？代理状态"
 
 msgid "? Proxy Unknown"
 msgstr "？代理未知"
@@ -675,3 +669,9 @@ msgstr "✗ 代理离线"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重启失败"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "！代理到期"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "？代理状态"

@@ -17,9 +17,6 @@ msgstr ""
 "X-Poedit-SearchPath-1: bouquet_manager.py\n"
 "X-Poedit-SearchPath-2: resolver/Console.py\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Wygaśnięcie proxy"
-
 msgid "(%d channels)?"
 msgstr "(%d kanałów)?"
 
@@ -97,9 +94,6 @@ msgstr "- Usunięto {} zduplikowane wpisy"
 
 msgid "- {} entries updated"
 msgstr "- Zaktualizowano {} wpisów"
-
-msgid "? Proxy Status"
-msgstr "? Stan proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Pełnomocnik nieznany"
@@ -696,6 +690,12 @@ msgstr "✗ Serwer proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponowne uruchomienie nie powiodło się"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Wygaśnięcie proxy"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stan proxy"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Włącz lub wyłącz IPv6."

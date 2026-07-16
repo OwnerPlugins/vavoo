@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Mag-e-expire ang Proxy"
-
 msgid "(%d channels)?"
 msgstr "(%d channel)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} inalis ang mga duplicate na entry"
 
 msgid "- {} entries updated"
 msgstr "- Na-update ang mga entry ng {}."
-
-msgid "? Proxy Status"
-msgstr "? Katayuan ng Proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Hindi Kilala ang Proxy"
@@ -675,3 +669,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Mag-e-expire ang Proxy"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Katayuan ng Proxy"

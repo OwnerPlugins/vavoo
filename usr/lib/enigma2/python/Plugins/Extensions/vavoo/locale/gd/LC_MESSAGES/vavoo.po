@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy a’ tighinn gu crìch"
-
 msgid "(%d channels)?"
 msgstr "(%d seanailean)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} inntrigidhean dùblaichte air an toirt air falbh"
 
 msgid "- {} entries updated"
 msgstr "- {} inntrigeadh air ùrachadh"
-
-msgid "? Proxy Status"
-msgstr "? Inbhe neach-ionaid"
 
 msgid "? Proxy Unknown"
 msgstr "? Neach-ionaid Neo-aithnichte"
@@ -675,3 +669,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy a’ tighinn gu crìch"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Inbhe neach-ionaid"

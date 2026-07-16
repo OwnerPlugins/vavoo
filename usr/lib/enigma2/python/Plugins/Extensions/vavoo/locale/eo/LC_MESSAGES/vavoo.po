@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Prokura Eksvalidiĝo"
-
 msgid "(%d channels)?"
 msgstr "(%d kanaloj)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} duplikataj enskriboj forigitaj"
 
 msgid "- {} entries updated"
 msgstr "- {} enskriboj ĝisdatigitaj"
-
-msgid "? Proxy Status"
-msgstr "? Prokura Statuso"
 
 msgid "? Proxy Unknown"
 msgstr "? Prokura Nekonata"
@@ -675,3 +669,9 @@ msgstr "✗ Prokura eksterrete"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rekomenco Malsukcesis"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Prokura Eksvalidiĝo"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Prokura Statuso"

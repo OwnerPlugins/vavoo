@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Dirprwy yn dod i ben"
-
 msgid "(%d channels)?"
 msgstr "(%d sianel)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} cofnod dyblyg wedi'u tynnu"
 
 msgid "- {} entries updated"
 msgstr "- {} cofnod wedi'u diweddaru"
-
-msgid "? Proxy Status"
-msgstr "? Statws Dirprwy"
 
 msgid "? Proxy Unknown"
 msgstr "? Dirprwy Anhysbys"
@@ -675,3 +669,9 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Dirprwy yn dod i ben"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Statws Dirprwy"

@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proksi Tamat Tempoh"
-
 msgid "(%d channels)?"
 msgstr "(%d saluran)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} entri pendua dialih keluar"
 
 msgid "- {} entries updated"
 msgstr "- entri {} dikemas kini"
-
-msgid "? Proxy Status"
-msgstr "? Status Proksi"
 
 msgid "? Proxy Unknown"
 msgstr "? Proksi Tidak Diketahui"
@@ -675,3 +669,9 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proksi Tamat Tempoh"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Status Proksi"

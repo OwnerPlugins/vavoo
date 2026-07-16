@@ -16,8 +16,6 @@
 
 
 
-msgid "! Proxy Expiring"
-msgstr ""
 
 msgid "(%d channels)?"
 msgstr ""
@@ -95,9 +93,6 @@ msgid "- {} duplicate entries removed"
 msgstr ""
 
 msgid "- {} entries updated"
-msgstr ""
-
-msgid "? Proxy Status"
 msgstr ""
 
 msgid "? Proxy Unknown"

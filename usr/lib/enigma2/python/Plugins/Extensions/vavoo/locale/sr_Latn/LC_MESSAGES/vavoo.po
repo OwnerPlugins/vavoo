@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Прокси истиче"
-
 msgid "(%d channels)?"
 msgstr "(%д канала)?"
 
@@ -91,9 +88,6 @@ msgstr "- Уклоњено је {} дуплих уноса"
 
 msgid "- {} entries updated"
 msgstr "- {} уноса је ажурирано"
-
-msgid "? Proxy Status"
-msgstr "? Статус проксија"
 
 msgid "? Proxy Unknown"
 msgstr "? Прокси непознат"
@@ -675,3 +669,9 @@ msgstr "✗ Прокси ван мреже"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Поновно покретање није успело"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Прокси истиче"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Статус проксија"
