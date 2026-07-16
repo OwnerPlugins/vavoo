@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! پراکسی کی میعاد ختم ہو رہی ہے۔"
-
 msgid "(%d channels)?"
 msgstr "(%d چینلز)؟"
 
@@ -91,9 +88,6 @@ msgstr "- {} ڈپلیکیٹ اندراجات کو ہٹا دیا گیا۔"
 
 msgid "- {} entries updated"
 msgstr "- {} اندراجات کو اپ ڈیٹ کر دیا گیا۔"
-
-msgid "? Proxy Status"
-msgstr "? پراکسی اسٹیٹس"
 
 msgid "? Proxy Unknown"
 msgstr "? پراکسی نامعلوم"
@@ -675,3 +669,9 @@ msgstr "✗ پراکسی آف لائن"
 
 msgid "✗ Restart Failed"
 msgstr "✗ دوبارہ شروع کرنا ناکام ہو گیا۔"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! پراکسی کی میعاد ختم ہو رہی ہے۔"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? پراکسی اسٹیٹس"

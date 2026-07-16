@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! תוקף פרוקסי יפוג"
-
 msgid "(%d channels)?"
 msgstr "(%d ערוצים)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} ערכים כפולים הוסרו"
 
 msgid "- {} entries updated"
 msgstr "- {} ערכים עודכנו"
-
-msgid "? Proxy Status"
-msgstr "? סטטוס פרוקסי"
 
 msgid "? Proxy Unknown"
 msgstr "? פרוקסי לא ידוע"
@@ -676,3 +670,9 @@ msgstr "✗ פרוקסי לא מקוון"
 
 msgid "✗ Restart Failed"
 msgstr "✗ הפעלה מחדש נכשלה"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! תוקף פרוקסי יפוג"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? סטטוס פרוקסי"

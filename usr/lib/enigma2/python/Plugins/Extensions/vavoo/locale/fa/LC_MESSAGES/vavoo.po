@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! پروکسی در حال انقضا است"
-
 msgid "(%d channels)?"
 msgstr "(%d کانال)؟"
 
@@ -91,9 +88,6 @@ msgstr "- {} ورودی تکراری حذف شد"
 
 msgid "- {} entries updated"
 msgstr "- {} ورودی به روز شد"
-
-msgid "? Proxy Status"
-msgstr "? وضعیت پروکسی"
 
 msgid "? Proxy Unknown"
 msgstr "? پروکسی ناشناس"
@@ -675,3 +669,9 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! پروکسی در حال انقضا است"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? وضعیت پروکسی"

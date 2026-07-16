@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy iraungitzen"
-
 msgid "(%d channels)?"
 msgstr "(%d kanal)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} bikoiztutako sarrera kendu dira"
 
 msgid "- {} entries updated"
 msgstr "- {} sarrera eguneratu dira"
-
-msgid "? Proxy Status"
-msgstr "? Proxy egoera"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy ezezaguna"
@@ -675,3 +669,9 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy iraungitzen"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Proxy egoera"

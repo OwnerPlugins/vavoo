@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy en expiracion"
-
 msgid "(%d channels)?"
 msgstr "(%d canals)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} entradas en doble suprimidas"
 
 msgid "- {} entries updated"
 msgstr "- {} entradas mesas a jorn"
-
-msgid "? Proxy Status"
-msgstr "? Estat del mandatari"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy desconegut"
@@ -675,3 +669,9 @@ msgstr "✗ Proxy fòra linha"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reaviada a fracassat"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy en expiracion"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Estat del mandatari"

@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr ""
-
 msgid "(%d channels)?"
 msgstr "(%d kanal)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} navnîşên dubare hatin rakirin"
 
 msgid "- {} entries updated"
 msgstr "- {} navnîş hatin nûve kirin"
-
-msgid "? Proxy Status"
-msgstr "? Rewşa Proxy"
 
 msgid "? Proxy Unknown"
 msgstr ""
@@ -675,3 +669,6 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Rewşa Proxy"

@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy expiră"
-
 msgid "(%d channels)?"
 msgstr "(%d canale)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} intrări duplicat eliminate"
 
 msgid "- {} entries updated"
 msgstr "- {} intrări actualizate"
-
-msgid "? Proxy Status"
-msgstr "? Stare proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy necunoscut"
@@ -676,3 +670,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Repornirea eșuată"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy expiră"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stare proxy"

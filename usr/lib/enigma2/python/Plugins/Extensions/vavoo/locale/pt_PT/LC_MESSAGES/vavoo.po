@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Expiração do proxy"
-
 msgid "(%d channels)?"
 msgstr "(%d canais)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} entradas duplicadas removidas"
 
 msgid "- {} entries updated"
 msgstr "- {} entradas atualizadas"
-
-msgid "? Proxy Status"
-msgstr "? Status do proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy desconhecido"
@@ -675,3 +669,9 @@ msgstr "✗Proxy off-line"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Falha na reinicialização"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Expiração do proxy"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Status do proxy"

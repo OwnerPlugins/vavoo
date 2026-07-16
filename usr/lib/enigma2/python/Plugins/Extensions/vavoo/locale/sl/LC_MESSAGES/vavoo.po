@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy poteče"
-
 msgid "(%d channels)?"
 msgstr "(%d kanalov)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} odstranjenih podvojenih vnosov"
 
 msgid "- {} entries updated"
 msgstr "- {} vnosov posodobljenih"
-
-msgid "? Proxy Status"
-msgstr "? Stanje posrednika"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy neznan"
@@ -675,3 +669,9 @@ msgstr "✗ Proxy brez povezave"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovni zagon ni uspel"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy poteče"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stanje posrednika"

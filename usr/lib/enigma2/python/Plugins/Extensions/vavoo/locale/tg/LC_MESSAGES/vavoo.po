@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Мӯҳлати прокси ба охир мерасад"
-
 msgid "(%d channels)?"
 msgstr "(%d канал)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} сабтҳои такрорӣ хориҷ карда шуданд"
 
 msgid "- {} entries updated"
 msgstr "- {} сабтҳо нав карда шуданд"
-
-msgid "? Proxy Status"
-msgstr "? Ҳолати прокси"
 
 msgid "? Proxy Unknown"
 msgstr "? Прокси номаълум"
@@ -675,3 +669,9 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Бозоғозӣ ноком шуд"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Мӯҳлати прокси ба охир мерасад"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Ҳолати прокси"

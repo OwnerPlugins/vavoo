@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Prokura Tiskadi"
-
 msgid "(%d channels)?"
 msgstr "(%d kanali)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} daħliet duplikati mneħħija"
 
 msgid "- {} entries updated"
 msgstr "- {} entrati aġġornati"
-
-msgid "? Proxy Status"
-msgstr "? Status tal-Prokura"
 
 msgid "? Proxy Unknown"
 msgstr "? Prokura Mhux Magħruf"
@@ -674,3 +668,9 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Prokura Tiskadi"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Status tal-Prokura"

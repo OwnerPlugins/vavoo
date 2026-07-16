@@ -11,9 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.9\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Välityspalvelin vanhenee"
-
 msgid "(%d channels)?"
 msgstr "(%d kanavaa)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} päällekkäistä merkintää poistettu"
 
 msgid "- {} entries updated"
 msgstr "- {} merkintää päivitetty"
-
-msgid "? Proxy Status"
-msgstr "? Välityspalvelimen tila"
 
 msgid "? Proxy Unknown"
 msgstr "? Välityspalvelin Tuntematon"
@@ -675,6 +669,12 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Välityspalvelin vanhenee"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Välityspalvelimen tila"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Ota Ipv6 käyttöön tai pois käytöstä."

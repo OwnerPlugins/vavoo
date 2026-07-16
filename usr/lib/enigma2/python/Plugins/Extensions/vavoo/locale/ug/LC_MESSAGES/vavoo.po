@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! ۋاكالەتچى ۋاقتى توشىدۇ"
-
 msgid "(%d channels)?"
 msgstr "(% d channels)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} كۆپەيتىلگەن تۈرلەر چىقىرىۋېتىلدى"
 
 msgid "- {} entries updated"
 msgstr "- {} تۈرلەر يېڭىلاندى"
-
-msgid "? Proxy Status"
-msgstr "؟ ۋاكالەتچى ھالىتى"
 
 msgid "? Proxy Unknown"
 msgstr "؟ ۋاكالەتچى نامەلۇم"
@@ -675,3 +669,9 @@ msgstr "✗ ۋاكالەتچى Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ قايتا قوزغىتىش مەغلۇب بولدى"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! ۋاكالەتچى ۋاقتى توشىدۇ"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "؟ ۋاكالەتچى ھالىتى"

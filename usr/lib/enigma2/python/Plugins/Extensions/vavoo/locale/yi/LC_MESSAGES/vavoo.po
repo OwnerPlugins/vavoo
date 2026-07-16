@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! פּראָקסי עקספּירינג"
-
 msgid "(%d channels)?"
 msgstr "(% ד טשאַנאַלז)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} דופּליקאַט איינסן אַוועקגענומען"
 
 msgid "- {} entries updated"
 msgstr "- {} איינסן דערהייַנטיקט"
-
-msgid "? Proxy Status"
-msgstr "? פּראָקסי סטאַטוס"
 
 msgid "? Proxy Unknown"
 msgstr "? פּראָקסי אומבאַקאַנט"
@@ -675,3 +669,9 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! פּראָקסי עקספּירינג"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? פּראָקסי סטאַטוס"

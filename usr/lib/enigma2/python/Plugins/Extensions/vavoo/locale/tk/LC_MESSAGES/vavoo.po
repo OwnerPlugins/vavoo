@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "!! Proksi möhleti"
-
 msgid "(%d channels)?"
 msgstr "(% d kanallar)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} dublikat ýazgylar aýryldy"
 
 msgid "- {} entries updated"
 msgstr "- {} ýazgylar täzelendi"
-
-msgid "? Proxy Status"
-msgstr "? Proksi ýagdaýy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proksi näbelli"
@@ -675,3 +669,9 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "!! Proksi möhleti"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Proksi ýagdaýy"

@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy caducant"
-
 msgid "(%d channels)?"
 msgstr "(%d canals)?"
 
@@ -92,9 +89,6 @@ msgstr "- S'han eliminat {} entrades duplicades"
 
 msgid "- {} entries updated"
 msgstr "- S'han actualitzat {} entrades"
-
-msgid "? Proxy Status"
-msgstr "? Estat del proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy desconegut"
@@ -676,3 +670,9 @@ msgstr "✗ Proxy fora de línia"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Error de reinici"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy caducant"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Estat del proxy"

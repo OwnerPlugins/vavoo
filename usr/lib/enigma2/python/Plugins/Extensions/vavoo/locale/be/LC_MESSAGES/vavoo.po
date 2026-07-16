@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Тэрмін дзеяння проксі заканчваецца"
-
 msgid "(%d channels)?"
 msgstr "(%d каналаў)?"
 
@@ -92,9 +89,6 @@ msgstr "- {} дублікатаў выдалена"
 
 msgid "- {} entries updated"
 msgstr "- {} запісы абноўлены"
-
-msgid "? Proxy Status"
-msgstr "? Статус проксі"
 
 msgid "? Proxy Unknown"
 msgstr "? Проксі невядомы"
@@ -676,3 +670,9 @@ msgstr "✗ Проксі ў аўтаномным рэжыме"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не атрымалася перазапусціць"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Тэрмін дзеяння проксі заканчваецца"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Статус проксі"

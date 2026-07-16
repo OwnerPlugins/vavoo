@@ -19,9 +19,6 @@ msgstr ""
 "X-Poedit-SearchPath-4: vavoo_proxy.py\n"
 "X-Poedit-SearchPath-5: vUtils.py\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Expiration du mandataire"
-
 msgid "(%d channels)?"
 msgstr "(%d chaînes) ?"
 
@@ -99,9 +96,6 @@ msgstr "- {} entrées en double supprimées"
 
 msgid "- {} entries updated"
 msgstr "- {} entrées mises à jour"
-
-msgid "? Proxy Status"
-msgstr "? Statut du proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy inconnu"
@@ -707,6 +701,12 @@ msgstr "✗ Proxy hors ligne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Échec du redémarrage"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Expiration du mandataire"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Statut du proxy"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Activer ou désactiver IPv6."

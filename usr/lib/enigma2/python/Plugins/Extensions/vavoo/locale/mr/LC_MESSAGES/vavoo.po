@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! प्रॉक्सी कालबाह्य होत आहे"
-
 msgid "(%d channels)?"
 msgstr "(%d चॅनेल)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} डुप्लिकेट नोंदी काढल्या"
 
 msgid "- {} entries updated"
 msgstr "- {} नोंदी अपडेट केल्या"
-
-msgid "? Proxy Status"
-msgstr "? प्रॉक्सी स्थिती"
 
 msgid "? Proxy Unknown"
 msgstr "? प्रॉक्सी अज्ञात"
@@ -675,3 +669,9 @@ msgstr "✗ प्रॉक्सी ऑफलाइन"
 
 msgid "✗ Restart Failed"
 msgstr "✗ रीस्टार्ट अयशस्वी"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! प्रॉक्सी कालबाह्य होत आहे"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? प्रॉक्सी स्थिती"

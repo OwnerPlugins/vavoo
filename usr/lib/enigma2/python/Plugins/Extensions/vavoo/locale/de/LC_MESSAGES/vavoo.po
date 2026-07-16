@@ -16,9 +16,6 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy läuft ab"
-
 msgid "(%d channels)?"
 msgstr "(%d Kanäle)?"
 
@@ -96,9 +93,6 @@ msgstr "- {} doppelte Einträge entfernt"
 
 msgid "- {} entries updated"
 msgstr "- {} Einträge aktualisiert"
-
-msgid "? Proxy Status"
-msgstr "? Proxy-Status"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy unbekannt"
@@ -680,3 +674,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Neustart fehlgeschlagen"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy läuft ab"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Proxy-Status"

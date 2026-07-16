@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Muda wa Wakala Unaisha"
-
 msgid "(%d channels)?"
 msgstr "(vituo %d)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} nakala rudufu zimeondolewa"
 
 msgid "- {} entries updated"
 msgstr "- {} maingizo yalisasishwa"
-
-msgid "? Proxy Status"
-msgstr "? Hali ya Wakala"
 
 msgid "? Proxy Unknown"
 msgstr "? Wakala Haijulikani"
@@ -675,3 +669,9 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Muda wa Wakala Unaisha"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Hali ya Wakala"

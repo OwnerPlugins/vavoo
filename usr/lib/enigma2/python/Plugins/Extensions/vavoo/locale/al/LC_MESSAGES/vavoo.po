@@ -21,9 +21,6 @@ msgstr ""
 "X-Poedit-SearchPath-4: vavoo_proxy.py\n"
 "X-Poedit-SearchPath-5: vUtils.py\n"
 
-msgid "! Proxy Expiring"
-msgstr ""
-
 msgid "(%d channels)?"
 msgstr ""
 
@@ -100,9 +97,6 @@ msgid "- {} duplicate entries removed"
 msgstr ""
 
 msgid "- {} entries updated"
-msgstr ""
-
-msgid "? Proxy Status"
 msgstr ""
 
 msgid "? Proxy Unknown"

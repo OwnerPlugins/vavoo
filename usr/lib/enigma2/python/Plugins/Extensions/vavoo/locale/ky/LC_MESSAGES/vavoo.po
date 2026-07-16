@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Прокси мөөнөтү бүтүүдө"
-
 msgid "(%d channels)?"
 msgstr "(%d канал)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} кайталанма жазуулар алынып салынды"
 
 msgid "- {} entries updated"
 msgstr "- {} жазуу жаңыртылды"
-
-msgid "? Proxy Status"
-msgstr "? Прокси статусу"
 
 msgid "? Proxy Unknown"
 msgstr "? Прокси Белгисиз"
@@ -675,3 +669,9 @@ msgstr "✗ Прокси оффлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Кайра баштоо ишке ашкан жок"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Прокси мөөнөтү бүтүүдө"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Прокси статусу"

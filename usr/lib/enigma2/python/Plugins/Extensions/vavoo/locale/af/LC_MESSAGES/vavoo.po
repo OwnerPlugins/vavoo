@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Volmag verval"
-
 msgid "(%d channels)?"
 msgstr "(%d kanale)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} duplikaatinskrywings is verwyder"
 
 msgid "- {} entries updated"
 msgstr "- {} inskrywings opgedateer"
-
-msgid "? Proxy Status"
-msgstr "? Volmagstatus"
 
 msgid "? Proxy Unknown"
 msgstr "? Volmag Onbekend"
@@ -675,3 +669,9 @@ msgstr "✗ Proxy vanlyn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herbegin het misluk"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Volmag verval"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Volmagstatus"

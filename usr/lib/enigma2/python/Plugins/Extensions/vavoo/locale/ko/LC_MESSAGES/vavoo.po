@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid "! Proxy Expiring"
-msgstr "! 프록시 만료"
-
 msgid "(%d channels)?"
 msgstr "(%d개 채널)?"
 
@@ -92,9 +89,6 @@ msgstr "- {}개의 중복 항목이 제거되었습니다."
 
 msgid "- {} entries updated"
 msgstr "- {}개 항목이 업데이트되었습니다."
-
-msgid "? Proxy Status"
-msgstr "? 프록시 상태"
 
 msgid "? Proxy Unknown"
 msgstr "? 프록시 알 수 없음"
@@ -676,3 +670,9 @@ msgstr "✗ 오프라인 프록시"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 다시 시작 실패"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! 프록시 만료"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? 프록시 상태"

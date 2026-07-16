@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! พร็อกซีหมดอายุ"
-
 msgid "(%d channels)?"
 msgstr "(%d ช่อง)?"
 
@@ -91,9 +88,6 @@ msgstr "- ลบรายการที่ซ้ำกัน {} รายกา
 
 msgid "- {} entries updated"
 msgstr "- อัปเดตรายการแล้ว {} รายการ"
-
-msgid "? Proxy Status"
-msgstr "? สถานะพร็อกซี"
 
 msgid "? Proxy Unknown"
 msgstr "? ไม่ทราบพร็อกซี"
@@ -675,3 +669,9 @@ msgstr "✗ พร็อกซีออฟไลน์"
 
 msgid "✗ Restart Failed"
 msgstr "✗ การรีสตาร์ทล้มเหลว"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! พร็อกซีหมดอายุ"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? สถานะพร็อกซี"

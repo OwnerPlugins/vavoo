@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Umboð rennur út"
-
 msgid "(%d channels)?"
 msgstr "(%d rásir)?"
 
@@ -91,9 +88,6 @@ msgstr "- {} tvíteknar færslur fjarlægðar"
 
 msgid "- {} entries updated"
 msgstr "- {} færslur uppfærðar"
-
-msgid "? Proxy Status"
-msgstr "? Umboðsstaða"
 
 msgid "? Proxy Unknown"
 msgstr "? Umboð óþekkt"
@@ -674,3 +668,9 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Umboð rennur út"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Umboðsstaða"

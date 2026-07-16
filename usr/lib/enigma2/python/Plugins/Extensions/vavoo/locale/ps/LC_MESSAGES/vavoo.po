@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! پراکسي پای ته رسیږي"
-
 msgid "(%d channels)?"
 msgstr "(%d چینلونه)؟"
 
@@ -91,9 +88,6 @@ msgstr "- {} نقل شوي ننوتل لرې کړل"
 
 msgid "- {} entries updated"
 msgstr "- {} ننوتل تازه شوي"
-
-msgid "? Proxy Status"
-msgstr "؟ د پراکسي حالت"
 
 msgid "? Proxy Unknown"
 msgstr "؟ پراکسي نامعلوم"
@@ -675,3 +669,9 @@ msgstr "✗ پراکسي آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ بیا پیل کول ناکام شول"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! پراکسي پای ته رسیږي"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "؟ د پراکسي حالت"

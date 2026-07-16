@@ -12,9 +12,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy hết hạn"
-
 msgid "(%d channels)?"
 msgstr "(%d kênh)?"
 
@@ -92,9 +89,6 @@ msgstr "- Đã xóa {} mục trùng lặp"
 
 msgid "- {} entries updated"
 msgstr "- Đã cập nhật {} mục"
-
-msgid "? Proxy Status"
-msgstr "? Trạng thái ủy quyền"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy không xác định"
@@ -676,3 +670,9 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy hết hạn"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Trạng thái ủy quyền"

@@ -14,9 +14,6 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy in scadenza"
-
 msgid "(%d channels)?"
 msgstr "(%d canali)?"
 
@@ -94,9 +91,6 @@ msgstr "- {} voci duplicate rimosse"
 
 msgid "- {} entries updated"
 msgstr "- {} voci aggiornate"
-
-msgid "? Proxy Status"
-msgstr "? Stato del proxy"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy sconosciuto"
@@ -678,6 +672,12 @@ msgstr "✗ Proxy Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Riavvio non riuscito"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy in scadenza"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? Stato del proxy"
 
 #~ msgid "Active or Disactive Ipv6."
 #~ msgstr "Attivare o disattivare Ipv6."

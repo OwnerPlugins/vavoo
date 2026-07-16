@@ -11,9 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "! Proxy Expiring"
-msgstr "! Proxy သက်တမ်းကုန်ခြင်း။"
-
 msgid "(%d channels)?"
 msgstr "(%d ချန်နယ်များ)။"
 
@@ -91,9 +88,6 @@ msgstr "- {} ပွားနေသော ထည့်သွင်းမှုမ
 
 msgid "- {} entries updated"
 msgstr "- အကြောင်းအရာ {} ခု အပ်ဒိတ်လုပ်ထားသည်။"
-
-msgid "? Proxy Status"
-msgstr "? ပရောက်စီအခြေအနေ"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy အမည်မသိ"
@@ -675,3 +669,9 @@ msgstr "✗ ပရောက်စီအော့ဖ်လိုင်း"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ပြန်လည်စတင်ခြင်း မအောင်မြင်ပါ။"
+
+#~ msgid "! Proxy Expiring"
+#~ msgstr "! Proxy သက်တမ်းကုန်ခြင်း။"
+
+#~ msgid "? Proxy Status"
+#~ msgstr "? ပရောက်စီအခြေအနေ"
