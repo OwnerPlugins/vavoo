@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/Belfagor2005/vavoo">
-    <img src="https://img.shields.io/badge/Version-1.77-blue.svg" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.78-blue.svg" alt="Version">
   </a>
 
   <a href="https://www.enigma2.net">

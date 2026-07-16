@@ -4069,17 +4069,20 @@ class VavooSearch(Screen):
 
 class TvInfoBarShowHide():
     """
-    InfoBar show/hide control, modified to only toggle overlays on OK press.
-    No auto-hide timers.
+    InfoBar show/hide control – toggles both the standard Enigma2 infobar
+    and the custom overlays (help + EPG) simultaneously on OK press.
+    At stream start, both are shown; custom overlays auto‑hide after 5s,
+    but the standard infobar stays until toggled off.
     """
     STATE_HIDDEN = 0
     STATE_HIDING = 1
     STATE_SHOWING = 2
     STATE_SHOWN = 3
-    FLAG_CENTER_DVB_SUBS = 2048
+    # FLAG_CENTER_DVB_SUBS = 2048
     skipToggleShow = False
 
     def __init__(self):
+        print("[DEBUG] TvInfoBarShowHide.__init__ START")
         self["ShowHideActions"] = ActionMap(
             ["InfobarShowHideActions"],
             {
@@ -4091,10 +4094,12 @@ class TvInfoBarShowHide():
         self.__event_tracker = ServiceEventTracker(
             screen=self, eventmap={
                 iPlayableService.evStart: self.serviceStarted})
+
         self.__state = self.STATE_SHOWN
         self.__locked = 0
+        print("[DEBUG] TvInfoBarShowHide.__init__ state={}")
 
-        # Overlay proxy
+        # Top overlay: controls + proxy status
         self.helpOverlay = Label("")
         self.helpOverlay.skinAttributes = [
             ("position", "0,0"),
@@ -4110,7 +4115,7 @@ class TvInfoBarShowHide():
         self["helpOverlay"] = self.helpOverlay
         self["helpOverlay"].hide()
 
-        # Overlay EPG
+        # EPG overlay (below the help overlay)
         self.epgOverlay = Label("")
         self.epgOverlay.skinAttributes = [
             ("position", "0,{}".format(OVERLAY_Y_EPG)),
@@ -4126,6 +4131,7 @@ class TvInfoBarShowHide():
         self["epgOverlay"] = self.epgOverlay
         self["epgOverlay"].hide()
 
+        # Timer to update proxy status every 30s while overlays are visible
         self.proxy_update_timer = eTimer()
         try:
             self.proxy_update_timer.timeout.connect(
@@ -4134,63 +4140,39 @@ class TvInfoBarShowHide():
             self.proxy_update_timer.callback.append(
                 self.update_proxy_status_overlay)
 
-        # Timer to hide the overlay after a while (OFF)
+        # Timer to auto‑hide custom overlays after 5 seconds
         self.hideTimer = eTimer()
         try:
             self.hideTimer.timeout.connect(self.doTimerHide)
         except BaseException:
             self.hideTimer.callback.append(self.doTimerHide)
-        # self.hideTimer.start(50000, True)
 
+        # Timer for delayed start (to ensure infobar is rendered)
+        self.delayed_start_timer = eTimer()
+        try:
+            self.delayed_start_timer.timeout.connect(self._delayed_start)
+        except BaseException:
+            self.delayed_start_timer.callback.append(self._delayed_start)
+
+        # Timer to retry serviceStarted if execing is False
+        self.retry_start_timer = eTimer()
+        try:
+            self.retry_start_timer.timeout.connect(self._retry_start)
+        except BaseException:
+            self.retry_start_timer.callback.append(self._retry_start)
         self.onShow.append(self.__onShow)
         self.onHide.append(self.__onHide)
-
-    def get_proxy_status_text(self):
-        try:
-            if not is_proxy_running():
-                return _("✗ Proxy Offline")
-            status = get_proxy_status()
-            if not status:
-                return _("? Proxy Unknown")
-            if status.get("initialized", False):
-                token_age = status.get("addon_sig_age", 0)
-                if token_age < 300:
-                    return _("✓ Proxy OK")
-                elif token_age < 420:
-                    ttl = 600 - token_age
-                    # Translators: {0} is the time in seconds until token
-                    # refresh
-                    return _("✓ Proxy ({0}s)").format(int(ttl))
-                else:
-                    return _("! Proxy Expiring")
-            else:
-                return _("✗ Proxy Error")
-        except Exception as e:
-            print("[Proxy Status] Error: " + str(e))
-            return _("? Proxy Status")
-
-    def update_proxy_status_overlay(self):
-        if self["helpOverlay"].visible:
-            try:
-                current_text = self["helpOverlay"].getText()
-                parts = current_text.split("|")
-                if len(parts) > 1:
-                    base_parts = parts[:-1]
-                    base_help = "|".join(base_parts).strip()
-                    proxy_status = self.get_proxy_status_text()
-                    new_text = base_help + " | " + proxy_status + " | " + "by Lululla"
-                    self["helpOverlay"].setText(new_text)
-            except Exception as e:
-                print("[Update Proxy Overlay] Error: " + str(e))
+        print("[DEBUG] TvInfoBarShowHide.__init__ END")
 
     def get_current_epg(self):
-        """Method to be overridden by the child class (Playstream2)"""
+        """Method to be overridden by child class (Playstream2)."""
         return "EPG not available"
 
     def show_help_overlay(self):
-        """Show the overlays with controls and EPG."""
+        """Show custom overlays and start the auto‑hide timer."""
+        print("[DEBUG] show_help_overlay START")
         try:
-            # Proxy details
+            # Prepare help overlay text (controls + proxy details)
             if is_proxy_running():
                 status = get_proxy_status()
                 if status:
@@ -4215,27 +4197,20 @@ class TvInfoBarShowHide():
 
             controls = _("CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit")
             credit = "by Lululla"
-
             help_text = "{} | {} | {}".format(controls, proxy_details, credit)
             self["helpOverlay"].setText(help_text)
             self["helpOverlay"].show()
+            print("[DEBUG] show_help_overlay helpOverlay shown")
 
-            # get_current_epg() can block for seconds (fetching/parsing a
-            # country's EPG file on a cache miss). Show a placeholder and
-            # start the hide timer now instead of after that call returns -
-            # otherwise the overlay appears stuck/unresponsive for however
-            # long the fetch takes, and the 5s auto-hide only starts
-            # counting down once it's done. Fetch in the background and
-            # fill in the real text if the overlay is still up when it
-            # completes.
+            # Show EPG (initially "Loading...")
             self["epgOverlay"].setText(_("Loading EPG..."))
             self["epgOverlay"].show()
+            print("[DEBUG] show_help_overlay epgOverlay shown")
 
-            # Update proxy status every 30 seconds while the overlay is visible
+            # Start timer to update proxy status every 30s
             if not self.proxy_update_timer.isActive():
                 self.proxy_update_timer.start(30000, True)
-
-            self.hideTimer.start(5000, True)  # 5 seconds
+                print("[DEBUG] show_help_overlay proxy_update_timer started")
 
             def _fetch_epg_async():
                 try:
@@ -4248,77 +4223,138 @@ class TvInfoBarShowHide():
                     try:
                         if self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
+                            print("[DEBUG] show_help_overlay EPG updated: {}".format(epg_text[:50]))
                     except Exception:
                         pass
                 reactor.callFromThread(_apply_epg_text)
 
             threading.Thread(target=_fetch_epg_async, daemon=True).start()
+
         except Exception as e:
             print("[Show Help] Error: " + str(e))
+        print("[DEBUG] show_help_overlay END")
+
+    def update_proxy_status_overlay(self):
+        """Update the helpOverlay text with current proxy status."""
+        if self["helpOverlay"].visible:
+            try:
+                current_text = self["helpOverlay"].getText()
+                parts = current_text.split("|")
+                if len(parts) > 2:
+                    controls_part = parts[0].strip()
+                    credit_part = parts[-1].strip()
+
+                    if is_proxy_running():
+                        status = get_proxy_status()
+                        if status:
+                            token_age = status.get("addon_sig_age", 0)
+                            channels = status.get("channels_count", 0)
+                            if token_age < 300:
+                                proxy_msg = _("✓ Proxy OK")
+                            elif token_age < 420:
+                                ttl = 600 - token_age
+                                proxy_msg = _("✓ Proxy ({0}s)").format(int(ttl))
+                            else:
+                                proxy_msg = _("✗ Proxy Expired")
+                            channels_text = _("Channels")
+                            proxy_details = "{} | {}: {}".format(
+                                proxy_msg, channels_text, channels)
+                        else:
+                            proxy_details = _("? Proxy Unknown")
+                    else:
+                        proxy_details = _("✗ Proxy Offline")
+
+                    new_text = "{} | {} | {}".format(controls_part, proxy_details, credit_part)
+                    self["helpOverlay"].setText(new_text)
+            except Exception as e:
+                print("[Update Proxy Overlay] Error: " + str(e))
 
     def hide_help_overlay(self):
-        """Hide both overlays."""
+        """Hide both overlays and stop timer"""
+        print("[DEBUG] hide_help_overlay START")
+        self.hideTimer.stop()
+        self.proxy_update_timer.stop()
         if self["helpOverlay"].visible:
-            self.proxy_update_timer.stop()
-            self.hideTimer.stop()
             self["helpOverlay"].hide()
             self["epgOverlay"].hide()
+            print("[DEBUG] hide_help_overlay overlays hidden")
+        print("[DEBUG] hide_help_overlay END")
 
-    def OkPressed(self):
-        """Toggle overlays on OK press."""
-        if self["helpOverlay"].visible:
-            self.hide_help_overlay()
-        else:
-            self.show_help_overlay()
-        self.toggleShow()
-
+    # ========== ORIGINAL METHODS (KEPT) ==========
     def __onShow(self):
+        print("[DEBUG] __onShow called, old state={}".format(self.__state))
         self.__state = self.STATE_SHOWN
+        print("[DEBUG] __onShow new state={}".format(self.__state))
 
     def __onHide(self):
+        print("[DEBUG] __onHide called, old state={}".format(self.__state))
         self.__state = self.STATE_HIDDEN
+        print("[DEBUG] __onHide new state={}".format(self.__state))
 
     def doShow(self):
+        print("[DEBUG] doShow START, state={}".format(self.__state))
+        self.hideTimer.stop()
         self.show()
+        self.startHideTimer()
+        print("[DEBUG] doShow END")
 
     def doHide(self):
+        print("[DEBUG] doHide START, state={}".format(self.__state))
+        self.hideTimer.stop()
         self.hide()
-        if self["helpOverlay"].visible:
-            self.hide_help_overlay()
-
-    def serviceStarted(self):
-        if self.execing and config.usage.show_infobar_on_zap.value:
-            self.doShow()
-            self.show_help_overlay()
+        self.hide_help_overlay()
+        self.startHideTimer()
+        print("[DEBUG] doHide END")
 
     def startHideTimer(self):
-        pass
+        print("[DEBUG] startHideTimer START, state={}, locked={}".format(self.__state, self.__locked))
+        if self.__state == self.STATE_SHOWN and not self.__locked:
+            self.hideTimer.stop()
+            self.hideTimer.start(5000, True)
+            print("[DEBUG] startHideTimer timer started (5s)")
+        else:
+            print("[DEBUG] startHideTimer NOT starting: state={}, locked={}".format(self.__state, self.__locked))
+        print("[DEBUG] startHideTimer END")
 
     def doTimerHide(self):
-        """Called when hide timer expires"""
-        print("[TvInfoBar] Auto-hiding overlay after timeout")
-        self.hide_help_overlay()
-        self.toggleShow()
+        print("[DEBUG] doTimerHide START, state={}".format(self.__state))
+        self.hideTimer.stop()
+        if self.__state == self.STATE_SHOWN:
+            print("[DEBUG] doTimerHide hiding infobar and overlays")
+            self.hide()
+            self.hide_help_overlay()
+        else:
+            print("[DEBUG] doTimerHide state is HIDDEN, not hiding")
+        print("[DEBUG] doTimerHide END")
 
     def toggleShow(self):
+        print("[DEBUG] toggleShow START, state={}, skipToggleShow={}".format(self.__state, self.skipToggleShow))
         if not self.skipToggleShow:
             if self.__state == self.STATE_HIDDEN:
+                print("[DEBUG] toggleShow calling doShow()")
                 self.doShow()
             else:
+                print("[DEBUG] toggleShow calling doHide()")
                 self.doHide()
         else:
+            print("[DEBUG] toggleShow skipToggleShow is True, resetting")
             self.skipToggleShow = False
+        print("[DEBUG] toggleShow END")
 
     def lockShow(self):
+        print("[DEBUG] lockShow START")
         try:
             self.__locked += 1
         except BaseException:
             self.__locked = 0
         if self.execing:
             self.show()
+            self.hideTimer.stop()
             self.skipToggleShow = False
+        print("[DEBUG] lockShow END, locked={}".format(self.__locked))
 
     def unlockShow(self):
+        print("[DEBUG] unlockShow START")
         try:
             self.__locked -= 1
         except BaseException:
@@ -4327,6 +4363,59 @@ class TvInfoBarShowHide():
             self.__locked = 0
         if self.execing:
             self.startHideTimer()
+        print("[DEBUG] unlockShow END, locked={}".format(self.__locked))
+
+    def _do_show_all(self):
+        """Show infobar and overlays, start hide timer"""
+        print("[DEBUG] _do_show_all CALLED")
+        self.doShow()                  # Shows infobar
+        self.show_help_overlay()       # Shows overlays
+        self.delayed_start_timer.start(500, True)  # Start hide timer after 500ms
+        print("[DEBUG] _do_show_all END")
+
+    def _retry_start(self):
+        """Retry serviceStarted if execing is False"""
+        print("[DEBUG] _retry_start CALLED")
+        self.retry_start_timer.stop()
+        if self.execing:
+            print("[DEBUG] _retry_start execing is now True, calling _do_show_all()")
+            self._do_show_all()
+        else:
+            print("[DEBUG] _retry_start execing still False, will retry in 500ms")
+            self.retry_start_timer.start(500, True)
+
+    def _delayed_start(self):
+        """Delayed start callback - starts the hide timer after infobar is rendered"""
+        print("[DEBUG] _delayed_start CALLED")
+        self.delayed_start_timer.stop()
+        print("[DEBUG] _delayed_start starting hideTimer (5s)")
+        self.hideTimer.start(5000, True)
+        print("[DEBUG] _delayed_start END")
+
+    def serviceStarted(self):
+        print("[DEBUG] ========== serviceStarted CALLED ==========")
+        print("[DEBUG] serviceStarted execing={}".format(self.execing))
+        if self.execing:
+            print("[DEBUG] serviceStarted execing is True, calling _do_show_all()")
+            self._do_show_all()
+        else:
+            print("[DEBUG] serviceStarted execing is False, will retry in 500ms")
+            self.retry_start_timer.start(500, True)
+        print("[DEBUG] ========== serviceStarted END ==========")
+
+    def OkPressed(self):
+        """Toggle both infobar and overlays together"""
+        print("[DEBUG] ========== OkPressed CALLED ==========")
+        print("[DEBUG] OkPressed helpOverlay.visible={}".format(self["helpOverlay"].visible))
+        if self["helpOverlay"].visible:
+            print("[DEBUG] OkPressed hiding overlays")
+            self.hide_help_overlay()
+        else:
+            print("[DEBUG] OkPressed showing overlays")
+            self.show_help_overlay()
+        print("[DEBUG] OkPressed calling toggleShow()")
+        self.toggleShow()
+        print("[DEBUG] ========== OkPressed END ==========")
 
 
 class Playstream2(

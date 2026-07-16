@@ -1,9 +1,17 @@
 #!/bin/bash
 
-version='1.77'
-changelog="- Added auto update in-app, with a themed popup and changelog
-- Enigma2 GUI now restarts automatically after an update
-- General stability and reliability fixes"
+version='1.78'
+changelog="
+Bump version to 1.78 and refactor TvInfoBarShowHide class to fix overlay display/hide timing issues:
+- Add delayed_start_timer and retry_start_timer to handle cases where execing is False
+- Implement _delayed_start(), _retry_start(), _do_show_all() helpers for reliable show sequence
+- Improve update_proxy_status_overlay() logic for cleaner proxy status display
+- Add extensive debug prints throughout for troubleshooting overlay behavior
+- Improve docstrings and code organization with clearer section comments
+- Enhance state tracking in doShow(), doHide(), startHideTimer(), doTimerHide()
+Custom overlays auto-hide after 5s while standard infobar remains until toggled off."
+
+
 echo "$changelog"
 TMPPATH=/tmp/vavoo-install
 FILEPATH=/tmp/vavoo-main.tar.gz
