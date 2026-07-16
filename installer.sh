@@ -6,6 +6,7 @@ changelog="- Fixed EPG matching for many Italian channels (alias system) and UK 
 - Auto-update check now runs every time you open the plugin
 - Redesigned installer console: auto-scrolling output, fixed Restart GUI button
 - Fixed a splash screen progress bar reliability issue
+- Fixed background selection showing the wrong image
 - General stability and reliability fixes"
 
 
