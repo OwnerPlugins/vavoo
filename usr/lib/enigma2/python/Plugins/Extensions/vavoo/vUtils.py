@@ -1780,6 +1780,17 @@ def get_satellite_priority(orbpos, configured_sats):
     return 0.5
 
 
+# get_country_code() returns real ISO 3166-1 codes (needed for flag
+# downloads, e.g. "gb" for United Kingdom), but the Rytec database groups
+# channels by its own historical suffix convention, which doesn't always
+# match ISO - e.g. UK channels are "BBCOne.uk", not "BBCOne.gb". Without
+# this translation, every channel from a mismatched country would find
+# zero candidates in rytec_by_country and always report "ID not found".
+RYTEC_COUNTRY_CODE_OVERRIDES = {
+    'gb': 'uk',
+}
+
+
 class VavooEPGMatcher:
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
@@ -2025,6 +2036,9 @@ class VavooEPGMatcher:
                 for code in balkan_codes
                 for entry in self.rytec_by_country.get(code, [])
             ]
+        elif RYTEC_COUNTRY_CODE_OVERRIDES.get(country_code):
+            entries_to_scan = self.rytec_by_country.get(
+                RYTEC_COUNTRY_CODE_OVERRIDES[country_code], [])
         else:
             entries_to_scan = self.rytec_by_country.get(country_code, [])
 
