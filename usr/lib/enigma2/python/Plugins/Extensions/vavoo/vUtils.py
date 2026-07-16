@@ -1780,6 +1780,17 @@ def get_satellite_priority(orbpos, configured_sats):
     return 0.5
 
 
+# get_country_code() returns real ISO 3166-1 codes (needed for flag
+# downloads, e.g. "gb" for United Kingdom), but the Rytec database groups
+# channels by its own historical suffix convention, which doesn't always
+# match ISO - e.g. UK channels are "BBCOne.uk", not "BBCOne.gb". Without
+# this translation, every channel from a mismatched country would find
+# zero candidates in rytec_by_country and always report "ID not found".
+RYTEC_COUNTRY_CODE_OVERRIDES = {
+    'gb': 'uk',
+}
+
+
 class VavooEPGMatcher:
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
@@ -1871,6 +1882,7 @@ class VavooEPGMatcher:
                 self.rytec_by_country.setdefault(
                     entry_country, []).append(entry)
                 self.rytec_names[original_id] = clean_name
+                self.rytec_by_id[original_id] = service_ref
 
             print("[VavooEPGMatcher] Loaded {} Rytec channels".format(
                 len(self.rytec_entries)))
@@ -2025,13 +2037,30 @@ class VavooEPGMatcher:
                 for code in balkan_codes
                 for entry in self.rytec_by_country.get(code, [])
             ]
+        elif RYTEC_COUNTRY_CODE_OVERRIDES.get(country_code):
+            entries_to_scan = self.rytec_by_country.get(
+                RYTEC_COUNTRY_CODE_OVERRIDES[country_code], [])
         else:
             entries_to_scan = self.rytec_by_country.get(country_code, [])
 
         # Pass 1: search all matches by similarity (ignore priority for now)
+        # Reuse one SequenceMatcher with seq1 fixed to clean_input instead
+        # of building a new one per candidate (set_seq2() lets it skip
+        # re-analyzing seq1 every time), and check the cheap upper-bound
+        # estimates (real_quick_ratio(), then quick_ratio()) before paying
+        # for the full ratio() computation - both are always >= the real
+        # ratio, so this only skips candidates that could never reach the
+        # threshold anyway, never a false negative. This loop runs against
+        # every Rytec entry for the country on every uncached match, so it
+        # matters most for countries with large Rytec databases (e.g. Italy).
+        sm = SequenceMatcher(None, clean_input)
         for clean_entry, orig_name, rytec_id, service_ref in entries_to_scan:
-            # Calculate base similarity
-            score = calculate_similarity(clean_input, clean_entry)
+            sm.set_seq2(clean_entry)
+            if sm.real_quick_ratio() < self.similarity_threshold:
+                continue
+            if sm.quick_ratio() < self.similarity_threshold:
+                continue
+            score = sm.ratio()
             if score < self.similarity_threshold:
                 continue
 
@@ -2106,8 +2135,13 @@ class VavooEPGMatcher:
             # Clean the channel name using the same rules as playlist_generator
             norm_name = channel_alias.normalize_channel_name(channel_name)
             if norm_name:
-                # If we have an EPG ID for this canonical name, use it directly
-                alias_id = self.alias_map.get(norm_name)
+                # If we have an EPG ID for this canonical name, use it
+                # directly. self.alias_map (loaded from the on-disk
+                # channel_alias.json, if present) can override/add to the
+                # curated channel_alias.ALIAS_MAP, which is the actual
+                # source of the ~300 hand-mapped Italian channel aliases.
+                alias_id = self.alias_map.get(
+                    norm_name) or channel_alias.ALIAS_MAP.get(norm_name)
                 if alias_id:
                     alias_sref = self.rytec_by_id.get(alias_id)
                     if alias_sref:
@@ -2167,18 +2201,26 @@ class VavooEPGMatcher:
 
         if self._temp_cache and search_key in self._temp_cache:
             cached = self._temp_cache[search_key]
-            print("[Match] Temp cache HIT: {}".format(search_key))
-            new_entry = cached.copy()
-            new_entry['name'] = channel_name   # original name
-            self.cache[search_key] = new_entry
-            self._index_cache_key(search_key)
-            # Deferred to save_cache() (called once per batch by callers,
-            # e.g. after a whole bouquet export) instead of writing the
-            # full cache file here - this branch fires per matched
-            # channel, and a full rewrite per channel turns a bulk export
-            # into many redundant whole-file writes as the cache grows.
-            self.new_matches[search_key] = new_entry
-            return cached.get('id'), cached.get('sref')
+            # Unlike the local cache above, this comes from a pre-built
+            # file downloaded from GitHub - validate the ID before
+            # trusting it, same as the local cache path does, instead of
+            # blindly returning whatever is there.
+            if self.is_valid_rytec_id(cached.get('id')):
+                print("[Match] Temp cache HIT: {}".format(search_key))
+                new_entry = cached.copy()
+                new_entry['name'] = channel_name   # original name
+                self.cache[search_key] = new_entry
+                self._index_cache_key(search_key)
+                # Deferred to save_cache() (called once per batch by callers,
+                # e.g. after a whole bouquet export) instead of writing the
+                # full cache file here - this branch fires per matched
+                # channel, and a full rewrite per channel turns a bulk export
+                # into many redundant whole-file writes as the cache grows.
+                self.new_matches[search_key] = new_entry
+                return cached.get('id'), cached.get('sref')
+            else:
+                print(
+                    "[Match] Temp cache has invalid ID for {}, ignoring".format(search_key))
 
         # 3. Live matching
         print("[Match] Doing local matching for: {}".format(channel_name))

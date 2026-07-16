@@ -318,6 +318,14 @@ proxy_thread = None
 search_ok = False
 tmlast = None
 
+# Per-country parsed EPG document + channel->programme index, shared
+# across Playstream2 instances (module-level, not per-instance) so
+# switching channels or reopening the player doesn't re-fetch/re-parse/
+# re-index the same country's EPG document within the TTL window - see
+# Playstream2.get_current_epg().
+_epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index)
+_epg_result_cache = {}   # "epg_<name>_<country>" -> (timestamp, result_str)
+
 # Auto-update check state, shared between startVavoo (kicks off the
 # background check) and MainVavoo (shows the popup once, after the main
 # menu is open). See _start_update_check() /
@@ -330,18 +338,21 @@ _update_popup_shown = False
 
 def _start_update_check():
     """Check installer.sh on GitHub for a newer plugin version, in the
-    background, once per plugin launch.
+    background, every time the plugin is launched (i.e. every time the
+    splash screen runs, not just once per Enigma2 GUI process).
 
     Called from startVavoo so the check overlaps with the splash screen
     instead of adding to perceived load time. The result is only surfaced
     as a popup once MainVavoo (the main menu) is actually open - see
-    MainVavoo._check_update_popup_tick().
+    MainVavoo._check_update_popup_tick(). Resets the shared state on
+    every call so a closed-and-reopened plugin gets a fresh check and
+    can show the popup again, instead of only ever on the first launch.
     """
-    global _update_check_started
-    if _update_check_started:
-        print("[Update] _start_update_check() called again, already started - skipping")
-        return
+    global _update_check_started, _update_check_done, _update_check_result, _update_popup_shown
     _update_check_started = True
+    _update_check_done = False
+    _update_check_result = None
+    _update_popup_shown = False
     print("[Update] Starting background version check (local v{})".format(__version__))
 
     def _worker():
@@ -752,10 +763,11 @@ class vavoo_config(Screen, ConfigListScreen):
         if isfile('/var/lib/dpkg/status'):
             skin = skin.replace('.xml', '_cvs.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+            self.skin = apply_selected_background(f.read())
         self.setup_title = ('Vavoo Config')
 
         self.old_proxy_enabled = cfg.proxy_enabled.value
+        self.old_back = cfg.back.value
 
         self.list = []
         self.onChangedEntry = []
@@ -1462,12 +1474,25 @@ class vavoo_config(Screen, ConfigListScreen):
                 print("Config reload error (safe mode): " + str(e))
                 self._safe_config_reload()
 
+            back_changed = self.old_back != cfg.back.value
             bakk = str(cfg.back.getValue()) + '.png'
             add_skin_back(bakk)
 
+            message = _("Configuration saved successfully!")
+            if back_changed:
+                # apply_selected_background() makes freshly-opened screens
+                # point at the actual selected file, avoiding Enigma2's
+                # pixmap cache entirely - but the MainVavoo screen
+                # currently open behind this config screen was already
+                # loaded before this change, so it still needs to be
+                # closed and reopened once to pick up the new skin text.
+                message += "\n\n" + \
+                    _("Exit and reopen the plugin to see the new background.")
+                self.old_back = cfg.back.value
+
             self.session.open(
                 MessageBox,
-                _("Configuration saved successfully!"),
+                message,
                 MessageBox.TYPE_INFO,
                 timeout=5
             )
@@ -1610,10 +1635,12 @@ class startVavoo(Screen):
         smooth = t * t * (3.0 - 2.0 * t)          # ease-in-out curve
         self._pct = min(self.SOFT_CAP, int(round(smooth * self.SOFT_CAP)))
 
-        try:
-            self["progress"].instance.setValue(self._pct)
-        except Exception:
-            pass
+        # ProgressBar.setValue() already no-ops safely if its instance
+        # isn't bound yet - going through it (instead of the raw
+        # .instance.setValue() + silent try/except used before) means a
+        # real failure here can't silently freeze the bar while the
+        # percentage/status text next to it keeps advancing.
+        self["progress"].setValue(self._pct)
         self["progress_pct"].setText("%d %%" % self._pct)
 
         # advance status messages
@@ -1673,10 +1700,7 @@ class startVavoo(Screen):
             pass
 
         self._pct = 100
-        try:
-            self["progress"].instance.setValue(100)
-        except Exception:
-            pass
+        self["progress"].setValue(100)
         self["progress_pct"].setText("100 %")
 
         if timed_out:
@@ -1720,10 +1744,7 @@ class startVavoo(Screen):
         self.timer.start(500, True)
 
         # animation tick timer (repeating, 30 ms interval, cosmetic only)
-        try:
-            self["progress"].instance.setValue(0)
-        except Exception:
-            pass
+        self["progress"].setValue(0)
         self._anim_timer = eTimer()
         if isfile('/var/lib/dpkg/status'):
             self._anim_timer.timeout.connect(self._tick)
@@ -1823,7 +1844,7 @@ class MainVavoo(Screen):
         if isfile('/var/lib/dpkg/status'):
             skin = skin.replace('.xml', '_cvs.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+            self.skin = apply_selected_background(f.read())
 
         if is_stats_enabled():
             record_anonymous_startup()
@@ -2737,21 +2758,27 @@ class MainVavoo(Screen):
                 import subprocess
                 self['name'].setText(_("Updating EPG..."))
 
-                # Run in background to not block UI
+                # Run in background to not block UI. UI updates must be
+                # marshalled back onto the reactor thread - Enigma2's GUI
+                # components aren't thread-safe to touch directly from a
+                # background thread.
                 def update_thread():
                     try:
                         result = subprocess.call(
                             ['epgimport', '--import'], timeout=300)
                         if result == 0:
-                            self.session.open(
-                                MessageBox, _("EPG update completed"), MessageBox.TYPE_INFO)
+                            reactor.callFromThread(
+                                self.session.open, MessageBox,
+                                _("EPG update completed"), MessageBox.TYPE_INFO)
                         else:
-                            self.session.open(
-                                MessageBox, _("EPG update failed"), MessageBox.TYPE_ERROR)
+                            reactor.callFromThread(
+                                self.session.open, MessageBox,
+                                _("EPG update failed"), MessageBox.TYPE_ERROR)
                     except Exception as e:
                         print("[Vavoo] EPG update error:", str(e))
                     finally:
-                        self['name'].setText(_("Ready"))
+                        reactor.callFromThread(
+                            self['name'].setText, _("Ready"))
 
                 thread = threading.Thread(target=update_thread)
                 thread.setDaemon(True)
@@ -3037,7 +3064,7 @@ class vavoo(Screen):
         """Load the skin file."""
         skin = join(skin_path, 'defaultListScreen.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+            self.skin = apply_selected_background(f.read())
 
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
@@ -4761,8 +4788,8 @@ class Playstream2(
             cache_key = "epg_{}_{}".format(clean_name, self.country_code)
 
             # Check if we have cached result (5 minutes TTL)
-            if hasattr(self, '_epg_cache') and cache_key in self._epg_cache:
-                cached_time, cached_result = self._epg_cache[cache_key]
+            if cache_key in _epg_result_cache:
+                cached_time, cached_result = _epg_result_cache[cache_key]
                 if time.time() - cached_time < 300:  # 5 minutes
                     elapsed = time.time() - start_time
                     if elapsed > 0.05:
@@ -4770,10 +4797,6 @@ class Playstream2(
                             "[EPG] Cache HIT for {} (took {:.3f}s)".format(
                                 clean_name, elapsed))
                     return cached_result
-
-            # Initialize cache dict if needed
-            if not hasattr(self, '_epg_cache'):
-                self._epg_cache = {}
 
             # Get matcher (singleton, already loaded)
             matcher = get_epg_matcher()
@@ -4791,21 +4814,20 @@ class Playstream2(
 
             if not rytec_id:
                 result = "EPG not available (ID not found)"
-                self._epg_cache[cache_key] = (time.time(), result)
+                _epg_result_cache[cache_key] = (time.time(), result)
                 return result
 
             # The whole country's EPG document (all channels, potentially
-            # hundreds of <programme> entries) is what's slow to fetch and
-            # parse - not the per-channel lookup. Reuse a recently parsed
-            # copy across channels in the same country instead of
-            # re-downloading and re-parsing it on every single channel
-            # view, which is what made switching channels feel slow.
-            if not hasattr(self, '_epg_xml_cache'):
-                self._epg_xml_cache = {}
-
-            xml_cached = self._epg_xml_cache.get(self.country_code)
+            # thousands of <programme> entries across all channels/days)
+            # is what's slow to fetch, parse, and scan - not any single
+            # channel's lookup. Reuse a recently parsed copy, and a
+            # channel->programmes index built alongside it, across
+            # channels in the same country instead of re-downloading,
+            # re-parsing, and re-scanning the whole thing from scratch on
+            # every single channel view.
+            xml_cached = _epg_xml_cache.get(self.country_code)
             if xml_cached and (time.time() - xml_cached[0] < 300):
-                root = xml_cached[1]
+                root, channel_index = xml_cached[1], xml_cached[2]
             else:
                 # Build EPG URL
                 epg_url = "http://{}:{}/epg/{}.xml".format(
@@ -4824,7 +4846,7 @@ class Playstream2(
 
                 if not xml_data:
                     result = "EPG not available"
-                    self._epg_cache[cache_key] = (time.time(), result)
+                    _epg_result_cache[cache_key] = (time.time(), result)
                     return result
 
                 try:
@@ -4832,29 +4854,38 @@ class Playstream2(
                 except Exception as e:
                     print("[EPG] XML parsing error: {}".format(e))
                     result = "EPG parsing error"
-                    self._epg_cache[cache_key] = (time.time(), result)
+                    _epg_result_cache[cache_key] = (time.time(), result)
                     return result
 
-                self._epg_xml_cache[self.country_code] = (time.time(), root)
+                # Index once per document: channel id (dots stripped, to
+                # match id_match()'s old comparison) -> its own programme
+                # entries, so a single channel's lookup only ever scans
+                # that channel's handful of entries instead of every
+                # <programme> in the whole country.
+                index_start = time.time()
+                channel_index = {}
+                for prog in root.findall('programme'):
+                    prog_channel = prog.get('channel')
+                    if not prog_channel:
+                        continue
+                    channel_index.setdefault(
+                        prog_channel.replace('.', ''), []).append(prog)
+                index_time = time.time() - index_start
+                if index_time > 0.1:
+                    print("[EPG] Slow index build: {:.3f}s ({} channels)".format(
+                        index_time, len(channel_index)))
 
-            # Parse XML
+                _epg_xml_cache[self.country_code] = (
+                    time.time(), root, channel_index)
+
+            # Find current programme
             parse_start = time.time()
             try:
                 now = time.time()
-
-                def id_match(epg_id, rid):
-                    # Simple ID matching without regex
-                    return epg_id.replace('.', '') == rid.replace('.', '')
-
                 current_prog = None
+                rid_key = rytec_id.replace('.', '')
 
-                # Optimize: break early when found
-                for prog in root.findall('programme'):
-                    prog_channel = prog.get('channel')
-                    if not prog_channel or not id_match(
-                            prog_channel, rytec_id):
-                        continue
-
+                for prog in channel_index.get(rid_key, []):
                     start_str = prog.get('start')
                     stop_str = prog.get('stop')
                     if not start_str or not stop_str:
@@ -4906,13 +4937,13 @@ class Playstream2(
                     result = "No programme found"
 
                 # Cache the result
-                self._epg_cache[cache_key] = (time.time(), result)
+                _epg_result_cache[cache_key] = (time.time(), result)
                 return result
 
             except Exception as e:
                 print("[EPG] Programme matching error: {}".format(e))
                 result = "EPG parsing error"
-                self._epg_cache[cache_key] = (time.time(), result)
+                _epg_result_cache[cache_key] = (time.time(), result)
                 return result
 
         except Exception as e:
@@ -5327,6 +5358,29 @@ def add_skin_back(bakk):
         cmd = 'cp -f ' + str(baknew) + ' ' + BackPath + '/default.png'
         os_system(cmd)
         os_system('sync')
+
+
+def apply_selected_background(skin_text):
+    """Point a skin's hardcoded default.png background reference at the
+    actually-selected background file instead.
+
+    add_skin_back() copies the selected image's content onto default.png
+    on disk, but Enigma2 caches pixmaps by file path - re-showing a
+    skin that references that same "default.png" path just returns the
+    previously-cached bitmap (e.g. selecting "oktus" still visually
+    shows "kiddac") until the whole GUI process restarts and re-reads
+    it fresh. Referencing the real, distinctly-named file instead (e.g.
+    "oktus.png") means a newly-selected background is a cache miss and
+    gets loaded fresh immediately, no restart needed.
+    """
+    try:
+        selected = join(BackPath, str(cfg.back.value) + '.png')
+        if isfile(selected):
+            default_path = join(BackPath, 'default.png')
+            skin_text = skin_text.replace(default_path, selected)
+    except Exception as e:
+        print("[Background] Error applying selected background: " + str(e))
+    return skin_text
 
 
 def add_skin_font():

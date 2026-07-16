@@ -57,11 +57,9 @@ class Console(Screen):
             <widget name="text" position="44,80" size="712,276" backgroundColor="#0e0518" foregroundColor="#e0d0f0" font="Console;16" transparent="1" zPosition="5"/>
             <eLabel position="30,384" size="740,1" backgroundColor="#3a1a5a" zPosition="4"/>
             <eLabel position="30,408" size="24,24" backgroundColor="#c0392b" zPosition="4"/>
-            <eLabel text="Cancel" position="62,408" zPosition="2" size="180,24" font="Regular;16" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
-            <eLabel position="310,408" size="24,24" backgroundColor="#9970bb" zPosition="4"/>
-            <eLabel text="Hide/Show" position="342,408" zPosition="2" size="180,24" font="Regular;16" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
-            <eLabel position="590,408" size="24,24" backgroundColor="#27ae60" zPosition="4"/>
-            <eLabel text="Restart GUI" position="622,408" zPosition="2" size="150,24" font="Regular;16" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <widget name="key_red" position="62,408" zPosition="2" size="340,24" font="Regular;16" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <eLabel position="450,408" size="24,24" backgroundColor="#27ae60" zPosition="4"/>
+            <eLabel text="Restart GUI" position="482,408" zPosition="2" size="260,24" font="Regular;16" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
         </screen>'''
     else:
         skin = '''<screen name="VavooInstallerConsole" position="center,center" size="1200,690" title="Command execution..." backgroundColor="#ff0a0510" flags="wfNoBorder">
@@ -88,16 +86,15 @@ class Console(Screen):
             <widget name="text" position="66,120" size="1068,414" backgroundColor="#0e0518" foregroundColor="#e0d0f0" font="Console;24" transparent="1" zPosition="5"/>
             <eLabel position="45,576" size="1110,2" backgroundColor="#3a1a5a" zPosition="4"/>
             <eLabel position="45,612" size="36,36" backgroundColor="#c0392b" zPosition="4"/>
-            <eLabel text="Cancel" position="93,612" zPosition="2" size="270,36" font="Regular;24" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
-            <eLabel position="465,612" size="36,36" backgroundColor="#9970bb" zPosition="4"/>
-            <eLabel text="Hide/Show" position="513,612" zPosition="2" size="270,36" font="Regular;24" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
-            <eLabel position="885,612" size="36,36" backgroundColor="#27ae60" zPosition="4"/>
-            <eLabel text="Restart GUI" position="933,612" zPosition="2" size="225,36" font="Regular;24" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <widget name="key_red" position="93,612" zPosition="2" size="510,36" font="Regular;24" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
+            <eLabel position="675,612" size="36,36" backgroundColor="#27ae60" zPosition="4"/>
+            <eLabel text="Restart GUI" position="723,612" zPosition="2" size="390,36" font="Regular;24" halign="left" valign="center" backgroundColor="#0a0510" foregroundColor="#f0e0ff" transparent="1"/>
         </screen>'''
 
-    # Keep only the most recent lines so the buffer (and the Label holding
-    # it) don't grow unbounded over a long-running install.
-    MAX_LINES = 200
+    # Label has no scroll capability, so the visible text is always just
+    # trimmed to the last VISIBLE_LINES lines - the effect is that the
+    # console always shows the latest output, as if auto-scrolled.
+    VISIBLE_LINES = 13
 
     def __init__(
             self,
@@ -128,15 +125,12 @@ class Console(Screen):
         # (see the same issue on the update popup's changelog).
         self['text'] = Label('')
         self['key_red'] = Label(_('Cancel'))
-        self['key_green'] = Label(_('Hide/Show'))
-        self['key_blue'] = Label(_('Restart'))
         self["actions"] = ActionMap(
             ["WizardActions", 'ColorActions'],
             {
                 "ok": self.cancel,
                 "red": self.cancel,
-                "green": self.toggleHideShow,
-                "blue": self.restartenigma,
+                "green": self.restartenigma,
                 "exit": self.cancel,
             }, -1
         )
@@ -161,14 +155,15 @@ class Console(Screen):
 
     def _setText(self, text):
         self._text_buffer = text
-        self['text'].setText(self._text_buffer)
+        self._render()
 
     def _appendText(self, text):
         self._text_buffer += text
+        self._render()
+
+    def _render(self):
         lines = self._text_buffer.split('\n')
-        if len(lines) > self.MAX_LINES:
-            self._text_buffer = '\n'.join(lines[-self.MAX_LINES:])
-        self['text'].setText(self._text_buffer)
+        self['text'].setText('\n'.join(lines[-self.VISIBLE_LINES:]))
 
     def updateTitle(self):
         self.setTitle(self.newtitle)
@@ -210,18 +205,9 @@ class Console(Screen):
 
         if self.errorOcurred or not self.closeOnSuccess:
             self._appendText('\nPress OK or Exit to abort!')
-            self['key_red'].setText('Exit')
-            self['key_green'].setText('')
+            self['key_red'].setText(_('Exit'))
         else:
             self.closeConsole()
-
-    def toggleHideShow(self):
-        if self.finished:
-            return
-        if self.shown:
-            self.hide()
-        else:
-            self.show()
 
     def cancel(self):
         if self.finished:
