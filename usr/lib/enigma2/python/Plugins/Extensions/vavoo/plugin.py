@@ -4223,7 +4223,8 @@ class TvInfoBarShowHide():
                     try:
                         if self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
-                            print("[DEBUG] show_help_overlay EPG updated: {}".format(epg_text[:50]))
+                            print("[DEBUG] show_help_overlay EPG updated: {}".format(
+                                epg_text[:50]))
                     except Exception:
                         pass
                 reactor.callFromThread(_apply_epg_text)
@@ -4253,7 +4254,8 @@ class TvInfoBarShowHide():
                                 proxy_msg = _("✓ Proxy OK")
                             elif token_age < 420:
                                 ttl = 600 - token_age
-                                proxy_msg = _("✓ Proxy ({0}s)").format(int(ttl))
+                                proxy_msg = _(
+                                    "✓ Proxy ({0}s)").format(int(ttl))
                             else:
                                 proxy_msg = _("✗ Proxy Expired")
                             channels_text = _("Channels")
@@ -4264,7 +4266,8 @@ class TvInfoBarShowHide():
                     else:
                         proxy_details = _("✗ Proxy Offline")
 
-                    new_text = "{} | {} | {}".format(controls_part, proxy_details, credit_part)
+                    new_text = "{} | {} | {}".format(
+                        controls_part, proxy_details, credit_part)
                     self["helpOverlay"].setText(new_text)
             except Exception as e:
                 print("[Update Proxy Overlay] Error: " + str(e))
@@ -4307,13 +4310,18 @@ class TvInfoBarShowHide():
         print("[DEBUG] doHide END")
 
     def startHideTimer(self):
-        print("[DEBUG] startHideTimer START, state={}, locked={}".format(self.__state, self.__locked))
+        print(
+            "[DEBUG] startHideTimer START, state={}, locked={}".format(
+                self.__state,
+                self.__locked))
         if self.__state == self.STATE_SHOWN and not self.__locked:
             self.hideTimer.stop()
             self.hideTimer.start(5000, True)
             print("[DEBUG] startHideTimer timer started (5s)")
         else:
-            print("[DEBUG] startHideTimer NOT starting: state={}, locked={}".format(self.__state, self.__locked))
+            print(
+                "[DEBUG] startHideTimer NOT starting: state={}, locked={}".format(
+                    self.__state, self.__locked))
         print("[DEBUG] startHideTimer END")
 
     def doTimerHide(self):
@@ -4328,7 +4336,10 @@ class TvInfoBarShowHide():
         print("[DEBUG] doTimerHide END")
 
     def toggleShow(self):
-        print("[DEBUG] toggleShow START, state={}, skipToggleShow={}".format(self.__state, self.skipToggleShow))
+        print(
+            "[DEBUG] toggleShow START, state={}, skipToggleShow={}".format(
+                self.__state,
+                self.skipToggleShow))
         if not self.skipToggleShow:
             if self.__state == self.STATE_HIDDEN:
                 print("[DEBUG] toggleShow calling doShow()")
@@ -4370,7 +4381,8 @@ class TvInfoBarShowHide():
         print("[DEBUG] _do_show_all CALLED")
         self.doShow()                  # Shows infobar
         self.show_help_overlay()       # Shows overlays
-        self.delayed_start_timer.start(500, True)  # Start hide timer after 500ms
+        self.delayed_start_timer.start(
+            500, True)  # Start hide timer after 500ms
         print("[DEBUG] _do_show_all END")
 
     def _retry_start(self):
@@ -4406,7 +4418,9 @@ class TvInfoBarShowHide():
     def OkPressed(self):
         """Toggle both infobar and overlays together"""
         print("[DEBUG] ========== OkPressed CALLED ==========")
-        print("[DEBUG] OkPressed helpOverlay.visible={}".format(self["helpOverlay"].visible))
+        print(
+            "[DEBUG] OkPressed helpOverlay.visible={}".format(
+                self["helpOverlay"].visible))
         if self["helpOverlay"].visible:
             print("[DEBUG] OkPressed hiding overlays")
             self.hide_help_overlay()
