@@ -276,6 +276,9 @@ msgstr "錯誤： {}"
 msgid "Exit"
 msgstr "出口"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "退出並重新開啟插件即可看到新的背景。"
+
 msgid "Export"
 msgstr "出口"
 
@@ -320,9 +323,6 @@ msgstr "產生 .m3u 檔案並儲存到裝置 %s 嗎？"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "為所有 %d 個國家產生 .m3u 檔案嗎？"
-
-msgid "Hide/Show"
-msgstr "隱藏/顯示"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "自動更新 EPG 的頻率（需要 EPGImport 調度程式）"
@@ -485,9 +485,6 @@ msgstr "消除"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "移除所有 Vavoo 花束？"
-
-msgid "Restart"
-msgstr "重新啟動"
 
 msgid "Restarting..."
 msgstr "正在重新啟動..."
@@ -669,6 +666,12 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "Hide/Show"
+#~ msgstr "隱藏/顯示"
+
+#~ msgid "Restart"
+#~ msgstr "重新啟動"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "！代理到期"

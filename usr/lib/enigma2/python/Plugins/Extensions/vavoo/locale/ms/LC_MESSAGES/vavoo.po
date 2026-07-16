@@ -276,6 +276,9 @@ msgstr "Ralat: {}"
 msgid "Exit"
 msgstr "Keluar"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Keluar dan buka semula pemalam untuk melihat latar belakang baharu."
+
 msgid "Export"
 msgstr "Eksport"
 
@@ -320,9 +323,6 @@ msgstr "Hasilkan fail .m3u dan simpan ke peranti %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Hasilkan fail .m3u untuk SEMUA %d negara?"
-
-msgid "Hide/Show"
-msgstr "Sembunyi/Tunjukkan"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kekerapan untuk mengemas kini EPG secara automatik (memerlukan penjadual EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Alih keluar"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Keluarkan SEMUA jambangan Vavoo?"
-
-msgid "Restart"
-msgstr "Mulakan semula"
 
 msgid "Restarting..."
 msgstr "Memulakan semula..."
@@ -669,6 +666,12 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Sembunyi/Tunjukkan"
+
+#~ msgid "Restart"
+#~ msgstr "Mulakan semula"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proksi Tamat Tempoh"

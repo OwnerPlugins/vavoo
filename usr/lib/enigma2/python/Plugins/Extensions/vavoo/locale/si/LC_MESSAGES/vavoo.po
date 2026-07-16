@@ -276,6 +276,9 @@ msgstr "දෝෂය: {}"
 msgid "Exit"
 msgstr "පිටවීම"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "නව පසුබිම බැලීමට ප්ලගිනයෙන් පිටවී නැවත විවෘත කරන්න."
+
 msgid "Export"
 msgstr "අපනයනය කරන්න"
 
@@ -320,9 +323,6 @@ msgstr ".m3u ගොනු උත්පාදනය කර උපාංගය %s 
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "සියලුම රටවල් %d සඳහා .m3u ගොනු උත්පාදනය කරන්නද?"
-
-msgid "Hide/Show"
-msgstr "සඟවන්න/පෙන්වන්න"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG ස්වයංක්‍රීයව යාවත්කාලීන කිරීමට කොපමණ වාරයක් (EPGImport උපලේඛනය අවශ්‍ය වේ)"
@@ -485,9 +485,6 @@ msgstr "ඉවත් කරන්න"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "සියලුම Vavoo මල් කළඹ ඉවත් කරන්නද?"
-
-msgid "Restart"
-msgstr "යළි අරඹන්න"
 
 msgid "Restarting..."
 msgstr "නැවත ආරම්භ කරමින්..."
@@ -668,6 +665,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ නැවත ආරම්භ කිරීම අසාර්ථක විය"
+
+#~ msgid "Hide/Show"
+#~ msgstr "සඟවන්න/පෙන්වන්න"
+
+#~ msgid "Restart"
+#~ msgstr "යළි අරඹන්න"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! ප්‍රොක්සි කල් ඉකුත් වේ"

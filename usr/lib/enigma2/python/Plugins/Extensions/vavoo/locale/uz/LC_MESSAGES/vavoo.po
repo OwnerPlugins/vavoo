@@ -276,6 +276,9 @@ msgstr "Xato: {}"
 msgid "Exit"
 msgstr "Chiqish"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Yangi fonni ko'rish uchun plagindan chiqing va qayta oching."
+
 msgid "Export"
 msgstr "Eksport"
 
@@ -320,9 +323,6 @@ msgstr ".m3u fayllarini yaratib, %s qurilmasiga saqlansinmi?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "HAMMA %d ta mamlakat uchun .m3u fayllar yaratilsinmi?"
-
-msgid "Hide/Show"
-msgstr "Yashirish/Ko‘rsatish"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPGni qanchalik tez-tez avtomatik yangilash kerak (EPGImport rejalashtiruvchisi kerak)"
@@ -485,9 +485,6 @@ msgstr "O'chirish"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "BARCHA Vavoo guldastalari olib tashlansinmi?"
-
-msgid "Restart"
-msgstr "Qayta ishga tushirish"
 
 msgid "Restarting..."
 msgstr "Qayta ishga tushirilmoqda..."
@@ -669,6 +666,12 @@ msgstr "✗ Proksi oflayn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Qayta ishga tushirilmadi"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Yashirish/Ko‘rsatish"
+
+#~ msgid "Restart"
+#~ msgstr "Qayta ishga tushirish"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proksi muddati tugayapti"

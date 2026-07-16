@@ -277,6 +277,9 @@ msgstr "Lỗi: {}"
 msgid "Exit"
 msgstr "Ra"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Thoát và mở lại plugin để xem nền mới."
+
 msgid "Export"
 msgstr "Xuất khẩu"
 
@@ -321,9 +324,6 @@ msgstr "Tạo tệp .m3u và lưu vào thiết bị %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Tạo tệp .m3u cho TẤT CẢ các quốc gia %d?"
-
-msgid "Hide/Show"
-msgstr "Ẩn/Hiển thị"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Tần suất tự động cập nhật EPG (yêu cầu bộ lập lịch EPGImport)"
@@ -486,9 +486,6 @@ msgstr "Di dời"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Xóa TẤT CẢ bó hoa Vavoo?"
-
-msgid "Restart"
-msgstr "Khởi động lại"
 
 msgid "Restarting..."
 msgstr "Đang khởi động lại..."
@@ -670,6 +667,12 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Ẩn/Hiển thị"
+
+#~ msgid "Restart"
+#~ msgstr "Khởi động lại"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy hết hạn"

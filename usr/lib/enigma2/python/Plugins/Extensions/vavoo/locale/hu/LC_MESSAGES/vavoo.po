@@ -291,6 +291,9 @@ msgstr "Hiba: %s"
 msgid "Exit"
 msgstr "Kilépés"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Lépjen ki, majd nyissa meg újra a beépülő modult az új háttér megtekintéséhez."
+
 msgid "Export"
 msgstr "Exportálás"
 
@@ -335,9 +338,6 @@ msgstr ".m3u fájlok generálása és mentése a(z) %s eszközre?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr ".m3u fájlok generálása MINDEN %d ország számára?"
-
-msgid "Hide/Show"
-msgstr "Elrejtés/Megjelenítés"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Milyen gyakran kell automatikusan frissíteni az EPG-t (EPGImport ütemező szükséges)"
@@ -474,7 +474,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -505,9 +505,6 @@ msgstr "Eltávolítás"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Eltávolítom az ÖSSZES Vavoo csokrot?"
-
-msgid "Restart"
-msgstr "Újraindítás"
 
 #, fuzzy
 msgid "Restarting..."
@@ -635,7 +632,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -697,6 +694,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Az újraindítás sikertelen"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Elrejtés/Megjelenítés"
+
+#~ msgid "Restart"
+#~ msgstr "Újraindítás"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy lejár"

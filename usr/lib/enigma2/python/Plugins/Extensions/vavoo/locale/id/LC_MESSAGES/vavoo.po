@@ -276,6 +276,9 @@ msgstr "Kesalahan: {}"
 msgid "Exit"
 msgstr "KELUAR"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Keluar dan buka kembali plugin untuk melihat latar belakang baru."
+
 msgid "Export"
 msgstr "Ekspor"
 
@@ -320,9 +323,6 @@ msgstr "Hasilkan file .m3u dan simpan ke perangkat %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Hasilkan file .m3u untuk SEMUA %d negara?"
-
-msgid "Hide/Show"
-msgstr "Sembunyikan/Tampilkan"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Seberapa sering memperbarui EPG secara otomatis (memerlukan penjadwal EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Menghapus"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Hapus SEMUA karangan bunga Vavoo?"
-
-msgid "Restart"
-msgstr "Mulai ulang"
 
 msgid "Restarting..."
 msgstr "Memulai ulang..."
@@ -669,6 +666,12 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Mulai Ulang Gagal"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Sembunyikan/Tampilkan"
+
+#~ msgid "Restart"
+#~ msgstr "Mulai ulang"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proksi Kedaluwarsa"

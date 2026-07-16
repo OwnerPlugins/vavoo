@@ -17,6 +17,7 @@
 
 
 
+
 msgid "(%d channels)?"
 msgstr ""
 
@@ -281,6 +282,9 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr ""
+
 msgid "Export"
 msgstr ""
 
@@ -324,9 +328,6 @@ msgid "Generate .m3u files and save to device %s?"
 msgstr ""
 
 msgid "Generate .m3u files for ALL %d countries?"
-msgstr ""
-
-msgid "Hide/Show"
 msgstr ""
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
@@ -486,9 +487,6 @@ msgid "Remove"
 msgstr ""
 
 msgid "Remove ALL Vavoo bouquets?"
-msgstr ""
-
-msgid "Restart"
 msgstr ""
 
 msgid "Restarting..."

@@ -276,6 +276,9 @@ msgstr "ਗਲਤੀ: {}"
 msgid "Exit"
 msgstr "ਨਿਕਾਸ"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "ਨਵਾਂ ਬੈਕਗ੍ਰਾਊਂਡ ਦੇਖਣ ਲਈ ਪਲੱਗਇਨ ਤੋਂ ਬਾਹਰ ਨਿਕਲੋ ਅਤੇ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।"
+
 msgid "Export"
 msgstr "ਨਿਰਯਾਤ"
 
@@ -320,9 +323,6 @@ msgstr ".m3u ਫਾਈਲਾਂ ਬਣਾਉ ਅਤੇ ਡਿਵਾਈਸ %s ਵ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ਕੀ ਸਾਰੇ %d ਦੇਸ਼ਾਂ ਲਈ .m3u ਫਾਈਲਾਂ ਬਣਾਉਣੀਆਂ ਹਨ?"
-
-msgid "Hide/Show"
-msgstr "ਲੁਕਾਓ/ਦਿਖਾਓ"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG ਨੂੰ ਕਿੰਨੀ ਵਾਰ ਆਟੋ-ਅੱਪਡੇਟ ਕਰਨਾ ਹੈ (EPGImport ਸ਼ਡਿਊਲਰ ਦੀ ਲੋੜ ਹੈ)"
@@ -485,9 +485,6 @@ msgstr "ਹਟਾਓ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ਕੀ ਸਾਰੇ ਵਾਵੂ ਗੁਲਦਸਤੇ ਹਟਾਉਣੇ ਹਨ?"
-
-msgid "Restart"
-msgstr "ਰੀਸਟਾਰਟ ਕਰੋ"
 
 msgid "Restarting..."
 msgstr "ਰੀਸਟਾਰਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
@@ -669,6 +666,12 @@ msgstr "✗ ਪ੍ਰੌਕਸੀ ਔਫਲਾਈਨ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ਮੁੜ ਚਾਲੂ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ"
+
+#~ msgid "Hide/Show"
+#~ msgstr "ਲੁਕਾਓ/ਦਿਖਾਓ"
+
+#~ msgid "Restart"
+#~ msgstr "ਰੀਸਟਾਰਟ ਕਰੋ"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! ਪ੍ਰੌਕਸੀ ਦੀ ਮਿਆਦ ਪੁੱਗ ਰਹੀ ਹੈ"

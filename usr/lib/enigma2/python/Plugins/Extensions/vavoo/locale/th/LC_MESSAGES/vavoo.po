@@ -276,6 +276,9 @@ msgstr "ข้อผิดพลาด: {}"
 msgid "Exit"
 msgstr "ออก"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "ออกและเปิดปลั๊กอินอีกครั้งเพื่อดูพื้นหลังใหม่"
+
 msgid "Export"
 msgstr "ส่งออก"
 
@@ -320,9 +323,6 @@ msgstr "สร้างไฟล์ .m3u และบันทึกลงใน
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "สร้างไฟล์ .m3u สำหรับ %d ประเทศทั้งหมดหรือไม่"
-
-msgid "Hide/Show"
-msgstr "ซ่อน/แสดง"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "ความถี่ในการอัปเดต EPG อัตโนมัติ (ต้องใช้ตัวกำหนดเวลา EPGImport)"
@@ -485,9 +485,6 @@ msgstr "ลบ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ลบช่อดอกไม้ Vavoo ทั้งหมดหรือไม่"
-
-msgid "Restart"
-msgstr "รีสตาร์ท"
 
 msgid "Restarting..."
 msgstr "กำลังรีสตาร์ท..."
@@ -669,6 +666,12 @@ msgstr "✗ พร็อกซีออฟไลน์"
 
 msgid "✗ Restart Failed"
 msgstr "✗ การรีสตาร์ทล้มเหลว"
+
+#~ msgid "Hide/Show"
+#~ msgstr "ซ่อน/แสดง"
+
+#~ msgid "Restart"
+#~ msgstr "รีสตาร์ท"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! พร็อกซีหมดอายุ"

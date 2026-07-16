@@ -291,6 +291,9 @@ msgstr "Chyba: {}"
 msgid "Exit"
 msgstr "Výstup"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Ukončete a znovu otevřete plugin, abyste viděli nové pozadí."
+
 msgid "Export"
 msgstr "Vývozní"
 
@@ -336,9 +339,6 @@ msgstr "Vygenerovat soubory .m3u a uložit do zařízení %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Vygenerovat soubory .m3u pro VŠECHNY %d země?"
-
-msgid "Hide/Show"
-msgstr "Skrýt/Zobrazit"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Jak často automaticky aktualizovat EPG (vyžaduje plánovač EPGImport)"
@@ -503,9 +503,6 @@ msgstr "Odstranit"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Odstranit VŠECHNY kytice Vavoo?"
-
-msgid "Restart"
-msgstr "Restartujte"
 
 msgid "Restarting..."
 msgstr "Restartování..."
@@ -692,6 +689,12 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restart se nezdařil"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Skrýt/Zobrazit"
+
+#~ msgid "Restart"
+#~ msgstr "Restartujte"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Platnost proxy vyprší"

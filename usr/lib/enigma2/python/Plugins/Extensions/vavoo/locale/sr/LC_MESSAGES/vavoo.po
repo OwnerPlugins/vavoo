@@ -277,6 +277,9 @@ msgstr "Грешка: {}"
 msgid "Exit"
 msgstr "Изађи"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Изађите и поново отворите додатак да бисте видели нову позадину."
+
 msgid "Export"
 msgstr "Извоз"
 
@@ -321,9 +324,6 @@ msgstr "Генерисати .м3у датотеке и сачувати их н
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Генерисати .м3у датотеке за СВЕ %д земље?"
-
-msgid "Hide/Show"
-msgstr "Сакриј/Прикажи"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Колико често да се аутоматски ажурира ЕПГ (захтева ЕПГИмпорт планер)"
@@ -486,9 +486,6 @@ msgstr "Уклони"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Уклонити СВЕ Вавоо букете?"
-
-msgid "Restart"
-msgstr "Поново покрени"
 
 msgid "Restarting..."
 msgstr "Поновно покретање..."
@@ -670,6 +667,12 @@ msgstr "✗ Прокси ван мреже"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Поновно покретање није успело"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Сакриј/Прикажи"
+
+#~ msgid "Restart"
+#~ msgstr "Поново покрени"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Прокси истиче"

@@ -276,6 +276,9 @@ msgstr "تېروتنه: {}"
 msgid "Exit"
 msgstr "وتل"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "د نوي شالید لیدلو لپاره پلگ ان پریږدئ او بیا خلاص کړئ."
+
 msgid "Export"
 msgstr "صادرول"
 
@@ -320,9 +323,6 @@ msgstr "د .m3u فایلونه جوړ کړئ او په %s کې خوندي کړئ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "د ټولو %d هیوادونو لپاره .m3u فایلونه جوړ کړئ؟"
-
-msgid "Hide/Show"
-msgstr "پټول / ښکاره کول"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "څو ځله د EPG اتومات تازه کول (د EPGImport مهالویش ته اړتیا لري)"
@@ -485,9 +485,6 @@ msgstr "لرې کړئ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "د واوو ټول ګلدانونه لرې کړئ؟"
-
-msgid "Restart"
-msgstr "بیا پیل کړئ"
 
 msgid "Restarting..."
 msgstr "بیا پیل کول..."
@@ -669,6 +666,12 @@ msgstr "✗ پراکسي آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ بیا پیل کول ناکام شول"
+
+#~ msgid "Hide/Show"
+#~ msgstr "پټول / ښکاره کول"
+
+#~ msgid "Restart"
+#~ msgstr "بیا پیل کړئ"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! پراکسي پای ته رسیږي"

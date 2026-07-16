@@ -277,6 +277,9 @@ msgstr "שגיאה: {}"
 msgid "Exit"
 msgstr "יְצִיאָה"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "צא ופתח מחדש את הפלאגין כדי לראות את הרקע החדש."
+
 msgid "Export"
 msgstr "יְצוּא"
 
@@ -321,9 +324,6 @@ msgstr "האם ליצור קבצי ‎.m3u ולשמור במכשיר %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ליצור קבצי .m3u עבור כל %d המדינות?"
-
-msgid "Hide/Show"
-msgstr "הסתר/הצג"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "באיזו תדירות לעדכן אוטומטית את ה-EPG (דורש מתזמן EPGImport)"
@@ -486,9 +486,6 @@ msgstr "לְהַסִיר"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "להסיר את כל זרי Vavoo?"
-
-msgid "Restart"
-msgstr "הפעל מחדש"
 
 msgid "Restarting..."
 msgstr "מופעל מחדש..."
@@ -670,6 +667,12 @@ msgstr "✗ פרוקסי לא מקוון"
 
 msgid "✗ Restart Failed"
 msgstr "✗ הפעלה מחדש נכשלה"
+
+#~ msgid "Hide/Show"
+#~ msgstr "הסתר/הצג"
+
+#~ msgid "Restart"
+#~ msgstr "הפעל מחדש"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! תוקף פרוקסי יפוג"

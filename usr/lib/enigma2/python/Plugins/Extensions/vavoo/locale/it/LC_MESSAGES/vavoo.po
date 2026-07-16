@@ -279,6 +279,9 @@ msgstr "Errore: {}"
 msgid "Exit"
 msgstr "Esci"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Esci e riapri il plugin per vedere il nuovo sfondo."
+
 msgid "Export"
 msgstr "Esporta"
 
@@ -323,9 +326,6 @@ msgstr "Generare file .m3u e salvarli sul dispositivo %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generare file .m3u per TUTTI i %d paesi?"
-
-msgid "Hide/Show"
-msgstr "Nascondi/Mostra"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Con quale frequenza aggiornare automaticamente l'EPG (richiede scheduler EPGImport)?"
@@ -488,9 +488,6 @@ msgstr "Rimuovi"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Rimuovere TUTTI i bouquet Vavoo?"
-
-msgid "Restart"
-msgstr "Riavviare"
 
 msgid "Restarting..."
 msgstr "Riavvio in corso..."
@@ -672,6 +669,12 @@ msgstr "✗ Proxy Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Riavvio non riuscito"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Nascondi/Mostra"
+
+#~ msgid "Restart"
+#~ msgstr "Riavviare"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy in scadenza"

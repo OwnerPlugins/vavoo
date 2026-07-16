@@ -277,6 +277,9 @@ msgstr "Kļūda: {}"
 msgid "Exit"
 msgstr "Iziet"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Izejiet un atkārtoti atveriet spraudni, lai redzētu jauno fonu."
+
 msgid "Export"
 msgstr "Eksportēt"
 
@@ -321,9 +324,6 @@ msgstr "Vai ģenerēt .m3u failus un saglabāt ierīcē %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Vai ģenerēt .m3u failus VISĀM %d valstīm?"
-
-msgid "Hide/Show"
-msgstr "Paslēpt/Rādīt"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Cik bieži EPG automātiski atjaunināt (nepieciešams EPGImport plānotājs)"
@@ -486,9 +486,6 @@ msgstr "Noņemt"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vai noņemt VISUS Vavoo pušķus?"
-
-msgid "Restart"
-msgstr "Restartēt"
 
 msgid "Restarting..."
 msgstr "Notiek restartēšana..."
@@ -670,6 +667,12 @@ msgstr "✗ Starpniekserveris bezsaistē"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restartēšana neizdevās"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Paslēpt/Rādīt"
+
+#~ msgid "Restart"
+#~ msgstr "Restartēt"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Starpniekservera derīguma termiņš beidzas"

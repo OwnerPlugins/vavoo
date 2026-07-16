@@ -277,6 +277,9 @@ msgstr "Viga: {}"
 msgid "Exit"
 msgstr "Välju"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Uue tausta nägemiseks väljuge pistikprogrammist ja avage see uuesti."
+
 msgid "Export"
 msgstr "Ekspordi"
 
@@ -321,9 +324,6 @@ msgstr "Kas luua .m3u-failid ja salvestada need seadmesse %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Kas luua .m3u-failid KÕIGI %d riigi jaoks?"
-
-msgid "Hide/Show"
-msgstr "Peida/Kuva"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kui sageli EPG-d automaatselt värskendada (vaja on EPGIimpordi ajakava)"
@@ -486,9 +486,6 @@ msgstr "Eemalda"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Kas eemaldada KÕIK Vavoo kimbud?"
-
-msgid "Restart"
-msgstr "Taaskäivitage"
 
 msgid "Restarting..."
 msgstr "Taaskäivitamine..."
@@ -670,6 +667,12 @@ msgstr "✗ Puhverserver võrguühenduseta"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Taaskäivitamine ebaõnnestus"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Peida/Kuva"
+
+#~ msgid "Restart"
+#~ msgstr "Taaskäivitage"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Puhverserver aegub"

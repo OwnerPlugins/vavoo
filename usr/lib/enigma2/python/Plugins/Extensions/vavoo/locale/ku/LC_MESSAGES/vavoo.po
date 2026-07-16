@@ -276,6 +276,9 @@ msgstr "Çewtî: {}"
 msgid "Exit"
 msgstr "Derî"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Ji pêvekê derkeve û ji nû ve veke da ku paşxaneya nû bibînin."
+
 msgid "Export"
 msgstr "Eksport"
 
@@ -320,9 +323,6 @@ msgstr "Pelên .m3u biafirînin û li cîhaza %s tomar bikin?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ji bo HEMÛ %d welatan pelên .m3u biafirînin?"
-
-msgid "Hide/Show"
-msgstr "Veşêre / Nîşan bide"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Çi caran meriv EPG-ê bixweber nûve bike (pêdivî ye ku nexşerêya EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Dûrxistin"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "HEMÛ bûkên Vavoo rakin?"
-
-msgid "Restart"
-msgstr ""
 
 msgid "Restarting..."
 msgstr "Ji nû ve dest pê dike..."
@@ -669,6 +666,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Veşêre / Nîşan bide"
 
 #~ msgid "? Proxy Status"
 #~ msgstr "? Rewşa Proxy"

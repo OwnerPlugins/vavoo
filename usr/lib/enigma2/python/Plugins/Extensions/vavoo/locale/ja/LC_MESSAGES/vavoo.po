@@ -277,6 +277,9 @@ msgstr "エラー： {}"
 msgid "Exit"
 msgstr "出口"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "プラグインを終了して再度開くと、新しい背景が表示されます。"
+
 msgid "Export"
 msgstr "輸出"
 
@@ -321,9 +324,6 @@ msgstr ".m3u ファイルを生成してデバイス %s に保存しますか?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "%d か国すべての .m3u ファイルを生成しますか?"
-
-msgid "Hide/Show"
-msgstr "非表示/表示"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG を自動更新する頻度 (EPGImport スケジューラが必要)"
@@ -486,9 +486,6 @@ msgstr "取り除く"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "すべての Vavoo ブーケを削除しますか?"
-
-msgid "Restart"
-msgstr "再起動"
 
 msgid "Restarting..."
 msgstr "再起動中..."
@@ -670,6 +667,12 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "Hide/Show"
+#~ msgstr "非表示/表示"
+
+#~ msgid "Restart"
+#~ msgstr "再起動"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "！プロキシの有効期限が切れます"

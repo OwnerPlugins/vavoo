@@ -276,6 +276,9 @@ msgstr "خطأ: {}"
 msgid "Exit"
 msgstr "مخرج"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "اخرج من المكوّن الإضافي وأعد فتحه لرؤية الخلفية الجديدة."
+
 msgid "Export"
 msgstr "تصدير"
 
@@ -320,9 +323,6 @@ msgstr "إنشاء ملفات .m3u وحفظها على الجهاز %s؟"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "إنشاء ملفات .m3u لجميع %d دولة؟"
-
-msgid "Hide/Show"
-msgstr "إخفاء/إظهار"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "عدد مرات التحديث التلقائي لـ EPG (يتطلب جدولة EPGImport)"
@@ -485,9 +485,6 @@ msgstr "يزيل"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "إزالة جميع باقات Vavoo؟"
-
-msgid "Restart"
-msgstr "إعادة تشغيل"
 
 msgid "Restarting..."
 msgstr "جارٍ إعادة التشغيل..."
@@ -669,6 +666,12 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "Hide/Show"
+#~ msgstr "إخفاء/إظهار"
+
+#~ msgid "Restart"
+#~ msgstr "إعادة تشغيل"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! انتهاء صلاحية الوكيل"

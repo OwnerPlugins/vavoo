@@ -276,6 +276,9 @@ msgstr "កំហុស៖ {}"
 msgid "Exit"
 msgstr "ចេញ"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "ចេញ ហើយបើកកម្មវិធីជំនួយឡើងវិញ ដើម្បីមើលផ្ទៃខាងក្រោយថ្មី។"
+
 msgid "Export"
 msgstr "នាំចេញ"
 
@@ -320,9 +323,6 @@ msgstr "បង្កើតឯកសារ .m3u ហើយរក្សាទុក
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "បង្កើតឯកសារ .m3u សម្រាប់ %d ប្រទេសទាំងអស់?"
-
-msgid "Hide/Show"
-msgstr "លាក់/បង្ហាញ"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "តើត្រូវធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិនូវ EPG ញឹកញាប់ប៉ុណ្ណា (តម្រូវឱ្យមានកម្មវិធីកំណត់ពេល EPGImport)"
@@ -485,9 +485,6 @@ msgstr "ដកចេញ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ដកភួង Vavoo ទាំងអស់ចេញ?"
-
-msgid "Restart"
-msgstr "ចាប់ផ្ដើមឡើងវិញ"
 
 msgid "Restarting..."
 msgstr "កំពុងចាប់ផ្តើមឡើងវិញ..."
@@ -669,6 +666,12 @@ msgstr "✗ប្រូកស៊ីក្រៅបណ្តាញ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ការចាប់ផ្តើមឡើងវិញបានបរាជ័យ"
+
+#~ msgid "Hide/Show"
+#~ msgstr "លាក់/បង្ហាញ"
+
+#~ msgid "Restart"
+#~ msgstr "ចាប់ផ្ដើមឡើងវិញ"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! ប្រូកស៊ីផុតកំណត់"

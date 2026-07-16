@@ -276,6 +276,9 @@ msgstr "Хатогӣ: {}"
 msgid "Exit"
 msgstr "Баромадгоҳ"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Бароед ва плагинро дубора кушоед, то заминаи навро бубинед."
+
 msgid "Export"
 msgstr "Содирот"
 
@@ -320,9 +323,6 @@ msgstr "Файлҳои .m3u тавлид кунед ва дар дастгоҳи
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Барои ҲАМАИ %d кишвар файлҳои .m3u тавлид кунед?"
-
-msgid "Hide/Show"
-msgstr "Пинҳон / Намоиш"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Чӣ қадар вақт ба таври худкор навсозии EPG (нақшаи EPGImport лозим аст)"
@@ -485,9 +485,6 @@ msgstr "Хориҷ кунед"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ҲАМАИ гулдастаҳои Vavoo хориҷ карда шавад?"
-
-msgid "Restart"
-msgstr "Оғози дубора"
 
 msgid "Restarting..."
 msgstr "Бозоғозӣ..."
@@ -669,6 +666,12 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Бозоғозӣ ноком шуд"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Пинҳон / Намоиш"
+
+#~ msgid "Restart"
+#~ msgstr "Оғози дубора"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Мӯҳлати прокси ба охир мерасад"

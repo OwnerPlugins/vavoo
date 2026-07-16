@@ -276,6 +276,9 @@ msgstr "טעות: {}"
 msgid "Exit"
 msgstr "אַרויסגאַנג"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "אַרויסגאַנג און ריאָופּאַן די פּלוגין צו זען די נייַע הינטערגרונט."
+
 msgid "Export"
 msgstr "עקספּאָרט"
 
@@ -320,9 +323,6 @@ msgstr "דזשענערייט .מ3ו טעקעס און ראַטעווען צו מ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "דזשענערייט .מ3ו טעקעס פֿאַר אַלע %d לענדער?"
-
-msgid "Hide/Show"
-msgstr "באַהאַלטן / ווייַזן"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "ווי אָפט צו אויטאָמאַטיש דערהייַנטיקן די EPG (ריקווייערז EPGImport סקעדזשולער)"
@@ -485,9 +485,6 @@ msgstr "אַראָפּנעמען"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "אַראָפּנעמען אַלע וואַוואָו באָוקייז?"
-
-msgid "Restart"
-msgstr "ריסטאַרט"
 
 msgid "Restarting..."
 msgstr "ריסטאַרטינג ..."
@@ -669,6 +666,12 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "Hide/Show"
+#~ msgstr "באַהאַלטן / ווייַזן"
+
+#~ msgid "Restart"
+#~ msgstr "ריסטאַרט"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! פּראָקסי עקספּירינג"

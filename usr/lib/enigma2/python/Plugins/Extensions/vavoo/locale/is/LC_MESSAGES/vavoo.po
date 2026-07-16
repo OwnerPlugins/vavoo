@@ -276,6 +276,9 @@ msgstr "Villa: {}"
 msgid "Exit"
 msgstr "Hætta"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Lokaðu og opnaðu viðbótina aftur til að sjá nýja bakgrunninn."
+
 msgid "Export"
 msgstr "Útflutningur"
 
@@ -320,9 +323,6 @@ msgstr "Búa til .m3u skrár og vista í tæki %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Búa til .m3u skrár fyrir ÖLL %d lönd?"
-
-msgid "Hide/Show"
-msgstr "Fela/Sýna"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Hversu oft á að uppfæra EPG sjálfkrafa (þarf EPGImport tímaáætlun)"
@@ -485,9 +485,6 @@ msgstr "Fjarlægja"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Fjarlægja ALLA Vavoo kransa?"
-
-msgid "Restart"
-msgstr "Endurræstu"
 
 msgid "Restarting..."
 msgstr "Endurræsir..."
@@ -668,6 +665,12 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Fela/Sýna"
+
+#~ msgid "Restart"
+#~ msgstr "Endurræstu"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Umboð rennur út"

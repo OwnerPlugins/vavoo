@@ -276,6 +276,9 @@ msgstr "Սխալ՝ {}"
 msgid "Exit"
 msgstr "Ելք"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Դուրս եկեք և նորից բացեք հավելվածը՝ նոր ֆոնը տեսնելու համար:"
+
 msgid "Export"
 msgstr "Արտահանում"
 
@@ -320,9 +323,6 @@ msgstr "Ստեղծե՞լ .m3u ֆայլեր և պահել %s սարքում:"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ստեղծե՞լ .m3u ֆայլեր ԲՈԼՈՐ %d երկրների համար:"
-
-msgid "Hide/Show"
-msgstr "Թաքցնել/Ցուցադրել"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Որքա՞ն հաճախ կարելի է ավտոմատ թարմացնել EPG-ը (պահանջվում է EPGImport ժամանակացույց)"
@@ -485,9 +485,6 @@ msgstr "Հեռացնել"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Հեռացնե՞լ Vavoo-ի ԲՈԼՈՐ ծաղկեփնջերը:"
-
-msgid "Restart"
-msgstr "Վերագործարկեք"
 
 msgid "Restarting..."
 msgstr "Վերագործարկում..."
@@ -668,6 +665,12 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Թաքցնել/Ցուցադրել"
+
+#~ msgid "Restart"
+#~ msgstr "Վերագործարկեք"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Վստահված անձը սպառվում է"

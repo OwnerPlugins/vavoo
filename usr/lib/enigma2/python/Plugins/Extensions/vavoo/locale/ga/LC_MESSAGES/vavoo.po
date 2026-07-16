@@ -277,6 +277,9 @@ msgstr "Earráid: {}"
 msgid "Exit"
 msgstr "Scoir"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Scoir agus athoscail an breiseán chun an cúlra nua a fheiceáil."
+
 msgid "Export"
 msgstr "Easpórtáil"
 
@@ -321,9 +324,6 @@ msgstr "Gin comhaid .m3u agus sábháil ar ghléas %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Gin comhaid .m3u do GACH tír %d?"
-
-msgid "Hide/Show"
-msgstr "Folaigh/Taispeáin"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Cé chomh minic is féidir an EPG a nuashonrú go huathoibríoch (tá sceidealóir EPGImport ag teastáil)"
@@ -486,9 +486,6 @@ msgstr "Bain"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Bain GACH bouquets Vavoo?"
-
-msgid "Restart"
-msgstr "Atosaigh"
 
 msgid "Restarting..."
 msgstr "Á atosú..."
@@ -670,6 +667,12 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Folaigh/Taispeáin"
+
+#~ msgid "Restart"
+#~ msgstr "Atosaigh"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Seachfhreastalaí ag dul in éag"

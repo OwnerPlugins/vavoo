@@ -291,6 +291,9 @@ msgstr "Error: %s"
 msgid "Exit"
 msgstr "Exit"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr ""
+
 msgid "Export"
 msgstr "Export"
 
@@ -335,9 +338,6 @@ msgstr "Generate .m3u files and save to device %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generate .m3u files for ALL %d countries?"
-
-msgid "Hide/Show"
-msgstr "Hide/Show"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr ""
@@ -501,9 +501,6 @@ msgstr "Remove"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Remove ALL Vavoo bouquets?"
-
-msgid "Restart"
-msgstr "Restart"
 
 #, fuzzy
 msgid "Restarting..."
@@ -689,6 +686,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr ""
+
+#~ msgid "Hide/Show"
+#~ msgstr "Hide/Show"
+
+#~ msgid "Restart"
+#~ msgstr "Restart"
 
 #, fuzzy
 #~ msgid "Active or Disactive Ipv6."

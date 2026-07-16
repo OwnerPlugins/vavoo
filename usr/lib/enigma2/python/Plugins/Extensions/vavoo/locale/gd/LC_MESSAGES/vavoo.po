@@ -276,6 +276,9 @@ msgstr "Mearachd: {}"
 msgid "Exit"
 msgstr "Ar-a-mach"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Fàg agus fosgail am plugan a-rithist gus an cùl-raon ùr fhaicinn."
+
 msgid "Export"
 msgstr "Às-mhalairt"
 
@@ -320,9 +323,6 @@ msgstr "Cruthaich faidhlichean .m3u is sàbhail dhan uidheam %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Cruthaich faidhlichean .m3u airson GACH %d dùthaich?"
-
-msgid "Hide/Show"
-msgstr "Falaich/Seall"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Dè cho tric airson an EPG ùrachadh gu fèin-ghluasadach (feumar clàr-ama EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Thoir air falbh"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Thoir air falbh A H-UILE bouquets Vavoo?"
-
-msgid "Restart"
-msgstr "Ath-thòisich"
 
 msgid "Restarting..."
 msgstr "Ag ath-thòiseachadh..."
@@ -669,6 +666,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Falaich/Seall"
+
+#~ msgid "Restart"
+#~ msgstr "Ath-thòisich"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy a’ tighinn gu crìch"

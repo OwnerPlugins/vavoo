@@ -276,6 +276,9 @@ msgstr "خرابی: {}"
 msgid "Exit"
 msgstr "باہر نکلیں۔"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "نیا پس منظر دیکھنے کے لیے پلگ ان سے باہر نکلیں اور دوبارہ کھولیں۔"
+
 msgid "Export"
 msgstr "برآمد کریں۔"
 
@@ -320,9 +323,6 @@ msgstr ".m3u فائلیں بنائیں اور ڈیوائس %s میں محفوظ 
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "تمام %d ممالک کے لیے .m3u فائلیں بنائیں؟"
-
-msgid "Hide/Show"
-msgstr "چھپائیں/دکھائیں۔"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "ای پی جی کو کتنی بار خودکار اپ ڈیٹ کرنا ہے (ای پی جی امپورٹ شیڈیولر کی ضرورت ہے)"
@@ -485,9 +485,6 @@ msgstr "ہٹا دیں۔"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "تمام Vavoo گلدستے ہٹائیں؟"
-
-msgid "Restart"
-msgstr "دوبارہ شروع کریں۔"
 
 msgid "Restarting..."
 msgstr "دوبارہ شروع ہو رہا ہے..."
@@ -669,6 +666,12 @@ msgstr "✗ پراکسی آف لائن"
 
 msgid "✗ Restart Failed"
 msgstr "✗ دوبارہ شروع کرنا ناکام ہو گیا۔"
+
+#~ msgid "Hide/Show"
+#~ msgstr "چھپائیں/دکھائیں۔"
+
+#~ msgid "Restart"
+#~ msgstr "دوبارہ شروع کریں۔"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! پراکسی کی میعاد ختم ہو رہی ہے۔"

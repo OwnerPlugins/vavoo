@@ -276,6 +276,9 @@ msgstr "ত্রুটি: {}"
 msgid "Exit"
 msgstr "প্রস্থান করুন"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "প্রস্থান করুন এবং নতুন পটভূমি দেখতে প্লাগইন পুনরায় খুলুন।"
+
 msgid "Export"
 msgstr "রপ্তানি"
 
@@ -320,9 +323,6 @@ msgstr ".m3u ফাইল তৈরি করে %s ডিভাইসে সং
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "সমস্ত %d দেশের জন্য .m3u ফাইল তৈরি করবেন?"
-
-msgid "Hide/Show"
-msgstr "লুকান/দেখান"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "কত ঘন ঘন ইপিজি স্বয়ংক্রিয়-আপডেট করতে হবে (ইপিজিআমপোর্ট শিডিউলার প্রয়োজন)"
@@ -485,9 +485,6 @@ msgstr "সরান"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "সব Vavoo bouquets সরান?"
-
-msgid "Restart"
-msgstr "রিস্টার্ট করুন"
 
 msgid "Restarting..."
 msgstr "রিস্টার্ট হচ্ছে..."
@@ -669,6 +666,12 @@ msgstr "✗ প্রক্সি অফলাইন"
 
 msgid "✗ Restart Failed"
 msgstr "✗ পুনঃসূচনা ব্যর্থ হয়েছে৷"
+
+#~ msgid "Hide/Show"
+#~ msgstr "লুকান/দেখান"
+
+#~ msgid "Restart"
+#~ msgstr "রিস্টার্ট করুন"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! প্রক্সি মেয়াদ শেষ হচ্ছে"

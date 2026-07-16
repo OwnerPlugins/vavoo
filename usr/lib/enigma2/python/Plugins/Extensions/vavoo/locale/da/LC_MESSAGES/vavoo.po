@@ -277,6 +277,9 @@ msgstr "Fejl: {}"
 msgid "Exit"
 msgstr "Udgang"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Afslut og åbn pluginnet igen for at se den nye baggrund."
+
 msgid "Export"
 msgstr "Eksportere"
 
@@ -321,9 +324,6 @@ msgstr "Vil du generere .m3u-filer og gemme på enheden %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Vil du generere .m3u-filer for ALLE %d lande?"
-
-msgid "Hide/Show"
-msgstr "Skjul/Vis"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Hvor ofte skal EPG automatisk opdateres (kræver EPGImport-planlægger)"
@@ -486,9 +486,6 @@ msgstr "Fjerne"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Fjerne ALLE Vavoo buketter?"
-
-msgid "Restart"
-msgstr "Genstart"
 
 msgid "Restarting..."
 msgstr "Genstarter..."
@@ -669,6 +666,12 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Genstart mislykkedes"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Skjul/Vis"
+
+#~ msgid "Restart"
+#~ msgstr "Genstart"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy udløber"

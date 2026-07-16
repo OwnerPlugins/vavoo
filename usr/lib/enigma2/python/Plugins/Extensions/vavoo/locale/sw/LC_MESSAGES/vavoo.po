@@ -276,6 +276,9 @@ msgstr "Hitilafu: {}"
 msgid "Exit"
 msgstr "Utgång"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Ondoka na ufungue tena programu-jalizi ili kuona usuli mpya."
+
 msgid "Export"
 msgstr "Hamisha"
 
@@ -320,9 +323,6 @@ msgstr "Je, ungependa kuzalisha faili za .m3u na uhifadhi kwenye kifaa %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Je, ungependa kuzalisha faili za .m3u kwa nchi %d ZOTE?"
-
-msgid "Hide/Show"
-msgstr "Ficha/Onyesha"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Ni mara ngapi kusasisha EPG kiotomatiki (inahitaji kipanga ratiba cha EPGI)"
@@ -485,9 +485,6 @@ msgstr "Ondoa"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Ungependa kuondoa shada ZOTE za Vavoo?"
-
-msgid "Restart"
-msgstr "Anzisha upya"
 
 msgid "Restarting..."
 msgstr "Inaanza upya..."
@@ -669,6 +666,12 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Ficha/Onyesha"
+
+#~ msgid "Restart"
+#~ msgstr "Anzisha upya"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Muda wa Wakala Unaisha"

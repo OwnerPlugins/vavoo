@@ -277,6 +277,9 @@ msgstr "Klaida: {}"
 msgid "Exit"
 msgstr "Išeiti"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Išeikite ir vėl atidarykite papildinį, kad pamatytumėte naują foną."
+
 msgid "Export"
 msgstr "Eksportuoti"
 
@@ -321,9 +324,6 @@ msgstr "Sugeneruoti .m3u failus ir išsaugoti įrenginyje %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generuoti .m3u failus VISIEMS %d šalių?"
-
-msgid "Hide/Show"
-msgstr "Slėpti/Rodyti"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kaip dažnai automatiškai atnaujinti EPG (reikalingas EPGImport planuoklis)"
@@ -486,9 +486,6 @@ msgstr "Pašalinti"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Pašalinti VISAS „Vavoo“ puokštes?"
-
-msgid "Restart"
-msgstr "Paleisti iš naujo"
 
 msgid "Restarting..."
 msgstr "Paleidžiama iš naujo..."
@@ -670,6 +667,12 @@ msgstr "✗ Tarpinis serveris neprisijungęs"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nepavyko paleisti iš naujo"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Slėpti/Rodyti"
+
+#~ msgid "Restart"
+#~ msgstr "Paleisti iš naujo"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Baigiasi įgaliotojo serverio galiojimo laikas"

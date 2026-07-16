@@ -276,6 +276,9 @@ msgstr "Żball: {}"
 msgid "Exit"
 msgstr "Ħruġ"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Oħroġ u erġa' tiftaħ il-plugin biex tara l-isfond il-ġdid."
+
 msgid "Export"
 msgstr "Esportazzjoni"
 
@@ -320,9 +323,6 @@ msgstr "Iġġenera fajls .m3u u ssejvja fuq it-tagħmir %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Iġġenera fajls .m3u għal %d pajjiżi KOLLHA?"
-
-msgid "Hide/Show"
-msgstr "Aħbi/Uri"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kemm-il darba taġġorna l-EPG awtomatikament (jeħtieġ EPGImport Scheduler)"
@@ -485,9 +485,6 @@ msgstr "Neħħi"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Neħħi l-bukketti KOLLHA Vavoo?"
-
-msgid "Restart"
-msgstr "Ibda mill-ġdid"
 
 msgid "Restarting..."
 msgstr "Nibda mill-ġdid..."
@@ -668,6 +665,12 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Aħbi/Uri"
+
+#~ msgid "Restart"
+#~ msgstr "Ibda mill-ġdid"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Prokura Tiskadi"

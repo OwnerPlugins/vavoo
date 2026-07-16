@@ -276,6 +276,9 @@ msgstr "Gabim: {}"
 msgid "Exit"
 msgstr "Dilni"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Dilni dhe rihapni shtesën për të parë sfondin e ri."
+
 msgid "Export"
 msgstr "Eksporto"
 
@@ -320,9 +323,6 @@ msgstr "Të gjenerohen skedarë .m3u dhe të ruhen në pajisjen %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Të gjenerohen skedarë .m3u për të GJITHA %d vendet?"
-
-msgid "Hide/Show"
-msgstr "Fsheh/Shfaq"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Sa shpesh të përditësohet automatikisht EPG (kërkon programuesin EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Hiq"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Të hiqen TË GJITHA buqetat Vavoo?"
-
-msgid "Restart"
-msgstr "Rinis"
 
 msgid "Restarting..."
 msgstr "Po riniset..."
@@ -669,6 +666,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Fsheh/Shfaq"
+
+#~ msgid "Restart"
+#~ msgstr "Rinis"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy skadon"

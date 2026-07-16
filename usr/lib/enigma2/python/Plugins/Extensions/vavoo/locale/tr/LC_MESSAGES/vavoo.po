@@ -281,6 +281,9 @@ msgstr "Hata: {}"
 msgid "Exit"
 msgstr "Çıkış"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Yeni arka planı görmek için eklentiden çıkın ve yeniden açın."
+
 msgid "Export"
 msgstr "Dışa Aktar"
 
@@ -325,9 +328,6 @@ msgstr ".m3u dosyaları oluşturulup %s cihazına kaydedilsin mi?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "TÜM %d ülke için .m3u dosyaları oluşturulsun mu?"
-
-msgid "Hide/Show"
-msgstr "Gizle/Göster"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG'nin ne sıklıkla otomatik güncelleneceği (EPGImport zamanlayıcısı gerekir)"
@@ -490,9 +490,6 @@ msgstr "Kaldır"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "TÜM Vavoo buketleri kaldırılsın mı?"
-
-msgid "Restart"
-msgstr "Yeniden Başlat"
 
 msgid "Restarting..."
 msgstr "Yeniden başlatılıyor..."
@@ -674,6 +671,12 @@ msgstr "✗ Proxy çevrimdışı"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yeniden başlatma başarısız"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Gizle/Göster"
+
+#~ msgid "Restart"
+#~ msgstr "Yeniden Başlat"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy süresi doluyor"

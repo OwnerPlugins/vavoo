@@ -291,6 +291,9 @@ msgstr "Chyba: %s"
 msgid "Exit"
 msgstr "Ukončiť"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Ukončite a znova otvorte doplnok, aby ste videli nové pozadie."
+
 msgid "Export"
 msgstr "Exportovať"
 
@@ -335,9 +338,6 @@ msgstr "Vygenerovať súbory .m3u a uložiť ich do zariadenia %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generovať súbory .m3u pre VŠETKY %d krajiny?"
-
-msgid "Hide/Show"
-msgstr "Skryť/zobraziť"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Ako často automaticky aktualizovať EPG (vyžaduje plánovač EPGImport)"
@@ -474,7 +474,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Ready"
@@ -504,9 +504,6 @@ msgstr "Odstrániť"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Odstrániť VŠETKY kytice Vavoo?"
-
-msgid "Restart"
-msgstr "Reštart"
 
 #, fuzzy
 msgid "Restarting..."
@@ -634,7 +631,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -695,6 +692,12 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reštart zlyhal"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Skryť/zobraziť"
+
+#~ msgid "Restart"
+#~ msgstr "Reštart"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Platnosť proxy vyprší"

@@ -276,6 +276,9 @@ msgstr "အမှား- {}"
 msgid "Exit"
 msgstr "ထွက်ပေါက်"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "နောက်ခံအသစ်ကိုကြည့်ရန် ပလပ်အင်ကိုထွက်ပြီး ပြန်ဖွင့်ပါ။"
+
 msgid "Export"
 msgstr "တင်ပို့ခြင်း။"
 
@@ -320,9 +323,6 @@ msgstr ".m3u ဖိုင်များကို ထုတ်လုပ်ပြ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "နိုင်ငံပေါင်း %d နိုင်ငံအတွက် .m3u ဖိုင်များကို ဖန်တီးမလား။"
-
-msgid "Hide/Show"
-msgstr "ဖျောက်/ပြပါ။"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG ကို အလိုအလျောက် အပ်ဒိတ်လုပ်ရန် မည်မျှ မကြာခဏ (EPGImport အစီအစဉ်ကို လိုအပ်သည်)"
@@ -485,9 +485,6 @@ msgstr "ဖယ်ရှားပါ။"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vavoo ပန်းစည်းအားလုံးကို ဖယ်ရှားမလား။"
-
-msgid "Restart"
-msgstr "ပြန်စတင်သည်"
 
 msgid "Restarting..."
 msgstr "ပြန်လည်စတင်နေသည်..."
@@ -669,6 +666,12 @@ msgstr "✗ ပရောက်စီအော့ဖ်လိုင်း"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ပြန်လည်စတင်ခြင်း မအောင်မြင်ပါ။"
+
+#~ msgid "Hide/Show"
+#~ msgstr "ဖျောက်/ပြပါ။"
+
+#~ msgid "Restart"
+#~ msgstr "ပြန်စတင်သည်"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy သက်တမ်းကုန်ခြင်း။"

@@ -276,6 +276,9 @@ msgstr "Қате: {}"
 msgid "Exit"
 msgstr "Шығу"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Жаңа фонды көру үшін плагиннен шығып, қайта ашыңыз."
+
 msgid "Export"
 msgstr "Экспорттау"
 
@@ -320,9 +323,6 @@ msgstr ".m3u файлдарын жасап, %s құрылғысына сақта
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "БАРЛЫҚ %d ел үшін .m3u файлдарын жасау керек пе?"
-
-msgid "Hide/Show"
-msgstr "Жасыру/көрсету"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG қаншалықты жиі автоматты түрде жаңартылады (EPGImport жоспарлаушы қажет)"
@@ -485,9 +485,6 @@ msgstr "Жою"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "БАРЛЫҚ Vavoo гүл шоқтарын жою керек пе?"
-
-msgid "Restart"
-msgstr "Қайтадан қосу"
 
 msgid "Restarting..."
 msgstr "Қайта іске қосылуда..."
@@ -669,6 +666,12 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Қайта іске қосу сәтсіз аяқталды"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Жасыру/көрсету"
+
+#~ msgid "Restart"
+#~ msgstr "Қайтадан қосу"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Прокси мерзімі аяқталады"

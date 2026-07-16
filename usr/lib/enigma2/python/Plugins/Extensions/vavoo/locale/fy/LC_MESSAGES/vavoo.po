@@ -276,6 +276,9 @@ msgstr "Flater: {}"
 msgid "Exit"
 msgstr "Útgong"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Gean út en iepenje de plugin opnij om de nije eftergrûn te sjen."
+
 msgid "Export"
 msgstr "Eksportearje"
 
@@ -320,9 +323,6 @@ msgstr ".m3u-bestannen generearje en opslaan op apparaat %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr ".m3u-bestannen generearje foar ALLE %d lannen?"
-
-msgid "Hide/Show"
-msgstr "Ferbergje / sjen litte"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Hoe faak de EPG automatysk bywurkje (fereasket EPGImport-skemader)"
@@ -485,9 +485,6 @@ msgstr "Fuortsmite"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ALLE Vavoo-boeketten fuortsmite?"
-
-msgid "Restart"
-msgstr "Op 'e nij begjinne"
 
 msgid "Restarting..."
 msgstr "Op 'e nij begjinne..."
@@ -668,6 +665,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herstart mislearre"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Ferbergje / sjen litte"
+
+#~ msgid "Restart"
+#~ msgstr "Op 'e nij begjinne"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy ferrint"

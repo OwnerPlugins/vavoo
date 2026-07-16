@@ -276,6 +276,9 @@ msgstr "Errorea: {}"
 msgid "Exit"
 msgstr "Irten"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Irten eta berriro ireki plugina atzeko plano berria ikusteko."
+
 msgid "Export"
 msgstr "Esportatu"
 
@@ -320,9 +323,6 @@ msgstr ".m3u fitxategiak sortu eta %s gailuan gorde?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "%d herrialde GUZTIETARentzako .m3u fitxategiak sortu?"
-
-msgid "Hide/Show"
-msgstr "Ezkutatu/Erakutsi"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Zenbatero eguneratu automatikoki EPG (EPGImport programatzailea behar du)"
@@ -485,9 +485,6 @@ msgstr "Kendu"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vavoo sorta GUZTIAK kendu?"
-
-msgid "Restart"
-msgstr "Berrabiarazi"
 
 msgid "Restarting..."
 msgstr "Berrabiarazten..."
@@ -669,6 +666,12 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Ezkutatu/Erakutsi"
+
+#~ msgid "Restart"
+#~ msgstr "Berrabiarazi"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy iraungitzen"

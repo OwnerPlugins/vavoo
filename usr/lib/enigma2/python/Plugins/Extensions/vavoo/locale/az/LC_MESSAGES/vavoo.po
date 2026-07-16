@@ -276,6 +276,9 @@ msgstr "Xəta: {}"
 msgid "Exit"
 msgstr "Çıx"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Çıxın və yeni fonu görmək üçün plaqini yenidən açın."
+
 msgid "Export"
 msgstr "İxrac"
 
@@ -320,9 +323,6 @@ msgstr ".m3u faylları yaradılsın və %s cihazına saxlanılsın?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "BÜTÜN %d ölkə üçün .m3u faylları yaradılsın?"
-
-msgid "Hide/Show"
-msgstr "Gizlət/göstər"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG-ni nə qədər tez-tez avtomatik yeniləmək (EPGImport planlaşdırıcısı tələb olunur)"
@@ -485,9 +485,6 @@ msgstr "Sil"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "BÜTÜN Vavoo buketləri silinsin?"
-
-msgid "Restart"
-msgstr "Yenidən başladın"
 
 msgid "Restarting..."
 msgstr "Yenidən başlayır..."
@@ -669,6 +666,12 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yenidən Başlatma uğursuz oldu"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Gizlət/göstər"
+
+#~ msgid "Restart"
+#~ msgstr "Yenidən başladın"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proksinin müddəti bitir"

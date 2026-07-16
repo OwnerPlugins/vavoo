@@ -276,6 +276,9 @@ msgstr ""
 msgid "Exit"
 msgstr "Sortida"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Sortir e tornar dobrir l'ensamblador per veire lo fons novèl."
+
 msgid "Export"
 msgstr "Exportar"
 
@@ -320,9 +323,6 @@ msgstr "Generar de fichièrs .m3u e enregistrar sul periferic %s ?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generar de fichièrs .m3u per TOTES los %d païses ?"
-
-msgid "Hide/Show"
-msgstr "Amagar/Afichar"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Qué frequéncia metre a jorn automaticament l'EPG (necessita lo planificator EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Levar"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Quitar TODOS los ramos de Vavoo?"
-
-msgid "Restart"
-msgstr "Reaviar"
 
 msgid "Restarting..."
 msgstr "Reaviada..."
@@ -669,6 +666,12 @@ msgstr "✗ Proxy fòra linha"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reaviada a fracassat"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Amagar/Afichar"
+
+#~ msgid "Restart"
+#~ msgstr "Reaviar"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy en expiracion"

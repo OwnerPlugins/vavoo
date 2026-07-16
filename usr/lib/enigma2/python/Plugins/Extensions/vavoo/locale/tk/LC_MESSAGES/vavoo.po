@@ -276,6 +276,9 @@ msgstr "Roralňyşlyk: {}"
 msgid "Exit"
 msgstr "Çyk"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Täze fon görmek üçin plaginden çykyň we açyň."
+
 msgid "Export"
 msgstr "Eksport"
 
@@ -320,9 +323,6 @@ msgstr ".M3u faýllaryny dörediň we% s enjamyna ýazdyryň?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ALhli% d ýurtlar üçin .m3u faýl dörediň?"
-
-msgid "Hide/Show"
-msgstr "Gizlemek / görkezmek"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "EPG-ni näçe gezek awtomatiki täzelemeli (EPGImport meýilnamasyny talap edýär)"
@@ -485,9 +485,6 @@ msgstr "Aýyr"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vhli “Vavoo” buketlerini aýyryň?"
-
-msgid "Restart"
-msgstr "Gaýtadan açyň"
 
 msgid "Restarting..."
 msgstr "Başlamak ..."
@@ -669,6 +666,12 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Gizlemek / görkezmek"
+
+#~ msgid "Restart"
+#~ msgstr "Gaýtadan açyň"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "!! Proksi möhleti"

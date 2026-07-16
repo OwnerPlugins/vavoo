@@ -276,6 +276,9 @@ msgstr "Fout: {}"
 msgid "Exit"
 msgstr "Verlaat"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Verlaat en heropen die inprop om die nuwe agtergrond te sien."
+
 msgid "Export"
 msgstr "Uitvoer"
 
@@ -320,9 +323,6 @@ msgstr "Genereer .m3u-lêers en stoor op toestel %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Genereer .m3u-lêers vir ALLE %d lande?"
-
-msgid "Hide/Show"
-msgstr "Versteek/Wys"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Hoe gereeld om die EPG outomaties op te dateer (vereis EPGImport skeduleerder)"
@@ -485,9 +485,6 @@ msgstr "Verwyder"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Verwyder ALLE Vavoo-ruikers?"
-
-msgid "Restart"
-msgstr "Herbegin"
 
 msgid "Restarting..."
 msgstr "Herbegin tans …"
@@ -669,6 +666,12 @@ msgstr "✗ Proxy vanlyn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herbegin het misluk"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Versteek/Wys"
+
+#~ msgid "Restart"
+#~ msgstr "Herbegin"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Volmag verval"

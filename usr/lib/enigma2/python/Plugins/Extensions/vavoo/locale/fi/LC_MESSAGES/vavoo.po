@@ -276,6 +276,9 @@ msgstr "Virhe: {}"
 msgid "Exit"
 msgstr "Poistu"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Poistu ja avaa laajennus uudelleen nähdäksesi uuden taustan."
+
 msgid "Export"
 msgstr "Vie"
 
@@ -320,9 +323,6 @@ msgstr "Luodaanko .m3u-tiedostot ja tallennetaan laitteelle %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Luodaanko .m3u-tiedostot KAIKILLE %d maalle?"
-
-msgid "Hide/Show"
-msgstr "Piilota/Näytä"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kuinka usein EPG päivitetään automaattisesti (vaatii EPGImport-ajastimen)"
@@ -485,9 +485,6 @@ msgstr "Poista"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Poistetaanko KAIKKI Vavoo-niput?"
-
-msgid "Restart"
-msgstr "Käynnistä uudelleen"
 
 msgid "Restarting..."
 msgstr "Käynnistetään uudelleen..."
@@ -669,6 +666,12 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Piilota/Näytä"
+
+#~ msgid "Restart"
+#~ msgstr "Käynnistä uudelleen"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Välityspalvelin vanhenee"

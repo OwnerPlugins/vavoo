@@ -276,6 +276,9 @@ msgstr "Gwall: {}"
 msgid "Exit"
 msgstr "Ymadael"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Gadael ac ailagor yr ategyn i weld y cefndir newydd."
+
 msgid "Export"
 msgstr "Allforio"
 
@@ -320,9 +323,6 @@ msgstr "Cynhyrchu ffeiliau .m3u a chadw i ddyfais %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Cynhyrchu ffeiliau .m3u ar gyfer POB gwlad %d?"
-
-msgid "Hide/Show"
-msgstr "Cuddio/Dangos"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Pa mor aml i ddiweddaru'r EPG yn awtomatig (angen amserlennydd EPGImport)"
@@ -485,9 +485,6 @@ msgstr "Dileu"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Tynnu POB tusw Vavoo?"
-
-msgid "Restart"
-msgstr "Ailgychwyn"
 
 msgid "Restarting..."
 msgstr "Wrthi'n ailgychwyn..."
@@ -669,6 +666,12 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Cuddio/Dangos"
+
+#~ msgid "Restart"
+#~ msgstr "Ailgychwyn"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Dirprwy yn dod i ben"

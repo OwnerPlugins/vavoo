@@ -277,6 +277,9 @@ msgstr "Napaka: {}"
 msgid "Exit"
 msgstr "Izhod"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Zaprite in znova odprite vtičnik, da vidite novo ozadje."
+
 msgid "Export"
 msgstr "Izvozi"
 
@@ -321,9 +324,6 @@ msgstr "Ustvarite datoteke .m3u in jih shranite v napravo %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ustvariti datoteke .m3u za VSEh %d držav?"
-
-msgid "Hide/Show"
-msgstr "Skrij/prikaži"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kako pogosto samodejno posodobiti EPG (zahteva načrtovalnik EPGImport)"
@@ -486,9 +486,6 @@ msgstr "Odstrani"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Odstraniti VSE šopke Vavoo?"
-
-msgid "Restart"
-msgstr "Znova zaženite"
 
 msgid "Restarting..."
 msgstr "Ponovni zagon ..."
@@ -669,6 +666,12 @@ msgstr "✗ Proxy brez povezave"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovni zagon ni uspel"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Skrij/prikaži"
+
+#~ msgid "Restart"
+#~ msgstr "Znova zaženite"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Proxy poteče"

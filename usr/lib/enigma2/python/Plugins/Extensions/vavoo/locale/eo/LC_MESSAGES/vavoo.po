@@ -277,6 +277,9 @@ msgstr "Eraro: {}"
 msgid "Exit"
 msgstr "Eliro"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Eliru kaj remalfermu la kromprogramon por vidi la novan fonon."
+
 msgid "Export"
 msgstr "Eksporto"
 
@@ -321,9 +324,6 @@ msgstr "Ĉu krei .m3u dosierojn kaj konservi al aparato %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ĉu generi .m3u dosierojn por ĈIUJ %d landoj?"
-
-msgid "Hide/Show"
-msgstr "Kaŝi/Montri"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Kiom ofte aŭtomate ĝisdatigi la EPG (postulas EPGImport-planilon)"
@@ -486,9 +486,6 @@ msgstr "Forigi"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Ĉu forigi ĈIUJN Vavoo-bukedojn?"
-
-msgid "Restart"
-msgstr "Rekomencu"
 
 msgid "Restarting..."
 msgstr "Rekomencante..."
@@ -669,6 +666,12 @@ msgstr "✗ Prokura eksterrete"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rekomenco Malsukcesis"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Kaŝi/Montri"
+
+#~ msgid "Restart"
+#~ msgstr "Rekomencu"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Prokura Eksvalidiĝo"

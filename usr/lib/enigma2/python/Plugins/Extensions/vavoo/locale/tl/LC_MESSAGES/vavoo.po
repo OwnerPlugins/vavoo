@@ -276,6 +276,9 @@ msgstr ""
 msgid "Exit"
 msgstr "Lumabas"
 
+msgid "Exit and reopen the plugin to see the new background."
+msgstr "Lumabas at muling buksan ang plugin upang makita ang bagong background."
+
 msgid "Export"
 msgstr "I-export"
 
@@ -320,9 +323,6 @@ msgstr "Bumuo ng mga .m3u na file at i-save sa device %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Bumuo ng mga .m3u na file para sa LAHAT ng %d na bansa?"
-
-msgid "Hide/Show"
-msgstr "Itago/Ipakita"
 
 msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
 msgstr "Gaano kadalas i-auto-update ang EPG (nangangailangan ng EPGImport scheduler)"
@@ -485,9 +485,6 @@ msgstr "Alisin"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Alisin ang LAHAT ng mga bouquet ng Vavoo?"
-
-msgid "Restart"
-msgstr "I-restart"
 
 msgid "Restarting..."
 msgstr "Nagsisimula muli..."
@@ -669,6 +666,12 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "Hide/Show"
+#~ msgstr "Itago/Ipakita"
+
+#~ msgid "Restart"
+#~ msgstr "I-restart"
 
 #~ msgid "! Proxy Expiring"
 #~ msgstr "! Mag-e-expire ang Proxy"
