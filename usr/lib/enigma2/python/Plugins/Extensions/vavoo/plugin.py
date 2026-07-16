@@ -4872,8 +4872,9 @@ class Playstream2(
                         prog_channel.replace('.', ''), []).append(prog)
                 index_time = time.time() - index_start
                 if index_time > 0.1:
-                    print("[EPG] Slow index build: {:.3f}s ({} channels)".format(
-                        index_time, len(channel_index)))
+                    print(
+                        "[EPG] Slow index build: {:.3f}s ({} channels)".format(
+                            index_time, len(channel_index)))
 
                 _epg_xml_cache[self.country_code] = (
                     time.time(), root, channel_index)
