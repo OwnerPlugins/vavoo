@@ -1882,6 +1882,7 @@ class VavooEPGMatcher:
                 self.rytec_by_country.setdefault(
                     entry_country, []).append(entry)
                 self.rytec_names[original_id] = clean_name
+                self.rytec_by_id[original_id] = service_ref
 
             print("[VavooEPGMatcher] Loaded {} Rytec channels".format(
                 len(self.rytec_entries)))
@@ -2120,8 +2121,13 @@ class VavooEPGMatcher:
             # Clean the channel name using the same rules as playlist_generator
             norm_name = channel_alias.normalize_channel_name(channel_name)
             if norm_name:
-                # If we have an EPG ID for this canonical name, use it directly
-                alias_id = self.alias_map.get(norm_name)
+                # If we have an EPG ID for this canonical name, use it
+                # directly. self.alias_map (loaded from the on-disk
+                # channel_alias.json, if present) can override/add to the
+                # curated channel_alias.ALIAS_MAP, which is the actual
+                # source of the ~300 hand-mapped Italian channel aliases.
+                alias_id = self.alias_map.get(
+                    norm_name) or channel_alias.ALIAS_MAP.get(norm_name)
                 if alias_id:
                     alias_sref = self.rytec_by_id.get(alias_id)
                     if alias_sref:

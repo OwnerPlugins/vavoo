@@ -2737,21 +2737,27 @@ class MainVavoo(Screen):
                 import subprocess
                 self['name'].setText(_("Updating EPG..."))
 
-                # Run in background to not block UI
+                # Run in background to not block UI. UI updates must be
+                # marshalled back onto the reactor thread - Enigma2's GUI
+                # components aren't thread-safe to touch directly from a
+                # background thread.
                 def update_thread():
                     try:
                         result = subprocess.call(
                             ['epgimport', '--import'], timeout=300)
                         if result == 0:
-                            self.session.open(
-                                MessageBox, _("EPG update completed"), MessageBox.TYPE_INFO)
+                            reactor.callFromThread(
+                                self.session.open, MessageBox,
+                                _("EPG update completed"), MessageBox.TYPE_INFO)
                         else:
-                            self.session.open(
-                                MessageBox, _("EPG update failed"), MessageBox.TYPE_ERROR)
+                            reactor.callFromThread(
+                                self.session.open, MessageBox,
+                                _("EPG update failed"), MessageBox.TYPE_ERROR)
                     except Exception as e:
                         print("[Vavoo] EPG update error:", str(e))
                     finally:
-                        self['name'].setText(_("Ready"))
+                        reactor.callFromThread(
+                            self['name'].setText, _("Ready"))
 
                 thread = threading.Thread(target=update_thread)
                 thread.setDaemon(True)

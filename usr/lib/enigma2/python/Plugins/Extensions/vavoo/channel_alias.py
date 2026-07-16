@@ -351,9 +351,13 @@ def normalize_channel_name(raw_name):
     # Remove common suffixes like .c, .s, HD, FHD, etc.
     name = sub(r'\s*\.(c|s)$', '', name)
     name = sub(r'\s*(HD|FHD|SD|4K|HEVC|H265)$', '', name, flags=IGNORECASE)
-    # Apply explicit rename rules
+    # Apply explicit rename rules. Exact match, not substring: several
+    # patterns are single digits or short generic words ("8", "27",
+    # "RAI", "SUPER") meant to disambiguate a channel literally named
+    # just that - "in name" would also match e.g. "DAZN 8" or "RAI 1",
+    # silently renaming them to the wrong channel's alias.
     for pattern, canonical in RENAME_RULES:
-        if pattern in name:
+        if name == pattern:
             return canonical
     # Special handling for HISTORY channels
     if name.startswith(
