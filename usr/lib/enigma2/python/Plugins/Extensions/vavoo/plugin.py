@@ -2136,14 +2136,24 @@ class MainVavoo(Screen):
             if len(countries_list) > 8:
 
                 def download_rest():
+                    downloaded_rest = 0
                     for country in countries_list[8:]:
                         try:
-                            download_flag_online(
+                            success, _ = download_flag_online(
                                 country, screen_width=screen_width)
+                            if success:
+                                downloaded_rest += 1
                         except BaseException:
                             pass
 
                     print("[Background] Finished downloading remaining flags")
+                    # The single-shot refresh above only covers the first
+                    # 8 countries - without this, flags for every country
+                    # after that silently never appear until something
+                    # else happens to rebuild the list.
+                    if downloaded_rest > 0:
+                        reactor.callFromThread(
+                            self.flag_refresh_timer.start, 1000, True)
                 thread = threading.Thread(target=download_rest)
                 thread.setDaemon(True)
                 thread.start()
