@@ -798,11 +798,6 @@ def get_proxy_channels(country_name):
     return []
 
 
-def get_proxy_stream_url(channel_id):
-    """Get the stream URL via proxy"""
-    return PROXY_BASE_URL + "/vavoo?channel=%s" % channel_id
-
-
 def get_proxy_catalog_url():
     """
     Get the proxy catalog URL

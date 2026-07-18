@@ -104,7 +104,6 @@ from . import (
     FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
 )
 from . import PY2, PY3, vUtils
-# from .epg_manager import EPGManager
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -458,29 +457,6 @@ def to_string(text):
     return str(text)
 
 
-def check_vavoo_connectivity():
-    try:
-        test_url = PRIMARY_BASE_URL
-        if requests is not None:
-            response = requests.get(test_url, timeout=5)
-            status_code = response.status_code
-        else:
-            req = UrlRequest(
-                test_url, headers={
-                    'User-Agent': vUtils.RequestAgent()})
-            response = urlopen(req, timeout=5)
-            status_code = getattr(response, 'getcode', lambda: 0)() or 0
-        if status_code == 200:
-            print("[Connectivity] vavoo.to is reachable")
-            return True
-
-        print("[Connectivity] vavoo.to returned {0}".format(status_code))
-        return False
-    except Exception as e:
-        print("[Connectivity] Cannot reach vavoo.to: {0}".format(e))
-        return False
-
-
 # config section
 # --- Live search input field integrated in plugin config ---
 class ConfigSearchText(ConfigText):
@@ -715,48 +691,6 @@ def show_list(name, link, is_category=False, is_channel=False):
     ))
 
     return list(res)
-
-
-def is_port_in_use(port):
-    import socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex((PROXY_HOST, port)) == 0
-
-
-def get_proxy_stream_url(channel_id):
-    """Get the stream URL via proxy"""
-    local_ip = PROXY_HOST
-    # port = PORT
-    return "http://" + str(local_ip) + ":" + str(PORT) + \
-        "/vavoo?channel=" + str(channel_id)
-
-
-def keep_proxy_alive():
-    """Keep proxy alive by periodically checking it"""
-
-    def monitor_proxy():
-        while True:
-            try:
-                if not is_proxy_running():
-                    print(
-                        "[Proxy Monitor] Proxy not running, attempting to restart...")
-
-                    timeout = cfg.proxy_startup_timeout.value
-                    run_proxy_in_background(startup_timeout=timeout)
-                elif not is_proxy_ready():
-                    print("[Proxy Monitor] Proxy running but not ready")
-                # else: proxy is running and ready
-
-            except Exception as e:
-                print("[Proxy Monitor] Error: " + str(e))
-
-            select.select([], [], [], 60)
-
-    # Start monitor thread
-    monitor_thread = threading.Thread(target=monitor_proxy)
-    monitor_thread.setDaemon(True)
-    monitor_thread.start()
-    return monitor_thread
 
 
 class vavoo_config(Screen, ConfigListScreen):
