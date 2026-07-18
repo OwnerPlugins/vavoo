@@ -11,8 +11,8 @@ from json import loads
 from os import listdir, remove
 from os.path import exists as file_exists, isfile, join, basename
 from re import compile, search
-from enigma import eTimer
 from Components.config import config
+from twisted.internet import reactor
 
 from .vUtils import (
     decodeHtml,
@@ -382,12 +382,11 @@ def export_bouquet_async(
                     except Exception as cb_e:
                         print("[Bouquet] Error in callback: %s" % cb_e)
 
-                timer = eTimer()
-                try:
-                    timer.callback.append(do_callback)
-                except AttributeError:
-                    timer.timeout.connect(do_callback)
-                timer.start(0, True)
+                # Constructing/starting an eTimer directly from this
+                # background thread isn't safe - marshal onto the reactor
+                # thread instead, same as everywhere else callbacks need
+                # to run from here.
+                reactor.callFromThread(do_callback)
                 return
 
             # Instant recharge of services to make the bouquet visible
@@ -398,12 +397,7 @@ def export_bouquet_async(
                 except Exception as e:
                     print("[Bouquet] Error reloading services: %s" % e)
 
-            reload_timer = eTimer()
-            try:
-                reload_timer.callback.append(do_reload)
-            except AttributeError:
-                reload_timer.timeout.connect(do_reload)
-            reload_timer.start(500, True)   # 500 ms di delay
+            reactor.callFromThread(reactor.callLater, 0.5, do_reload)
             # -------------------------------------------------
 
             # Notify that bouquet is ready (first callback)
@@ -419,12 +413,7 @@ def export_bouquet_async(
                 except Exception as cb_e:
                     print("[Bouquet] Error in first callback: %s" % cb_e)
 
-            timer = eTimer()
-            try:
-                timer.callback.append(do_first_callback)
-            except AttributeError:
-                timer.timeout.connect(do_first_callback)
-            timer.start(0, True)
+            reactor.callFromThread(do_first_callback)
 
             # PHASE 2: Process EPG matching in background (same thread)
             if channels_list:
@@ -454,12 +443,7 @@ def export_bouquet_async(
                 except Exception as cb_e:
                     print("[Bouquet] Error in error callback: %s" % cb_e)
 
-            timer = eTimer()
-            try:
-                timer.callback.append(do_callback)
-            except AttributeError:
-                timer.timeout.connect(do_callback)
-            timer.start(0, True)
+            reactor.callFromThread(do_callback)
 
         finally:
             # Release the lock if provided
@@ -704,22 +688,36 @@ def process_epg_matching_background(
             "[EPGBackground] COMPLETED for %s - matched=%d" %
             (name, len(matched)))
         print("[EPGBackground] Calling callback with message='EPG processing completed'")
-        try:
-            saved_callback(True, saved_matched, "EPG processing completed")
-        except Exception as cb_e:
-            print("[EPGBackground] Error in completion callback: %s" % cb_e)
+
+        def _do_completion_callback():
+            try:
+                saved_callback(True, saved_matched, "EPG processing completed")
+            except Exception as cb_e:
+                print("[EPGBackground] Error in completion callback: %s" % cb_e)
+        # This whole function runs on a background thread (see task() in
+        # export_bouquet_async) - the callback ends up in plugin.py's
+        # _on_export_complete(), a UI-touching method, so marshal it onto
+        # the reactor thread rather than calling it directly.
+        reactor.callFromThread(_do_completion_callback)
 
         # Update the complete cache with matched channels only;
         # - unmatched go to unmatched.json.
         update_complete_cache(matched, unmatched, country_code, servicetype)
 
     except Exception as exc:
-        print("[EPGBackground] Error: %s" % str(exc))
+        # Python 3 deletes an "except ... as exc" binding once this block
+        # exits, but _do_error_callback() runs later (asynchronously, via
+        # callFromThread) - capture the message into a plain local first.
+        exc_message = str(exc)
+        print("[EPGBackground] Error: %s" % exc_message)
         trace_error()
-        try:
-            callback(False, 0, str(exc))
-        except Exception as cb_e:
-            print("[EPGBackground] Error in error callback: %s" % cb_e)
+
+        def _do_error_callback():
+            try:
+                callback(False, 0, exc_message)
+            except Exception as cb_e:
+                print("[EPGBackground] Error in error callback: %s" % cb_e)
+        reactor.callFromThread(_do_error_callback)
 
 
 def _create_flat_bouquet_proxy(
