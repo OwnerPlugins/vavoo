@@ -92,7 +92,10 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
+from .vavoo_stats import (
+    record_anonymous_startup, is_stats_enabled, start_heartbeat,
+    stop_heartbeat, STATS_DISABLE_FILE
+)
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -507,6 +510,7 @@ cfg.updateinterval = ConfigSelectionNumber(
 cfg.fixedtime = ConfigClock(default=46800)
 cfg.last_update = ConfigText(default="Never")
 cfg.stmain = ConfigYesNo(default=True)
+cfg.stats_enabled = ConfigYesNo(default=True)
 # cfg.ipv6 = ConfigEnableDisable(default=False)
 cfg.back = ConfigSelection(default='oktus', choices=BakP)
 """
@@ -929,6 +933,11 @@ class vavoo_config(Screen, ConfigListScreen):
                 _('Link in Main Menu'),
                 cfg.stmain,
                 _("Link in Main Menu")))
+        self.list.append(
+            getConfigListEntry(
+                _("Send Anonymous Statistics"),
+                cfg.stats_enabled,
+                _("Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -1452,6 +1461,25 @@ class vavoo_config(Screen, ConfigListScreen):
                 else:
                     shutdown_proxy()
                 self.old_proxy_enabled = cfg.proxy_enabled.value
+
+            # Sync the anonymous-stats opt-out file with this toggle -
+            # is_stats_enabled() (vavoo_stats.py) checks for this file's
+            # existence, but nothing ever created/removed it since there
+            # was no actual UI control for it before this config entry.
+            try:
+                if cfg.stats_enabled.value:
+                    if isfile(STATS_DISABLE_FILE):
+                        remove(STATS_DISABLE_FILE)
+                else:
+                    if not isfile(STATS_DISABLE_FILE):
+                        with open(STATS_DISABLE_FILE, 'w') as f:
+                            f.write('1')
+                    # Stop the running heartbeat immediately instead of
+                    # letting it keep firing every 5 minutes until the
+                    # plugin is next restarted.
+                    stop_heartbeat()
+            except Exception as e:
+                print("[Config] Error syncing stats opt-out: " + str(e))
 
             # Manage EPG source
             if cfg.epg_enabled.value and not is_proxy_running():
