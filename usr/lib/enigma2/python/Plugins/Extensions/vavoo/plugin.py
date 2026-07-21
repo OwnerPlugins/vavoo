@@ -4310,7 +4310,6 @@ class TvInfoBarShowHide():
             print("[DEBUG] hide_help_overlay overlays hidden")
         print("[DEBUG] hide_help_overlay END")
 
-    # ========== ORIGINAL METHODS (KEPT) ==========
     def __onShow(self):
         print("[DEBUG] __onShow called, old state={}".format(self.__state))
         self.__state = self.STATE_SHOWN
@@ -4343,7 +4342,7 @@ class TvInfoBarShowHide():
                 self.__locked))
         if self.__state == self.STATE_SHOWN and not self.__locked:
             self.hideTimer.stop()
-            self.hideTimer.start(5000, True)
+            self.hideTimer.start(10000, True)
             print("[DEBUG] startHideTimer timer started (5s)")
         else:
             print(
