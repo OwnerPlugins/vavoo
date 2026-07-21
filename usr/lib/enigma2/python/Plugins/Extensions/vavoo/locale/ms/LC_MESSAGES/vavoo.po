@@ -611,7 +611,7 @@ msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Stream Live - Maklumat"
 
 msgid "Vavoo Stream Live Plugin"
-msgstr ""
+msgstr "Pemalam Langsung Vavoo Stream"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Sejambak Vavoo berjaya dikeluarkan!"

@@ -604,7 +604,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Vavoo EPG uppspretta fannst ekki. Vinsamlega flytjið út að minnsta kosti einn blómvönd fyrst."
 
 msgid "Vavoo Stream Live"
-msgstr ""
+msgstr "Vavoo streymi í beinni"
 
 msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Stream Live - Upplýsingar"

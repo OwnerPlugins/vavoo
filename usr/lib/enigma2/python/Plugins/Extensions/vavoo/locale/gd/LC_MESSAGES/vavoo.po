@@ -669,7 +669,7 @@ msgid "✗ Proxy Expired"
 msgstr "✗ Neach-ionaid air tighinn gu crìch"
 
 msgid "✗ Proxy Offline"
-msgstr ""
+msgstr "✗ Neach-ionaid far-loidhne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
