@@ -226,7 +226,7 @@ def start_heartbeat():
     if collector._session_id:
         collector.start_heartbeat()
     else:
-        debug("Cannot start heartbeat: no session yet", area="STATS")
+        debug("Cannot start heartbeat: no session yet")
 
 
 def stop_heartbeat():

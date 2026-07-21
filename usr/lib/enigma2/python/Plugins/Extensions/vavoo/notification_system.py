@@ -6,6 +6,7 @@ from Components.Label import Label
 from Screens.Screen import Screen
 from enigma import eTimer
 from threading import Lock
+from twisted.internet import reactor
 
 """
 #########################################################
@@ -153,7 +154,14 @@ class HybridNotificationManager:
             return False
 
     def showMessage(self, message, duration=3000):
-        """Show a notification message"""
+        """Show a notification message.
+
+        Safe to call from any thread, including background threads -
+        the actual widget/timer updates in _showMessage() are Enigma2
+        GUI operations, which aren't safe to touch off the reactor
+        thread, so marshal onto it via reactor.callFromThread() rather
+        than calling _showMessage() directly.
+        """
         # If not initialized yet, queue the message
         if not self.notification_window or not self.session:
             self.pending_messages.append((message, duration))
@@ -161,7 +169,7 @@ class HybridNotificationManager:
                 self.pending_messages = self.pending_messages[-10:]
             return
 
-        self._showMessage(message, duration)
+        reactor.callFromThread(self._showMessage, message, duration)
 
     def show_download_status(self, title, status, file_size=0):
         """Display a download status notification"""
@@ -195,7 +203,11 @@ class HybridNotificationManager:
         self.showMessage(message, seconds * 1000)
 
     def hide(self):
-        """Hide notification immediately"""
+        """Hide notification immediately. Safe to call from any thread -
+        see showMessage()."""
+        reactor.callFromThread(self._hideNow)
+
+    def _hideNow(self):
         self.hide_timer.stop()
         self._hideNotification()
 

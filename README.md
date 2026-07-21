@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/Belfagor2005/vavoo">
-    <img src="https://img.shields.io/badge/Version-1.79-blue.svg" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.80-blue.svg" alt="Version">
   </a>
 
   <a href="https://www.enigma2.net">
@@ -97,7 +97,7 @@ The plugin includes a sophisticated notification system that provides real-time 
 
 ### Automatic Updates (Recommended)
 - Go to **Menu Config** → Enable **"Scheduled Bouquet Update: ON"**
-- Choose update interval (5-15 minutes) or fixed time
+- Choose update interval (5-3600 minutes, in 5-minute steps) or fixed time
 - The proxy will handle everything automatically
 
 ### EPG Setup
@@ -113,13 +113,13 @@ The plugin includes a sophisticated notification system that provides real-time 
 ## 🔧 User Configuration
 In the Config Menu:
 - ✅ **Scheduled Bouquet Update**: ON/OFF (only required setting)
-- ✅ If ON: Choose interval (5-15 min) or fixed time
+- ✅ If ON: Choose interval (5-3600 min) or fixed time
 - ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport
 - ✅ **Proxy Enabled**: Enable/disable the local proxy (default: ON)
 - ✅ **List Position**: Place Vavoo bouquets at top or bottom of channel list
 - ✅ **Select Background**: Choose custom background images
-- ✅ **IPv6 State**: Enable/disable IPv6 on your system
 - ✅ **Link in Main Menu**: Show plugin in main Enigma2 menu
+- ✅ **Send Anonymous Statistics**: Opt in/out of anonymous startup/heartbeat pings (default: ON)
 - Proxy and updates are managed automatically
 
 ## 🎯 Benefits
@@ -171,6 +171,7 @@ The proxy provides these endpoints:
 - `/status` – Check proxy status
 - `/channels?country=CountryName` – Get channels by country
 - `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect)
+- `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
 - `/refresh_token` – Force token refresh
@@ -333,4 +334,4 @@ https://creativecommons.org/licenses/by-nc-sa/4.0
 **For modifications and redistribution, please maintain this credit header.**
 
 ---
-*Last Modified: 2026-07-06*
+*Last Modified: 2026-07-21*

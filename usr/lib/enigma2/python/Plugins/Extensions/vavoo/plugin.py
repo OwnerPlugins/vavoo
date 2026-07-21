@@ -92,7 +92,10 @@ from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
-from .vavoo_stats import record_anonymous_startup, is_stats_enabled, start_heartbeat, stop_heartbeat
+from .vavoo_stats import (
+    record_anonymous_startup, is_stats_enabled, start_heartbeat,
+    stop_heartbeat, STATS_DISABLE_FILE
+)
 from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
@@ -101,7 +104,6 @@ from . import (
     FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
 )
 from . import PY2, PY3, vUtils
-# from .epg_manager import EPGManager
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -455,29 +457,6 @@ def to_string(text):
     return str(text)
 
 
-def check_vavoo_connectivity():
-    try:
-        test_url = PRIMARY_BASE_URL
-        if requests is not None:
-            response = requests.get(test_url, timeout=5)
-            status_code = response.status_code
-        else:
-            req = UrlRequest(
-                test_url, headers={
-                    'User-Agent': vUtils.RequestAgent()})
-            response = urlopen(req, timeout=5)
-            status_code = getattr(response, 'getcode', lambda: 0)() or 0
-        if status_code == 200:
-            print("[Connectivity] vavoo.to is reachable")
-            return True
-
-        print("[Connectivity] vavoo.to returned {0}".format(status_code))
-        return False
-    except Exception as e:
-        print("[Connectivity] Cannot reach vavoo.to: {0}".format(e))
-        return False
-
-
 # config section
 # --- Live search input field integrated in plugin config ---
 class ConfigSearchText(ConfigText):
@@ -507,6 +486,7 @@ cfg.updateinterval = ConfigSelectionNumber(
 cfg.fixedtime = ConfigClock(default=46800)
 cfg.last_update = ConfigText(default="Never")
 cfg.stmain = ConfigYesNo(default=True)
+cfg.stats_enabled = ConfigYesNo(default=True)
 # cfg.ipv6 = ConfigEnableDisable(default=False)
 cfg.back = ConfigSelection(default='oktus', choices=BakP)
 """
@@ -713,48 +693,6 @@ def show_list(name, link, is_category=False, is_channel=False):
     return list(res)
 
 
-def is_port_in_use(port):
-    import socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex((PROXY_HOST, port)) == 0
-
-
-def get_proxy_stream_url(channel_id):
-    """Get the stream URL via proxy"""
-    local_ip = PROXY_HOST
-    # port = PORT
-    return "http://" + str(local_ip) + ":" + str(PORT) + \
-        "/vavoo?channel=" + str(channel_id)
-
-
-def keep_proxy_alive():
-    """Keep proxy alive by periodically checking it"""
-
-    def monitor_proxy():
-        while True:
-            try:
-                if not is_proxy_running():
-                    print(
-                        "[Proxy Monitor] Proxy not running, attempting to restart...")
-
-                    timeout = cfg.proxy_startup_timeout.value
-                    run_proxy_in_background(startup_timeout=timeout)
-                elif not is_proxy_ready():
-                    print("[Proxy Monitor] Proxy running but not ready")
-                # else: proxy is running and ready
-
-            except Exception as e:
-                print("[Proxy Monitor] Error: " + str(e))
-
-            select.select([], [], [], 60)
-
-    # Start monitor thread
-    monitor_thread = threading.Thread(target=monitor_proxy)
-    monitor_thread.setDaemon(True)
-    monitor_thread.start()
-    return monitor_thread
-
-
 class vavoo_config(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -929,6 +867,11 @@ class vavoo_config(Screen, ConfigListScreen):
                 _('Link in Main Menu'),
                 cfg.stmain,
                 _("Link in Main Menu")))
+        self.list.append(
+            getConfigListEntry(
+                _("Send Anonymous Statistics"),
+                cfg.stats_enabled,
+                _("Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -1452,6 +1395,25 @@ class vavoo_config(Screen, ConfigListScreen):
                 else:
                     shutdown_proxy()
                 self.old_proxy_enabled = cfg.proxy_enabled.value
+
+            # Sync the anonymous-stats opt-out file with this toggle -
+            # is_stats_enabled() (vavoo_stats.py) checks for this file's
+            # existence, but nothing ever created/removed it since there
+            # was no actual UI control for it before this config entry.
+            try:
+                if cfg.stats_enabled.value:
+                    if isfile(STATS_DISABLE_FILE):
+                        remove(STATS_DISABLE_FILE)
+                else:
+                    if not isfile(STATS_DISABLE_FILE):
+                        with open(STATS_DISABLE_FILE, 'w') as f:
+                            f.write('1')
+                    # Stop the running heartbeat immediately instead of
+                    # letting it keep firing every 5 minutes until the
+                    # plugin is next restarted.
+                    stop_heartbeat()
+            except Exception as e:
+                print("[Config] Error syncing stats opt-out: " + str(e))
 
             # Manage EPG source
             if cfg.epg_enabled.value and not is_proxy_running():
@@ -2136,14 +2098,24 @@ class MainVavoo(Screen):
             if len(countries_list) > 8:
 
                 def download_rest():
+                    downloaded_rest = 0
                     for country in countries_list[8:]:
                         try:
-                            download_flag_online(
+                            success, _ = download_flag_online(
                                 country, screen_width=screen_width)
+                            if success:
+                                downloaded_rest += 1
                         except BaseException:
                             pass
 
                     print("[Background] Finished downloading remaining flags")
+                    # The single-shot refresh above only covers the first
+                    # 8 countries - without this, flags for every country
+                    # after that silently never appear until something
+                    # else happens to rebuild the list.
+                    if downloaded_rest > 0:
+                        reactor.callFromThread(
+                            self.flag_refresh_timer.start, 1000, True)
                 thread = threading.Thread(target=download_rest)
                 thread.setDaemon(True)
                 thread.start()
@@ -3812,7 +3784,7 @@ class VavooSearch(Screen):
         self["search_text"] = Label("")
         self['version'] = Label()
         self["input_info"] = Label(
-            _("Press TEXT button to type, BACKSPACE to delete"))
+            _("Press GREEN to type, YELLOW to delete"))
         self["channel_list"] = m2list([])
         self["status"] = Label(_("Enter text to search..."))
         self["key_red"] = Label(_("Clear All"))

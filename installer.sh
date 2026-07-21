@@ -1,13 +1,14 @@
 #!/bin/bash
 
-version='1.79'
-changelog="- Fixed EPG matching for many Italian channels (alias system) and UK channels
-- Faster EPG matching and per-channel programme lookup
-- Auto-update check now runs every time you open the plugin
-- Redesigned installer console: auto-scrolling output, fixed Restart GUI button
-- Fixed a splash screen progress bar reliability issue
-- Fixed background selection showing the wrong image
-- General stability and reliability fixes"
+version='1.80'
+changelog="- Fixed notifications not being thread-safe, which could crash background exports/EPG processing
+- Fixed bouquet export background thread touching Enigma2 UI objects unsafely
+- Fixed country flags beyond the first 8 never appearing in the main menu
+- Added the missing \"Send Anonymous Statistics\" config option
+- Fixed several proxy reliability bugs (cache eviction, HTTP 451 handling)
+- Fixed search screen button hint showing the wrong key
+- Removed dead/unused code
+- General stability and documentation accuracy fixes"
 
 
 echo "$changelog"

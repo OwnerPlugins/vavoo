@@ -20,7 +20,6 @@ from . import (
     PORT,
     PROXY_HOST,
     PROXY_STATUS_URL,
-    PROXY_HEALTH_URL,
     PROXY_SHUTDOWN_URL,
     BASE_SITES,
     HOST_GIT,
@@ -600,141 +599,6 @@ def remove_pid_file():
 atexit.register(remove_pid_file)
 
 
-class ProxyHealthMonitor:
-    """Monitors proxy health and restarts it if necessary"""
-
-    def __init__(self, proxy_instance):
-        self.proxy = proxy_instance
-        self.last_health_check = time.time()
-        self.failure_count = 0
-        self.max_failures = 3
-        self.monitor_thread = None
-        self.running = False
-        self.stop_event = threading.Event()
-
-    def start(self):
-        """Start the background health monitor"""
-        self.running = True
-        self.stop_event.clear()
-        self.monitor_thread = threading.Thread(target=self._monitor_loop)
-        self.monitor_thread.setDaemon(True)
-        self.monitor_thread.start()
-        print("[Proxy Health Monitor] Started")
-
-    def stop(self):
-        self.running = False
-        self.stop_event.set()
-        if self.monitor_thread:
-            self.monitor_thread.join(timeout=2)
-
-    def _monitor_loop(self):
-        """Main monitor loop"""
-        while self.running and not self.stop_event.is_set():
-            try:
-                self._check_proxy_health()
-                self.stop_event.wait(60)
-            except Exception as e:
-                print(str(e))
-                log_exception(
-                    "[Health Monitor] Unexpected error",
-                    area="PROXY")
-
-    def _check_proxy_health(self):
-        """Check proxy health status"""
-        try:
-            # 1. Check if proxy responds
-            response = requests.get(
-                PROXY_HEALTH_URL, timeout=2)
-
-            if response.status_code == 200:
-                data = response.json()
-
-                # 2. Check token status
-                token_age = data.get("token", {}).get("age", 0)
-                # needs_refresh = data.get("needs_refresh", False)
-
-                if token_age > TOKEN_REFRESH_AGE:  # aligned with token_monitor_loop threshold
-                    print(
-                        "[Health Monitor] Old token (" +
-                        str(token_age) +
-                        "s), forcing refresh..."
-                    )
-                    self.proxy.refresh_addon_sig_if_needed(force=True)
-
-                # 3. Reset failure count if everything is OK
-                self.failure_count = 0
-                self.last_health_check = time.time()
-
-            else:
-                self._handle_proxy_failure()
-
-        except Exception as e:
-            print("[Health Monitor] Proxy not responding: " + str(e))
-            self._handle_proxy_failure()
-
-    def _handle_proxy_failure(self):
-        """Handle proxy failure"""
-        self.failure_count += 1
-        print(
-            "[Health Monitor] Proxy failure #" +
-            str(self.failure_count)
-        )
-
-        if self.failure_count >= self.max_failures:
-            print(
-                "[Health Monitor] Too many failures, attempting to restart proxy..."
-            )
-            self._restart_proxy()
-            self.failure_count = 0
-
-    def _restart_proxy(self):
-        try:
-            global proxy, _starting
-            # 1. Try to shut down the current proxy
-            try:
-                requests.get(PROXY_SHUTDOWN_URL, timeout=2)
-                select.select([], [], [], 2)
-            except Exception:
-                pass
-
-            # Remove the old PID file
-            remove_pid_file()
-
-            # 2. Kill any zombie processes still holding the port ─────────────
-            try:
-                import subprocess
-                with open('/dev/null', 'w') as devnull:
-                    subprocess.call(
-                        ["pkill", "-f", "python.*vavoo_proxy"],
-                        stdout=devnull,
-                        stderr=devnull
-                    )
-            except Exception as kill_err:
-                print("[Health Monitor] pkill: " + str(kill_err))
-            select.select([], [], [], 2)
-
-            # Reset the global flag
-            _starting = False
-
-            # 3. Restart the proxy
-            proxy = VavooProxy()
-
-            if proxy.initialize_proxy():
-                server = ThreadedHTTPServer(
-                    ('0.0.0.0', PORT), VavooHTTPHandler)
-                proxy.server = server
-                server_thread = threading.Thread(target=server.serve_forever)
-                server_thread.setDaemon(True)
-                server_thread.start()
-                write_pid_file()
-                print("[Health Monitor] Proxy restarted successfully")
-                return True
-
-        except Exception as e:
-            print("[Health Monitor] Failed to restart proxy: " + str(e))
-        return False
-
-
 class VavooProxy:
     def __init__(self):
         self.session = requests.Session()
@@ -1184,7 +1048,7 @@ class VavooProxy:
                             if attempt < max_retries - 1:
                                 continue
 
-                        if e.response.status_code == 502 and attempt < max_retries - 1:
+                        if e.response is not None and e.response.status_code == 502 and attempt < max_retries - 1:
                             select.select([], [], [], 2 ** attempt)
                             continue
                         else:
@@ -1338,6 +1202,14 @@ class VavooProxy:
                 if stream_url:
                     self.resolve_cache[channel_url] = {
                         "url": stream_url, "ts": time.time()}
+                    # Re-resolving an already-cached URL updates its value
+                    # but OrderedDict doesn't move existing keys on their
+                    # own - without this, eviction below would go by
+                    # original insertion order rather than last use, and
+                    # could drop a channel that's actively being
+                    # refreshed while keeping one nobody has touched in a
+                    # while.
+                    self.resolve_cache.move_to_end(channel_url)
                     # Evict oldest 500 entries (OrderedDict preserves insertion
                     # order in Py2+3)
                     if len(self.resolve_cache) > 1000:
@@ -1371,6 +1243,14 @@ class VavooProxy:
         return None
 
     def get_local_ip(self, force_refresh=False):
+        # Deliberately always 127.0.0.1, not the box's real LAN IP: the
+        # /channels endpoint embeds this directly into the proxy URLs
+        # returned for bouquet export (http://<local_ip>:PORT/vavoo?...),
+        # and localhost is "the core trick that makes streams stable"
+        # (see CLAUDE.md) - a real LAN IP would still often work, but
+        # loses that guarantee for no benefit. The API docs' own example
+        # showing a LAN-looking address is just misleading, not a
+        # promise this should actually return one.
         return PROXY_HOST
 
     def stop(self):
