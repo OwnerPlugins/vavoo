@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-__author__ = "Lululla"
+__author__ = "Lululla & Qu4k3"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "CC BY-NC-SA 4.0"

@@ -305,7 +305,7 @@ global search_ok, screen_width
 global proxy_instance, proxy_thread
 
 title_plug = 'Vavoo'
-desc_plugin = ('..:: Vavoo by Lululla v.%s ::..' % __version__)
+desc_plugin = ('..:: Vavoo by Lululla & Qu4k3 v.%s ::..' % __version__)
 PLUGIN_PATH = PLUGIN_ROOT
 PLUGLOGO = join(PLUGIN_PATH, 'plugin.png')
 ENIGMA_PATH = get_enigma2_path()
@@ -1536,7 +1536,7 @@ class startVavoo(Screen):
         self["progress_pct"] = Label("0 %")
         self["progress"] = ProgressBar()
         self["status"] = Label(self.STATUS_STEPS[0][1])
-        self["author"] = Label("by Lululla")
+        self["author"] = Label("by Lululla & Qu4k3")
         self["skip_hint"] = Label("Press OK or EXIT to skip")
 
         self['actions'] = ActionMap(
@@ -4192,7 +4192,7 @@ class TvInfoBarShowHide():
                 proxy_details = _("✗ Proxy Offline")
 
             controls = _("CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit")
-            credit = "by Lululla"
+            credit = "by Lululla & Qu4k3"
             help_text = "{} | {} | {}".format(controls, proxy_details, credit)
             self["helpOverlay"].setText(help_text)
             self["helpOverlay"].show()

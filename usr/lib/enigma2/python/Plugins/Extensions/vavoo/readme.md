@@ -1,18 +1,53 @@
-# 🎬 Vavoo Stream Live - Enigma2 Plugin
+<h1 align="center">🎬 Vavoo Stream Live</h1>
 
-[![Python package](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml/badge.svg)](https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml)
-[![Version](https://img.shields.io/badge/Version-1.61-blue.svg)](https://github.com/Belfagor2005/vavoo)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Python](https://img.shields.io/badge/Python-2.7%2F3.x-yellow.svg)](https://python.org)
+<p align="center">
+  <a href="https://github.com/Belfagor2005/vavoo">
+    <img src="https://img.shields.io/badge/Version-1.80-blue.svg" alt="Version">
+  </a>
+
+  <a href="https://www.enigma2.net">
+    <img src="https://img.shields.io/badge/Enigma2-Plugin-ff6600.svg" alt="Enigma2">
+  </a>
+
+  <a href="https://python.org">
+    <img src="https://img.shields.io/badge/Python-2.7%2F3.x-yellow.svg" alt="Python">
+  </a>
+
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg" alt="License">
+  </a>
+
+  <a href="https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml">
+    <img src="https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml/badge.svg" alt="Pylint">
+  </a>
+
+  <a href="https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml">
+    <img src="https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml/badge.svg" alt="Ruff Status">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Belfagor2005">
+    <img src="https://komarev.com/ghpvc/?username=Belfagor2005&label=Repository%20Views&color=blueviolet" alt="Visitors">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://ko-fi.com/lululla">
+    <img src="https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge" alt="Ko-fi">
+  </a>
+
+  <a href="https://paypal.me/belfagor2005">
+    <img src="https://img.shields.io/badge/_-Donate-green.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge" alt="PayPal">
+  </a>
+</p>
 
 ## 📌 Overview
 Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousands of live TV channels from multiple countries. It features a built-in local proxy for improved reliability, automatic bouquet updates, EPG integration, real-time notifications, satellite priority matching, and seamless integration with your Enigma2 receiver.
 
 ## 🖼️ Screenshots
 
-|-------------------------------------------|
 | <img src="https://raw.githubusercontent.com/Belfagor2005/vavoo/main/screen/screen9.gif" width="400"> |
-|-------------------------------------------|
 
 ## ✨ Key Features
 - **Live TV Streaming** – Watch live channels from various countries
@@ -62,7 +97,7 @@ The plugin includes a sophisticated notification system that provides real-time 
 
 ### Automatic Updates (Recommended)
 - Go to **Menu Config** → Enable **"Scheduled Bouquet Update: ON"**
-- Choose update interval (5-15 minutes) or fixed time
+- Choose update interval (5-3600 minutes, in 5-minute steps) or fixed time
 - The proxy will handle everything automatically
 
 ### EPG Setup
@@ -78,13 +113,13 @@ The plugin includes a sophisticated notification system that provides real-time 
 ## 🔧 User Configuration
 In the Config Menu:
 - ✅ **Scheduled Bouquet Update**: ON/OFF (only required setting)
-- ✅ If ON: Choose interval (5-15 min) or fixed time
+- ✅ If ON: Choose interval (5-3600 min) or fixed time
 - ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport
 - ✅ **Proxy Enabled**: Enable/disable the local proxy (default: ON)
 - ✅ **List Position**: Place Vavoo bouquets at top or bottom of channel list
 - ✅ **Select Background**: Choose custom background images
-- ✅ **IPv6 State**: Enable/disable IPv6 on your system
 - ✅ **Link in Main Menu**: Show plugin in main Enigma2 menu
+- ✅ **Send Anonymous Statistics**: Opt in/out of anonymous startup/heartbeat pings (default: ON)
 - Proxy and updates are managed automatically
 
 ## 🎯 Benefits
@@ -136,6 +171,7 @@ The proxy provides these endpoints:
 - `/status` – Check proxy status
 - `/channels?country=CountryName` – Get channels by country
 - `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect)
+- `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
 - `/refresh_token` – Force token refresh
@@ -250,6 +286,22 @@ curl -s http://127.0.0.1:4323/health
 | Cache file corrupted | Delete the file and restart - it will be regenerated |
 | Old format entries | The plugin auto-converts them on read or use YELLOW button |
 
+## Privacy & Anonymous Stats
+
+Vavoo sends **anonymous** startup notifications to help improve the plugin.
+
+**Collected (anonymous only):**
+- Temporary session ID (changes on every reboot)
+- Plugin version
+- Event type (startup/heartbeat)
+- Timestamp
+
+**Not collected:** IP, MAC, personal data, channels, or any identifying info.
+
+**Disable:** Config menu → "Send Anonymous Statistics" → No
+
+[View source code](https://github.com/OwnerPlugins/vavoo/blob/main/usr/lib/enigma2/python/Plugins/Extensions/vavoo/vavoo_stats.py)
+
 ## 📝 Important Notes
 - **Notifications are thread-safe** – You can call `quick_notify()` from any background thread
 - **Message queue system** ensures no notifications are lost during plugin startup
@@ -263,33 +315,6 @@ curl -s http://127.0.0.1:4323/health
 - Use **TEXT button** in main menu to manually refresh proxy token
 - Use **YELLOW button** to fix cache format
 - Proxy status is displayed in real-time in the main interface
-
-## 🔄 Version History
-
-### Version 1.61 (2026-03-19)
-- ✨ **Cache Format Fix**: Added YELLOW button to fix cache format and remove duplicates
-- ✨ **HTTP 451 Handling**: Automatic fallback to kool.to mirror when vavoo.to is blocked
-- ✨ **Enhanced Proxy Monitoring**: Added active stream tracking and token age display
-- ✨ **Improved Satellite Priority**: Better detection of user-configured satellites
-- 🐛 Fixed EPG cache consistency issues
-- 🐛 Resolved duplicate entry problems in unmatched cache
-- ⚡ Optimized EPG matching performance
-- 📝 Updated documentation with new features
-
-### Version 1.60 (2026-03-17)
-- ✨ Added singleton notification manager with thread-safe operations
-- ✨ Implemented message queue for pre-initialization notifications
-- ✨ Enhanced unmatched cache with attempt tracking and auto-conversion
-- ✨ Added real-time proxy status overlay in player
-- 🐛 Fixed notification display from background threads
-- 🐛 Fixed unmatched cache format consistency
-- ⚡ Improved EPG matching performance
-
-### Version 1.59 (2026-03-15)
-- ✨ Added EPG cache in `/etc/enigma2/` (persistent storage)
-- ✨ Implemented GitHub redirects for EPG files
-- ✨ Added proxy health monitoring endpoint
-- ⚡ Optimized memory usage
 
 ## 🤝 Credits
 - **Created by**: Lululla (https://github.com/Belfagor2005)
@@ -309,4 +334,4 @@ https://creativecommons.org/licenses/by-nc-sa/4.0
 **For modifications and redistribution, please maintain this credit header.**
 
 ---
-*Last Modified: 2026-03-19*
+*Last Modified: 2026-07-21*

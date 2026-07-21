@@ -466,7 +466,7 @@ def update_pot_file(xml_strings, py_strings):
             f.write(pot_header)
         else:
             f.write('# {} translations\n'.format(PLUGIN_NAME))
-            f.write('# Copyright (C) 2025 Lululla Team\n')
+            f.write('# Copyright (C) 2025 Lululla & Qu4k3 Team\n')
             f.write(
                 '# This file is distributed under the same license as the Lululla package.\n')
             f.write('# [lululla] <ekekaz@gmail.com>, 2025.\n')

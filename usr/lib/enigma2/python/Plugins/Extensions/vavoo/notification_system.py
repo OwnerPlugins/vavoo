@@ -26,7 +26,7 @@ from twisted.internet import reactor
 #########################################################
 """
 
-__author__ = "Lululla"
+__author__ = "Lululla & Qu4k3"
 
 if sys.version_info[0] >= 3:
     unicode = str
