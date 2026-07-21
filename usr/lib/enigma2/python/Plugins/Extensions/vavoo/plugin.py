@@ -530,66 +530,6 @@ except BaseException:
     pass
 
 
-# check server
-def raises(url):
-    """Attempts to fetch a URL with retries and error handling"""
-    try:
-        if requests is not None:
-            http = requests.Session()
-            if HTTPAdapter is not None:
-                if Retry is not None:
-                    retries = Retry(total=1, backoff_factor=1)
-                    adapter = HTTPAdapter(max_retries=retries)
-                else:
-                    adapter = HTTPAdapter(max_retries=1)
-                http.mount("http://", adapter)
-                http.mount("https://", adapter)
-
-            r = http.get(
-                url,
-                headers={'User-Agent': vUtils.RequestAgent()},
-                timeout=(3, 10),
-                verify=True,
-                stream=True,
-                allow_redirects=False
-            )
-            r.raise_for_status()
-
-            if r.status_code == requests.codes.ok:
-                for xc in r.iter_content(1024):
-                    pass
-                r.close()
-                return True
-        else:
-            req = UrlRequest(
-                url, headers={
-                    'User-Agent': vUtils.RequestAgent()})
-            resp = urlopen(req, timeout=10)
-            status_code = getattr(resp, 'getcode', lambda: 0)() or 0
-            if status_code == 200:
-                return True
-
-    except Exception as e:
-        print("Server check failed:", e)
-    return False
-
-
-def zServer(opt=0, server=None, port=None):
-    """Checks if a server is reachable and returns it, fallback to default"""
-    try:
-        from urllib.error import HTTPError
-    except ImportError:
-        from urllib2 import HTTPError
-
-    try:
-        if raises(server):
-            print('server is reachable:', str(server))
-            return str(server)
-    except HTTPError as err:
-        print(err.code)
-        return PRIMARY_BASE_URL
-
-
 # menulist
 class m2list(MenuList):
     def __init__(self, items):
@@ -1944,6 +1884,16 @@ class MainVavoo(Screen):
             print("[DEBUG] fix_cache_format cancelled by user")
             return
 
+        # An in-progress export's EPG-matching phase writes the same
+        # cache file (see bouquet_manager.process_epg_matching_background)
+        # with no lock of its own - share export_lock so the two can't
+        # interleave and corrupt/clobber each other's write.
+        if not export_lock.acquire(blocking=False):
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(
+                    _("An export is in progress. Please wait before fixing the cache."), 4)
+            return
+
         try:
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Fixing cache format..."), 2)
@@ -1984,6 +1934,8 @@ class MainVavoo(Screen):
                 MessageBox.TYPE_ERROR,
                 timeout=5
             )
+        finally:
+            export_lock.release()
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
@@ -3085,64 +3037,6 @@ class vavoo(Screen):
             self.timer.timeout.connect(self.cat)
         self.timer.start(500, True)
 
-    def _initialize_proxy_for_country(self):
-        """Initialize the proxy for the selected country"""
-        try:
-            print("[vavoo] Initializing proxy for country: " +
-                  str(self.country_name))
-
-            # URL to initialize the proxy for the specific country
-            init_url = PROXY_BASE_URL + \
-                "/initialize_country?country={}".format(self.country_name)
-            content = getUrl(init_url, timeout=10)
-            if content:
-                if PY3:
-                    content = ensure_str(content)
-
-                result = loads(content)
-                if result.get("status") == "ok":
-                    print("[vavoo] Proxy initialized for " +
-                          str(self.country_name))
-                    self.proxy_initialized = True
-                    return True
-
-        except Exception as e:
-            print("[vavoo] Proxy initialization error: " + str(e))
-
-        return False
-
-    def debug_proxy_state(self):
-        """Debug function to check proxy state"""
-        try:
-            print("=" * 60)
-            print(
-                "[DEBUG] Checking proxy state for country: " +
-                self.country_name)
-
-            # 1. Check status
-            status_url = PROXY_STATUS_URL
-            status = getUrl(status_url, timeout=3)
-            if status:
-                print("[DEBUG] Proxy Status: " + status[:200])
-
-            # 2. Check countries list
-            countries_url = PROXY_COUNTRIES_URL
-            countries = getUrl(countries_url, timeout=3)
-            if countries:
-                print("[DEBUG] Available countries: " + countries[:200])
-
-            # 3. Try to get channels
-            test_url = PROXY_BASE_URL + "/channels?country=Italy"
-            channels = getUrl(test_url, timeout=5)
-            print("[DEBUG] Channels response length: " +
-                  str(len(channels) if channels else 0))
-            if channels and len(channels) < 500:
-                print("[DEBUG] Channels data: " + channels)
-
-            print("=" * 60)
-        except Exception as e:
-            print("[DEBUG] Error checking proxy: " + str(e))
-
     def cat(self):
         """Load channels for the selected country with proxy verification and fallback"""
         print("[DEBUG] vavoo.cat() called for country: " + str(self.country_name))
@@ -3282,28 +3176,6 @@ class vavoo(Screen):
         except Exception:
             pass
 
-    def _ensure_proxy_ready(self, timeout=10):
-        """Ensures the proxy is ready"""
-        for i in range(timeout):
-            if is_proxy_ready(timeout=2):
-                return True
-
-            if i == 0:
-                self['name'].setText(_("Waiting for proxy..."))
-
-            select.select([], [], [], 1)
-
-        self.session.open(
-            MessageBox,
-            _("Proxy not responding after") +
-            " " +
-            str(timeout) +
-            " " +
-            _("seconds"),
-            MessageBox.TYPE_ERROR,
-            timeout=5)
-        return False
-
     def _update_proxy_status_display(self):
         """Internal method to update proxy status display"""
         try:
@@ -3344,166 +3216,6 @@ class vavoo(Screen):
         except Exception as e:
             print("[MainVavoo] Error updating proxy status: " + str(e))
             self['proxy_status'].setText(_("✗ Error"))
-
-    def _check_and_ensure_proxy_ready(self):
-        """Check proxy status and try to fix issues if needed"""
-        status = {
-            "ready": False,
-            "message": "",
-            "needs_restart": False,
-            "needs_start": False,
-        }
-
-        if not cfg.proxy_enabled.value:
-            status["message"] = "Proxy disabled"
-            status["needs_start"] = True
-            return status
-
-        if not is_proxy_running():
-            status["message"] = "Proxy not running"
-            status["needs_restart"] = True
-            return status
-
-        try:
-            proxy_response = getUrl(PROXY_STATUS_URL, timeout=3)
-            if not proxy_response:
-                status["message"] = "Cannot get proxy status"
-                status["needs_restart"] = True
-                return status
-
-            proxy_data = loads(proxy_response)
-
-            if not proxy_data.get("initialized", False):
-                status["message"] = "Proxy not initialized"
-                status["needs_restart"] = True
-                return status
-
-            if not proxy_data.get("addon_sig_valid", False):
-                status["message"] = "Token not valid"
-                status["needs_restart"] = True
-                return status
-
-            token_age = proxy_data.get("addon_sig_age", 0)
-            if token_age > 420:
-                print(
-                    "[vavoo] Token old (" +
-                    str(token_age) +
-                    "s), forcing refresh...")
-                try:
-                    getUrl(PROXY_REFRESH_URL, timeout=3)
-                except Exception:
-                    pass
-
-            status["ready"] = True
-            status["message"] = "Proxy ready"
-            return status
-
-        except Exception as e:
-            status["message"] = "Error checking proxy: " + str(e)
-            status["needs_restart"] = True
-            return status
-
-    def _try_proxy_recovery(self):
-        """Attempt to recover proxy connection asynchronously."""
-        if not cfg.proxy_enabled.value:
-            return False
-
-        print("[vavoo] Attempting proxy recovery...")
-
-        # 1. Try token refresh in a background thread (getUrl is blocking)
-        def do_refresh():
-            try:
-                getUrl(PROXY_REFRESH_URL, timeout=3)
-            except Exception:
-                pass
-        threading.Thread(target=do_refresh, daemon=True).start()
-
-        # 2. If proxy is not ready, schedule a restart
-        if not is_proxy_ready(timeout=1):
-            reactor.callLater(1, self._restart_proxy_and_reload)
-        return False
-
-    def _restart_proxy_and_reload(self):
-        timeout = cfg.proxy_startup_timeout.value
-        run_proxy_in_background(startup_timeout=timeout)
-        # Reload channel list after 3 seconds (enough for proxy to start)
-        reactor.callLater(3, self.cat)
-
-    def _show_proxy_error(self, status):
-        """Show proxy error message"""
-        error_msg = _("Proxy Error: ") + status["message"]
-        print("[vavoo] " + error_msg)
-        self['name'].setText(error_msg)
-
-        # Offer restart option
-        if status["needs_restart"]:
-            self.session.openWithCallback(
-                self._restart_proxy_callback,
-                MessageBox,
-                "Proxy needs restart: " + status["message"] + "\nRestart now?",
-                MessageBox.TYPE_YESNO
-            )
-
-    def _restart_proxy_callback(self, result):
-        """Callback for proxy restart"""
-        if result:
-            print("[vavoo] User requested proxy restart")
-            timeout = cfg.proxy_startup_timeout.value
-            run_proxy_in_background(startup_timeout=timeout)
-            # Wait and retry
-            self.session.open(
-                MessageBox,
-                _("Proxy restarting... Please wait"),
-                MessageBox.TYPE_INFO,
-                timeout=3)
-
-            # Retry loading after 3 seconds
-            self.timer = eTimer()
-            try:
-                self.timer.callback.append(self.cat)
-            except Exception:
-                self.timer.timeout.connect(self.cat)
-            self.timer.start(3000, True)
-
-    def start_vavoo_proxy(self):
-        if not cfg.proxy_enabled.value:
-            return False
-        if is_proxy_running():
-            print("[MainVavoo] Proxy already running")
-            return True
-
-        print("[MainVavoo] Starting proxy...")
-        timeout = cfg.proxy_startup_timeout.value
-        success = run_proxy_in_background(startup_timeout=timeout)
-        if success:
-            for i in range(10):
-                if is_proxy_ready(timeout=1):
-                    print("[MainVavoo] Proxy ready")
-                    return True
-                select.select([], [], [], 1)
-            print("[MainVavoo] Proxy started but not ready after 10s")
-        else:
-            print("[MainVavoo] Proxy start error")
-        return False
-
-    def _matches_selection(self, country_field, selected_name):
-        """
-        Check if a channel matches the selection
-        country_field: country field from JSON (ex: "France" or "France ➾ Sports")
-        selected_name: what user selected (ex: "France" or "France ➾ Sports")
-        """
-        country_field = url_unquote(country_field).strip("\r\n")
-        selected_name = selected_name.strip()
-
-        # If user selected main country (without ➾)
-        if "➾" not in selected_name:
-            # Show ALL channels from that country, including subcategories
-            # Match exact country OR country with any subcategory
-            return country_field == selected_name or country_field.startswith(
-                selected_name + " ➾")
-        else:
-            # User selected specific category - exact match only
-            return country_field == selected_name
 
     def _reload_services(self):
         try:
@@ -3658,38 +3370,6 @@ class vavoo(Screen):
                 [name, url],
                 [[[name, url]]]
             )
-
-    def filterM3u(self, result):
-        global search_ok
-        if result:
-            try:
-                self.cat_list = []
-                search_filter = result
-                for item in self.itemlist:
-                    name = item.split('###')[0]
-                    url = item.split('###')[1]
-                    if search_filter.lower() in str(name).lower():
-                        search_ok = True
-                        namex = name
-                        urlx = url.replace('%0a', '').replace('%0A', '')
-                        self.cat_list.append(show_list(namex, urlx))
-                if len(self.cat_list) < 1:
-                    _session.open(
-                        MessageBox,
-                        _('No channels found in search!!!'),
-                        MessageBox.TYPE_INFO,
-                        timeout=5)
-                    return
-                else:
-                    self['menulist'].l.setList(self.cat_list)
-                    # self['menulist'].moveToIndex(0)
-                    txtsream = self['menulist'].getCurrent()[0][0]
-                    self['name'].setText(str(txtsream))
-            except Exception as e:
-                print(e)
-                trace_error()
-                self['name'].setText(_('Error'))
-                search_ok = False
 
     def goConfig(self):
         self.session.open(vavoo_config)
