@@ -693,7 +693,9 @@ def process_epg_matching_background(
             try:
                 saved_callback(True, saved_matched, "EPG processing completed")
             except Exception as cb_e:
-                print("[EPGBackground] Error in completion callback: %s" % cb_e)
+                print(
+                    "[EPGBackground] Error in completion callback: %s" %
+                    cb_e)
         # This whole function runs on a background thread (see task() in
         # export_bouquet_async) - the callback ends up in plugin.py's
         # _on_export_complete(), a UI-touching method, so marshal it onto

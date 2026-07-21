@@ -867,11 +867,8 @@ class vavoo_config(Screen, ConfigListScreen):
                 _('Link in Main Menu'),
                 cfg.stmain,
                 _("Link in Main Menu")))
-        self.list.append(
-            getConfigListEntry(
-                _("Send Anonymous Statistics"),
-                cfg.stats_enabled,
-                _("Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
+        self.list.append(getConfigListEntry(_("Send Anonymous Statistics"), cfg.stats_enabled, _(
+            "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
