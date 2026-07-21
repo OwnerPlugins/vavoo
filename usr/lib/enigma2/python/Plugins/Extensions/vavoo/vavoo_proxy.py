@@ -1048,7 +1048,7 @@ class VavooProxy:
                             if attempt < max_retries - 1:
                                 continue
 
-                        if e.response.status_code == 502 and attempt < max_retries - 1:
+                        if e.response is not None and e.response.status_code == 502 and attempt < max_retries - 1:
                             select.select([], [], [], 2 ** attempt)
                             continue
                         else:
@@ -1202,6 +1202,14 @@ class VavooProxy:
                 if stream_url:
                     self.resolve_cache[channel_url] = {
                         "url": stream_url, "ts": time.time()}
+                    # Re-resolving an already-cached URL updates its value
+                    # but OrderedDict doesn't move existing keys on their
+                    # own - without this, eviction below would go by
+                    # original insertion order rather than last use, and
+                    # could drop a channel that's actively being
+                    # refreshed while keeping one nobody has touched in a
+                    # while.
+                    self.resolve_cache.move_to_end(channel_url)
                     # Evict oldest 500 entries (OrderedDict preserves insertion
                     # order in Py2+3)
                     if len(self.resolve_cache) > 1000:
@@ -1235,6 +1243,14 @@ class VavooProxy:
         return None
 
     def get_local_ip(self, force_refresh=False):
+        # Deliberately always 127.0.0.1, not the box's real LAN IP: the
+        # /channels endpoint embeds this directly into the proxy URLs
+        # returned for bouquet export (http://<local_ip>:PORT/vavoo?...),
+        # and localhost is "the core trick that makes streams stable"
+        # (see CLAUDE.md) - a real LAN IP would still often work, but
+        # loses that guarantee for no benefit. The API docs' own example
+        # showing a LAN-looking address is just misleading, not a
+        # promise this should actually return one.
         return PROXY_HOST
 
     def stop(self):
