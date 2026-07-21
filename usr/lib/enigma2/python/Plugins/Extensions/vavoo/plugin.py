@@ -3784,7 +3784,7 @@ class VavooSearch(Screen):
         self["search_text"] = Label("")
         self['version'] = Label()
         self["input_info"] = Label(
-            _("Press TEXT button to type, BACKSPACE to delete"))
+            _("Press GREEN to type, YELLOW to delete"))
         self["channel_list"] = m2list([])
         self["status"] = Label(_("Enter text to search..."))
         self["key_red"] = Label(_("Clear All"))
