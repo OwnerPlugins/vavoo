@@ -222,21 +222,21 @@ def load_cache_from_disk():
 def _protect_placeholders(text):
     """
     Protect placeholders before translation to prevent them from being translated.
-    
+
     Handles:
     - Python: %(name)s, %(name)d, etc.
     - C# / Enigma2: {0}, {name}, {hours}, etc.
-    
+
     Returns:
         tuple: (protected_text, python_placeholders, csharp_placeholders)
     """
     if not text:
         return text, {}, {}
-    
+
     python_placeholders = {}
     csharp_placeholders = {}
     idx = 0
-    
+
     # 1. Protect Python placeholders: %(name)s, %(name)d, etc.
     python_regex = re.compile(r'%\([a-zA-Z_][a-zA-Z0-9_]*\)[diouxXeEfFgGcrs]')
     for match in python_regex.finditer(text):
@@ -245,7 +245,7 @@ def _protect_placeholders(text):
         text = text.replace(placeholder, replacement)
         python_placeholders[replacement] = placeholder
         idx += 1
-    
+
     # 2. Protect C# / Enigma2 placeholders: {0}, {name}, {hours}, etc.
     idx = 0
     csharp_regex = re.compile(r'\{[^{}]+\}')
@@ -255,7 +255,7 @@ def _protect_placeholders(text):
         text = text.replace(placeholder, replacement)
         csharp_placeholders[replacement] = placeholder
         idx += 1
-    
+
     return text, python_placeholders, csharp_placeholders
 
 
@@ -265,15 +265,15 @@ def _restore_placeholders(text, python_placeholders, csharp_placeholders):
     """
     if not text:
         return text
-    
+
     # Restore C# placeholders first
     for key, value in csharp_placeholders.items():
         text = text.replace(key, value)
-    
+
     # Restore Python placeholders
     for key, value in python_placeholders.items():
         text = text.replace(key, value)
-    
+
     return text
 
 
@@ -300,12 +300,14 @@ def translate_text(text, target_lang=None, use_cache=True):
     # ============================================================
     # PROTECT PLACEHOLDERS BEFORE TRANSLATION
     # ============================================================
-    protected_text, python_placeholders, csharp_placeholders = _protect_placeholders(text_unicode)
+    protected_text, python_placeholders, csharp_placeholders = _protect_placeholders(
+        text_unicode)
 
     if use_cache:
         cached = _get_cached_translation(protected_text, target_lang)
         if cached is not None:
-            restored = _restore_placeholders(cached, python_placeholders, csharp_placeholders)
+            restored = _restore_placeholders(
+                cached, python_placeholders, csharp_placeholders)
             return restored
 
     if len(protected_text) > MAX_CHARS_PER_REQUEST:
@@ -343,9 +345,11 @@ def translate_text(text, target_lang=None, use_cache=True):
             # ============================================================
             # RESTORE PLACEHOLDERS AFTER TRANSLATION
             # ============================================================
-            translated_text = _restore_placeholders(translated_text, python_placeholders, csharp_placeholders)
+            translated_text = _restore_placeholders(
+                translated_text, python_placeholders, csharp_placeholders)
             if use_cache:
-                _cache_translation(protected_text, target_lang, translated_text)
+                _cache_translation(
+                    protected_text, target_lang, translated_text)
             return translated_text
         else:
             _log("Empty API response for: '{}...'".format(text_unicode[:30]))
