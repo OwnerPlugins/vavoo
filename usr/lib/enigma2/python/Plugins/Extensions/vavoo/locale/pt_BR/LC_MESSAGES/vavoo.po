@@ -637,7 +637,7 @@ msgid "v{} -> v{}"
 msgstr ""
 
 msgid "✓ Proxy ({0}s)"
-msgstr ""
+msgstr "✓Proxy ({0}s)"
 
 msgid "✓ Proxy OK"
 msgstr "✓Proxy OK"

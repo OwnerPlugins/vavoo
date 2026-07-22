@@ -667,7 +667,7 @@ msgid "v{} -> v{}"
 msgstr ""
 
 msgid "✓ Proxy ({0}s)"
-msgstr ""
+msgstr "✓ Apoderado ({0}s)"
 
 msgid "✓ Proxy OK"
 msgstr "✓ Proxy Aceptar"
