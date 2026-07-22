@@ -103,8 +103,8 @@ class AnonymousStats:
             return
         self._session_id, already_sent = self._get_or_create_session_id()
         if already_sent:
-            debug(
-                "Stats already sent for this session: {}".format(self._session_id[:16]))
+            debug("Stats already sent for this session: {}".format(
+                self._session_id[:16]))
             return
         debug(
             "Recording startup - Session ID: {}".format(self._session_id[:16]))
