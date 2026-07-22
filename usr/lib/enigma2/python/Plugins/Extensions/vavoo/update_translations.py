@@ -215,11 +215,79 @@ def load_cache_from_disk():
         _translation_cache = {}
 
 
+# ============================================================
+# PLACEHOLDER PROTECTION
+# ============================================================
+
+def _protect_placeholders(text):
+    """
+    Protect placeholders before translation to prevent them from being translated.
+    
+    Handles:
+    - Python: %(name)s, %(name)d, etc.
+    - C# / Enigma2: {0}, {name}, {hours}, etc.
+    
+    Returns:
+        tuple: (protected_text, python_placeholders, csharp_placeholders)
+    """
+    if not text:
+        return text, {}, {}
+    
+    python_placeholders = {}
+    csharp_placeholders = {}
+    idx = 0
+    
+    # 1. Protect Python placeholders: %(name)s, %(name)d, etc.
+    python_regex = re.compile(r'%\([a-zA-Z_][a-zA-Z0-9_]*\)[diouxXeEfFgGcrs]')
+    for match in python_regex.finditer(text):
+        placeholder = match.group(0)
+        replacement = f"__PYPH_{idx}__"
+        text = text.replace(placeholder, replacement)
+        python_placeholders[replacement] = placeholder
+        idx += 1
+    
+    # 2. Protect C# / Enigma2 placeholders: {0}, {name}, {hours}, etc.
+    idx = 0
+    csharp_regex = re.compile(r'\{[^{}]+\}')
+    for match in csharp_regex.finditer(text):
+        placeholder = match.group(0)
+        replacement = f"__CSH_{idx}__"
+        text = text.replace(placeholder, replacement)
+        csharp_placeholders[replacement] = placeholder
+        idx += 1
+    
+    return text, python_placeholders, csharp_placeholders
+
+
+def _restore_placeholders(text, python_placeholders, csharp_placeholders):
+    """
+    Restore placeholders after translation.
+    """
+    if not text:
+        return text
+    
+    # Restore C# placeholders first
+    for key, value in csharp_placeholders.items():
+        text = text.replace(key, value)
+    
+    # Restore Python placeholders
+    for key, value in python_placeholders.items():
+        text = text.replace(key, value)
+    
+    return text
+
+
+# ============================================================
+# TRANSLATION FUNCTION WITH PLACEHOLDER PROTECTION
+# ============================================================
+
 def translate_text(text, target_lang=None, use_cache=True):
-    """Translate a text using Google Translate API"""
+    """Translate a text using Google Translate API with placeholder protection."""
     if not text:
         return ""
+
     text_unicode = _to_unicode(text)
+
     if target_lang is None:
         target_lang = _get_system_language()
     target_lang = target_lang.lower()
@@ -228,21 +296,31 @@ def translate_text(text, target_lang=None, use_cache=True):
         _log("Arabic text detected, not translated: '{}...'".format(
             text_unicode[:30]))
         return text_unicode
+
+    # ============================================================
+    # PROTECT PLACEHOLDERS BEFORE TRANSLATION
+    # ============================================================
+    protected_text, python_placeholders, csharp_placeholders = _protect_placeholders(text_unicode)
+
     if use_cache:
-        cached = _get_cached_translation(text_unicode, target_lang)
+        cached = _get_cached_translation(protected_text, target_lang)
         if cached is not None:
-            return cached
-    if len(text_unicode) > MAX_CHARS_PER_REQUEST:
+            restored = _restore_placeholders(cached, python_placeholders, csharp_placeholders)
+            return restored
+
+    if len(protected_text) > MAX_CHARS_PER_REQUEST:
         _log("Text too long ({} chars), truncated to {}".format(
-            len(text_unicode), MAX_CHARS_PER_REQUEST))
-        text_unicode = text_unicode[:MAX_CHARS_PER_REQUEST]
+            len(protected_text), MAX_CHARS_PER_REQUEST))
+        protected_text = protected_text[:MAX_CHARS_PER_REQUEST]
+
     params = {
         "client": "gtx",
         "sl": "auto",
         "tl": target_lang,
         "dt": "t",
-        "q": text_unicode,
+        "q": protected_text,
     }
+
     try:
         query_string = urlencode(params)
         url = "{}?{}".format(TRANSLATE_API_URL, query_string)
@@ -262,8 +340,12 @@ def translate_text(text, target_lang=None, use_cache=True):
                     translated_text += item[0]
         if translated_text:
             translated_text = _clean_whitespace(translated_text)
+            # ============================================================
+            # RESTORE PLACEHOLDERS AFTER TRANSLATION
+            # ============================================================
+            translated_text = _restore_placeholders(translated_text, python_placeholders, csharp_placeholders)
             if use_cache:
-                _cache_translation(text_unicode, target_lang, translated_text)
+                _cache_translation(protected_text, target_lang, translated_text)
             return translated_text
         else:
             _log("Empty API response for: '{}...'".format(text_unicode[:30]))
@@ -466,7 +548,7 @@ def update_pot_file(xml_strings, py_strings):
             f.write(pot_header)
         else:
             f.write('# {} translations\n'.format(PLUGIN_NAME))
-            f.write('# Copyright (C) 2025 Lululla & Qu4k3 Team\n')
+            f.write('# Copyright (C) 2025 Lululla Team\n')
             f.write(
                 '# This file is distributed under the same license as the Lululla package.\n')
             f.write('# [lululla] <ekekaz@gmail.com>, 2025.\n')
