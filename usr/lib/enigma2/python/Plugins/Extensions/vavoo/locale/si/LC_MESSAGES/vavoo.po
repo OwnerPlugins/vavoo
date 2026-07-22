@@ -101,6 +101,9 @@ msgstr "සියලුම රටවල් (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "වෙනත් රටකට අපනයනයක් දැනටමත් සිදුවෙමින් පවතී. කරුණාකර රැඳී සිටින්න."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "අපනයනයක් සිදු වෙමින් පවතී. හැඹිලිය සවි කිරීමට පෙර කරුණාකර රැඳී සිටින්න."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "නිර්නාමික ආරම්භක/හෘද ස්පන්දන පිං පමණක් (සැසි හැඳුනුම්පත, අනුවාදය, වේලා මුද්‍රාව - පුද්ගලික දත්ත නැත). ඉවත් වීමට අබල කරන්න."
 
@@ -393,9 +396,6 @@ msgstr "නාලිකා හමු නොවීය"
 msgid "No channels found for: %s"
 msgstr "%s සඳහා නාලිකා කිසිවක් හමු නොවීය"
 
-msgid "No channels found in search!!!"
-msgstr "සෙවීමේදී නාලිකා කිසිවක් හමු නොවීය!!!"
-
 msgid "No items available"
 msgstr "අයිතම නොමැත"
 
@@ -430,9 +430,6 @@ msgstr "ප්‍රොක්සි අක්‍රියයි"
 msgid "Proxy Enabled"
 msgstr "ප්‍රොක්සි සබල කර ඇත"
 
-msgid "Proxy Error:"
-msgstr "ප්‍රොක්සි දෝෂය:"
-
 msgid "Proxy disabled"
 msgstr "ප්‍රොක්සි අක්‍රිය කර ඇත"
 
@@ -448,14 +445,8 @@ msgstr "Proxy ක්‍රියාත්මක නොවේ. කරුණාක
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "ප්‍රොක්සි සක්‍රිය නැත. M3U ගොනුව උත්පාදනය කළ නොහැක."
 
-msgid "Proxy not responding after"
-msgstr "ප්‍රොක්සි පසුව ප්‍රතිචාර නොදක්වයි"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "ප්‍රොක්සි ඔන්ලයින් - {} නාලිකා ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "ප්‍රොක්සි නැවත ආරම්භ කරමින්... කරුණාකර රැඳී සිටින්න"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "ප්‍රොක්සි ආරම්භක කල් ඉකුත්වීම (තත්පර)"
@@ -621,9 +612,6 @@ msgstr "Vavoo දැනටමත් ක්රියාත්මක වේ."
 msgid "Version:"
 msgstr "අනුවාදය:"
 
-msgid "Waiting for proxy..."
-msgstr "ප්‍රොක්සි සඳහා රැඳී සිටිමින්..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG සහාය ඇතිව Vavoo Proxy වෙත සාදරයෙන් පිළිගනිමු"
 
@@ -642,9 +630,6 @@ msgstr "පරතරය"
 
 msgid "lowercase"
 msgstr "කුඩා අකුරු"
-
-msgid "seconds"
-msgstr "තත්පර"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -672,6 +657,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ නැවත ආරම්භ කිරීම අසාර්ථක විය"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "සෙවීමේදී නාලිකා කිසිවක් හමු නොවීය!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "ප්‍රොක්සි දෝෂය:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "ප්‍රොක්සි පසුව ප්‍රතිචාර නොදක්වයි"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "ප්‍රොක්සි නැවත ආරම්භ කරමින්... කරුණාකර රැඳී සිටින්න"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "ප්‍රොක්සි සඳහා රැඳී සිටිමින්..."
+
+#~ msgid "seconds"
+#~ msgstr "තත්පර"
 
 #~ msgid "Hide/Show"
 #~ msgstr "සඟවන්න/පෙන්වන්න"

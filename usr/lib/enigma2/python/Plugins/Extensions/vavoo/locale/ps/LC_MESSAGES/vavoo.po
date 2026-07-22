@@ -101,6 +101,9 @@ msgstr "ټول هیوادونه (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "د بل هیواد لپاره صادرات لا دمخه د پرمختګ په حال کې دي. مهرباني وکړئ انتظار وکړئ."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "صادرات روان دي. مهرباني وکړئ د کیچ د تنظیم کولو دمخه انتظار وکړئ."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "یوازې نامعلوم پیل / د زړه ضربان پینګ (د سیشن ID، نسخه، مهال ویش - هیڅ شخصي معلومات نشته). د انتخاب کولو لپاره غیر فعال کړئ."
 
@@ -393,9 +396,6 @@ msgstr "هیڅ چینل ونه موندل شو"
 msgid "No channels found for: %s"
 msgstr "د دې لپاره هیڅ چینل ونه موندل شو: %s"
 
-msgid "No channels found in search!!!"
-msgstr "په لټون کې هیڅ چینل ونه موندل شو!!!"
-
 msgid "No items available"
 msgstr "هیڅ توکي شتون نلري"
 
@@ -430,9 +430,6 @@ msgstr "پراکسي غیر فعاله شوې"
 msgid "Proxy Enabled"
 msgstr "پراکسي فعاله شوې"
 
-msgid "Proxy Error:"
-msgstr "پراکسي تېروتنه:"
-
 msgid "Proxy disabled"
 msgstr "پراکسي غیر فعاله شوې"
 
@@ -448,14 +445,8 @@ msgstr "پراکسي نه روانه ده. مهرباني وکړئ لومړی پ
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "پراکسي فعاله نه ده. د M3U فایل پیدا کولو توان نلري."
 
-msgid "Proxy not responding after"
-msgstr "پراکسي وروسته ځواب نه ورکوي"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "پراکسي آنلاین - {} چینلونه ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "پراکسي بیا پیل کیږي... مهرباني وکړئ انتظار وکړئ"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "د پراکسي پیل وخت پای (ثانوي)"
@@ -622,9 +613,6 @@ msgstr "Vavoo لا دمخه روانه ده."
 msgid "Version:"
 msgstr "نسخه:"
 
-msgid "Waiting for proxy..."
-msgstr "د پراکسي په انتظار..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "د EPG ملاتړ سره Vavoo پراکسي ته ښه راغلاست"
 
@@ -643,9 +631,6 @@ msgstr "وقفه"
 
 msgid "lowercase"
 msgstr "کوچنی"
-
-msgid "seconds"
-msgstr "ثانیې"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ پراکسي آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ بیا پیل کول ناکام شول"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "په لټون کې هیڅ چینل ونه موندل شو!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "پراکسي تېروتنه:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "پراکسي وروسته ځواب نه ورکوي"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "پراکسي بیا پیل کیږي... مهرباني وکړئ انتظار وکړئ"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "د پراکسي په انتظار..."
+
+#~ msgid "seconds"
+#~ msgstr "ثانیې"
 
 #~ msgid "Hide/Show"
 #~ msgstr "پټول / ښکاره کول"

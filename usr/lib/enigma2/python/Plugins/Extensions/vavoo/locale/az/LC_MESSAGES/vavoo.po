@@ -101,6 +101,9 @@ msgstr "Bütün ölkələr (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Başqa ölkəyə ixrac artıq davam edir. Zəhmət olmasa gözləyin."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "İxrac gedir. Keşi düzəltməzdən əvvəl gözləyin."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Yalnız anonim başlanğıc/ürək döyüntüsü pingi (sessiya id, versiya, vaxt damğası - şəxsi məlumat yoxdur). İmtina etmək üçün deaktiv edin."
 
@@ -393,9 +396,6 @@ msgstr "Heç bir kanal tapılmadı"
 msgid "No channels found for: %s"
 msgstr "%s üçün heç bir kanal tapılmadı"
 
-msgid "No channels found in search!!!"
-msgstr "Axtarışda heç bir kanal tapılmadı!!!"
-
 msgid "No items available"
 msgstr "Element yoxdur"
 
@@ -430,9 +430,6 @@ msgstr "Proksi Deaktivdir"
 msgid "Proxy Enabled"
 msgstr "Proksi Aktivdir"
 
-msgid "Proxy Error:"
-msgstr "Proksi xətası:"
-
 msgid "Proxy disabled"
 msgstr "Proksi söndürüldü"
 
@@ -448,14 +445,8 @@ msgstr "Proksi işləmir. Zəhmət olmasa, əvvəlcə proksi işə salın."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proksi aktiv deyil. M3U faylını yaratmaq mümkün deyil."
 
-msgid "Proxy not responding after"
-msgstr "Proksi sonra cavab vermir"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proksi onlayn - {} kanal ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proksi yenidən işə salınır... Lütfən, gözləyin"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Proksinin işə salınma müddəti (saniyələr)"
@@ -622,9 +613,6 @@ msgstr "Vavoo artıq işləyir."
 msgid "Version:"
 msgstr "Versiya:"
 
-msgid "Waiting for proxy..."
-msgstr "Proksi gözlənilir..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG dəstəyi ilə Vavoo Proxy-ə xoş gəlmisiniz"
 
@@ -643,9 +631,6 @@ msgstr ""
 
 msgid "lowercase"
 msgstr "kiçik hərf"
-
-msgid "seconds"
-msgstr "saniyə"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yenidən Başlatma uğursuz oldu"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Axtarışda heç bir kanal tapılmadı!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Proksi xətası:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proksi sonra cavab vermir"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proksi yenidən işə salınır... Lütfən, gözləyin"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Proksi gözlənilir..."
+
+#~ msgid "seconds"
+#~ msgstr "saniyə"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Gizlət/göstər"

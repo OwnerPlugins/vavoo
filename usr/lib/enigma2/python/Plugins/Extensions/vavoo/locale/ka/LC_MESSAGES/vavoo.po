@@ -101,6 +101,9 @@ msgstr "ყველა ქვეყანა (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "სხვა ქვეყანაში ექსპორტი უკვე მიმდინარეობს. გთხოვთ დაელოდოთ."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "ექსპორტი მიმდინარეობს. გთხოვთ, დაელოდოთ ქეშის დაფიქსირებამდე."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "მხოლოდ ანონიმური გაშვების/გულისცემის პინგი (სესიის ID, ვერსია, დროის ანაბეჭდი - პერსონალური მონაცემების გარეშე). გამორთეთ უარის თქმა."
 
@@ -393,9 +396,6 @@ msgstr "არხები ვერ მოიძებნა"
 msgid "No channels found for: %s"
 msgstr "არხები ვერ მოიძებნა: %s-ისთვის"
 
-msgid "No channels found in search!!!"
-msgstr "ძიებაში არხი ვერ მოიძებნა!!!"
-
 msgid "No items available"
 msgstr "არ არის ხელმისაწვდომი ნივთები"
 
@@ -430,9 +430,6 @@ msgstr "პროქსი გამორთულია"
 msgid "Proxy Enabled"
 msgstr "პროქსი ჩართულია"
 
-msgid "Proxy Error:"
-msgstr "პროქსის შეცდომა:"
-
 msgid "Proxy disabled"
 msgstr "პროქსი გამორთულია"
 
@@ -448,14 +445,8 @@ msgstr "პროქსი არ მუშაობს. გთხოვთ, ჯ
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "პროქსი არ არის აქტიური. M3U ფაილის გენერირება შეუძლებელია."
 
-msgid "Proxy not responding after"
-msgstr "პროქსი არ პასუხობს შემდეგ"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "პროქსი ონლაინ - {} არხი ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "პროქსი გადატვირთულია... გთხოვთ დაელოდოთ"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "პროქსის გაშვების ვადა (წამი)"
@@ -621,9 +612,6 @@ msgstr "Vavoo უკვე გაშვებულია."
 msgid "Version:"
 msgstr "ვერსია:"
 
-msgid "Waiting for proxy..."
-msgstr "პროქსის მოლოდინში..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "კეთილი იყოს თქვენი მობრძანება Vavoo Proxy-ში EPG მხარდაჭერით"
 
@@ -642,9 +630,6 @@ msgstr "ინტერვალი"
 
 msgid "lowercase"
 msgstr "პატარა ასო"
-
-msgid "seconds"
-msgstr "წამი"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -672,6 +657,24 @@ msgstr "✗ პროქსი ხაზგარეშე"
 
 msgid "✗ Restart Failed"
 msgstr "✗ გადატვირთვა ვერ მოხერხდა"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "ძიებაში არხი ვერ მოიძებნა!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "პროქსის შეცდომა:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "პროქსი არ პასუხობს შემდეგ"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "პროქსი გადატვირთულია... გთხოვთ დაელოდოთ"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "პროქსის მოლოდინში..."
+
+#~ msgid "seconds"
+#~ msgstr "წამი"
 
 #~ msgid "Hide/Show"
 #~ msgstr "დამალვა/ჩვენება"

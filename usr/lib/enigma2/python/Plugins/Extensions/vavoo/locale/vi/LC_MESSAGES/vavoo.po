@@ -102,6 +102,9 @@ msgstr "Tất cả các quốc gia (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Quá trình xuất khẩu sang một quốc gia khác đang được tiến hành. Vui lòng chờ."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Quá trình xuất khẩu đang được tiến hành. Vui lòng đợi trước khi sửa bộ đệm."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Chỉ ping khởi động/nhịp tim ẩn danh (id phiên, phiên bản, dấu thời gian - không có dữ liệu cá nhân). Tắt để chọn không tham gia."
 
@@ -394,9 +397,6 @@ msgstr "Không tìm thấy kênh nào"
 msgid "No channels found for: %s"
 msgstr "Không tìm thấy kênh nào cho: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Không tìm thấy kênh nào trong tìm kiếm!!!"
-
 msgid "No items available"
 msgstr "Không có mặt hàng nào"
 
@@ -431,9 +431,6 @@ msgstr "Proxy bị vô hiệu hóa"
 msgid "Proxy Enabled"
 msgstr "Đã bật proxy"
 
-msgid "Proxy Error:"
-msgstr "Lỗi ủy quyền:"
-
 msgid "Proxy disabled"
 msgstr "Đã tắt proxy"
 
@@ -449,14 +446,8 @@ msgstr "Proxy không chạy. Vui lòng khởi động proxy trước."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy không hoạt động. Không thể tạo tệp M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proxy không phản hồi sau"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy trực tuyến - {} kênh ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Đang khởi động lại proxy... Vui lòng đợi"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Thời gian chờ khởi động proxy (giây)"
@@ -623,9 +614,6 @@ msgstr "Vavoo đã chạy."
 msgid "Version:"
 msgstr "Phiên bản:"
 
-msgid "Waiting for proxy..."
-msgstr "Đang chờ proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Chào mừng bạn đến với Vavoo Proxy với sự hỗ trợ EPG"
 
@@ -644,9 +632,6 @@ msgstr "khoảng thời gian"
 
 msgid "lowercase"
 msgstr "chữ thường"
-
-msgid "seconds"
-msgstr "giây"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Không tìm thấy kênh nào trong tìm kiếm!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Lỗi ủy quyền:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy không phản hồi sau"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Đang khởi động lại proxy... Vui lòng đợi"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Đang chờ proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "giây"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Ẩn/Hiển thị"

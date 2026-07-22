@@ -102,6 +102,9 @@ msgstr "Visas valstis (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Eksports uz citu valsti jau notiek. Lūdzu, uzgaidiet."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Notiek eksportēšana. Lūdzu, uzgaidiet, pirms labojat kešatmiņu."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Tikai anonīms startēšanas/heartbeat ping (sesijas ID, versija, laikspiedols — nav personas datu). Atspējot, lai atteiktos."
 
@@ -394,9 +397,6 @@ msgstr "Nav atrasts neviens kanāls"
 msgid "No channels found for: %s"
 msgstr "Nav atrasts neviens kanāls priekš: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Meklējot nav atrasts neviens kanāls!!!"
-
 msgid "No items available"
 msgstr "Nav pieejams neviens vienums"
 
@@ -431,9 +431,6 @@ msgstr "Starpniekserveris ir atspējots"
 msgid "Proxy Enabled"
 msgstr "Starpniekserveris ir iespējots"
 
-msgid "Proxy Error:"
-msgstr "Starpniekservera kļūda:"
-
 msgid "Proxy disabled"
 msgstr "Starpniekserveris ir atspējots"
 
@@ -449,14 +446,8 @@ msgstr "Starpniekserveris nedarbojas. Lūdzu, vispirms palaidiet starpniekserver
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Starpniekserveris nav aktīvs. Nevar ģenerēt M3U failu."
 
-msgid "Proxy not responding after"
-msgstr "Starpniekserveris nereaģē pēc tam"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Starpniekserveris tiešsaistē — {} kanāli ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Notiek starpniekservera restartēšana... Lūdzu, uzgaidiet"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Starpniekservera palaišanas taimauts (sekundēs)"
@@ -623,9 +614,6 @@ msgstr "Vavoo jau darbojas."
 msgid "Version:"
 msgstr "Versija:"
 
-msgid "Waiting for proxy..."
-msgstr "Gaida starpniekserveri..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Laipni lūdzam Vavoo Proxy ar EPG atbalstu"
 
@@ -644,9 +632,6 @@ msgstr "intervāls"
 
 msgid "lowercase"
 msgstr "mazie burti"
-
-msgid "seconds"
-msgstr "sekundes"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ Starpniekserveris bezsaistē"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restartēšana neizdevās"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Meklējot nav atrasts neviens kanāls!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Starpniekservera kļūda:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Starpniekserveris nereaģē pēc tam"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Notiek starpniekservera restartēšana... Lūdzu, uzgaidiet"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Gaida starpniekserveri..."
+
+#~ msgid "seconds"
+#~ msgstr "sekundes"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Paslēpt/Rādīt"

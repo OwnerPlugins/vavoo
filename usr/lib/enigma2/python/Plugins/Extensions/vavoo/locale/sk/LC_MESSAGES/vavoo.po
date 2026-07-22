@@ -103,6 +103,9 @@ msgstr "Všetky krajiny (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Export do inej krajiny už prebieha. Čakajte prosím."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Prebieha export. Pred opravou vyrovnávacej pamäte počkajte."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Iba anonymný ping pri spustení/srdci (identifikátor relácie, verzia, časová pečiatka – žiadne osobné údaje). Deaktiváciou sa odhlásite."
 
@@ -408,9 +411,6 @@ msgstr "Nenašli sa žiadne kanály: {}"
 msgid "No channels found for: %s"
 msgstr "Nenašli sa žiadne kanály pre: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Vo vyhľadávaní sa nenašli žiadne kanály!!!"
-
 msgid "No items available"
 msgstr "Nie sú k dispozícii žiadne položky"
 
@@ -445,9 +445,6 @@ msgstr "Server proxy je vypnutý"
 msgid "Proxy Enabled"
 msgstr "Proxy je povolený"
 
-msgid "Proxy Error:"
-msgstr "Chyba proxy:"
-
 msgid "Proxy disabled"
 msgstr "Server proxy je vypnutý"
 
@@ -463,14 +460,8 @@ msgstr "Proxy nie je spustený. Najprv spustite proxy."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy nie je aktívny. Nepodarilo sa vygenerovať súbor M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proxy potom neodpovedá"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy online – {} kanálov ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy sa reštartuje... Čakajte prosím"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Časový limit spustenia servera proxy (v sekundách)"
@@ -478,7 +469,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Ready"
@@ -638,7 +629,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -646,9 +637,6 @@ msgstr "Vavoo už beží."
 
 msgid "Version:"
 msgstr "Verzia:"
-
-msgid "Waiting for proxy..."
-msgstr "Čaká sa na proxy..."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Vitajte vo Vavoo Proxy s podporou EPG"
@@ -668,9 +656,6 @@ msgstr "interval"
 
 msgid "lowercase"
 msgstr "malé písmo"
-
-msgid "seconds"
-msgstr "sekúnd"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -699,6 +684,24 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reštart zlyhal"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Vo vyhľadávaní sa nenašli žiadne kanály!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Chyba proxy:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy potom neodpovedá"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy sa reštartuje... Čakajte prosím"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Čaká sa na proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "sekúnd"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Skryť/zobraziť"

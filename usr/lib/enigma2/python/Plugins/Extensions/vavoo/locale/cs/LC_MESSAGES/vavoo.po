@@ -106,6 +106,9 @@ msgstr "Všechny země (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Export pro jinou zemi již probíhá. Prosím čekejte."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Probíhá export. Před opravou mezipaměti prosím počkejte."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Pouze anonymní ping při spuštění/tlukotu srdce (ID relace, verze, časové razítko – žádné osobní údaje). Deaktivací se odhlásíte."
 
@@ -410,9 +413,6 @@ msgstr "Nebyly nalezeny žádné kanály"
 msgid "No channels found for: %s"
 msgstr "Pro: %s nebyly nalezeny žádné kanály"
 
-msgid "No channels found in search!!!"
-msgstr "Při vyhledávání nebyly nalezeny žádné kanály!!!"
-
 msgid "No items available"
 msgstr "Nejsou k dispozici žádné položky"
 
@@ -447,9 +447,6 @@ msgstr "Proxy zakázáno"
 msgid "Proxy Enabled"
 msgstr "Proxy povoleno"
 
-msgid "Proxy Error:"
-msgstr "Chyba proxy:"
-
 msgid "Proxy disabled"
 msgstr "Proxy zakázáno"
 
@@ -465,14 +462,8 @@ msgstr "Proxy není spuštěno. Nejprve spusťte proxy."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy není aktivní. Nelze vygenerovat soubor M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proxy neodpovídá po"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy online – {} kanálů ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy se restartuje... Prosím čekejte"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Časový limit spuštění proxy (v sekundách)"
@@ -644,9 +635,6 @@ msgstr "Vavoo již běží."
 msgid "Version:"
 msgstr "Verze:"
 
-msgid "Waiting for proxy..."
-msgstr "Čekání na proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Vítejte ve Vavoo Proxy s podporou EPG"
 
@@ -665,9 +653,6 @@ msgstr ""
 
 msgid "lowercase"
 msgstr "malá písmena"
-
-msgid "seconds"
-msgstr "sekund"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -696,6 +681,24 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restart se nezdařil"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Při vyhledávání nebyly nalezeny žádné kanály!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Chyba proxy:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy neodpovídá po"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy se restartuje... Prosím čekejte"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Čekání na proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "sekund"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Skrýt/Zobrazit"

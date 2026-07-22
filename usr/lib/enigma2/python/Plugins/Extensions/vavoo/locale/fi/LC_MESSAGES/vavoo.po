@@ -101,6 +101,9 @@ msgstr "Kaikki maat (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Toisen maan vienti on jo käynnissä. Odota."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Vienti on meneillään. Odota ennen välimuistin korjaamista."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Vain nimetön käynnistys/heartbeat ping (istunnon tunnus, versio, aikaleima - ei henkilökohtaisia ​​tietoja). Poista käytöstä poistaminen käytöstä."
 
@@ -393,9 +396,6 @@ msgstr "Kanavia ei löytynyt"
 msgid "No channels found for: %s"
 msgstr "Kanavia ei löytynyt kohteelle: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Kanavia ei löytynyt haussa!!!"
-
 msgid "No items available"
 msgstr "Ei kohteita saatavilla"
 
@@ -430,9 +430,6 @@ msgstr "Välityspalvelin poissa käytöstä"
 msgid "Proxy Enabled"
 msgstr "Välityspalvelin käytössä"
 
-msgid "Proxy Error:"
-msgstr "Välityspalvelimen virhe:"
-
 msgid "Proxy disabled"
 msgstr "Välityspalvelin poissa käytöstä"
 
@@ -448,14 +445,8 @@ msgstr "Välityspalvelin ei ole käynnissä. Käynnistä välityspalvelin ensin.
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Välityspalvelin ei ole aktiivinen. M3U-tiedostoa ei voida luoda."
 
-msgid "Proxy not responding after"
-msgstr "Välityspalvelin ei vastaa jälkeen"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Välityspalvelin verkossa - {} kanavaa ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Välityspalvelin käynnistetään uudelleen... Odota"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Välityspalvelimen käynnistyksen aikakatkaisu (sekuntia)"
@@ -622,9 +613,6 @@ msgstr "Vavoo on jo käynnissä."
 msgid "Version:"
 msgstr "Versio:"
 
-msgid "Waiting for proxy..."
-msgstr "Odotetaan välityspalvelinta..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Tervetuloa Vavoo Proxyyn EPG-tuella"
 
@@ -643,9 +631,6 @@ msgstr "aikaväli"
 
 msgid "lowercase"
 msgstr "pienaakkoset"
-
-msgid "seconds"
-msgstr "sekuntia"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Kanavia ei löytynyt haussa!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Välityspalvelimen virhe:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Välityspalvelin ei vastaa jälkeen"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Välityspalvelin käynnistetään uudelleen... Odota"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Odotetaan välityspalvelinta..."
+
+#~ msgid "seconds"
+#~ msgstr "sekuntia"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Piilota/Näytä"

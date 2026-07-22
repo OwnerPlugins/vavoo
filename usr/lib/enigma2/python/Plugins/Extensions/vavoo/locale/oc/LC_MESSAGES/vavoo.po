@@ -101,6 +101,9 @@ msgstr "Totes los païses (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Una exportacion per un autre país es ja en cors. Esperatz."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Una exportacion es en cors. Esperatz abans de corregir l'escobilhièr."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ping d'arrenjament anonim/batèment de còr solament (identificant de sesilha, version, timbre d'ora - pas de donadas personalas). Desactivar per se desactivar."
 
@@ -393,9 +396,6 @@ msgstr "Cap de canal pas trobat"
 msgid "No channels found for: %s"
 msgstr "Cap de canal pas trobat per : %s"
 
-msgid "No channels found in search!!!"
-msgstr "Cap de canal pas trobat dins la recèrca!!!"
-
 msgid "No items available"
 msgstr "Cap d'article disponible"
 
@@ -430,9 +430,6 @@ msgstr "Proxy desactivat"
 msgid "Proxy Enabled"
 msgstr "Proxy activat"
 
-msgid "Proxy Error:"
-msgstr "Error de mandatari:"
-
 msgid "Proxy disabled"
 msgstr "Proxy desactivat"
 
@@ -448,14 +445,8 @@ msgstr "Proxy es pas en cors d'execucion. Mercés d'aviar lo mandatari d'en prim
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy pas actiu. Impossible de generar un fichièr M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proxy respond pas après"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy en linha - {} canals ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy en reaviada... Esperatz"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Temps d'arrenjament del proxy (segondas)"
@@ -622,9 +613,6 @@ msgstr "Vavoo es ja en cors."
 msgid "Version:"
 msgstr ""
 
-msgid "Waiting for proxy..."
-msgstr "En espèra de mandatari..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Benvenguda sus Vavoo Proxy amb supòrt EPG"
 
@@ -643,9 +631,6 @@ msgstr ""
 
 msgid "lowercase"
 msgstr "minusculas"
-
-msgid "seconds"
-msgstr "segondas"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proxy fòra linha"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reaviada a fracassat"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Cap de canal pas trobat dins la recèrca!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Error de mandatari:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy respond pas après"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy en reaviada... Esperatz"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "En espèra de mandatari..."
+
+#~ msgid "seconds"
+#~ msgstr "segondas"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Amagar/Afichar"

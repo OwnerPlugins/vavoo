@@ -102,6 +102,9 @@ msgstr "Gach tír (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Tá onnmhairiú do thír eile ar siúl cheana féin. Fan le do thoil."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Tá onnmhairiú ar siúl. Fan le do thoil roimh an taisce a shocrú."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Tús gan ainm/ping buille croí amháin (aitheantas seisiúin, leagan, stampa ama - gan sonraí pearsanta). Díchumasaigh rogha an diúltaithe."
 
@@ -394,9 +397,6 @@ msgstr "Níor aimsíodh aon chainéil"
 msgid "No channels found for: %s"
 msgstr "Níor aimsíodh cainéil le haghaidh: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Níor aimsíodh aon chainéil sa chuardach!!!"
-
 msgid "No items available"
 msgstr "Níl aon earraí ar fáil"
 
@@ -431,9 +431,6 @@ msgstr "Seachfhreastalaí faoi Mhíchumas"
 msgid "Proxy Enabled"
 msgstr "Seachfhreastalaí Cumasaithe"
 
-msgid "Proxy Error:"
-msgstr "Earráid Seachfhreastalaí:"
-
 msgid "Proxy disabled"
 msgstr "Díchumasaíodh seachfhreastalaí"
 
@@ -449,14 +446,8 @@ msgstr "Níl seachfhreastalaí ag rith. Cuir tús leis an seachfhreastalaí ar d
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Níl an seachfhreastalaí gníomhach. Ní féidir an comhad M3U a ghiniúint."
 
-msgid "Proxy not responding after"
-msgstr "Seachfhreastalaí gan freagairt tar éis"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Seachfhreastalaí ar líne - {} cainéil ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Seachfhreastalaí á atosú... Fan le do thoil"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Teorainn ama tosaithe seachfhreastalaí (soicindí)"
@@ -623,9 +614,6 @@ msgstr "Tá Vavoo ag rith cheana féin."
 msgid "Version:"
 msgstr "Leagan:"
 
-msgid "Waiting for proxy..."
-msgstr "Ag feitheamh le seachfhreastalaí..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Fáilte go Vavoo Proxy le tacaíocht EPG"
 
@@ -644,9 +632,6 @@ msgstr "eatramh"
 
 msgid "lowercase"
 msgstr "cás íochtair"
-
-msgid "seconds"
-msgstr "soicind"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Níor aimsíodh aon chainéil sa chuardach!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Earráid Seachfhreastalaí:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Seachfhreastalaí gan freagairt tar éis"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Seachfhreastalaí á atosú... Fan le do thoil"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Ag feitheamh le seachfhreastalaí..."
+
+#~ msgid "seconds"
+#~ msgstr "soicind"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Folaigh/Taispeáin"

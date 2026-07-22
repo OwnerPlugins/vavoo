@@ -102,6 +102,9 @@ msgstr "Све земље (%д)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Већ је у току извоз за другу земљу. Молимо сачекајте."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Извоз је у току. Сачекајте пре поправљања кеша."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Само анонимни пинг покретања/откуцаја срца (ИД сесије, верзија, временска ознака - без личних података). Онемогућите да бисте искључили."
 
@@ -394,9 +397,6 @@ msgstr "Није пронађен ниједан канал"
 msgid "No channels found for: %s"
 msgstr "Није пронађен ниједан канал за: %с"
 
-msgid "No channels found in search!!!"
-msgstr "Ниједан канал није пронађен у претрази!!!"
-
 msgid "No items available"
 msgstr "Нема доступних ставки"
 
@@ -431,9 +431,6 @@ msgstr "Прокси је онемогућен"
 msgid "Proxy Enabled"
 msgstr "Прокси је омогућен"
 
-msgid "Proxy Error:"
-msgstr "Грешка проксија:"
-
 msgid "Proxy disabled"
 msgstr "Прокси је онемогућен"
 
@@ -449,14 +446,8 @@ msgstr "Прокси није покренут. Прво покрените пр
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Прокси није активан. Није могуће генерисати М3У датотеку."
 
-msgid "Proxy not responding after"
-msgstr "Прокси не одговара после"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Прокси онлајн - {} канала ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Прокси се поново покреће... Молимо сачекајте"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Временско ограничење за покретање проксија (секунде)"
@@ -623,9 +614,6 @@ msgstr "Вавоо већ ради."
 msgid "Version:"
 msgstr "верзија:"
 
-msgid "Waiting for proxy..."
-msgstr "Чека се прокси..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Добродошли у Вавоо Проки са подршком за ЕПГ"
 
@@ -644,9 +632,6 @@ msgstr "интервал"
 
 msgid "lowercase"
 msgstr "мала слова"
-
-msgid "seconds"
-msgstr "секунди"
 
 msgid "v{} -> v{}"
 msgstr "в{} -> в{}"
@@ -674,6 +659,24 @@ msgstr "✗ Прокси ван мреже"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Поновно покретање није успело"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Ниједан канал није пронађен у претрази!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Грешка проксија:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Прокси не одговара после"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Прокси се поново покреће... Молимо сачекајте"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Чека се прокси..."
+
+#~ msgid "seconds"
+#~ msgstr "секунди"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Сакриј/Прикажи"

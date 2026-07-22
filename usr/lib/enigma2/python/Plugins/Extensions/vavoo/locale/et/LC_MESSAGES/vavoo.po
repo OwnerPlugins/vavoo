@@ -102,6 +102,9 @@ msgstr "Kõik riigid (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Eksport teise riiki juba käib. Palun oodake."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Eksport on pooleli. Oodake enne vahemälu parandamist."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ainult anonüümne käivitamine/südamelöögi ping (seansi ID, versioon, ajatempel – isikuandmed puuduvad). Loobumiseks keelake."
 
@@ -394,9 +397,6 @@ msgstr "Ühtegi kanalit ei leitud"
 msgid "No channels found for: %s"
 msgstr "Ühtegi kanalit ei leitud: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Otsingus ei leitud ühtegi kanalit!!!"
-
 msgid "No items available"
 msgstr "Ükski üksus pole saadaval"
 
@@ -431,9 +431,6 @@ msgstr "Puhverserver on keelatud"
 msgid "Proxy Enabled"
 msgstr "Puhverserver lubatud"
 
-msgid "Proxy Error:"
-msgstr "Puhverserveri viga:"
-
 msgid "Proxy disabled"
 msgstr "Puhverserver on keelatud"
 
@@ -449,14 +446,8 @@ msgstr "Puhverserver ei tööta. Palun käivitage esmalt puhverserver."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Puhverserver pole aktiivne. M3U-faili ei saa luua."
 
-msgid "Proxy not responding after"
-msgstr "Puhverserver ei vasta pärast seda"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Puhverserver võrgus – {} kanalit ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Puhverserveri taaskäivitamine... Palun oodake"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Puhverserveri käivitamise ajalõpp (sekundites)"
@@ -623,9 +614,6 @@ msgstr "Vavoo juba jookseb."
 msgid "Version:"
 msgstr "Versioon:"
 
-msgid "Waiting for proxy..."
-msgstr "Puhverserveri ootamine..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Tere tulemast EPG toega Vavoo puhverserverisse"
 
@@ -644,9 +632,6 @@ msgstr "intervall"
 
 msgid "lowercase"
 msgstr "väiketähtedega"
-
-msgid "seconds"
-msgstr "sekundit"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ Puhverserver võrguühenduseta"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Taaskäivitamine ebaõnnestus"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Otsingus ei leitud ühtegi kanalit!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Puhverserveri viga:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Puhverserver ei vasta pärast seda"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Puhverserveri taaskäivitamine... Palun oodake"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Puhverserveri ootamine..."
+
+#~ msgid "seconds"
+#~ msgstr "sekundit"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Peida/Kuva"

@@ -103,6 +103,9 @@ msgstr "Minden ország (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Egy másik országba irányuló export már folyamatban van. Kérjük, várjon."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Exportálás van folyamatban. Kérjük, várjon a gyorsítótár javítása előtt."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Csak névtelen indítási/heartbeat ping (munkamenetazonosító, verzió, időbélyeg – személyes adatok nélkül). A leiratkozás letiltása."
 
@@ -408,9 +411,6 @@ msgstr "Nem található csatorna a következőhöz: {}"
 msgid "No channels found for: %s"
 msgstr "Nem található csatorna a következőhöz: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Nem található csatorna a keresésben!!!"
-
 msgid "No items available"
 msgstr "Nincsenek elérhető tételek"
 
@@ -445,9 +445,6 @@ msgstr "Proxy letiltva"
 msgid "Proxy Enabled"
 msgstr "Proxy engedélyezve"
 
-msgid "Proxy Error:"
-msgstr "Proxy hiba:"
-
 msgid "Proxy disabled"
 msgstr "Proxy letiltva"
 
@@ -463,14 +460,8 @@ msgstr "A proxy nem fut. Kérjük, először indítsa el a proxyt."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "A proxy nem aktív. Nem sikerült létrehozni az M3U fájlt."
 
-msgid "Proxy not responding after"
-msgstr "A proxy nem válaszol ezután"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy online – {} csatorna ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy újraindítása... Kérjük, várjon"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Proxy indítási időtúllépése (másodperc)"
@@ -478,7 +469,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -639,7 +630,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -648,9 +639,6 @@ msgstr "A Vavoo már fut."
 
 msgid "Version:"
 msgstr "Verzió:"
-
-msgid "Waiting for proxy..."
-msgstr "Várakozás a proxyra..."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Üdvözöljük az EPG-támogatással rendelkező Vavoo Proxyban"
@@ -670,9 +658,6 @@ msgstr "intervallum"
 
 msgid "lowercase"
 msgstr "kisbetűk"
-
-msgid "seconds"
-msgstr "másodpercig"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -701,6 +686,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Az újraindítás sikertelen"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Nem található csatorna a keresésben!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Proxy hiba:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "A proxy nem válaszol ezután"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy újraindítása... Kérjük, várjon"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Várakozás a proxyra..."
+
+#~ msgid "seconds"
+#~ msgstr "másodpercig"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Elrejtés/Megjelenítés"

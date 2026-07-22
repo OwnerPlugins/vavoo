@@ -101,6 +101,9 @@ msgstr "Բոլոր երկրները (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Այլ երկիր արտահանումն արդեն ընթացքի մեջ է։ Խնդրում ենք սպասել:"
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Ընթացքի մեջ է արտահանում. Խնդրում ենք սպասել նախքան քեշը շտկելը:"
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Միայն անանուն գործարկման/սրտի բաբախման պինգ (նստաշրջանի id, տարբերակ, ժամադրոշմ՝ անձնական տվյալներ չկան): Անջատել՝ հրաժարվելու համար:"
 
@@ -393,9 +396,6 @@ msgstr "Ալիքներ չեն գտնվել"
 msgid "No channels found for: %s"
 msgstr "%s-ի համար ալիքներ չեն գտնվել"
 
-msgid "No channels found in search!!!"
-msgstr "Որոնման մեջ ալիքներ չեն գտնվել!!!"
-
 msgid "No items available"
 msgstr "Նյութեր չկան"
 
@@ -430,9 +430,6 @@ msgstr "Վստահված անձը անջատված է"
 msgid "Proxy Enabled"
 msgstr "Վստահված անձը միացված է"
 
-msgid "Proxy Error:"
-msgstr "Վստահված անձի սխալ."
-
 msgid "Proxy disabled"
 msgstr "Վստահված անձը անջատված է"
 
@@ -448,14 +445,8 @@ msgstr "Proxy-ը չի աշխատում: Խնդրում ենք նախ սկսել 
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Պրոքսին ակտիվ չէ: Հնարավոր չէ ստեղծել M3U ֆայլ:"
 
-msgid "Proxy not responding after"
-msgstr "Վստահված անձը չի արձագանքում դրանից հետո"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Առցանց վստահված անձ - {} ալիք ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy-ը վերագործարկվում է... Խնդրում ենք սպասել"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Պրոքսիի գործարկման ժամկետը (վայրկյան)"
@@ -621,9 +612,6 @@ msgstr "Vavoo-ն արդեն վազում է:"
 msgid "Version:"
 msgstr "Տարբերակ:"
 
-msgid "Waiting for proxy..."
-msgstr "Սպասում է վստահված անձի..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Բարի գալուստ Vavoo Proxy՝ EPG աջակցությամբ"
 
@@ -642,9 +630,6 @@ msgstr "ընդմիջում"
 
 msgid "lowercase"
 msgstr "փոքրատառ"
-
-msgid "seconds"
-msgstr "վայրկյան"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -672,6 +657,24 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Որոնման մեջ ալիքներ չեն գտնվել!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Վստահված անձի սխալ."
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Վստահված անձը չի արձագանքում դրանից հետո"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy-ը վերագործարկվում է... Խնդրում ենք սպասել"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Սպասում է վստահված անձի..."
+
+#~ msgid "seconds"
+#~ msgstr "վայրկյան"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Թաքցնել/Ցուցադրել"

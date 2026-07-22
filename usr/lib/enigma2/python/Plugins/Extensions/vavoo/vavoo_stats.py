@@ -57,26 +57,33 @@ class AnonymousStats:
         self._session_id = None
         self._send_timer = None
 
-    def _get_anonymous_session_id(self):
+    def _get_or_create_session_id(self):
+        """Return (session_id, already_sent) for this boot.
+
+        SESSION_ID_FILE lives in /tmp, which is wiped on reboot, so an
+        existing file means we already recorded+sent a startup event
+        earlier in this same boot - reuse that id and skip sending
+        again. Only generate (and later persist) a fresh id when no
+        file exists yet.
+        """
+        if os.path.exists(SESSION_ID_FILE):
+            try:
+                with open(SESSION_ID_FILE, "r") as f:
+                    existing = f.read().strip()
+                if existing:
+                    return existing, True
+            except Exception:
+                pass
         seed = "{}_{}_{}".format(
             time.time(),
             os.getpid(),
             random.randint(
                 1,
                 1000000))
-        return hashlib.md5(seed.encode("utf-8")).hexdigest()[:16]
+        return hashlib.md5(seed.encode("utf-8")).hexdigest()[:16], False
 
     def _is_disabled(self):
         return os.path.exists(STATS_DISABLE_FILE)
-
-    def _should_send_for_session(self):
-        if os.path.exists(SESSION_ID_FILE):
-            try:
-                with open(SESSION_ID_FILE, "r") as f:
-                    return f.read().strip() == self._session_id
-            except Exception:
-                pass
-        return False
 
     def _mark_session_sent(self):
         try:
@@ -94,7 +101,11 @@ class AnonymousStats:
         if self._is_disabled():
             debug("Stats disabled")
             return
-        self._session_id = self._get_anonymous_session_id()
+        self._session_id, already_sent = self._get_or_create_session_id()
+        if already_sent:
+            debug("Stats already sent for this session: {}".format(
+                self._session_id[:16]))
+            return
         debug(
             "Recording startup - Session ID: {}".format(self._session_id[:16]))
         self._send_in_background()
@@ -104,10 +115,6 @@ class AnonymousStats:
             try:
                 if self._is_disabled():
                     debug("Stats disabled by user")
-                    return
-
-                if self._should_send_for_session():
-                    debug("Stats already sent for this session")
                     return
 
                 payload = {

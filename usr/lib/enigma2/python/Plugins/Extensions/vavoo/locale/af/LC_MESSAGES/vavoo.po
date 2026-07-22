@@ -101,6 +101,9 @@ msgstr "Alle lande (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "'n Uitvoer na 'n ander land is reeds aan die gang. Wag asseblief."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "'n Uitvoer is aan die gang. Wag asseblief voordat die kas reggemaak word."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Slegs anonieme opstart/hartklop-ping (sessie-ID, weergawe, tydstempel - geen persoonlike data). Deaktiveer om te onttrek."
 
@@ -393,9 +396,6 @@ msgstr "Geen kanale gevind nie"
 msgid "No channels found for: %s"
 msgstr "Geen kanale gevind vir: %s nie"
 
-msgid "No channels found in search!!!"
-msgstr "Geen kanale gevind in soektog nie!!!"
-
 msgid "No items available"
 msgstr "Geen items beskikbaar nie"
 
@@ -430,9 +430,6 @@ msgstr "Volmag gedeaktiveer"
 msgid "Proxy Enabled"
 msgstr "Proxy geaktiveer"
 
-msgid "Proxy Error:"
-msgstr "Proxy Fout:"
-
 msgid "Proxy disabled"
 msgstr "Volmag gedeaktiveer"
 
@@ -448,14 +445,8 @@ msgstr "Proxy loop nie. Begin asseblief eers die instaanbediener."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Volmag nie aktief nie. Kan nie M3U-lêer genereer nie."
 
-msgid "Proxy not responding after"
-msgstr "Proxy reageer nie daarna nie"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Volmag aanlyn - {} kanale ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy herbegin... Wag asseblief"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Gevolmagtigde opstart-uitteltyd (sekondes)"
@@ -622,9 +613,6 @@ msgstr "Vavoo hardloop reeds."
 msgid "Version:"
 msgstr "Weergawe:"
 
-msgid "Waiting for proxy..."
-msgstr "Wag tans vir instaanbediener …"
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Welkom by Vavoo Proxy met EPG-ondersteuning"
 
@@ -643,9 +631,6 @@ msgstr ""
 
 msgid "lowercase"
 msgstr "kleinletters"
-
-msgid "seconds"
-msgstr "sekondes"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proxy vanlyn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herbegin het misluk"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Geen kanale gevind in soektog nie!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Proxy Fout:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy reageer nie daarna nie"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy herbegin... Wag asseblief"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Wag tans vir instaanbediener …"
+
+#~ msgid "seconds"
+#~ msgstr "sekondes"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Versteek/Wys"

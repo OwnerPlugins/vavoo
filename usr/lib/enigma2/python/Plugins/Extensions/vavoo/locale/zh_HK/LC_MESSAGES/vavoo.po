@@ -101,6 +101,9 @@ msgstr "所有国家 (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "另一个国家的导出正在进行中。请等待。"
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "導出正在進行中。請等待，然後再修復快取。"
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "僅匿名啟動/心跳 ping（會話 ID、版本、時間戳記 - 無個人資料）。禁用選擇退出。"
 
@@ -404,9 +407,6 @@ msgstr "未找到频道"
 msgid "No channels found for: %s"
 msgstr "未找到以下内容的频道: %s"
 
-msgid "No channels found in search!!!"
-msgstr "搜索中未找到频道！！！"
-
 msgid "No items available"
 msgstr "沒有可用的項目"
 
@@ -441,9 +441,6 @@ msgstr "代理已禁用"
 msgid "Proxy Enabled"
 msgstr "代理已启用"
 
-msgid "Proxy Error:"
-msgstr "代理錯誤："
-
 msgid "Proxy disabled"
 msgstr "代理已禁用"
 
@@ -459,14 +456,8 @@ msgstr "代理未运行。请先启动代理。"
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "代理未激活。无法生成 M3U 文件。"
 
-msgid "Proxy not responding after"
-msgstr "代理在以下时间后无响应"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "線上代理 - {} 個頻道 ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "代理正在重启... 请等待"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "代理啟動超時（秒）"
@@ -635,9 +626,6 @@ msgstr "Vavoo 已在运行。"
 msgid "Version:"
 msgstr "版本:"
 
-msgid "Waiting for proxy..."
-msgstr "正在等待代理..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "歡迎使用帶有 EPG 支援的 Vavoo Proxy"
 
@@ -656,9 +644,6 @@ msgstr "间隔"
 
 msgid "lowercase"
 msgstr "小写"
-
-msgid "seconds"
-msgstr "秒"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -688,6 +673,24 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "搜索中未找到频道！！！"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "代理錯誤："
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "代理在以下时间后无响应"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "代理正在重启... 请等待"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "正在等待代理..."
+
+#~ msgid "seconds"
+#~ msgstr "秒"
 
 #~ msgid "Hide/Show"
 #~ msgstr "隐藏/显示"

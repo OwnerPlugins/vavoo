@@ -102,6 +102,9 @@ msgstr "Alle land (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "En eksport for et annet land er allerede i gang. Vennligst vent."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "En eksport pågår. Vent før du fikser cachen."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Kun anonym oppstart/hjerteslag-ping (sesjons-ID, versjon, tidsstempel - ingen personlige data). Deaktiver for å velge bort."
 
@@ -394,9 +397,6 @@ msgstr "Ingen kanaler funnet"
 msgid "No channels found for: %s"
 msgstr "Ingen kanaler funnet for: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Ingen kanaler funnet i søk!!!"
-
 msgid "No items available"
 msgstr "Ingen varer tilgjengelig"
 
@@ -431,9 +431,6 @@ msgstr "Proxy deaktivert"
 msgid "Proxy Enabled"
 msgstr "Proxy aktivert"
 
-msgid "Proxy Error:"
-msgstr "Proxy-feil:"
-
 msgid "Proxy disabled"
 msgstr "Proxy deaktivert"
 
@@ -449,14 +446,8 @@ msgstr "Proxy kjører ikke. Start proxy først."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy ikke aktiv. Kan ikke generere M3U-fil."
 
-msgid "Proxy not responding after"
-msgstr "Proxy svarer ikke etter"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy online – {} kanaler ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy starter på nytt... Vennligst vent"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Tidsavbrudd for proxy-oppstart (sekunder)"
@@ -622,9 +613,6 @@ msgstr "Vavoo er allerede i gang."
 msgid "Version:"
 msgstr "Versjon:"
 
-msgid "Waiting for proxy..."
-msgstr "Venter på proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Velkommen til Vavoo Proxy med EPG-støtte"
 
@@ -643,9 +631,6 @@ msgstr "intervall"
 
 msgid "lowercase"
 msgstr "små bokstaver"
-
-msgid "seconds"
-msgstr "sekunder"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proxy frakoblet"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart mislyktes"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Ingen kanaler funnet i søk!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Proxy-feil:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy svarer ikke etter"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy starter på nytt... Vennligst vent"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Venter på proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "sekunder"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Skjul/Vis"

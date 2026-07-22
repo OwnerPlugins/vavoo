@@ -101,6 +101,9 @@ msgstr "Бардык өлкөлөр (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Башка өлкөгө экспорт азыртадан жүрүп жатат. Күтө туруңуз."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Экспорт жүрүп жатат. Кэшти оңдоодон мурун күтө туруңуз."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Анонимдүү баштоо/жүрөктүн кагышы гана (сеанс идентификатору, версия, убакыт белгиси - жеке маалымат жок). Чыгуу үчүн өчүрүү."
 
@@ -393,9 +396,6 @@ msgstr "Каналдар табылган жок"
 msgid "No channels found for: %s"
 msgstr "Төмөнкү үчүн эч кандай канал табылган жок: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Издөөдө эч кандай канал табылган жок!!!"
-
 msgid "No items available"
 msgstr "Эч нерсе жок"
 
@@ -430,9 +430,6 @@ msgstr "Прокси өчүрүлгөн"
 msgid "Proxy Enabled"
 msgstr "Прокси иштетилген"
 
-msgid "Proxy Error:"
-msgstr "Прокси катасы:"
-
 msgid "Proxy disabled"
 msgstr "Прокси өчүрүлгөн"
 
@@ -448,14 +445,8 @@ msgstr "Прокси иштебей жатат. Сураныч, адегенде
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Прокси активдүү эмес. M3U файлын түзүү мүмкүн эмес."
 
-msgid "Proxy not responding after"
-msgstr "Прокси кийин жооп бербейт"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Прокси онлайн - {} канал ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Прокси кайра иштетилүүдө... Күтө туруңуз"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Проксиди баштоо күтүү убакыты (секунд)"
@@ -622,9 +613,6 @@ msgstr "Vavoo мурунтан эле иштеп жатат."
 msgid "Version:"
 msgstr "Версия:"
 
-msgid "Waiting for proxy..."
-msgstr "Прокси күтүлүүдө..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG колдоосу менен Vavoo Proxy кош келиңиз"
 
@@ -643,9 +631,6 @@ msgstr "интервал"
 
 msgid "lowercase"
 msgstr "кичине тамга"
-
-msgid "seconds"
-msgstr "секунд"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Прокси оффлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Кайра баштоо ишке ашкан жок"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Издөөдө эч кандай канал табылган жок!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Прокси катасы:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Прокси кийин жооп бербейт"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Прокси кайра иштетилүүдө... Күтө туруңуз"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Прокси күтүлүүдө..."
+
+#~ msgid "seconds"
+#~ msgstr "секунд"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Жашыруу/Көрсөтүү"

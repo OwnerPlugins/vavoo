@@ -39,7 +39,6 @@ from . import (
     PLUGIN_ROOT,
     PROXY_HOST,
     ENIGMA_PATH,
-    country_codes
 )
 
 """
@@ -291,13 +290,7 @@ def convert_bouquet_sync(
             return 0
 
         # 4. Extract country code
-        separators = ["➾", "⟾", "->", "→"]
-        base_name = name
-        for sep in separators:
-            if sep in name:
-                base_name = name.split(sep)[0].strip()
-                break
-        country_code = country_codes.get(base_name.capitalize(), "")
+        country_code = get_country_code_from_bouquet_name(name) or ""
 
         # 5. Get matcher
         matcher = get_epg_matcher()
@@ -666,6 +659,11 @@ def process_epg_matching_background(
                 print(
                     "[EPGBackground] Updated %d service lines in %s" %
                     (changes, bouquet_filename))
+                # Without this, Enigma2's live service database keeps
+                # using the fallback refs written in phase 1 until a
+                # manual reload/reboot, so the just-matched EPG never
+                # actually shows up despite the "completed" notification.
+                reactor.callFromThread(ReloadBouquets)
 
         # 5. Generate EPG mapping files
         if matched:
@@ -880,15 +878,10 @@ def create_fallback_bouquet_sync(
             return 0, "", [], ""
 
         # 4. Extract country code for later EPG
-        separators = ["➾", "⟾", "->", "→"]
-        base_name = name
-        for sep in separators:
-            if sep in name:
-                base_name = name.split(sep)[0].strip()
-                break
-        country_code = country_codes.get(base_name.capitalize(), "")
+        country_code = get_country_code_from_bouquet_name(name) or ""
 
         # 5. Prepare bouquet filename (same logic as create_bouquet_file)
+        separators = ["➾", "⟾", "->", "→"]
         is_category = any(sep in name for sep in separators)
         if export_type == "flat" or not is_category:
             safe_name = name.lower().replace(

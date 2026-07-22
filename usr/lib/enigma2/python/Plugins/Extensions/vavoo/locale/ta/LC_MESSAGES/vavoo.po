@@ -101,6 +101,9 @@ msgstr "அனைத்து நாடுகளும் (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "மற்றொரு நாட்டிற்கான ஏற்றுமதி ஏற்கனவே நடந்து கொண்டிருக்கிறது. தயவுசெய்து காத்திருக்கவும்."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "ஏற்றுமதி நடந்து கொண்டிருக்கிறது. தற்காலிக சேமிப்பை சரிசெய்வதற்கு முன் காத்திருக்கவும்."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "அநாமதேய தொடக்க/இதய துடிப்பு பிங் மட்டும் (அமர்வு ஐடி, பதிப்பு, நேர முத்திரை - தனிப்பட்ட தரவு இல்லை). விலகுவதை முடக்கு."
 
@@ -393,9 +396,6 @@ msgstr "சேனல்கள் எதுவும் இல்லை"
 msgid "No channels found for: %s"
 msgstr "இதற்கான சேனல்கள் எதுவும் இல்லை: %s"
 
-msgid "No channels found in search!!!"
-msgstr "தேடலில் சேனல்கள் இல்லை!!!"
-
 msgid "No items available"
 msgstr "பொருட்கள் எதுவும் கிடைக்கவில்லை"
 
@@ -430,9 +430,6 @@ msgstr "ப்ராக்ஸி முடக்கப்பட்டது"
 msgid "Proxy Enabled"
 msgstr "ப்ராக்ஸி இயக்கப்பட்டது"
 
-msgid "Proxy Error:"
-msgstr "ப்ராக்ஸி பிழை:"
-
 msgid "Proxy disabled"
 msgstr "ப்ராக்ஸி முடக்கப்பட்டது"
 
@@ -448,14 +445,8 @@ msgstr "ப்ராக்ஸி இயங்கவில்லை. முதல
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "ப்ராக்ஸி செயலில் இல்லை. M3U கோப்பை உருவாக்க முடியவில்லை."
 
-msgid "Proxy not responding after"
-msgstr "பதிலாள் பிறகு பதிலளிக்கவில்லை"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "ப்ராக்ஸி ஆன்லைனில் - {} சேனல்கள் ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "ப்ராக்ஸி மறுதொடக்கம் செய்கிறது... தயவுசெய்து காத்திருக்கவும்"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "ப்ராக்ஸி தொடக்க நேரம் முடிந்தது (வினாடிகள்)"
@@ -622,9 +613,6 @@ msgstr "Vavoo ஏற்கனவே இயங்குகிறது."
 msgid "Version:"
 msgstr "பதிப்பு:"
 
-msgid "Waiting for proxy..."
-msgstr "ப்ராக்ஸிக்காக காத்திருக்கிறது..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG ஆதரவுடன் Vavoo Proxyக்கு வரவேற்கிறோம்"
 
@@ -643,9 +631,6 @@ msgstr "இடைவெளி"
 
 msgid "lowercase"
 msgstr "சிறிய எழுத்து"
-
-msgid "seconds"
-msgstr "வினாடிகள்"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ ப்ராக்ஸி ஆஃப்லைன்"
 
 msgid "✗ Restart Failed"
 msgstr "✗ மறுதொடக்கம் தோல்வியடைந்தது"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "தேடலில் சேனல்கள் இல்லை!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "ப்ராக்ஸி பிழை:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "பதிலாள் பிறகு பதிலளிக்கவில்லை"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "ப்ராக்ஸி மறுதொடக்கம் செய்கிறது... தயவுசெய்து காத்திருக்கவும்"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "ப்ராக்ஸிக்காக காத்திருக்கிறது..."
+
+#~ msgid "seconds"
+#~ msgstr "வினாடிகள்"
 
 #~ msgid "Hide/Show"
 #~ msgstr "மறை/காட்டு"

@@ -101,6 +101,9 @@ msgstr "Il-pajjiżi kollha (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Diġà għaddejja esportazzjoni għal pajjiż ieħor. Jekk jogħġbok stenna."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Esportazzjoni għaddejja. Jekk jogħġbok stenna qabel ma tirranġa l-cache."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ping tal-istartjar/taħbit tal-qalb anonimu biss (id tas-sessjoni, verżjoni, timestamp - l-ebda data personali). Iddiżattiva biex tagħżel barra."
 
@@ -393,9 +396,6 @@ msgstr "Ma nstab l-ebda kanal"
 msgid "No channels found for: %s"
 msgstr "Ma nstab l-ebda kanal għal: %s"
 
-msgid "No channels found in search!!!"
-msgstr "L-ebda kanal ma nstab fit-tfittxija!!!"
-
 msgid "No items available"
 msgstr "Ebda oġġetti disponibbli"
 
@@ -430,9 +430,6 @@ msgstr "Prokura b'Diżabilità"
 msgid "Proxy Enabled"
 msgstr "Proxy Ippermettiet"
 
-msgid "Proxy Error:"
-msgstr "Żball tal-Prokura:"
-
 msgid "Proxy disabled"
 msgstr "Proxy diżattivat"
 
@@ -448,14 +445,8 @@ msgstr "Proxy mhux qed jaħdem. Jekk jogħġbok ibda l-prokura l-ewwel."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Prokura mhux attiva. Ma tistax tiġġenera fajl M3U."
 
-msgid "Proxy not responding after"
-msgstr "Prokura ma tirrispondix wara"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Prokura onlajn - {} kanali ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy jerġa' jibda... Jekk jogħġbok stenna"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Timeout tal-istartjar tal-prokura (sekondi)"
@@ -621,9 +612,6 @@ msgstr "Vavoo diġà qed jaħdem."
 msgid "Version:"
 msgstr "Verżjoni:"
 
-msgid "Waiting for proxy..."
-msgstr "Stennija għal prokura..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Merħba għal Vavoo Proxy b'appoġġ EPG"
 
@@ -642,9 +630,6 @@ msgstr "intervall"
 
 msgid "lowercase"
 msgstr "minusura"
-
-msgid "seconds"
-msgstr "sekondi"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -672,6 +657,24 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "L-ebda kanal ma nstab fit-tfittxija!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Żball tal-Prokura:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Prokura ma tirrispondix wara"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy jerġa' jibda... Jekk jogħġbok stenna"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Stennija għal prokura..."
+
+#~ msgid "seconds"
+#~ msgstr "sekondi"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Aħbi/Uri"

@@ -101,6 +101,9 @@ msgstr "Nchi zote (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Uhamishaji wa nchi nyingine tayari unaendelea. Tafadhali subiri."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Uhamishaji unaendelea. Tafadhali subiri kabla ya kurekebisha akiba."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ping ya kuanza/mapigo ya moyo pekee (kitambulisho cha kipindi, toleo, muhuri wa muda - hakuna data ya kibinafsi). Zima ili kuchagua kutoka."
 
@@ -393,9 +396,6 @@ msgstr "Hakuna vituo vilivyopatikana"
 msgid "No channels found for: %s"
 msgstr "Hakuna vituo vilivyopatikana vya: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Hakuna vituo vilivyopatikana katika utafutaji!!!"
-
 msgid "No items available"
 msgstr "Hakuna vipengee vinavyopatikana"
 
@@ -430,9 +430,6 @@ msgstr "Wakala Amezimwa"
 msgid "Proxy Enabled"
 msgstr "Proksi Imewashwa"
 
-msgid "Proxy Error:"
-msgstr "Hitilafu ya Wakala:"
-
 msgid "Proxy disabled"
 msgstr "Seva mbadala imezimwa"
 
@@ -448,14 +445,8 @@ msgstr "Seva mbadala haifanyi kazi. Tafadhali anza seva mbadala kwanza."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Seva mbadala haitumiki. Haiwezi kutengeneza faili ya M3U."
 
-msgid "Proxy not responding after"
-msgstr "Wakala hajibu baada ya"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Wakala mtandaoni - {} njia ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Seva inawasha tena... Tafadhali subiri"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Muda wa kuanza kwa seva mbadala (sekunde)"
@@ -622,9 +613,6 @@ msgstr "Vavoo tayari inaendeshwa."
 msgid "Version:"
 msgstr "Toleo:"
 
-msgid "Waiting for proxy..."
-msgstr "Inasubiri proksi..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Karibu kwa Wakala wa Vavoo kwa usaidizi wa EPG"
 
@@ -643,9 +631,6 @@ msgstr "muda"
 
 msgid "lowercase"
 msgstr "herufi ndogo"
-
-msgid "seconds"
-msgstr "sekunde"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Hakuna vituo vilivyopatikana katika utafutaji!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Hitilafu ya Wakala:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Wakala hajibu baada ya"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Seva inawasha tena... Tafadhali subiri"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Inasubiri proksi..."
+
+#~ msgid "seconds"
+#~ msgstr "sekunde"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Ficha/Onyesha"

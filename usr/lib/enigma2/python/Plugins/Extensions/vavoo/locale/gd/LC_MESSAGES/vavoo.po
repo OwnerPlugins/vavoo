@@ -101,6 +101,9 @@ msgstr "A h-uile dùthaich (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Tha às-mhalairt airson dùthaich eile a’ dol air adhart mu thràth. Feuch an fuirich thu."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Tha às-mhalairt a’ dol air adhart. Feuch an fuirich thu mus socraich thu an tasgadan."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ping tòiseachaidh gun urra / buille cridhe a-mhàin (ID seisean, dreach, stampa-ama - gun dàta pearsanta). Cuir à comas tarraing a-mach."
 
@@ -393,9 +396,6 @@ msgstr "Cha deach sianalan a lorg"
 msgid "No channels found for: %s"
 msgstr "Cha deach seanalan a lorg airson: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Cha deach seanalan a lorg san rannsachadh !!!"
-
 msgid "No items available"
 msgstr "Chan eil stuthan ri fhaighinn"
 
@@ -430,9 +430,6 @@ msgstr "Proxy à comas"
 msgid "Proxy Enabled"
 msgstr "Progsaidh air a chomasachadh"
 
-msgid "Proxy Error:"
-msgstr "Mearachd neach-ionaid:"
-
 msgid "Proxy disabled"
 msgstr "Neach-ionaid à comas"
 
@@ -448,14 +445,8 @@ msgstr "Chan eil progsaidh a’ ruith. Feuch an tòisich thu air an neach-ionaid
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Chan eil progsaidh gnìomhach. Cha ghabh am faidhle M3U a ghineadh."
 
-msgid "Proxy not responding after"
-msgstr "Chan eil neach-ionaid a’ freagairt às deidh sin"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Progsaidh air-loidhne - {} seanalan ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Progsaidh ag ath-thòiseachadh... Fuirich ort"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Ùine tòiseachaidh neach-ionaid (diogan)"
@@ -622,9 +613,6 @@ msgstr "Tha Vavoo a' ruith mu thràth."
 msgid "Version:"
 msgstr "Tionndadh:"
 
-msgid "Waiting for proxy..."
-msgstr "A' feitheamh ri neach-ionaid..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Fàilte gu Vavoo Proxy le taic EPG"
 
@@ -643,9 +631,6 @@ msgstr "eadar-ama"
 
 msgid "lowercase"
 msgstr "litrichean beaga"
-
-msgid "seconds"
-msgstr "diog"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Neach-ionaid far-loidhne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Cha deach seanalan a lorg san rannsachadh !!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Mearachd neach-ionaid:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Chan eil neach-ionaid a’ freagairt às deidh sin"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Progsaidh ag ath-thòiseachadh... Fuirich ort"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "A' feitheamh ri neach-ionaid..."
+
+#~ msgid "seconds"
+#~ msgstr "diog"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Falaich/Seall"

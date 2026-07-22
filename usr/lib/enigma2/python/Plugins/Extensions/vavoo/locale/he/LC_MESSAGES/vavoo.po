@@ -102,6 +102,9 @@ msgstr "כל המדינות (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "ייצוא למדינה אחרת כבר מתבצע. אנא המתן."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "ייצוא מתבצע. אנא המתן לפני תיקון המטמון."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "סטארט-אפ אנונימי/פינג קצב לב בלבד (מזהה הפעלה, גרסה, חותמת זמן - ללא נתונים אישיים). השבת כדי לבטל את הסכמתך."
 
@@ -394,9 +397,6 @@ msgstr "לא נמצאו ערוצים"
 msgid "No channels found for: %s"
 msgstr "לא נמצאו ערוצים עבור: %s"
 
-msgid "No channels found in search!!!"
-msgstr "לא נמצאו ערוצים בחיפוש!!!"
-
 msgid "No items available"
 msgstr "אין פריטים זמינים"
 
@@ -431,9 +431,6 @@ msgstr "פרוקסי מושבת"
 msgid "Proxy Enabled"
 msgstr "פרוקסי מופעל"
 
-msgid "Proxy Error:"
-msgstr "שגיאת פרוקסי:"
-
 msgid "Proxy disabled"
 msgstr "פרוקסי מושבת"
 
@@ -449,14 +446,8 @@ msgstr "פרוקסי לא פועל. אנא הפעל תחילה את ה-proxy."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "פרוקסי לא פעיל. לא ניתן ליצור קובץ M3U."
 
-msgid "Proxy not responding after"
-msgstr "פרוקסי לא מגיב לאחר מכן"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "פרוקסי מקוון - {} ערוצים ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "פרוקסי מופעל מחדש... אנא המתן"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "פסק זמן להפעלה של שרת proxy (שניות)"
@@ -623,9 +614,6 @@ msgstr "Vavoo כבר פועל."
 msgid "Version:"
 msgstr "גִרְסָה:"
 
-msgid "Waiting for proxy..."
-msgstr "ממתין ל-proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ברוכים הבאים ל-Vavoo Proxy עם תמיכה ב-EPG"
 
@@ -644,9 +632,6 @@ msgstr "הַפסָקָה"
 
 msgid "lowercase"
 msgstr "אותיות קטנות"
-
-msgid "seconds"
-msgstr "שניות"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ פרוקסי לא מקוון"
 
 msgid "✗ Restart Failed"
 msgstr "✗ הפעלה מחדש נכשלה"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "לא נמצאו ערוצים בחיפוש!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "שגיאת פרוקסי:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "פרוקסי לא מגיב לאחר מכן"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "פרוקסי מופעל מחדש... אנא המתן"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "ממתין ל-proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "שניות"
 
 #~ msgid "Hide/Show"
 #~ msgstr "הסתר/הצג"

@@ -101,6 +101,9 @@ msgstr "Herrialde guztiak (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "An export for another country is already in progress. Mesedez, itxaron."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Esportazio bat abian da. Mesedez, itxaron cachea konpondu aurretik."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Abiarazte/taupadaren ping anonimoa soilik (saioaren IDa, bertsioa, denbora-zigilua - ez dago datu pertsonalik). Desgaitu uzteko."
 
@@ -393,9 +396,6 @@ msgstr "Ez da kanalik aurkitu"
 msgid "No channels found for: %s"
 msgstr "Ez da kanalik aurkitu: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Ez da kanalik aurkitu bilaketan!!!"
-
 msgid "No items available"
 msgstr "Ez dago elementurik eskuragarri"
 
@@ -430,9 +430,6 @@ msgstr "Proxy desgaituta"
 msgid "Proxy Enabled"
 msgstr "Proxy gaituta"
 
-msgid "Proxy Error:"
-msgstr "Proxy errorea:"
-
 msgid "Proxy disabled"
 msgstr "Proxy desgaituta dago"
 
@@ -448,14 +445,8 @@ msgstr "Proxy ez dago martxan. Mesedez, hasi proxy-a lehenik."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy ez dago aktibo. Ezin da M3U fitxategia sortu."
 
-msgid "Proxy not responding after"
-msgstr "Proxyak ez du erantzun ondoren"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy linean - {} kanal ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy berrabiarazten... Itxaron mesedez"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Proxy-a abiarazteko denbora-muga (segundo)"
@@ -622,9 +613,6 @@ msgstr "Vavoo martxan dago jada."
 msgid "Version:"
 msgstr "Bertsioa:"
 
-msgid "Waiting for proxy..."
-msgstr "Proxyaren zain..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Ongi etorri Vavoo Proxy-ra EPG laguntzarekin"
 
@@ -643,9 +631,6 @@ msgstr "tartea"
 
 msgid "lowercase"
 msgstr "minuskula"
-
-msgid "seconds"
-msgstr "segundoak"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Ez da kanalik aurkitu bilaketan!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Proxy errorea:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxyak ez du erantzun ondoren"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy berrabiarazten... Itxaron mesedez"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Proxyaren zain..."
+
+#~ msgid "seconds"
+#~ msgstr "segundoak"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Ezkutatu/Erakutsi"

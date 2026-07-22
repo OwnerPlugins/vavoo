@@ -101,6 +101,9 @@ msgstr "Të gjitha vendet (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Një eksport për një vend tjetër tashmë është në progres. Ju lutem prisni."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Një eksport është në zhvillim e sipër. Ju lutemi prisni përpara se të rregulloni cache."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Vetëm ping anonim i fillimit/rrahjeve të zemrës (id-ja e sesionit, versioni, vula kohore - pa të dhëna personale). Çaktivizo për të hequr dorë."
 
@@ -393,9 +396,6 @@ msgstr "Nuk u gjet asnjë kanal"
 msgid "No channels found for: %s"
 msgstr "Nuk u gjetën kanale për: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Nuk u gjet asnjë kanal në kërkim!!!"
-
 msgid "No items available"
 msgstr "Nuk ka artikuj të disponueshëm"
 
@@ -430,9 +430,6 @@ msgstr "Proxy është i çaktivizuar"
 msgid "Proxy Enabled"
 msgstr "Proxy i aktivizuar"
 
-msgid "Proxy Error:"
-msgstr "Gabim përfaqësuesi:"
-
 msgid "Proxy disabled"
 msgstr "Proxy është i çaktivizuar"
 
@@ -448,14 +445,8 @@ msgstr "Proxy nuk po funksionon. Ju lutemi nisni së pari përfaqësuesin."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy jo aktiv. Skedari M3U nuk mund të gjenerohet."
 
-msgid "Proxy not responding after"
-msgstr "Përfaqësuesi nuk përgjigjet më pas"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy në linjë - {} kanale ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy po riniset... Ju lutemi prisni"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Koha e nisjes së përfaqësuesit (sekonda)"
@@ -622,9 +613,6 @@ msgstr "Vavoo tashmë po funksionon."
 msgid "Version:"
 msgstr "Versioni:"
 
-msgid "Waiting for proxy..."
-msgstr "Në pritje të përfaqësuesit..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Mirë se vini në Vavoo Proxy me mbështetje EPG"
 
@@ -643,9 +631,6 @@ msgstr "intervali"
 
 msgid "lowercase"
 msgstr "shkronja të vogla"
-
-msgid "seconds"
-msgstr "sekonda"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Nuk u gjet asnjë kanal në kërkim!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Gabim përfaqësuesi:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Përfaqësuesi nuk përgjigjet më pas"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy po riniset... Ju lutemi prisni"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Në pritje të përfaqësuesit..."
+
+#~ msgid "seconds"
+#~ msgstr "sekonda"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Fsheh/Shfaq"
