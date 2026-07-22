@@ -2963,6 +2963,24 @@ class vavoo(Screen):
         self._verify_proxy_ready()
 
         self._initialize_timer()
+        self._initialize_proxy_status_timer()
+
+    def _initialize_proxy_status_timer(self):
+        """Keep the proxy_status label live while this screen is open.
+
+        Unlike MainVavoo (which refreshes every 10s via
+        proxy_monitor_timer), this screen previously only set the label
+        once in _verify_proxy_ready() and never again, so it went stale
+        the moment the user opened a country.
+        """
+        self.proxy_status_timer = eTimer()
+        try:
+            self.proxy_status_timer.timeout.connect(
+                self._update_proxy_status_display)
+        except BaseException:
+            self.proxy_status_timer.callback.append(
+                self._update_proxy_status_display)
+        self.proxy_status_timer.start(10000)
 
     def _verify_proxy_ready(self):
         """Verify that the proxy is ready without attempting to start it"""
@@ -3433,6 +3451,11 @@ class vavoo(Screen):
                 pass
         except Exception as e:
             print("Error stopping timer: " + str(e))
+        try:
+            if hasattr(self, 'proxy_status_timer'):
+                self.proxy_status_timer.stop()
+        except Exception as e:
+            print("Error stopping proxy_status_timer: " + str(e))
         return Screen.close(self, *args, **kwargs)
 
     def backhome(self):
