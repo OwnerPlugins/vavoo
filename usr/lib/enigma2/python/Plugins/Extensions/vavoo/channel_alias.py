@@ -348,9 +348,15 @@ def normalize_channel_name(raw_name):
     from re import sub, IGNORECASE
     # First, strip any trailing quality markers and clean up
     name = raw_name.upper().strip()
-    # Remove common suffixes like .c, .s, HD, FHD, etc.
-    name = sub(r'\s*\.(c|s)$', '', name)
-    name = sub(r'\s*(HD|FHD|SD|4K|HEVC|H265)$', '', name, flags=IGNORECASE)
+    # Remove common suffixes like .c, .s, HD, FHD, etc. name is already
+    # uppercased above, so these need IGNORECASE to actually match.
+    # 4K is deliberately NOT stripped here: unlike HD/FHD/SD/HEVC/H265
+    # (pure quality tags that collapse onto the same base channel),
+    # "RAI 4K" and "SKY SPORT 4K" are their own distinct channels with
+    # dedicated ALIAS_MAP entries - stripping it would silently merge
+    # them into the wrong (non-4K) channel.
+    name = sub(r'\s*\.(c|s)$', '', name, flags=IGNORECASE)
+    name = sub(r'\s*(HD|FHD|SD|HEVC|H265)$', '', name, flags=IGNORECASE)
     # Apply explicit rename rules. Exact match, not substring: several
     # patterns are single digits or short generic words ("8", "27",
     # "RAI", "SUPER") meant to disambiguate a channel literally named

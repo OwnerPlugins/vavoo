@@ -60,13 +60,11 @@ def main():
         print("Usage: python xml2pot.py <setup.xml>")
         sys.exit(1)
 
-    # FIXED PATHS
-    xml_file = "setup.xml"  # Same folder as the script
-    pot_file = "locale/Calendar.pot"  # In locale/ folder
+    xml_file = sys.argv[1]
+    pot_file = "locale/vavoo.pot"  # In locale/ folder
 
     if not os.path.exists(xml_file):
         print("File not found: %s" % xml_file)
-        print("Make sure xml2pot.py is in the same folder as setup.xml")
         sys.exit(1)
 
     # Extract strings

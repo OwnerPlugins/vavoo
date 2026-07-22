@@ -714,10 +714,6 @@ class VavooProxy:
         def token_monitor_loop():
             while not self._stop_event.is_set():
                 # Check FIRST, then sleep (first check is immediate at startup)
-                if hasattr(self, 'active_streams') and self.active_streams:
-                    select.select([], [], [], 120)
-                else:
-                    select.select([], [], [], 60)
                 try:
                     now = time.time()
                     token_age = (now - self.addon_sig_data["ts"]

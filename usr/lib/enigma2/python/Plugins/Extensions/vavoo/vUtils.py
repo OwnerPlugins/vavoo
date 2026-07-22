@@ -1413,7 +1413,14 @@ def get_country_code_from_bouquet_name(name):
         if sep in name:
             base_name = name.split(sep)[0].strip()
             break
-    return country_codes.get(base_name.capitalize(), None)
+    # Case-insensitive lookup: .capitalize() breaks multi-word names
+    # like "United Kingdom" -> "United kingdom", which then can't match
+    # the Title-Case keys in country_codes.
+    base_name_lower = base_name.lower()
+    for key, code in country_codes.items():
+        if key.lower() == base_name_lower:
+            return code
+    return None
 
 
 def get_country_code(country_name):
@@ -1843,7 +1850,7 @@ class VavooEPGMatcher:
             return
 
         try:
-            with open(rytec_file, 'r', encoding='utf-8') as f:
+            with io.open(rytec_file, 'r', encoding='utf-8') as f:
                 content = f.read()
 
             pattern = r'<channel\s+id="([^"]+)">([^<]+)</channel>\s*(?:<!--\s*([^>]+)\s*-->)?'

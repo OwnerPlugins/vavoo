@@ -12,10 +12,7 @@ from Components.ActionMap import ActionMap
 from Screens.MessageBox import MessageBox
 from enigma import getDesktop
 
-from . import PY3
-
-import gettext
-_ = gettext.gettext
+from . import PY3, _
 
 
 def getDesktopSize():

@@ -510,7 +510,13 @@ def fix_po_file(po_file):
                         i += 1
                     continue
                 else:
+                    # Duplicate header block: skip its msgid/msgstr AND
+                    # all its quoted continuation lines too, or those
+                    # would fall through below as orphaned top-level
+                    # strings attached to no msgid/msgstr (invalid PO).
                     i += 2
+                    while i < len(lines) and lines[i].strip().startswith('"'):
+                        i += 1
                     continue
             if line.strip().startswith('msgid "') and '""' in line:
                 fixed_lines.append('msgid ""\n')
