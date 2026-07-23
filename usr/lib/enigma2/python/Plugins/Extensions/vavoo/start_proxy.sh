@@ -30,9 +30,16 @@ echo ""
 pkill -f "vavoo_proxy.py" 2>/dev/null
 sleep 2
 
+# Some images install plugins under /usr/lib64 instead of /usr/lib
+if [ -d /usr/lib64/enigma2/python/Plugins/Extensions/vavoo ]; then
+    PLUGINPATH=/usr/lib64/enigma2/python/Plugins/Extensions/vavoo
+else
+    PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/vavoo
+fi
+
 # Start the proxy
-cd /usr/lib/enigma2/python/Plugins/Extensions/vavoo
-python /usr/lib/enigma2/python/Plugins/Extensions/vavoo/start_proxy.py > /tmp/vavoo_proxy.log 2>&1 &
+cd "$PLUGINPATH"
+python "$PLUGINPATH/start_proxy.py" > /tmp/vavoo_proxy.log 2>&1 &
 
 # Wait a few seconds for startup
 sleep 5

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+import os
 import sys
 """
 #########################################################
@@ -25,7 +26,10 @@ import sys
 #########################################################
 """
 
-plugin_path = "/usr/lib/enigma2/python/Plugins/Extensions/vavoo"
+# Some images install plugins under /usr/lib64 instead of /usr/lib
+_lib64_path = "/usr/lib64/enigma2/python/Plugins/Extensions/vavoo"
+plugin_path = _lib64_path if os.path.isdir(_lib64_path) else \
+    "/usr/lib/enigma2/python/Plugins/Extensions/vavoo"
 if plugin_path not in sys.path:
     sys.path.append(plugin_path)
 
