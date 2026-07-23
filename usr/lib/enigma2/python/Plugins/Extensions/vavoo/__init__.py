@@ -5,7 +5,7 @@ __author__ = "Lululla & Qu4k3"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "CC BY-NC-SA 4.0"
-__version__ = "1.80"
+__version__ = "1.81"
 
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
