@@ -1,0 +1,25 @@
+name: Skin Consistency Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Check skin widget consistency across resolutions
+        run: |
+          cd usr/lib/enigma2/python/Plugins/Extensions/vavoo
+          python check_skin_consistency.py

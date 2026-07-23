@@ -26,16 +26,15 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   vavoo_proxy.py         # local HTTP proxy (127.0.0.1:4323): auth/token handling, stream resolution, EPG redirects
   start_proxy.py / start_proxy.sh   # spawns vavoo_proxy.py as a detached background process
   bouquet_manager.py     # builds/exports Enigma2 bouquets (flat + hierarchical) pointing at the proxy
-  epg_manager.py         # EPG download/parse/cache + Rytec/satellite-priority channel matching
   channel_alias.py       # channel name normalization/aliasing for EPG matching
-  vUtils.py              # grab-bag: logging, HTTP helpers, caching, proxy status/health helpers
+  vUtils.py              # grab-bag: logging, HTTP helpers, caching, proxy status/health helpers,
+                          #   EPG download/parse/cache + Rytec/satellite-priority channel matching
   notification_system.py # singleton, thread-safe on-screen notification/toast manager
   vavoo_stats.py         # anonymous opt-out startup/heartbeat telemetry (no PII)
   Console.py             # generic subprocess-output Screen used for shell commands in the UI
-  html_conv.py           # HTML entity escape/unescape helpers (str-compat shim, also duplicated in vUtils.py)
-  translate_utils.py     # runtime string translation w/ on-disk cache (translation_cache.json)
   update_translations.py # dev-time script: extracts strings, updates .po/.pot, compiles .mo
   xml2pot.py             # dev-time helper: pulls translatable strings out of skin XML into .pot
+  check_skin_consistency.py # dev-time script: compares widget name= sets across hd/fhd/wqhd skins
   locale/<lang>/LC_MESSAGES/vavoo.{po,mo}  # gettext translations, ~90 languages
   skin/{hd,fhd,wqhd}/*.xml   # per-resolution skin layouts (HD, FullHD, WQHD/4K)
   skin/cowntry/*.png, skin/pics/*.png, skin/images*/*.png  # flags/backgrounds
@@ -83,7 +82,7 @@ per-category/hierarchical) that reference the proxy, matches services
 against the Rytec database for EPG service-reference compatibility, and can
 reorganize bouquet position (top/bottom of channel list).
 
-**EPG (`epg_manager.py` + `channel_alias.py`)** — downloads/parses EPG,
+**EPG (`vUtils.py`'s `VavooEPGMatcher` + `channel_alias.py`)** — downloads/parses EPG,
 caches matched/unmatched channels to
 `/etc/enigma2/vavoo_epg_cache.json` and `..._unmatched_cache.json`, and
 does satellite-priority matching: it reads the user's configured satellites
@@ -165,9 +164,9 @@ f-strings before choosing).
   hand-edit `.po`/`.mo` files** for strings that CI will regenerate; edit
   the source string in the `.py`/`.xml` file instead and let CI (or a local
   run of `update_translations.py`) regenerate translations.
-- `translation_cache.json` and `translate_utils.py` are runtime helpers
-  used by the plugin itself (not just the dev tooling) to translate
-  dynamically-fetched content (e.g. channel/EPG names) on the box.
+- `translation_cache.json` is a dev-tooling cache used by
+  `update_translations.py`'s auto-translate step, not read by the
+  runtime plugin.
 
 ## CI / linting (`.github/workflows/`)
 
@@ -186,6 +185,9 @@ Filenames don't always match their content — check behavior, not just the name
 - `autotag.yml` — watches `__init__.py` for changes; when
   `__version__` changes, tags `v<version>` and creates a GitHub Release
   with an auto-generated changelog from commit messages.
+- `skin_consistency.yml` — runs `check_skin_consistency.py` on push/PR,
+  failing the build if a widget's `name=` is missing from one
+  resolution's skin XML but present in another.
 
 There's no `requirements.txt`, `pyproject.toml`, or lint config file
 (ruff/flake8 run with defaults) — don't add one speculatively.
