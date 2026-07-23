@@ -1423,6 +1423,23 @@ def get_country_code_from_bouquet_name(name):
     return None
 
 
+# Language/demonym adjectives sometimes used as IPTV group names instead
+# of a country name (e.g. "Italian", "German") - not real country names,
+# so they don't belong in __init__.py's country_codes table, but
+# get_country_code() has always accepted them too.
+_EXTRA_COUNTRY_ALIASES = {
+    'italia': 'it',
+    'italiana': 'it',
+    'italian': 'it',
+    'german': 'de',
+    'french': 'fr',
+    'spanish': 'es',
+    'english': 'gb',
+    'british': 'gb',
+    'default': 'us',
+}
+
+
 def get_country_code(country_name):
     """
     Extract country code from country name.
@@ -1447,101 +1464,21 @@ def get_country_code(country_name):
     if len(country_name) < 2:
         return ""
 
-    special_mapping = {
-        'America': 'us',
-        'Arabia': 'sa',
-        'Balkans': 'bk',
-        'Baltic': 'baltic',
-        'Czech Republic': 'cz',
-        'Czech': 'cz',
-        'Global': 'internat',
-        'Great Britain': 'gb',
-        'Holy See': 'va',
-        'Internat': 'internat',
-        'International': 'internat',
-        'Internaz': 'internat',
-        'North Korea': 'kp',
-        'Russia': 'ru',
-        'Russian Federation': 'ru',
-        'Scandinavia': 'scandinavia',
-        'Slovak Republic': 'sk',
-        'Slovakia': 'sk',
-        'South Korea': 'kr',
-        'UAE': 'ae',
-        'UK': 'gb',
-        'USA': 'us',
-        'United Arab Emirates': 'ae',
-        'United Kingdom': 'gb',
-        'United States': 'us',
-        'Vatican City': 'va',
-        'World': 'internat',
-    }
-
-    if country_name in special_mapping:
-        return special_mapping[country_name]
-
-    # Full country map
-    country_map = {
-        # Europe
-        'Albania': 'al',
-        'Arabia': 'sa',
-        'Austria': 'at',
-        'Balkans': 'bk',
-        'Belgium': 'be',
-        'Bulgaria': 'bg',
-        'Croatia': 'hr',
-        'Czech Republic': 'cz',
-        'France': 'fr',
-        'Germany': 'de',
-        'Greece': 'gr',
-        'Hungary': 'hu',
-        'Italy': 'it',
-        'Netherlands': 'nl',
-        'Poland': 'pl',
-        'Portugal': 'pt',
-        'Romania': 'ro',
-        'Russia': 'ru',
-        'Slovakia': 'sk',
-        'Slovenia': 'si',
-        'Spain': 'es',
-        'Switzerland': 'ch',
-        'Turkey': 'tr',
-        'UK': 'gb',
-        'United Kingdom': 'gb',
-
-        # Special cases
-        'Global': 'internat',
-        'Internat': 'internat',
-        'International': 'internat',
-        'Internaz': 'internat',
-        'World': 'internat',
-
-        'Italia': 'it',
-        'Italiana': 'it',
-        'Italian': 'it',
-        'German': 'de',
-        'French': 'fr',
-        'Spanish': 'es',
-        'English': 'gb',
-        'British': 'gb',
-
-        # Default
-        'default': 'us'
-    }
-
-    # Exact match
-    if country_name in country_map:
-        return country_map[country_name]
-
-    # Case-insensitive
+    # country_codes (__init__.py) is the single source of truth for real
+    # country names - checked case-insensitively.
     name_lower = country_name.lower()
-    for key, code in country_map.items():
+    for key, code in country_codes.items():
         if key.lower() == name_lower:
             return code
 
-    # Partial match
-    for key, code in country_map.items():
-        if key.lower() in name_lower or name_lower in key.lower():
+    if name_lower in _EXTRA_COUNTRY_ALIASES:
+        return _EXTRA_COUNTRY_ALIASES[name_lower]
+
+    # Partial match against the canonical table, for group names that
+    # embed a country name inside a longer string
+    for key, code in country_codes.items():
+        key_lower = key.lower()
+        if key_lower in name_lower or name_lower in key_lower:
             return code
 
     return ""
@@ -1941,12 +1878,13 @@ class VavooEPGMatcher:
         norm_key = self._normalize_key(name_part, country_part)
         self.normalized_index[norm_key] = key
 
-    def _get_signal_priority(self, service_ref, country_code=None):
+    def _get_signal_priority(self, service_ref):
         """
         Determine signal priority based on service reference type.
 
         Priority levels:
-        1 = Satellite (best) - with bonus for Italian satellites
+        1 = Satellite (best) - Italian-satellite bonus is applied by the
+            caller separately, via orbital position + a boost multiplier
         2 = Terrestrial DVB-T
         3 = Cable
         4 = Other / IPTV or unknown
@@ -1959,38 +1897,44 @@ class VavooEPGMatcher:
             namespace_str = parts[3] if parts[3] else '0'
             namespace = int(namespace_str, 16)
 
-            # Known satellite namespaces
+            # Known satellite namespaces. Enigma2 encodes orbital position
+            # as (tenths_of_a_degree << 16) for east, or
+            # ((3600 - tenths_of_a_degree) << 16) for west - verified
+            # against the terrestrial/cable checks below, which use the
+            # same top-16-bits convention (0xFFFF0000).
             satellite_namespaces = [
-                0x5A0000,   # 13.0°E HotBird (Italy)
+                0x820000,   # 13.0°E HotBird (Italy)
                 0xC00000,   # 19.2°E Astra
                 0xEB0000,   # 23.5°E Astra 3
-                0xEF0000,   # 28.2°E Astra 2
-                0xE080000,  # 16.0°E Eutelsat 16A
-                0x9E0000,   # 9.0°E Eutelsat 9B
-                0x7E0000,   # 7.0°E Eutelsat 7E
+                0x11A0000,  # 28.2°E Astra 2
+                0xA00000,   # 16.0°E Eutelsat 16A
+                0x5A0000,   # 9.0°E Eutelsat 9B
+                0x460000,   # 7.0°E Eutelsat 7E
                 0xDDE0000,  # 5.0°W Eutelsat 5WA (Italy)
                 0xCE40000,  # 30.0°W Hispasat
-                0x2A00000,  # 42.0°E Türksat
-                0x4C0000,   # 4.8°E Astra 4A / Sirius
-                0x1F80000,  # 31.5°E Astra 5B
-                0x2100000,  # 33.0°E Eutelsat 33E
-                0x1980000,  # 25.5°E Es'hail / Arabsat
+                0x1A40000,  # 42.0°E Türksat
+                0x300000,   # 4.8°E Astra 4A / Sirius
+                0x13B0000,  # 31.5°E Astra 5B
+                0x14A0000,  # 33.0°E Eutelsat 33E
+                0xFF0000,   # 25.5°E Es'hail / Arabsat
                 0x1C20000,  # 45.0°E AzerSpace
                 0x1860000,  # 39.0°E Hellas Sat
-                0x36E0000,  # 36.0°E Eutelsat 36B
+                0x1680000,  # 36.0°E Eutelsat 36B
                 0x1040000,  # 26.0°E Badr
                 0x130000,   # 1.9°E BulgariaSat
             ]
 
-            # Italian satellites (bonus priority)
-            italian_satellites = [0x5A0000, 0xDDE0000]
-
-            # Check for satellite match
+            # Check for satellite match. Mask must be 0xFFFF0000 (top 16
+            # bits, matching how the value above was built) - the
+            # previous 0xFFF00000 zeroed out part of the orbital-position
+            # field itself, so it could only ever match a namespace by
+            # coincidence, not because it was actually that satellite.
             for sat_ns in satellite_namespaces:
-                if namespace & 0xFFF00000 == sat_ns:
-                    if country_code == 'it' and sat_ns in italian_satellites:
-                        return 1  # Italian satellite - top priority
-                    return 1      # Other satellite
+                if namespace & 0xFFFF0000 == sat_ns:
+                    # Italian satellite bonus is applied by the caller
+                    # via priority + a boost multiplier, not by this
+                    # priority level - satellite is always priority 1.
+                    return 1
 
             # Terrestrial DVB-T
             if namespace & 0xFFFF0000 == 0xEEEE0000:
@@ -2305,8 +2249,11 @@ class VavooEPGMatcher:
                     'matched': True,
                     'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
                 }
-            with open(CACHE_FILE, 'w') as f:
+            complete_cache = _prune_cache_if_needed(complete_cache)
+            temp_file = CACHE_FILE + ".tmp"
+            with open(temp_file, 'w') as f:
                 dump(complete_cache, f, indent=2, sort_keys=True)
+            rename(temp_file, CACHE_FILE)
             self.cache = complete_cache
             self._build_normalized_index()
             self.new_matches.clear()
@@ -2316,6 +2263,34 @@ class VavooEPGMatcher:
 
 
 # ==================== EPG CACHE FUNCTIONS ====================
+
+# Safety-net cap: the matched-channel cache is meant to persist
+# indefinitely (unlike vavoo_proxy.py's short-TTL resolve_cache), so
+# this is deliberately generous - real usage (every unique channel
+# name across every country a user has ever exported) tops out well
+# below this. It only guards against unbounded/pathological growth,
+# trimming the oldest entries by their own 'timestamp' field.
+MAX_CACHE_ENTRIES = 15000
+
+
+def _prune_cache_if_needed(cache, max_entries=MAX_CACHE_ENTRIES):
+    """Drop the oldest entries (by 'timestamp') if cache exceeds max_entries."""
+    if len(cache) <= max_entries:
+        return cache
+    try:
+        ordered = sorted(
+            cache.items(),
+            key=lambda kv: kv[1].get('timestamp', ''),
+        )
+        to_drop = len(cache) - max_entries
+        for key, _ in ordered[:to_drop]:
+            del cache[key]
+        print(
+            "[Cache] Pruned {} oldest entries (cap: {})".format(
+                to_drop, max_entries))
+    except Exception as e:
+        print("[Cache] Error pruning cache: {}".format(e))
+    return cache
 
 
 def load_temp_cache():
@@ -2360,8 +2335,11 @@ def save_cache(cache):
                         key, missing))
                 return False
 
-        with open(CACHE_FILE, 'w') as f:
+        cache = _prune_cache_if_needed(cache)
+        temp_file = CACHE_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
             dump(cache, f, indent=2, sort_keys=True)
+        rename(temp_file, CACHE_FILE)
         print("[Cache] Saved {} entries".format(len(cache)))
         return True
     except Exception as e:
@@ -2427,10 +2405,14 @@ def clean_cache_and_unmatched():
             new_main[key] = value
 
     # Save caches
-    with open(CACHE_FILE, 'w') as f:
+    cache_temp = CACHE_FILE + ".tmp"
+    with open(cache_temp, 'w') as f:
         dump(new_main, f, indent=2)
-    with open(UNMATCHED_FILE, 'w') as f:
+    rename(cache_temp, CACHE_FILE)
+    unmatched_temp = UNMATCHED_FILE + ".tmp"
+    with open(unmatched_temp, 'w') as f:
         dump(unmatched, f, indent=2)
+    rename(unmatched_temp, UNMATCHED_FILE)
     matcher.cache = new_main
     matcher._build_normalized_index()
     print("[Cache] Cleanup completed: moved {} entries to unmatched".format(moved))
@@ -2450,8 +2432,10 @@ def cleanup_cache_matched_flag():
                 value['matched'] = False
                 changed = True
     if changed:
-        with open(CACHE_FILE, 'w') as f:
+        temp_file = CACHE_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
             dump(cache, f, indent=2)
+        rename(temp_file, CACHE_FILE)
         print("[Cache] Cleaned matched flags for invalid IDs.")
 
 
@@ -2516,8 +2500,11 @@ def update_complete_cache(
             print("[Cache] Added matched: %s -> %s" % (key, m['rytec_id']))
 
         # Save main cache
-        with open(CACHE_FILE, 'w') as f:
+        complete_cache = _prune_cache_if_needed(complete_cache)
+        temp_file = CACHE_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
             dump(complete_cache, f, indent=4, sort_keys=True)
+        rename(temp_file, CACHE_FILE)
 
         # Update matcher with new cache
         matcher.cache = complete_cache
@@ -2867,13 +2854,15 @@ def fix_cache_format(
 
         # Save if any changes
         if modified > 0 or duplicates > 0 or keys_changed or removed > 0:
-            with open(CACHE_FILE, 'w') as f:
+            temp_file = CACHE_FILE + ".tmp"
+            with open(temp_file, 'w') as f:
                 dump(
                     new_cache,
                     f,
                     indent=4,
                     sort_keys=True,
                     ensure_ascii=False)
+            rename(temp_file, CACHE_FILE)
             print(
                 "[Cache] Fixed %d entries, marked %d duplicates, removed %d entries, keys lowercased" %
                 (modified, duplicates, removed))
