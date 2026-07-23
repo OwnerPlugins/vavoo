@@ -101,6 +101,9 @@ msgstr "אַלע לענדער (%ד)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "אַן עקספּאָרט פֿאַר אן אנדער לאַנד איז שוין אין פּראָגרעס. ביטע וואַרטן."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "אַן עקספּאָרט איז אין פּראָגרעס. ביטע וואַרטן איידער פיקסיר די קאַש."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "אַנאָנימע באַנוצערס סטאַרטאַפּ / כאַרטביט פּינג בלויז (סעסיע שייַן, ווערסיע, טימעסטאַמפּ - קיין פערזענלעכע דאַטן). דיסייבאַל צו אַפּט אויס."
 
@@ -393,9 +396,6 @@ msgstr "קיין טשאַנאַלז געפונען"
 msgid "No channels found for: %s"
 msgstr "קיין טשאַנאַלז געפונען פֿאַר: %s"
 
-msgid "No channels found in search!!!"
-msgstr "קיין טשאַנאַלז געפֿונען אין זוכן !!!"
-
 msgid "No items available"
 msgstr "קיין ייטאַמז בנימצא"
 
@@ -430,9 +430,6 @@ msgstr "פּראָקסי פאַרקריפּלט"
 msgid "Proxy Enabled"
 msgstr "פּראָקסי ענאַבלעד"
 
-msgid "Proxy Error:"
-msgstr "פראקסי טעות:"
-
 msgid "Proxy disabled"
 msgstr "פּראָקסי פאַרקריפּלט"
 
@@ -448,14 +445,8 @@ msgstr "פּראָקסי איז נישט פליסנדיק. ביטע אָנהיי
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "פּראָקסי איז נישט אַקטיוו. ניט געקענט צו דזשענערייט M3U טעקע."
 
-msgid "Proxy not responding after"
-msgstr "פּראָקסי ניט ריספּאַנדינג נאָך"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "פּראָקסי אָנליין - {} טשאַנאַלז ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "פּראָקסי ריסטאַרטינג ... ביטע וואַרטן"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "פּראַקסי סטאַרטאַפּ טיימאַוט (סעקונדן)"
@@ -622,9 +613,6 @@ msgstr "וואַוואָ איז שוין פליסנדיק."
 msgid "Version:"
 msgstr "ווערסיע:"
 
-msgid "Waiting for proxy..."
-msgstr "ווארטן אויף פראקסי..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ברוכים הבאים צו Vavoo Proxy מיט EPG שטיצן"
 
@@ -643,9 +631,6 @@ msgstr "מעהאַלעך"
 
 msgid "lowercase"
 msgstr "קליין אותיות"
-
-msgid "seconds"
-msgstr "סעקונדעס"
 
 msgid "v{} -> v{}"
 msgstr "v {} -> וו{}"
@@ -673,6 +658,24 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "קיין טשאַנאַלז געפֿונען אין זוכן !!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "פראקסי טעות:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "פּראָקסי ניט ריספּאַנדינג נאָך"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "פּראָקסי ריסטאַרטינג ... ביטע וואַרטן"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "ווארטן אויף פראקסי..."
+
+#~ msgid "seconds"
+#~ msgstr "סעקונדעס"
 
 #~ msgid "Hide/Show"
 #~ msgstr "באַהאַלטן / ווייַזן"

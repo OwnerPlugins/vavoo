@@ -101,6 +101,9 @@ msgstr "Сите земји (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Веќе е во тек извоз за друга земја. Ве молиме почекајте."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Во тек е извоз. Ве молиме почекајте пред да го поправите кешот."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Само анонимен пинг за стартување/отчукување на срцето (ид на сесија, верзија, временски печат - нема лични податоци). Оневозможете за да се откажете."
 
@@ -393,9 +396,6 @@ msgstr "Не се пронајдени канали"
 msgid "No channels found for: %s"
 msgstr "Не се пронајдени канали за: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Не се пронајдени канали во пребарувањето!!!"
-
 msgid "No items available"
 msgstr "Нема достапни ставки"
 
@@ -430,9 +430,6 @@ msgstr "Проксито е оневозможено"
 msgid "Proxy Enabled"
 msgstr "Овозможено прокси"
 
-msgid "Proxy Error:"
-msgstr "Грешка на прокси:"
-
 msgid "Proxy disabled"
 msgstr "Проксито е оневозможено"
 
@@ -448,14 +445,8 @@ msgstr "Проксито не работи. Прво стартувајте го
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Проксито не е активен. Не може да се генерира датотека M3U."
 
-msgid "Proxy not responding after"
-msgstr "Полномошникот не одговара после"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Прокси онлајн - {} канали ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Проксито се рестартира... Ве молиме почекајте"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Истекување на стартувањето на прокси (секунди)"
@@ -622,9 +613,6 @@ msgstr "Vavoo веќе работи."
 msgid "Version:"
 msgstr "Верзија:"
 
-msgid "Waiting for proxy..."
-msgstr "Се чека полномошник..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Добредојдовте во Vavoo Proxy со поддршка за EPG"
 
@@ -643,9 +631,6 @@ msgstr "интервал"
 
 msgid "lowercase"
 msgstr "мали букви"
-
-msgid "seconds"
-msgstr "секунди"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Офлајн прокси"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Рестартирањето не успеа"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Не се пронајдени канали во пребарувањето!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Грешка на прокси:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Полномошникот не одговара после"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Проксито се рестартира... Ве молиме почекајте"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Се чека полномошник..."
+
+#~ msgid "seconds"
+#~ msgstr "секунди"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Скриј/Покажи"

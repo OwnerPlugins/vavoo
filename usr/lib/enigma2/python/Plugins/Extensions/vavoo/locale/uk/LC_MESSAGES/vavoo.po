@@ -102,6 +102,9 @@ msgstr "Усі країни (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Експорт в іншу країну вже триває. Будь ласка, зачекайте."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Виконується експорт. Зачекайте, перш ніж виправляти кеш."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Лише анонімний пінг запуску/контроль (ідентифікатор сеансу, версія, мітка часу – особистих даних немає). Вимкніть, щоб відмовитися."
 
@@ -394,9 +397,6 @@ msgstr "Канали не знайдено"
 msgid "No channels found for: %s"
 msgstr "Не знайдено каналів для: %s"
 
-msgid "No channels found in search!!!"
-msgstr "У пошуку каналів не знайдено!!!"
-
 msgid "No items available"
 msgstr "Немає доступних товарів"
 
@@ -431,9 +431,6 @@ msgstr "Проксі вимкнено"
 msgid "Proxy Enabled"
 msgstr "Проксі увімкнено"
 
-msgid "Proxy Error:"
-msgstr "Помилка проксі:"
-
 msgid "Proxy disabled"
 msgstr "Проксі вимкнено"
 
@@ -449,14 +446,8 @@ msgstr "Проксі не працює. Спочатку запустіть пр
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Проксі не активний. Не вдалося створити файл M3U."
 
-msgid "Proxy not responding after"
-msgstr "Проксі не відповідає після"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Проксі онлайн - {} каналів ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Перезапуск проксі... Зачекайте"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Час очікування запуску проксі (секунди)"
@@ -623,9 +614,6 @@ msgstr "Vavoo вже працює."
 msgid "Version:"
 msgstr "Версія:"
 
-msgid "Waiting for proxy..."
-msgstr "Очікування проксі..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Ласкаво просимо до Vavoo Proxy із підтримкою EPG"
 
@@ -644,9 +632,6 @@ msgstr "інтервал"
 
 msgid "lowercase"
 msgstr "нижній регістр"
-
-msgid "seconds"
-msgstr "секунд"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ Проксі офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не вдалося перезапустити"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "У пошуку каналів не знайдено!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Помилка проксі:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Проксі не відповідає після"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Перезапуск проксі... Зачекайте"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Очікування проксі..."
+
+#~ msgid "seconds"
+#~ msgstr "секунд"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Приховати/Показати"

@@ -101,6 +101,9 @@ msgstr "Countrieshli ýurtlar (% d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Başga bir ýurt üçin eksport eýýäm dowam edýär. Garaşmagyňyzy haýyş edýäris."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Eksport dowam edýär. Keşi düzetmezden ozal garaşyň."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Anonim başlangyç / ýürek urgusy (diňe sessiýa ID, wersiýa, wagt belligi - şahsy maglumatlar ýok). Çykmagy öçüriň."
 
@@ -393,9 +396,6 @@ msgstr "Kanal tapylmady"
 msgid "No channels found for: %s"
 msgstr "Kanal tapylmady:% s"
 
-msgid "No channels found in search!!!"
-msgstr "Gözlegde kanal tapylmady !!!"
-
 msgid "No items available"
 msgstr "Hiç zat ýok"
 
@@ -430,9 +430,6 @@ msgstr "Proksi ýapyk"
 msgid "Proxy Enabled"
 msgstr "Proksi açyk"
 
-msgid "Proxy Error:"
-msgstr "Proksi säwligi:"
-
 msgid "Proxy disabled"
 msgstr "Proksi ýapyk"
 
@@ -448,14 +445,8 @@ msgstr "Proksi işlemeýär. Ilki bilen proksi başlaň."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proksi işjeň däl. M3U faýly döredip bolmaýar."
 
-msgid "Proxy not responding after"
-msgstr "Proksi soň jogap berenok"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proksi onlaýn - {} kanallar ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proksi täzeden başlaýar ... Garaşmagyňyzy haýyş edýäris"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Proksi başlangyç möhleti (sekuntlar)"
@@ -622,9 +613,6 @@ msgstr "Vavoo eýýäm işleýär."
 msgid "Version:"
 msgstr "Wersiýa:"
 
-msgid "Waiting for proxy..."
-msgstr "Proksi garaşmak ..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG goldawy bilen Vavoo Proxy-a hoş geldiňiz"
 
@@ -643,9 +631,6 @@ msgstr "aralyk"
 
 msgid "lowercase"
 msgstr "kiçi harp"
-
-msgid "seconds"
-msgstr "sekunt"
 
 msgid "v{} -> v{}"
 msgstr "v {} -> v {}"
@@ -673,6 +658,24 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Gözlegde kanal tapylmady !!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Proksi säwligi:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proksi soň jogap berenok"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proksi täzeden başlaýar ... Garaşmagyňyzy haýyş edýäris"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Proksi garaşmak ..."
+
+#~ msgid "seconds"
+#~ msgstr "sekunt"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Gizlemek / görkezmek"

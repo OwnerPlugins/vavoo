@@ -22,6 +22,8 @@
 
 
 
+
+
 msgid "(%d channels)?"
 msgstr ""
 
@@ -110,6 +112,9 @@ msgid "All countries (%d)"
 msgstr ""
 
 msgid "An export for another country is already in progress. Please wait."
+msgstr ""
+
+msgid "An export is in progress. Please wait before fixing the cache."
 msgstr ""
 
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
@@ -400,9 +405,6 @@ msgstr ""
 msgid "No channels found for: %s"
 msgstr ""
 
-msgid "No channels found in search!!!"
-msgstr ""
-
 msgid "No items available"
 msgstr ""
 
@@ -436,9 +438,6 @@ msgstr ""
 msgid "Proxy Enabled"
 msgstr ""
 
-msgid "Proxy Error:"
-msgstr ""
-
 msgid "Proxy disabled"
 msgstr ""
 
@@ -454,13 +453,7 @@ msgstr ""
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr ""
 
-msgid "Proxy not responding after"
-msgstr ""
-
 msgid "Proxy online - {} channels  ✓"
-msgstr ""
-
-msgid "Proxy restarting... Please wait"
 msgstr ""
 
 msgid "Proxy startup timeout (seconds)"
@@ -625,9 +618,6 @@ msgstr ""
 msgid "Version:"
 msgstr ""
 
-msgid "Waiting for proxy..."
-msgstr ""
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr ""
 
@@ -644,9 +634,6 @@ msgid "interval"
 msgstr ""
 
 msgid "lowercase"
-msgstr ""
-
-msgid "seconds"
 msgstr ""
 
 msgid "v{} -> v{}"

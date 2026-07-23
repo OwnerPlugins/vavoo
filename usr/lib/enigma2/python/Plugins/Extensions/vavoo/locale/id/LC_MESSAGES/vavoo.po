@@ -101,6 +101,9 @@ msgstr "Semua negara (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Ekspor untuk negara lain sedang berlangsung. Harap tunggu."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Ekspor sedang berlangsung. Harap tunggu sebelum memperbaiki cache."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Hanya startup anonim/ping detak jantung (id sesi, versi, stempel waktu - tidak ada data pribadi). Nonaktifkan untuk memilih tidak ikut."
 
@@ -393,9 +396,6 @@ msgstr "Tidak ada saluran yang ditemukan"
 msgid "No channels found for: %s"
 msgstr "Tidak ada saluran ditemukan untuk: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Tidak ada saluran yang ditemukan dalam pencarian!!!"
-
 msgid "No items available"
 msgstr "Tidak ada item yang tersedia"
 
@@ -430,9 +430,6 @@ msgstr "Proksi Dinonaktifkan"
 msgid "Proxy Enabled"
 msgstr "Proksi Diaktifkan"
 
-msgid "Proxy Error:"
-msgstr "Kesalahan Proksi:"
-
 msgid "Proxy disabled"
 msgstr "Proksi dinonaktifkan"
 
@@ -448,14 +445,8 @@ msgstr "Proksi tidak berjalan. Silakan mulai proxy terlebih dahulu."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proksi tidak aktif. Tidak dapat membuat file M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proksi tidak merespons setelahnya"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proksi online - {} saluran ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proksi dimulai ulang... Harap tunggu"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Batas waktu pengaktifan proxy (detik)"
@@ -622,9 +613,6 @@ msgstr "Vavoo sudah berjalan."
 msgid "Version:"
 msgstr "Versi:"
 
-msgid "Waiting for proxy..."
-msgstr "Menunggu proksi..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Selamat datang di Vavoo Proxy dengan dukungan EPG"
 
@@ -643,9 +631,6 @@ msgstr "selang"
 
 msgid "lowercase"
 msgstr "huruf kecil"
-
-msgid "seconds"
-msgstr "detik"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Mulai Ulang Gagal"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Tidak ada saluran yang ditemukan dalam pencarian!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Kesalahan Proksi:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proksi tidak merespons setelahnya"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proksi dimulai ulang... Harap tunggu"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Menunggu proksi..."
+
+#~ msgid "seconds"
+#~ msgstr "detik"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Sembunyikan/Tampilkan"

@@ -101,6 +101,9 @@ msgstr "Öll lönd (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Útflutningur til annars lands er þegar í gangi. Vinsamlegast bíddu."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Útflutningur stendur yfir. Vinsamlegast bíddu áður en þú lagar skyndiminni."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Nafnlaus gangsetning/hjartsláttarping eingöngu (lotuauðkenni, útgáfa, tímastimpill - engin persónuleg gögn). Slökktu til að afþakka."
 
@@ -393,9 +396,6 @@ msgstr "Engar rásir fundust"
 msgid "No channels found for: %s"
 msgstr "Engar rásir fundust fyrir: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Engar rásir fundust í leit!!!"
-
 msgid "No items available"
 msgstr "Engir hlutir í boði"
 
@@ -430,9 +430,6 @@ msgstr "Umboð óvirkt"
 msgid "Proxy Enabled"
 msgstr "Proxy virkt"
 
-msgid "Proxy Error:"
-msgstr "Umboðsvilla:"
-
 msgid "Proxy disabled"
 msgstr "Umboð óvirkt"
 
@@ -448,14 +445,8 @@ msgstr "Proxy er ekki í gangi. Vinsamlegast ræstu umboðið fyrst."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Umboð ekki virkt. Ekki tókst að búa til M3U skrá."
 
-msgid "Proxy not responding after"
-msgstr "Umboðsmaður svarar ekki á eftir"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Umboð á netinu - {} rásir ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy endurræsir... Vinsamlegast bíddu"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Tímamörk ræsingar proxy (sekúndur)"
@@ -621,9 +612,6 @@ msgstr "Vavoo er þegar í gangi."
 msgid "Version:"
 msgstr "Útgáfa:"
 
-msgid "Waiting for proxy..."
-msgstr "Bíður eftir proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Velkomin í Vavoo Proxy með EPG stuðningi"
 
@@ -642,9 +630,6 @@ msgstr "millibili"
 
 msgid "lowercase"
 msgstr "lágstafir"
-
-msgid "seconds"
-msgstr "sekúndur"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -672,6 +657,24 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Engar rásir fundust í leit!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Umboðsvilla:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Umboðsmaður svarar ekki á eftir"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy endurræsir... Vinsamlegast bíddu"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Bíður eftir proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "sekúndur"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Fela/Sýna"

@@ -102,6 +102,9 @@ msgstr "Visos šalys (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Jau vykdomas eksportas į kitą šalį. Palaukite."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Vyksta eksportas. Palaukite prieš taisydami talpyklą."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Tik anoniminis paleidimas / širdies plakimas (seanso ID, versija, laiko žyma – nėra asmeninių duomenų). Išjungti, kad atsisakytumėte."
 
@@ -394,9 +397,6 @@ msgstr "Nerasta jokių kanalų"
 msgid "No channels found for: %s"
 msgstr "Nerasta kanalų: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Paieškoje nerasta jokių kanalų!!!"
-
 msgid "No items available"
 msgstr "Prekių nėra"
 
@@ -431,9 +431,6 @@ msgstr "Tarpinis serveris išjungtas"
 msgid "Proxy Enabled"
 msgstr "Įgalintas tarpinis serveris"
 
-msgid "Proxy Error:"
-msgstr "Tarpinio serverio klaida:"
-
 msgid "Proxy disabled"
 msgstr "Tarpinis serveris išjungtas"
 
@@ -449,14 +446,8 @@ msgstr "Tarpinis serveris neveikia. Pirmiausia paleiskite tarpinį serverį."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Tarpinis serveris neaktyvus. Nepavyko sugeneruoti M3U failo."
 
-msgid "Proxy not responding after"
-msgstr "Įgaliotasis serveris neatsako po to"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Tarpinis serveris prisijungęs – {} kanalai ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Tarpinis serveris paleistas iš naujo... Palaukite"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Tarpinio serverio paleidimo skirtasis laikas (sekundėmis)"
@@ -623,9 +614,6 @@ msgstr "Vavoo jau veikia."
 msgid "Version:"
 msgstr "Versija:"
 
-msgid "Waiting for proxy..."
-msgstr "Laukiama tarpinio serverio..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Sveiki atvykę į „Vavoo Proxy“ su EPG palaikymu"
 
@@ -644,9 +632,6 @@ msgstr "intervalas"
 
 msgid "lowercase"
 msgstr "mažosiomis raidėmis"
-
-msgid "seconds"
-msgstr "sekundžių"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ Tarpinis serveris neprisijungęs"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nepavyko paleisti iš naujo"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Paieškoje nerasta jokių kanalų!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Tarpinio serverio klaida:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Įgaliotasis serveris neatsako po to"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Tarpinis serveris paleistas iš naujo... Palaukite"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Laukiama tarpinio serverio..."
+
+#~ msgid "seconds"
+#~ msgstr "sekundžių"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Slėpti/Rodyti"

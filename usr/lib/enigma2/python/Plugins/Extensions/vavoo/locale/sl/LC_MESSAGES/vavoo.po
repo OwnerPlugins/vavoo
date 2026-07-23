@@ -102,6 +102,9 @@ msgstr "Vse države (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Izvoz v drugo državo že poteka. Počakajte prosim."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Izvoz je v teku. Počakajte, preden popravite predpomnilnik."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Samo anonimni zagon/ping s srčnim utripom (id seje, različica, časovni žig - brez osebnih podatkov). Onemogočite, da se odjavite."
 
@@ -394,9 +397,6 @@ msgstr "Ni kanalov"
 msgid "No channels found for: %s"
 msgstr "Ni kanalov za: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Pri iskanju ni bilo mogoče najti nobenega kanala!!!"
-
 msgid "No items available"
 msgstr "Ni artiklov na voljo"
 
@@ -431,9 +431,6 @@ msgstr "Proxy onemogočen"
 msgid "Proxy Enabled"
 msgstr "Proxy omogočen"
 
-msgid "Proxy Error:"
-msgstr "Napaka posrednika:"
-
 msgid "Proxy disabled"
 msgstr "Proxy onemogočen"
 
@@ -449,14 +446,8 @@ msgstr "Proxy se ne izvaja. Najprej zaženite proxy."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy ni aktiven. Ni mogoče ustvariti datoteke M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proxy se po tem ne odziva"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy na spletu - {} kanalov ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Ponovni zagon proxyja ... Počakajte"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Časovna omejitev zagona strežnika proxy (sekunde)"
@@ -622,9 +613,6 @@ msgstr "Vavoo že deluje."
 msgid "Version:"
 msgstr "Različica:"
 
-msgid "Waiting for proxy..."
-msgstr "Čakanje na proxy ..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Dobrodošli v Vavoo Proxy s podporo za EPG"
 
@@ -643,9 +631,6 @@ msgstr ""
 
 msgid "lowercase"
 msgstr "male črke"
-
-msgid "seconds"
-msgstr "sekund"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proxy brez povezave"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovni zagon ni uspel"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Pri iskanju ni bilo mogoče najti nobenega kanala!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Napaka posrednika:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy se po tem ne odziva"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Ponovni zagon proxyja ... Počakajte"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Čakanje na proxy ..."
+
+#~ msgid "seconds"
+#~ msgstr "sekund"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Skrij/prikaži"

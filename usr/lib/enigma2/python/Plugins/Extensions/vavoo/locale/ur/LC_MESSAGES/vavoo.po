@@ -101,6 +101,9 @@ msgstr "تمام ممالک (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "دوسرے ملک کے لیے برآمد پہلے ہی جاری ہے۔ برائے مہربانی انتظار کریں۔"
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "ایکسپورٹ جاری ہے۔ براہ کرم کیشے کو ٹھیک کرنے سے پہلے انتظار کریں۔"
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "صرف گمنام اسٹارٹ اپ/دل کی دھڑکن پنگ (سیشن آئی ڈی، ورژن، ٹائم اسٹیمپ - کوئی ذاتی ڈیٹا نہیں)۔ آپٹ آؤٹ کرنے کو غیر فعال کریں۔"
 
@@ -393,9 +396,6 @@ msgstr "کوئی چینل نہیں ملا"
 msgid "No channels found for: %s"
 msgstr "اس کے لیے کوئی چینل نہیں ملا: %s"
 
-msgid "No channels found in search!!!"
-msgstr "تلاش میں کوئی چینل نہیں ملا!!!"
-
 msgid "No items available"
 msgstr "کوئی آئٹمز دستیاب نہیں ہیں۔"
 
@@ -430,9 +430,6 @@ msgstr "پراکسی غیر فعال"
 msgid "Proxy Enabled"
 msgstr "پراکسی فعال"
 
-msgid "Proxy Error:"
-msgstr "پراکسی خرابی:"
-
 msgid "Proxy disabled"
 msgstr "پراکسی غیر فعال ہے۔"
 
@@ -448,14 +445,8 @@ msgstr "پراکسی نہیں چل رہی ہے۔ براہ کرم پہلے پرا
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "پراکسی فعال نہیں ہے۔ M3U فائل بنانے سے قاصر۔"
 
-msgid "Proxy not responding after"
-msgstr "پراکسی اس کے بعد جواب نہیں دے رہی ہے۔"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "پراکسی آن لائن - {} چینلز ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "پراکسی دوبارہ شروع ہو رہی ہے... براہ کرم انتظار کریں۔"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "پراکسی اسٹارٹ اپ ٹائم آؤٹ (سیکنڈز)"
@@ -622,9 +613,6 @@ msgstr "واوو پہلے ہی چل رہا ہے۔"
 msgid "Version:"
 msgstr "ورژن:"
 
-msgid "Waiting for proxy..."
-msgstr "پراکسی کا انتظار کر رہا ہے..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG سپورٹ کے ساتھ Vavoo Proxy میں خوش آمدید"
 
@@ -643,9 +631,6 @@ msgstr "وقفہ"
 
 msgid "lowercase"
 msgstr "چھوٹا"
-
-msgid "seconds"
-msgstr "سیکنڈ"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ پراکسی آف لائن"
 
 msgid "✗ Restart Failed"
 msgstr "✗ دوبارہ شروع کرنا ناکام ہو گیا۔"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "تلاش میں کوئی چینل نہیں ملا!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "پراکسی خرابی:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "پراکسی اس کے بعد جواب نہیں دے رہی ہے۔"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "پراکسی دوبارہ شروع ہو رہی ہے... براہ کرم انتظار کریں۔"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "پراکسی کا انتظار کر رہا ہے..."
+
+#~ msgid "seconds"
+#~ msgstr "سیکنڈ"
 
 #~ msgid "Hide/Show"
 #~ msgstr "چھپائیں/دکھائیں۔"

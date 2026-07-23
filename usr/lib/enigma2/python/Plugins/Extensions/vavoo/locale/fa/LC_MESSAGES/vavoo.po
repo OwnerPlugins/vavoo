@@ -101,6 +101,9 @@ msgstr "همه کشورها (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "صادرات برای کشوری دیگر در حال انجام است. لطفا صبر کنید."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "صادرات در حال انجام است. لطفا قبل از تعمیر حافظه پنهان صبر کنید."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "فقط پینگ راه‌اندازی/ضربان قلب ناشناس (شناسه جلسه، نسخه، مهر زمانی - بدون اطلاعات شخصی). برای انصراف غیرفعال کنید."
 
@@ -393,9 +396,6 @@ msgstr "کانالی پیدا نشد"
 msgid "No channels found for: %s"
 msgstr "هیچ کانالی برای: %s یافت نشد"
 
-msgid "No channels found in search!!!"
-msgstr "هیچ کانالی در جستجو یافت نشد!!!"
-
 msgid "No items available"
 msgstr "هیچ موردی در دسترس نیست"
 
@@ -430,9 +430,6 @@ msgstr "پروکسی غیرفعال است"
 msgid "Proxy Enabled"
 msgstr "پروکسی فعال شد"
 
-msgid "Proxy Error:"
-msgstr "خطای پروکسی:"
-
 msgid "Proxy disabled"
 msgstr "پروکسی غیرفعال شد"
 
@@ -448,14 +445,8 @@ msgstr "پروکسی اجرا نمی شود. لطفاً ابتدا پروکسی 
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "پروکسی فعال نیست امکان تولید فایل M3U وجود ندارد."
 
-msgid "Proxy not responding after"
-msgstr "پراکسی بعد از پاسخ دادن"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "پروکسی آنلاین - {} کانال ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "پراکسی در حال راه اندازی مجدد... لطفاً صبر کنید"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "پایان زمان راه اندازی پروکسی (ثانیه)"
@@ -622,9 +613,6 @@ msgstr "Vavoo در حال اجرا است."
 msgid "Version:"
 msgstr "نسخه:"
 
-msgid "Waiting for proxy..."
-msgstr "در انتظار پروکسی..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "به Vavoo Proxy با پشتیبانی از EPG خوش آمدید"
 
@@ -643,9 +631,6 @@ msgstr "فاصله"
 
 msgid "lowercase"
 msgstr "حروف کوچک"
-
-msgid "seconds"
-msgstr "ثانیه"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "هیچ کانالی در جستجو یافت نشد!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "خطای پروکسی:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "پراکسی بعد از پاسخ دادن"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "پراکسی در حال راه اندازی مجدد... لطفاً صبر کنید"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "در انتظار پروکسی..."
+
+#~ msgid "seconds"
+#~ msgstr "ثانیه"
 
 #~ msgid "Hide/Show"
 #~ msgstr "پنهان کردن/نمایش"

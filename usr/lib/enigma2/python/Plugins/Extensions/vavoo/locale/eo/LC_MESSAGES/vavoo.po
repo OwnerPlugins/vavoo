@@ -102,6 +102,9 @@ msgstr "Ĉiuj landoj (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Eksporto por alia lando jam okazas. Bonvolu atendi."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Eksporto estas en progreso. Bonvolu atendi antaŭ ripari la kaŝmemoron."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Anonima starto/korbato-pingo nur (sesio-identigilo, versio, tempomarko - neniuj personaj datumoj). Malebligu elekti ekstere."
 
@@ -394,9 +397,6 @@ msgstr "Neniuj kanaloj trovitaj"
 msgid "No channels found for: %s"
 msgstr "Neniuj kanaloj trovitaj por: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Neniuj kanaloj trovitaj en serĉo!!!"
-
 msgid "No items available"
 msgstr "Neniuj eroj haveblaj"
 
@@ -431,9 +431,6 @@ msgstr "Prokurilo Malŝaltita"
 msgid "Proxy Enabled"
 msgstr "Prokurilo Ebligita"
 
-msgid "Proxy Error:"
-msgstr "Prokura Eraro:"
-
 msgid "Proxy disabled"
 msgstr "Prokurilo malŝaltita"
 
@@ -449,14 +446,8 @@ msgstr "Prokurilo ne funkcias. Bonvolu unue komenci la prokurilon."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Prokurilo ne aktiva. Ne eblas generi M3U-dosieron."
 
-msgid "Proxy not responding after"
-msgstr "Prokurilo ne respondas poste"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Prokura enreta - {} kanaloj ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Prokurilo rekomenciĝas... Bonvolu atendi"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Prokura ektempotempo (sekundoj)"
@@ -622,9 +613,6 @@ msgstr "Vavoo jam kuras."
 msgid "Version:"
 msgstr "Versio:"
 
-msgid "Waiting for proxy..."
-msgstr "Atendante prokurilon..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Bonvenon al Vavoo Proxy kun EPG-subteno"
 
@@ -643,9 +631,6 @@ msgstr "intervalo"
 
 msgid "lowercase"
 msgstr "minuskla"
-
-msgid "seconds"
-msgstr "sekundoj"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Prokura eksterrete"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rekomenco Malsukcesis"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Neniuj kanaloj trovitaj en serĉo!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Prokura Eraro:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Prokurilo ne respondas poste"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Prokurilo rekomenciĝas... Bonvolu atendi"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Atendante prokurilon..."
+
+#~ msgid "seconds"
+#~ msgstr "sekundoj"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Kaŝi/Montri"

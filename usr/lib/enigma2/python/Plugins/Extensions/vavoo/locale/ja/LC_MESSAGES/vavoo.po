@@ -102,6 +102,9 @@ msgstr "すべての国 (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "別の国への輸出はすでに進行中です。お待ちください。"
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "エクスポートが進行中です。キャッシュを修正する前にお待ちください。"
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "匿名の起動/ハートビート ping のみ (セッション ID、バージョン、タイムスタンプ - 個人データなし)。オプトアウトを無効にします。"
 
@@ -394,9 +397,6 @@ msgstr "チャンネルが見つかりません"
 msgid "No channels found for: %s"
 msgstr "チャンネルが見つかりません: %s"
 
-msgid "No channels found in search!!!"
-msgstr "検索でチャンネルが見つかりませんでした。"
-
 msgid "No items available"
 msgstr "利用可能なアイテムはありません"
 
@@ -431,9 +431,6 @@ msgstr "プロキシが無効です"
 msgid "Proxy Enabled"
 msgstr "プロキシが有効です"
 
-msgid "Proxy Error:"
-msgstr "プロキシエラー:"
-
 msgid "Proxy disabled"
 msgstr "プロキシが無効になっています"
 
@@ -449,14 +446,8 @@ msgstr "プロキシが実行されていません。まずプロキシを開始
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "プロキシがアクティブではありません。 M3U ファイルを生成できません。"
 
-msgid "Proxy not responding after"
-msgstr "プロキシがその後応答しません"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "オンライン プロキシ - {} チャネル ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "プロキシを再起動しています...お待ちください"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "プロキシ起動タイムアウト (秒)"
@@ -623,9 +614,6 @@ msgstr "Vavoo はすでに実行されています。"
 msgid "Version:"
 msgstr "バージョン:"
 
-msgid "Waiting for proxy..."
-msgstr "プロキシを待っています..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG サポートを備えた Vavoo プロキシへようこそ"
 
@@ -644,9 +632,6 @@ msgstr "間隔"
 
 msgid "lowercase"
 msgstr "小文字"
-
-msgid "seconds"
-msgstr "秒"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -674,6 +659,24 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "検索でチャンネルが見つかりませんでした。"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "プロキシエラー:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "プロキシがその後応答しません"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "プロキシを再起動しています...お待ちください"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "プロキシを待っています..."
+
+#~ msgid "seconds"
+#~ msgstr "秒"
 
 #~ msgid "Hide/Show"
 #~ msgstr "非表示/表示"

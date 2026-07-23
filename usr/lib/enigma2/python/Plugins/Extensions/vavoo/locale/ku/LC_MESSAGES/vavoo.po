@@ -101,6 +101,9 @@ msgstr "Hemû welat (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Jixwe hinardekirinek ji bo welatek din di pêş de ye. Ji kerema xwe bisekinin."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Hinardekirinek li pêş e. Ji kerema xwe berî rastkirina cache li bendê bin."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Tenê ping destpêkirina/lêdana dil a anonîm (nasnameya danişînê, guherto, mohra demjimêr - daneyên kesane tune). Ji bo veqetandinê neçalak bike."
 
@@ -393,9 +396,6 @@ msgstr "Tu kanal nehat dîtin"
 msgid "No channels found for: %s"
 msgstr "Tu kanal nehat dîtin ji bo: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Di lêgerînê de kanal nehatin dîtin!!!"
-
 msgid "No items available"
 msgstr "Tiştek tune"
 
@@ -430,9 +430,6 @@ msgstr "Proxy Neçalak"
 msgid "Proxy Enabled"
 msgstr ""
 
-msgid "Proxy Error:"
-msgstr "Çewtiya Proxy:"
-
 msgid "Proxy disabled"
 msgstr "Proxy neçalak"
 
@@ -448,14 +445,8 @@ msgstr "Proxy nayê xebitandin. Ji kerema xwe pêşî proxy dest pê bikin."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy ne çalak e. Nekarî pelê M3U çêbike."
 
-msgid "Proxy not responding after"
-msgstr "Proxy piştî bersivê nade"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy serhêl - {} kanal ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proxy ji nû ve dest pê dike... Ji kerema xwe li bendê bin"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Dema destpêkirina proxy (çirkeyan)"
@@ -622,9 +613,6 @@ msgstr "Vavoo jixwe dimeşe."
 msgid "Version:"
 msgstr "Awa:"
 
-msgid "Waiting for proxy..."
-msgstr "Li benda proxy ..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Bi piştgiriya EPG-ê re bi xêr hatin Vavoo Proxy"
 
@@ -643,9 +631,6 @@ msgstr "navber"
 
 msgid "lowercase"
 msgstr "tîpên biçûk"
-
-msgid "seconds"
-msgstr ""
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,21 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Di lêgerînê de kanal nehatin dîtin!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Çewtiya Proxy:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy piştî bersivê nade"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proxy ji nû ve dest pê dike... Ji kerema xwe li bendê bin"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Li benda proxy ..."
 
 #~ msgid "Hide/Show"
 #~ msgstr "Veşêre / Nîşan bide"

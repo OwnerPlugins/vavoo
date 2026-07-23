@@ -101,6 +101,9 @@ msgstr "सभी देश (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "दूसरे देश के लिए निर्यात पहले से ही प्रगति पर है। कृपया प्रतीक्षा करें।"
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "एक निर्यात प्रगति पर है. कृपया कैश ठीक करने से पहले प्रतीक्षा करें."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "केवल अनाम स्टार्टअप/दिल की धड़कन पिंग (सत्र आईडी, संस्करण, टाइमस्टैम्प - कोई व्यक्तिगत डेटा नहीं)। बाहर निकलना अक्षम करें."
 
@@ -393,9 +396,6 @@ msgstr "कोई चैनल नहीं मिला"
 msgid "No channels found for: %s"
 msgstr "%s के लिए कोई चैनल नहीं मिला"
 
-msgid "No channels found in search!!!"
-msgstr "खोज में कोई चैनल नहीं मिला!!!"
-
 msgid "No items available"
 msgstr "कोई आइटम उपलब्ध नहीं है"
 
@@ -430,9 +430,6 @@ msgstr "प्रॉक्सी अक्षम"
 msgid "Proxy Enabled"
 msgstr "प्रॉक्सी सक्षम"
 
-msgid "Proxy Error:"
-msgstr "प्रॉक्सी त्रुटि:"
-
 msgid "Proxy disabled"
 msgstr "प्रॉक्सी अक्षम"
 
@@ -448,14 +445,8 @@ msgstr "प्रॉक्सी नहीं चल रही है. कृप
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "प्रॉक्सी सक्रिय नहीं है. M3U फ़ाइल जनरेट करने में असमर्थ."
 
-msgid "Proxy not responding after"
-msgstr "प्रॉक्सी इसके बाद प्रतिक्रिया नहीं दे रहा है"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "प्रॉक्सी ऑनलाइन - {} चैनल ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "प्रॉक्सी पुनः आरंभ हो रही है... कृपया प्रतीक्षा करें"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "प्रॉक्सी स्टार्टअप टाइमआउट (सेकंड)"
@@ -622,9 +613,6 @@ msgstr "वावू पहले से ही चल रहा है।"
 msgid "Version:"
 msgstr "संस्करण:"
 
-msgid "Waiting for proxy..."
-msgstr "प्रॉक्सी की प्रतीक्षा में..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ईपीजी समर्थन के साथ वावू प्रॉक्सी में आपका स्वागत है"
 
@@ -643,9 +631,6 @@ msgstr "अंतराल"
 
 msgid "lowercase"
 msgstr "छोटे"
-
-msgid "seconds"
-msgstr "सेकंड"
 
 msgid "v{} -> v{}"
 msgstr "वी{} -> वी{}"
@@ -673,6 +658,24 @@ msgstr "✗ प्रॉक्सी ऑफ़लाइन"
 
 msgid "✗ Restart Failed"
 msgstr "✗ पुनः प्रारंभ विफल"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "खोज में कोई चैनल नहीं मिला!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "प्रॉक्सी त्रुटि:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "प्रॉक्सी इसके बाद प्रतिक्रिया नहीं दे रहा है"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "प्रॉक्सी पुनः आरंभ हो रही है... कृपया प्रतीक्षा करें"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "प्रॉक्सी की प्रतीक्षा में..."
+
+#~ msgid "seconds"
+#~ msgstr "सेकंड"
 
 #~ msgid "Hide/Show"
 #~ msgstr "छिपाएं दिखाएं"

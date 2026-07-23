@@ -101,6 +101,9 @@ msgstr "Lahat ng bansa (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Ang pag-export para sa ibang bansa ay isinasagawa na. Mangyaring maghintay."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "May isinasagawang pag-export. Mangyaring maghintay bago ayusin ang cache."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Anonymous na startup/heartbeat ping lang (session id, bersyon, timestamp - walang personal na data). Huwag paganahin upang mag-opt out."
 
@@ -393,9 +396,6 @@ msgstr "Walang nakitang mga channel"
 msgid "No channels found for: %s"
 msgstr "Walang nakitang mga channel para sa: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Walang nakitang mga channel sa paghahanap!!!"
-
 msgid "No items available"
 msgstr "Walang available na item"
 
@@ -430,9 +430,6 @@ msgstr "Naka-disable ang Proxy"
 msgid "Proxy Enabled"
 msgstr "Naka-enable ang Proxy"
 
-msgid "Proxy Error:"
-msgstr ""
-
 msgid "Proxy disabled"
 msgstr "Hindi pinagana ang proxy"
 
@@ -448,14 +445,8 @@ msgstr "Hindi tumatakbo ang proxy. Mangyaring simulan muna ang proxy."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Hindi aktibo ang proxy. Hindi makabuo ng M3U file."
 
-msgid "Proxy not responding after"
-msgstr "Hindi tumugon ang proxy pagkatapos"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proxy online - {} mga channel ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Nagre-restart ang proxy... Mangyaring maghintay"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Timeout ng pagsisimula ng proxy (mga segundo)"
@@ -622,9 +613,6 @@ msgstr "Tumatakbo na si Vavoo."
 msgid "Version:"
 msgstr "Bersyon:"
 
-msgid "Waiting for proxy..."
-msgstr "Naghihintay ng proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Maligayang pagdating sa Vavoo Proxy na may suporta sa EPG"
 
@@ -643,9 +631,6 @@ msgstr "pagitan"
 
 msgid "lowercase"
 msgstr "maliit na titik"
-
-msgid "seconds"
-msgstr "segundo"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,21 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Walang nakitang mga channel sa paghahanap!!!"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Hindi tumugon ang proxy pagkatapos"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Nagre-restart ang proxy... Mangyaring maghintay"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Naghihintay ng proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "segundo"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Itago/Ipakita"

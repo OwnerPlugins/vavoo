@@ -101,6 +101,9 @@ msgstr "Semua negara (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Eksport ke negara lain sedang dijalankan. Sila tunggu."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Eksport sedang dijalankan. Sila tunggu sebelum membetulkan cache."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ping permulaan/degupan jantung tanpa nama sahaja (id sesi, versi, cap masa - tiada data peribadi). Lumpuhkan untuk menarik diri."
 
@@ -393,9 +396,6 @@ msgstr "Tiada saluran ditemui"
 msgid "No channels found for: %s"
 msgstr "Tiada saluran ditemui untuk: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Tiada saluran ditemui dalam carian!!!"
-
 msgid "No items available"
 msgstr "Tiada item tersedia"
 
@@ -430,9 +430,6 @@ msgstr "Proksi Dilumpuhkan"
 msgid "Proxy Enabled"
 msgstr "Proksi Didayakan"
 
-msgid "Proxy Error:"
-msgstr "Ralat Proksi:"
-
 msgid "Proxy disabled"
 msgstr "Proksi dilumpuhkan"
 
@@ -448,14 +445,8 @@ msgstr "Proksi tidak berjalan. Sila mulakan proksi dahulu."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proksi tidak aktif. Tidak dapat menjana fail M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proksi tidak bertindak balas selepas itu"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Proksi dalam talian - {} saluran ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Proksi dimulakan semula... Sila tunggu"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Tamat masa permulaan proksi (saat)"
@@ -622,9 +613,6 @@ msgstr "Vavoo sudah berjalan."
 msgid "Version:"
 msgstr "Versi:"
 
-msgid "Waiting for proxy..."
-msgstr "Menunggu proksi..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Selamat datang ke Vavoo Proxy dengan sokongan EPG"
 
@@ -643,9 +631,6 @@ msgstr "selang waktu"
 
 msgid "lowercase"
 msgstr "huruf kecil"
-
-msgid "seconds"
-msgstr "detik"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Tiada saluran ditemui dalam carian!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Ralat Proksi:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proksi tidak bertindak balas selepas itu"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Proksi dimulakan semula... Sila tunggu"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Menunggu proksi..."
+
+#~ msgid "seconds"
+#~ msgstr "detik"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Sembunyi/Tunjukkan"

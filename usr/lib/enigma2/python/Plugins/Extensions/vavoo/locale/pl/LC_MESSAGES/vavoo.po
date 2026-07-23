@@ -107,6 +107,9 @@ msgstr "Wszystkie kraje (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Eksport dla innego kraju jest już w toku. Proszę czekać."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Trwa eksport. Poczekaj zanim naprawisz pamięć podręczną."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Tylko anonimowy ping uruchamiania/bicia serca (identyfikator sesji, wersja, sygnatura czasowa – brak danych osobowych). Wyłącz, aby zrezygnować."
 
@@ -410,9 +413,6 @@ msgstr "Nie znaleziono kanałów"
 msgid "No channels found for: %s"
 msgstr "Nie znaleziono kanałów dla: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Nie znaleziono kanałów w wyszukiwaniu!!!"
-
 msgid "No items available"
 msgstr "Brak dostępnych elementów"
 
@@ -447,9 +447,6 @@ msgstr "Proxy wyłączone"
 msgid "Proxy Enabled"
 msgstr "Proxy włączone"
 
-msgid "Proxy Error:"
-msgstr "Błąd proxy:"
-
 msgid "Proxy disabled"
 msgstr "Proxy wyłączone"
 
@@ -465,14 +462,8 @@ msgstr "Proxy nie działa. Najpierw uruchom proxy."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Proxy nieaktywne. Nie można wygenerować pliku M3U."
 
-msgid "Proxy not responding after"
-msgstr "Proxy nie odpowiada po"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Pełnomocnik online - {} kanały ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Restartowanie proxy... Proszę czekać"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Limit czasu uruchamiania serwera proxy (sekundy)"
@@ -641,9 +632,6 @@ msgstr "Vavoo jest już uruchomione."
 msgid "Version:"
 msgstr "Wersja:"
 
-msgid "Waiting for proxy..."
-msgstr "Oczekiwanie na proxy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Witamy w Vavoo Proxy z obsługą EPG"
 
@@ -662,9 +650,6 @@ msgstr "interwał"
 
 msgid "lowercase"
 msgstr "małe litery"
-
-msgid "seconds"
-msgstr "sekund"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -694,6 +679,24 @@ msgstr "✗ Serwer proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponowne uruchomienie nie powiodło się"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Nie znaleziono kanałów w wyszukiwaniu!!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Błąd proxy:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Proxy nie odpowiada po"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Restartowanie proxy... Proszę czekać"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Oczekiwanie na proxy..."
+
+#~ msgid "seconds"
+#~ msgstr "sekund"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Ukryj/Pokaż"

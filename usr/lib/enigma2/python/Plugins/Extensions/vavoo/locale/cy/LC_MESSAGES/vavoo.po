@@ -101,6 +101,9 @@ msgstr "Pob gwlad (%d)"
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Mae allforio ar gyfer gwlad arall eisoes ar y gweill. Arhoswch os gwelwch yn dda."
 
+msgid "An export is in progress. Please wait before fixing the cache."
+msgstr "Mae allforio ar y gweill. Arhoswch cyn trwsio'r storfa."
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Cychwyn dienw/ping curiad calon yn unig (ID sesiwn, fersiwn, stamp amser - dim data personol). Analluogi optio allan."
 
@@ -393,9 +396,6 @@ msgstr "Heb ganfod sianeli"
 msgid "No channels found for: %s"
 msgstr "Heb ganfod sianeli ar gyfer: %s"
 
-msgid "No channels found in search!!!"
-msgstr "Dim sianeli wedi'u canfod wrth chwilio !!!"
-
 msgid "No items available"
 msgstr "Dim eitemau ar gael"
 
@@ -430,9 +430,6 @@ msgstr "Dirprwy Anabl"
 msgid "Proxy Enabled"
 msgstr "Wedi Galluogi drwy Ddirprwy"
 
-msgid "Proxy Error:"
-msgstr "Gwall dirprwy:"
-
 msgid "Proxy disabled"
 msgstr "Analluogwyd dirprwy"
 
@@ -448,14 +445,8 @@ msgstr "Nid yw dirprwy yn rhedeg. Dechreuwch y dirprwy yn gyntaf."
 msgid "Proxy not active. Unable to generate M3U file."
 msgstr "Dirprwy ddim yn weithredol. Methu cynhyrchu ffeil M3U."
 
-msgid "Proxy not responding after"
-msgstr "Dirprwy ddim yn ymateb ar ôl"
-
 msgid "Proxy online - {} channels  ✓"
 msgstr "Dirprwy ar-lein - {} sianeli ✓"
-
-msgid "Proxy restarting... Please wait"
-msgstr "Dirprwy yn ailgychwyn... Arhoswch"
 
 msgid "Proxy startup timeout (seconds)"
 msgstr "Goramser cychwyn dirprwy (eiliadau)"
@@ -622,9 +613,6 @@ msgstr "Mae Vavoo eisoes yn rhedeg."
 msgid "Version:"
 msgstr "Fersiwn:"
 
-msgid "Waiting for proxy..."
-msgstr "Aros am ddirprwy..."
-
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Croeso i Vavoo Proxy gyda chefnogaeth EPG"
 
@@ -643,9 +631,6 @@ msgstr "cyfwng"
 
 msgid "lowercase"
 msgstr "llythrennau bach"
-
-msgid "seconds"
-msgstr "eiliadau"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -673,6 +658,24 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "No channels found in search!!!"
+#~ msgstr "Dim sianeli wedi'u canfod wrth chwilio !!!"
+
+#~ msgid "Proxy Error:"
+#~ msgstr "Gwall dirprwy:"
+
+#~ msgid "Proxy not responding after"
+#~ msgstr "Dirprwy ddim yn ymateb ar ôl"
+
+#~ msgid "Proxy restarting... Please wait"
+#~ msgstr "Dirprwy yn ailgychwyn... Arhoswch"
+
+#~ msgid "Waiting for proxy..."
+#~ msgstr "Aros am ddirprwy..."
+
+#~ msgid "seconds"
+#~ msgstr "eiliadau"
 
 #~ msgid "Hide/Show"
 #~ msgstr "Cuddio/Dangos"
