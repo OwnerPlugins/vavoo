@@ -1848,10 +1848,17 @@ class VavooEPGMatcher:
         n = name.upper()  # usiamo maiuscolo come nell'esterno, poi abbassiamo
         n = sub(r'\[.*\]', '', n)
         n = sub(r'\(.*\)', '', n)
-        n = sub(r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$', '', n)
-        # Remove suffiss Vavoo (.c, .s, .b, ...)
+        # Vavoo suffix (.c, .s, .b, ...) must be stripped BEFORE the
+        # quality-tag strip below: names very often carry both (e.g.
+        # "6TER FHD .b"), and the quality tag isn't at the string's end
+        # while the Vavoo suffix is still there - stripping in the other
+        # order left "FHD"/"HD" stuck in the cleaned name (e.g. "6ter
+        # fhd" instead of "6ter"), which tanks the similarity score
+        # against the plain Rytec name and was silently failing to match
+        # a large fraction of channels that carry both suffixes.
         if not n.startswith("HISTORY"):
             n = sub(r'\s+\.[A-Z0-9]{1,3}$', '', n)
+        n = sub(r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$', '', n)
         n = sub(r'\s+\+$', '', n)
         n = sub(r'[^A-Z0-9 ]', '', n)
         n = sub(r'\s+', ' ', n)
