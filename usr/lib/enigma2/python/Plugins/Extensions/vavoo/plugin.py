@@ -4365,8 +4365,15 @@ class Playstream2(
         else:
             print("[Playstream2] Too many EOFs, stopping auto-restart")
             error_msg = _("Stream ended. Too many connection issues.") + \
-                "\n" + _("Please try another channel.")
-            self.session.open(
+                "\n" + _("Returning to channel list.")
+            # Giving up on auto-restart used to just show this message
+            # and leave the player screen sitting dead (no video, no
+            # further retries) once it closed on its own after the
+            # timeout - the user had to notice and press cancel/back
+            # themselves to get back to the channel list. Close the
+            # player automatically instead.
+            self.session.openWithCallback(
+                lambda result=None: self.cancel(),
                 MessageBox,
                 error_msg,
                 MessageBox.TYPE_ERROR,
