@@ -507,6 +507,15 @@ cfg.search_text = ConfigSearchText(default="")
 cfg.proxy_startup_timeout = ConfigSelectionNumber(
     default=120, min=15, max=300, stepwidth=5)
 
+# MainVavoo's proxy_monitor_timer/proxy_watchdog_timer are created and
+# restarted from three different places (initial open, returning from
+# config, returning from Playstream2) - use one shared constant per
+# timer everywhere instead of separate literals, which had drifted out
+# of sync with each other (and with their own "every N seconds"
+# comments) at two of those six call sites.
+PROXY_MONITOR_INTERVAL_MS = 10000
+PROXY_WATCHDOG_INTERVAL_MS = 60000
+
 
 def normalize_language_code(language):
     """Normalize Enigma2 language identifiers to a comparable short code."""
@@ -1781,7 +1790,7 @@ class MainVavoo(Screen):
                     self._proxy_watchdog_check
                 )
 
-            self.proxy_watchdog_timer.start(180000)
+            self.proxy_watchdog_timer.start(PROXY_WATCHDOG_INTERVAL_MS)
 
             # Monitor timer - check proxy status every 10 seconds
             self.proxy_monitor_timer = eTimer()
@@ -1794,7 +1803,7 @@ class MainVavoo(Screen):
                     self._check_and_update_proxy_status
                 )
 
-            self.proxy_monitor_timer.start(10000)
+            self.proxy_monitor_timer.start(PROXY_MONITOR_INTERVAL_MS)
 
         else:
             print("[MainVavoo] Proxy disabled by configuration")
@@ -2795,8 +2804,8 @@ class MainVavoo(Screen):
                             self._check_and_update_proxy_status)
 
                 # (Re)start them
-                self.proxy_watchdog_timer.start(60000)
-                self.proxy_monitor_timer.start(10000)
+                self.proxy_watchdog_timer.start(PROXY_WATCHDOG_INTERVAL_MS)
+                self.proxy_monitor_timer.start(PROXY_MONITOR_INTERVAL_MS)
 
                 # Refresh labels + list
                 self["proxy_status"].setText(_("Checking proxy..."))
@@ -4770,10 +4779,12 @@ class Playstream2(
         try:
             for screen in self.session.dialog_stack:
                 if hasattr(screen[0], 'proxy_monitor_timer'):
-                    screen[0].proxy_monitor_timer.start(30000)
+                    screen[0].proxy_monitor_timer.start(
+                        PROXY_MONITOR_INTERVAL_MS)
                     print("[Playstream2] Restarted proxy monitor timer")
                 if hasattr(screen[0], 'proxy_watchdog_timer'):
-                    screen[0].proxy_watchdog_timer.start(60000)
+                    screen[0].proxy_watchdog_timer.start(
+                        PROXY_WATCHDOG_INTERVAL_MS)
                     print("[Playstream2] Restarted proxy watchdog timer")
         except Exception as e:
             print("[Playstream2] Error restarting timers: {}".format(e))
