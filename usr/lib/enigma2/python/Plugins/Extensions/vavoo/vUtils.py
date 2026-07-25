@@ -2220,8 +2220,15 @@ class VavooEPGMatcher:
             channel_name, country_code)
 
         # Is there already an entry in the cache (even with invalid ID)?
-        existing_entry = self.cache.get(
-            search_key) if search_key in self.cache else None
+        # Resolve via normalized_index first: the raw key an entry is
+        # stored under can differ from search_key (e.g. name-cleaning
+        # rules changed since it was written, same drift as the
+        # _clean_name_for_key '&' case). Step 1 above already proves such
+        # an entry is reachable via normalized_index - looking it up with
+        # self.cache.get(search_key) directly would miss it and silently
+        # discard a valid existing match every time this branch runs.
+        existing_key = self.normalized_index.get(search_key, search_key)
+        existing_entry = self.cache.get(existing_key)
 
         if result_id and result_sref:
             # Decide which sref to keep
@@ -2261,8 +2268,8 @@ class VavooEPGMatcher:
                     # Update cache with matched=False if needed
                     if existing_entry.get('matched', True) is not False:
                         existing_entry['matched'] = False
-                        self.cache[search_key] = existing_entry
-                        self._index_cache_key(search_key)
+                        self.cache[existing_key] = existing_entry
+                        self._index_cache_key(existing_key)
                         # Not deferred to new_matches/save_cache(): that
                         # method always writes matched=True, which would
                         # be wrong here. This branch is rare (only when a
@@ -2279,8 +2286,8 @@ class VavooEPGMatcher:
                     # data behind it, forever, since nothing else ever
                     # revisits an entry once it's "matched".
                     existing_entry['matched'] = False
-                    self.cache[search_key] = existing_entry
-                    self._index_cache_key(search_key)
+                    self.cache[existing_key] = existing_entry
+                    self._index_cache_key(existing_key)
                     save_cache(self.cache)
             # Otherwise, no match and no valid sref
             save_unmatched(
