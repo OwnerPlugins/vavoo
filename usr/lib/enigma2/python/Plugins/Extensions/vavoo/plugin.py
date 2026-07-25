@@ -4417,7 +4417,7 @@ class Playstream2(
         # Check if it's ANY proxy URL (localhost or network IP)
         if ":{}/vavoo".format(PORT) in self.url or ":{}/resolve".format(PORT) in self.url:
             print("[Playstream2] Proxy URL detected")
-            self.playProxyStream()
+            self.playProxyStream(force_refresh=force)
         else:
             print("[Playstream2] Non-proxy URL, using old system")
             self.playOldSystem()
@@ -4631,8 +4631,14 @@ class Playstream2(
             traceback.print_exc()
             return "EPG error"
 
-    def playProxyStream(self):
-        """Play via proxy - token management is handled by proxy"""
+    def playProxyStream(self, force_refresh=False):
+        """Play via proxy - token management is handled by proxy.
+
+        force_refresh=True (an EOF-triggered retry, see restartAfterEOF)
+        tells the proxy to bypass its resolve cache - reusing the same
+        cached URL that just failed for up to resolve_cache_ttl would
+        otherwise make every quick retry fail the exact same way.
+        """
         try:
             # Extract channel ID from URL
             channel_id = None
@@ -4657,8 +4663,10 @@ class Playstream2(
                     proxy_host = match.group(1)
 
             # Build proxy URL WITHOUT extra parameters
-            proxy_url = "http://" + \
-                str(proxy_host) + "/vavoo?channel=" + str(channel_id) + "&direct=1"
+            proxy_url = "http://" + str(proxy_host) + \
+                "/vavoo?channel=" + str(channel_id)
+            if force_refresh:
+                proxy_url += "&force=1"
             print("[Playstream2] Clean proxy URL: " + proxy_url)
 
             # Add User-Agent as fragment
