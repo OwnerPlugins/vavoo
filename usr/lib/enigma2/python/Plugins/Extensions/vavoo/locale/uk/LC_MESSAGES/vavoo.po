@@ -415,9 +415,6 @@ msgstr "Зараз %s"
 msgid "Only one specific country"
 msgstr "Тільки одна конкретна країна"
 
-msgid "Please try another channel."
-msgstr "Спробуйте інший канал."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Позиція букетів Vavoo в основному списку"
 
@@ -484,6 +481,9 @@ msgstr "Видалити ВСІ букети Vavoo?"
 
 msgid "Restarting..."
 msgstr "Перезапуск..."
+
+msgid "Returning to channel list."
+msgstr "Повернення до списку каналів."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ОБЕРІТЬ СВІЙ ВИБІР"
@@ -659,6 +659,9 @@ msgstr "✗ Проксі офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не вдалося перезапустити"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Спробуйте інший канал."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "У пошуку каналів не знайдено!!!"

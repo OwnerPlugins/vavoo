@@ -414,9 +414,6 @@ msgstr "Ngayon %s"
 msgid "Only one specific country"
 msgstr "Isang partikular na bansa lamang"
 
-msgid "Please try another channel."
-msgstr "Mangyaring sumubok ng ibang channel."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisyon ng mga bouquet ng Vavoo sa pangunahing listahan"
 
@@ -483,6 +480,9 @@ msgstr "Alisin ang LAHAT ng mga bouquet ng Vavoo?"
 
 msgid "Restarting..."
 msgstr "Nagsisimula muli..."
+
+msgid "Returning to channel list."
+msgstr "Bumabalik sa listahan ng channel."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "PUMILI NG IYONG PAGPILI"
@@ -658,6 +658,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Mangyaring sumubok ng ibang channel."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Walang nakitang mga channel sa paghahanap!!!"

@@ -429,9 +429,6 @@ msgstr "Teraz %s"
 msgid "Only one specific country"
 msgstr "Iba jedna konkrétna krajina"
 
-msgid "Please try another channel."
-msgstr "Skúste iný kanál."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozícia kytíc Vavoo v hlavnom zozname"
 
@@ -469,7 +466,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Ready"
@@ -503,6 +500,9 @@ msgstr "Odstrániť VŠETKY kytice Vavoo?"
 #, fuzzy
 msgid "Restarting..."
 msgstr "Reštart"
+
+msgid "Returning to channel list."
+msgstr "Návrat do zoznamu kanálov."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VYBERTE SI SVOJ VÝBER"
@@ -629,7 +629,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -684,6 +684,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reštart zlyhal"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Skúste iný kanál."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Vo vyhľadávaní sa nenašli žiadne kanály!!!"

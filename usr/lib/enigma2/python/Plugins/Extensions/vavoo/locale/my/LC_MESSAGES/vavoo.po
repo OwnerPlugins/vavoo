@@ -414,9 +414,6 @@ msgstr "ယခု %s"
 msgid "Only one specific country"
 msgstr "သီးခြားနိုင်ငံတစ်ခုသာဖြစ်သည်။"
 
-msgid "Please try another channel."
-msgstr "ကျေးဇူးပြု၍ အခြားချန်နယ်ကို စမ်းကြည့်ပါ။"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "အဓိကစာရင်းတွင် Vavoo ပန်းစည်းများ၏ရာထူး"
 
@@ -483,6 +480,9 @@ msgstr "Vavoo ပန်းစည်းအားလုံးကို ဖယ်�
 
 msgid "Restarting..."
 msgstr "ပြန်လည်စတင်နေသည်..."
+
+msgid "Returning to channel list."
+msgstr "ချန်နယ်စာရင်းသို့ ပြန်သွားသည်။"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "သင့်ရွေးချယ်မှုကို ရွေးချယ်ပါ။"
@@ -658,6 +658,9 @@ msgstr "✗ ပရောက်စီအော့ဖ်လိုင်း"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ပြန်လည်စတင်ခြင်း မအောင်မြင်ပါ။"
+
+#~ msgid "Please try another channel."
+#~ msgstr "ကျေးဇူးပြု၍ အခြားချန်နယ်ကို စမ်းကြည့်ပါ။"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ရှာဖွေမှုတွင် ချန်နယ်များ မတွေ့ပါ!!!"

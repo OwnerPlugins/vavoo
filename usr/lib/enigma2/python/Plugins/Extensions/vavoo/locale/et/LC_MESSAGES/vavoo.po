@@ -415,9 +415,6 @@ msgstr "Nüüd %s"
 msgid "Only one specific country"
 msgstr "Ainult üks konkreetne riik"
 
-msgid "Please try another channel."
-msgstr "Proovige teist kanalit."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo kimpude asukoht põhinimekirjas"
 
@@ -484,6 +481,9 @@ msgstr "Kas eemaldada KÕIK Vavoo kimbud?"
 
 msgid "Restarting..."
 msgstr "Taaskäivitamine..."
+
+msgid "Returning to channel list."
+msgstr "Kanalite loendi juurde naasmine."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VALI OMA VALIK"
@@ -659,6 +659,9 @@ msgstr "✗ Puhverserver võrguühenduseta"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Taaskäivitamine ebaõnnestus"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Proovige teist kanalit."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Otsingus ei leitud ühtegi kanalit!!!"

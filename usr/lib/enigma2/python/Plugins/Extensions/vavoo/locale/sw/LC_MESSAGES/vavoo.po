@@ -414,9 +414,6 @@ msgstr "Sasa %s"
 msgid "Only one specific country"
 msgstr "Nchi moja tu maalum"
 
-msgid "Please try another channel."
-msgstr "Tafadhali jaribu kituo kingine."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Nafasi ya bouquets ya Vavoo katika orodha kuu"
 
@@ -483,6 +480,9 @@ msgstr "Ungependa kuondoa shada ZOTE za Vavoo?"
 
 msgid "Restarting..."
 msgstr "Inaanza upya..."
+
+msgid "Returning to channel list."
+msgstr "Inarudi kwenye orodha ya vituo."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "CHAGUA UCHAGUZI WAKO"
@@ -658,6 +658,9 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Tafadhali jaribu kituo kingine."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Hakuna vituo vilivyopatikana katika utafutaji!!!"

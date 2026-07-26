@@ -414,9 +414,6 @@ msgstr "الآن %s"
 msgid "Only one specific country"
 msgstr "دولة محددة واحدة فقط"
 
-msgid "Please try another channel."
-msgstr "الرجاء تجربة قناة أخرى."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "موضع باقات Vavoo في القائمة الرئيسية"
 
@@ -483,6 +480,9 @@ msgstr "إزالة جميع باقات Vavoo؟"
 
 msgid "Restarting..."
 msgstr "جارٍ إعادة التشغيل..."
+
+msgid "Returning to channel list."
+msgstr "العودة إلى قائمة القنوات."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "اختر ما تريد"
@@ -658,6 +658,9 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "Please try another channel."
+#~ msgstr "الرجاء تجربة قناة أخرى."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "لم يتم العثور على قنوات في البحث!!!"

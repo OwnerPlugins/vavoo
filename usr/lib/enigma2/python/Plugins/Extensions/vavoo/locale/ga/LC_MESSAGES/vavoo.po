@@ -415,9 +415,6 @@ msgstr "Anois %s"
 msgid "Only one specific country"
 msgstr "Tír ar leith amháin"
 
-msgid "Please try another channel."
-msgstr "Bain triail as cainéal eile."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Seasamh bouquets Vavoo ar an liosta is mó"
 
@@ -484,6 +481,9 @@ msgstr "Bain GACH bouquets Vavoo?"
 
 msgid "Restarting..."
 msgstr "Á atosú..."
+
+msgid "Returning to channel list."
+msgstr "Ag filleadh ar an liosta cainéal."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ROGHNAIGH DO ROGHA"
@@ -659,6 +659,9 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Bain triail as cainéal eile."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Níor aimsíodh aon chainéil sa chuardach!!!"

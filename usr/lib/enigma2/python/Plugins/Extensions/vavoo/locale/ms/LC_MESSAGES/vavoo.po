@@ -414,9 +414,6 @@ msgstr "Sekarang %s"
 msgid "Only one specific country"
 msgstr "Hanya satu negara tertentu"
 
-msgid "Please try another channel."
-msgstr "Sila cuba saluran lain."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Kedudukan sejambak Vavoo dalam senarai utama"
 
@@ -483,6 +480,9 @@ msgstr "Keluarkan SEMUA jambangan Vavoo?"
 
 msgid "Restarting..."
 msgstr "Memulakan semula..."
+
+msgid "Returning to channel list."
+msgstr "Kembali ke senarai saluran."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "PILIH PILIHAN ANDA"
@@ -658,6 +658,9 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Sila cuba saluran lain."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Tiada saluran ditemui dalam carian!!!"

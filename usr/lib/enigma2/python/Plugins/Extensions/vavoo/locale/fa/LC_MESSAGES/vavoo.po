@@ -414,9 +414,6 @@ msgstr "اکنون %s"
 msgid "Only one specific country"
 msgstr "فقط یک کشور خاص"
 
-msgid "Please try another channel."
-msgstr "لطفا کانال دیگری را امتحان کنید."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "جایگاه دسته گل های Vavoo در لیست اصلی"
 
@@ -483,6 +480,9 @@ msgstr "همه دسته‌های Vavoo حذف شوند؟"
 
 msgid "Restarting..."
 msgstr "شروع مجدد..."
+
+msgid "Returning to channel list."
+msgstr "بازگشت به لیست کانال"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "انتخاب خود را انتخاب کنید"
@@ -658,6 +658,9 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "Please try another channel."
+#~ msgstr "لطفا کانال دیگری را امتحان کنید."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "هیچ کانالی در جستجو یافت نشد!!!"

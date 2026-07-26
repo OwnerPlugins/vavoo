@@ -414,9 +414,6 @@ msgstr "ఇప్పుడు %s"
 msgid "Only one specific country"
 msgstr "ఒకే ఒక నిర్దిష్ట దేశం"
 
-msgid "Please try another channel."
-msgstr "దయచేసి మరొక ఛానెల్‌ని ప్రయత్నించండి."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ప్రధాన జాబితాలో Vavoo బొకేట్స్ స్థానం"
 
@@ -483,6 +480,9 @@ msgstr "అన్ని Vavoo బొకేలను తీసివేయాల�
 
 msgid "Restarting..."
 msgstr "పునఃప్రారంభిస్తోంది..."
+
+msgid "Returning to channel list."
+msgstr "ఛానెల్ జాబితాకు తిరిగి వస్తోంది."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "మీ ఎంపికను ఎంచుకోండి"
@@ -658,6 +658,9 @@ msgstr "✗ ప్రాక్సీ ఆఫ్‌లైన్"
 
 msgid "✗ Restart Failed"
 msgstr "✗ పునఃప్రారంభం విఫలమైంది"
+
+#~ msgid "Please try another channel."
+#~ msgstr "దయచేసి మరొక ఛానెల్‌ని ప్రయత్నించండి."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "శోధనలో ఛానెల్‌లు ఏవీ కనుగొనబడలేదు!!!"

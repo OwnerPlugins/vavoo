@@ -414,9 +414,6 @@ msgstr "Agora %s"
 msgid "Only one specific country"
 msgstr "Só un país específico"
 
-msgid "Please try another channel."
-msgstr "Proba con outra canle."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posición dos ramos Vavoo na lista principal"
 
@@ -483,6 +480,9 @@ msgstr "Eliminar TODOS os ramos de Vavoo?"
 
 msgid "Restarting..."
 msgstr "Reiniciando..."
+
+msgid "Returning to channel list."
+msgstr "Volvendo á lista de canles."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "SELECCIONA A SÚA ELECCIÓN"
@@ -658,6 +658,9 @@ msgstr "✗ Proxy fóra de liña"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Fallou o reinicio"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Proba con outra canle."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Non se atoparon canles na busca!!!"

@@ -415,9 +415,6 @@ msgstr "Bây giờ %s"
 msgid "Only one specific country"
 msgstr "Chỉ có một quốc gia cụ thể"
 
-msgid "Please try another channel."
-msgstr "Vui lòng thử kênh khác."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vị trí của bó hoa Vavoo trong danh sách chính"
 
@@ -484,6 +481,9 @@ msgstr "Xóa TẤT CẢ bó hoa Vavoo?"
 
 msgid "Restarting..."
 msgstr "Đang khởi động lại..."
+
+msgid "Returning to channel list."
+msgstr "Quay lại danh sách kênh."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "CHỌN LỰA CHỌN CỦA BẠN"
@@ -659,6 +659,9 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Vui lòng thử kênh khác."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Không tìm thấy kênh nào trong tìm kiếm!!!"

@@ -414,9 +414,6 @@ msgstr "اب %s"
 msgid "Only one specific country"
 msgstr "صرف ایک مخصوص ملک"
 
-msgid "Please try another channel."
-msgstr "براہ کرم دوسرا چینل آزمائیں۔"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "اہم فہرست میں واوو کے گلدستے کی پوزیشن"
 
@@ -483,6 +480,9 @@ msgstr "تمام Vavoo گلدستے ہٹائیں؟"
 
 msgid "Restarting..."
 msgstr "دوبارہ شروع ہو رہا ہے..."
+
+msgid "Returning to channel list."
+msgstr "چینل کی فہرست پر واپس جا رہا ہے۔"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "اپنی پسند کا انتخاب کریں۔"
@@ -658,6 +658,9 @@ msgstr "✗ پراکسی آف لائن"
 
 msgid "✗ Restart Failed"
 msgstr "✗ دوبارہ شروع کرنا ناکام ہو گیا۔"
+
+#~ msgid "Please try another channel."
+#~ msgstr "براہ کرم دوسرا چینل آزمائیں۔"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "تلاش میں کوئی چینل نہیں ملا!!!"

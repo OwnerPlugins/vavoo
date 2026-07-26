@@ -414,9 +414,6 @@ msgstr "Issa %s"
 msgid "Only one specific country"
 msgstr "Pajjiż speċifiku wieħed biss"
 
-msgid "Please try another channel."
-msgstr "Jekk jogħġbok ipprova kanal ieħor."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pożizzjoni tal-bukketti Vavoo fil-lista prinċipali"
 
@@ -483,6 +480,9 @@ msgstr "Neħħi l-bukketti KOLLHA Vavoo?"
 
 msgid "Restarting..."
 msgstr "Nibda mill-ġdid..."
+
+msgid "Returning to channel list."
+msgstr "Nirritornaw għal-lista tal-kanali."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "AGĦŻEL L-GĦAŻLA TIEGĦEK"
@@ -657,6 +657,9 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Jekk jogħġbok ipprova kanal ieħor."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "L-ebda kanal ma nstab fit-tfittxija!!!"

@@ -415,9 +415,6 @@ msgstr "Acum %s"
 msgid "Only one specific country"
 msgstr "O singură țară anume"
 
-msgid "Please try another channel."
-msgstr "Vă rugăm să încercați un alt canal."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Poziția buchetelor Vavoo în lista principală"
 
@@ -484,6 +481,9 @@ msgstr "Eliminați TOATE buchetele Vavoo?"
 
 msgid "Restarting..."
 msgstr "Se repornește..."
+
+msgid "Returning to channel list."
+msgstr "Revenind la lista de canale."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "SELECTAȚI ALEGEREA DVS"
@@ -659,6 +659,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Repornirea eșuată"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Vă rugăm să încercați un alt canal."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Nu s-au găsit canale în căutare!!!"

@@ -414,9 +414,6 @@ msgstr "Азыр %s"
 msgid "Only one specific country"
 msgstr "Бир гана конкреттүү өлкө"
 
-msgid "Please try another channel."
-msgstr "Башка каналды байкап көрүңүз."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Негизги тизмедеги Vavoo букеттеринин орду"
 
@@ -483,6 +480,9 @@ msgstr "БАРДЫК Vavoo гүлдестелери өчүрүлсүнбү?"
 
 msgid "Restarting..."
 msgstr "Кайра иштетилүүдө..."
+
+msgid "Returning to channel list."
+msgstr "Канал тизмесине кайтуу."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ТАНДООҢУЗДУ ТАНДАЙТ"
@@ -658,6 +658,9 @@ msgstr "✗ Прокси оффлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Кайра баштоо ишке ашкан жок"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Башка каналды байкап көрүңүз."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Издөөдө эч кандай канал табылган жок!!!"

@@ -414,9 +414,6 @@ msgstr "ବର୍ତ୍ତମାନ% s"
 msgid "Only one specific country"
 msgstr "କେବଳ ଗୋଟିଏ ନିର୍ଦ୍ଦିଷ୍ଟ ଦେଶ |"
 
-msgid "Please try another channel."
-msgstr "ଦୟାକରି ଅନ୍ୟ ଏକ ଚ୍ୟାନେଲ୍ ଚେଷ୍ଟା କରନ୍ତୁ |"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ମୁଖ୍ୟ ତାଲିକାରେ ଭାଭୋ ପୁଷ୍ପଗୁଡ଼ିକର ଅବସ୍ଥାନ |"
 
@@ -483,6 +480,9 @@ msgstr "ସମସ୍ତ ଭାଭୋ ପୁଷ୍ପଗୁଡିକ ଅପସା
 
 msgid "Restarting..."
 msgstr "ପୁନ art ଆରମ୍ଭ ..."
+
+msgid "Returning to channel list."
+msgstr "ଚ୍ୟାନେଲ ତାଲିକାକୁ ଫେରିବା |"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ଆପଣଙ୍କର ପସନ୍ଦ ଚୟନ କରନ୍ତୁ |"
@@ -658,6 +658,9 @@ msgstr "✗ ପ୍ରକ୍ସି ଅଫଲାଇନ୍ |"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ପୁନ art ଆରମ୍ଭ ବିଫଳ |"
+
+#~ msgid "Please try another channel."
+#~ msgstr "ଦୟାକରି ଅନ୍ୟ ଏକ ଚ୍ୟାନେଲ୍ ଚେଷ୍ଟା କରନ୍ତୁ |"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ସନ୍ଧାନରେ କ channels ଣସି ଚ୍ୟାନେଲ ମିଳିଲା ନାହିଁ !!!"

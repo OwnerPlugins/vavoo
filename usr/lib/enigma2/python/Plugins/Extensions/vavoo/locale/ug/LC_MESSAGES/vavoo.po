@@ -414,9 +414,6 @@ msgstr "ھازىر% s"
 msgid "Only one specific country"
 msgstr "پەقەت بىرلا ئالاھىدە دۆلەت"
 
-msgid "Please try another channel."
-msgstr "باشقا قانالنى سىناپ بېقىڭ."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo گۈللىرىنىڭ ئاساسلىق تىزىملىكتىكى ئورنى"
 
@@ -483,6 +480,9 @@ msgstr "بارلىق Vavoo گۈللىرىنى ئۆچۈرەمسىز؟"
 
 msgid "Restarting..."
 msgstr "قايتا قوزغىتىش ..."
+
+msgid "Returning to channel list."
+msgstr "قانال تىزىملىكىگە قايتىش."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "تاللىشىڭىزنى تاللاڭ"
@@ -658,6 +658,9 @@ msgstr "✗ ۋاكالەتچى Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ قايتا قوزغىتىش مەغلۇب بولدى"
+
+#~ msgid "Please try another channel."
+#~ msgstr "باشقا قانالنى سىناپ بېقىڭ."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ئىزدەشتە قانال تېپىلمىدى !!!"

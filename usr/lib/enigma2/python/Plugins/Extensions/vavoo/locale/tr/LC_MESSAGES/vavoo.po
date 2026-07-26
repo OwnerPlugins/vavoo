@@ -419,9 +419,6 @@ msgstr "Şimdi %s"
 msgid "Only one specific country"
 msgstr "Yalnızca belirli bir ülke"
 
-msgid "Please try another channel."
-msgstr "Lütfen başka bir kanal deneyin."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Ana listede Vavoo buketlerinin konumu"
 
@@ -488,6 +485,9 @@ msgstr "TÜM Vavoo buketleri kaldırılsın mı?"
 
 msgid "Restarting..."
 msgstr "Yeniden başlatılıyor..."
+
+msgid "Returning to channel list."
+msgstr "Kanal listesine geri dönülüyor."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "SEÇİMİNİZİ YAPIN"
@@ -663,6 +663,9 @@ msgstr "✗ Proxy çevrimdışı"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yeniden başlatma başarısız"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Lütfen başka bir kanal deneyin."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Aramada kanal bulunamadı!!!"

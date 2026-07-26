@@ -414,9 +414,6 @@ msgstr "Ҳоло %s"
 msgid "Only one specific country"
 msgstr "Танҳо як кишвари мушаххас"
 
-msgid "Please try another channel."
-msgstr "Лутфан канали дигарро санҷед."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Мавқеи гулдастаҳои Vavoo дар рӯйхати асосӣ"
 
@@ -483,6 +480,9 @@ msgstr "ҲАМАИ гулдастаҳои Vavoo хориҷ карда шавад
 
 msgid "Restarting..."
 msgstr "Бозоғозӣ..."
+
+msgid "Returning to channel list."
+msgstr "Бозгашт ба рӯйхати каналҳо."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ИНТИХОБИ ХУДРО ИНТИХОБ КУНЕД"
@@ -658,6 +658,9 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Бозоғозӣ ноком шуд"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Лутфан канали дигарро санҷед."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Дар ҷустуҷӯ ягон канал ёфт нашуд!!!"

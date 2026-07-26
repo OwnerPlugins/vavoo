@@ -414,9 +414,6 @@ msgstr "Nyt %s"
 msgid "Only one specific country"
 msgstr "Vain yksi tietty maa"
 
-msgid "Please try another channel."
-msgstr "Yritä toista kanavaa."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo-nippujen sijainti päähakemistossa"
 
@@ -483,6 +480,9 @@ msgstr "Poistetaanko KAIKKI Vavoo-niput?"
 
 msgid "Restarting..."
 msgstr "Käynnistetään uudelleen..."
+
+msgid "Returning to channel list."
+msgstr "Palataan kanavaluetteloon."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VALITSE VAIHTOEHTO"
@@ -658,6 +658,9 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Yritä toista kanavaa."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Kanavia ei löytynyt haussa!!!"

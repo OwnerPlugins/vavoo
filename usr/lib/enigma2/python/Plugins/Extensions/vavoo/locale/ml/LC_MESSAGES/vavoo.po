@@ -414,9 +414,6 @@ msgstr "ഇപ്പോൾ %s"
 msgid "Only one specific country"
 msgstr "ഒരു പ്രത്യേക രാജ്യം മാത്രം"
 
-msgid "Please try another channel."
-msgstr "ദയവായി മറ്റൊരു ചാനൽ ശ്രമിക്കുക."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "പ്രധാന പട്ടികയിൽ വാവോ പൂച്ചെണ്ടുകളുടെ സ്ഥാനം"
 
@@ -483,6 +480,9 @@ msgstr "എല്ലാ വാവോ പൂച്ചെണ്ടുകളും 
 
 msgid "Restarting..."
 msgstr "പുനരാരംഭിക്കുന്നു..."
+
+msgid "Returning to channel list."
+msgstr "ചാനൽ ലിസ്റ്റിലേക്ക് മടങ്ങുന്നു."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "നിങ്ങളുടെ ചോയ്സ് തിരഞ്ഞെടുക്കുക"
@@ -658,6 +658,9 @@ msgstr "✗ പ്രോക്സി ഓഫ്‌ലൈൻ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ പുനരാരംഭിക്കൽ പരാജയപ്പെട്ടു"
+
+#~ msgid "Please try another channel."
+#~ msgstr "ദയവായി മറ്റൊരു ചാനൽ ശ്രമിക്കുക."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "തിരയലിൽ ചാനലുകളൊന്നും കണ്ടെത്തിയില്ല!!!"

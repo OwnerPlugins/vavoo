@@ -414,9 +414,6 @@ msgstr "No %s"
 msgid "Only one specific country"
 msgstr "Allinnich ien spesifyk lân"
 
-msgid "Please try another channel."
-msgstr "Besykje in oar kanaal."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posysje fan Vavoo-boeketten yn 'e haadlist"
 
@@ -483,6 +480,9 @@ msgstr "ALLE Vavoo-boeketten fuortsmite?"
 
 msgid "Restarting..."
 msgstr "Op 'e nij begjinne..."
+
+msgid "Returning to channel list."
+msgstr "Werom nei kanaallist."
 
 msgid "SELECT YOUR CHOICE"
 msgstr ""
@@ -657,6 +657,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herstart mislearre"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Besykje in oar kanaal."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Gjin kanalen fûn yn sykjen !!!"

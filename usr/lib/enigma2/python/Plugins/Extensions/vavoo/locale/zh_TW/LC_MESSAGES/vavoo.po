@@ -414,9 +414,6 @@ msgstr "現在%s"
 msgid "Only one specific country"
 msgstr "只有一個特定國家"
 
-msgid "Please try another channel."
-msgstr "請嘗試其他頻道。"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo 花束在主列表中的位置"
 
@@ -483,6 +480,9 @@ msgstr "移除所有 Vavoo 花束？"
 
 msgid "Restarting..."
 msgstr "正在重新啟動..."
+
+msgid "Returning to channel list."
+msgstr "返回頻道清單。"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "選擇您的選擇"
@@ -658,6 +658,9 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "Please try another channel."
+#~ msgstr "請嘗試其他頻道。"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "搜尋中未找到頻道！"

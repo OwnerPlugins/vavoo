@@ -414,9 +414,6 @@ msgstr "Tani %s"
 msgid "Only one specific country"
 msgstr "Vetëm një vend specifik"
 
-msgid "Please try another channel."
-msgstr "Ju lutemi provoni një kanal tjetër."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozicioni i buqetave Vavoo në listën kryesore"
 
@@ -483,6 +480,9 @@ msgstr "Të hiqen TË GJITHA buqetat Vavoo?"
 
 msgid "Restarting..."
 msgstr "Po riniset..."
+
+msgid "Returning to channel list."
+msgstr "Po kthehet në listën e kanaleve."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ZGJIDHNI ZGJEDHJEN TUAJ"
@@ -658,6 +658,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Ju lutemi provoni një kanal tjetër."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Nuk u gjet asnjë kanal në kërkim!!!"

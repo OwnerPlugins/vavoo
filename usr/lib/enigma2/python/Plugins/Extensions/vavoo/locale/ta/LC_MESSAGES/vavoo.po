@@ -414,9 +414,6 @@ msgstr "இப்போது %s"
 msgid "Only one specific country"
 msgstr "ஒரே ஒரு குறிப்பிட்ட நாடு"
 
-msgid "Please try another channel."
-msgstr "வேறொரு சேனலை முயற்சிக்கவும்."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "முக்கிய பட்டியலில் Vavoo பூங்கொத்துகளின் நிலை"
 
@@ -483,6 +480,9 @@ msgstr "அனைத்து Vavoo பூங்கொத்துகளைய�
 
 msgid "Restarting..."
 msgstr "மீண்டும் தொடங்குகிறது..."
+
+msgid "Returning to channel list."
+msgstr "சேனல் பட்டியலுக்குத் திரும்புகிறது."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "உங்கள் விருப்பத்தைத் தேர்ந்தெடுக்கவும்"
@@ -658,6 +658,9 @@ msgstr "✗ ப்ராக்ஸி ஆஃப்லைன்"
 
 msgid "✗ Restart Failed"
 msgstr "✗ மறுதொடக்கம் தோல்வியடைந்தது"
+
+#~ msgid "Please try another channel."
+#~ msgstr "வேறொரு சேனலை முயற்சிக்கவும்."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "தேடலில் சேனல்கள் இல்லை!!!"

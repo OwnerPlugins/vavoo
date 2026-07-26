@@ -415,9 +415,6 @@ msgstr "現在 %s"
 msgid "Only one specific country"
 msgstr "特定の国は 1 つだけ"
 
-msgid "Please try another channel."
-msgstr "別のチャンネルをお試しください。"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "メインリストにおけるVavooブーケの位置"
 
@@ -484,6 +481,9 @@ msgstr "すべての Vavoo ブーケを削除しますか?"
 
 msgid "Restarting..."
 msgstr "再起動中..."
+
+msgid "Returning to channel list."
+msgstr "チャンネルリストに戻ります。"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "選択してください"
@@ -659,6 +659,9 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "Please try another channel."
+#~ msgstr "別のチャンネルをお試しください。"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "検索でチャンネルが見つかりませんでした。"

@@ -415,9 +415,6 @@ msgstr "Tagad %s"
 msgid "Only one specific country"
 msgstr "Tikai viena konkrēta valsts"
 
-msgid "Please try another channel."
-msgstr "Lūdzu, izmēģiniet citu kanālu."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo pušķu pozīcija galvenajā sarakstā"
 
@@ -484,6 +481,9 @@ msgstr "Vai noņemt VISUS Vavoo pušķus?"
 
 msgid "Restarting..."
 msgstr "Notiek restartēšana..."
+
+msgid "Returning to channel list."
+msgstr "Atgriežoties kanālu sarakstā."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "IZVĒLIES SAVU IZVĒLI"
@@ -659,6 +659,9 @@ msgstr "✗ Starpniekserveris bezsaistē"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restartēšana neizdevās"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Lūdzu, izmēģiniet citu kanālu."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Meklējot nav atrasts neviens kanāls!!!"

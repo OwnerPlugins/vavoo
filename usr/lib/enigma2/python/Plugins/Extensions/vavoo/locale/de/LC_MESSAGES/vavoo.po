@@ -419,9 +419,6 @@ msgstr "Jetzt %s"
 msgid "Only one specific country"
 msgstr "Nur ein bestimmtes Land"
 
-msgid "Please try another channel."
-msgstr "Bitte versuchen Sie einen anderen Kanal."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Position der Vavoo-Bouquets in der Hauptliste"
 
@@ -488,6 +485,9 @@ msgstr "ALLE Vavoo-Bouquets entfernen?"
 
 msgid "Restarting..."
 msgstr "Neustart ..."
+
+msgid "Returning to channel list."
+msgstr "Rückkehr zur Senderliste."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "WÄHLEN SIE IHRE OPTION"
@@ -663,6 +663,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Neustart fehlgeschlagen"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Bitte versuchen Sie einen anderen Kanal."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Keine Kanäle in der Suche gefunden!!!"

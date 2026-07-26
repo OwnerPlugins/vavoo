@@ -414,9 +414,6 @@ msgstr "ਹੁਣ %s"
 msgid "Only one specific country"
 msgstr "ਸਿਰਫ਼ ਇੱਕ ਖਾਸ ਦੇਸ਼"
 
-msgid "Please try another channel."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਹੋਰ ਚੈਨਲ ਅਜ਼ਮਾਓ।"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ਮੁੱਖ ਸੂਚੀ ਵਿੱਚ ਵਾਵੂ ਗੁਲਦਸਤੇ ਦੀ ਸਥਿਤੀ"
 
@@ -483,6 +480,9 @@ msgstr "ਕੀ ਸਾਰੇ ਵਾਵੂ ਗੁਲਦਸਤੇ ਹਟਾਉਣ�
 
 msgid "Restarting..."
 msgstr "ਰੀਸਟਾਰਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
+
+msgid "Returning to channel list."
+msgstr "ਚੈਨਲ ਸੂਚੀ 'ਤੇ ਵਾਪਸ ਜਾ ਰਿਹਾ ਹੈ।"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ਆਪਣੀ ਚੋਣ ਚੁਣੋ"
@@ -658,6 +658,9 @@ msgstr "✗ ਪ੍ਰੌਕਸੀ ਔਫਲਾਈਨ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ਮੁੜ ਚਾਲੂ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ"
+
+#~ msgid "Please try another channel."
+#~ msgstr "ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਹੋਰ ਚੈਨਲ ਅਜ਼ਮਾਓ।"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ਖੋਜ ਵਿੱਚ ਕੋਈ ਚੈਨਲ ਨਹੀਂ ਮਿਲਿਆ !!!"

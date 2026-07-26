@@ -414,9 +414,6 @@ msgstr "දැන් %s"
 msgid "Only one specific country"
 msgstr "එක් නිශ්චිත රටක් පමණි"
 
-msgid "Please try another channel."
-msgstr "කරුණාකර වෙනත් නාලිකාවක් උත්සාහ කරන්න."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ප්රධාන ලැයිස්තුවේ Vavoo bouquets පිහිටීම"
 
@@ -483,6 +480,9 @@ msgstr "සියලුම Vavoo මල් කළඹ ඉවත් කරන්�
 
 msgid "Restarting..."
 msgstr "නැවත ආරම්භ කරමින්..."
+
+msgid "Returning to channel list."
+msgstr "නාලිකා ලැයිස්තුවට නැවත පැමිණේ."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ඔබේ තේරීම තෝරන්න"
@@ -657,6 +657,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ නැවත ආරම්භ කිරීම අසාර්ථක විය"
+
+#~ msgid "Please try another channel."
+#~ msgstr "කරුණාකර වෙනත් නාලිකාවක් උත්සාහ කරන්න."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "සෙවීමේදී නාලිකා කිසිවක් හමු නොවීය!!!"

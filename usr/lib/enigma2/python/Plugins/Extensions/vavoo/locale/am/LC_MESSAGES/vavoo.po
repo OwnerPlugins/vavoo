@@ -414,9 +414,6 @@ msgstr "አሁን %s"
 msgid "Only one specific country"
 msgstr "አንድ የተወሰነ ሀገር ብቻ"
 
-msgid "Please try another channel."
-msgstr "እባክህ ሌላ ቻናል ሞክር።"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "በዋናው ዝርዝር ውስጥ የቫቮ እቅፍ አበባዎች አቀማመጥ"
 
@@ -483,6 +480,9 @@ msgstr "ሁሉም Vavoo እቅፍ አበባዎች ይወገዱ?"
 
 msgid "Restarting..."
 msgstr "እንደገና በመጀመር ላይ..."
+
+msgid "Returning to channel list."
+msgstr "ወደ ሰርጥ ዝርዝር በመመለስ ላይ።"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ምርጫዎን ይምረጡ"
@@ -658,6 +658,9 @@ msgstr "✗ ተኪ ከመስመር ውጭ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ዳግም ማስጀመር አልተሳካም።"
+
+#~ msgid "Please try another channel."
+#~ msgstr "እባክህ ሌላ ቻናል ሞክር።"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "በፍለጋ ውስጥ ምንም ቻናል አልተገኙም !!!"

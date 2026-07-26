@@ -414,9 +414,6 @@ msgstr "ឥឡូវនេះ %s"
 msgid "Only one specific country"
 msgstr "ប្រទេសជាក់លាក់តែមួយ"
 
-msgid "Please try another channel."
-msgstr "សូមសាកល្បងឆានែលផ្សេងទៀត។"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ទីតាំងនៃភួង Vavoo នៅក្នុងបញ្ជីសំខាន់"
 
@@ -483,6 +480,9 @@ msgstr "ដកភួង Vavoo ទាំងអស់ចេញ?"
 
 msgid "Restarting..."
 msgstr "កំពុងចាប់ផ្តើមឡើងវិញ..."
+
+msgid "Returning to channel list."
+msgstr "ត្រឡប់ទៅបញ្ជីឆានែល។"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ជ្រើសរើសជម្រើសរបស់អ្នក។"
@@ -658,6 +658,9 @@ msgstr "✗ប្រូកស៊ីក្រៅបណ្តាញ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ការចាប់ផ្តើមឡើងវិញបានបរាជ័យ"
+
+#~ msgid "Please try another channel."
+#~ msgstr "សូមសាកល្បងឆានែលផ្សេងទៀត។"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "រកមិនឃើញឆានែលទេ!!!"

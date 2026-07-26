@@ -414,9 +414,6 @@ msgstr "Nú %s"
 msgid "Only one specific country"
 msgstr "Aðeins eitt ákveðið land"
 
-msgid "Please try another channel."
-msgstr "Vinsamlegast reyndu aðra rás."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Staða Vavoo kransa á aðallistanum"
 
@@ -483,6 +480,9 @@ msgstr "Fjarlægja ALLA Vavoo kransa?"
 
 msgid "Restarting..."
 msgstr "Endurræsir..."
+
+msgid "Returning to channel list."
+msgstr "Farið aftur í ráslista."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VELDU ÞITT VAL"
@@ -657,6 +657,9 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Vinsamlegast reyndu aðra rás."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Engar rásir fundust í leit!!!"

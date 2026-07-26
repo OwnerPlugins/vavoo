@@ -399,9 +399,6 @@ msgstr ""
 msgid "Only one specific country"
 msgstr ""
 
-msgid "Please try another channel."
-msgstr ""
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr ""
 
@@ -466,6 +463,9 @@ msgid "Remove ALL Vavoo bouquets?"
 msgstr ""
 
 msgid "Restarting..."
+msgstr ""
+
+msgid "Returning to channel list."
 msgstr ""
 
 msgid "SELECT YOUR CHOICE"

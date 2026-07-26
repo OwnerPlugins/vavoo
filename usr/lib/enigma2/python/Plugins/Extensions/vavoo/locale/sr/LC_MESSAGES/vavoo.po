@@ -415,9 +415,6 @@ msgstr "Сада %с"
 msgid "Only one specific country"
 msgstr "Само једна одређена држава"
 
-msgid "Please try another channel."
-msgstr "Покушајте са другим каналом."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Положај Вавоо букета на главној листи"
 
@@ -484,6 +481,9 @@ msgstr "Уклонити СВЕ Вавоо букете?"
 
 msgid "Restarting..."
 msgstr "Поновно покретање..."
+
+msgid "Returning to channel list."
+msgstr "Повратак на листу канала."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ИЗАБЕРИТЕ СВОЈ ИЗБОР"
@@ -659,6 +659,9 @@ msgstr "✗ Прокси ван мреже"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Поновно покретање није успело"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Покушајте са другим каналом."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Ниједан канал није пронађен у претрази!!!"

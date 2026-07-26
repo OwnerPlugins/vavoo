@@ -431,9 +431,6 @@ msgstr "Nyní %s"
 msgid "Only one specific country"
 msgstr "Pouze jedna konkrétní země"
 
-msgid "Please try another channel."
-msgstr "Zkuste prosím jiný kanál."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozice kytic Vavoo v hlavním seznamu"
 
@@ -501,6 +498,9 @@ msgstr "Odstranit VŠECHNY kytice Vavoo?"
 
 msgid "Restarting..."
 msgstr "Restartování..."
+
+msgid "Returning to channel list."
+msgstr "Návrat do seznamu kanálů."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VYBERTE SI SVOU VOLBU"
@@ -681,6 +681,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restart se nezdařil"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Zkuste prosím jiný kanál."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Při vyhledávání nebyly nalezeny žádné kanály!!!"

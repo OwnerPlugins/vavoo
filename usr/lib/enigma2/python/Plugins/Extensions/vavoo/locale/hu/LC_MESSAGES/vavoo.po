@@ -429,9 +429,6 @@ msgstr "Most %s"
 msgid "Only one specific country"
 msgstr "Csak egy konkrét ország"
 
-msgid "Please try another channel."
-msgstr "Kérlek, próbálj meg egy másik csatornát."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "A Vavoo csokrok helye a fő listában"
 
@@ -469,7 +466,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -504,6 +501,9 @@ msgstr "Eltávolítom az ÖSSZES Vavoo csokrot?"
 #, fuzzy
 msgid "Restarting..."
 msgstr "Újraindítás"
+
+msgid "Returning to channel list."
+msgstr "Visszatérés a csatornalistához."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VÁLASZD A VÁLASZTÁST"
@@ -630,7 +630,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -686,6 +686,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Az újraindítás sikertelen"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Kérlek, próbálj meg egy másik csatornát."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Nem található csatorna a keresésben!!!"

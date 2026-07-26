@@ -414,9 +414,6 @@ msgstr "Nawr %s"
 msgid "Only one specific country"
 msgstr "Dim ond un wlad benodol"
 
-msgid "Please try another channel."
-msgstr "Rhowch gynnig ar sianel arall."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Safle tuswau Vavoo yn y brif restr"
 
@@ -483,6 +480,9 @@ msgstr "Tynnu POB tusw Vavoo?"
 
 msgid "Restarting..."
 msgstr "Wrthi'n ailgychwyn..."
+
+msgid "Returning to channel list."
+msgstr "Yn dychwelyd i'r rhestr sianeli."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "DEWISWCH EICH DEWIS"
@@ -658,6 +658,9 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Rhowch gynnig ar sianel arall."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Dim sianeli wedi'u canfod wrth chwilio !!!"

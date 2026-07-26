@@ -415,9 +415,6 @@ msgstr "Зараз %s"
 msgid "Only one specific country"
 msgstr "Толькі адна канкрэтная краіна"
 
-msgid "Please try another channel."
-msgstr "Паспрабуйце іншы канал."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Месца букетаў Vavoo у асноўным спісе"
 
@@ -484,6 +481,9 @@ msgstr "Выдаліць УСЕ букеты Vavoo?"
 
 msgid "Restarting..."
 msgstr "Перазапуск..."
+
+msgid "Returning to channel list."
+msgstr "Вяртанне да спісу каналаў."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ВЫБЕРЫ СВОЙ ВЫБАР"
@@ -659,6 +659,9 @@ msgstr "✗ Проксі ў аўтаномным рэжыме"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не атрымалася перазапусціць"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Паспрабуйце іншы канал."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "У пошуку каналы не знойдзены!!!"

@@ -414,9 +414,6 @@ msgstr "Orain %s"
 msgid "Only one specific country"
 msgstr "Herrialde zehatz bakarra"
 
-msgid "Please try another channel."
-msgstr "Mesedez, saiatu beste kanal bat."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo sorten posizioa zerrenda nagusian"
 
@@ -483,6 +480,9 @@ msgstr "Vavoo sorta GUZTIAK kendu?"
 
 msgid "Restarting..."
 msgstr "Berrabiarazten..."
+
+msgid "Returning to channel list."
+msgstr "Kanalen zerrendara itzultzen."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "HAUTATU ZURE AUKERA"
@@ -658,6 +658,9 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Mesedez, saiatu beste kanal bat."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Ez da kanalik aurkitu bilaketan!!!"

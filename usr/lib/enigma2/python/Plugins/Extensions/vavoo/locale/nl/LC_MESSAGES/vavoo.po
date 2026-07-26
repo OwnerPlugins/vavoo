@@ -415,9 +415,6 @@ msgstr "Nu %s"
 msgid "Only one specific country"
 msgstr "Slechts één specifiek land"
 
-msgid "Please try another channel."
-msgstr "Probeer een ander kanaal."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Positie van Vavoo-boeketten in de hoofdlijst"
 
@@ -484,6 +481,9 @@ msgstr "ALLE Vavoo-boeketten verwijderen?"
 
 msgid "Restarting..."
 msgstr "Opnieuw opstarten..."
+
+msgid "Returning to channel list."
+msgstr "Terugkeren naar de zenderlijst."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "SELECTEER UW KEUZE"
@@ -659,6 +659,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Opnieuw opstarten mislukt"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Probeer een ander kanaal."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Geen kanalen gevonden in zoekopdracht!!!"

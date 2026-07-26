@@ -414,9 +414,6 @@ msgstr "ಈಗ %s"
 msgid "Only one specific country"
 msgstr "ಒಂದೇ ಒಂದು ನಿರ್ದಿಷ್ಟ ದೇಶ"
 
-msgid "Please try another channel."
-msgstr "ದಯವಿಟ್ಟು ಇನ್ನೊಂದು ಚಾನಲ್ ಪ್ರಯತ್ನಿಸಿ."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ಮುಖ್ಯ ಪಟ್ಟಿಯಲ್ಲಿ ವಾವೂ ಹೂಗುಚ್ಛಗಳ ಸ್ಥಾನ"
 
@@ -483,6 +480,9 @@ msgstr "ಎಲ್ಲಾ Vavoo ಹೂಗುಚ್ಛಗಳನ್ನು ತೆಗ�
 
 msgid "Restarting..."
 msgstr "ಮರುಪ್ರಾರಂಭಿಸಲಾಗುತ್ತಿದೆ..."
+
+msgid "Returning to channel list."
+msgstr "ಚಾನಲ್ ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಲಾಗುತ್ತಿದೆ."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ನಿಮ್ಮ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ"
@@ -658,6 +658,9 @@ msgstr "✗ ಪ್ರಾಕ್ಸಿ ಆಫ್‌ಲೈನ್"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ಮರುಪ್ರಾರಂಭ ವಿಫಲವಾಗಿದೆ"
+
+#~ msgid "Please try another channel."
+#~ msgstr "ದಯವಿಟ್ಟು ಇನ್ನೊಂದು ಚಾನಲ್ ಪ್ರಯತ್ನಿಸಿ."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ಹುಡುಕಾಟದಲ್ಲಿ ಯಾವುದೇ ಚಾನಲ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ!!!"

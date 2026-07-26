@@ -414,9 +414,6 @@ msgstr "İndi %s"
 msgid "Only one specific country"
 msgstr "Yalnız bir xüsusi ölkə"
 
-msgid "Please try another channel."
-msgstr "Zəhmət olmasa başqa kanalı yoxlayın."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Əsas siyahıda Vavoo buketlərinin yeri"
 
@@ -483,6 +480,9 @@ msgstr "BÜTÜN Vavoo buketləri silinsin?"
 
 msgid "Restarting..."
 msgstr "Yenidən başlayır..."
+
+msgid "Returning to channel list."
+msgstr "Kanal siyahısına qayıdır."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "SEÇİMİNİZİ SEÇİN"
@@ -658,6 +658,9 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yenidən Başlatma uğursuz oldu"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Zəhmət olmasa başqa kanalı yoxlayın."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Axtarışda heç bir kanal tapılmadı!!!"

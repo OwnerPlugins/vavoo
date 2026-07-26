@@ -414,9 +414,6 @@ msgstr "Nou %s"
 msgid "Only one specific country"
 msgstr "Slegs een spesifieke land"
 
-msgid "Please try another channel."
-msgstr "Probeer asseblief 'n ander kanaal."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisie van Vavoo-ruikers in die hooflys"
 
@@ -483,6 +480,9 @@ msgstr "Verwyder ALLE Vavoo-ruikers?"
 
 msgid "Restarting..."
 msgstr "Herbegin tans …"
+
+msgid "Returning to channel list."
+msgstr "Keer terug na kanaallys."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "KIES JOU KEUSE"
@@ -658,6 +658,9 @@ msgstr "✗ Proxy vanlyn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herbegin het misluk"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Probeer asseblief 'n ander kanaal."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Geen kanale gevind in soektog nie!!!"

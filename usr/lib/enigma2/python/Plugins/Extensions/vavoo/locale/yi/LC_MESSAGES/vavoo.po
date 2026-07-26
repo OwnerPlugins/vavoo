@@ -414,9 +414,6 @@ msgstr "איצט %s"
 msgid "Only one specific country"
 msgstr "בלויז איין ספּעציפיש לאַנד"
 
-msgid "Please try another channel."
-msgstr "ביטע פּרובירן אן אנדער קאַנאַל."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "שטעלע פון ​​וואַוואָ באָוקייז אין די הויפּט רשימה"
 
@@ -483,6 +480,9 @@ msgstr "אַראָפּנעמען אַלע וואַוואָו באָוקייז?"
 
 msgid "Restarting..."
 msgstr "ריסטאַרטינג ..."
+
+msgid "Returning to channel list."
+msgstr "צוריקקומען צו קאַנאַל רשימה."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "אויסקלייַבן דיין ברירה"
@@ -658,6 +658,9 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "Please try another channel."
+#~ msgstr "ביטע פּרובירן אן אנדער קאַנאַל."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "קיין טשאַנאַלז געפֿונען אין זוכן !!!"

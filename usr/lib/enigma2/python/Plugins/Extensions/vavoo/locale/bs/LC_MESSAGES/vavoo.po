@@ -414,9 +414,6 @@ msgstr "Sada %s"
 msgid "Only one specific country"
 msgstr "Samo jedna određena država"
 
-msgid "Please try another channel."
-msgstr "Pokušajte s drugim kanalom."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozicija Vavoo buketa na glavnoj listi"
 
@@ -483,6 +480,9 @@ msgstr "Ukloniti SVE Vavoo bukete?"
 
 msgid "Restarting..."
 msgstr "Ponovno pokretanje..."
+
+msgid "Returning to channel list."
+msgstr "Povratak na listu kanala."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ODABERITE SVOJ IZBOR"
@@ -658,6 +658,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovno pokretanje nije uspjelo"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Pokušajte s drugim kanalom."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Nijedan kanal nije pronađen u pretrazi!!!"

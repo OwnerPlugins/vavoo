@@ -414,9 +414,6 @@ msgstr "Одоо %s"
 msgid "Only one specific country"
 msgstr "Зөвхөн нэг тодорхой улс"
 
-msgid "Please try another channel."
-msgstr "Өөр суваг үзээрэй."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Үндсэн жагсаалтад Vavoo баглаагуудын байрлал"
 
@@ -483,6 +480,9 @@ msgstr "БҮХ Vavoo баглааг арилгах уу?"
 
 msgid "Restarting..."
 msgstr "Дахин эхлүүлж байна..."
+
+msgid "Returning to channel list."
+msgstr "Сувгийн жагсаалт руу буцаж байна."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "СОНГОЛТОО СОНГООРОЙ"
@@ -658,6 +658,9 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Дахин эхлүүлэх амжилтгүй боллоо"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Өөр суваг үзээрэй."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Хайлтад суваг олдсонгүй!!!"

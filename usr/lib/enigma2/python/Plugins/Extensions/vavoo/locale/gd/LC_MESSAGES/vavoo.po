@@ -414,9 +414,6 @@ msgstr "A-nis %s"
 msgid "Only one specific country"
 msgstr "Dìreach aon dùthaich shònraichte"
 
-msgid "Please try another channel."
-msgstr "Feuch sianal eile."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Suidheachadh bouquets Vavoo anns a’ phrìomh liosta"
 
@@ -483,6 +480,9 @@ msgstr "Thoir air falbh A H-UILE bouquets Vavoo?"
 
 msgid "Restarting..."
 msgstr "Ag ath-thòiseachadh..."
+
+msgid "Returning to channel list."
+msgstr "A’ tilleadh gu liosta nan seanalan."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ROGHAINN DO ROGHA"
@@ -658,6 +658,9 @@ msgstr "✗ Neach-ionaid far-loidhne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Feuch sianal eile."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Cha deach seanalan a lorg san rannsachadh !!!"

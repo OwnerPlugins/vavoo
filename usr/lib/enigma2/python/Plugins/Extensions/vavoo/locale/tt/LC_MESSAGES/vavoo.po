@@ -414,9 +414,6 @@ msgstr "Хәзер% s"
 msgid "Only one specific country"
 msgstr "Бер генә ил"
 
-msgid "Please try another channel."
-msgstr "Зинһар, бүтән каналны карагыз."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Төп исемлектә Vavoo букетларының позициясе"
 
@@ -483,6 +480,9 @@ msgstr "БАРЫ Vavoo букетларын бетерегез?"
 
 msgid "Restarting..."
 msgstr "Яңарту ..."
+
+msgid "Returning to channel list."
+msgstr "Канал исемлегенә кайту."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "Сайлавыгызны сайлагыз"
@@ -658,6 +658,9 @@ msgstr "Off Оффлайн прокси"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Яңарту уңышсыз"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Зинһар, бүтән каналны карагыз."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Эзләүдә каналлар табылмады !!!"

@@ -415,9 +415,6 @@ msgstr "Nu %s"
 msgid "Only one specific country"
 msgstr "Endast ett specifikt land"
 
-msgid "Please try another channel."
-msgstr "Försök med en annan kanal."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Placering av Vavoo-buketter i huvudlistan"
 
@@ -484,6 +481,9 @@ msgstr "Ta bort ALLA Vavoo-buketter?"
 
 msgid "Restarting..."
 msgstr "Startar om..."
+
+msgid "Returning to channel list."
+msgstr "Återgår till kanallistan."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "VÄLJ DITT VAL"
@@ -659,6 +659,9 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart misslyckades"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Försök med en annan kanal."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Inga kanaler hittades i sökningen!!!"

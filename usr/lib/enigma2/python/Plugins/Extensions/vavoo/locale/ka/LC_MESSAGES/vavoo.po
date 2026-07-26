@@ -414,9 +414,6 @@ msgstr "ახლა %s"
 msgid "Only one specific country"
 msgstr "მხოლოდ ერთი კონკრეტული ქვეყანა"
 
-msgid "Please try another channel."
-msgstr "გთხოვთ სცადოთ სხვა არხი."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo-ს თაიგულების პოზიცია ძირითად სიაში"
 
@@ -483,6 +480,9 @@ msgstr "ამოიღოთ Vavoo-ს ყველა თაიგული?"
 
 msgid "Restarting..."
 msgstr "გადატვირთვა..."
+
+msgid "Returning to channel list."
+msgstr "არხების სიაში დაბრუნება."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "აირჩიეთ თქვენი არჩევანი"
@@ -657,6 +657,9 @@ msgstr "✗ პროქსი ხაზგარეშე"
 
 msgid "✗ Restart Failed"
 msgstr "✗ გადატვირთვა ვერ მოხერხდა"
+
+#~ msgid "Please try another channel."
+#~ msgstr "გთხოვთ სცადოთ სხვა არხი."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ძიებაში არხი ვერ მოიძებნა!!!"

@@ -415,9 +415,6 @@ msgstr "עכשיו %s"
 msgid "Only one specific country"
 msgstr "רק מדינה אחת ספציפית"
 
-msgid "Please try another channel."
-msgstr "אנא נסה ערוץ אחר."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "מיקום זרי Vavoo ברשימה הראשית"
 
@@ -484,6 +481,9 @@ msgstr "להסיר את כל זרי Vavoo?"
 
 msgid "Restarting..."
 msgstr "מופעל מחדש..."
+
+msgid "Returning to channel list."
+msgstr "חוזר לרשימת הערוצים."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "בחר את הבחירה שלך"
@@ -659,6 +659,9 @@ msgstr "✗ פרוקסי לא מקוון"
 
 msgid "✗ Restart Failed"
 msgstr "✗ הפעלה מחדש נכשלה"
+
+#~ msgid "Please try another channel."
+#~ msgstr "אנא נסה ערוץ אחר."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "לא נמצאו ערוצים בחיפוש!!!"

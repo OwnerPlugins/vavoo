@@ -414,9 +414,6 @@ msgstr "ตอนนี้ %s"
 msgid "Only one specific country"
 msgstr "เฉพาะประเทศเดียวเท่านั้น"
 
-msgid "Please try another channel."
-msgstr "โปรดลองช่องอื่น"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ตำแหน่งของช่อดอกไม้วาวูในรายการหลัก"
 
@@ -483,6 +480,9 @@ msgstr "ลบช่อดอกไม้ Vavoo ทั้งหมดหรื�
 
 msgid "Restarting..."
 msgstr "กำลังรีสตาร์ท..."
+
+msgid "Returning to channel list."
+msgstr "กลับสู่รายการช่อง"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "เลือกตัวเลือกของคุณ"
@@ -658,6 +658,9 @@ msgstr "✗ พร็อกซีออฟไลน์"
 
 msgid "✗ Restart Failed"
 msgstr "✗ การรีสตาร์ทล้มเหลว"
+
+#~ msgid "Please try another channel."
+#~ msgstr "โปรดลองช่องอื่น"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "ไม่พบช่องในการค้นหา!!!"

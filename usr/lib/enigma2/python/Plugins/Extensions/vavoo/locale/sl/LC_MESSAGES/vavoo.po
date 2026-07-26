@@ -415,9 +415,6 @@ msgstr "Zdaj %s"
 msgid "Only one specific country"
 msgstr "Samo ena določena država"
 
-msgid "Please try another channel."
-msgstr "Poskusite z drugim kanalom."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Položaj šopkov Vavoo na glavnem seznamu"
 
@@ -484,6 +481,9 @@ msgstr "Odstraniti VSE šopke Vavoo?"
 
 msgid "Restarting..."
 msgstr "Ponovni zagon ..."
+
+msgid "Returning to channel list."
+msgstr "Nazaj na seznam kanalov."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "IZBERITE SVOJO IZBIRO"
@@ -658,6 +658,9 @@ msgstr "✗ Proxy brez povezave"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovni zagon ni uspel"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Poskusite z drugim kanalom."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Pri iskanju ni bilo mogoče najti nobenega kanala!!!"

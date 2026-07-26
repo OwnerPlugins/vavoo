@@ -414,9 +414,6 @@ msgstr "Այժմ %s"
 msgid "Only one specific country"
 msgstr "Միայն մեկ կոնկրետ երկիր"
 
-msgid "Please try another channel."
-msgstr "Խնդրում ենք փորձել մեկ այլ ալիք:"
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo ծաղկեփնջերի դիրքը հիմնական ցանկում"
 
@@ -483,6 +480,9 @@ msgstr "Հեռացնե՞լ Vavoo-ի ԲՈԼՈՐ ծաղկեփնջերը:"
 
 msgid "Restarting..."
 msgstr "Վերագործարկում..."
+
+msgid "Returning to channel list."
+msgstr "Վերադառնալով ալիքների ցանկին:"
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ԸՆՏՐԵՔ ՁԵՐ ԸՆՏՐՈՒԹՅՈՒՆԸ"
@@ -657,6 +657,9 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Խնդրում ենք փորձել մեկ այլ ալիք:"
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Որոնման մեջ ալիքներ չեն գտնվել!!!"

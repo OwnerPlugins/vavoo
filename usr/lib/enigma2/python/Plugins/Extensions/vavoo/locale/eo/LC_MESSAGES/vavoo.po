@@ -415,9 +415,6 @@ msgstr "Nun %s"
 msgid "Only one specific country"
 msgstr "Nur unu specifa lando"
 
-msgid "Please try another channel."
-msgstr "Bonvolu provi alian kanalon."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozicio de Vavoo-bukedoj en la ĉefa listo"
 
@@ -484,6 +481,9 @@ msgstr "Ĉu forigi ĈIUJN Vavoo-bukedojn?"
 
 msgid "Restarting..."
 msgstr "Rekomencante..."
+
+msgid "Returning to channel list."
+msgstr "Revenante al kanallisto."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ELEKTU VIAN ELEKTON"
@@ -658,6 +658,9 @@ msgstr "✗ Prokura eksterrete"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rekomenco Malsukcesis"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Bonvolu provi alian kanalon."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Neniuj kanaloj trovitaj en serĉo!!!"

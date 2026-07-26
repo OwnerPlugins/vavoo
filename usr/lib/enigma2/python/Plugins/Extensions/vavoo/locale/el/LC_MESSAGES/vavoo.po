@@ -415,9 +415,6 @@ msgstr "Τώρα %s"
 msgid "Only one specific country"
 msgstr "Μόνο μία συγκεκριμένη χώρα"
 
-msgid "Please try another channel."
-msgstr "Παρακαλώ δοκιμάστε άλλο κανάλι."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Θέση των μπουκέτων Vavoo στην κύρια λίστα"
 
@@ -484,6 +481,9 @@ msgstr "Να γίνει αφαίρεση ΟΛΩΝ των μπουκέτων Vavo
 
 msgid "Restarting..."
 msgstr "Επανεκκίνηση..."
+
+msgid "Returning to channel list."
+msgstr "Επιστροφή στη λίστα καναλιών."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "ΕΠΙΛΕΞΤΕ ΤΗΝ ΕΠΙΛΟΓΗ ΣΑΣ"
@@ -659,6 +659,9 @@ msgstr "✗ Ο proxy είναι εκτός σύνδεσης"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Η επανεκκίνηση απέτυχε"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Παρακαλώ δοκιμάστε άλλο κανάλι."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Δεν βρέθηκαν κανάλια στην αναζήτηση!!!"

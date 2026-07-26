@@ -414,9 +414,6 @@ msgstr "Niha %s"
 msgid "Only one specific country"
 msgstr "Tenê welatek taybetî"
 
-msgid "Please try another channel."
-msgstr "Ji kerema xwe kanalek din biceribîne."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Cihê bûkên Vavoo di navnîşa sereke de"
 
@@ -483,6 +480,9 @@ msgstr "HEMÛ bûkên Vavoo rakin?"
 
 msgid "Restarting..."
 msgstr "Ji nû ve dest pê dike..."
+
+msgid "Returning to channel list."
+msgstr "Vegere navnîşa kanalê."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "HILBIJARTINA XWE HILBIJARTIN"
@@ -658,6 +658,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Ji kerema xwe kanalek din biceribîne."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Di lêgerînê de kanal nehatin dîtin!!!"

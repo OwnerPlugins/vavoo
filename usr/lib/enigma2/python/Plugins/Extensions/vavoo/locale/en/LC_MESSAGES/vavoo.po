@@ -428,9 +428,6 @@ msgstr "Now %s"
 msgid "Only one specific country"
 msgstr "Only one specific country"
 
-msgid "Please try another channel."
-msgstr "Please try another channel."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Position of Vavoo bouquets in the main list"
 
@@ -500,6 +497,9 @@ msgstr "Remove ALL Vavoo bouquets?"
 #, fuzzy
 msgid "Restarting..."
 msgstr "Restart"
+
+msgid "Returning to channel list."
+msgstr ""
 
 msgid "SELECT YOUR CHOICE"
 msgstr "SELECT YOUR CHOICE"
@@ -678,6 +678,9 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr ""
+
+#~ msgid "Please try another channel."
+#~ msgstr "Please try another channel."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "No channels found in search!!!"

@@ -414,9 +414,6 @@ msgstr "Indi% s"
 msgid "Only one specific country"
 msgstr "Diňe belli bir ýurt"
 
-msgid "Please try another channel."
-msgstr "Başga bir kanal synap görmegiňizi haýyş edýäris."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "“Vavoo” buketleriniň esasy sanawdaky orny"
 
@@ -483,6 +480,9 @@ msgstr "Vhli “Vavoo” buketlerini aýyryň?"
 
 msgid "Restarting..."
 msgstr "Başlamak ..."
+
+msgid "Returning to channel list."
+msgstr "Kanal sanawyna gaýdyp barmak."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "Saýlawyňyzy saýlaň"
@@ -658,6 +658,9 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Başga bir kanal synap görmegiňizi haýyş edýäris."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Gözlegde kanal tapylmady !!!"

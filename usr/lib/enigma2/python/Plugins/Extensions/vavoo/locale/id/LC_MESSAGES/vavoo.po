@@ -414,9 +414,6 @@ msgstr "Sekarang %s"
 msgid "Only one specific country"
 msgstr "Hanya satu negara tertentu"
 
-msgid "Please try another channel."
-msgstr "Silakan coba saluran lain."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisi karangan bunga Vavoo di daftar utama"
 
@@ -483,6 +480,9 @@ msgstr "Hapus SEMUA karangan bunga Vavoo?"
 
 msgid "Restarting..."
 msgstr "Memulai ulang..."
+
+msgid "Returning to channel list."
+msgstr "Kembali ke daftar saluran."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "PILIH PILIHAN ANDA"
@@ -658,6 +658,9 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Mulai Ulang Gagal"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Silakan coba saluran lain."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Tidak ada saluran yang ditemukan dalam pencarian!!!"

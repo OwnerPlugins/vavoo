@@ -414,9 +414,6 @@ msgstr "Endi %s"
 msgid "Only one specific country"
 msgstr "Faqat bitta aniq mamlakat"
 
-msgid "Please try another channel."
-msgstr "Boshqa kanalni sinab ko'ring."
-
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo guldastalarining asosiy ro'yxatdagi o'rni"
 
@@ -483,6 +480,9 @@ msgstr "BARCHA Vavoo guldastalari olib tashlansinmi?"
 
 msgid "Restarting..."
 msgstr "Qayta ishga tushirilmoqda..."
+
+msgid "Returning to channel list."
+msgstr "Kanallar ro'yxatiga qaytish."
 
 msgid "SELECT YOUR CHOICE"
 msgstr "TANLOVINGIZNI TANlang"
@@ -658,6 +658,9 @@ msgstr "✗ Proksi oflayn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Qayta ishga tushirilmadi"
+
+#~ msgid "Please try another channel."
+#~ msgstr "Boshqa kanalni sinab ko'ring."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Qidiruvda hech qanday kanal topilmadi!!!"
