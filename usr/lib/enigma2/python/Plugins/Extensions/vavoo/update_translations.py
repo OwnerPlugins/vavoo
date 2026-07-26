@@ -549,7 +549,13 @@ def update_pot_file(xml_strings, py_strings):
             pass
     with open(POT_FILE, 'w') as f:
         if pot_header:
-            f.write(pot_header)
+            # Normalize away any trailing blank lines before writing:
+            # the loop below always prepends its own leading "\n"
+            # before the first entry, so re-using a header that already
+            # ends in a blank line (as extracted from this same
+            # function's own previous output) made the file grow one
+            # more blank line every single run, forever.
+            f.write(pot_header.rstrip('\n') + '\n')
         else:
             f.write('# {} translations\n'.format(PLUGIN_NAME))
             f.write('# Copyright (C) 2025 Lululla Team\n')

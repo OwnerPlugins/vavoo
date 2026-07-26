@@ -1135,16 +1135,24 @@ class VavooProxy:
 
             return None
 
-    def resolve_with_retry(self, channel_url, max_retries=2):
-        """Resolve URLs with short-lived caching and fast retries"""
+    def resolve_with_retry(self, channel_url, max_retries=2, force_refresh=False):
+        """Resolve URLs with short-lived caching and fast retries.
+
+        force_refresh=True skips the cache read (still updates it with
+        the fresh result below) - used when the caller already knows
+        the cached URL is bad, e.g. a player EOF-retry, where reusing
+        the same cached URL for up to resolve_cache_ttl would otherwise
+        guarantee every retry fails the exact same way.
+        """
         if not channel_url:
             print(" No channel URL provided")
             return None
 
         now = time.time()
-        cached = self.resolve_cache.get(channel_url)
-        if cached and (now - cached["ts"] < self.resolve_cache_ttl):
-            return cached["url"]
+        if not force_refresh:
+            cached = self.resolve_cache.get(channel_url)
+            if cached and (now - cached["ts"] < self.resolve_cache_ttl):
+                return cached["url"]
 
         for attempt in range(max_retries):
             try:
@@ -1315,8 +1323,15 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
                 try:
-                    # 1. Resolve the Vavoo stream URL
-                    stream_url = proxy.resolve_with_retry(channel.get("url"))
+                    # 1. Resolve the Vavoo stream URL. force=1 (sent by
+                    # the player's EOF-retry path) bypasses the resolve
+                    # cache, since retrying against the same cached URL
+                    # that just failed would otherwise guarantee every
+                    # retry fails the same way.
+                    force_refresh = query_params.get(
+                        'force', ['0'])[0] == '1'
+                    stream_url = proxy.resolve_with_retry(
+                        channel.get("url"), force_refresh=force_refresh)
                     if not stream_url:
                         self.send_error(404, "Stream not resolved")
                         return

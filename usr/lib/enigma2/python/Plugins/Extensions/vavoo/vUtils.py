@@ -1763,6 +1763,33 @@ class VavooEPGMatcher:
         suffix = parts[-1]
         return len(suffix) in (2, 3) and suffix.isalpha()
 
+    def _cleanup_stale_unmatched(self, channel_name, country_code, servicetype):
+        """Remove this channel's entry from the unmatched cache if one
+        exists there from before it started matching successfully.
+
+        Only the live-rematch success path in find_match() used to do
+        this (via save_unmatched(matched=True)); the alias/local-cache/
+        temp-cache fast-path hits never did, leaving "ghost" unmatched
+        entries around indefinitely for channels that actually match
+        fine now. Keeps an in-memory copy of the unmatched keys so this
+        check is cheap on the common case (nothing to clean up) instead
+        of paying for a full save_unmatched() read+write on every match.
+        """
+        if not hasattr(self, '_unmatched_keys'):
+            self._unmatched_keys = set()
+            try:
+                if exists(UNMATCHED_FILE):
+                    with open(UNMATCHED_FILE, 'r') as f:
+                        content = f.read().strip()
+                        if content:
+                            self._unmatched_keys = set(loads(content).keys())
+            except Exception:
+                pass
+        key = "%s_%s" % (channel_name.strip(), country_code or '')
+        if key in self._unmatched_keys:
+            save_unmatched(channel_name, country_code, servicetype, matched=True)
+            self._unmatched_keys.discard(key)
+
     def _load_alias_map(self):
         if exists(ALIAS_FILE):
             try:
@@ -1848,10 +1875,17 @@ class VavooEPGMatcher:
         n = name.upper()  # usiamo maiuscolo come nell'esterno, poi abbassiamo
         n = sub(r'\[.*\]', '', n)
         n = sub(r'\(.*\)', '', n)
-        n = sub(r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$', '', n)
-        # Remove suffiss Vavoo (.c, .s, .b, ...)
+        # Vavoo suffix (.c, .s, .b, ...) must be stripped BEFORE the
+        # quality-tag strip below: names very often carry both (e.g.
+        # "6TER FHD .b"), and the quality tag isn't at the string's end
+        # while the Vavoo suffix is still there - stripping in the other
+        # order left "FHD"/"HD" stuck in the cleaned name (e.g. "6ter
+        # fhd" instead of "6ter"), which tanks the similarity score
+        # against the plain Rytec name and was silently failing to match
+        # a large fraction of channels that carry both suffixes.
         if not n.startswith("HISTORY"):
             n = sub(r'\s+\.[A-Z0-9]{1,3}$', '', n)
+        n = sub(r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$', '', n)
         n = sub(r'\s+\+$', '', n)
         n = sub(r'[^A-Z0-9 ]', '', n)
         n = sub(r'\s+', ' ', n)
@@ -2095,6 +2129,8 @@ class VavooEPGMatcher:
                             alias_sref = '4097' + alias_sref[1:]
                         print(
                             "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
+                        self._cleanup_stale_unmatched(
+                            channel_name, country_code, servicetype)
                         return alias_id, alias_sref
 
         # Normalize the original name for key generation
@@ -2116,6 +2152,8 @@ class VavooEPGMatcher:
                     if channel_clean == rytec_clean:
                         print(
                             "[Match] Local cache HIT (valid ID & name match): {}".format(cached_key))
+                        self._cleanup_stale_unmatched(
+                            channel_name, country_code, servicetype)
                         return cached.get('id'), cached.get('sref')
                     else:
                         print(
@@ -2126,6 +2164,8 @@ class VavooEPGMatcher:
                     # We don't have the Rytec name, accept the cache
                     print(
                         "[Match] Local cache HIT (valid ID, no Rytec name): {}".format(cached_key))
+                    self._cleanup_stale_unmatched(
+                        channel_name, country_code, servicetype)
                     return cached.get('id'), cached.get('sref')
             else:
                 # Invalid ID, proceed with live matching
@@ -2163,6 +2203,8 @@ class VavooEPGMatcher:
                 # channel, and a full rewrite per channel turns a bulk export
                 # into many redundant whole-file writes as the cache grows.
                 self.new_matches[search_key] = new_entry
+                self._cleanup_stale_unmatched(
+                    channel_name, country_code, servicetype)
                 return cached.get('id'), cached.get('sref')
             else:
                 print(
@@ -2178,8 +2220,15 @@ class VavooEPGMatcher:
             channel_name, country_code)
 
         # Is there already an entry in the cache (even with invalid ID)?
-        existing_entry = self.cache.get(
-            search_key) if search_key in self.cache else None
+        # Resolve via normalized_index first: the raw key an entry is
+        # stored under can differ from search_key (e.g. name-cleaning
+        # rules changed since it was written, same drift as the
+        # _clean_name_for_key '&' case). Step 1 above already proves such
+        # an entry is reachable via normalized_index - looking it up with
+        # self.cache.get(search_key) directly would miss it and silently
+        # discard a valid existing match every time this branch runs.
+        existing_key = self.normalized_index.get(search_key, search_key)
+        existing_entry = self.cache.get(existing_key)
 
         if result_id and result_sref:
             # Decide which sref to keep
@@ -2208,14 +2257,19 @@ class VavooEPGMatcher:
             # If no live match, but there is an existing entry with a valid
             # sref, use it (with matched=False)
             if existing_entry:
+                # Compare against the normalized form: some legacy entries
+                # were written without the trailing colon, which made this
+                # equality check silently treat an actual fallback sref as
+                # "valid" and skip the downgrade below.
                 existing_sref = existing_entry.get('sref')
-                if existing_sref and existing_sref != "4097:0:0:0:0:0:0:0:0:0:":
+                normalized_sref = ensure_sref_trailing_colon(existing_sref)
+                if normalized_sref and normalized_sref != "4097:0:0:0:0:0:0:0:0:0:":
                     print("[Match] No live match, using existing sref (invalid ID)")
                     # Update cache with matched=False if needed
                     if existing_entry.get('matched', True) is not False:
                         existing_entry['matched'] = False
-                        self.cache[search_key] = existing_entry
-                        self._index_cache_key(search_key)
+                        self.cache[existing_key] = existing_entry
+                        self._index_cache_key(existing_key)
                         # Not deferred to new_matches/save_cache(): that
                         # method always writes matched=True, which would
                         # be wrong here. This branch is rare (only when a
@@ -2223,6 +2277,18 @@ class VavooEPGMatcher:
                         # so an eager write is an acceptable tradeoff.
                         save_cache(self.cache)
                     return existing_entry.get('id'), existing_sref
+                elif existing_entry.get('matched') is not False:
+                    # Stale entry with an invalid id AND no usable sref -
+                    # a leftover from before this channel ever properly
+                    # matched. Live re-matching just failed too, so
+                    # there's nothing worth preserving; without this, the
+                    # cache keeps claiming matched=True with no real EPG
+                    # data behind it, forever, since nothing else ever
+                    # revisits an entry once it's "matched".
+                    existing_entry['matched'] = False
+                    self.cache[existing_key] = existing_entry
+                    self._index_cache_key(existing_key)
+                    save_cache(self.cache)
             # Otherwise, no match and no valid sref
             save_unmatched(
                 channel_name,
