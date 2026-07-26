@@ -1,22 +1,23 @@
 #!/bin/bash
 
-version='1.81'
-changelog="- Fixed satellite priority matching for EPG - a mask bug meant almost
-  none of the 19 known satellites could ever match, and 11 of them had
-  the wrong orbital position value besides
-- Fixed bouquets not showing correct EPG after export until a manual
-  reload/reboot
-- Fixed proxy status freezing after selecting a country instead of
-  refreshing live
-- Fixed the Console (installer) screen always showing English text
-- Fixed anonymous usage stats firing on every plugin open instead of
-  once per boot
-- Fixed the proxy's token-refresh monitor running at half the intended
-  frequency
-- Consolidated country-name matching into a single lookup table
-- Hardened EPG cache writes against corruption from a crash/power loss
-- Removed another block of dead code with no remaining callers
-- General stability and documentation accuracy fixes"
+version='1.82'
+changelog="- Fixed EPG matching failing for channels with both a quality tag
+  and a Vavoo suffix (e.g. '6TER FHD .b') due to stripping them in the
+  wrong order
+- Fixed the player screen getting stuck after giving up on repeated
+  stream retries - it now returns to the channel list automatically
+- Fixed automatic stream retries reusing the same cached (possibly
+  broken) resolved URL instead of fetching a fresh one
+- Fixed the main menu's proxy status label refreshing 3x slower than
+  intended after watching a stream
+- Fixed two EPG cache bugs that left channels either stuck as
+  'unmatched' after they had actually matched, or stuck claiming a
+  match with no real EPG data behind it
+- Fixed EPG matching discarding a valid cached channel match and
+  re-marking it as unmatched whenever its cache key format had drifted
+  from an older version
+- Fixed the translation-update CI workflow silently growing vavoo.pot
+  by one blank line on every run"
 
 
 echo "$changelog"
