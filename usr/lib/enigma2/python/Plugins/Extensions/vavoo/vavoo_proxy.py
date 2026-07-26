@@ -1135,7 +1135,11 @@ class VavooProxy:
 
             return None
 
-    def resolve_with_retry(self, channel_url, max_retries=2, force_refresh=False):
+    def resolve_with_retry(
+            self,
+            channel_url,
+            max_retries=2,
+            force_refresh=False):
         """Resolve URLs with short-lived caching and fast retries.
 
         force_refresh=True skips the cache read (still updates it with

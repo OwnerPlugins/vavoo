@@ -736,7 +736,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) +
+            print("Getting channels for '" + str(country_name) + \
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
@@ -1763,7 +1763,11 @@ class VavooEPGMatcher:
         suffix = parts[-1]
         return len(suffix) in (2, 3) and suffix.isalpha()
 
-    def _cleanup_stale_unmatched(self, channel_name, country_code, servicetype):
+    def _cleanup_stale_unmatched(
+            self,
+            channel_name,
+            country_code,
+            servicetype):
         """Remove this channel's entry from the unmatched cache if one
         exists there from before it started matching successfully.
 
@@ -1787,7 +1791,11 @@ class VavooEPGMatcher:
                 pass
         key = "%s_%s" % (channel_name.strip(), country_code or '')
         if key in self._unmatched_keys:
-            save_unmatched(channel_name, country_code, servicetype, matched=True)
+            save_unmatched(
+                channel_name,
+                country_code,
+                servicetype,
+                matched=True)
             self._unmatched_keys.discard(key)
 
     def _load_alias_map(self):
