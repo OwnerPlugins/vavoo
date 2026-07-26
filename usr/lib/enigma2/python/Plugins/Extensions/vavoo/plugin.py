@@ -1271,31 +1271,15 @@ class vavoo_config(Screen, ConfigListScreen):
     def schedule_epg_update(self):
         """Schedule automatic EPG updates using EPGImport's own scheduler"""
         try:
-            # This creates a crontab entry or uses EPGImport's built-in scheduler
-            # EPGImport typically uses its own timer, so we just need to ensure
-            # the source is selected and auto-update is enabled in EPGImport
-
-            # Option 1: Use EPGImport's own configuration
-            if file_exists(EPGIMPORT_CONF):
-                # Read existing config
-                with open(EPGIMPORT_CONF, 'r') as f:
-                    lines = f.readlines()
-
-                # Check if our source is already enabled
-                source_enabled = False
-                for line in lines:
-                    if 'vavoo.sources.xml' in line and line.strip().startswith('sources='):
-                        source_enabled = True
-                        break
-
-                if not source_enabled:
-                    # Add our source to the config
-                    with open(EPGIMPORT_CONF, 'a') as f:
-                        f.write('\nsources=/etc/epgimport/vavoo.sources.xml\n')
-
-            # Option 2: Trigger an immediate update (optional)
+            # EPGImport's own scheduler picks up whatever sources the user
+            # has enabled in ITS config screen - we used to try to enable
+            # our source here by opening EPGIMPORT_CONF in text mode and
+            # appending a "sources=..." line to it, but that file is
+            # actually a binary serialized blob (not the plain-text format
+            # this assumed), so every append corrupted EPGImport's own
+            # config. Enabling the Vavoo source is left to the user via
+            # EPGImport's settings screen instead.
             if cfg.epg_auto_update.value:
-                # We'll let the user configure EPGImport separately
                 pass
 
         except Exception as e:
@@ -2654,15 +2638,20 @@ class MainVavoo(Screen):
                 MessageBox.TYPE_INFO)
             return
 
-        # Check if the source is enabled in EPGImport config
+        # Check if the source is enabled in EPGImport config. EPGIMPORT_CONF
+        # is a binary serialized blob (EPGImport's own internal format, not
+        # plain text), so it can't be read line-by-line, and it never
+        # contains the source's filename ("vavoo.sources.xml") - EPGImport
+        # records each enabled source by its <description> text instead,
+        # which for every Vavoo-generated source starts with "Vavoo "
+        # (write_epg_mapping_file() / update_epg_sources() in vUtils.py).
+        # A raw substring search for that prefix is format-agnostic and
+        # works regardless of the underlying serialization.
         source_enabled = False
         if isfile(EPGIMPORT_CONF):
             try:
-                with open(EPGIMPORT_CONF, 'r') as f:
-                    for line in f:
-                        if 'vavoo.sources.xml' in line and not line.strip().startswith('#'):
-                            source_enabled = True
-                            break
+                with open(EPGIMPORT_CONF, 'rb') as f:
+                    source_enabled = b'Vavoo' in f.read()
             except Exception as e:
                 print("[EPG] Error reading epgimport.conf: {}".format(e))
 
