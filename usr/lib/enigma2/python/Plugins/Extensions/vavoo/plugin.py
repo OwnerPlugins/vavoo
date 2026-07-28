@@ -4674,8 +4674,14 @@ class Playstream2(
             encoded_url = stream_url_with_ua.replace(":", "%3a")
             encoded_name = self.name.replace(":", "%3a")
 
+            # Use the configured player service type ("Server for Player
+            # Used" in settings - 4097/5001/5002/8193) instead of always
+            # hardcoding 4097 - bouquet export already respects this
+            # setting (see cfg.services.value usage there), but this
+            # in-plugin player was silently ignoring it, always using
+            # 4097's backend regardless of what the user picked.
             ref = (
-                "4097:0:1:0:0:0:0:0:0:0:" +
+                cfg.services.value + ":0:1:0:0:0:0:0:0:0:" +
                 encoded_url +
                 ":" +
                 encoded_name
@@ -4713,7 +4719,7 @@ class Playstream2(
 
             full_url = url + app
             ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(
-                "4097",
+                cfg.services.value,
                 full_url.replace(":", "%3a"),
                 self.name.replace(":", "%3a")
             )
