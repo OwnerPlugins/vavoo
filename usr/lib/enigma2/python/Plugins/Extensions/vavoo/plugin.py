@@ -112,6 +112,7 @@ from .bouquet_manager import (
     export_bouquet_async
 )
 from .vUtils import (
+    debug,
     make_print,
     update_epg_sources,
     get_epg_matcher,
@@ -161,7 +162,7 @@ try:
     from .notification_system import init_notification_system, quick_notify
     NOTIFICATION_AVAILABLE = True
 except ImportError as e:
-    print("[DEBUG] Notification system not available:", e)
+    debug("Notification system not available: {}".format(e))
     NOTIFICATION_AVAILABLE = False
 
     def quick_notify(*args, **kwargs):
@@ -1874,7 +1875,7 @@ class MainVavoo(Screen):
             return
 
         if not result:
-            print("[DEBUG] fix_cache_format cancelled by user")
+            debug("fix_cache_format cancelled by user")
             return
 
         # An in-progress export's EPG-matching phase writes the same
@@ -1915,12 +1916,12 @@ class MainVavoo(Screen):
                 MessageBox.TYPE_INFO,
                 timeout=5
             )
-            print(
-                "[DEBUG] fix_cache_format completed: fixed={}, removed={}".format(
+            debug(
+                "fix_cache_format completed: fixed={}, removed={}".format(
                     fixed, removed))
 
         except Exception as e:
-            print("[DEBUG] Error in fix_cache_format: {}".format(e))
+            debug("Error in fix_cache_format: {}".format(e))
             self.session.open(
                 MessageBox,
                 _("Error fixing cache: {}").format(str(e)),
@@ -1932,7 +1933,7 @@ class MainVavoo(Screen):
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
-        print("[DEBUG] reload_bouquets_with_popup called")
+        debug("reload_bouquets_with_popup called")
         self.session.openWithCallback(
             self._confirm_reload_bouquets,
             MessageBox,
@@ -1945,7 +1946,7 @@ class MainVavoo(Screen):
     def _confirm_reload_bouquets(self, result):
         """Callback after user confirmation"""
         if result:
-            print("[DEBUG] User confirmed reload")
+            debug("User confirmed reload")
             try:
                 db = eDVBDB.getInstance()
                 db.reloadBouquets()
@@ -1964,10 +1965,10 @@ class MainVavoo(Screen):
             except Exception as e:
                 print("[MessageBox] Error:", e)
         else:
-            print("[DEBUG] User cancelled reload")
+            debug("User cancelled reload")
 
     def closex(self):
-        print("[DEBUG] Exit from plugin. Cleaning up plugin timers...")
+        debug("Exit from plugin. Cleaning up plugin timers...")
         if is_stats_enabled():
             stop_heartbeat()
             print("[Stats] Heartbeat fermato")
@@ -3055,7 +3056,7 @@ class vavoo(Screen):
 
     def cat(self):
         """Load channels for the selected country with proxy verification and fallback"""
-        print("[DEBUG] vavoo.cat() called for country: " + str(self.country_name))
+        debug("vavoo.cat() called for country: " + str(self.country_name))
         if not cfg.proxy_enabled.value:
             print("[vavoo] Proxy disabled, using fallback directly")
             self._fallback_to_original_method()
@@ -3066,7 +3067,7 @@ class vavoo(Screen):
                 country_encoded = url_quote(self.country_name)
                 proxy_url = PROXY_BASE_URL + \
                     "/channels?country={}".format(country_encoded)
-                print("[DEBUG] Fetching from proxy: " + proxy_url)
+                debug("Fetching from proxy: " + proxy_url)
 
                 content = getUrl(proxy_url, timeout=10)
 
@@ -3075,10 +3076,10 @@ class vavoo(Screen):
                     self._build_channel_list(channels_data)
                     return
                 else:
-                    print(
-                        "[DEBUG][cat] Proxy returned empty response, trying fallback...")
+                    debug(
+                        "[cat] Proxy returned empty response, trying fallback...")
             except Exception as proxy_error:
-                print("[DEBUG][cat] Proxy error: " + str(proxy_error))
+                debug("[cat] Proxy error: " + str(proxy_error))
 
             # 2. FALLBACK: use the original method
             self._fallback_to_original_method()
@@ -3174,7 +3175,7 @@ class vavoo(Screen):
             item[0][0] + "###" + item[0][1] for item in self.cat_list
         ]
         self.update_menu()
-        print("[DEBUG] List built with " + str(len(self.cat_list)) + " items.")
+        debug("List built with " + str(len(self.cat_list)) + " items.")
 
     def _handle_cat_error(self, e):
         """Handle cat() method errors"""
@@ -3330,8 +3331,8 @@ class vavoo(Screen):
 
     def _on_export_complete(self, success, ch_count, message):
         """Callback for bouquet export completion"""
-        print(
-            "[DEBUG] _on_export_complete CALLED - success=%s, ch_count=%s, message='%s'" %
+        debug(
+            "_on_export_complete CALLED - success=%s, ch_count=%s, message='%s'" %
             (success, ch_count, message))
 
         try:
@@ -3344,14 +3345,14 @@ class vavoo(Screen):
             # Success - two cases:
             if message == "Bouquet created":
                 # First callback - base bouquet ready
-                print("[DEBUG] Bouquet ready with {} channels".format(ch_count))
+                debug("Bouquet ready with {} channels".format(ch_count))
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed
-                print("[DEBUG] EPG completed for {} channels".format(ch_count))
+                debug("EPG completed for {} channels".format(ch_count))
                 if NOTIFICATION_AVAILABLE:
                     if ch_count > 0:
                         quick_notify(
@@ -3362,7 +3363,7 @@ class vavoo(Screen):
 
             else:
                 # Other messages
-                print("[DEBUG] Export completed: {}".format(message))
+                debug("Export completed: {}".format(message))
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(message, 3)
 
@@ -3779,7 +3780,7 @@ class TvInfoBarShowHide():
     skipToggleShow = False
 
     def __init__(self):
-        print("[DEBUG] TvInfoBarShowHide.__init__ START")
+        debug("TvInfoBarShowHide.__init__ START")
         self["ShowHideActions"] = ActionMap(
             ["InfobarShowHideActions"],
             {
@@ -3794,7 +3795,7 @@ class TvInfoBarShowHide():
 
         self.__state = self.STATE_SHOWN
         self.__locked = 0
-        print("[DEBUG] TvInfoBarShowHide.__init__ state={}")
+        debug("TvInfoBarShowHide.__init__ state={}")
 
         # Top overlay: controls + proxy status
         self.helpOverlay = Label("")
@@ -3859,7 +3860,7 @@ class TvInfoBarShowHide():
             self.retry_start_timer.callback.append(self._retry_start)
         self.onShow.append(self.__onShow)
         self.onHide.append(self.__onHide)
-        print("[DEBUG] TvInfoBarShowHide.__init__ END")
+        debug("TvInfoBarShowHide.__init__ END")
 
     def get_current_epg(self):
         """Method to be overridden by child class (Playstream2)."""
@@ -3867,7 +3868,7 @@ class TvInfoBarShowHide():
 
     def show_help_overlay(self):
         """Show custom overlays and start the auto‑hide timer."""
-        print("[DEBUG] show_help_overlay START")
+        debug("show_help_overlay START")
         try:
             # Prepare help overlay text (controls + proxy details)
             if is_proxy_running():
@@ -3897,17 +3898,17 @@ class TvInfoBarShowHide():
             help_text = "{} | {} | {}".format(controls, proxy_details, credit)
             self["helpOverlay"].setText(help_text)
             self["helpOverlay"].show()
-            print("[DEBUG] show_help_overlay helpOverlay shown")
+            debug("show_help_overlay helpOverlay shown")
 
             # Show EPG (initially "Loading...")
             self["epgOverlay"].setText(_("Loading EPG..."))
             self["epgOverlay"].show()
-            print("[DEBUG] show_help_overlay epgOverlay shown")
+            debug("show_help_overlay epgOverlay shown")
 
             # Start timer to update proxy status every 30s
             if not self.proxy_update_timer.isActive():
                 self.proxy_update_timer.start(30000, True)
-                print("[DEBUG] show_help_overlay proxy_update_timer started")
+                debug("show_help_overlay proxy_update_timer started")
 
             def _fetch_epg_async():
                 try:
@@ -3920,7 +3921,7 @@ class TvInfoBarShowHide():
                     try:
                         if self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
-                            print("[DEBUG] show_help_overlay EPG updated: {}".format(
+                            debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
                     except Exception:
                         pass
@@ -3930,7 +3931,7 @@ class TvInfoBarShowHide():
 
         except Exception as e:
             print("[Show Help] Error: " + str(e))
-        print("[DEBUG] show_help_overlay END")
+        debug("show_help_overlay END")
 
     def update_proxy_status_overlay(self):
         """Update the helpOverlay text with current proxy status."""
@@ -3971,85 +3972,85 @@ class TvInfoBarShowHide():
 
     def hide_help_overlay(self):
         """Hide both overlays and stop timer"""
-        print("[DEBUG] hide_help_overlay START")
+        debug("hide_help_overlay START")
         self.hideTimer.stop()
         self.proxy_update_timer.stop()
         if self["helpOverlay"].visible:
             self["helpOverlay"].hide()
             self["epgOverlay"].hide()
-            print("[DEBUG] hide_help_overlay overlays hidden")
-        print("[DEBUG] hide_help_overlay END")
+            debug("hide_help_overlay overlays hidden")
+        debug("hide_help_overlay END")
 
     def __onShow(self):
-        print("[DEBUG] __onShow called, old state={}".format(self.__state))
+        debug("__onShow called, old state={}".format(self.__state))
         self.__state = self.STATE_SHOWN
-        print("[DEBUG] __onShow new state={}".format(self.__state))
+        debug("__onShow new state={}".format(self.__state))
 
     def __onHide(self):
-        print("[DEBUG] __onHide called, old state={}".format(self.__state))
+        debug("__onHide called, old state={}".format(self.__state))
         self.__state = self.STATE_HIDDEN
-        print("[DEBUG] __onHide new state={}".format(self.__state))
+        debug("__onHide new state={}".format(self.__state))
 
     def doShow(self):
-        print("[DEBUG] doShow START, state={}".format(self.__state))
+        debug("doShow START, state={}".format(self.__state))
         self.hideTimer.stop()
         self.show()
         self.startHideTimer()
-        print("[DEBUG] doShow END")
+        debug("doShow END")
 
     def doHide(self):
-        print("[DEBUG] doHide START, state={}".format(self.__state))
+        debug("doHide START, state={}".format(self.__state))
         self.hideTimer.stop()
         self.hide()
         self.hide_help_overlay()
         self.startHideTimer()
-        print("[DEBUG] doHide END")
+        debug("doHide END")
 
     def startHideTimer(self):
-        print(
-            "[DEBUG] startHideTimer START, state={}, locked={}".format(
+        debug(
+            "startHideTimer START, state={}, locked={}".format(
                 self.__state,
                 self.__locked))
         if self.__state == self.STATE_SHOWN and not self.__locked:
             self.hideTimer.stop()
             self.hideTimer.start(10000, True)
-            print("[DEBUG] startHideTimer timer started (5s)")
+            debug("startHideTimer timer started (5s)")
         else:
-            print(
-                "[DEBUG] startHideTimer NOT starting: state={}, locked={}".format(
+            debug(
+                "startHideTimer NOT starting: state={}, locked={}".format(
                     self.__state, self.__locked))
-        print("[DEBUG] startHideTimer END")
+        debug("startHideTimer END")
 
     def doTimerHide(self):
-        print("[DEBUG] doTimerHide START, state={}".format(self.__state))
+        debug("doTimerHide START, state={}".format(self.__state))
         self.hideTimer.stop()
         if self.__state == self.STATE_SHOWN:
-            print("[DEBUG] doTimerHide hiding infobar and overlays")
+            debug("doTimerHide hiding infobar and overlays")
             self.hide()
             self.hide_help_overlay()
         else:
-            print("[DEBUG] doTimerHide state is HIDDEN, not hiding")
-        print("[DEBUG] doTimerHide END")
+            debug("doTimerHide state is HIDDEN, not hiding")
+        debug("doTimerHide END")
 
     def toggleShow(self):
-        print(
-            "[DEBUG] toggleShow START, state={}, skipToggleShow={}".format(
+        debug(
+            "toggleShow START, state={}, skipToggleShow={}".format(
                 self.__state,
                 self.skipToggleShow))
         if not self.skipToggleShow:
             if self.__state == self.STATE_HIDDEN:
-                print("[DEBUG] toggleShow calling doShow()")
+                debug("toggleShow calling doShow()")
                 self.doShow()
             else:
-                print("[DEBUG] toggleShow calling doHide()")
+                debug("toggleShow calling doHide()")
                 self.doHide()
         else:
-            print("[DEBUG] toggleShow skipToggleShow is True, resetting")
+            debug("toggleShow skipToggleShow is True, resetting")
             self.skipToggleShow = False
-        print("[DEBUG] toggleShow END")
+        debug("toggleShow END")
 
     def lockShow(self):
-        print("[DEBUG] lockShow START")
+        debug("lockShow START")
         try:
             self.__locked += 1
         except BaseException:
@@ -4058,10 +4059,10 @@ class TvInfoBarShowHide():
             self.show()
             self.hideTimer.stop()
             self.skipToggleShow = False
-        print("[DEBUG] lockShow END, locked={}".format(self.__locked))
+        debug("lockShow END, locked={}".format(self.__locked))
 
     def unlockShow(self):
-        print("[DEBUG] unlockShow START")
+        debug("unlockShow START")
         try:
             self.__locked -= 1
         except BaseException:
@@ -4070,62 +4071,62 @@ class TvInfoBarShowHide():
             self.__locked = 0
         if self.execing:
             self.startHideTimer()
-        print("[DEBUG] unlockShow END, locked={}".format(self.__locked))
+        debug("unlockShow END, locked={}".format(self.__locked))
 
     def _do_show_all(self):
         """Show infobar and overlays, start hide timer"""
-        print("[DEBUG] _do_show_all CALLED")
+        debug("_do_show_all CALLED")
         self.doShow()                  # Shows infobar
         self.show_help_overlay()       # Shows overlays
         self.delayed_start_timer.start(
             500, True)  # Start hide timer after 500ms
-        print("[DEBUG] _do_show_all END")
+        debug("_do_show_all END")
 
     def _retry_start(self):
         """Retry serviceStarted if execing is False"""
-        print("[DEBUG] _retry_start CALLED")
+        debug("_retry_start CALLED")
         self.retry_start_timer.stop()
         if self.execing:
-            print("[DEBUG] _retry_start execing is now True, calling _do_show_all()")
+            debug("_retry_start execing is now True, calling _do_show_all()")
             self._do_show_all()
         else:
-            print("[DEBUG] _retry_start execing still False, will retry in 500ms")
+            debug("_retry_start execing still False, will retry in 500ms")
             self.retry_start_timer.start(500, True)
 
     def _delayed_start(self):
         """Delayed start callback - starts the hide timer after infobar is rendered"""
-        print("[DEBUG] _delayed_start CALLED")
+        debug("_delayed_start CALLED")
         self.delayed_start_timer.stop()
-        print("[DEBUG] _delayed_start starting hideTimer (5s)")
+        debug("_delayed_start starting hideTimer (5s)")
         self.hideTimer.start(5000, True)
-        print("[DEBUG] _delayed_start END")
+        debug("_delayed_start END")
 
     def serviceStarted(self):
-        print("[DEBUG] ========== serviceStarted CALLED ==========")
-        print("[DEBUG] serviceStarted execing={}".format(self.execing))
+        debug("========== serviceStarted CALLED ==========")
+        debug("serviceStarted execing={}".format(self.execing))
         if self.execing:
-            print("[DEBUG] serviceStarted execing is True, calling _do_show_all()")
+            debug("serviceStarted execing is True, calling _do_show_all()")
             self._do_show_all()
         else:
-            print("[DEBUG] serviceStarted execing is False, will retry in 500ms")
+            debug("serviceStarted execing is False, will retry in 500ms")
             self.retry_start_timer.start(500, True)
-        print("[DEBUG] ========== serviceStarted END ==========")
+        debug("========== serviceStarted END ==========")
 
     def OkPressed(self):
         """Toggle both infobar and overlays together"""
-        print("[DEBUG] ========== OkPressed CALLED ==========")
-        print(
-            "[DEBUG] OkPressed helpOverlay.visible={}".format(
+        debug("========== OkPressed CALLED ==========")
+        debug(
+            "OkPressed helpOverlay.visible={}".format(
                 self["helpOverlay"].visible))
         if self["helpOverlay"].visible:
-            print("[DEBUG] OkPressed hiding overlays")
+            debug("OkPressed hiding overlays")
             self.hide_help_overlay()
         else:
-            print("[DEBUG] OkPressed showing overlays")
+            debug("OkPressed showing overlays")
             self.show_help_overlay()
-        print("[DEBUG] OkPressed calling toggleShow()")
+        debug("OkPressed calling toggleShow()")
         self.toggleShow()
-        print("[DEBUG] ========== OkPressed END ==========")
+        debug("========== OkPressed END ==========")
 
 
 class Playstream2(

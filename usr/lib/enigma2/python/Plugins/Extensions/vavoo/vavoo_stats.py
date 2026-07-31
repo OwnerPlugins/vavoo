@@ -163,9 +163,8 @@ class AnonymousStats:
         self._send_heartbeat()
 
     def _send_heartbeat(self):
-        print("[Stats] _send_heartbeat ENTRATO")
         if not getattr(self, '_heartbeat_active', False):
-            print("[Stats] Heartbeat non attivo, esco")
+            debug("Heartbeat not active, skipping send")
             return
 
         payload = {
@@ -176,7 +175,7 @@ class AnonymousStats:
             "timestamp": int(time.time()),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
-        print("[Stats] Sending heartbeat...")
+        debug("Sending heartbeat...")
         # _http_post blocks for up to _HTTP_TIMEOUT on a slow/unreachable
         # server. The first call runs synchronously from start_heartbeat()
         # (called from MainVavoo.__init__ on the UI/reactor thread), and

@@ -13,6 +13,9 @@ from Screens.MessageBox import MessageBox
 from enigma import getDesktop
 
 from . import PY3, _
+from .vUtils import make_print
+
+print = make_print("CONSOLE")
 
 
 def getDesktopSize():
@@ -168,9 +171,8 @@ class Console(Screen):
     def startRun(self):
         if self.showStartStopText:
             self._setText(_('Execution progress\n\n'))
-        print('[Console] executing in run', self.run,
-              ' the command:', self.cmdlist[self.run])
-        print("[Console] Executing command:", self.cmdlist[self.run])
+        print("Executing command (run {}): {}".format(
+            self.run, self.cmdlist[self.run]))
         if self.container.execute(self.cmdlist[self.run]):
             self._setText(self.cmdlist[self.run])
             self.runFinished(-1)
@@ -246,7 +248,7 @@ class Console(Screen):
             data = str.decode()
         else:
             data = str
-        print("[Console] Data received: ", data)
+        print("Data received: {}".format(data))
         self._appendText(data)
 
     def restartenigma(self):

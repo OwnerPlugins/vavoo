@@ -8,6 +8,8 @@ from enigma import eTimer
 from threading import Lock
 from twisted.internet import reactor
 
+from .vUtils import make_print
+
 """
 #########################################################
 #                                                       #
@@ -27,6 +29,8 @@ from twisted.internet import reactor
 """
 
 __author__ = "Lululla & Qu4k3"
+
+print = make_print("NOTIFY")
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -109,9 +113,9 @@ class HybridNotificationManager:
             try:
                 self.notification_window = session.instantiateDialog(
                     SimpleNotifyWidget)
-                print("[NOTIFY] Notification window created")
+                print("Notification window created")
             except Exception as e:
-                print("[NOTIFY] Error creating window: {}".format(e))
+                print("Error creating window: {}".format(e))
 
         # Process any pending messages
         if self.pending_messages:
@@ -146,11 +150,11 @@ class HybridNotificationManager:
                 self.hide_timer.start(duration, True)
 
                 # Log for debug
-                print("[NOTIFY] {} ({}ms)".format(display_msg, duration))
+                print("{} ({}ms)".format(display_msg, duration))
                 return True
             return False
         except Exception as e:
-            print("[NOTIFY] Error showing message: {}".format(e))
+            print("Error showing message: {}".format(e))
             return False
 
     def showMessage(self, message, duration=3000):
@@ -264,7 +268,7 @@ def hide_current_notification():
 def cleanup_notifications():
     """Clean up notifications when plugin closes"""
     _notification_manager.hide()
-    print("[NOTIFY] Cleanup complete")
+    print("Cleanup complete")
 
 
 # =============================================================================

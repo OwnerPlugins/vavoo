@@ -1300,8 +1300,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             else:
                 self.send_response(code)
         except (BrokenPipeError, ConnectionResetError):
-            print(
-                "[DEBUG][VAVOO_PROXY][safe_send_response] Client disconnected during response - ignoring")
+            print("Client disconnected during response - ignoring")
             return False
         return True
 
