@@ -118,6 +118,20 @@ DEBUG_ENABLED = str(
     "on")
 
 
+def set_debug_enabled(enabled):
+    """Toggle DEBUG-level logging at runtime (config menu "Debug logging").
+
+    VAVOO_DEBUG only takes effect at process start and, since the proxy
+    runs as a thread inside the same Enigma2 process, an env var set in
+    an SSH session never reaches it anyway (Enigma2 itself is started
+    by the box's init supervisor, not that shell). This is checked on
+    every debug() call instead, so a config toggle takes effect
+    immediately with no restart needed.
+    """
+    global DEBUG_ENABLED
+    DEBUG_ENABLED = bool(enabled)
+
+
 def _rotate_log_if_needed():
     try:
         if isfile(LOG_FILE) and getsize(LOG_FILE) >= LOG_MAX_BYTES:

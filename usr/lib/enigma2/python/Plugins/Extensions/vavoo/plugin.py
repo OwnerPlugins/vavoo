@@ -488,6 +488,11 @@ cfg.fixedtime = ConfigClock(default=46800)
 cfg.last_update = ConfigText(default="Never")
 cfg.stmain = ConfigYesNo(default=True)
 cfg.stats_enabled = ConfigYesNo(default=True)
+cfg.debug_logging = ConfigYesNo(default=False)
+cfg.debug_logging.addNotifier(
+    lambda cfgelement: vUtils.set_debug_enabled(cfgelement.value),
+    initial_call=True
+)
 # cfg.ipv6 = ConfigEnableDisable(default=False)
 cfg.back = ConfigSelection(default='oktus', choices=BakP)
 """
@@ -819,6 +824,8 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Link in Main Menu")))
         self.list.append(getConfigListEntry(_("Send Anonymous Statistics"), cfg.stats_enabled, _(
             "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
+        self.list.append(getConfigListEntry(_("Debug logging"), cfg.debug_logging, _(
+            "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
