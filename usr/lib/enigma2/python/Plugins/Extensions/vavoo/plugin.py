@@ -1803,7 +1803,13 @@ class MainVavoo(Screen):
             # Optional: stop proxy if it is running
             shutdown_proxy()
 
+        # proxy_monitor_timer's first tick is still PROXY_MONITOR_INTERVAL_MS
+        # (10s) away, so without this the label would sit on "Checking
+        # proxy..." for up to 10 seconds even though the splash screen
+        # already confirmed (or gave up on) proxy readiness moments ago -
+        # refresh it immediately instead of leaving that stale placeholder.
         self['proxy_status'].setText(_("Checking proxy..."))
+        self._update_proxy_status_display()
         self.cat()
 
         # Poll for the update check started during the splash screen to
