@@ -17,7 +17,7 @@ from difflib import SequenceMatcher
 from json import dump, load, loads
 from Components.config import config
 from Components.NimManager import nimmanager
-from os import listdir, makedirs, remove, system, unlink, rename
+from os import listdir, makedirs, remove, unlink, rename
 from os.path import basename, exists, getmtime, getsize, isfile, join, splitext
 from enigma import eTimer
 from random import choice
@@ -1004,16 +1004,6 @@ def purge(directory, pattern):
         file_path = join(directory, f)
         if isfile(file_path) and search(pattern, f):
             remove(file_path)
-
-
-def MemClean():
-    """Clear system memory cache"""
-    try:
-        # system('sync')
-        for i in range(1, 4):
-            system("echo " + str(i) + " > /proc/sys/vm/drop_caches")
-    except Exception:
-        pass
 
 
 """

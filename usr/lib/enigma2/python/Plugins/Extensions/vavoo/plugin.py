@@ -4324,7 +4324,6 @@ class Playstream2(
     def _handleEofEvent(self, source):
         """Shared EOF bookkeeping/restart logic for doEofInternal() and
         __evEOF(), which both fire for the same underlying event."""
-        vUtils.MemClean()
         current_time = time.time()
 
         if not hasattr(self, 'eof_count'):
