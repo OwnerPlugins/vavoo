@@ -1444,7 +1444,7 @@ class startVavoo(Screen):
         (18, "Loading channel catalog ..."),
         (42, "Authenticating Vavoo servers ..."),
         (68, "Renewing stream tokens ..."),
-        (86, "EPG sync ready ..."),
+        (86, "Finalizing startup ..."),
     ]
     TOTAL_MS = 1200   # time for the cosmetic bar to reach SOFT_CAP
     TICK_MS = 30     # timer interval in ms
