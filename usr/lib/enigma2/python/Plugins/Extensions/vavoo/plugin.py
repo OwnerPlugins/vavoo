@@ -6,6 +6,7 @@ import codecs
 import ssl
 import time
 import threading
+from difflib import SequenceMatcher
 from os import listdir, unlink, remove, system as os_system
 from os.path import exists as file_exists, join, isfile, getsize
 from re import compile, DOTALL, search
@@ -112,6 +113,7 @@ from .bouquet_manager import (
     export_bouquet_async
 )
 from .vUtils import (
+    debug,
     make_print,
     update_epg_sources,
     get_epg_matcher,
@@ -161,7 +163,7 @@ try:
     from .notification_system import init_notification_system, quick_notify
     NOTIFICATION_AVAILABLE = True
 except ImportError as e:
-    print("[DEBUG] Notification system not available:", e)
+    debug("Notification system not available: {}".format(e))
     NOTIFICATION_AVAILABLE = False
 
     def quick_notify(*args, **kwargs):
@@ -325,8 +327,40 @@ tmlast = None
 # switching channels or reopening the player doesn't re-fetch/re-parse/
 # re-index the same country's EPG document within the TTL window - see
 # Playstream2.get_current_epg().
-_epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index)
+_epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index, display_name_index)
 _epg_result_cache = {}   # "epg_<name>_<country>" -> (timestamp, result_str)
+
+# Safety-net caps: entries here are only ever added, never removed on
+# their own (the 5-minute figure elsewhere is a reuse TTL, not an
+# eviction one) - unlike vUtils.py's persistent EPG matcher cache (which
+# already has its own size cap), these two are plain in-memory dicts
+# that grow for the life of the process, one entry per unique
+# channel+country (_epg_result_cache) or country (_epg_xml_cache) ever
+# viewed. _epg_xml_cache is naturally small (bounded by distinct
+# countries actually browsed), but capped too for consistency/safety.
+_EPG_RESULT_CACHE_MAX = 500
+_EPG_XML_CACHE_MAX = 50
+
+
+def _cache_epg_result(cache_key, result):
+    _epg_result_cache[cache_key] = (time.time(), result)
+    if len(_epg_result_cache) > _EPG_RESULT_CACHE_MAX:
+        oldest = sorted(
+            _epg_result_cache, key=lambda k: _epg_result_cache[k][0]
+        )[:len(_epg_result_cache) - _EPG_RESULT_CACHE_MAX]
+        for k in oldest:
+            del _epg_result_cache[k]
+
+
+def _cache_epg_xml(country_code, root, channel_index, display_name_index):
+    _epg_xml_cache[country_code] = (
+        time.time(), root, channel_index, display_name_index)
+    if len(_epg_xml_cache) > _EPG_XML_CACHE_MAX:
+        oldest = sorted(
+            _epg_xml_cache, key=lambda k: _epg_xml_cache[k][0]
+        )[:len(_epg_xml_cache) - _EPG_XML_CACHE_MAX]
+        for k in oldest:
+            del _epg_xml_cache[k]
 
 # Auto-update check state, shared between startVavoo (kicks off the
 # background check) and MainVavoo (shows the popup once, after the main
@@ -487,6 +521,11 @@ cfg.fixedtime = ConfigClock(default=46800)
 cfg.last_update = ConfigText(default="Never")
 cfg.stmain = ConfigYesNo(default=True)
 cfg.stats_enabled = ConfigYesNo(default=True)
+cfg.debug_logging = ConfigYesNo(default=False)
+cfg.debug_logging.addNotifier(
+    lambda cfgelement: vUtils.set_debug_enabled(cfgelement.value),
+    initial_call=True
+)
 # cfg.ipv6 = ConfigEnableDisable(default=False)
 cfg.back = ConfigSelection(default='oktus', choices=BakP)
 """
@@ -818,6 +857,8 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Link in Main Menu")))
         self.list.append(getConfigListEntry(_("Send Anonymous Statistics"), cfg.stats_enabled, _(
             "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
+        self.list.append(getConfigListEntry(_("Debug logging"), cfg.debug_logging, _(
+            "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -1271,31 +1312,15 @@ class vavoo_config(Screen, ConfigListScreen):
     def schedule_epg_update(self):
         """Schedule automatic EPG updates using EPGImport's own scheduler"""
         try:
-            # This creates a crontab entry or uses EPGImport's built-in scheduler
-            # EPGImport typically uses its own timer, so we just need to ensure
-            # the source is selected and auto-update is enabled in EPGImport
-
-            # Option 1: Use EPGImport's own configuration
-            if file_exists(EPGIMPORT_CONF):
-                # Read existing config
-                with open(EPGIMPORT_CONF, 'r') as f:
-                    lines = f.readlines()
-
-                # Check if our source is already enabled
-                source_enabled = False
-                for line in lines:
-                    if 'vavoo.sources.xml' in line and line.strip().startswith('sources='):
-                        source_enabled = True
-                        break
-
-                if not source_enabled:
-                    # Add our source to the config
-                    with open(EPGIMPORT_CONF, 'a') as f:
-                        f.write('\nsources=/etc/epgimport/vavoo.sources.xml\n')
-
-            # Option 2: Trigger an immediate update (optional)
+            # EPGImport's own scheduler picks up whatever sources the user
+            # has enabled in ITS config screen - we used to try to enable
+            # our source here by opening EPGIMPORT_CONF in text mode and
+            # appending a "sources=..." line to it, but that file is
+            # actually a binary serialized blob (not the plain-text format
+            # this assumed), so every append corrupted EPGImport's own
+            # config. Enabling the Vavoo source is left to the user via
+            # EPGImport's settings screen instead.
             if cfg.epg_auto_update.value:
-                # We'll let the user configure EPGImport separately
                 pass
 
         except Exception as e:
@@ -1452,7 +1477,7 @@ class startVavoo(Screen):
         (18, "Loading channel catalog ..."),
         (42, "Authenticating Vavoo servers ..."),
         (68, "Renewing stream tokens ..."),
-        (86, "EPG sync ready ..."),
+        (86, "Finalizing startup ..."),
     ]
     TOTAL_MS = 1200   # time for the cosmetic bar to reach SOFT_CAP
     TICK_MS = 30     # timer interval in ms
@@ -1811,7 +1836,13 @@ class MainVavoo(Screen):
             # Optional: stop proxy if it is running
             shutdown_proxy()
 
+        # proxy_monitor_timer's first tick is still PROXY_MONITOR_INTERVAL_MS
+        # (10s) away, so without this the label would sit on "Checking
+        # proxy..." for up to 10 seconds even though the splash screen
+        # already confirmed (or gave up on) proxy readiness moments ago -
+        # refresh it immediately instead of leaving that stale placeholder.
         self['proxy_status'].setText(_("Checking proxy..."))
+        self._update_proxy_status_display()
         self.cat()
 
         # Poll for the update check started during the splash screen to
@@ -1890,7 +1921,7 @@ class MainVavoo(Screen):
             return
 
         if not result:
-            print("[DEBUG] fix_cache_format cancelled by user")
+            debug("fix_cache_format cancelled by user")
             return
 
         # An in-progress export's EPG-matching phase writes the same
@@ -1931,12 +1962,12 @@ class MainVavoo(Screen):
                 MessageBox.TYPE_INFO,
                 timeout=5
             )
-            print(
-                "[DEBUG] fix_cache_format completed: fixed={}, removed={}".format(
+            debug(
+                "fix_cache_format completed: fixed={}, removed={}".format(
                     fixed, removed))
 
         except Exception as e:
-            print("[DEBUG] Error in fix_cache_format: {}".format(e))
+            debug("Error in fix_cache_format: {}".format(e))
             self.session.open(
                 MessageBox,
                 _("Error fixing cache: {}").format(str(e)),
@@ -1948,7 +1979,7 @@ class MainVavoo(Screen):
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
-        print("[DEBUG] reload_bouquets_with_popup called")
+        debug("reload_bouquets_with_popup called")
         self.session.openWithCallback(
             self._confirm_reload_bouquets,
             MessageBox,
@@ -1961,7 +1992,7 @@ class MainVavoo(Screen):
     def _confirm_reload_bouquets(self, result):
         """Callback after user confirmation"""
         if result:
-            print("[DEBUG] User confirmed reload")
+            debug("User confirmed reload")
             try:
                 db = eDVBDB.getInstance()
                 db.reloadBouquets()
@@ -1980,10 +2011,10 @@ class MainVavoo(Screen):
             except Exception as e:
                 print("[MessageBox] Error:", e)
         else:
-            print("[DEBUG] User cancelled reload")
+            debug("User cancelled reload")
 
     def closex(self):
-        print("[DEBUG] Exit from plugin. Cleaning up plugin timers...")
+        debug("Exit from plugin. Cleaning up plugin timers...")
         if is_stats_enabled():
             stop_heartbeat()
             print("[Stats] Heartbeat fermato")
@@ -2654,15 +2685,20 @@ class MainVavoo(Screen):
                 MessageBox.TYPE_INFO)
             return
 
-        # Check if the source is enabled in EPGImport config
+        # Check if the source is enabled in EPGImport config. EPGIMPORT_CONF
+        # is a binary serialized blob (EPGImport's own internal format, not
+        # plain text), so it can't be read line-by-line, and it never
+        # contains the source's filename ("vavoo.sources.xml") - EPGImport
+        # records each enabled source by its <description> text instead,
+        # which for every Vavoo-generated source starts with "Vavoo "
+        # (write_epg_mapping_file() / update_epg_sources() in vUtils.py).
+        # A raw substring search for that prefix is format-agnostic and
+        # works regardless of the underlying serialization.
         source_enabled = False
         if isfile(EPGIMPORT_CONF):
             try:
-                with open(EPGIMPORT_CONF, 'r') as f:
-                    for line in f:
-                        if 'vavoo.sources.xml' in line and not line.strip().startswith('#'):
-                            source_enabled = True
-                            break
+                with open(EPGIMPORT_CONF, 'rb') as f:
+                    source_enabled = b'Vavoo' in f.read()
             except Exception as e:
                 print("[EPG] Error reading epgimport.conf: {}".format(e))
 
@@ -3066,7 +3102,7 @@ class vavoo(Screen):
 
     def cat(self):
         """Load channels for the selected country with proxy verification and fallback"""
-        print("[DEBUG] vavoo.cat() called for country: " + str(self.country_name))
+        debug("vavoo.cat() called for country: " + str(self.country_name))
         if not cfg.proxy_enabled.value:
             print("[vavoo] Proxy disabled, using fallback directly")
             self._fallback_to_original_method()
@@ -3077,7 +3113,7 @@ class vavoo(Screen):
                 country_encoded = url_quote(self.country_name)
                 proxy_url = PROXY_BASE_URL + \
                     "/channels?country={}".format(country_encoded)
-                print("[DEBUG] Fetching from proxy: " + proxy_url)
+                debug("Fetching from proxy: " + proxy_url)
 
                 content = getUrl(proxy_url, timeout=10)
 
@@ -3086,10 +3122,10 @@ class vavoo(Screen):
                     self._build_channel_list(channels_data)
                     return
                 else:
-                    print(
-                        "[DEBUG][cat] Proxy returned empty response, trying fallback...")
+                    debug(
+                        "[cat] Proxy returned empty response, trying fallback...")
             except Exception as proxy_error:
-                print("[DEBUG][cat] Proxy error: " + str(proxy_error))
+                debug("[cat] Proxy error: " + str(proxy_error))
 
             # 2. FALLBACK: use the original method
             self._fallback_to_original_method()
@@ -3185,7 +3221,7 @@ class vavoo(Screen):
             item[0][0] + "###" + item[0][1] for item in self.cat_list
         ]
         self.update_menu()
-        print("[DEBUG] List built with " + str(len(self.cat_list)) + " items.")
+        debug("List built with " + str(len(self.cat_list)) + " items.")
 
     def _handle_cat_error(self, e):
         """Handle cat() method errors"""
@@ -3341,8 +3377,8 @@ class vavoo(Screen):
 
     def _on_export_complete(self, success, ch_count, message):
         """Callback for bouquet export completion"""
-        print(
-            "[DEBUG] _on_export_complete CALLED - success=%s, ch_count=%s, message='%s'" %
+        debug(
+            "_on_export_complete CALLED - success=%s, ch_count=%s, message='%s'" %
             (success, ch_count, message))
 
         try:
@@ -3355,14 +3391,14 @@ class vavoo(Screen):
             # Success - two cases:
             if message == "Bouquet created":
                 # First callback - base bouquet ready
-                print("[DEBUG] Bouquet ready with {} channels".format(ch_count))
+                debug("Bouquet ready with {} channels".format(ch_count))
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed
-                print("[DEBUG] EPG completed for {} channels".format(ch_count))
+                debug("EPG completed for {} channels".format(ch_count))
                 if NOTIFICATION_AVAILABLE:
                     if ch_count > 0:
                         quick_notify(
@@ -3373,7 +3409,7 @@ class vavoo(Screen):
 
             else:
                 # Other messages
-                print("[DEBUG] Export completed: {}".format(message))
+                debug("Export completed: {}".format(message))
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(message, 3)
 
@@ -3790,7 +3826,7 @@ class TvInfoBarShowHide():
     skipToggleShow = False
 
     def __init__(self):
-        print("[DEBUG] TvInfoBarShowHide.__init__ START")
+        debug("TvInfoBarShowHide.__init__ START")
         self["ShowHideActions"] = ActionMap(
             ["InfobarShowHideActions"],
             {
@@ -3805,7 +3841,7 @@ class TvInfoBarShowHide():
 
         self.__state = self.STATE_SHOWN
         self.__locked = 0
-        print("[DEBUG] TvInfoBarShowHide.__init__ state={}")
+        debug("TvInfoBarShowHide.__init__ state={}")
 
         # Top overlay: controls + proxy status
         self.helpOverlay = Label("")
@@ -3870,7 +3906,7 @@ class TvInfoBarShowHide():
             self.retry_start_timer.callback.append(self._retry_start)
         self.onShow.append(self.__onShow)
         self.onHide.append(self.__onHide)
-        print("[DEBUG] TvInfoBarShowHide.__init__ END")
+        debug("TvInfoBarShowHide.__init__ END")
 
     def get_current_epg(self):
         """Method to be overridden by child class (Playstream2)."""
@@ -3878,7 +3914,7 @@ class TvInfoBarShowHide():
 
     def show_help_overlay(self):
         """Show custom overlays and start the auto‑hide timer."""
-        print("[DEBUG] show_help_overlay START")
+        debug("show_help_overlay START")
         try:
             # Prepare help overlay text (controls + proxy details)
             if is_proxy_running():
@@ -3908,17 +3944,17 @@ class TvInfoBarShowHide():
             help_text = "{} | {} | {}".format(controls, proxy_details, credit)
             self["helpOverlay"].setText(help_text)
             self["helpOverlay"].show()
-            print("[DEBUG] show_help_overlay helpOverlay shown")
+            debug("show_help_overlay helpOverlay shown")
 
             # Show EPG (initially "Loading...")
             self["epgOverlay"].setText(_("Loading EPG..."))
             self["epgOverlay"].show()
-            print("[DEBUG] show_help_overlay epgOverlay shown")
+            debug("show_help_overlay epgOverlay shown")
 
             # Start timer to update proxy status every 30s
             if not self.proxy_update_timer.isActive():
                 self.proxy_update_timer.start(30000, True)
-                print("[DEBUG] show_help_overlay proxy_update_timer started")
+                debug("show_help_overlay proxy_update_timer started")
 
             def _fetch_epg_async():
                 try:
@@ -3931,7 +3967,7 @@ class TvInfoBarShowHide():
                     try:
                         if self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
-                            print("[DEBUG] show_help_overlay EPG updated: {}".format(
+                            debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
                     except Exception:
                         pass
@@ -3941,7 +3977,7 @@ class TvInfoBarShowHide():
 
         except Exception as e:
             print("[Show Help] Error: " + str(e))
-        print("[DEBUG] show_help_overlay END")
+        debug("show_help_overlay END")
 
     def update_proxy_status_overlay(self):
         """Update the helpOverlay text with current proxy status."""
@@ -3982,85 +4018,85 @@ class TvInfoBarShowHide():
 
     def hide_help_overlay(self):
         """Hide both overlays and stop timer"""
-        print("[DEBUG] hide_help_overlay START")
+        debug("hide_help_overlay START")
         self.hideTimer.stop()
         self.proxy_update_timer.stop()
         if self["helpOverlay"].visible:
             self["helpOverlay"].hide()
             self["epgOverlay"].hide()
-            print("[DEBUG] hide_help_overlay overlays hidden")
-        print("[DEBUG] hide_help_overlay END")
+            debug("hide_help_overlay overlays hidden")
+        debug("hide_help_overlay END")
 
     def __onShow(self):
-        print("[DEBUG] __onShow called, old state={}".format(self.__state))
+        debug("__onShow called, old state={}".format(self.__state))
         self.__state = self.STATE_SHOWN
-        print("[DEBUG] __onShow new state={}".format(self.__state))
+        debug("__onShow new state={}".format(self.__state))
 
     def __onHide(self):
-        print("[DEBUG] __onHide called, old state={}".format(self.__state))
+        debug("__onHide called, old state={}".format(self.__state))
         self.__state = self.STATE_HIDDEN
-        print("[DEBUG] __onHide new state={}".format(self.__state))
+        debug("__onHide new state={}".format(self.__state))
 
     def doShow(self):
-        print("[DEBUG] doShow START, state={}".format(self.__state))
+        debug("doShow START, state={}".format(self.__state))
         self.hideTimer.stop()
         self.show()
         self.startHideTimer()
-        print("[DEBUG] doShow END")
+        debug("doShow END")
 
     def doHide(self):
-        print("[DEBUG] doHide START, state={}".format(self.__state))
+        debug("doHide START, state={}".format(self.__state))
         self.hideTimer.stop()
         self.hide()
         self.hide_help_overlay()
         self.startHideTimer()
-        print("[DEBUG] doHide END")
+        debug("doHide END")
 
     def startHideTimer(self):
-        print(
-            "[DEBUG] startHideTimer START, state={}, locked={}".format(
+        debug(
+            "startHideTimer START, state={}, locked={}".format(
                 self.__state,
                 self.__locked))
         if self.__state == self.STATE_SHOWN and not self.__locked:
             self.hideTimer.stop()
             self.hideTimer.start(10000, True)
-            print("[DEBUG] startHideTimer timer started (5s)")
+            debug("startHideTimer timer started (5s)")
         else:
-            print(
-                "[DEBUG] startHideTimer NOT starting: state={}, locked={}".format(
+            debug(
+                "startHideTimer NOT starting: state={}, locked={}".format(
                     self.__state, self.__locked))
-        print("[DEBUG] startHideTimer END")
+        debug("startHideTimer END")
 
     def doTimerHide(self):
-        print("[DEBUG] doTimerHide START, state={}".format(self.__state))
+        debug("doTimerHide START, state={}".format(self.__state))
         self.hideTimer.stop()
         if self.__state == self.STATE_SHOWN:
-            print("[DEBUG] doTimerHide hiding infobar and overlays")
+            debug("doTimerHide hiding infobar and overlays")
             self.hide()
             self.hide_help_overlay()
         else:
-            print("[DEBUG] doTimerHide state is HIDDEN, not hiding")
-        print("[DEBUG] doTimerHide END")
+            debug("doTimerHide state is HIDDEN, not hiding")
+        debug("doTimerHide END")
 
     def toggleShow(self):
-        print(
-            "[DEBUG] toggleShow START, state={}, skipToggleShow={}".format(
+        debug(
+            "toggleShow START, state={}, skipToggleShow={}".format(
                 self.__state,
                 self.skipToggleShow))
         if not self.skipToggleShow:
             if self.__state == self.STATE_HIDDEN:
-                print("[DEBUG] toggleShow calling doShow()")
+                debug("toggleShow calling doShow()")
                 self.doShow()
             else:
-                print("[DEBUG] toggleShow calling doHide()")
+                debug("toggleShow calling doHide()")
                 self.doHide()
         else:
-            print("[DEBUG] toggleShow skipToggleShow is True, resetting")
+            debug("toggleShow skipToggleShow is True, resetting")
             self.skipToggleShow = False
-        print("[DEBUG] toggleShow END")
+        debug("toggleShow END")
 
     def lockShow(self):
-        print("[DEBUG] lockShow START")
+        debug("lockShow START")
         try:
             self.__locked += 1
         except BaseException:
@@ -4069,10 +4105,10 @@ class TvInfoBarShowHide():
             self.show()
             self.hideTimer.stop()
             self.skipToggleShow = False
-        print("[DEBUG] lockShow END, locked={}".format(self.__locked))
+        debug("lockShow END, locked={}".format(self.__locked))
 
     def unlockShow(self):
-        print("[DEBUG] unlockShow START")
+        debug("unlockShow START")
         try:
             self.__locked -= 1
         except BaseException:
@@ -4081,62 +4117,62 @@ class TvInfoBarShowHide():
             self.__locked = 0
         if self.execing:
             self.startHideTimer()
-        print("[DEBUG] unlockShow END, locked={}".format(self.__locked))
+        debug("unlockShow END, locked={}".format(self.__locked))
 
     def _do_show_all(self):
         """Show infobar and overlays, start hide timer"""
-        print("[DEBUG] _do_show_all CALLED")
+        debug("_do_show_all CALLED")
         self.doShow()                  # Shows infobar
         self.show_help_overlay()       # Shows overlays
         self.delayed_start_timer.start(
             500, True)  # Start hide timer after 500ms
-        print("[DEBUG] _do_show_all END")
+        debug("_do_show_all END")
 
     def _retry_start(self):
         """Retry serviceStarted if execing is False"""
-        print("[DEBUG] _retry_start CALLED")
+        debug("_retry_start CALLED")
         self.retry_start_timer.stop()
         if self.execing:
-            print("[DEBUG] _retry_start execing is now True, calling _do_show_all()")
+            debug("_retry_start execing is now True, calling _do_show_all()")
             self._do_show_all()
         else:
-            print("[DEBUG] _retry_start execing still False, will retry in 500ms")
+            debug("_retry_start execing still False, will retry in 500ms")
             self.retry_start_timer.start(500, True)
 
     def _delayed_start(self):
         """Delayed start callback - starts the hide timer after infobar is rendered"""
-        print("[DEBUG] _delayed_start CALLED")
+        debug("_delayed_start CALLED")
         self.delayed_start_timer.stop()
-        print("[DEBUG] _delayed_start starting hideTimer (5s)")
+        debug("_delayed_start starting hideTimer (5s)")
         self.hideTimer.start(5000, True)
-        print("[DEBUG] _delayed_start END")
+        debug("_delayed_start END")
 
     def serviceStarted(self):
-        print("[DEBUG] ========== serviceStarted CALLED ==========")
-        print("[DEBUG] serviceStarted execing={}".format(self.execing))
+        debug("========== serviceStarted CALLED ==========")
+        debug("serviceStarted execing={}".format(self.execing))
         if self.execing:
-            print("[DEBUG] serviceStarted execing is True, calling _do_show_all()")
+            debug("serviceStarted execing is True, calling _do_show_all()")
             self._do_show_all()
         else:
-            print("[DEBUG] serviceStarted execing is False, will retry in 500ms")
+            debug("serviceStarted execing is False, will retry in 500ms")
             self.retry_start_timer.start(500, True)
-        print("[DEBUG] ========== serviceStarted END ==========")
+        debug("========== serviceStarted END ==========")
 
     def OkPressed(self):
         """Toggle both infobar and overlays together"""
-        print("[DEBUG] ========== OkPressed CALLED ==========")
-        print(
-            "[DEBUG] OkPressed helpOverlay.visible={}".format(
+        debug("========== OkPressed CALLED ==========")
+        debug(
+            "OkPressed helpOverlay.visible={}".format(
                 self["helpOverlay"].visible))
         if self["helpOverlay"].visible:
-            print("[DEBUG] OkPressed hiding overlays")
+            debug("OkPressed hiding overlays")
             self.hide_help_overlay()
         else:
-            print("[DEBUG] OkPressed showing overlays")
+            debug("OkPressed showing overlays")
             self.show_help_overlay()
-        print("[DEBUG] OkPressed calling toggleShow()")
+        debug("OkPressed calling toggleShow()")
         self.toggleShow()
-        print("[DEBUG] ========== OkPressed END ==========")
+        debug("========== OkPressed END ==========")
 
 
 class Playstream2(
@@ -4327,7 +4363,6 @@ class Playstream2(
     def _handleEofEvent(self, source):
         """Shared EOF bookkeeping/restart logic for doEofInternal() and
         __evEOF(), which both fire for the same underlying event."""
-        vUtils.MemClean()
         current_time = time.time()
 
         if not hasattr(self, 'eof_count'):
@@ -4501,7 +4536,7 @@ class Playstream2(
 
             if not rytec_id:
                 result = "EPG not available (ID not found)"
-                _epg_result_cache[cache_key] = (time.time(), result)
+                _cache_epg_result(cache_key, result)
                 return result
 
             # The whole country's EPG document (all channels, potentially
@@ -4514,7 +4549,8 @@ class Playstream2(
             # every single channel view.
             xml_cached = _epg_xml_cache.get(self.country_code)
             if xml_cached and (time.time() - xml_cached[0] < 300):
-                root, channel_index = xml_cached[1], xml_cached[2]
+                root, channel_index, display_name_index = (
+                    xml_cached[1], xml_cached[2], xml_cached[3])
             else:
                 # Build EPG URL
                 epg_url = "http://{}:{}/epg/{}.xml".format(
@@ -4533,7 +4569,7 @@ class Playstream2(
 
                 if not xml_data:
                     result = "EPG not available"
-                    _epg_result_cache[cache_key] = (time.time(), result)
+                    _cache_epg_result(cache_key, result)
                     return result
 
                 try:
@@ -4541,7 +4577,7 @@ class Playstream2(
                 except Exception as e:
                     print("[EPG] XML parsing error: {}".format(e))
                     result = "EPG parsing error"
-                    _epg_result_cache[cache_key] = (time.time(), result)
+                    _cache_epg_result(cache_key, result)
                     return result
 
                 # Index once per document: channel id (dots stripped, to
@@ -4563,38 +4599,93 @@ class Playstream2(
                         "[EPG] Slow index build: {:.3f}s ({} channels)".format(
                             index_time, len(channel_index)))
 
-                _epg_xml_cache[self.country_code] = (
-                    time.time(), root, channel_index)
+                # Secondary, display-only index: cleaned <display-name>
+                # text -> channel id, used as a fallback (see below) when
+                # the primary rytec_id lookup finds nothing - some
+                # country feeds use their own id convention (e.g.
+                # "Canal.Hollywood.HD.pt", "RTP.1.HD.pt") that diverges
+                # from the separate Rytec matching database's ids for
+                # the same real channel, even though this feed has
+                # perfectly good programme data under its own id.
+                display_name_index = {}
+                for chan in root.findall('channel'):
+                    chan_id = chan.get('id')
+                    if not chan_id:
+                        continue
+                    for dn in chan.findall('display-name'):
+                        dn_text = (dn.text or '').strip()
+                        if not dn_text:
+                            continue
+                        clean_dn = matcher._clean_name_for_similarity(
+                            dn_text)
+                        if clean_dn:
+                            display_name_index[clean_dn] = chan_id
+
+                _cache_epg_xml(
+                    self.country_code, root, channel_index,
+                    display_name_index)
 
             # Find current programme
             parse_start = time.time()
             try:
+                import calendar
                 now = time.time()
-                current_prog = None
+
+                def _current_in(programmes):
+                    for prog in programmes:
+                        start_str = prog.get('start')
+                        stop_str = prog.get('stop')
+                        if not start_str or not stop_str:
+                            continue
+                        try:
+                            # Parse dates without timezone for speed
+                            start_clean = start_str.split(' ')[0]
+                            stop_clean = stop_str.split(' ')[0]
+                            start_dt = datetime.datetime.strptime(
+                                start_clean, "%Y%m%d%H%M%S")
+                            stop_dt = datetime.datetime.strptime(
+                                stop_clean, "%Y%m%d%H%M%S")
+                            start_ts = calendar.timegm(start_dt.timetuple())
+                            stop_ts = calendar.timegm(stop_dt.timetuple())
+                            if start_ts <= now <= stop_ts:
+                                return prog
+                        except Exception:
+                            continue
+                    return None
+
                 rid_key = rytec_id.replace('.', '')
+                current_prog = _current_in(channel_index.get(rid_key, []))
 
-                for prog in channel_index.get(rid_key, []):
-                    start_str = prog.get('start')
-                    stop_str = prog.get('stop')
-                    if not start_str or not stop_str:
-                        continue
-
-                    try:
-                        # Parse dates without timezone for speed
-                        import calendar
-                        start_clean = start_str.split(' ')[0]
-                        stop_clean = stop_str.split(' ')[0]
-                        start_dt = datetime.datetime.strptime(
-                            start_clean, "%Y%m%d%H%M%S")
-                        stop_dt = datetime.datetime.strptime(
-                            stop_clean, "%Y%m%d%H%M%S")
-                        start_ts = calendar.timegm(start_dt.timetuple())
-                        stop_ts = calendar.timegm(stop_dt.timetuple())
-                        if start_ts <= now <= stop_ts:
-                            current_prog = prog
-                            break
-                    except Exception:
-                        continue
+                # Fallback: the matched rytec_id has no coverage in this
+                # feed (a different id scheme for the same real channel,
+                # e.g. matcher assigns "rtp1.pt" but this feed uses
+                # "RTP.1.HD.pt") - try matching this channel's own name
+                # directly against the feed's <display-name> tags
+                # instead. Display-only: never touches matcher.cache,
+                # dvb_ref, or anything bouquet-export/satellite-EPG
+                # relies on - purely a better answer for this overlay.
+                if current_prog is None and display_name_index:
+                    clean_for_fallback = matcher._clean_name_for_similarity(
+                        clean_name)
+                    if clean_for_fallback:
+                        best_score = 0.0
+                        best_id = None
+                        sm = SequenceMatcher(None, clean_for_fallback)
+                        for dn_key, dn_id in display_name_index.items():
+                            sm.set_seq2(dn_key)
+                            score = sm.ratio()
+                            if score > best_score:
+                                best_score = score
+                                best_id = dn_id
+                        if best_id and best_score >= matcher.similarity_threshold:
+                            fallback_key = best_id.replace('.', '')
+                            current_prog = _current_in(
+                                channel_index.get(fallback_key, []))
+                            if current_prog is not None:
+                                print(
+                                    "[EPG] Fallback name match: '{}' -> {} "
+                                    "(score={:.2f})".format(
+                                        clean_name, best_id, best_score))
 
                 parse_time = time.time() - parse_start
                 if parse_time > 0.1:
@@ -4625,13 +4716,13 @@ class Playstream2(
                     result = "No programme found"
 
                 # Cache the result
-                _epg_result_cache[cache_key] = (time.time(), result)
+                _cache_epg_result(cache_key, result)
                 return result
 
             except Exception as e:
                 print("[EPG] Programme matching error: {}".format(e))
                 result = "EPG parsing error"
-                _epg_result_cache[cache_key] = (time.time(), result)
+                _cache_epg_result(cache_key, result)
                 return result
 
         except Exception as e:
@@ -4685,8 +4776,14 @@ class Playstream2(
             encoded_url = stream_url_with_ua.replace(":", "%3a")
             encoded_name = self.name.replace(":", "%3a")
 
+            # Use the configured player service type ("Server for Player
+            # Used" in settings - 4097/5001/5002/8193) instead of always
+            # hardcoding 4097 - bouquet export already respects this
+            # setting (see cfg.services.value usage there), but this
+            # in-plugin player was silently ignoring it, always using
+            # 4097's backend regardless of what the user picked.
             ref = (
-                "4097:0:1:0:0:0:0:0:0:0:" +
+                cfg.services.value + ":0:1:0:0:0:0:0:0:0:" +
                 encoded_url +
                 ":" +
                 encoded_name
@@ -4724,7 +4821,7 @@ class Playstream2(
 
             full_url = url + app
             ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(
-                "4097",
+                cfg.services.value,
                 full_url.replace(":", "%3a"),
                 self.name.replace(":", "%3a")
             )

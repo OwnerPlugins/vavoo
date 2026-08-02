@@ -17,7 +17,7 @@ from difflib import SequenceMatcher
 from json import dump, load, loads
 from Components.config import config
 from Components.NimManager import nimmanager
-from os import listdir, makedirs, remove, system, unlink, rename
+from os import listdir, makedirs, remove, unlink, rename
 from os.path import basename, exists, getmtime, getsize, isfile, join, splitext
 from enigma import eTimer
 from random import choice
@@ -116,6 +116,20 @@ DEBUG_ENABLED = str(
             "true",
             "yes",
     "on")
+
+
+def set_debug_enabled(enabled):
+    """Toggle DEBUG-level logging at runtime (config menu "Debug logging").
+
+    VAVOO_DEBUG only takes effect at process start and, since the proxy
+    runs as a thread inside the same Enigma2 process, an env var set in
+    an SSH session never reaches it anyway (Enigma2 itself is started
+    by the box's init supervisor, not that shell). This is checked on
+    every debug() call instead, so a config toggle takes effect
+    immediately with no restart needed.
+    """
+    global DEBUG_ENABLED
+    DEBUG_ENABLED = bool(enabled)
 
 
 def _rotate_log_if_needed():
@@ -561,10 +575,17 @@ def get_external_ip():
         return ensure_str(value, errors='ignore').strip()
 
     services = [
+        # --max-time bounds curl itself (Python 2 has no
+        # Popen.communicate(timeout=...), so this is the only reliable
+        # way to bound both versions) - this call runs while holding
+        # addon_sig_lock (see refresh_addon_sig_if_needed()), which
+        # every channel resolve retry also needs, so an unbounded hang
+        # here previously meant an unbounded freeze for all playback.
         lambda: Popen(
             [
                 'curl',
                 '-s',
+                '--max-time', '5',
                 'ifconfig.me'],
             stdout=PIPE).communicate()[0],
     ]
@@ -990,16 +1011,6 @@ def purge(directory, pattern):
         file_path = join(directory, f)
         if isfile(file_path) and search(pattern, f):
             remove(file_path)
-
-
-def MemClean():
-    """Clear system memory cache"""
-    try:
-        # system('sync')
-        for i in range(1, 4):
-            system("echo " + str(i) + " > /proc/sys/vm/drop_caches")
-    except Exception:
-        pass
 
 
 """
@@ -2465,11 +2476,13 @@ def clean_cache_and_unmatched():
             # Try to derive from ID: remove country suffix and replace dots
             # with spaces
             rytec_name = id_val.split('.')[0].replace('.', ' ')
-        # clean_rytec_name = matcher._clean_name(rytec_name)
-        # clean_channel_name = matcher._clean_name(key.split('_')[0])
+        # rsplit on the last '_' (not split()[0] on the first) to match
+        # how these "name_country" keys are actually built elsewhere
+        # (_index_cache_key(), save_cache()) - a name containing a
+        # literal underscore would otherwise get truncated here.
         clean_rytec_name = matcher._clean_name_for_similarity(rytec_name)
-        clean_channel_name = matcher._clean_name_for_similarity(key.split('_')[
-                                                                0])
+        clean_channel_name = matcher._clean_name_for_similarity(
+            key.rsplit('_', 1)[0])
 
         if clean_rytec_name != clean_channel_name:
             # Move to unmatched to be re-matched

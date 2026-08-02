@@ -15,6 +15,7 @@ from Components.config import config
 from twisted.internet import reactor
 
 from .vUtils import (
+    debug,
     decodeHtml,
     getUrl,
     get_country_code_from_bouquet_name,
@@ -22,6 +23,7 @@ from .vUtils import (
     get_proxy_channels,
     is_proxy_ready,
     is_proxy_running,
+    make_print,
     remove_parentheses,
     ReloadBouquets,
     sanitizeFilename,
@@ -64,6 +66,8 @@ from . import (
 """
 __author__ = "Lululla"
 __license__ = "CC BY-NC-SA 4.0"
+
+print = make_print("BOUQUET")
 
 try:
     from urllib.parse import unquote, quote
@@ -350,13 +354,13 @@ def export_bouquet_async(
         servicetype,
         bouquet_position,
         lock=None):
-    print(
-        "[DEBUG] export_bouquet_async called for %s, type %s" %
+    debug(
+        "export_bouquet_async called for %s, type %s" %
         (name, export_type))
 
     def task():
         try:
-            print("[DEBUG] Background task started for %s" % name)
+            debug("Background task started for %s" % name)
 
             # PHASE 1: Create fallback bouquet (fast)
             ch_count, bouquet_filename, channels_list, country_code = create_fallback_bouquet_sync(
@@ -420,7 +424,7 @@ def export_bouquet_async(
                 pass
 
         except Exception as e:
-            print("[DEBUG] Background task error: %s" % str(e))
+            debug("Background task error: %s" % str(e))
             trace_error()
             exc = e
 
@@ -571,7 +575,7 @@ def process_epg_matching_background(
         unmatched = []
 
         for ch in channels_list:
-            print("[DEBUG] original_name in ch:", repr(ch['original_name']))
+            debug("original_name in ch: {}".format(repr(ch['original_name'])))
 
             rytec_id, dvb_ref = matcher.find_match(
                 ch['original_name'], country_code)
