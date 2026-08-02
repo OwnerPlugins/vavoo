@@ -575,10 +575,17 @@ def get_external_ip():
         return ensure_str(value, errors='ignore').strip()
 
     services = [
+        # --max-time bounds curl itself (Python 2 has no
+        # Popen.communicate(timeout=...), so this is the only reliable
+        # way to bound both versions) - this call runs while holding
+        # addon_sig_lock (see refresh_addon_sig_if_needed()), which
+        # every channel resolve retry also needs, so an unbounded hang
+        # here previously meant an unbounded freeze for all playback.
         lambda: Popen(
             [
                 'curl',
                 '-s',
+                '--max-time', '5',
                 'ifconfig.me'],
             stdout=PIPE).communicate()[0],
     ]
