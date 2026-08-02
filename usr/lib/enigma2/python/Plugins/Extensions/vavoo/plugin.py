@@ -6,6 +6,7 @@ import codecs
 import ssl
 import time
 import threading
+from difflib import SequenceMatcher
 from os import listdir, unlink, remove, system as os_system
 from os.path import exists as file_exists, join, isfile, getsize
 from re import compile, DOTALL, search
@@ -326,7 +327,7 @@ tmlast = None
 # switching channels or reopening the player doesn't re-fetch/re-parse/
 # re-index the same country's EPG document within the TTL window - see
 # Playstream2.get_current_epg().
-_epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index)
+_epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index, display_name_index)
 _epg_result_cache = {}   # "epg_<name>_<country>" -> (timestamp, result_str)
 
 # Safety-net caps: entries here are only ever added, never removed on
@@ -351,8 +352,9 @@ def _cache_epg_result(cache_key, result):
             del _epg_result_cache[k]
 
 
-def _cache_epg_xml(country_code, root, channel_index):
-    _epg_xml_cache[country_code] = (time.time(), root, channel_index)
+def _cache_epg_xml(country_code, root, channel_index, display_name_index):
+    _epg_xml_cache[country_code] = (
+        time.time(), root, channel_index, display_name_index)
     if len(_epg_xml_cache) > _EPG_XML_CACHE_MAX:
         oldest = sorted(
             _epg_xml_cache, key=lambda k: _epg_xml_cache[k][0]
@@ -4547,7 +4549,8 @@ class Playstream2(
             # every single channel view.
             xml_cached = _epg_xml_cache.get(self.country_code)
             if xml_cached and (time.time() - xml_cached[0] < 300):
-                root, channel_index = xml_cached[1], xml_cached[2]
+                root, channel_index, display_name_index = (
+                    xml_cached[1], xml_cached[2], xml_cached[3])
             else:
                 # Build EPG URL
                 epg_url = "http://{}:{}/epg/{}.xml".format(
@@ -4596,37 +4599,93 @@ class Playstream2(
                         "[EPG] Slow index build: {:.3f}s ({} channels)".format(
                             index_time, len(channel_index)))
 
-                _cache_epg_xml(self.country_code, root, channel_index)
+                # Secondary, display-only index: cleaned <display-name>
+                # text -> channel id, used as a fallback (see below) when
+                # the primary rytec_id lookup finds nothing - some
+                # country feeds use their own id convention (e.g.
+                # "Canal.Hollywood.HD.pt", "RTP.1.HD.pt") that diverges
+                # from the separate Rytec matching database's ids for
+                # the same real channel, even though this feed has
+                # perfectly good programme data under its own id.
+                display_name_index = {}
+                for chan in root.findall('channel'):
+                    chan_id = chan.get('id')
+                    if not chan_id:
+                        continue
+                    for dn in chan.findall('display-name'):
+                        dn_text = (dn.text or '').strip()
+                        if not dn_text:
+                            continue
+                        clean_dn = matcher._clean_name_for_similarity(
+                            dn_text)
+                        if clean_dn:
+                            display_name_index[clean_dn] = chan_id
+
+                _cache_epg_xml(
+                    self.country_code, root, channel_index,
+                    display_name_index)
 
             # Find current programme
             parse_start = time.time()
             try:
+                import calendar
                 now = time.time()
-                current_prog = None
+
+                def _current_in(programmes):
+                    for prog in programmes:
+                        start_str = prog.get('start')
+                        stop_str = prog.get('stop')
+                        if not start_str or not stop_str:
+                            continue
+                        try:
+                            # Parse dates without timezone for speed
+                            start_clean = start_str.split(' ')[0]
+                            stop_clean = stop_str.split(' ')[0]
+                            start_dt = datetime.datetime.strptime(
+                                start_clean, "%Y%m%d%H%M%S")
+                            stop_dt = datetime.datetime.strptime(
+                                stop_clean, "%Y%m%d%H%M%S")
+                            start_ts = calendar.timegm(start_dt.timetuple())
+                            stop_ts = calendar.timegm(stop_dt.timetuple())
+                            if start_ts <= now <= stop_ts:
+                                return prog
+                        except Exception:
+                            continue
+                    return None
+
                 rid_key = rytec_id.replace('.', '')
+                current_prog = _current_in(channel_index.get(rid_key, []))
 
-                for prog in channel_index.get(rid_key, []):
-                    start_str = prog.get('start')
-                    stop_str = prog.get('stop')
-                    if not start_str or not stop_str:
-                        continue
-
-                    try:
-                        # Parse dates without timezone for speed
-                        import calendar
-                        start_clean = start_str.split(' ')[0]
-                        stop_clean = stop_str.split(' ')[0]
-                        start_dt = datetime.datetime.strptime(
-                            start_clean, "%Y%m%d%H%M%S")
-                        stop_dt = datetime.datetime.strptime(
-                            stop_clean, "%Y%m%d%H%M%S")
-                        start_ts = calendar.timegm(start_dt.timetuple())
-                        stop_ts = calendar.timegm(stop_dt.timetuple())
-                        if start_ts <= now <= stop_ts:
-                            current_prog = prog
-                            break
-                    except Exception:
-                        continue
+                # Fallback: the matched rytec_id has no coverage in this
+                # feed (a different id scheme for the same real channel,
+                # e.g. matcher assigns "rtp1.pt" but this feed uses
+                # "RTP.1.HD.pt") - try matching this channel's own name
+                # directly against the feed's <display-name> tags
+                # instead. Display-only: never touches matcher.cache,
+                # dvb_ref, or anything bouquet-export/satellite-EPG
+                # relies on - purely a better answer for this overlay.
+                if current_prog is None and display_name_index:
+                    clean_for_fallback = matcher._clean_name_for_similarity(
+                        clean_name)
+                    if clean_for_fallback:
+                        best_score = 0.0
+                        best_id = None
+                        sm = SequenceMatcher(None, clean_for_fallback)
+                        for dn_key, dn_id in display_name_index.items():
+                            sm.set_seq2(dn_key)
+                            score = sm.ratio()
+                            if score > best_score:
+                                best_score = score
+                                best_id = dn_id
+                        if best_id and best_score >= matcher.similarity_threshold:
+                            fallback_key = best_id.replace('.', '')
+                            current_prog = _current_in(
+                                channel_index.get(fallback_key, []))
+                            if current_prog is not None:
+                                print(
+                                    "[EPG] Fallback name match: '{}' -> {} "
+                                    "(score={:.2f})".format(
+                                        clean_name, best_id, best_score))
 
                 parse_time = time.time() - parse_start
                 if parse_time > 0.1:
