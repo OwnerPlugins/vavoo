@@ -2476,11 +2476,13 @@ def clean_cache_and_unmatched():
             # Try to derive from ID: remove country suffix and replace dots
             # with spaces
             rytec_name = id_val.split('.')[0].replace('.', ' ')
-        # clean_rytec_name = matcher._clean_name(rytec_name)
-        # clean_channel_name = matcher._clean_name(key.split('_')[0])
+        # rsplit on the last '_' (not split()[0] on the first) to match
+        # how these "name_country" keys are actually built elsewhere
+        # (_index_cache_key(), save_cache()) - a name containing a
+        # literal underscore would otherwise get truncated here.
         clean_rytec_name = matcher._clean_name_for_similarity(rytec_name)
-        clean_channel_name = matcher._clean_name_for_similarity(key.split('_')[
-                                                                0])
+        clean_channel_name = matcher._clean_name_for_similarity(
+            key.rsplit('_', 1)[0])
 
         if clean_rytec_name != clean_channel_name:
             # Move to unmatched to be re-matched

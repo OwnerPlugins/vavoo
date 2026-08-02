@@ -329,6 +329,37 @@ tmlast = None
 _epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index)
 _epg_result_cache = {}   # "epg_<name>_<country>" -> (timestamp, result_str)
 
+# Safety-net caps: entries here are only ever added, never removed on
+# their own (the 5-minute figure elsewhere is a reuse TTL, not an
+# eviction one) - unlike vUtils.py's persistent EPG matcher cache (which
+# already has its own size cap), these two are plain in-memory dicts
+# that grow for the life of the process, one entry per unique
+# channel+country (_epg_result_cache) or country (_epg_xml_cache) ever
+# viewed. _epg_xml_cache is naturally small (bounded by distinct
+# countries actually browsed), but capped too for consistency/safety.
+_EPG_RESULT_CACHE_MAX = 500
+_EPG_XML_CACHE_MAX = 50
+
+
+def _cache_epg_result(cache_key, result):
+    _epg_result_cache[cache_key] = (time.time(), result)
+    if len(_epg_result_cache) > _EPG_RESULT_CACHE_MAX:
+        oldest = sorted(
+            _epg_result_cache, key=lambda k: _epg_result_cache[k][0]
+        )[:len(_epg_result_cache) - _EPG_RESULT_CACHE_MAX]
+        for k in oldest:
+            del _epg_result_cache[k]
+
+
+def _cache_epg_xml(country_code, root, channel_index):
+    _epg_xml_cache[country_code] = (time.time(), root, channel_index)
+    if len(_epg_xml_cache) > _EPG_XML_CACHE_MAX:
+        oldest = sorted(
+            _epg_xml_cache, key=lambda k: _epg_xml_cache[k][0]
+        )[:len(_epg_xml_cache) - _EPG_XML_CACHE_MAX]
+        for k in oldest:
+            del _epg_xml_cache[k]
+
 # Auto-update check state, shared between startVavoo (kicks off the
 # background check) and MainVavoo (shows the popup once, after the main
 # menu is open). See _start_update_check() /
@@ -4503,7 +4534,7 @@ class Playstream2(
 
             if not rytec_id:
                 result = "EPG not available (ID not found)"
-                _epg_result_cache[cache_key] = (time.time(), result)
+                _cache_epg_result(cache_key, result)
                 return result
 
             # The whole country's EPG document (all channels, potentially
@@ -4535,7 +4566,7 @@ class Playstream2(
 
                 if not xml_data:
                     result = "EPG not available"
-                    _epg_result_cache[cache_key] = (time.time(), result)
+                    _cache_epg_result(cache_key, result)
                     return result
 
                 try:
@@ -4543,7 +4574,7 @@ class Playstream2(
                 except Exception as e:
                     print("[EPG] XML parsing error: {}".format(e))
                     result = "EPG parsing error"
-                    _epg_result_cache[cache_key] = (time.time(), result)
+                    _cache_epg_result(cache_key, result)
                     return result
 
                 # Index once per document: channel id (dots stripped, to
@@ -4565,8 +4596,7 @@ class Playstream2(
                         "[EPG] Slow index build: {:.3f}s ({} channels)".format(
                             index_time, len(channel_index)))
 
-                _epg_xml_cache[self.country_code] = (
-                    time.time(), root, channel_index)
+                _cache_epg_xml(self.country_code, root, channel_index)
 
             # Find current programme
             parse_start = time.time()
@@ -4627,13 +4657,13 @@ class Playstream2(
                     result = "No programme found"
 
                 # Cache the result
-                _epg_result_cache[cache_key] = (time.time(), result)
+                _cache_epg_result(cache_key, result)
                 return result
 
             except Exception as e:
                 print("[EPG] Programme matching error: {}".format(e))
                 result = "EPG parsing error"
-                _epg_result_cache[cache_key] = (time.time(), result)
+                _cache_epg_result(cache_key, result)
                 return result
 
         except Exception as e:
