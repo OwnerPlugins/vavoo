@@ -216,6 +216,9 @@ msgstr "Skep EPG-bron vir EPGImport met Vavoo-programdata"
 msgid "Credits:"
 msgstr "Krediete:"
 
+msgid "Debug logging"
+msgstr "Ontfout aanteken"
+
 msgid "Default View"
 msgstr "Verstek aansig"
 
@@ -531,6 +534,9 @@ msgstr "Bediener vir speler gebruik"
 
 msgid "Server for player."
 msgstr "Bediener vir speler."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Wys uitgebreide DEBUG-vlak boodskappe in vavoo.log (UI lewensiklus, per-versoek detail). Tree onmiddellik in werking - laat staan ​​tensy foutopsporing gedoen word."
 
 msgid "Showing all channels: {}"
 msgstr "Wys tans alle kanale: {}"

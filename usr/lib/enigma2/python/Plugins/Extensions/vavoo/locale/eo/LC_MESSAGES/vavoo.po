@@ -217,6 +217,9 @@ msgstr "Kreu EPG-fonton por EPGImport kun Vavoo-programo-datumoj"
 msgid "Credits:"
 msgstr "Kreditoj:"
 
+msgid "Debug logging"
+msgstr "Sencimigi protokolon"
+
 msgid "Default View"
 msgstr "Defaŭlta Vido"
 
@@ -532,6 +535,9 @@ msgstr "Servilo por Ludanto Uzita"
 
 msgid "Server for player."
 msgstr "Servilo por ludanto."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Montru multvortajn DEBUG-nivelajn mesaĝojn en vavoo.log (UI-vivciklo, laŭpeta detalo). Efikas tuj - forlasu krom se problemoj."
 
 msgid "Showing all channels: {}"
 msgstr "Montrante ĉiujn kanalojn: {}"

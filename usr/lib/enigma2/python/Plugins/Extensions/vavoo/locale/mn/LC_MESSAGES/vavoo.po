@@ -216,6 +216,9 @@ msgstr "Vavoo програмын өгөгдлөөр EPGImport-д зориулс�
 msgid "Credits:"
 msgstr "Зээл:"
 
+msgid "Debug logging"
+msgstr "Дебаг хийх бүртгэл"
+
 msgid "Default View"
 msgstr "Өгөгдмөл харах"
 
@@ -531,6 +534,9 @@ msgstr "Ашигласан тоглогчдод зориулсан сервер"
 
 msgid "Server for player."
 msgstr "Тоглогчдод зориулсан сервер."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "DEBUG түвшний дэлгэрэнгүй мессежүүдийг vavoo.log-д харуулах (UI амьдралын мөчлөг, хүсэлт бүрийн дэлгэрэнгүй). Нэн даруй хүчин төгөлдөр болно - алдааг олж засварлахгүй бол орхи."
 
 msgid "Showing all channels: {}"
 msgstr "Бүх сувгийг харуулж байна: {}"

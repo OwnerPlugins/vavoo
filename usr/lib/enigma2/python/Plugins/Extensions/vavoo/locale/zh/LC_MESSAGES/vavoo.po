@@ -225,6 +225,9 @@ msgstr "使用 Vavoo 节目数据为 EPGImport 创建 EPG 源"
 msgid "Credits:"
 msgstr "学分："
 
+msgid "Debug logging"
+msgstr "调试日志记录"
+
 msgid "Default View"
 msgstr "默认视图"
 
@@ -552,6 +555,9 @@ msgstr "使用的播放器服务器"
 #, fuzzy
 msgid "Server for player."
 msgstr "播放器服务器，使用: %s"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "在 vavoo.log 中显示详细的调试级别消息（UI 生命周期、每个请求的详细信息）。立即生效 - 除非出现故障，否则请不要使用。"
 
 msgid "Showing all channels: {}"
 msgstr "显示所有频道：{}"

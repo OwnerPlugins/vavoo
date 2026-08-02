@@ -216,6 +216,9 @@ msgstr "使用 Vavoo 節目資料為 EPGImport 建立 EPG 來源"
 msgid "Credits:"
 msgstr "學分："
 
+msgid "Debug logging"
+msgstr "調試日誌記錄"
+
 msgid "Default View"
 msgstr "預設視圖"
 
@@ -531,6 +534,9 @@ msgstr "玩家使用的伺服器"
 
 msgid "Server for player."
 msgstr "玩家的伺服器。"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "在 vavoo.log 中顯示詳細的偵錯等級訊息（UI 生命週期、每個要求的詳細資訊）。立即生效 - 除非故障，否則請不要使用。"
 
 msgid "Showing all channels: {}"
 msgstr "顯示所有頻道：{}"

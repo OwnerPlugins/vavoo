@@ -216,6 +216,9 @@ msgstr "Sortu EPG iturburua EPGImport-erako Vavoo programaren datuekin"
 msgid "Credits:"
 msgstr "Kredituak:"
 
+msgid "Debug logging"
+msgstr "Araztu erregistroa"
+
 msgid "Default View"
 msgstr "Ikuspegi lehenetsia"
 
@@ -531,6 +534,9 @@ msgstr "Erabilitako jokalarientzako zerbitzaria"
 
 msgid "Server for player."
 msgstr "Jokalarientzako zerbitzaria."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Erakutsi DEBUG-mailako mezu zehatzak vavoo.log-en (UI bizi-zikloa, eskaera bakoitzeko xehetasunak). Berehala izango du eragina - desaktibatuta, arazoak konpondu ezean."
 
 msgid "Showing all channels: {}"
 msgstr "Kanal guztiak erakusten: {}"

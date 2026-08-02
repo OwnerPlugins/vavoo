@@ -216,6 +216,9 @@ msgstr "Meitsje EPG-boarne foar EPGImport mei Vavoo-programmagegevens"
 msgid "Credits:"
 msgstr ""
 
+msgid "Debug logging"
+msgstr ""
+
 msgid "Default View"
 msgstr "Standert View"
 
@@ -531,6 +534,9 @@ msgstr "Tsjinner foar spiler brûkt"
 
 msgid "Server for player."
 msgstr "Tsjinner foar spiler."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Lit verbose berjochten op DEBUG-nivo sjen yn vavoo.log (UI-libbenssyklus, detail per fersyk). Treedt daliks effekt - lit ôf, útsein as it oplossen fan problemen."
 
 msgid "Showing all channels: {}"
 msgstr "Alle kanalen sjen litte: {}"

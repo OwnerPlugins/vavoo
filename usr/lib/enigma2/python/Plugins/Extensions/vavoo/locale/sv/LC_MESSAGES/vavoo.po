@@ -217,6 +217,9 @@ msgstr "Skapa EPG-källa för EPGImport med Vavoo programdata"
 msgid "Credits:"
 msgstr "Krediter:"
 
+msgid "Debug logging"
+msgstr "Felsökning av loggning"
+
 msgid "Default View"
 msgstr "Standardvy"
 
@@ -532,6 +535,9 @@ msgstr "Server för spelare som används"
 
 msgid "Server for player."
 msgstr "Server för spelare."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Visa utförliga meddelanden på DEBUG-nivå i vavoo.log (UI-livscykel, detalj per begäran). Träder i kraft omedelbart - lämna av om inte felsökning sker."
 
 msgid "Showing all channels: {}"
 msgstr "Visar alla kanaler: {}"

@@ -216,6 +216,9 @@ msgstr "შექმენით EPG წყარო EPGImport-ისთვი�
 msgid "Credits:"
 msgstr "კრედიტები:"
 
+msgid "Debug logging"
+msgstr "გამართვის ჟურნალი"
+
 msgid "Default View"
 msgstr "ნაგულისხმევი ხედი"
 
@@ -531,6 +534,9 @@ msgstr "მეორადი მოთამაშის სერვერი"
 
 msgid "Server for player."
 msgstr "სერვერი მოთამაშისთვის."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "სიტყვიერი DEBUG დონის შეტყობინებების ჩვენება vavoo.log-ში (UI სასიცოცხლო ციკლი, თითოეული მოთხოვნის დეტალი). ამოქმედდება მყისიერად - შეაჩერეთ პრობლემების აღმოფხვრის გარეშე."
 
 msgid "Showing all channels: {}"
 msgstr "ნაჩვენებია ყველა არხი: {}"

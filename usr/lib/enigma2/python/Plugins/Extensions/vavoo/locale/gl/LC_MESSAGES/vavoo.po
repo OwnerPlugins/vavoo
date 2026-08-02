@@ -216,6 +216,9 @@ msgstr "Crea unha fonte EPG para EPGImport cos datos do programa Vavoo"
 msgid "Credits:"
 msgstr "Créditos:"
 
+msgid "Debug logging"
+msgstr "Rexistro de depuración"
+
 msgid "Default View"
 msgstr "Vista predeterminada"
 
@@ -531,6 +534,9 @@ msgstr "Servidor para o reprodutor usado"
 
 msgid "Server for player."
 msgstr "Servidor para xogador."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Mostra mensaxes detalladas de nivel DEBUG en vavoo.log (ciclo de vida da IU, detalle por solicitude). Entra en vigor de inmediato - desactivar a menos que se solucione o problema."
 
 msgid "Showing all channels: {}"
 msgstr "Mostrando todas as canles: {}"

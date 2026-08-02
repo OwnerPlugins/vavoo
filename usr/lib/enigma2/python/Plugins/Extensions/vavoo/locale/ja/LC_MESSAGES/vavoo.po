@@ -217,6 +217,9 @@ msgstr "Vavoo プログラム データを使用して EPGImport 用の EPG ソ�
 msgid "Credits:"
 msgstr "クレジット:"
 
+msgid "Debug logging"
+msgstr "デバッグログ"
+
 msgid "Default View"
 msgstr "デフォルトビュー"
 
@@ -532,6 +535,9 @@ msgstr "使用するプレーヤーのサーバー"
 
 msgid "Server for player."
 msgstr "プレイヤー用のサーバー。"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "vavoo.log に詳細な DEBUG レベルのメッセージを表示します (UI ライフサイクル、リクエストごとの詳細)。すぐに有効になります。トラブルシューティングを行う場合を除き、そのままにしておきます。"
 
 msgid "Showing all channels: {}"
 msgstr "すべてのチャンネルを表示中: {}"

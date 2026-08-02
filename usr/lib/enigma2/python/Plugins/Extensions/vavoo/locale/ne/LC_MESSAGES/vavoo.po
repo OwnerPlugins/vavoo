@@ -216,6 +216,9 @@ msgstr "Vavoo कार्यक्रम डेटा संग EPGImport क�
 msgid "Credits:"
 msgstr "क्रेडिट:"
 
+msgid "Debug logging"
+msgstr "डिबग लगिङ"
+
 msgid "Default View"
 msgstr "पूर्वनिर्धारित दृश्य"
 
@@ -531,6 +534,9 @@ msgstr "प्रयोग गरिएको प्लेयरको लाग
 
 msgid "Server for player."
 msgstr "खेलाडी लागि सर्भर।"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "vavoo.log मा भर्बोज DEBUG-स्तर सन्देशहरू देखाउनुहोस् (UI जीवनचक्र, प्रति-अनुरोध विवरण)। तुरुन्तै प्रभाव पार्छ - समस्या निवारण बाहेक छोड्नुहोस्।"
 
 msgid "Showing all channels: {}"
 msgstr "सबै च्यानलहरू देखाउँदै: {}"

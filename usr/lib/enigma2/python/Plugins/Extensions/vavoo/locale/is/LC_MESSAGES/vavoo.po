@@ -216,6 +216,9 @@ msgstr "Búðu til EPG uppsprettu fyrir EPGImport með Vavoo forritagögnum"
 msgid "Credits:"
 msgstr "Inneign:"
 
+msgid "Debug logging"
+msgstr "Villuleita skráningu"
+
 msgid "Default View"
 msgstr "Sjálfgefin útsýni"
 
@@ -531,6 +534,9 @@ msgstr "Miðlari fyrir spilara notaður"
 
 msgid "Server for player."
 msgstr "Server fyrir spilara."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Sýna margslungin skilaboð á DEBUG-stigi í vavoo.log (lífsferill HÍ, smáatriði fyrir hverja beiðni). Tekur strax gildi - slepptu nema bilanaleit."
 
 msgid "Showing all channels: {}"
 msgstr "Sýnir allar rásir: {}"

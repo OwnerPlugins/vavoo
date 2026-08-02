@@ -217,6 +217,9 @@ msgstr "Sukurkite EPG šaltinį EPGImport su Vavoo programos duomenimis"
 msgid "Credits:"
 msgstr "Kreditai:"
 
+msgid "Debug logging"
+msgstr "Derinimo registravimas"
+
 msgid "Default View"
 msgstr "Numatytasis vaizdas"
 
@@ -532,6 +535,9 @@ msgstr "Naudotas serveris grotuvui"
 
 msgid "Server for player."
 msgstr "Serveris žaidėjui."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Rodyti išsamius DEBUG lygio pranešimus vavoo.log (UI gyvavimo ciklas, išsami informacija pagal užklausą). Įsigalioja iš karto – išjunkite, nebent trikčių šalinimas."
 
 msgid "Showing all channels: {}"
 msgstr "Rodomi visi kanalai: {}"

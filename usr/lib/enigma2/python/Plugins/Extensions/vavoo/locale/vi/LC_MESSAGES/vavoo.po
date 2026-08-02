@@ -217,6 +217,9 @@ msgstr "Tạo nguồn EPG cho EPGImport bằng dữ liệu chương trình Vavoo
 msgid "Credits:"
 msgstr "Tín dụng:"
 
+msgid "Debug logging"
+msgstr "Ghi nhật ký gỡ lỗi"
+
 msgid "Default View"
 msgstr "Chế độ xem mặc định"
 
@@ -532,6 +535,9 @@ msgstr "Máy chủ dành cho người chơi được sử dụng"
 
 msgid "Server for player."
 msgstr "Máy chủ cho người chơi."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Hiển thị các thông báo chi tiết ở cấp độ DEBUG trong vavoo.log (vòng đời giao diện người dùng, chi tiết theo yêu cầu). Có hiệu lực ngay lập tức - tắt đi trừ khi khắc phục sự cố."
 
 msgid "Showing all channels: {}"
 msgstr "Hiển thị tất cả các kênh: {}"

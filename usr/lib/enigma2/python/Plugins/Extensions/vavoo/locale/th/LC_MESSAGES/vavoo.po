@@ -216,6 +216,9 @@ msgstr "สร้างแหล่ง EPG สำหรับ EPGImport ด้�
 msgid "Credits:"
 msgstr "เครดิต:"
 
+msgid "Debug logging"
+msgstr "การบันทึกการแก้ไขข้อบกพร่อง"
+
 msgid "Default View"
 msgstr "มุมมองเริ่มต้น"
 
@@ -531,6 +534,9 @@ msgstr "เซิร์ฟเวอร์สำหรับผู้เล่น
 
 msgid "Server for player."
 msgstr "เซิร์ฟเวอร์สำหรับผู้เล่น"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "แสดงข้อความระดับ DEBUG แบบละเอียดใน vavoo.log (วงจรการใช้งาน UI รายละเอียดตามคำขอ) มีผลทันที - งดเว้นเว้นแต่จะแก้ไขปัญหาได้"
 
 msgid "Showing all channels: {}"
 msgstr "แสดงทุกช่อง: {}"

@@ -217,6 +217,9 @@ msgstr "Looge Vavoo programmi andmetega EPG allikas EPGImport jaoks"
 msgid "Credits:"
 msgstr "Autorid:"
 
+msgid "Debug logging"
+msgstr "Silumise logimine"
+
 msgid "Default View"
 msgstr "Vaikevaade"
 
@@ -532,6 +535,9 @@ msgstr "Kasutatud server mängijale"
 
 msgid "Server for player."
 msgstr "Server mängija jaoks."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Kuva üksikasjalikud SILUtaseme sõnumid saidil vavoo.log (UI elutsükkel, päringu üksikasjad). Mõjub kohe – jätke välja, välja arvatud juhul, kui tõrkeotsing on tehtud."
 
 msgid "Showing all channels: {}"
 msgstr "Kuvatakse kõik kanalid: {}"

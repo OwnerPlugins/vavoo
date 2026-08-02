@@ -216,6 +216,9 @@ msgstr "Creu ffynhonnell EPG ar gyfer EPGImport gyda data rhaglen Vavoo"
 msgid "Credits:"
 msgstr "Credydau:"
 
+msgid "Debug logging"
+msgstr "Logio dadfygio"
+
 msgid "Default View"
 msgstr "Golwg ddiofyn"
 
@@ -531,6 +534,9 @@ msgstr "Gweinydd ar gyfer Chwaraewr a Ddefnyddir"
 
 msgid "Server for player."
 msgstr "Gweinydd ar gyfer chwaraewr."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Dangos negeseuon ar lafar ar lefel DEBUG yn vavoo.log (cylch bywyd UI, manylion fesul cais). Daw i rym ar unwaith - gadewch i ffwrdd oni bai ei fod yn datrys problemau."
 
 msgid "Showing all channels: {}"
 msgstr "Yn dangos pob sianel: {}"

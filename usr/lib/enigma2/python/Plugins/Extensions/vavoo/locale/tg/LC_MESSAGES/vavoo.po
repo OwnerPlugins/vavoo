@@ -216,6 +216,9 @@ msgstr "Бо маълумоти барномаи Vavoo барои EPGImport ма
 msgid "Credits:"
 msgstr "Қарзҳо:"
 
+msgid "Debug logging"
+msgstr "Сабти хатогиҳо"
+
 msgid "Default View"
 msgstr "Намоиши пешфарз"
 
@@ -531,6 +534,9 @@ msgstr "Сервер барои плеери истифодашуда"
 
 msgid "Server for player."
 msgstr "Сервер барои бозигар."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Паёмҳои муфассали DEBUG-ро дар vavoo.log нишон диҳед (давраи ҳаёти UI, тафсилоти ҳар як дархост). Дарҳол эътибор пайдо мекунад - то бартараф кардани мушкилот, тарк кунед."
 
 msgid "Showing all channels: {}"
 msgstr "Намоиши ҳама каналҳо: {}"

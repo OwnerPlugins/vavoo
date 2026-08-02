@@ -216,6 +216,9 @@ msgstr "Cipta sumber EPG untuk EPGImport dengan data program Vavoo"
 msgid "Credits:"
 msgstr "Kredit:"
 
+msgid "Debug logging"
+msgstr "Pengelogan nyahpepijat"
+
 msgid "Default View"
 msgstr "Paparan Lalai"
 
@@ -531,6 +534,9 @@ msgstr "Pelayan untuk Pemain Digunakan"
 
 msgid "Server for player."
 msgstr "Pelayan untuk pemain."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Tunjukkan mesej peringkat DEBUG bertele-tele dalam vavoo.log (kitaran hayat UI, butiran setiap permintaan). Berkuat kuasa serta-merta - berhenti kecuali menyelesaikan masalah."
 
 msgid "Showing all channels: {}"
 msgstr "Menunjukkan semua saluran: {}"

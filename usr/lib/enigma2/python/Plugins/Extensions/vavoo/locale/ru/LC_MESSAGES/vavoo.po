@@ -220,6 +220,9 @@ msgstr "Создать источник EPG для EPGImport с данными �
 msgid "Credits:"
 msgstr "Благодарности:"
 
+msgid "Debug logging"
+msgstr "Ведение журнала отладки"
+
 msgid "Default View"
 msgstr "Вид по умолчанию"
 
@@ -541,6 +544,9 @@ msgstr "Сервер для используемого плеера"
 
 msgid "Server for player."
 msgstr "Сервер для плеера."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Показывать подробные сообщения уровня DEBUG в vavoo.log (жизненный цикл пользовательского интерфейса, подробности для каждого запроса). Вступает в силу немедленно — прекратите действие, если не потребуется устранение неполадок."
 
 msgid "Showing all channels: {}"
 msgstr "Показаны все каналы: {}"

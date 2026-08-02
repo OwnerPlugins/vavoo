@@ -216,6 +216,9 @@ msgstr "Vavoo நிரல் தரவுகளுடன் EPGImport க்க
 msgid "Credits:"
 msgstr "கடன்:"
 
+msgid "Debug logging"
+msgstr "பிழைத்திருத்த பதிவு"
+
 msgid "Default View"
 msgstr "இயல்புநிலை பார்வை"
 
@@ -531,6 +534,9 @@ msgstr "பயன்படுத்திய வீரர்களுக்க�
 
 msgid "Server for player."
 msgstr "வீரர்களுக்கான சேவையகம்."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "vavoo.log (UI லைஃப்சைக்கிள், ஒரு கோரிக்கை விவரம்) இல் உள்ள டீபக்-நிலை செய்திகளைக் காட்டு. உடனடியாக அமலுக்கு வரும் - பிழையறிந்து தீர்க்காதவரை விட்டுவிடுங்கள்."
 
 msgid "Showing all channels: {}"
 msgstr "எல்லா சேனல்களையும் காட்டுகிறது: {}"

@@ -216,6 +216,9 @@ msgstr "Ստեղծեք EPG աղբյուր EPGImport-ի համար Vavoo ծրագ
 msgid "Credits:"
 msgstr "Վարկեր:"
 
+msgid "Debug logging"
+msgstr "Վրիպազերծման գրանցում"
+
 msgid "Default View"
 msgstr "Կանխադրված դիտում"
 
@@ -531,6 +534,9 @@ msgstr "Օգտագործված սերվեր խաղացողի համար"
 
 msgid "Server for player."
 msgstr "Սերվեր խաղացողի համար."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Ցուցադրել մանրամասն DEBUG մակարդակի հաղորդագրությունները vavoo.log-ում (UI-ի կյանքի ցիկլ, յուրաքանչյուր հարցման մանրամասն): Անմիջապես ուժի մեջ է մտնում, թողեք, եթե անսարքությունները չշտկվեն:"
 
 msgid "Showing all channels: {}"
 msgstr "Ցուցադրվում են բոլոր ալիքները՝ {}"

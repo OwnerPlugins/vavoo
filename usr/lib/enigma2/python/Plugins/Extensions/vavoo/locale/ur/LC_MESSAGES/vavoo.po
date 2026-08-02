@@ -216,6 +216,9 @@ msgstr "Vavoo پروگرام ڈیٹا کے ساتھ EPGImport کے لیے EPG س
 msgid "Credits:"
 msgstr "کریڈٹس:"
 
+msgid "Debug logging"
+msgstr "ڈیبگ لاگنگ"
+
 msgid "Default View"
 msgstr "ڈیفالٹ ویو"
 
@@ -531,6 +534,9 @@ msgstr "استعمال شدہ پلیئر کے لیے سرور"
 
 msgid "Server for player."
 msgstr "کھلاڑی کے لیے سرور۔"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "vavoo.log میں وربوز ڈیبگ سطح کے پیغامات دکھائیں (UI لائف سائیکل، فی درخواست کی تفصیل)۔ فوری طور پر اثر انداز ہوتا ہے - چھوڑ دیں جب تک کہ خرابیوں کا سراغ لگانا نہ ہو۔"
 
 msgid "Showing all channels: {}"
 msgstr "تمام چینلز دکھا رہا ہے: {}"

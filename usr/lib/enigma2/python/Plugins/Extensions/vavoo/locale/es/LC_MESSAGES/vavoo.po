@@ -231,6 +231,9 @@ msgstr "Crear fuente EPG para EPGImport con datos de programa Vavoo"
 msgid "Credits:"
 msgstr "Créditos:"
 
+msgid "Debug logging"
+msgstr "Registro de depuración"
+
 msgid "Default View"
 msgstr "Vista predeterminada"
 
@@ -557,6 +560,9 @@ msgstr "Servidor para el reproductor utilizado"
 
 msgid "Server for player."
 msgstr "Servidor para el reproductor."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Muestre mensajes detallados a nivel de DEBUG en vavoo.log (ciclo de vida de la interfaz de usuario, detalle por solicitud). Entra en vigor inmediatamente; déjelo fuera a menos que se solucione el problema."
 
 msgid "Showing all channels: {}"
 msgstr "Mostrando todos los canales: {}"

@@ -216,6 +216,9 @@ msgstr "منبع EPG برای EPGImport با داده های برنامه Vavoo 
 msgid "Credits:"
 msgstr "اعتبارات:"
 
+msgid "Debug logging"
+msgstr "ثبت اشکال زدایی"
+
 msgid "Default View"
 msgstr "نمای پیش فرض"
 
@@ -531,6 +534,9 @@ msgstr "سرور برای پلیر استفاده شده است"
 
 msgid "Server for player."
 msgstr "سرور برای بازیکن"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "نمایش پیام‌های پرمخاطب در سطح DEBUG در vavoo.log (چرخه عمر UI، جزئیات هر درخواست). فوراً اعمال می شود - آن را متوقف کنید مگر اینکه عیب یابی شود."
 
 msgid "Showing all channels: {}"
 msgstr "نمایش همه کانال ها: {}"

@@ -217,6 +217,9 @@ msgstr "Creați sursa EPG pentru EPGImport cu datele programului Vavoo"
 msgid "Credits:"
 msgstr "Credite:"
 
+msgid "Debug logging"
+msgstr "Jurnal de depanare"
+
 msgid "Default View"
 msgstr "Vizualizare implicită"
 
@@ -532,6 +535,9 @@ msgstr "Server pentru jucător folosit"
 
 msgid "Server for player."
 msgstr "Server pentru jucător."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Afișați mesaje detaliate la nivel DEBUG în vavoo.log (ciclul de viață al interfeței de utilizare, detaliu per cerere). Are efect imediat - opriți, cu excepția cazului în care se depanează."
 
 msgid "Showing all channels: {}"
 msgstr "Se afișează toate canalele: {}"

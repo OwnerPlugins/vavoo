@@ -216,6 +216,9 @@ msgstr "שאַפֿן EPG מקור פֿאַר EPGImport מיט Vavoo פּראָג
 msgid "Credits:"
 msgstr "קרעדיט:"
 
+msgid "Debug logging"
+msgstr "דיבאַג לאָגינג"
+
 msgid "Default View"
 msgstr "פעליקייַט View"
 
@@ -531,6 +534,9 @@ msgstr "סערווירער פֿאַר שפּילער געוויינט"
 
 msgid "Server for player."
 msgstr "סערווירער פֿאַר שפּילער."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "ווייַזן ווערבאָוסע DEBUG-מדרגה אַרטיקלען אין vavoo.log (י לייפסיקלע, פּער-בעטן דעטאַל). נעמט ווירקונג מיד - לאָזן אַוועק סייַדן טראָובלעשאָאָטינג."
 
 msgid "Showing all channels: {}"
 msgstr "ווייַזן אַלע טשאַנאַלז: {}"

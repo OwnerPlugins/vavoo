@@ -216,6 +216,9 @@ msgstr "Vavoo പ്രോഗ്രാം ഡാറ്റ ഉപയോഗിച�
 msgid "Credits:"
 msgstr "കടപ്പാട്:"
 
+msgid "Debug logging"
+msgstr "ഡീബഗ് ലോഗിംഗ്"
+
 msgid "Default View"
 msgstr "ഡിഫോൾട്ട് കാഴ്ച"
 
@@ -531,6 +534,9 @@ msgstr "ഉപയോഗിച്ച കളിക്കാരനുള്ള സ�
 
 msgid "Server for player."
 msgstr "കളിക്കാരനുള്ള സെർവർ."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "vavoo.log-ൽ വെർബോസ് ഡീബഗ്-ലെവൽ സന്ദേശങ്ങൾ കാണിക്കുക (UI ലൈഫ് സൈക്കിൾ, ഓരോ അഭ്യർത്ഥനയുടെ വിശദാംശങ്ങൾ). ഉടനടി പ്രാബല്യത്തിൽ വരും - ട്രബിൾഷൂട്ട് ചെയ്യുന്നില്ലെങ്കിൽ ഉപേക്ഷിക്കുക."
 
 msgid "Showing all channels: {}"
 msgstr "എല്ലാ ചാനലുകളും കാണിക്കുന്നു: {}"

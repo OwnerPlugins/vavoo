@@ -217,6 +217,9 @@ msgstr "Ustvarite vir EPG za EPGImport s programskimi podatki Vavoo"
 msgid "Credits:"
 msgstr "Zasluge:"
 
+msgid "Debug logging"
+msgstr "Beleženje odpravljanja napak"
+
 msgid "Default View"
 msgstr "Privzeti pogled"
 
@@ -532,6 +535,9 @@ msgstr "Uporabljen strežnik za igralca"
 
 msgid "Server for player."
 msgstr "Server za igralca."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Prikaži podrobna sporočila na ravni DEBUG v vavoo.log (življenjski cikel uporabniškega vmesnika, podrobnosti za vsako zahtevo). Začne veljati takoj - izključite, razen če odpravite težave."
 
 msgid "Showing all channels: {}"
 msgstr "Prikaz vseh kanalov: {}"

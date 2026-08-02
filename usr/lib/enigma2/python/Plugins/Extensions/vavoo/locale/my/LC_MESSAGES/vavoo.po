@@ -216,6 +216,9 @@ msgstr "Vavoo ပရိုဂရမ်ဒေတာဖြင့် EPGImport အ�
 msgid "Credits:"
 msgstr "ခရက်ဒစ်"
 
+msgid "Debug logging"
+msgstr "အမှားပြင်ဆင်ခြင်း"
+
 msgid "Default View"
 msgstr "ပုံသေမြင်ကွင်း"
 
@@ -531,6 +534,9 @@ msgstr "Player အတွက် အသုံးပြုထားသော ဆာ
 
 msgid "Server for player."
 msgstr "ကစားသမားအတွက် ဆာဗာ။"
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "vavoo.log (UI ဘဝသံသရာ၊ တောင်းဆိုချက်တစ်ခုချင်းအသေးစိတ်) တွင် စကားလုံးအသုံးအနှုန်း DEBUG အဆင့် မက်ဆေ့ချ်များကို ပြပါ။ ချက်ချင်းအကျိုးသက်ရောက်မှုရှိသည် - ပြဿနာဖြေရှင်းခြင်းမပြုပါက ထွက်ခွာပါ။"
 
 msgid "Showing all channels: {}"
 msgstr "ချန်နယ်အားလုံးကို ပြသနေသည်- {}"

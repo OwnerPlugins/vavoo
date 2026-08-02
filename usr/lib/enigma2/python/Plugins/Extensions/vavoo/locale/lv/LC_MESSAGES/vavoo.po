@@ -217,6 +217,9 @@ msgstr "Izveidojiet EPG avotu EPGImport, izmantojot Vavoo programmas datus"
 msgid "Credits:"
 msgstr "Kredīti:"
 
+msgid "Debug logging"
+msgstr "Atkļūdošanas reģistrēšana"
+
 msgid "Default View"
 msgstr "Noklusējuma skats"
 
@@ -532,6 +535,9 @@ msgstr "Izmantots serveris atskaņotājam"
 
 msgid "Server for player."
 msgstr "Serveris spēlētājam."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Rādīt detalizētus ATkļūdošanas līmeņa ziņojumus vietnē vavoo.log (UI dzīves cikls, detalizēta informācija par pieprasījumu). Stājas spēkā nekavējoties — pārtrauciet, ja vien netiek veikta traucējummeklēšana."
 
 msgid "Showing all channels: {}"
 msgstr "Tiek rādīti visi kanāli: {}"

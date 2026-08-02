@@ -221,6 +221,9 @@ msgstr "EPG-Quelle für EPGImport mit Vavoo-Programmdaten erstellen"
 msgid "Credits:"
 msgstr "Mitwirkende:"
 
+msgid "Debug logging"
+msgstr "Debug-Protokollierung"
+
 msgid "Default View"
 msgstr "Standardansicht"
 
@@ -536,6 +539,9 @@ msgstr "Verwendeter Server für Player"
 
 msgid "Server for player."
 msgstr "Server für Player."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Ausführliche Nachrichten auf DEBUG-Ebene in vavoo.log anzeigen (UI-Lebenszyklus, Details pro Anfrage). Tritt sofort in Kraft – unterlassen Sie die Anwendung, es sei denn, es handelt sich um eine Fehlerbehebung."
 
 msgid "Showing all channels: {}"
 msgstr "Zeige alle Kanäle: {}"

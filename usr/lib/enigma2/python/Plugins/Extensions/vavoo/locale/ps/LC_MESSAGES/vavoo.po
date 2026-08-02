@@ -216,6 +216,9 @@ msgstr "د Vavoo برنامې ډیټا سره د EPGImport لپاره د EPG س�
 msgid "Credits:"
 msgstr "اعتبار:"
 
+msgid "Debug logging"
+msgstr ""
+
 msgid "Default View"
 msgstr "ډیفالټ لید"
 
@@ -531,6 +534,9 @@ msgstr "د کارول شوي لوبغاړي لپاره سرور"
 
 msgid "Server for player."
 msgstr "د لوبغاړي لپاره سرور."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "په vavoo.log کې د فعل DEBUG کچې پیغامونه وښایاست (UI د ژوند دورې، د هرې غوښتنې توضیحات). سمدلاسه اغیزمن کیږي - پریږدئ پرته لدې چې ستونزې حل شي."
 
 msgid "Showing all channels: {}"
 msgstr "ټول چینلونه ښودل: {}"

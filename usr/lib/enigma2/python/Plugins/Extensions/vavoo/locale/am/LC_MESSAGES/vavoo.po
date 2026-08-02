@@ -216,6 +216,9 @@ msgstr "ለEPGImport በVavoo ፕሮግራም ውሂብ የ EPG ምንጭ ይፍ
 msgid "Credits:"
 msgstr "ምስጋናዎች"
 
+msgid "Debug logging"
+msgstr "ማረም ምዝግብ ማስታወሻ"
+
 msgid "Default View"
 msgstr "ነባሪ እይታ"
 
@@ -531,6 +534,9 @@ msgstr "ያገለገለ የተጫዋች አገልጋይ"
 
 msgid "Server for player."
 msgstr "ለተጫዋች አገልጋይ."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "በ vavoo.log (UI የህይወት ኡደት፣ በጥያቄ ዝርዝር) ላይ የቃል የDEBUG-ደረጃ መልዕክቶችን አሳይ። ወዲያውኑ ተግባራዊ ይሆናል - መላ መፈለግ ካልሆነ በስተቀር ይውጡ።"
 
 msgid "Showing all channels: {}"
 msgstr "ሁሉንም ቻናሎች በማሳየት ላይ፡ {}"

@@ -224,6 +224,9 @@ msgstr ""
 msgid "Credits:"
 msgstr "Credits:"
 
+msgid "Debug logging"
+msgstr ""
+
 msgid "Default View"
 msgstr "Default View"
 
@@ -549,6 +552,9 @@ msgstr "Server for Player Used"
 
 msgid "Server for player."
 msgstr "Server for player."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr ""
 
 msgid "Showing all channels: {}"
 msgstr "Showing all channels: {}"

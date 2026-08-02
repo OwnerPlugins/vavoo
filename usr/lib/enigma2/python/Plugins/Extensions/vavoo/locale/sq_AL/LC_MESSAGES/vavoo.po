@@ -216,6 +216,9 @@ msgstr "Krijo burimin EPG për EPGImport me të dhënat e programit Vavoo"
 msgid "Credits:"
 msgstr "Kredite:"
 
+msgid "Debug logging"
+msgstr "Regjistrimi i korrigjimit"
+
 msgid "Default View"
 msgstr "Pamja e parazgjedhur"
 
@@ -531,6 +534,9 @@ msgstr "Serveri i përdorur për lojtarin"
 
 msgid "Server for player."
 msgstr "Server për lojtarin."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Shfaq mesazhet me fjalë të nivelit DEBUG në vavoo.log (cikli jetësor i UI, detaje për kërkesë). Hyn në fuqi menjëherë - lëreni nëse nuk zgjidhni problemet."
 
 msgid "Showing all channels: {}"
 msgstr "Duke shfaqur të gjitha kanalet: {}"

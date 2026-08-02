@@ -216,6 +216,9 @@ msgstr "Bi daneyên bernameya Vavoo re çavkaniya EPG-ê ji bo EPGImport biafir�
 msgid "Credits:"
 msgstr "Kredî:"
 
+msgid "Debug logging"
+msgstr ""
+
 msgid "Default View"
 msgstr "Pêşniyara Bingehîn"
 
@@ -531,6 +534,9 @@ msgstr "Server ji bo Lîstikvanê Bikaranîn"
 
 msgid "Server for player."
 msgstr "Server ji bo lîstikvan."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Di vavoo.log de peyamên asta DEBUG-ê yên devkî nîşan bide (çerxa jiyanê ya UI, hûrguliya her daxwazê). Tavilê bandor dike - heya ku pirsgirêk neyê çareser kirin bihêle."
 
 msgid "Showing all channels: {}"
 msgstr "Hemî kanal nîşan dide: {}"

@@ -217,6 +217,9 @@ msgstr "Creeu una font EPG per a EPGImport amb les dades del programa Vavoo"
 msgid "Credits:"
 msgstr "Crèdits:"
 
+msgid "Debug logging"
+msgstr "Registre de depuració"
+
 msgid "Default View"
 msgstr "Vista per defecte"
 
@@ -532,6 +535,9 @@ msgstr "Servidor per al jugador utilitzat"
 
 msgid "Server for player."
 msgstr "Servidor per al jugador."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Mostra missatges detallats de nivell DEBUG a vavoo.log (cicle de vida de la IU, detall per sol·licitud). Entra en vigor immediatament; deixeu-ho apagar tret que es resolgui problemes."
 
 msgid "Showing all channels: {}"
 msgstr "Mostrant tots els canals: {}"

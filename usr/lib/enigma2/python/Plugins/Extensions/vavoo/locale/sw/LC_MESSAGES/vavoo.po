@@ -216,6 +216,9 @@ msgstr "Unda chanzo cha EPG cha EPGIMport ukitumia data ya mpango wa Vavoo"
 msgid "Credits:"
 msgstr "Mikopo:"
 
+msgid "Debug logging"
+msgstr "Tatua ukataji"
+
 msgid "Default View"
 msgstr "Mwonekano Chaguomsingi"
 
@@ -531,6 +534,9 @@ msgstr "Seva ya Mchezaji Inayotumika"
 
 msgid "Server for player."
 msgstr "Seva kwa mchezaji."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Onyesha ujumbe wa kiwango cha verbose DEBUG katika vavoo.log (Mzunguko wa maisha wa UI, maelezo ya kila ombi). Huanza kutumika mara moja - acha isipokuwa utatuzi wa matatizo."
 
 msgid "Showing all channels: {}"
 msgstr "Inaonyesha vituo vyote: {}"

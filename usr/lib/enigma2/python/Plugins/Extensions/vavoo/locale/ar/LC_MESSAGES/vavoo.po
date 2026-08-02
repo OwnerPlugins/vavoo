@@ -216,6 +216,9 @@ msgstr "إنشاء مصدر EPG لـ EPGImport مع بيانات برنامج Va
 msgid "Credits:"
 msgstr "الإبداع:"
 
+msgid "Debug logging"
+msgstr "تسجيل التصحيح"
+
 msgid "Default View"
 msgstr "العرض الافتراضي"
 
@@ -531,6 +534,9 @@ msgstr "الخادم المستخدم للمشغل"
 
 msgid "Server for player."
 msgstr "الخادم للمشغل."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "عرض رسائل مطولة على مستوى DEBUG في vavoo.log (دورة حياة واجهة المستخدم، تفاصيل لكل طلب). يسري مفعوله على الفور - اتركه ما لم يتم استكشاف الأخطاء وإصلاحها."
 
 msgid "Showing all channels: {}"
 msgstr "عرض جميع القنوات: {}"

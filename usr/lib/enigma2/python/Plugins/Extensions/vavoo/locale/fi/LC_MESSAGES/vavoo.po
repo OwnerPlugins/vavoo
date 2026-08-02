@@ -216,6 +216,9 @@ msgstr "Luo EPG-lähde EPGImportille Vavoo-ohjelmatiedoilla"
 msgid "Credits:"
 msgstr "Tekijät:"
 
+msgid "Debug logging"
+msgstr "Virheenkorjausloki"
+
 msgid "Default View"
 msgstr "Oletusnäkymä"
 
@@ -531,6 +534,9 @@ msgstr "Palvelin soittimelle"
 
 msgid "Server for player."
 msgstr "Palvelin soittimelle."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Näytä monisanaiset DEBUG-tason viestit vavoo.logissa (käyttöliittymän elinkaari, pyyntökohtaiset tiedot). Tulee voimaan välittömästi - jätä pois, ellet suorita vianmääritystä."
 
 msgid "Showing all channels: {}"
 msgstr "Näytetään kaikki kanavat: {}"

@@ -216,6 +216,9 @@ msgstr "Cruthaich stòr EPG airson EPGImport le dàta prògram Vavoo"
 msgid "Credits:"
 msgstr "Creideasan:"
 
+msgid "Debug logging"
+msgstr "Clàradh deasbaid"
+
 msgid "Default View"
 msgstr "Sealladh bunaiteach"
 
@@ -531,6 +534,9 @@ msgstr "Am frithealaiche airson cluicheadair air a chleachdadh"
 
 msgid "Server for player."
 msgstr "Am frithealaiche airson cluicheadair a-nuas."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Seall teachdaireachdan ìre verbose DEBUG ann an vavoo.log (cuairt-beatha UI, mion-fhiosrachadh gach iarrtas). A’ tighinn gu buil sa bhad - fàg air falbh mura tèid duilgheadasan fhuasgladh."
 
 msgid "Showing all channels: {}"
 msgstr "A' sealltainn a h-uile seanail: {}"

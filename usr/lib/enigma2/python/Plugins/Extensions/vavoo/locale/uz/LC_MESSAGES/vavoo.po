@@ -216,6 +216,9 @@ msgstr "Vavoo dasturi ma'lumotlari bilan EPGImport uchun EPG manbasini yarating"
 msgid "Credits:"
 msgstr "Kreditlar:"
 
+msgid "Debug logging"
+msgstr "Nosozliklarni tuzatish jurnali"
+
 msgid "Default View"
 msgstr "Standart ko‘rinish"
 
@@ -531,6 +534,9 @@ msgstr "Ishlatilgan o'yinchi uchun server"
 
 msgid "Server for player."
 msgstr "O'yinchi uchun server."
+
+msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
+msgstr "Vavoo.logda DEBUG darajasidagi batafsil xabarlarni ko'rsatish (UI hayot aylanishi, har bir so'rov bo'yicha batafsil). Darhol kuchga kiradi - muammo bartaraf qilinmaguncha o'chirib qo'ying."
 
 msgid "Showing all channels: {}"
 msgstr "Barcha kanallar koʻrsatilmoqda: {}"
