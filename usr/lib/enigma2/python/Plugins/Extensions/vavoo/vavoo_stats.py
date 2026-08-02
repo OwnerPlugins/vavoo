@@ -35,17 +35,38 @@ _HTTP_TIMEOUT = 20
 def _http_post(url, payload):
     try:
         # Python 3
-        from urllib.request import Request, urlopen
+        from urllib.request import (
+            Request, HTTPRedirectHandler, build_opener)
     except ImportError:
         # Python 2
-        from urllib2 import Request, urlopen
+        from urllib2 import (
+            Request, HTTPRedirectHandler, build_opener)
 
     data = json.dumps(payload).encode('utf-8')
     headers = {'Content-Type': 'application/json'}
     req = Request(url, data=data, headers=headers)
 
+    # Google Apps Script /exec URLs answer every request, including
+    # POSTs, with a 302 to a one-time googleusercontent.com execution
+    # URL. urllib's default HTTPRedirectHandler follows that redirect
+    # by converting the POST into a bodyless GET (matches legacy
+    # browser behavior) - silently dropping the JSON payload before it
+    # ever reaches the script. Preserve method+body across redirects
+    # instead of letting that happen.
+    class PreservePostRedirectHandler(HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            if code in (301, 302, 303) and req.get_method() == 'POST':
+                new_req = Request(
+                    newurl, data=req.data, headers=req.headers)
+                new_req.get_method = lambda: 'POST'
+                return new_req
+            return HTTPRedirectHandler.redirect_request(
+                self, req, fp, code, msg, headers, newurl)
+
+    opener = build_opener(PreservePostRedirectHandler)
+
     try:
-        response = urlopen(req, timeout=_HTTP_TIMEOUT)
+        response = opener.open(req, timeout=_HTTP_TIMEOUT)
         return response.read()
     except Exception as e:
         error("HTTP POST error: {}".format(e))
