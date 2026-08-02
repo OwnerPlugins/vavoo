@@ -327,7 +327,8 @@ tmlast = None
 # switching channels or reopening the player doesn't re-fetch/re-parse/
 # re-index the same country's EPG document within the TTL window - see
 # Playstream2.get_current_epg().
-_epg_xml_cache = {}      # country_code -> (timestamp, root, channel_index, display_name_index)
+# country_code -> (timestamp, root, channel_index, display_name_index)
+_epg_xml_cache = {}
 _epg_result_cache = {}   # "epg_<name>_<country>" -> (timestamp, result_str)
 
 # Safety-net caps: entries here are only ever added, never removed on
@@ -361,6 +362,7 @@ def _cache_epg_xml(country_code, root, channel_index, display_name_index):
         )[:len(_epg_xml_cache) - _EPG_XML_CACHE_MAX]
         for k in oldest:
             del _epg_xml_cache[k]
+
 
 # Auto-update check state, shared between startVavoo (kicks off the
 # background check) and MainVavoo (shows the popup once, after the main
