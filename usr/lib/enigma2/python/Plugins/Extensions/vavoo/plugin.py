@@ -48,6 +48,7 @@ except ImportError:
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
+from Components.ScrollLabel import ScrollLabel
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
 from Components.Pixmap import Pixmap
@@ -1737,24 +1738,36 @@ class UpdatePopup(Screen):
         self["subtitle"] = Label(
             _("v{} -> v{}").format(__version__, remote_version))
         self["changelog_label"] = Label(_("Changelog:"))
-        # A plain Label, not ScrollLabel: the changelog text is always
-        # short (a handful of lines from installer.sh), and ScrollLabel's
-        # setText() depends on a pageHeight computed during skin binding
-        # that doesn't reliably come out non-zero across images - Label
-        # (used for title/subtitle above) renders correctly everywhere.
-        self["changelog"] = Label(changelog or _("No changelog provided."))
+        # ScrollLabel, not a plain Label: the changelog can run well
+        # past what the fixed-height box fits (confirmed - a 9-entry
+        # changelog overflowed a plain Label with no way to see the
+        # rest). ScrollLabel.setText()'s pageHeight is computed from the
+        # widget's bound size, which isn't reliably established yet in
+        # __init__ across images (comes out 0 on some) - deferring the
+        # setText() call to onLayoutFinish, after the skin has actually
+        # bound the widget, is the standard fix for that.
+        self._changelog_text = changelog or _("No changelog provided.")
+        self["changelog"] = ScrollLabel("")
+        self.onLayoutFinish.append(self._setChangelogText)
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Yes, update now"))
 
         self["actions"] = ActionMap(
-            ["OkCancelActions", "ColorActions"],
+            ["OkCancelActions", "ColorActions", "DirectionActions"],
             {
                 "ok": self.confirm,
                 "green": self.confirm,
                 "cancel": self.deny,
                 "red": self.deny,
+                "up": self["changelog"].pageUp,
+                "down": self["changelog"].pageDown,
+                "left": self["changelog"].pageUp,
+                "right": self["changelog"].pageDown,
             }, -1
         )
+
+    def _setChangelogText(self):
+        self["changelog"].setText(self._changelog_text)
 
     def confirm(self):
         self.close(True)
