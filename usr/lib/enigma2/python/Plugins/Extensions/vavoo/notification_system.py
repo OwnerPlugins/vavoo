@@ -73,7 +73,7 @@ class SimpleNotifyWidget(Screen):
             self["notification_text"].setText(text)
 
 
-class HybridNotificationManager:
+class HybridNotificationManager(object):
     """Singleton notification manager - works globally across all threads"""
 
     _instance = None
