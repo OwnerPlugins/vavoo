@@ -3064,6 +3064,8 @@ class vavoo(Screen):
     def _load_skin(self):
         """Load the skin file."""
         skin = join(skin_path, 'defaultListScreen.xml')
+        if isfile('/var/lib/dpkg/status'):
+            skin = skin.replace('.xml', '_cvs.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = apply_selected_background(f.read())
 
