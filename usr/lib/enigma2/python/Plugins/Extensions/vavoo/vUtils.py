@@ -757,7 +757,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) + \
+            print("Getting channels for '" + str(country_name) +
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
@@ -1063,7 +1063,8 @@ def ReloadBouquets(delay=500):
                 reactor.callLater(delay / 1000.0, do_reload)
                 return
         except Exception as e:
-            debug("reactor.callLater unavailable, falling back to eTimer: {}".format(e))
+            debug(
+                "reactor.callLater unavailable, falling back to eTimer: {}".format(e))
         # Fallback: eTimer
         timer = eTimer()
         try:
@@ -1267,7 +1268,9 @@ def download_flag_online(
             try:
                 makedirs(cache_dir)
             except Exception as e:
-                debug("Could not create flag cache dir {}: {}".format(cache_dir, e))
+                debug(
+                    "Could not create flag cache dir {}: {}".format(
+                        cache_dir, e))
 
         # 4. Cache file path
         cache_file = join(cache_dir, "%s.png" % country_code_lower)
@@ -1381,7 +1384,9 @@ def download_flag_with_size(
             try:
                 makedirs(cache_dir)
             except Exception as e:
-                debug("Could not create flag cache dir {}: {}".format(cache_dir, e))
+                debug(
+                    "Could not create flag cache dir {}: {}".format(
+                        cache_dir, e))
 
         cache_file = join(cache_dir, "%s.png" % country_code.lower())
 

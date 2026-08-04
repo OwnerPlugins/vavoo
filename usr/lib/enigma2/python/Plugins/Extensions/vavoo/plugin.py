@@ -1537,7 +1537,8 @@ class startVavoo(Screen):
         try:
             max_wait_secs = int(cfg.proxy_startup_timeout.value)
         except Exception as e:
-            debug("Invalid proxy_startup_timeout config value, using default: {}".format(e))
+            debug(
+                "Invalid proxy_startup_timeout config value, using default: {}".format(e))
         self._max_wait_ms = max(1000, max_wait_secs * 1000)
 
         self.onLayoutFinish.append(self.loadDefaultImage)
@@ -2114,8 +2115,9 @@ class MainVavoo(Screen):
                             if success:
                                 downloaded_rest += 1
                         except BaseException as e:
-                            debug("Background flag download failed for {}: {}".format(
-                                country, e))
+                            debug(
+                                "Background flag download failed for {}: {}".format(
+                                    country, e))
 
                     print("[Background] Finished downloading remaining flags")
                     # The single-shot refresh above only covers the first
