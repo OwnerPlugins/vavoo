@@ -1909,7 +1909,8 @@ def run_proxy_in_background(startup_timeout=30):
         _starting = True
 
     try:
-        proxy_thread = threading.Thread(target=start_proxy, daemon=True)
+        proxy_thread = threading.Thread(target=start_proxy)
+        proxy_thread.setDaemon(True)
         proxy_thread.start()
         return True
     finally:
