@@ -131,8 +131,10 @@ try:
     subprocess.run(["chmod", "+x", START_PROXY_SCRIPT])
 except AttributeError:
     subprocess.call(["chmod", "+x", START_PROXY_SCRIPT])
-except Exception:
-    pass
+except Exception as e:
+    _init_log(
+        "chmod +x failed for {}: {}".format(START_PROXY_SCRIPT, e),
+        level="WARNING")
 
 country_codes = {
     # Africa

@@ -29,6 +29,7 @@ from . import (
 
 from .vUtils import (
     _starting_lock,
+    debug,
     get_external_ip,
     is_proxy_running,
     log_exception,
@@ -1236,8 +1237,8 @@ class VavooProxy:
                     if e.response is not None and e.response.status_code == 451:
                         self._switch_to_next_base(
                             "(HTTP 451 on resolve HTTPError)")
-                except Exception:
-                    pass
+                except Exception as e2:
+                    debug("_switch_to_next_base failed: {}".format(e2))
                 if attempt < max_retries - 1:
                     select.select([], [], [], 0.25)
             except Exception as e:
@@ -1742,8 +1743,8 @@ def start_proxy():
             try:
                 subprocess.call(["pkill", "-f", "python.*vavoo_proxy"])
                 select.select([], [], [], 2)
-            except Exception:
-                pass
+            except Exception as e:
+                debug("pkill of unresponsive proxy failed: {}".format(e))
 
     # Write the PID file for this instance
     write_pid_file()
@@ -1824,8 +1825,9 @@ def start_proxy():
                                 proxy.stop()
                             except Exception:
                                 pass
-                        except BaseException:
-                            pass
+                        except BaseException as e:
+                            debug("Old proxy server cleanup before "
+                                  "restart failed: {}".format(e))
                     proxy = VavooProxy()  # Recreate proxy
                     continue
 
