@@ -259,8 +259,8 @@ def url_unquote(value):
 try:
     aspect_manager = vUtils.AspectManager()
     current_aspect = aspect_manager.get_current_aspect()
-except BaseException:
-    pass
+except BaseException as e:
+    debug("AspectManager init failed: {}".format(e))
 
 try:
     from Components.UsageConfig import defaultMoviePath
@@ -297,8 +297,8 @@ def _is_vavoo_already_open(session):
             name = dlg.__class__.__name__
             if name in ("startVavoo", "MainVavoo", "vavoo"):
                 return True
-    except Exception:
-        pass
+    except Exception as e:
+        debug("_is_vavoo_already_open check failed: {}".format(e))
     return False
 
 
@@ -633,15 +633,17 @@ def show_list(name, link, is_category=False, is_channel=False):
                                 icon_path = cache_file
                             else:
                                 unlink(cache_file)
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            debug("Flag cache check failed for {}: {}".format(
+                                cache_file, e))
 
                     # If not in cache, use default icon (don't download here - use preloading)
                     # Download will happen in
                     # preload_flags_for_visible_countries()
 
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Flag icon resolution failed for {}: {}".format(
+                    country_name, e))
 
     if screen_width >= 2560:
         icon_size = (60, 40)
@@ -1534,8 +1536,8 @@ class startVavoo(Screen):
         max_wait_secs = 30
         try:
             max_wait_secs = int(cfg.proxy_startup_timeout.value)
-        except Exception:
-            pass
+        except Exception as e:
+            debug("Invalid proxy_startup_timeout config value, using default: {}".format(e))
         self._max_wait_ms = max(1000, max_wait_secs * 1000)
 
         self.onLayoutFinish.append(self.loadDefaultImage)
@@ -2111,8 +2113,9 @@ class MainVavoo(Screen):
                                 country, screen_width=screen_width)
                             if success:
                                 downloaded_rest += 1
-                        except BaseException:
-                            pass
+                        except BaseException as e:
+                            debug("Background flag download failed for {}: {}".format(
+                                country, e))
 
                     print("[Background] Finished downloading remaining flags")
                     # The single-shot refresh above only covers the first
@@ -2437,8 +2440,9 @@ class MainVavoo(Screen):
                         PROXY_SHUTDOWN_URL, headers={
                             'User-Agent': vUtils.RequestAgent()})
                     urlopen(req, timeout=2)
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Graceful proxy shutdown request failed, "
+                      "falling back to pkill: {}".format(e))
 
             # 2. Kill any remaining python processes
             os_system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
@@ -2864,8 +2868,9 @@ class MainVavoo(Screen):
                 self["proxy_status"].setText(_("Checking proxy..."))
                 try:
                     self._update_proxy_status_display()
-                except Exception:
-                    pass
+                except Exception as e:
+                    debug("_update_proxy_status_display failed, label may "
+                          "stay stuck on 'Checking proxy...': {}".format(e))
 
                 # If previously proxy disabled, cat() would have returned early.
                 # Rebuild list now that proxy is enabled.
@@ -3056,8 +3061,9 @@ class vavoo(Screen):
             self["proxy_status"].setText(_("Checking proxy..."))
             try:
                 self._update_proxy_status_display()
-            except Exception:
-                pass
+            except Exception as e:
+                debug("_update_proxy_status_display failed, label may "
+                      "stay stuck on 'Checking proxy...': {}".format(e))
         except Exception as e:
             print("[vavoo] Error checking proxy: %s" % str(e))
 
@@ -3976,20 +3982,28 @@ class TvInfoBarShowHide():
                 debug("show_help_overlay proxy_update_timer started")
 
             def _fetch_epg_async():
+                # The fetch below can take a long time on a slow/flaky
+                # network. If the user has already left this channel by
+                # the time it finishes, self is a torn-down screen -
+                # don't touch it any further.
+                if self._closed:
+                    return
                 try:
                     epg_text = self.get_current_epg()
                 except Exception as e:
                     print("[Show Help] Async EPG fetch error: " + str(e))
                     return
+                if self._closed:
+                    return
 
                 def _apply_epg_text():
                     try:
-                        if self["helpOverlay"].visible:
+                        if not self._closed and self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
                             debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        debug("Applying EPG overlay text failed: {}".format(e))
                 reactor.callFromThread(_apply_epg_text)
 
             _epg_fetch_thread = threading.Thread(target=_fetch_epg_async)
@@ -4228,6 +4242,12 @@ class Playstream2(
 
         self.stream_running = False
         self.is_streaming = False
+        # Set once cancel() starts closing this screen, so a background
+        # EPG fetch already in flight from a channel the user has since
+        # left (show_help_overlay's _fetch_epg_async) can notice and
+        # stop touching self instead of running against a torn-down
+        # screen.
+        self._closed = False
         self.currentindex = index
         self.item = item
         self.itemscount = len(cat_list)
@@ -4910,12 +4930,13 @@ class Playstream2(
             self.session.nav.stopService()
             if restore_original and self.srefInit:
                 self.session.nav.playService(self.srefInit)
-        except BaseException:
-            pass
+        except BaseException as e:
+            print("[Playstream2] Failed to stop/restore service: {}".format(e))
 
     def cancel(self):
         """Close the player"""
         print("[Playstream2] Closing player...")
+        self._closed = True
         self.stopStream()
         try:
             for screen in self.session.dialog_stack:
@@ -4941,13 +4962,14 @@ class Playstream2(
         # Restore aspect ratio
         try:
             aspect_manager.restore_aspect()
-        except BaseException:
-            pass
+        except BaseException as e:
+            debug("aspect_manager.restore_aspect() failed: {}".format(e))
 
         self.close()
 
     def leavePlayer(self):
         """Alternative close method"""
+        self._closed = True
         self.stopStream()
         self.close()
 

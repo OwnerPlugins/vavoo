@@ -289,8 +289,8 @@ def getDNSinfo():
             if line.startswith("h="):
                 dns_external = line.split("=")[1].strip()
                 break
-    except Exception:
-        pass
+    except Exception as e:
+        debug("External DNS check failed: {}".format(e))
 
     return dns_box, dns_external
 
@@ -729,8 +729,8 @@ def get_new_auth_signature():
                 if data.get("initialized", False):
                     print("Proxy active and running")
                     return "PROXY_ACTIVE"
-        except BaseException:
-            pass
+        except BaseException as e:
+            debug("Proxy status check failed, will try starting it: {}".format(e))
 
         try:
             from .vavoo_proxy import run_proxy_in_background
@@ -1062,8 +1062,8 @@ def ReloadBouquets(delay=500):
             if reactor.running:
                 reactor.callLater(delay / 1000.0, do_reload)
                 return
-        except Exception:
-            pass
+        except Exception as e:
+            debug("reactor.callLater unavailable, falling back to eTimer: {}".format(e))
         # Fallback: eTimer
         timer = eTimer()
         try:
@@ -1193,8 +1193,8 @@ def initialize_cache_with_local_flags():
     if not exists(cache_dir):
         try:
             makedirs(cache_dir)
-        except Exception:
-            pass
+        except Exception as e:
+            debug("Could not create flag cache dir {}: {}".format(cache_dir, e))
 
     copied = 0
     for filename in listdir(local_dir):
@@ -1219,8 +1219,9 @@ def initialize_cache_with_local_flags():
     try:
         with open(marker, 'wb') as f:
             f.write(b'1')
-    except Exception:
-        pass
+    except Exception as e:
+        debug("Could not write flag cache marker {}: {} (flags will "
+              "be re-copied on next start)".format(marker, e))
     return copied
 
 
@@ -1265,8 +1266,8 @@ def download_flag_online(
         if not exists(cache_dir):
             try:
                 makedirs(cache_dir)
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Could not create flag cache dir {}: {}".format(cache_dir, e))
 
         # 4. Cache file path
         cache_file = join(cache_dir, "%s.png" % country_code_lower)
@@ -1278,8 +1279,9 @@ def download_flag_online(
                 if file_age < 604800:
                     print("Cache HIT: %s" % country_name)
                     return True, cache_file
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Flag cache freshness check failed for {}: {}".format(
+                    cache_file, e))
 
         # 6. Set fixed flag dimensions
         if screen_width >= 2560:      # WQHD
@@ -1378,8 +1380,8 @@ def download_flag_with_size(
         if not exists(cache_dir):
             try:
                 makedirs(cache_dir)
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Could not create flag cache dir {}: {}".format(cache_dir, e))
 
         cache_file = join(cache_dir, "%s.png" % country_code.lower())
 
@@ -1798,8 +1800,8 @@ class VavooEPGMatcher:
                         content = f.read().strip()
                         if content:
                             self._unmatched_keys = set(loads(content).keys())
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Could not load unmatched cache keys: {}".format(e))
         key = "%s_%s" % (channel_name.strip(), country_code or '')
         if key in self._unmatched_keys:
             save_unmatched(
