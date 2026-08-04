@@ -402,7 +402,9 @@ def _start_update_check():
             version, len(changelog) if changelog else 0, len(content) if content else 0))
         _update_check_done = True
 
-    threading.Thread(target=_worker, daemon=True).start()
+    _update_thread = threading.Thread(target=_worker)
+    _update_thread.setDaemon(True)
+    _update_thread.start()
 
 
 # screen
@@ -3988,7 +3990,9 @@ class TvInfoBarShowHide():
                         pass
                 reactor.callFromThread(_apply_epg_text)
 
-            threading.Thread(target=_fetch_epg_async, daemon=True).start()
+            _epg_fetch_thread = threading.Thread(target=_fetch_epg_async)
+            _epg_fetch_thread.setDaemon(True)
+            _epg_fetch_thread.start()
 
         except Exception as e:
             print("[Show Help] Error: " + str(e))
