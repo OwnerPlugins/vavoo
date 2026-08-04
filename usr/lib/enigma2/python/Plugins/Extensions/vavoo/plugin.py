@@ -3974,15 +3974,23 @@ class TvInfoBarShowHide():
                 debug("show_help_overlay proxy_update_timer started")
 
             def _fetch_epg_async():
+                # The fetch below can take a long time on a slow/flaky
+                # network. If the user has already left this channel by
+                # the time it finishes, self is a torn-down screen -
+                # don't touch it any further.
+                if self._closed:
+                    return
                 try:
                     epg_text = self.get_current_epg()
                 except Exception as e:
                     print("[Show Help] Async EPG fetch error: " + str(e))
                     return
+                if self._closed:
+                    return
 
                 def _apply_epg_text():
                     try:
-                        if self["helpOverlay"].visible:
+                        if not self._closed and self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
                             debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
@@ -4226,6 +4234,12 @@ class Playstream2(
 
         self.stream_running = False
         self.is_streaming = False
+        # Set once cancel() starts closing this screen, so a background
+        # EPG fetch already in flight from a channel the user has since
+        # left (show_help_overlay's _fetch_epg_async) can notice and
+        # stop touching self instead of running against a torn-down
+        # screen.
+        self._closed = False
         self.currentindex = index
         self.item = item
         self.itemscount = len(cat_list)
@@ -4914,6 +4928,7 @@ class Playstream2(
     def cancel(self):
         """Close the player"""
         print("[Playstream2] Closing player...")
+        self._closed = True
         self.stopStream()
         try:
             for screen in self.session.dialog_stack:
@@ -4946,6 +4961,7 @@ class Playstream2(
 
     def leavePlayer(self):
         """Alternative close method"""
+        self._closed = True
         self.stopStream()
         self.close()
 
