@@ -4300,38 +4300,62 @@ class Playstream2(
         self.onClose.append(self.cancel)
 
     def showIMDB(self):
-        try:
-            epg_text = self.get_current_epg() if cfg.epg_enabled.value else ""
-            if epg_text and epg_text not in [
-                    "EPG not available", "No programme found", ""]:
-                if " - " in epg_text:
-                    title = epg_text.split(" - ")[0].strip()
-                    if " " in title and title[2] == ":":
-                        parts = title.split(" ", 1)
-                        if len(parts) > 1:
-                            title = parts[1].strip()
-                else:
-                    title = epg_text
+        # get_current_epg() can block for well over a minute when the
+        # EPG feed fetch stalls (e.g. flaky DNS) - the getUrl() timeout
+        # passed to it only bounds the socket connect/read, not name
+        # resolution. Run it off the main/reactor thread so a stall
+        # here doesn't freeze the whole GUI, and marshal the actual
+        # IMDb-opening (touches self.session) back onto the reactor.
+        if not cfg.epg_enabled.value:
+            print("[IMDB] No EPG available for current channel")
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("No programme info available"), 3)
+            return
 
-                print("[IMDB] Searching for: %s" % title)
+        def _openForEpgText(epg_text):
+            try:
+                if epg_text and epg_text not in [
+                        "EPG not available", "No programme found", ""]:
+                    if " - " in epg_text:
+                        title = epg_text.split(" - ")[0].strip()
+                        if " " in title and title[2] == ":":
+                            parts = title.split(" ", 1)
+                            if len(parts) > 1:
+                                title = parts[1].strip()
+                    else:
+                        title = epg_text
 
-                if returnIMDB(title, self.session):
-                    print(
-                        '[Playstream2] TMDB/IMDb opened for programme: %s' %
-                        title)
+                    print("[IMDB] Searching for: %s" % title)
+
+                    if returnIMDB(title, self.session):
+                        print(
+                            '[Playstream2] TMDB/IMDb opened for programme: %s' %
+                            title)
+                    else:
+                        print('[Playstream2] No TMDB/IMDb plugin found')
+                        if NOTIFICATION_AVAILABLE:
+                            print('notify started')
+                            quick_notify(_("No IMDb/TMDB plugin found"), 4)
                 else:
-                    print('[Playstream2] No TMDB/IMDb plugin found')
+                    print("[IMDB] No EPG available for current channel")
                     if NOTIFICATION_AVAILABLE:
                         print('notify started')
-                        quick_notify(_("No IMDb/TMDB plugin found"), 4)
-            else:
-                print("[IMDB] No EPG available for current channel")
-                if NOTIFICATION_AVAILABLE:
-                    print('notify started')
-                    quick_notify(_("No programme info available"), 3)
+                        quick_notify(_("No programme info available"), 3)
 
-        except Exception as e:
-            print('[Playstream2] Error opening IMDb/TMDB: %s' % e)
+            except Exception as e:
+                print('[Playstream2] Error opening IMDb/TMDB: %s' % e)
+
+        def _fetchEpgThenOpen():
+            try:
+                epg_text = self.get_current_epg()
+            except Exception as e:
+                print('[Playstream2] Error fetching EPG for IMDb: %s' % e)
+                epg_text = ""
+            reactor.callFromThread(_openForEpgText, epg_text)
+
+        epg_thread = threading.Thread(target=_fetchEpgThenOpen)
+        epg_thread.setDaemon(True)
+        epg_thread.start()
 
     def nextitem(self):
         """Switch to next channel"""
@@ -4748,8 +4772,7 @@ class Playstream2(
 
         except Exception as e:
             print("[EPG] Exception in get_current_epg: {}".format(e))
-            import traceback
-            traceback.print_exc()
+            trace_error()
             return "EPG error"
 
     def playProxyStream(self, force_refresh=False):
