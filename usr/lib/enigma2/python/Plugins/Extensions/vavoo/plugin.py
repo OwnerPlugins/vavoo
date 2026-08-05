@@ -111,7 +111,8 @@ from .bouquet_manager import (
     _update_favorite_file,
     reorganize_all_bouquets_position,
     remove_bouquets_by_name,
-    export_bouquet_async
+    export_bouquet_async,
+    is_bouquet_exported
 )
 from .vUtils import (
     debug,
@@ -3014,6 +3015,7 @@ class vavoo(Screen):
         self.name = name
         self.url = url
         self.option_value = option_value
+        self._update_export_button_label()
 
         self.current_view = "countries"  # default
         try:
@@ -3358,19 +3360,62 @@ class vavoo(Screen):
                 timeout=3
             )
 
+    def _update_export_button_label(self):
+        """Green button reads 'Remove Fav' if this bouquet is already
+        exported, 'Export Fav' otherwise."""
+        try:
+            if is_bouquet_exported(self.name):
+                self['green'].setText(_('Remove') + ' Fav')
+            else:
+                self['green'].setText(_('Export') + ' Fav')
+        except Exception as e:
+            debug("_update_export_button_label failed: {}".format(e))
+
     def message1(self, answer=None):
-        if answer is None:
+        """Green button: export this bouquet, or offer to remove it if
+        it's already exported."""
+        if is_bouquet_exported(self.name):
+            self.session.openWithCallback(
+                self._confirm_remove_fav,
+                MessageBox,
+                _("Remove the exported bouquet for this country/category?") +
+                "\n" + self.name,
+                MessageBox.TYPE_YESNO
+            )
+        else:
             # Show confirmation message before export
             self.session.openWithCallback(
-                self.message1,
+                self._confirm_export_fav,
                 MessageBox,
                 _("Do you want to export this bouquet?") + "\n" + self.name,
                 MessageBox.TYPE_YESNO
             )
-        elif answer is True:
+
+    def _confirm_export_fav(self, answer):
+        if answer is True:
             self.message2(self.name, self.url, True)
-        elif answer is False:
+        else:
             print("Export cancelled by user")
+
+    def _confirm_remove_fav(self, answer):
+        if not answer:
+            print("Remove favorite cancelled by user")
+            return
+        try:
+            removed = remove_bouquets_by_name(self.name)
+            if removed > 0:
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(
+                        _("Removed exported bouquet: {}").format(self.name), 3)
+                self._reload_services()
+            else:
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Nothing to remove for: {}").format(self.name), 3)
+        except Exception as e:
+            print("[vavoo] Error removing favorite: {}".format(e))
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Remove failed: {}").format(str(e)), 4)
+        self._update_export_button_label()
 
     def message2(self, name, url, response):
         if not export_lock.acquire(blocking=False):
@@ -3422,6 +3467,7 @@ class vavoo(Screen):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
+                self._update_export_button_label()
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed

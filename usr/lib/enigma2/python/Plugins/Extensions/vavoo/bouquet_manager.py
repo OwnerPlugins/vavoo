@@ -244,6 +244,31 @@ def remove_bouquets_by_name(name=None):
         return 0
 
 
+def is_bouquet_exported(name):
+    """Whether a Vavoo bouquet already exists on disk for this name.
+
+    Uses the same name_safe derivation as remove_bouquets_by_name() so
+    "is it exported" and "remove it" always agree on the same files.
+    """
+    if not name:
+        return False
+    try:
+        name_safe = name.lower().replace(
+            ' ', '_').replace(
+            '➾', '_').replace(
+            '⟾', '_').replace(
+            '->', '_')
+        for fname in listdir(ENIGMA_PATH):
+            if '.vavoo_' in fname and (
+                    fname.endswith('.tv') or fname.endswith('.radio')):
+                if name_safe in fname:
+                    return True
+        return False
+    except Exception as e:
+        print("Error checking bouquet export state: " + str(e))
+        return False
+
+
 def convert_bouquet(
         servicetype,
         name,
