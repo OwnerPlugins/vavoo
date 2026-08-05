@@ -411,6 +411,9 @@ msgstr "ไม่มีการเลือก"
 msgid "No valid channels for: %s"
 msgstr "ไม่มีช่องที่ถูกต้องสำหรับ: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "ไม่มีสิ่งใดที่จะลบสำหรับ: {}"
+
 msgid "Now %s"
 msgstr "ตอนนี้ %s"
 
@@ -480,6 +483,16 @@ msgstr "ลบ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ลบช่อดอกไม้ Vavoo ทั้งหมดหรือไม่"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "การส่งออกล้มเหลว: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ลบช่อดอกไม้ที่ส่งออกสำหรับประเทศ/หมวดหมู่นี้ใช่ไหม"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ลบช่อดอกไม้ที่ส่งออกแล้ว: {}"
 
 msgid "Restarting..."
 msgstr "กำลังรีสตาร์ท..."

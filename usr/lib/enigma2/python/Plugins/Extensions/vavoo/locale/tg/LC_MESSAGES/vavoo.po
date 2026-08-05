@@ -411,6 +411,9 @@ msgstr "Интихоб нест"
 msgid "No valid channels for: %s"
 msgstr "Барои %s каналҳои дуруст надоранд"
 
+msgid "Nothing to remove for: {}"
+msgstr "Ҳеҷ чиз барои хориҷ кардан нест: {}"
+
 msgid "Now %s"
 msgstr "Ҳоло %s"
 
@@ -480,6 +483,16 @@ msgstr "Хориҷ кунед"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ҲАМАИ гулдастаҳои Vavoo хориҷ карда шавад?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Содирот ноком шуд: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Гулдастаи содиршударо барои ин кишвар/категория хориҷ кунед?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Гулдастаи содиршуда хориҷ карда шуд: {}"
 
 msgid "Restarting..."
 msgstr "Бозоғозӣ..."

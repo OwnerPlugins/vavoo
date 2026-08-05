@@ -411,6 +411,9 @@ msgstr "Nema izbora"
 msgid "No valid channels for: %s"
 msgstr "Nema važećih kanala za: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Ništa za uklanjanje za: {}"
+
 msgid "Now %s"
 msgstr "Sada %s"
 
@@ -480,6 +483,16 @@ msgstr "Ukloni"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Ukloniti SVE Vavoo bukete?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Izvoz nije uspio: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Ukloniti izvezeni buket za ovu zemlju/kategoriju?"
+
+msgid "Removed exported bouquet: {}"
+msgstr ""
 
 msgid "Restarting..."
 msgstr "Ponovno pokretanje..."

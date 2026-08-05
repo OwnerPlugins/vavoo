@@ -411,6 +411,9 @@ msgstr "არჩევანი არ არის"
 msgid "No valid channels for: %s"
 msgstr "არ არის სწორი არხები: %s-ისთვის"
 
+msgid "Nothing to remove for: {}"
+msgstr "წასაშლელი არაფერია: {}"
+
 msgid "Now %s"
 msgstr "ახლა %s"
 
@@ -480,6 +483,16 @@ msgstr "ამოღება"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ამოიღოთ Vavoo-ს ყველა თაიგული?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ექსპორტი ვერ მოხერხდა: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ამოიღოთ ექსპორტირებული თაიგული ამ ქვეყნის/კატეგორიისთვის?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ამოღებულია ექსპორტირებული ბუკეტი: {}"
 
 msgid "Restarting..."
 msgstr "გადატვირთვა..."

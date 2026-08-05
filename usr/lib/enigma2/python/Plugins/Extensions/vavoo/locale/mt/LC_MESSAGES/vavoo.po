@@ -411,6 +411,9 @@ msgstr "L-ebda għażla"
 msgid "No valid channels for: %s"
 msgstr "Ebda kanali validi għal: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Xejn x'tneħħi għal: {}"
+
 msgid "Now %s"
 msgstr "Issa %s"
 
@@ -480,6 +483,16 @@ msgstr "Neħħi"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Neħħi l-bukketti KOLLHA Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "L-esportazzjoni falliet: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Neħħi l-bukkett esportat għal dan il-pajjiż/kategorija?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Tneħħa bukkett esportat: {}"
 
 msgid "Restarting..."
 msgstr "Nibda mill-ġdid..."

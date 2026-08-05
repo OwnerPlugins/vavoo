@@ -411,6 +411,9 @@ msgstr "Gun taghadh"
 msgid "No valid channels for: %s"
 msgstr "Chan eil seanalan dligheach ann airson: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Chan eil dad ri thoirt air falbh airson: {}"
+
 msgid "Now %s"
 msgstr "A-nis %s"
 
@@ -480,6 +483,16 @@ msgstr "Thoir air falbh"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Thoir air falbh A H-UILE bouquets Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Dh'fhàillig às-phortadh: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Thoir air falbh am bouquet às-mhalairt airson na dùthcha/roinne seo?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Chaidh bouquet às-mhalairt a thoirt air falbh: {}"
 
 msgid "Restarting..."
 msgstr "Ag ath-thòiseachadh..."

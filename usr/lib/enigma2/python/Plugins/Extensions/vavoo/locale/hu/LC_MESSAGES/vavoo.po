@@ -426,6 +426,9 @@ msgstr "Nincs kiválasztás"
 msgid "No valid channels for: %s"
 msgstr "Nincsenek érvényes csatornák ehhez: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nincs mit eltávolítani a következőhöz: {}"
+
 msgid "Now %s"
 msgstr "Most %s"
 
@@ -469,7 +472,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -500,6 +503,16 @@ msgstr "Eltávolítás"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Eltávolítom az ÖSSZES Vavoo csokrot?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Az exportálás sikertelen: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Eltávolítja az exportált csokrot ehhez az országhoz/kategóriához?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Exportált csokor eltávolítva: {}"
 
 #, fuzzy
 msgid "Restarting..."
@@ -636,7 +649,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 

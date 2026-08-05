@@ -426,6 +426,9 @@ msgstr "Žiadny výber"
 msgid "No valid channels for: %s"
 msgstr "Žiadne platné kanály pre: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nič na odstránenie pre: {}"
+
 msgid "Now %s"
 msgstr "Teraz %s"
 
@@ -469,7 +472,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Ready"
@@ -499,6 +502,16 @@ msgstr "Odstrániť"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Odstrániť VŠETKY kytice Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Export zlyhal: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Chcete odstrániť exportovanú kyticu pre túto krajinu/kategóriu?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Odstránená exportovaná kytica: {}"
 
 #, fuzzy
 msgid "Restarting..."
@@ -635,7 +648,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."

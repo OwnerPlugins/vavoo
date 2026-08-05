@@ -411,6 +411,9 @@ msgstr "Pas de seleccion"
 msgid "No valid channels for: %s"
 msgstr "Cap de canal valid per : %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Pas res a suprimir per : {}"
+
 msgid "Now %s"
 msgstr "Ara %s"
 
@@ -480,6 +483,16 @@ msgstr "Levar"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Quitar TODOS los ramos de Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "L'exportacion a fracassat : {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Suprimir lo ramelet exportat per aqueste país/categoria ?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Boquet exportat suprimit : {}"
 
 msgid "Restarting..."
 msgstr "Reaviada..."

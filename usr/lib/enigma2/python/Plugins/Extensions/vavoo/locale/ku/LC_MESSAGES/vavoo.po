@@ -411,6 +411,9 @@ msgstr "Hilbijartin tune"
 msgid "No valid channels for: %s"
 msgstr "Ji bo: %s kanalên derbasdar tune"
 
+msgid "Nothing to remove for: {}"
+msgstr "Tiştek nayê rakirin ji bo: {}"
+
 msgid "Now %s"
 msgstr "Niha %s"
 
@@ -480,6 +483,16 @@ msgstr "Dûrxistin"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "HEMÛ bûkên Vavoo rakin?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Hinardekirin têk çû: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Ji bo vî welatî/kategorî bûkek îxrackirî rakin?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Bûkê hat derxistin: {}"
 
 msgid "Restarting..."
 msgstr "Ji nû ve dest pê dike..."

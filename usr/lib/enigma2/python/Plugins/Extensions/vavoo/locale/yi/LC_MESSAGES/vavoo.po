@@ -411,6 +411,9 @@ msgstr "קיין סעלעקציע"
 msgid "No valid channels for: %s"
 msgstr "קיין גילטיק טשאַנאַלז פֿאַר: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "גאָרנישט צו באַזייַטיקן פֿאַר: {}"
+
 msgid "Now %s"
 msgstr "איצט %s"
 
@@ -480,6 +483,16 @@ msgstr "אַראָפּנעמען"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "אַראָפּנעמען אַלע וואַוואָו באָוקייז?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "עקספּאָרט ניט אַנדערש: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "אַראָפּנעמען די יקספּאָרטאַד בוקיי פֿאַר דעם לאַנד / קאַטעגאָריע?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "אראפגענומען עקספּאָרטירט בוקיי: {}"
 
 msgid "Restarting..."
 msgstr "ריסטאַרטינג ..."

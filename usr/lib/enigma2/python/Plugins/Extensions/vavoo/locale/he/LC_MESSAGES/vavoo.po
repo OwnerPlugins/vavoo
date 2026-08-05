@@ -412,6 +412,9 @@ msgstr "אין בחירה"
 msgid "No valid channels for: %s"
 msgstr "אין ערוצים חוקיים עבור: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "אין מה להסיר עבור: {}"
+
 msgid "Now %s"
 msgstr "עכשיו %s"
 
@@ -481,6 +484,16 @@ msgstr "לְהַסִיר"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "להסיר את כל זרי Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "הייצוא נכשל: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "להסיר את זר הפרחים המיוצא למדינה/קטגוריה זו?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "הוסר זר מיוצא: {}"
 
 msgid "Restarting..."
 msgstr "מופעל מחדש..."

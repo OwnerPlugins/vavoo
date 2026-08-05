@@ -411,6 +411,9 @@ msgstr "Ez dago aukeraketarik"
 msgid "No valid channels for: %s"
 msgstr "Ez dago baliozko kanalik: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Ez dago ezer kendu beharrik: {}"
+
 msgid "Now %s"
 msgstr "Orain %s"
 
@@ -480,6 +483,16 @@ msgstr "Kendu"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vavoo sorta GUZTIAK kendu?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Ezin izan da esportatu: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Herrialde/kategoria honetarako esportatutako sorta kendu nahi duzu?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Kendu da esportatutako sorta: {}"
 
 msgid "Restarting..."
 msgstr "Berrabiarazten..."

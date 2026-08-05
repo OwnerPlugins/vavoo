@@ -411,6 +411,9 @@ msgstr "Gjin seleksje"
 msgid "No valid channels for: %s"
 msgstr "Gjin jildige kanalen foar: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Neat te ferwiderjen foar: {}"
+
 msgid "Now %s"
 msgstr "No %s"
 
@@ -480,6 +483,16 @@ msgstr "Fuortsmite"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ALLE Vavoo-boeketten fuortsmite?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksportearje mislearre: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "It eksportearre boeket foar dit lân/kategory fuortsmite?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Eksportearre boeket fuortsmiten: {}"
 
 msgid "Restarting..."
 msgstr "Op 'e nij begjinne..."

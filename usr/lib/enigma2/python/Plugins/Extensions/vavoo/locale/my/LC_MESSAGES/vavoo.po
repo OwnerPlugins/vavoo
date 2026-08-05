@@ -411,6 +411,9 @@ msgstr "ရွေးချယ်မှု မရှိပါ။"
 msgid "No valid channels for: %s"
 msgstr "- %s အတွက် တရားဝင်ချန်နယ်များမရှိပါ။"
 
+msgid "Nothing to remove for: {}"
+msgstr "ဖယ်ရှားစရာ ဘာမှ မရှိပါ- {}"
+
 msgid "Now %s"
 msgstr "ယခု %s"
 
@@ -480,6 +483,16 @@ msgstr "ဖယ်ရှားပါ။"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vavoo ပန်းစည်းအားလုံးကို ဖယ်ရှားမလား။"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ထုတ်ယူမှု မအောင်မြင်ပါ- {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ဤနိုင်ငံ/အမျိုးအစားအတွက် တင်ပို့ထားသော ပန်းစည်းကို ဖယ်ရှားမလား။"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ဖယ်ထုတ်ထားသော ပန်းစည်း- {}"
 
 msgid "Restarting..."
 msgstr "ပြန်လည်စတင်နေသည်..."

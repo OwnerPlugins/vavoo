@@ -411,6 +411,9 @@ msgstr "هیڅ انتخاب نشته"
 msgid "No valid channels for: %s"
 msgstr "د دې لپاره هیڅ معتبر چینل نشته: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "د لرې کولو لپاره هیڅ شی نشته: {}"
+
 msgid "Now %s"
 msgstr "اوس %s"
 
@@ -480,6 +483,16 @@ msgstr "لرې کړئ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "د واوو ټول ګلدانونه لرې کړئ؟"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "صادرات ناکام شول: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "د دې هیواد/کټګورۍ لپاره صادر شوي ګلدان لرې کړئ؟"
+
+msgid "Removed exported bouquet: {}"
+msgstr "لرې شوی صادر شوی ګلدان: {}"
 
 msgid "Restarting..."
 msgstr "بیا پیل کول..."

@@ -412,6 +412,9 @@ msgstr "선택사항 없음"
 msgid "No valid channels for: %s"
 msgstr "다음에 대한 유효한 채널이 없습니다: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "제거할 항목 없음: {}"
+
 msgid "Now %s"
 msgstr "지금 %s"
 
@@ -481,6 +484,16 @@ msgstr "제거하다"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "모든 Vavoo 부케를 제거하시겠습니까?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "내보내기 실패: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "이 국가/카테고리에 대해 내보낸 꽃다발을 삭제하시겠습니까?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "내보낸 꽃다발 제거됨: {}"
 
 msgid "Restarting..."
 msgstr "다시 시작하는 중..."

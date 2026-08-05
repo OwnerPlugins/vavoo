@@ -411,6 +411,9 @@ msgstr "Ընտրություն չկա"
 msgid "No valid channels for: %s"
 msgstr "%s-ի համար վավեր ալիքներ չկան"
 
+msgid "Nothing to remove for: {}"
+msgstr "Հեռացնելու ոչինչ չկա՝ {}"
+
 msgid "Now %s"
 msgstr "Այժմ %s"
 
@@ -480,6 +483,16 @@ msgstr "Հեռացնել"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Հեռացնե՞լ Vavoo-ի ԲՈԼՈՐ ծաղկեփնջերը:"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Չհաջողվեց արտահանել՝ {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Հեռացնե՞լ արտահանված փունջն այս երկրի/կատեգորիայի համար:"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Արտահանված ծաղկեփունջը հեռացվեց՝ {}"
 
 msgid "Restarting..."
 msgstr "Վերագործարկում..."

@@ -412,6 +412,9 @@ msgstr "Intet valg"
 msgid "No valid channels for: %s"
 msgstr "Ingen gyldige kanaler for: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Intet at fjerne for: {}"
+
 msgid "Now %s"
 msgstr "Nu %s"
 
@@ -481,6 +484,16 @@ msgstr "Fjerne"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Fjerne ALLE Vavoo buketter?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksport mislykkedes: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Vil du fjerne den eksporterede buket for dette land/kategori?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Fjernet eksporteret buket: {}"
 
 msgid "Restarting..."
 msgstr "Genstarter..."

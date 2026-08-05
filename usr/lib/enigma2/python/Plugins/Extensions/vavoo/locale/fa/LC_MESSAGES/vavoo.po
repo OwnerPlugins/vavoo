@@ -411,6 +411,9 @@ msgstr "بدون انتخاب"
 msgid "No valid channels for: %s"
 msgstr "هیچ کانال معتبری برای: %s وجود ندارد"
 
+msgid "Nothing to remove for: {}"
+msgstr "چیزی برای حذف وجود ندارد: {}"
+
 msgid "Now %s"
 msgstr "اکنون %s"
 
@@ -480,6 +483,16 @@ msgstr "حذف کنید"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "همه دسته‌های Vavoo حذف شوند؟"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "صادر نشد: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "دسته گل صادر شده برای این کشور/رده حذف شود؟"
+
+msgid "Removed exported bouquet: {}"
+msgstr "دسته گل صادر شده حذف شد: {}"
 
 msgid "Restarting..."
 msgstr "شروع مجدد..."

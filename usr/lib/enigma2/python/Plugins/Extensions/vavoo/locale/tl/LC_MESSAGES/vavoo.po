@@ -411,6 +411,9 @@ msgstr "Walang pinipili"
 msgid "No valid channels for: %s"
 msgstr "Walang wastong channel para sa: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Walang aalisin para sa: {}"
+
 msgid "Now %s"
 msgstr "Ngayon %s"
 
@@ -480,6 +483,16 @@ msgstr "Alisin"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Alisin ang LAHAT ng mga bouquet ng Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Nabigo ang pag-export: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Alisin ang na-export na bouquet para sa bansa/kategorya na ito?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Inalis ang na-export na bouquet: {}"
 
 msgid "Restarting..."
 msgstr "Nagsisimula muli..."

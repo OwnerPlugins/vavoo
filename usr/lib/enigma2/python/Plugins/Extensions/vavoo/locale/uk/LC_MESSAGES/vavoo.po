@@ -412,6 +412,9 @@ msgstr "Без вибору"
 msgid "No valid channels for: %s"
 msgstr "Немає дійсних каналів для: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Немає нічого для видалення для: {}"
+
 msgid "Now %s"
 msgstr "Зараз %s"
 
@@ -481,6 +484,16 @@ msgstr "видалити"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Видалити ВСІ букети Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Помилка експорту: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Видалити експортований букет для цієї країни/категорії?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Видалено експортований букет: {}"
 
 msgid "Restarting..."
 msgstr "Перезапуск..."

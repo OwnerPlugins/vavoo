@@ -411,6 +411,9 @@ msgstr "निवड नाही"
 msgid "No valid channels for: %s"
 msgstr "यासाठी कोणतेही वैध चॅनेल नाहीत: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "यासाठी काढण्यासाठी काहीही नाही: {}"
+
 msgid "Now %s"
 msgstr "आता %s"
 
@@ -480,6 +483,16 @@ msgstr "काढा"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "सर्व वावु पुष्पगुच्छ काढायचे?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "निर्यात अयशस्वी: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "या देश/वर्गासाठी निर्यात केलेला पुष्पगुच्छ काढायचा?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "निर्यात केलेला पुष्पगुच्छ काढला: {}"
 
 msgid "Restarting..."
 msgstr "रीस्टार्ट करत आहे..."

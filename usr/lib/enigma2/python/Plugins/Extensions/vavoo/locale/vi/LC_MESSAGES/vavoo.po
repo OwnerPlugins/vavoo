@@ -412,6 +412,9 @@ msgstr "Không có lựa chọn"
 msgid "No valid channels for: %s"
 msgstr "Không có kênh hợp lệ cho: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Không có gì cần xóa đối với: {}"
+
 msgid "Now %s"
 msgstr "Bây giờ %s"
 
@@ -481,6 +484,16 @@ msgstr "Di dời"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Xóa TẤT CẢ bó hoa Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Xuất không thành công: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Xóa bó hoa đã xuất cho quốc gia/danh mục này?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Đã xóa bó hoa đã xuất: {}"
 
 msgid "Restarting..."
 msgstr "Đang khởi động lại..."

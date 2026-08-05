@@ -411,6 +411,9 @@ msgstr "ਕੋਈ ਚੋਣ ਨਹੀਂ"
 msgid "No valid channels for: %s"
 msgstr "ਇਸ ਲਈ ਕੋਈ ਵੈਧ ਚੈਨਲ ਨਹੀਂ: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "ਇਸ ਲਈ ਹਟਾਉਣ ਲਈ ਕੁਝ ਨਹੀਂ: {}"
+
 msgid "Now %s"
 msgstr "ਹੁਣ %s"
 
@@ -480,6 +483,16 @@ msgstr "ਹਟਾਓ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ਕੀ ਸਾਰੇ ਵਾਵੂ ਗੁਲਦਸਤੇ ਹਟਾਉਣੇ ਹਨ?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ਨਿਰਯਾਤ ਅਸਫਲ: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ਕੀ ਇਸ ਦੇਸ਼/ਸ਼੍ਰੇਣੀ ਲਈ ਨਿਰਯਾਤ ਕੀਤੇ ਗੁਲਦਸਤੇ ਨੂੰ ਹਟਾਉਣਾ ਹੈ?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ਨਿਰਯਾਤ ਕੀਤਾ ਗੁਲਦਸਤਾ ਹਟਾਇਆ ਗਿਆ: {}"
 
 msgid "Restarting..."
 msgstr "ਰੀਸਟਾਰਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."

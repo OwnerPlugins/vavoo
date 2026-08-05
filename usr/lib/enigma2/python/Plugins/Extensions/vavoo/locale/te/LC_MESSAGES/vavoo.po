@@ -411,6 +411,9 @@ msgstr "ఎంపిక లేదు"
 msgid "No valid channels for: %s"
 msgstr "దీని కోసం చెల్లుబాటు అయ్యే ఛానెల్‌లు లేవు: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "దీని కోసం తీసివేయడానికి ఏమీ లేదు: {}"
+
 msgid "Now %s"
 msgstr "ఇప్పుడు %s"
 
@@ -480,6 +483,16 @@ msgstr "తొలగించు"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "అన్ని Vavoo బొకేలను తీసివేయాలా?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ఎగుమతి విఫలమైంది: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ఈ దేశం/కేటగిరీ కోసం ఎగుమతి చేసిన బొకేని తీసివేయాలా?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ఎగుమతి చేసిన గుత్తి తీసివేయబడింది: {}"
 
 msgid "Restarting..."
 msgstr "పునఃప్రారంభిస్తోంది..."

@@ -412,6 +412,9 @@ msgstr "Valikut pole"
 msgid "No valid channels for: %s"
 msgstr "Puuduvad kehtivad kanalid: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Midagi pole eemaldatav: {}"
+
 msgid "Now %s"
 msgstr "Nüüd %s"
 
@@ -481,6 +484,16 @@ msgstr "Eemalda"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Kas eemaldada KÕIK Vavoo kimbud?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksport ebaõnnestus: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Kas eemaldada selle riigi/kategooria eksporditud kimp?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Eemaldatud eksporditud kimp: {}"
 
 msgid "Restarting..."
 msgstr "Taaskäivitamine..."
