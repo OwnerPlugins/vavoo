@@ -111,7 +111,9 @@ from .bouquet_manager import (
     _update_favorite_file,
     reorganize_all_bouquets_position,
     remove_bouquets_by_name,
-    export_bouquet_async
+    export_bouquet_async,
+    is_bouquet_exported,
+    remove_favorite_entry
 )
 from .vUtils import (
     debug,
@@ -316,6 +318,10 @@ CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
 regexs = '<a[^>]*href="([^"]+)"[^>]*><img[^>]*src="([^"]+)"[^>]*>'
 
 _session = None
+# Guards autostart() itself against re-scheduling delayed_boot_tasks() on
+# repeat calls - kept separate from _session, which delayed_boot_tasks()
+# uses to detect whether the user has actually opened a plugin screen.
+_autostart_scheduled = False
 auto_start_timer = None
 now = None
 proxy_instance = None
@@ -3014,6 +3020,7 @@ class vavoo(Screen):
         self.name = name
         self.url = url
         self.option_value = option_value
+        self._update_export_button_label()
 
         self.current_view = "countries"  # default
         try:
@@ -3358,19 +3365,63 @@ class vavoo(Screen):
                 timeout=3
             )
 
+    def _update_export_button_label(self):
+        """Green button reads 'Remove Fav' if this bouquet is already
+        exported, 'Export Fav' otherwise."""
+        try:
+            if is_bouquet_exported(self.name):
+                self['green'].setText(_('Remove') + ' Fav')
+            else:
+                self['green'].setText(_('Export') + ' Fav')
+        except Exception as e:
+            debug("_update_export_button_label failed: {}".format(e))
+
     def message1(self, answer=None):
-        if answer is None:
+        """Green button: export this bouquet, or offer to remove it if
+        it's already exported."""
+        if is_bouquet_exported(self.name):
+            self.session.openWithCallback(
+                self._confirm_remove_fav,
+                MessageBox,
+                _("Remove the exported bouquet for this country/category?") +
+                "\n" + self.name,
+                MessageBox.TYPE_YESNO
+            )
+        else:
             # Show confirmation message before export
             self.session.openWithCallback(
-                self.message1,
+                self._confirm_export_fav,
                 MessageBox,
                 _("Do you want to export this bouquet?") + "\n" + self.name,
                 MessageBox.TYPE_YESNO
             )
-        elif answer is True:
+
+    def _confirm_export_fav(self, answer):
+        if answer is True:
             self.message2(self.name, self.url, True)
-        elif answer is False:
+        else:
             print("Export cancelled by user")
+
+    def _confirm_remove_fav(self, answer):
+        if not answer:
+            print("Remove favorite cancelled by user")
+            return
+        try:
+            removed = remove_bouquets_by_name(self.name)
+            if removed > 0:
+                remove_favorite_entry(self.name)
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(
+                        _("Removed exported bouquet: {}").format(self.name), 3)
+                self._reload_services()
+            else:
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Nothing to remove for: {}").format(self.name), 3)
+        except Exception as e:
+            print("[vavoo] Error removing favorite: {}".format(e))
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Remove failed: {}").format(str(e)), 4)
+        self._update_export_button_label()
 
     def message2(self, name, url, response):
         if not export_lock.acquire(blocking=False):
@@ -3379,15 +3430,13 @@ class vavoo(Screen):
                     _("An export for another country is already in progress. Please wait."), 4)
             return
 
+        self._export_type = "hierarchical" if any(
+            sep in name for sep in ["➾", "⟾", "->", "→"]) else "flat"
+
         try:
             export_bouquet_async(
                 name,
-                "hierarchical" if any(
-                    sep in name for sep in [
-                        "➾",
-                        "⟾",
-                        "->",
-                        "→"]) else "flat",
+                self._export_type,
                 self,
                 self._on_export_complete,
                 cfg.services.value,
@@ -3422,6 +3471,17 @@ class vavoo(Screen):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
+                self._update_export_button_label()
+                # Register with Favorite.txt so "Scheduled List" auto-update
+                # (AutoStartTimer) picks this bouquet up going forward -
+                # that feature only ever re-updates bouquets already listed
+                # there, it never adds new ones on its own.
+                try:
+                    _update_favorite_file(
+                        self.name, self.url,
+                        getattr(self, '_export_type', 'flat'))
+                except Exception as e:
+                    print("[vavoo] Error updating Favorite.txt: {}".format(e))
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed
@@ -5189,10 +5249,19 @@ def delayed_boot_tasks():
 
 
 def autostart(reason, session=None, **kwargs):
-    global _session, delayed_start_timer
+    global _autostart_scheduled, delayed_start_timer
 
-    if reason == 0 and _session is None and session is not None:
-        _session = session
+    # NOTE: this must NOT set the module-level _session - that's how
+    # delayed_boot_tasks() (below) tells whether the user has actually
+    # opened a plugin screen since boot. It used to be set here too,
+    # which meant delayed_boot_tasks() always saw it as non-None (this
+    # function had just set it moments earlier) and always skipped
+    # starting the proxy at boot, regardless of whether the plugin was
+    # ever opened - the proxy would only exist in a half-initialized
+    # state (token monitor thread running, since that starts at module
+    # import) with no actual HTTP server listening.
+    if reason == 0 and not _autostart_scheduled and session is not None:
+        _autostart_scheduled = True
 
         delayed_start_timer = eTimer()
         try:

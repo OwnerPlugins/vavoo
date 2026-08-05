@@ -1,29 +1,30 @@
 #!/bin/bash
 
-version='1.83'
-changelog="- Fixed streams failing to play on some player backends by using
-  the player's own native HLS support again instead of relaying/
-  reassembling segments ourselves
-- Fixed the whole box (not just the plugin) freezing during repeated
-  stream retries, caused by an unconditional page-cache drop on every
-  stream end
-- Fixed the anonymous stats/heartbeat request silently losing its data
-  when the stats server redirected it
-- Fixed the startup splash screen showing misleading 'ready' text while
-  still genuinely waiting for the proxy to finish loading
-- Fixed the main menu's proxy status getting stuck on 'Checking
-  proxy...' for up to 10 seconds after opening, even though the splash
-  screen had already confirmed the proxy was ready
-- Fixed the in-plugin EPG overlay's lookup cache growing unbounded in
-  memory over long uptimes
-- Fixed EPG alias matching silently ignoring channels with a '.b'
-  suffix
-- Added a fallback so the in-plugin EPG overlay can still find
-  programme data when a channel's matched ID uses a different naming
-  convention than the EPG guide feed itself
-- Added a 'Debug logging' toggle in the config menu, replacing reliance
-  on an environment variable that often couldn't reach the running
-  process"
+version='1.84'
+changelog="- Fixed the plugin failing to load entirely on Python 2 images,
+  caused by an old-style class the notification manager relied on
+  __new__ for
+- Fixed background workers (update check, EPG fetch, proxy startup)
+  crashing on Python 2 with a Python-3-only Thread argument
+- Fixed the whole box freezing for up to two minutes when opening the
+  IMDb/info overlay on a slow or degraded network, by moving that EPG
+  lookup off the main thread
+- Fixed a leftover EPG fetch from a channel you'd already left still
+  running against the closed player screen
+- Fixed exported bouquets showing no EPG for channels whose matched ID
+  uses a different naming convention than the EPG guide feed - the
+  in-plugin overlay already had this fallback, exported/favorite
+  bouquets now do too
+- Fixed the proxy never actually starting automatically at boot, caused
+  by a startup flag collision that made it always think the plugin was
+  already open
+- Fixed manually-exported bouquets never being picked up by the
+  'Scheduled List' auto-update feature
+- Added a way to remove a single exported bouquet: the green button now
+  reads 'Remove Fav' instead of 'Export Fav' when a bouquet already
+  exists for that country/category
+- Added logging to previously-silent failure paths across the codebase
+  to make future issues easier to diagnose"
 
 
 echo "$changelog"
