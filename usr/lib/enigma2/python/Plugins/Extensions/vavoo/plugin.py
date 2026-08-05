@@ -317,6 +317,10 @@ CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
 regexs = '<a[^>]*href="([^"]+)"[^>]*><img[^>]*src="([^"]+)"[^>]*>'
 
 _session = None
+# Guards autostart() itself against re-scheduling delayed_boot_tasks() on
+# repeat calls - kept separate from _session, which delayed_boot_tasks()
+# uses to detect whether the user has actually opened a plugin screen.
+_autostart_scheduled = False
 auto_start_timer = None
 now = None
 proxy_instance = None
@@ -5235,10 +5239,19 @@ def delayed_boot_tasks():
 
 
 def autostart(reason, session=None, **kwargs):
-    global _session, delayed_start_timer
+    global _autostart_scheduled, delayed_start_timer
 
-    if reason == 0 and _session is None and session is not None:
-        _session = session
+    # NOTE: this must NOT set the module-level _session - that's how
+    # delayed_boot_tasks() (below) tells whether the user has actually
+    # opened a plugin screen since boot. It used to be set here too,
+    # which meant delayed_boot_tasks() always saw it as non-None (this
+    # function had just set it moments earlier) and always skipped
+    # starting the proxy at boot, regardless of whether the plugin was
+    # ever opened - the proxy would only exist in a half-initialized
+    # state (token monitor thread running, since that starts at module
+    # import) with no actual HTTP server listening.
+    if reason == 0 and not _autostart_scheduled and session is not None:
+        _autostart_scheduled = True
 
         delayed_start_timer = eTimer()
         try:
