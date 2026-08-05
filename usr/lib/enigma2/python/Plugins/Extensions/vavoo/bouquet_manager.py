@@ -1610,6 +1610,38 @@ def _update_favorite_file(name, url, export_type):
         print("[Bouquet] Error writing Favorite.txt: " + str(e))
 
 
+def remove_favorite_entry(name):
+    """Remove a single bouquet's entry from Favorite.txt, if present.
+
+    Counterpart to _update_favorite_file() - keeps a per-country/category
+    "Remove Fav" from leaving a stale entry that a later scheduled
+    auto-update run would just re-create.
+    """
+    favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
+    if not isfile(favorite_path):
+        return
+
+    try:
+        remaining = []
+        with open(favorite_path, 'r') as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped and '|' in stripped:
+                    bouq_name = stripped.split('|')[0].strip()
+                    if bouq_name == name:
+                        continue
+                remaining.append(line.rstrip('\n'))
+
+        if remaining:
+            with open(favorite_path, 'w') as f:
+                f.write('\n'.join(remaining) + '\n')
+        else:
+            remove(favorite_path)
+        print("[Bouquet] Removed {} from Favorite.txt".format(name))
+    except Exception as e:
+        print("[Bouquet] Error removing {} from Favorite.txt: {}".format(name, e))
+
+
 def reorganize_all_bouquets_position(list_position="bottom"):
     """Reorganize all Vavoo bouquets to the configured position"""
     try:

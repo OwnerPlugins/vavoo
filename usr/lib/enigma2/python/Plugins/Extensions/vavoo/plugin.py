@@ -112,7 +112,8 @@ from .bouquet_manager import (
     reorganize_all_bouquets_position,
     remove_bouquets_by_name,
     export_bouquet_async,
-    is_bouquet_exported
+    is_bouquet_exported,
+    remove_favorite_entry
 )
 from .vUtils import (
     debug,
@@ -3408,6 +3409,7 @@ class vavoo(Screen):
         try:
             removed = remove_bouquets_by_name(self.name)
             if removed > 0:
+                remove_favorite_entry(self.name)
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Removed exported bouquet: {}").format(self.name), 3)
@@ -3428,15 +3430,13 @@ class vavoo(Screen):
                     _("An export for another country is already in progress. Please wait."), 4)
             return
 
+        self._export_type = "hierarchical" if any(
+            sep in name for sep in ["➾", "⟾", "->", "→"]) else "flat"
+
         try:
             export_bouquet_async(
                 name,
-                "hierarchical" if any(
-                    sep in name for sep in [
-                        "➾",
-                        "⟾",
-                        "->",
-                        "→"]) else "flat",
+                self._export_type,
                 self,
                 self._on_export_complete,
                 cfg.services.value,
@@ -3472,6 +3472,16 @@ class vavoo(Screen):
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
                 self._update_export_button_label()
+                # Register with Favorite.txt so "Scheduled List" auto-update
+                # (AutoStartTimer) picks this bouquet up going forward -
+                # that feature only ever re-updates bouquets already listed
+                # there, it never adds new ones on its own.
+                try:
+                    _update_favorite_file(
+                        self.name, self.url,
+                        getattr(self, '_export_type', 'flat'))
+                except Exception as e:
+                    print("[vavoo] Error updating Favorite.txt: {}".format(e))
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed
