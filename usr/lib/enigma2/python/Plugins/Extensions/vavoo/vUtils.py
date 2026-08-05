@@ -11,6 +11,7 @@ import select
 import threading
 import types
 import urllib3
+import xml.etree.ElementTree as ET
 from datetime import datetime as _datetime
 from collections import OrderedDict
 from difflib import SequenceMatcher
@@ -2711,6 +2712,86 @@ def save_unmatched(
         print("[Unmatched] Error: %s" % e)
 
 
+_epg_feed_index_cache = {}  # country_code -> (timestamp, set(ids), {clean_name: id})
+_EPG_FEED_INDEX_TTL = 300
+
+
+def _get_epg_feed_index(country_code):
+    """
+    Fetch and index this country's actual EPG feed: the set of
+    <channel id> values it defines, plus a cleaned-display-name -> id
+    lookup.
+
+    Used by write_epg_mapping_file() as a fallback for channels whose
+    Rytec-matched id isn't one the feed itself uses - the same class of
+    mismatch plugin.py's get_current_epg() already works around for the
+    in-plugin overlay, but that fix doesn't cover this separate,
+    epgimport-facing pipeline (exported bouquets), which is what this is
+    for.
+
+    Never raises - returns (None, None) on any failure so callers just
+    skip the fallback and keep existing (correct-for-most-channels)
+    behavior.
+    """
+    if not country_code:
+        return None, None
+
+    cached = _epg_feed_index_cache.get(country_code)
+    if cached and (time() - cached[0] < _EPG_FEED_INDEX_TTL):
+        return cached[1], cached[2]
+
+    try:
+        url = "http://{}:{}/epg/{}.xml".format(
+            PROXY_HOST, PORT, country_code.lower())
+        xml_data = getUrl(url, timeout=10)
+        if not xml_data:
+            return None, None
+        root = ET.fromstring(xml_data)
+    except Exception as e:
+        debug("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
+        return None, None
+
+    matcher = get_epg_matcher()
+    feed_ids = set()
+    name_index = {}
+    for chan in root.findall('channel'):
+        chan_id = chan.get('id')
+        if not chan_id:
+            continue
+        feed_ids.add(chan_id)
+        for dn in chan.findall('display-name'):
+            dn_text = (dn.text or '').strip()
+            if not dn_text:
+                continue
+            clean_dn = matcher._clean_name_for_similarity(dn_text)
+            if clean_dn:
+                name_index[clean_dn] = chan_id
+
+    _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)
+    return feed_ids, name_index
+
+
+def _find_feed_id_by_name(channel_name, matcher, name_index):
+    """Fuzzy-match channel_name against an EPG feed's display-name index."""
+    if not name_index:
+        return None
+    clean = matcher._clean_name_for_similarity(channel_name)
+    if not clean:
+        return None
+    best_score = 0.0
+    best_id = None
+    sm = SequenceMatcher(None, clean)
+    for dn_key, dn_id in name_index.items():
+        sm.set_seq2(dn_key)
+        score = sm.ratio()
+        if score > best_score:
+            best_score = score
+            best_id = dn_id
+    if best_id and best_score >= matcher.similarity_threshold:
+        return best_id
+    return None
+
+
 def write_epg_mapping_file(epg_entries, country_code):
     """
     Write the EPG mapping file for a specific country.
@@ -2727,6 +2808,17 @@ def write_epg_mapping_file(epg_entries, country_code):
             filename = "vavoo.channels.xml"
         channels_file = join(epg_dir, filename)
 
+        # Some channels' Rytec-matched id isn't one this country's actual
+        # feed uses for <channel id> (it has its own convention for a
+        # handful of channels, e.g. "RTP.1.HD.pt" vs the Rytec
+        # "rtp1.pt") - epgimport can't find programme data filed under
+        # an id the feed never defines. Fall back to the feed's own id,
+        # found by display-name match, but only when the Rytec id
+        # genuinely isn't one the feed already has - this never touches
+        # a channel that's already matching correctly.
+        feed_ids, feed_name_index = _get_epg_feed_index(country_code)
+        matcher = get_epg_matcher() if feed_ids else None
+
         # Use dvb_ref as key to avoid duplicates, but also store the channel
         # name
         unique = {}
@@ -2734,6 +2826,15 @@ def write_epg_mapping_file(epg_entries, country_code):
             if dvb_ref and isinstance(dvb_ref, str) and dvb_ref.strip():
                 if not dvb_ref.endswith(':'):
                     dvb_ref = dvb_ref + ':'
+                if feed_ids and epg_id not in feed_ids:
+                    fallback_id = _find_feed_id_by_name(
+                        ch_name, matcher, feed_name_index)
+                    if fallback_id:
+                        debug(
+                            "EPG mapping fallback: '{}' rytec id '{}' not "
+                            "in feed, using '{}' instead".format(
+                                ch_name, epg_id, fallback_id))
+                        epg_id = fallback_id
                 unique[dvb_ref] = (epg_id, ch_name)
 
         if not unique:
