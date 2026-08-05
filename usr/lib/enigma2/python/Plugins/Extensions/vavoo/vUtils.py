@@ -758,7 +758,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) +
+            print("Getting channels for '" + str(country_name) + \
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
@@ -2712,7 +2712,8 @@ def save_unmatched(
         print("[Unmatched] Error: %s" % e)
 
 
-_epg_feed_index_cache = {}  # country_code -> (timestamp, set(ids), {clean_name: id})
+# country_code -> (timestamp, set(ids), {clean_name: id})
+_epg_feed_index_cache = {}
 _EPG_FEED_INDEX_TTL = 300
 
 

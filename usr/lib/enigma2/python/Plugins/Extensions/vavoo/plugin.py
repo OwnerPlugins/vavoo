@@ -3416,7 +3416,9 @@ class vavoo(Screen):
                 self._reload_services()
             else:
                 if NOTIFICATION_AVAILABLE:
-                    quick_notify(_("Nothing to remove for: {}").format(self.name), 3)
+                    quick_notify(
+                        _("Nothing to remove for: {}").format(
+                            self.name), 3)
         except Exception as e:
             print("[vavoo] Error removing favorite: {}".format(e))
             if NOTIFICATION_AVAILABLE:
