@@ -1209,16 +1209,22 @@ class VavooProxy:
                     stream_url = result.get("url") or result.get("streamUrl")
 
                 if stream_url:
+                    # Pop before inserting (rather than
+                    # OrderedDict.move_to_end(), which doesn't exist on
+                    # Python 2.7's collections.OrderedDict - it raised
+                    # AttributeError there, caught by the except below,
+                    # meaning every resolve attempt appeared to fail on
+                    # Python 2 even though the stream URL was already
+                    # fetched) - re-resolving an already-cached URL
+                    # updates its value, and a plain re-assignment
+                    # doesn't move an existing key's position, so without
+                    # this, eviction below would go by original insertion
+                    # order rather than last use, and could drop a
+                    # channel that's actively being refreshed while
+                    # keeping one nobody has touched in a while.
+                    self.resolve_cache.pop(channel_url, None)
                     self.resolve_cache[channel_url] = {
                         "url": stream_url, "ts": time.time()}
-                    # Re-resolving an already-cached URL updates its value
-                    # but OrderedDict doesn't move existing keys on their
-                    # own - without this, eviction below would go by
-                    # original insertion order rather than last use, and
-                    # could drop a channel that's actively being
-                    # refreshed while keeping one nobody has touched in a
-                    # while.
-                    self.resolve_cache.move_to_end(channel_url)
                     # Evict oldest 500 entries (OrderedDict preserves insertion
                     # order in Py2+3)
                     if len(self.resolve_cache) > 1000:
