@@ -416,6 +416,9 @@ msgstr "Seçim yok"
 msgid "No valid channels for: %s"
 msgstr "%s için geçerli kanal yok"
 
+msgid "Nothing to remove for: {}"
+msgstr "Şunun için kaldırılacak bir şey yok: {}"
+
 msgid "Now %s"
 msgstr "Şimdi %s"
 
@@ -485,6 +488,16 @@ msgstr "Kaldır"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "TÜM Vavoo buketleri kaldırılsın mı?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Dışa aktarma başarısız: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Bu ülke/kategori için dışa aktarılan buket kaldırılsın mı?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Dışa aktarılan buket kaldırıldı: {}"
 
 msgid "Restarting..."
 msgstr "Yeniden başlatılıyor..."

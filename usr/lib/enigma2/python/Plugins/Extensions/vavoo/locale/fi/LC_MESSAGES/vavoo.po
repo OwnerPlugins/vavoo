@@ -411,6 +411,9 @@ msgstr "Ei valintaa"
 msgid "No valid channels for: %s"
 msgstr "Ei kelvollisia kanavia kohteelle: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Ei mitään poistettavaa kohteelle: {}"
+
 msgid "Now %s"
 msgstr "Nyt %s"
 
@@ -480,6 +483,16 @@ msgstr "Poista"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Poistetaanko KAIKKI Vavoo-niput?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Vienti epäonnistui: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Poistetaanko viety kukkakimppu tästä maasta/luokasta?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Poistettu viety kimppu: {}"
 
 msgid "Restarting..."
 msgstr "Käynnistetään uudelleen..."

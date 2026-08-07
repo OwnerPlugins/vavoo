@@ -411,6 +411,9 @@ msgstr "Сонголт байхгүй"
 msgid "No valid channels for: %s"
 msgstr "%s-д хүчинтэй суваг алга"
 
+msgid "Nothing to remove for: {}"
+msgstr "Устгах зүйл алга: {}"
+
 msgid "Now %s"
 msgstr "Одоо %s"
 
@@ -480,6 +483,16 @@ msgstr "Устгах"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "БҮХ Vavoo баглааг арилгах уу?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Экспорт амжилтгүй болсон: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Энэ улс/ангилалд экспортлогдсон баглааг устгах уу?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Экспортолсон баглааг хассан: {}"
 
 msgid "Restarting..."
 msgstr "Дахин эхлүүлж байна..."

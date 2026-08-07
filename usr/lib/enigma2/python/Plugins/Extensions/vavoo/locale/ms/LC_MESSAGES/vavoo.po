@@ -411,6 +411,9 @@ msgstr "Tiada pilihan"
 msgid "No valid channels for: %s"
 msgstr "Tiada saluran yang sah untuk: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Tiada apa-apa untuk dialih keluar: {}"
+
 msgid "Now %s"
 msgstr "Sekarang %s"
 
@@ -480,6 +483,16 @@ msgstr "Alih keluar"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Keluarkan SEMUA jambangan Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksport gagal: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Alih keluar sejambak yang dieksport untuk negara/kategori ini?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Sejambak yang dieksport dialih keluar: {}"
 
 msgid "Restarting..."
 msgstr "Memulakan semula..."

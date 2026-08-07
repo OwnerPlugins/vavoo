@@ -411,6 +411,9 @@ msgstr "Сайлау юк"
 msgid "No valid channels for: %s"
 msgstr "% S өчен дөрес каналлар юк"
 
+msgid "Nothing to remove for: {}"
+msgstr "Алырлык бернәрсә дә юк: {}"
+
 msgid "Now %s"
 msgstr "Хәзер% s"
 
@@ -480,6 +483,16 @@ msgstr "Чыгар"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "БАРЫ Vavoo букетларын бетерегез?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Экспорт уңышсыз: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Бу ил / категория өчен экспортланган букетны бетерегез?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Экспортланган букет алынды: {}"
 
 msgid "Restarting..."
 msgstr "Яңарту ..."

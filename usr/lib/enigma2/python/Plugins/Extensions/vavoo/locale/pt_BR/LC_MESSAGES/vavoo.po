@@ -412,6 +412,9 @@ msgstr "Nenhuma seleção"
 msgid "No valid channels for: %s"
 msgstr "Nenhum canal válido para: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nada para remover: {}"
+
 msgid "Now %s"
 msgstr "Agora %s"
 
@@ -481,6 +484,16 @@ msgstr "Remover"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Remover TODOS os buquês Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Falha na exportação: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Remover o buquê exportado para este país/categoria?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Buquê exportado removido: {}"
 
 msgid "Restarting..."
 msgstr "Reiniciando..."

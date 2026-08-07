@@ -411,6 +411,9 @@ msgstr "Geen keuse nie"
 msgid "No valid channels for: %s"
 msgstr "Geen geldige kanale vir: %s nie"
 
+msgid "Nothing to remove for: {}"
+msgstr "Niks om te verwyder vir: {}"
+
 msgid "Now %s"
 msgstr "Nou %s"
 
@@ -480,6 +483,16 @@ msgstr "Verwyder"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Verwyder ALLE Vavoo-ruikers?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Uitvoer misluk: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Verwyder die uitgevoerde boeket vir hierdie land/kategorie?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Verwyder uitgevoerde boeket: {}"
 
 msgid "Restarting..."
 msgstr "Herbegin tans …"

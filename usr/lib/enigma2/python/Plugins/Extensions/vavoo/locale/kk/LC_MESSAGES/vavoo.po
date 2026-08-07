@@ -411,6 +411,9 @@ msgstr "Таңдау жоқ"
 msgid "No valid channels for: %s"
 msgstr "%s үшін жарамды арналар жоқ"
 
+msgid "Nothing to remove for: {}"
+msgstr "Келесі үшін жойылатын ештеңе жоқ: {}"
+
 msgid "Now %s"
 msgstr "Енді %s"
 
@@ -480,6 +483,16 @@ msgstr "Жою"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "БАРЛЫҚ Vavoo гүл шоқтарын жою керек пе?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Экспорттау орындалмады: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Осы ел/санат үшін экспортталған букет өшірілсін бе?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Экспортталған букет жойылды: {}"
 
 msgid "Restarting..."
 msgstr "Қайта іске қосылуда..."

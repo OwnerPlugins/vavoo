@@ -428,6 +428,9 @@ msgstr "Žádný výběr"
 msgid "No valid channels for: %s"
 msgstr "Žádné platné kanály pro: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nic k odstranění pro: {}"
+
 msgid "Now %s"
 msgstr "Nyní %s"
 
@@ -498,6 +501,16 @@ msgstr "Odstranit"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Odstranit VŠECHNY kytice Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Export selhal: %s"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Odebrat exportovanou kytici pro tuto zemi/kategorii?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Odebrána exportovaná kytice: {}"
 
 msgid "Restarting..."
 msgstr "Restartování..."

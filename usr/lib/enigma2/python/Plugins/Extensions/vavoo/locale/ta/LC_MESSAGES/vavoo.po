@@ -411,6 +411,9 @@ msgstr "தேர்வு இல்லை"
 msgid "No valid channels for: %s"
 msgstr "இதற்கு சரியான சேனல்கள் இல்லை: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "அகற்றுவதற்கு எதுவும் இல்லை: {}"
+
 msgid "Now %s"
 msgstr "இப்போது %s"
 
@@ -480,6 +483,16 @@ msgstr "அகற்று"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "அனைத்து Vavoo பூங்கொத்துகளையும் அகற்றவா?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ஏற்றுமதி தோல்வி: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "இந்த நாடு/வகைக்காக ஏற்றுமதி செய்யப்பட்ட பூங்கொத்தை அகற்றவா?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ஏற்றுமதி செய்யப்பட்ட பூங்கொத்து அகற்றப்பட்டது: {}"
 
 msgid "Restarting..."
 msgstr "மீண்டும் தொடங்குகிறது..."

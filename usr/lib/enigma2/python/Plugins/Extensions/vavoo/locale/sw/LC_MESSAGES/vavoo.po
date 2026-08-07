@@ -411,6 +411,9 @@ msgstr "Hakuna uteuzi"
 msgid "No valid channels for: %s"
 msgstr "Hakuna chaneli halali za: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Hakuna cha kuondoa kwa: {}"
+
 msgid "Now %s"
 msgstr "Sasa %s"
 
@@ -480,6 +483,16 @@ msgstr "Ondoa"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Ungependa kuondoa shada ZOTE za Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Imeshindwa kutuma: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Je, ungependa kuondoa shada lililohamishwa la nchi/aina hii?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Umeondoa shada lililohamishwa: {}"
 
 msgid "Restarting..."
 msgstr "Inaanza upya..."

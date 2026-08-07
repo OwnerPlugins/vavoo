@@ -412,6 +412,9 @@ msgstr "選択なし"
 msgid "No valid channels for: %s"
 msgstr "有効なチャネルがありません: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "削除するものはありません: {}"
+
 msgid "Now %s"
 msgstr "現在 %s"
 
@@ -481,6 +484,16 @@ msgstr "取り除く"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "すべての Vavoo ブーケを削除しますか?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "エクスポートに失敗しました: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "この国/カテゴリにエクスポートされた花束を削除しますか?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "エクスポートされた花束を削除しました: {}"
 
 msgid "Restarting..."
 msgstr "再起動中..."

@@ -5,7 +5,7 @@ __author__ = "Lululla & Qu4k3"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "CC BY-NC-SA 4.0"
-__version__ = "1.83"
+__version__ = "1.84"
 
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
@@ -131,8 +131,10 @@ try:
     subprocess.run(["chmod", "+x", START_PROXY_SCRIPT])
 except AttributeError:
     subprocess.call(["chmod", "+x", START_PROXY_SCRIPT])
-except Exception:
-    pass
+except Exception as e:
+    _init_log(
+        "chmod +x failed for {}: {}".format(START_PROXY_SCRIPT, e),
+        level="WARNING")
 
 country_codes = {
     # Africa

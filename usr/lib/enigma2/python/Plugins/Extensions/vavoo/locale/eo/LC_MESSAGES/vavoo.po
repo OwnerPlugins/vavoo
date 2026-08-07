@@ -412,6 +412,9 @@ msgstr "Neniu elekto"
 msgid "No valid channels for: %s"
 msgstr "Neniuj validaj kanaloj por: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nenio por forigi: {}"
+
 msgid "Now %s"
 msgstr "Nun %s"
 
@@ -481,6 +484,16 @@ msgstr "Forigi"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Ĉu forigi ĈIUJN Vavoo-bukedojn?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksporto malsukcesis: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Ĉu forigi la eksportitan bukedon por ĉi tiu lando/kategorio?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Forigita eksportita bukedo: {}"
 
 msgid "Restarting..."
 msgstr "Rekomencante..."

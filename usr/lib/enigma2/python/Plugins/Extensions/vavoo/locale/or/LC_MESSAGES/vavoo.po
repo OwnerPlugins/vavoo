@@ -411,6 +411,9 @@ msgstr "କ selection ଣସି ଚୟନ ନାହିଁ |"
 msgid "No valid channels for: %s"
 msgstr ":% S ପାଇଁ କ valid ଣସି ବ valid ଧ ଚ୍ୟାନେଲ ନାହିଁ |"
 
+msgid "Nothing to remove for: {}"
+msgstr "ଅପସାରଣ କରିବାକୁ କିଛି ନାହିଁ: {}"
+
 msgid "Now %s"
 msgstr "ବର୍ତ୍ତମାନ% s"
 
@@ -480,6 +483,16 @@ msgstr "ଅପସାରଣ କରନ୍ତୁ |"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ସମସ୍ତ ଭାଭୋ ପୁଷ୍ପଗୁଡିକ ଅପସାରଣ କରନ୍ତୁ?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ରପ୍ତାନି ବିଫଳ: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ଏହି ଦେଶ / ବର୍ଗ ପାଇଁ ରପ୍ତାନି ହୋଇଥିବା ପୁଷ୍ପକୁ ହଟାନ୍ତୁ?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ରପ୍ତାନି ହୋଇଥିବା ପୁଷ୍ପଗୁଚ୍ଛ: {}"
 
 msgid "Restarting..."
 msgstr "ପୁନ art ଆରମ୍ଭ ..."

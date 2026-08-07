@@ -411,6 +411,9 @@ msgstr "គ្មានការជ្រើសរើស"
 msgid "No valid channels for: %s"
 msgstr "មិនមានឆានែលត្រឹមត្រូវសម្រាប់៖ %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "គ្មានអ្វីដែលត្រូវដកចេញសម្រាប់៖ {}"
+
 msgid "Now %s"
 msgstr "ឥឡូវនេះ %s"
 
@@ -480,6 +483,16 @@ msgstr "ដកចេញ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ដកភួង Vavoo ទាំងអស់ចេញ?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ការនាំចេញបរាជ័យ៖ {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "យក​ភួង​ដែល​បាន​នាំចេញ​ចេញ​សម្រាប់​ប្រទេស/ប្រភេទ​នេះ?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "បាន​យក​ភួង​នាំចេញ​ចេញ៖ {}"
 
 msgid "Restarting..."
 msgstr "កំពុងចាប់ផ្តើមឡើងវិញ..."

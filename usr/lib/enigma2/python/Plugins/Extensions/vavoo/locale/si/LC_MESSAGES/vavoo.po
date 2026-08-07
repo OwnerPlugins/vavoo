@@ -411,6 +411,9 @@ msgstr "තේරීමක් නැත"
 msgid "No valid channels for: %s"
 msgstr "%s සඳහා වලංගු නාලිකා නොමැත"
 
+msgid "Nothing to remove for: {}"
+msgstr "මේ සඳහා ඉවත් කිරීමට කිසිවක් නැත: {}"
+
 msgid "Now %s"
 msgstr "දැන් %s"
 
@@ -480,6 +483,16 @@ msgstr "ඉවත් කරන්න"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "සියලුම Vavoo මල් කළඹ ඉවත් කරන්නද?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "අපනයනය අසාර්ථක විය: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "මෙම රට/ප්‍රවර්ගය සඳහා අපනයනය කළ මල් කළඹ ඉවත් කරන්නද?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "අපනයනය කළ මල් කළඹ ඉවත් කරන ලදී: {}"
 
 msgid "Restarting..."
 msgstr "නැවත ආරම්භ කරමින්..."

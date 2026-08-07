@@ -412,6 +412,9 @@ msgstr "Brez izbire"
 msgid "No valid channels for: %s"
 msgstr "Ni veljavnih kanalov za: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nič za odstranitev za: {}"
+
 msgid "Now %s"
 msgstr "Zdaj %s"
 
@@ -481,6 +484,16 @@ msgstr "Odstrani"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Odstraniti VSE šopke Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Izvoz ni uspel: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Ali želite odstraniti izvoženi šopek za to državo/kategorijo?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Odstranjen izvoženi šopek: {}"
 
 msgid "Restarting..."
 msgstr "Ponovni zagon ..."

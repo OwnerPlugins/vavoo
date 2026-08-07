@@ -411,6 +411,9 @@ msgstr "沒有選擇"
 msgid "No valid channels for: %s"
 msgstr "沒有有效的頻道：%s"
 
+msgid "Nothing to remove for: {}"
+msgstr "沒有要刪除的內容：{}"
+
 msgid "Now %s"
 msgstr "現在%s"
 
@@ -480,6 +483,16 @@ msgstr "消除"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "移除所有 Vavoo 花束？"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "匯出失敗：{}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "刪除該國家/類別的導出花束？"
+
+msgid "Removed exported bouquet: {}"
+msgstr "已刪除已匯出的花束：{}"
 
 msgid "Restarting..."
 msgstr "正在重新啟動..."

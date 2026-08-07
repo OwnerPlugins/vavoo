@@ -411,6 +411,9 @@ msgstr "Saýlaw ýok"
 msgid "No valid channels for: %s"
 msgstr "Dogry kanallar ýok:% s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Aýyrjak zat ýok: {}"
+
 msgid "Now %s"
 msgstr "Indi% s"
 
@@ -480,6 +483,16 @@ msgstr "Aýyr"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vhli “Vavoo” buketlerini aýyryň?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksport şowsuz: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Bu ýurt / kategoriýa üçin eksport edilen bukjany aýyryň?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Eksport edilen buket aýryldy: {}"
 
 msgid "Restarting..."
 msgstr "Başlamak ..."

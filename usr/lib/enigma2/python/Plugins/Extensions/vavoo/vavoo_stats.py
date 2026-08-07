@@ -93,8 +93,8 @@ class AnonymousStats:
                     existing = f.read().strip()
                 if existing:
                     return existing, True
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Could not read existing session id file: {}".format(e))
         seed = "{}_{}_{}".format(
             time.time(),
             os.getpid(),
@@ -113,8 +113,9 @@ class AnonymousStats:
                 os.makedirs(dirname)
             with open(SESSION_ID_FILE, "w") as f:
                 f.write(self._session_id)
-        except Exception:
-            pass
+        except Exception as e:
+            debug("Could not write session id file, startup stats may "
+                  "resend on next restart this boot: {}".format(e))
 
     # ── Startup stats ───────────────────────────────────────────────────────
 

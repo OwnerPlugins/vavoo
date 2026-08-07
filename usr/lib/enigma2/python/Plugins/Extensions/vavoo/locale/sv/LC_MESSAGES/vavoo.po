@@ -412,6 +412,9 @@ msgstr "Inget urval"
 msgid "No valid channels for: %s"
 msgstr "Inga giltiga kanaler för: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Inget att ta bort för: {}"
+
 msgid "Now %s"
 msgstr "Nu %s"
 
@@ -481,6 +484,16 @@ msgstr "Ta bort"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Ta bort ALLA Vavoo-buketter?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Export misslyckades: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Ta bort den exporterade buketten för detta land/kategori?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Borttagen exporterad bukett: {}"
 
 msgid "Restarting..."
 msgstr "Startar om..."

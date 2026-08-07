@@ -412,6 +412,9 @@ msgstr "Fără selecție"
 msgid "No valid channels for: %s"
 msgstr "Nu există canale valide pentru: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nimic de eliminat pentru: {}"
+
 msgid "Now %s"
 msgstr "Acum %s"
 
@@ -481,6 +484,16 @@ msgstr "Elimina"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Eliminați TOATE buchetele Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Export eșuat: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Eliminați buchetul exportat pentru această țară/categorie?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Buchetul exportat a fost eliminat: {}"
 
 msgid "Restarting..."
 msgstr "Se repornește..."

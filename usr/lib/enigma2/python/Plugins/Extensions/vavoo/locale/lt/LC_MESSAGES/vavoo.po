@@ -412,6 +412,9 @@ msgstr "Jokio pasirinkimo"
 msgid "No valid channels for: %s"
 msgstr "Nėra galiojančių kanalų: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nėra ko pašalinti: {}"
+
 msgid "Now %s"
 msgstr "Dabar %s"
 
@@ -481,6 +484,16 @@ msgstr "Pašalinti"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Pašalinti VISAS „Vavoo“ puokštes?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksportuoti nepavyko: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Pašalinti eksportuotą šios šalies / kategorijos puokštę?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Pašalinta eksportuota puokštė: {}"
 
 msgid "Restarting..."
 msgstr "Paleidžiama iš naujo..."

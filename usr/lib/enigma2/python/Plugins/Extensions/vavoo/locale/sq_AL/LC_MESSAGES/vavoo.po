@@ -411,6 +411,9 @@ msgstr "Asnjë përzgjedhje"
 msgid "No valid channels for: %s"
 msgstr "Nuk ka kanale të vlefshme për: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nuk ka asgjë për të hequr për: {}"
+
 msgid "Now %s"
 msgstr "Tani %s"
 
@@ -480,6 +483,16 @@ msgstr "Hiq"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Të hiqen TË GJITHA buqetat Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksporti dështoi: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Të hiqet buqeta e eksportuar për këtë shtet/kategori?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Buqeta e eksportuar u hoq: {}"
 
 msgid "Restarting..."
 msgstr "Po riniset..."

@@ -411,6 +411,9 @@ msgstr "تاللاش يوق"
 msgid "No valid channels for: %s"
 msgstr "ئۈنۈملۈك قانال يوق:% s"
 
+msgid "Nothing to remove for: {}"
+msgstr "چىقىرىۋېتىدىغان ھېچ نەرسە يوق: {}"
+
 msgid "Now %s"
 msgstr "ھازىر% s"
 
@@ -480,6 +483,16 @@ msgstr "ئۆچۈرۈڭ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "بارلىق Vavoo گۈللىرىنى ئۆچۈرەمسىز؟"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ئېكسپورت مەغلۇپ بولدى: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "بۇ دۆلەت / كاتېگورىيەگە ئېكسپورت قىلىنغان گۈلنى ئۆچۈرۈڭ؟"
+
+msgid "Removed exported bouquet: {}"
+msgstr "چىقىرىۋېتىلگەن گۈلدەستى: {}"
 
 msgid "Restarting..."
 msgstr "قايتا قوزغىتىش ..."

@@ -411,6 +411,9 @@ msgstr "Dim dewis"
 msgid "No valid channels for: %s"
 msgstr "Dim sianeli dilys ar gyfer: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Dim byd i'w ddileu ar gyfer: {}"
+
 msgid "Now %s"
 msgstr "Nawr %s"
 
@@ -480,6 +483,16 @@ msgstr "Dileu"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Tynnu POB tusw Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Methodd yr allforio: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Tynnu'r tusw a allforiwyd ar gyfer y wlad/categori hwn?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Tusw wedi'i allforio wedi'i dynnu: {}"
 
 msgid "Restarting..."
 msgstr "Wrthi'n ailgychwyn..."

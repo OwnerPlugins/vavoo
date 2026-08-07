@@ -412,6 +412,9 @@ msgstr "Sense selecció"
 msgid "No valid channels for: %s"
 msgstr "No hi ha canals vàlids per a: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Res per eliminar per a: {}"
+
 msgid "Now %s"
 msgstr "Ara %s"
 
@@ -481,6 +484,16 @@ msgstr "Eliminar"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Eliminar TOTS els rams de Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Ha fallat l'exportació: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Vols suprimir el ram exportat per a aquest país/categoria?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "S'ha eliminat el ram exportat: {}"
 
 msgid "Restarting..."
 msgstr "S'està reiniciant..."

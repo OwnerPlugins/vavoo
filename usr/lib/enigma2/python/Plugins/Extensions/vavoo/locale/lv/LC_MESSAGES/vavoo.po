@@ -412,6 +412,9 @@ msgstr "Nav atlases"
 msgid "No valid channels for: %s"
 msgstr "Nav derīgu kanālu: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Nav ko noņemt: {}"
+
 msgid "Now %s"
 msgstr "Tagad %s"
 
@@ -481,6 +484,16 @@ msgstr "Noņemt"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Vai noņemt VISUS Vavoo pušķus?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksportēšana neizdevās: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Vai noņemt eksportēto pušķi šai valstij/kategorijai?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Noņemts eksportētais pušķis: {}"
 
 msgid "Restarting..."
 msgstr "Notiek restartēšana..."

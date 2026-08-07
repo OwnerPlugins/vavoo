@@ -412,6 +412,9 @@ msgstr "Καμία επιλογή"
 msgid "No valid channels for: %s"
 msgstr "Δεν υπάρχουν έγκυρα κανάλια για: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Δεν υπάρχει τίποτα για κατάργηση για: {}"
+
 msgid "Now %s"
 msgstr "Τώρα %s"
 
@@ -481,6 +484,16 @@ msgstr "Αφαίρεση"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Να γίνει αφαίρεση ΟΛΩΝ των μπουκέτων Vavoo;"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Η εξαγωγή απέτυχε: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Να καταργηθεί το εξαγόμενο μπουκέτο για αυτήν τη χώρα/κατηγορία;"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Καταργήθηκε το εξαγόμενο μπουκέτο: {}"
 
 msgid "Restarting..."
 msgstr "Επανεκκίνηση..."

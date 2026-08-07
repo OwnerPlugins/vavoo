@@ -411,6 +411,9 @@ msgstr "Tanlov yoʻq"
 msgid "No valid channels for: %s"
 msgstr "%s uchun yaroqli kanallar mavjud emas"
 
+msgid "Nothing to remove for: {}"
+msgstr "Hech narsa olib tashlanmaydi: {}"
+
 msgid "Now %s"
 msgstr "Endi %s"
 
@@ -480,6 +483,16 @@ msgstr "O'chirish"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "BARCHA Vavoo guldastalari olib tashlansinmi?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Eksport qilinmadi: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Ushbu mamlakat/toifa uchun eksport qilingan guldasta olib tashlansinmi?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Eksport qilingan guldasta olib tashlandi: {}"
 
 msgid "Restarting..."
 msgstr "Qayta ishga tushirilmoqda..."

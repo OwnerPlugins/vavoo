@@ -411,6 +411,9 @@ msgstr "لا يوجد اختيار"
 msgid "No valid channels for: %s"
 msgstr "لا توجد قنوات صالحة لـ: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "لا يوجد شيء يمكن إزالته من أجل: {}"
+
 msgid "Now %s"
 msgstr "الآن %s"
 
@@ -480,6 +483,16 @@ msgstr "يزيل"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "إزالة جميع باقات Vavoo؟"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "فشل التصدير: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "هل تريد إزالة الباقة المصدرة لهذه الدولة/الفئة؟"
+
+msgid "Removed exported bouquet: {}"
+msgstr "تمت إزالة الباقة المصدرة: {}"
 
 msgid "Restarting..."
 msgstr "جارٍ إعادة التشغيل..."

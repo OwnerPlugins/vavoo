@@ -412,6 +412,9 @@ msgstr "Gan rogha"
 msgid "No valid channels for: %s"
 msgstr "Níl aon chainéil bhailí le haghaidh: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Níl aon rud le baint le haghaidh: {}"
+
 msgid "Now %s"
 msgstr "Anois %s"
 
@@ -481,6 +484,16 @@ msgstr "Bain"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Bain GACH bouquets Vavoo?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Theip ar easpórtáil: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Bain an bouquet easpórtáilte don tír/chatagóir seo?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Baineadh bouquet easpórtála: {}"
 
 msgid "Restarting..."
 msgstr "Á atosú..."

@@ -411,6 +411,9 @@ msgstr "ምርጫ የለም።"
 msgid "No valid channels for: %s"
 msgstr "ምንም የሚሰራ ሰርጦች የሉም ለ:%s"
 
+msgid "Nothing to remove for: {}"
+msgstr "ምንም የሚወገድለት የለም፡ {}"
+
 msgid "Now %s"
 msgstr "አሁን %s"
 
@@ -480,6 +483,16 @@ msgstr "አስወግድ"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "ሁሉም Vavoo እቅፍ አበባዎች ይወገዱ?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "ወደ ውጭ መላክ አልተሳካም፦ {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ለዚህ አገር/ ምድብ ወደ ውጭ የተላከው እቅፍ ይወገድ?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "ወደ ውጭ የተላከ እቅፍ ተወግዷል፡ {}"
 
 msgid "Restarting..."
 msgstr "እንደገና በመጀመር ላይ..."

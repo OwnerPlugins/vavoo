@@ -111,7 +111,9 @@ from .bouquet_manager import (
     _update_favorite_file,
     reorganize_all_bouquets_position,
     remove_bouquets_by_name,
-    export_bouquet_async
+    export_bouquet_async,
+    is_bouquet_exported,
+    remove_favorite_entry
 )
 from .vUtils import (
     debug,
@@ -259,8 +261,8 @@ def url_unquote(value):
 try:
     aspect_manager = vUtils.AspectManager()
     current_aspect = aspect_manager.get_current_aspect()
-except BaseException:
-    pass
+except BaseException as e:
+    debug("AspectManager init failed: {}".format(e))
 
 try:
     from Components.UsageConfig import defaultMoviePath
@@ -297,8 +299,8 @@ def _is_vavoo_already_open(session):
             name = dlg.__class__.__name__
             if name in ("startVavoo", "MainVavoo", "vavoo"):
                 return True
-    except Exception:
-        pass
+    except Exception as e:
+        debug("_is_vavoo_already_open check failed: {}".format(e))
     return False
 
 
@@ -316,6 +318,10 @@ CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
 regexs = '<a[^>]*href="([^"]+)"[^>]*><img[^>]*src="([^"]+)"[^>]*>'
 
 _session = None
+# Guards autostart() itself against re-scheduling delayed_boot_tasks() on
+# repeat calls - kept separate from _session, which delayed_boot_tasks()
+# uses to detect whether the user has actually opened a plugin screen.
+_autostart_scheduled = False
 auto_start_timer = None
 now = None
 proxy_instance = None
@@ -633,15 +639,17 @@ def show_list(name, link, is_category=False, is_channel=False):
                                 icon_path = cache_file
                             else:
                                 unlink(cache_file)
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            debug("Flag cache check failed for {}: {}".format(
+                                cache_file, e))
 
                     # If not in cache, use default icon (don't download here - use preloading)
                     # Download will happen in
                     # preload_flags_for_visible_countries()
 
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Flag icon resolution failed for {}: {}".format(
+                    country_name, e))
 
     if screen_width >= 2560:
         icon_size = (60, 40)
@@ -1534,8 +1542,9 @@ class startVavoo(Screen):
         max_wait_secs = 30
         try:
             max_wait_secs = int(cfg.proxy_startup_timeout.value)
-        except Exception:
-            pass
+        except Exception as e:
+            debug(
+                "Invalid proxy_startup_timeout config value, using default: {}".format(e))
         self._max_wait_ms = max(1000, max_wait_secs * 1000)
 
         self.onLayoutFinish.append(self.loadDefaultImage)
@@ -2111,8 +2120,10 @@ class MainVavoo(Screen):
                                 country, screen_width=screen_width)
                             if success:
                                 downloaded_rest += 1
-                        except BaseException:
-                            pass
+                        except BaseException as e:
+                            debug(
+                                "Background flag download failed for {}: {}".format(
+                                    country, e))
 
                     print("[Background] Finished downloading remaining flags")
                     # The single-shot refresh above only covers the first
@@ -2437,8 +2448,9 @@ class MainVavoo(Screen):
                         PROXY_SHUTDOWN_URL, headers={
                             'User-Agent': vUtils.RequestAgent()})
                     urlopen(req, timeout=2)
-            except Exception:
-                pass
+            except Exception as e:
+                debug("Graceful proxy shutdown request failed, "
+                      "falling back to pkill: {}".format(e))
 
             # 2. Kill any remaining python processes
             os_system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
@@ -2864,8 +2876,9 @@ class MainVavoo(Screen):
                 self["proxy_status"].setText(_("Checking proxy..."))
                 try:
                     self._update_proxy_status_display()
-                except Exception:
-                    pass
+                except Exception as e:
+                    debug("_update_proxy_status_display failed, label may "
+                          "stay stuck on 'Checking proxy...': {}".format(e))
 
                 # If previously proxy disabled, cat() would have returned early.
                 # Rebuild list now that proxy is enabled.
@@ -3007,6 +3020,7 @@ class vavoo(Screen):
         self.name = name
         self.url = url
         self.option_value = option_value
+        self._update_export_button_label()
 
         self.current_view = "countries"  # default
         try:
@@ -3056,8 +3070,9 @@ class vavoo(Screen):
             self["proxy_status"].setText(_("Checking proxy..."))
             try:
                 self._update_proxy_status_display()
-            except Exception:
-                pass
+            except Exception as e:
+                debug("_update_proxy_status_display failed, label may "
+                      "stay stuck on 'Checking proxy...': {}".format(e))
         except Exception as e:
             print("[vavoo] Error checking proxy: %s" % str(e))
 
@@ -3350,19 +3365,65 @@ class vavoo(Screen):
                 timeout=3
             )
 
+    def _update_export_button_label(self):
+        """Green button reads 'Remove Fav' if this bouquet is already
+        exported, 'Export Fav' otherwise."""
+        try:
+            if is_bouquet_exported(self.name):
+                self['green'].setText(_('Remove') + ' Fav')
+            else:
+                self['green'].setText(_('Export') + ' Fav')
+        except Exception as e:
+            debug("_update_export_button_label failed: {}".format(e))
+
     def message1(self, answer=None):
-        if answer is None:
+        """Green button: export this bouquet, or offer to remove it if
+        it's already exported."""
+        if is_bouquet_exported(self.name):
+            self.session.openWithCallback(
+                self._confirm_remove_fav,
+                MessageBox,
+                _("Remove the exported bouquet for this country/category?") +
+                "\n" + self.name,
+                MessageBox.TYPE_YESNO
+            )
+        else:
             # Show confirmation message before export
             self.session.openWithCallback(
-                self.message1,
+                self._confirm_export_fav,
                 MessageBox,
                 _("Do you want to export this bouquet?") + "\n" + self.name,
                 MessageBox.TYPE_YESNO
             )
-        elif answer is True:
+
+    def _confirm_export_fav(self, answer):
+        if answer is True:
             self.message2(self.name, self.url, True)
-        elif answer is False:
+        else:
             print("Export cancelled by user")
+
+    def _confirm_remove_fav(self, answer):
+        if not answer:
+            print("Remove favorite cancelled by user")
+            return
+        try:
+            removed = remove_bouquets_by_name(self.name)
+            if removed > 0:
+                remove_favorite_entry(self.name)
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(
+                        _("Removed exported bouquet: {}").format(self.name), 3)
+                self._reload_services()
+            else:
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(
+                        _("Nothing to remove for: {}").format(
+                            self.name), 3)
+        except Exception as e:
+            print("[vavoo] Error removing favorite: {}".format(e))
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Remove failed: {}").format(str(e)), 4)
+        self._update_export_button_label()
 
     def message2(self, name, url, response):
         if not export_lock.acquire(blocking=False):
@@ -3371,15 +3432,13 @@ class vavoo(Screen):
                     _("An export for another country is already in progress. Please wait."), 4)
             return
 
+        self._export_type = "hierarchical" if any(
+            sep in name for sep in ["➾", "⟾", "->", "→"]) else "flat"
+
         try:
             export_bouquet_async(
                 name,
-                "hierarchical" if any(
-                    sep in name for sep in [
-                        "➾",
-                        "⟾",
-                        "->",
-                        "→"]) else "flat",
+                self._export_type,
                 self,
                 self._on_export_complete,
                 cfg.services.value,
@@ -3414,6 +3473,17 @@ class vavoo(Screen):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
+                self._update_export_button_label()
+                # Register with Favorite.txt so "Scheduled List" auto-update
+                # (AutoStartTimer) picks this bouquet up going forward -
+                # that feature only ever re-updates bouquets already listed
+                # there, it never adds new ones on its own.
+                try:
+                    _update_favorite_file(
+                        self.name, self.url,
+                        getattr(self, '_export_type', 'flat'))
+                except Exception as e:
+                    print("[vavoo] Error updating Favorite.txt: {}".format(e))
 
             elif message == "EPG processing completed":
                 # Second callback - EPG completed
@@ -3976,20 +4046,28 @@ class TvInfoBarShowHide():
                 debug("show_help_overlay proxy_update_timer started")
 
             def _fetch_epg_async():
+                # The fetch below can take a long time on a slow/flaky
+                # network. If the user has already left this channel by
+                # the time it finishes, self is a torn-down screen -
+                # don't touch it any further.
+                if self._closed:
+                    return
                 try:
                     epg_text = self.get_current_epg()
                 except Exception as e:
                     print("[Show Help] Async EPG fetch error: " + str(e))
                     return
+                if self._closed:
+                    return
 
                 def _apply_epg_text():
                     try:
-                        if self["helpOverlay"].visible:
+                        if not self._closed and self["helpOverlay"].visible:
                             self["epgOverlay"].setText(epg_text)
                             debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        debug("Applying EPG overlay text failed: {}".format(e))
                 reactor.callFromThread(_apply_epg_text)
 
             _epg_fetch_thread = threading.Thread(target=_fetch_epg_async)
@@ -4228,6 +4306,12 @@ class Playstream2(
 
         self.stream_running = False
         self.is_streaming = False
+        # Set once cancel() starts closing this screen, so a background
+        # EPG fetch already in flight from a channel the user has since
+        # left (show_help_overlay's _fetch_epg_async) can notice and
+        # stop touching self instead of running against a torn-down
+        # screen.
+        self._closed = False
         self.currentindex = index
         self.item = item
         self.itemscount = len(cat_list)
@@ -4300,38 +4384,62 @@ class Playstream2(
         self.onClose.append(self.cancel)
 
     def showIMDB(self):
-        try:
-            epg_text = self.get_current_epg() if cfg.epg_enabled.value else ""
-            if epg_text and epg_text not in [
-                    "EPG not available", "No programme found", ""]:
-                if " - " in epg_text:
-                    title = epg_text.split(" - ")[0].strip()
-                    if " " in title and title[2] == ":":
-                        parts = title.split(" ", 1)
-                        if len(parts) > 1:
-                            title = parts[1].strip()
-                else:
-                    title = epg_text
+        # get_current_epg() can block for well over a minute when the
+        # EPG feed fetch stalls (e.g. flaky DNS) - the getUrl() timeout
+        # passed to it only bounds the socket connect/read, not name
+        # resolution. Run it off the main/reactor thread so a stall
+        # here doesn't freeze the whole GUI, and marshal the actual
+        # IMDb-opening (touches self.session) back onto the reactor.
+        if not cfg.epg_enabled.value:
+            print("[IMDB] No EPG available for current channel")
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("No programme info available"), 3)
+            return
 
-                print("[IMDB] Searching for: %s" % title)
+        def _openForEpgText(epg_text):
+            try:
+                if epg_text and epg_text not in [
+                        "EPG not available", "No programme found", ""]:
+                    if " - " in epg_text:
+                        title = epg_text.split(" - ")[0].strip()
+                        if " " in title and title[2] == ":":
+                            parts = title.split(" ", 1)
+                            if len(parts) > 1:
+                                title = parts[1].strip()
+                    else:
+                        title = epg_text
 
-                if returnIMDB(title, self.session):
-                    print(
-                        '[Playstream2] TMDB/IMDb opened for programme: %s' %
-                        title)
+                    print("[IMDB] Searching for: %s" % title)
+
+                    if returnIMDB(title, self.session):
+                        print(
+                            '[Playstream2] TMDB/IMDb opened for programme: %s' %
+                            title)
+                    else:
+                        print('[Playstream2] No TMDB/IMDb plugin found')
+                        if NOTIFICATION_AVAILABLE:
+                            print('notify started')
+                            quick_notify(_("No IMDb/TMDB plugin found"), 4)
                 else:
-                    print('[Playstream2] No TMDB/IMDb plugin found')
+                    print("[IMDB] No EPG available for current channel")
                     if NOTIFICATION_AVAILABLE:
                         print('notify started')
-                        quick_notify(_("No IMDb/TMDB plugin found"), 4)
-            else:
-                print("[IMDB] No EPG available for current channel")
-                if NOTIFICATION_AVAILABLE:
-                    print('notify started')
-                    quick_notify(_("No programme info available"), 3)
+                        quick_notify(_("No programme info available"), 3)
 
-        except Exception as e:
-            print('[Playstream2] Error opening IMDb/TMDB: %s' % e)
+            except Exception as e:
+                print('[Playstream2] Error opening IMDb/TMDB: %s' % e)
+
+        def _fetchEpgThenOpen():
+            try:
+                epg_text = self.get_current_epg()
+            except Exception as e:
+                print('[Playstream2] Error fetching EPG for IMDb: %s' % e)
+                epg_text = ""
+            reactor.callFromThread(_openForEpgText, epg_text)
+
+        epg_thread = threading.Thread(target=_fetchEpgThenOpen)
+        epg_thread.setDaemon(True)
+        epg_thread.start()
 
     def nextitem(self):
         """Switch to next channel"""
@@ -4748,8 +4856,7 @@ class Playstream2(
 
         except Exception as e:
             print("[EPG] Exception in get_current_epg: {}".format(e))
-            import traceback
-            traceback.print_exc()
+            trace_error()
             return "EPG error"
 
     def playProxyStream(self, force_refresh=False):
@@ -4887,12 +4994,13 @@ class Playstream2(
             self.session.nav.stopService()
             if restore_original and self.srefInit:
                 self.session.nav.playService(self.srefInit)
-        except BaseException:
-            pass
+        except BaseException as e:
+            print("[Playstream2] Failed to stop/restore service: {}".format(e))
 
     def cancel(self):
         """Close the player"""
         print("[Playstream2] Closing player...")
+        self._closed = True
         self.stopStream()
         try:
             for screen in self.session.dialog_stack:
@@ -4918,13 +5026,14 @@ class Playstream2(
         # Restore aspect ratio
         try:
             aspect_manager.restore_aspect()
-        except BaseException:
-            pass
+        except BaseException as e:
+            debug("aspect_manager.restore_aspect() failed: {}".format(e))
 
         self.close()
 
     def leavePlayer(self):
         """Alternative close method"""
+        self._closed = True
         self.stopStream()
         self.close()
 
@@ -5142,10 +5251,19 @@ def delayed_boot_tasks():
 
 
 def autostart(reason, session=None, **kwargs):
-    global _session, delayed_start_timer
+    global _autostart_scheduled, delayed_start_timer
 
-    if reason == 0 and _session is None and session is not None:
-        _session = session
+    # NOTE: this must NOT set the module-level _session - that's how
+    # delayed_boot_tasks() (below) tells whether the user has actually
+    # opened a plugin screen since boot. It used to be set here too,
+    # which meant delayed_boot_tasks() always saw it as non-None (this
+    # function had just set it moments earlier) and always skipped
+    # starting the proxy at boot, regardless of whether the plugin was
+    # ever opened - the proxy would only exist in a half-initialized
+    # state (token monitor thread running, since that starts at module
+    # import) with no actual HTTP server listening.
+    if reason == 0 and not _autostart_scheduled and session is not None:
+        _autostart_scheduled = True
 
         delayed_start_timer = eTimer()
         try:

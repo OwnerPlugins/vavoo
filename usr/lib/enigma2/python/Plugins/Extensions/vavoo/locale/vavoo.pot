@@ -396,6 +396,9 @@ msgstr ""
 msgid "No valid channels for: %s"
 msgstr ""
 
+msgid "Nothing to remove for: {}"
+msgstr ""
+
 msgid "Now %s"
 msgstr ""
 
@@ -463,6 +466,15 @@ msgid "Remove"
 msgstr ""
 
 msgid "Remove ALL Vavoo bouquets?"
+msgstr ""
+
+msgid "Remove failed: {}"
+msgstr ""
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr ""
+
+msgid "Removed exported bouquet: {}"
 msgstr ""
 
 msgid "Restarting..."

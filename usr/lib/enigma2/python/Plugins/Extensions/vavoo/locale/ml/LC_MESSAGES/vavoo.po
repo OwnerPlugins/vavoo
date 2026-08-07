@@ -411,6 +411,9 @@ msgstr "തിരഞ്ഞെടുക്കലൊന്നുമില്ല"
 msgid "No valid channels for: %s"
 msgstr "ഇതിനായി സാധുവായ ചാനലുകളൊന്നുമില്ല: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "ഇതിനായി നീക്കം ചെയ്യാൻ ഒന്നുമില്ല: {}"
+
 msgid "Now %s"
 msgstr "ഇപ്പോൾ %s"
 
@@ -480,6 +483,16 @@ msgstr "നീക്കം ചെയ്യുക"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "എല്ലാ വാവോ പൂച്ചെണ്ടുകളും നീക്കം ചെയ്യണോ?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "കയറ്റുമതി പരാജയപ്പെട്ടു: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "ഈ രാജ്യത്തിന്/വിഭാഗത്തിനായി കയറ്റുമതി ചെയ്ത പൂച്ചെണ്ട് നീക്കം ചെയ്യണോ?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "കയറ്റുമതി ചെയ്ത പൂച്ചെണ്ട് നീക്കം ചെയ്തു: {}"
 
 msgid "Restarting..."
 msgstr "പുനരാരംഭിക്കുന്നു..."

@@ -411,6 +411,9 @@ msgstr "Ekkert úrval"
 msgid "No valid channels for: %s"
 msgstr "Engar gildar rásir fyrir: %s"
 
+msgid "Nothing to remove for: {}"
+msgstr "Ekkert til að fjarlægja fyrir: {}"
+
 msgid "Now %s"
 msgstr "Nú %s"
 
@@ -480,6 +483,16 @@ msgstr "Fjarlægja"
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Fjarlægja ALLA Vavoo kransa?"
+
+#, fuzzy
+msgid "Remove failed: {}"
+msgstr "Útflutningur mistókst: {}"
+
+msgid "Remove the exported bouquet for this country/category?"
+msgstr "Fjarlægja útflutta vöndinn fyrir þetta land/flokk?"
+
+msgid "Removed exported bouquet: {}"
+msgstr "Fjarlægður útfluttur vöndur: {}"
 
 msgid "Restarting..."
 msgstr "Endurræsir..."
