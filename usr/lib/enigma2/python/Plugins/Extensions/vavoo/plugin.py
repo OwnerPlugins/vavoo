@@ -1339,28 +1339,6 @@ class vavoo_config(Screen, ConfigListScreen):
         except Exception as e:
             print("[Vavoo] Error scheduling EPG update:", str(e))
 
-    def trigger_epg_update(self):
-        """Manually trigger an EPG update"""
-        try:
-            # Use EPGImport's command line interface if available
-            import subprocess
-            result = subprocess.call(['epgimport', '--import'], timeout=60)
-            if result == 0:
-                self.session.open(
-                    MessageBox,
-                    _("EPG update started successfully"),
-                    MessageBox.TYPE_INFO)
-            else:
-                self.session.open(
-                    MessageBox,
-                    _("EPG update failed"),
-                    MessageBox.TYPE_ERROR)
-        except Exception as e:
-            print("[Vavoo] Error triggering EPG update:", str(e))
-            self.session.open(
-                MessageBox, _("Error starting EPG update: {}").format(
-                    str(e)), MessageBox.TYPE_ERROR)
-
     def save(self):
         if self["config"].isChanged():
             old_position = getattr(cfg, 'list_position', None)
@@ -2747,42 +2725,33 @@ class MainVavoo(Screen):
         )
 
     def _epg_update_callback(self, answer):
-        if answer:
+        if not answer:
+            return
+        # There is no "epgimport" CLI binary on a normal Enigma2 image -
+        # EPGImport is a GUI plugin, not a command-line tool. Opening its
+        # own Screen is what actually starts an import (the same thing
+        # that happens when a user opens it from the plugin menu
+        # themselves), and since that's an Enigma2 GUI operation it has
+        # to happen on the main/reactor thread - this is already running
+        # on it (called from a MessageBox callback), so no background
+        # thread is needed or appropriate here.
+        try:
             try:
-                # Call EPGImport via command line
-                import subprocess
-                self['name'].setText(_("Updating EPG..."))
-
-                # Run in background to not block UI. UI updates must be
-                # marshalled back onto the reactor thread - Enigma2's GUI
-                # components aren't thread-safe to touch directly from a
-                # background thread.
-                def update_thread():
-                    try:
-                        result = subprocess.call(
-                            ['epgimport', '--import'], timeout=300)
-                        if result == 0:
-                            reactor.callFromThread(
-                                self.session.open, MessageBox,
-                                _("EPG update completed"), MessageBox.TYPE_INFO)
-                        else:
-                            reactor.callFromThread(
-                                self.session.open, MessageBox,
-                                _("EPG update failed"), MessageBox.TYPE_ERROR)
-                    except Exception as e:
-                        print("[Vavoo] EPG update error:", str(e))
-                    finally:
-                        reactor.callFromThread(
-                            self['name'].setText, _("Ready"))
-
-                thread = threading.Thread(target=update_thread)
-                thread.setDaemon(True)
-                thread.start()
-
-            except Exception as e:
-                self.session.open(
-                    MessageBox, _("Error: {}").format(
-                        str(e)), MessageBox.TYPE_ERROR)
+                from Plugins.Extensions.EPGImport.EPGImport import EPGImport
+            except ImportError:
+                from Plugins.Extensions.EPGImport.epgimport import EPGImport
+            self.session.open(EPGImport)
+        except ImportError as e:
+            print("[Vavoo] EPG update error:", str(e))
+            self.session.open(
+                MessageBox,
+                _("EPGImport plugin not found: {}").format(str(e)),
+                MessageBox.TYPE_ERROR)
+        except Exception as e:
+            print("[Vavoo] EPG update error:", str(e))
+            self.session.open(
+                MessageBox, _("Error starting EPG update: {}").format(
+                    str(e)), MessageBox.TYPE_ERROR)
 
     def msgdeleteBouquets(self):
         message_parts = []
