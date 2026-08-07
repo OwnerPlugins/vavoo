@@ -2060,8 +2060,22 @@ class VavooEPGMatcher:
         # threshold anyway, never a false negative. This loop runs against
         # every Rytec entry for the country on every uncached match, so it
         # matters most for countries with large Rytec databases (e.g. Italy).
+        source_tokens = clean_input.split()
         sm = SequenceMatcher(None, clean_input)
         for clean_entry, orig_name, rytec_id, service_ref in entries_to_scan:
+            # A shared textual prefix with a *different* word at a
+            # position both share is a strong signal these are
+            # different channels (e.g. "canal motogp" vs "canal plus
+            # foot") - raw character similarity alone can clear even a
+            # fairly high threshold for such pairs since most of the
+            # string still overlaps. A longer entry may still add
+            # trailing descriptive words - only a genuine word-for-word
+            # prefix mismatch is rejected.
+            if source_tokens:
+                entry_tokens = clean_entry.split()
+                if entry_tokens and not _tokens_compatible(
+                        source_tokens, entry_tokens):
+                    continue
             sm.set_seq2(clean_entry)
             if sm.real_quick_ratio() < self.similarity_threshold:
                 continue
