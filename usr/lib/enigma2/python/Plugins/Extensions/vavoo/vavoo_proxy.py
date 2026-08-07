@@ -1288,7 +1288,23 @@ class VavooProxy:
 class VavooHTTPHandler(BaseHTTPRequestHandler):
     timeout = 10
 
+    def do_HEAD(self):
+        # BaseHTTPRequestHandler returns 501 for any method without a
+        # do_* handler - some EPG importers (and other HTTP clients)
+        # probe a URL with HEAD before actually fetching it, and would
+        # treat that 501 as the source being unreachable, silently
+        # skipping it entirely rather than falling back to GET. Reuse
+        # do_GET's routing/headers for every endpoint, just without a
+        # body, which is what HEAD is supposed to return anyway.
+        self._head_only = True
+        try:
+            self.do_GET()
+        finally:
+            self._head_only = False
+
     def safe_write(self, data):
+        if getattr(self, '_head_only', False):
+            return True
         try:
             if isinstance(data, unicode):
                 data = data.encode('utf-8')
