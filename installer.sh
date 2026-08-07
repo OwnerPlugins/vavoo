@@ -115,6 +115,13 @@ install_pkg() {
     fi
 }
 
+if [ -x /usr/bin/python3 ]; then
+    install_pkg "python3-difflib"
+else
+    install_pkg "python-difflib"
+fi
+
+
 [ "$PYTHON" = "PY3" ] && install_pkg "$Packagesix"
 install_pkg "$Packagerequests"
 
