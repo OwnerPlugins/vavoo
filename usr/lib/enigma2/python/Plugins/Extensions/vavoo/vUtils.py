@@ -2779,10 +2779,21 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
+    source_digits = set(findall(r'\d+', clean))
     best_score = 0.0
     best_id = None
     sm = SequenceMatcher(None, clean)
     for dn_key, dn_id in name_index.items():
+        # A shared textual prefix with a *different* embedded number is
+        # a strong signal these are actually different channels (e.g.
+        # "canale 122" vs "canale 5", "italia 3" vs "italia 2") -
+        # SequenceMatcher alone scores these well above threshold since
+        # most of the string still matches, which was silently
+        # substituting one channel's programme data for another's.
+        if source_digits:
+            candidate_digits = set(findall(r'\d+', dn_key))
+            if candidate_digits and candidate_digits != source_digits:
+                continue
         sm.set_seq2(dn_key)
         score = sm.ratio()
         if score > best_score:
