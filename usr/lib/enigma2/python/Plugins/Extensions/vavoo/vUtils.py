@@ -2772,6 +2772,21 @@ def _get_epg_feed_index(country_code):
     return feed_ids, name_index
 
 
+def _tokens_compatible(a_tokens, b_tokens):
+    """True unless the two token lists differ at a shared position -
+    i.e. one is a genuine word-for-word prefix of the other (or
+    they're equal). A longer name is allowed to just add trailing
+    descriptive words (e.g. "sky sport" / "sky sport 4k"), but
+    substituting a different word at a position both share (e.g.
+    "canale 5" vs "canale 122", "france o" vs "france 3") means these
+    are actually different channels, no matter how high the raw
+    character-level similarity looks."""
+    shorter, longer = (
+        (a_tokens, b_tokens) if len(a_tokens) <= len(b_tokens)
+        else (b_tokens, a_tokens))
+    return shorter == longer[:len(shorter)]
+
+
 def _find_feed_id_by_name(channel_name, matcher, name_index):
     """Fuzzy-match channel_name against an EPG feed's display-name index."""
     if not name_index:
@@ -2779,21 +2794,15 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
-    source_digits = set(findall(r'\d+', clean))
+    source_tokens = clean.split()
     best_score = 0.0
     best_id = None
     sm = SequenceMatcher(None, clean)
     for dn_key, dn_id in name_index.items():
-        # A shared textual prefix with a *different* embedded number is
-        # a strong signal these are actually different channels (e.g.
-        # "canale 122" vs "canale 5", "italia 3" vs "italia 2") -
-        # SequenceMatcher alone scores these well above threshold since
-        # most of the string still matches, which was silently
-        # substituting one channel's programme data for another's.
-        if source_digits:
-            candidate_digits = set(findall(r'\d+', dn_key))
-            if candidate_digits and candidate_digits != source_digits:
-                continue
+        candidate_tokens = dn_key.split()
+        if (source_tokens and candidate_tokens and
+                not _tokens_compatible(source_tokens, candidate_tokens)):
+            continue
         sm.set_seq2(dn_key)
         score = sm.ratio()
         if score > best_score:
