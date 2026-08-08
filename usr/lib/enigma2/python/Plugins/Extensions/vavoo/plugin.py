@@ -2741,11 +2741,35 @@ class MainVavoo(Screen):
         # called directly from here without our own threading.
         try:
             from Plugins.Extensions.EPGImport.plugin import (
-                epgimport, startImport)
+                epgimport, startImport, CONFIG_PATH)
+            from Plugins.Extensions.EPGImport import EPGConfig
             if epgimport.isImportRunning():
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(_("EPG import already running"), 3)
                 return
+            # epgimport.beginImport() (called by startImport()) requires
+            # epgimport.sources to already be populated - its own
+            # docstring says so ("Set self.sources before calling
+            # this"). EPGImport's own UI only ever calls startImport()
+            # from EPGImportConfig.doimport(), which builds that list
+            # from the user's enabled-sources settings first; calling
+            # startImport() directly skips that step, so with an empty
+            # source list nextImport() just closes the import right
+            # away - "0 events imported" with no error, since nothing
+            # was actually queued to import in the first place.
+            cfg = EPGConfig.loadUserSettings()
+            sources = list(
+                EPGConfig.enumSources(CONFIG_PATH, filter=cfg["sources"]))
+            if not sources:
+                self.session.open(
+                    MessageBox,
+                    _("No active EPG sources found in EPGImport. "
+                      "Please enable the Vavoo source in EPGImport settings."),
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
+                return
+            sources.reverse()
+            epgimport.sources = sources
             startImport()
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("EPG import started"), 3)
