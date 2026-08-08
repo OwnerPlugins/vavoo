@@ -1730,13 +1730,18 @@ class UpdatePopup(Screen):
         # ScrollLabel, not a plain Label: the changelog can run well
         # past what the fixed-height box fits (confirmed - a 9-entry
         # changelog overflowed a plain Label with no way to see the
-        # rest). ScrollLabel.setText()'s pageHeight is computed from the
-        # widget's bound size, which isn't reliably established yet in
-        # __init__ across images (comes out 0 on some) - deferring the
-        # setText() call to onLayoutFinish, after the skin has actually
-        # bound the widget, is the standard fix for that.
+        # rest). Construct it WITH the real text (same pattern
+        # EPGImport's own log screen uses successfully) so something is
+        # always visible even on images where pageHeight never comes
+        # out right - a previous attempt here that constructed with ""
+        # and deferred setText() entirely to onLayoutFinish left the box
+        # completely blank on at least OpenATV 7.6, not just
+        # mis-paginated. Still re-set it in onLayoutFinish too, once the
+        # widget's bound size is actually established, so pagination
+        # (pageUp/pageDown) is correct on images where the constructor
+        # call alone gets a wrong/zero pageHeight.
         self._changelog_text = changelog or _("No changelog provided.")
-        self["changelog"] = ScrollLabel("")
+        self["changelog"] = ScrollLabel(self._changelog_text)
         self.onLayoutFinish.append(self._setChangelogText)
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Yes, update now"))
