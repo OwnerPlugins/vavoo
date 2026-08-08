@@ -2728,19 +2728,27 @@ class MainVavoo(Screen):
         if not answer:
             return
         # There is no "epgimport" CLI binary on a normal Enigma2 image -
-        # EPGImport is a GUI plugin, not a command-line tool. Opening its
-        # own Screen is what actually starts an import (the same thing
-        # that happens when a user opens it from the plugin menu
-        # themselves), and since that's an Enigma2 GUI operation it has
-        # to happen on the main/reactor thread - this is already running
-        # on it (called from a MessageBox callback), so no background
-        # thread is needed or appropriate here.
+        # EPGImport is a GUI plugin, not a command-line tool, and
+        # EPGImport.EPGImport itself isn't a Screen either - it's a plain
+        # importer class. Plugins/Extensions/EPGImport/plugin.py (every
+        # Enigma2 plugin has a lowercase plugin.py as its required entry
+        # point) keeps a module-level startImport() that's the exact same
+        # function EPGImport's own UI button calls, using a
+        # already-constructed singleton importer - calling it directly
+        # runs a real import with no screen/dialog of ours or theirs
+        # involved. It kicks off its own async work (threads/reactor)
+        # internally, same as EPGImport's own button does, so this can be
+        # called directly from here without our own threading.
         try:
-            try:
-                from Plugins.Extensions.EPGImport.EPGImport import EPGImport
-            except ImportError:
-                from Plugins.Extensions.EPGImport.epgimport import EPGImport
-            self.session.open(EPGImport)
+            from Plugins.Extensions.EPGImport.plugin import (
+                epgimport, startImport)
+            if epgimport.isImportRunning():
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("EPG import already running"), 3)
+                return
+            startImport()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("EPG import started"), 3)
         except ImportError as e:
             print("[Vavoo] EPG update error:", str(e))
             self.session.open(
