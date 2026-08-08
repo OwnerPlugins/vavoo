@@ -235,6 +235,13 @@ msgstr "Ĉu vi volas ripari la kaŝmemorformaton?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG Simileca sojlo (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo jam kuras."
+
+msgid "EPG import started"
+msgstr "EPG-importo komenciĝis"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG estas malŝaltita. Bonvolu unue ebligi ĝin en Vavoo-agordoj."
 
@@ -244,14 +251,8 @@ msgstr "EPG-pretigo finiĝis (neniu kongruoj)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-pretigo finiĝis por {} kanaloj"
 
-msgid "EPG update completed"
-msgstr "EPG-ĝisdatigo finiĝis"
-
-msgid "EPG update failed"
-msgstr "EPG-ĝisdatigo malsukcesis"
-
-msgid "EPG update started successfully"
-msgstr "EPG-ĝisdatigo komenciĝis sukcese"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport kromaĵo ne trovita: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Ebligu Vavoo EPG"
@@ -279,9 +280,6 @@ msgstr "Eraro dum lanĉado de kanalo"
 
 msgid "Error: %s"
 msgstr "Eraro: %s"
-
-msgid "Error: {}"
-msgstr "Eraro: {}"
 
 msgid "Exit"
 msgstr "Eliro"
@@ -391,6 +389,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Neniu interreta konekto detektita. Bonvolu kontroli vian reton."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG-fonto ne estas ebligita en EPGImport. Bonvolu aktivigi ĝin en la agordoj de EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Neniuj kanaloj trovitaj"
 
@@ -457,9 +459,6 @@ msgstr "Prokura ektempotempo (sekundoj)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Prokura ĵetono refreŝiĝis sukcese"
-
-msgid "Ready"
-msgstr "Preta"
 
 msgid "Really close without saving settings?"
 msgstr "Ĉu vere fermi sen konservi agordojn?"
@@ -602,9 +601,6 @@ msgstr "Ĝisdatigu intervalon (minutoj):"
 msgid "Update now?"
 msgstr "Ĉu komenci EPG-ĝisdatigon nun?"
 
-msgid "Updating EPG..."
-msgstr "Ĝisdatigante EPG..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Ĝisdatigante Vavoo Stream Live..."
 
@@ -677,6 +673,24 @@ msgstr "✗ Prokura eksterrete"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rekomenco Malsukcesis"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG-ĝisdatigo finiĝis"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-ĝisdatigo malsukcesis"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-ĝisdatigo komenciĝis sukcese"
+
+#~ msgid "Error: {}"
+#~ msgstr "Eraro: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Preta"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Ĝisdatigante EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Bonvolu provi alian kanalon."

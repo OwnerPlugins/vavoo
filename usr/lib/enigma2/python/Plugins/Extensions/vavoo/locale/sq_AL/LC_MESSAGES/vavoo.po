@@ -234,6 +234,13 @@ msgstr "Dëshiron të rregullosh formatin e cache-it?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Pragu i ngjashmërisë së EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo tashmë po funksionon."
+
+msgid "EPG import started"
+msgstr "Filloi importi i EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG është i çaktivizuar. Ju lutemi aktivizoni atë në cilësimet e Vavoo së pari."
 
@@ -243,14 +250,8 @@ msgstr "Përpunimi i EPG-së përfundoi (nuk ka përputhje)"
 msgid "EPG processing completed for {} channels"
 msgstr "Përpunimi EPG përfundoi për {} kanale"
 
-msgid "EPG update completed"
-msgstr "Përditësimi i EPG përfundoi"
-
-msgid "EPG update failed"
-msgstr "Përditësimi i EPG dështoi"
-
-msgid "EPG update started successfully"
-msgstr "Përditësimi EPG filloi me sukses"
+msgid "EPGImport plugin not found: {}"
+msgstr "Shtojca EPGImport nuk u gjet: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Aktivizo Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "Gabim në nisjen e kanalit"
 
 msgid "Error: %s"
 msgstr "Gabim: %s"
-
-msgid "Error: {}"
-msgstr "Gabim: {}"
 
 msgid "Exit"
 msgstr "Dilni"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Nuk u zbulua asnjë lidhje interneti. Ju lutemi kontrolloni rrjetin tuaj."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Burimi Vavoo EPG nuk është i aktivizuar në EPGImport. Ju lutemi aktivizoni atë në cilësimet e EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Nuk u gjet asnjë kanal"
 
@@ -456,9 +458,6 @@ msgstr "Koha e nisjes së përfaqësuesit (sekonda)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Shenja e përfaqësuesit u rifreskua me sukses"
-
-msgid "Ready"
-msgstr "Gati"
 
 msgid "Really close without saving settings?"
 msgstr "Vërtetë mbyllet pa ruajtur cilësimet?"
@@ -601,9 +600,6 @@ msgstr "Intervali i përditësimit (minuta):"
 msgid "Update now?"
 msgstr "Të fillohet përditësimi i EPG tani?"
 
-msgid "Updating EPG..."
-msgstr "Po përditëson EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Shtojca Vavoo Stream Live"
@@ -677,6 +673,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Përditësimi i EPG përfundoi"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Përditësimi i EPG dështoi"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Përditësimi EPG filloi me sukses"
+
+#~ msgid "Error: {}"
+#~ msgstr "Gabim: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Gati"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Po përditëson EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Ju lutemi provoni një kanal tjetër."

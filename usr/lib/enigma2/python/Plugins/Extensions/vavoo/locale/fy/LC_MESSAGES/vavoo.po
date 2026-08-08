@@ -234,6 +234,13 @@ msgstr "Wolle jo it cache-formaat reparearje?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG-oerienkomstdrempel (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo rint al."
+
+msgid "EPG import started"
+msgstr "EPG ymport begûn"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG is útskeakele. Skeakelje it earst yn Vavoo-ynstellingen yn."
 
@@ -243,14 +250,8 @@ msgstr "EPG-ferwurking foltôge (gjin wedstriden)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-ferwurking foltôge foar {} kanalen"
 
-msgid "EPG update completed"
-msgstr "EPG-fernijing foltôge"
-
-msgid "EPG update failed"
-msgstr "EPG-fernijing mislearre"
-
-msgid "EPG update started successfully"
-msgstr "EPG-fernijing is mei súkses begûn"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport plugin net fûn: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG ynskeakelje"
@@ -278,9 +279,6 @@ msgstr "Flater by it starten fan kanaal"
 
 msgid "Error: %s"
 msgstr "Flater: %s"
-
-msgid "Error: {}"
-msgstr "Flater: {}"
 
 msgid "Exit"
 msgstr "Útgong"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Gjin ynternetferbining fûn. Kontrolearje asjebleaft jo netwurk."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG-boarne is net ynskeakele yn EPGImport. Aktivearje it asjebleaft yn EPGImport-ynstellingen."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Gjin kanalen fûn"
 
@@ -456,9 +458,6 @@ msgstr "Proxy opstarttiid (sekonden)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token is mei súkses ferfarske"
-
-msgid "Ready"
-msgstr "Klear"
 
 msgid "Really close without saving settings?"
 msgstr "Echt slute sûnder ynstellings te bewarjen?"
@@ -601,9 +600,6 @@ msgstr "Update ynterval (minuten):"
 msgid "Update now?"
 msgstr "EPG-fernijing no begjinne?"
 
-msgid "Updating EPG..."
-msgstr "EPG bywurkje..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live bywurkje..."
 
@@ -676,6 +672,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herstart mislearre"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG-fernijing foltôge"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-fernijing mislearre"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-fernijing is mei súkses begûn"
+
+#~ msgid "Error: {}"
+#~ msgstr "Flater: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Klear"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG bywurkje..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Besykje in oar kanaal."

@@ -235,6 +235,13 @@ msgstr "Kas soovite vahemälu vormingut parandada?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG sarnasuse lävi (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo juba jookseb."
+
+msgid "EPG import started"
+msgstr "EPG import algas"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG on keelatud. Palun lubage see esmalt Vavoo seadetes."
 
@@ -244,14 +251,8 @@ msgstr "EPG töötlemine lõpetatud (vasteid pole)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG töötlemine on lõpetatud {} kanali jaoks"
 
-msgid "EPG update completed"
-msgstr "EPG värskendus on lõpetatud"
-
-msgid "EPG update failed"
-msgstr "EPG värskendamine ebaõnnestus"
-
-msgid "EPG update started successfully"
-msgstr "EPG värskendamine algas edukalt"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGIimpordi pistikprogrammi ei leitud: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Luba Vavoo EPG"
@@ -279,9 +280,6 @@ msgstr "Viga kanali käivitamisel"
 
 msgid "Error: %s"
 msgstr "Viga: %s"
-
-msgid "Error: {}"
-msgstr "Viga: {}"
 
 msgid "Exit"
 msgstr "Välju"
@@ -391,6 +389,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Interneti-ühendust ei tuvastatud. Kontrollige oma võrku."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG allikas pole rakenduses EPGImport lubatud. Palun lubage see EPGIimpordi seadetes."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Ühtegi kanalit ei leitud"
 
@@ -457,9 +459,6 @@ msgstr "Puhverserveri käivitamise ajalõpp (sekundites)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Puhverserveri märgi värskendamine õnnestus"
-
-msgid "Ready"
-msgstr "Valmis"
 
 msgid "Really close without saving settings?"
 msgstr "Kas tõesti sulgeda seadeid salvestamata?"
@@ -602,9 +601,6 @@ msgstr "Värskendusintervall (minutid):"
 msgid "Update now?"
 msgstr "Kas alustada EPG värskendamist kohe?"
 
-msgid "Updating EPG..."
-msgstr "EPG värskendamine..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo otseülekanne"
@@ -678,6 +674,24 @@ msgstr "✗ Puhverserver võrguühenduseta"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Taaskäivitamine ebaõnnestus"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG värskendus on lõpetatud"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG värskendamine ebaõnnestus"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG värskendamine algas edukalt"
+
+#~ msgid "Error: {}"
+#~ msgstr "Viga: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Valmis"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG värskendamine..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Proovige teist kanalit."

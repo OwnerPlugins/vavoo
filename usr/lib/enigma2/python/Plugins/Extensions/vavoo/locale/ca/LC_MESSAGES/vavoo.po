@@ -235,6 +235,13 @@ msgstr "Voleu arreglar el format de la memòria cau?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Llindar de semblança EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo ja funciona."
+
+msgid "EPG import started"
+msgstr "S'ha iniciat la importació d'EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG està desactivat. Activeu-lo primer a la configuració de Vavoo."
 
@@ -244,14 +251,8 @@ msgstr "S'ha completat el processament de l'EPG (sense coincidències)"
 msgid "EPG processing completed for {} channels"
 msgstr "S'ha completat el processament de l'EPG per a {} canals"
 
-msgid "EPG update completed"
-msgstr "S'ha completat l'actualització de l'EPG"
-
-msgid "EPG update failed"
-msgstr "L'actualització de l'EPG ha fallat"
-
-msgid "EPG update started successfully"
-msgstr "L'actualització de l'EPG s'ha iniciat correctament"
+msgid "EPGImport plugin not found: {}"
+msgstr "No s'ha trobat el connector EPGImport: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Habiliteu Vavoo EPG"
@@ -278,9 +279,6 @@ msgid "Error starting channel"
 msgstr "S'ha produït un error en iniciar el canal"
 
 msgid "Error: %s"
-msgstr ""
-
-msgid "Error: {}"
 msgstr ""
 
 msgid "Exit"
@@ -391,6 +389,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "No s'ha detectat cap connexió a Internet. Comproveu la vostra xarxa."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "La font d'EPG de Vavoo no està activada a EPGImport. Si us plau, activeu-lo a la configuració d'EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "No s'han trobat canals"
 
@@ -457,9 +459,6 @@ msgstr "Temps d'espera d'inici del servidor intermediari (segons)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "El testimoni de proxy s'ha actualitzat correctament"
-
-msgid "Ready"
-msgstr "A punt"
 
 msgid "Really close without saving settings?"
 msgstr "Tanqueu realment sense desar la configuració?"
@@ -602,9 +601,6 @@ msgstr "Interval d'actualització (minuts):"
 msgid "Update now?"
 msgstr "Inicieu l'actualització de l'EPG ara?"
 
-msgid "Updating EPG..."
-msgstr "S'està actualitzant l'EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Connector de Vavoo Stream Live"
@@ -678,6 +674,21 @@ msgstr "✗ Proxy fora de línia"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Error de reinici"
+
+#~ msgid "EPG update completed"
+#~ msgstr "S'ha completat l'actualització de l'EPG"
+
+#~ msgid "EPG update failed"
+#~ msgstr "L'actualització de l'EPG ha fallat"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "L'actualització de l'EPG s'ha iniciat correctament"
+
+#~ msgid "Ready"
+#~ msgstr "A punt"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "S'està actualitzant l'EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Si us plau, proveu amb un altre canal."

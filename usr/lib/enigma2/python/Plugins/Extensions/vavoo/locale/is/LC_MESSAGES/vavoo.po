@@ -234,6 +234,13 @@ msgstr "Viltu laga skyndiminni sniðið?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG líkt þröskuldur (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo er þegar í gangi."
+
+msgid "EPG import started"
+msgstr "EPG innflutningur hafinn"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG er óvirkt. Vinsamlegast virkjaðu það í Vavoo stillingum fyrst."
 
@@ -243,14 +250,8 @@ msgstr "EPG vinnslu lokið (engar samsvörun)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-vinnslu lokið fyrir {} rásir"
 
-msgid "EPG update completed"
-msgstr "EPG uppfærslu lokið"
-
-msgid "EPG update failed"
-msgstr "EPG uppfærsla mistókst"
-
-msgid "EPG update started successfully"
-msgstr "EPG uppfærsla hófst með góðum árangri"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport viðbót fannst ekki: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Virkjaðu Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "Villa við að ræsa rás"
 
 msgid "Error: %s"
 msgstr "Villa: %s"
-
-msgid "Error: {}"
-msgstr "Villa: {}"
 
 msgid "Exit"
 msgstr "Hætta"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Engin internettenging fannst. Vinsamlegast athugaðu netið þitt."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG uppspretta er ekki virkjuð í EPGImport. Vinsamlegast virkjaðu það í stillingum EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Engar rásir fundust"
 
@@ -456,9 +458,6 @@ msgstr "Tímamörk ræsingar proxy (sekúndur)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Umboðslykill endurnýjaður"
-
-msgid "Ready"
-msgstr "Tilbúið"
 
 msgid "Really close without saving settings?"
 msgstr "Virkilega loka án þess að vista stillingar?"
@@ -601,9 +600,6 @@ msgstr "Uppfærslubil (mínútur):"
 msgid "Update now?"
 msgstr "Byrja EPG uppfærslu núna?"
 
-msgid "Updating EPG..."
-msgstr "Uppfærir EPG..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Uppfærir Vavoo Stream Live..."
 
@@ -676,6 +672,24 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG uppfærslu lokið"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG uppfærsla mistókst"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG uppfærsla hófst með góðum árangri"
+
+#~ msgid "Error: {}"
+#~ msgstr "Villa: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Tilbúið"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Uppfærir EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Vinsamlegast reyndu aðra rás."

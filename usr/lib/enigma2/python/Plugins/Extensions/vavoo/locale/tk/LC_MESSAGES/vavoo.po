@@ -234,6 +234,13 @@ msgstr "Keş formatyny düzetmek isleýärsiňizmi?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG meňzeşlik çäkleri (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo eýýäm işleýär."
+
+msgid "EPG import started"
+msgstr "EPG importy başlandy"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ýapyk. Ilki bilen “Vavoo” sazlamalarynda işlediň."
 
@@ -243,14 +250,8 @@ msgstr "EPG gaýtadan işlemek tamamlandy (gabat gelenok)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG gaýtadan işlemek {} kanallar üçin tamamlandy"
 
-msgid "EPG update completed"
-msgstr "EPG täzelenmesi tamamlandy"
-
-msgid "EPG update failed"
-msgstr "EPG täzelenmesi şowsuz"
-
-msgid "EPG update started successfully"
-msgstr "EPG täzelenmesi üstünlikli başlandy"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport plugin tapylmady: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG-i işlediň"
@@ -278,9 +279,6 @@ msgstr "Kanaly başlamakda säwlik"
 
 msgid "Error: %s"
 msgstr "Roralňyşlyk:% s"
-
-msgid "Error: {}"
-msgstr "Roralňyşlyk: {}"
 
 msgid "Exit"
 msgstr "Çyk"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Internet birikmesi tapylmady Toruňyzy barlaň."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG çeşmesi EPGImport-da açyk däl. EPGImport sazlamalarynda işlediň."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Kanal tapylmady"
 
@@ -456,9 +458,6 @@ msgstr "Proksi başlangyç möhleti (sekuntlar)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proksi belligi üstünlikli täzelendi"
-
-msgid "Ready"
-msgstr "Taýýar"
 
 msgid "Really close without saving settings?"
 msgstr "Sazlamalary tygşytlamazdan hakykatdanam ýapykmy?"
@@ -601,9 +600,6 @@ msgstr "Aralyk aralygy (minutlar):"
 msgid "Update now?"
 msgstr "EPG täzelenmesini indi başlaň?"
 
-msgid "Updating EPG..."
-msgstr "EPG täzelenmek ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Wavoo akymy göni ýaýlymda"
@@ -677,6 +673,24 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG täzelenmesi tamamlandy"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG täzelenmesi şowsuz"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG täzelenmesi üstünlikli başlandy"
+
+#~ msgid "Error: {}"
+#~ msgstr "Roralňyşlyk: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Taýýar"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG täzelenmek ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Başga bir kanal synap görmegiňizi haýyş edýäris."

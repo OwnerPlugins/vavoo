@@ -234,6 +234,13 @@ msgstr "ကက်ရှ်ဖော်မတ်ကို သင်ပြင်�
 msgid "EPG Similarity Threshold (%)"
 msgstr ""
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo လည်ပတ်နေပြီဖြစ်သည်။"
+
+msgid "EPG import started"
+msgstr "EPG တင်သွင်းမှုကို စတင်ခဲ့သည်။"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ကို ပိတ်ထားသည်။ Vavoo ဆက်တင်များတွင် ဦးစွာဖွင့်ပါ။"
 
@@ -243,14 +250,8 @@ msgstr "EPG လုပ်ဆောင်ခြင်း ပြီးသွား�
 msgid "EPG processing completed for {} channels"
 msgstr "ချန်နယ် {} ခုအတွက် EPG လုပ်ဆောင်ခြင်း ပြီးသွားပါပြီ။"
 
-msgid "EPG update completed"
-msgstr "EPG အပ်ဒိတ် ပြီးပါပြီ။"
-
-msgid "EPG update failed"
-msgstr "EPG အပ်ဒိတ် မအောင်မြင်ပါ။"
-
-msgid "EPG update started successfully"
-msgstr "EPG အပ်ဒိတ်ကို အောင်မြင်စွာ စတင်ခဲ့သည်။"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport ပလပ်အင်ကို ရှာမတွေ့ပါ- {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG ကိုဖွင့်ပါ။"
@@ -278,9 +279,6 @@ msgstr "ချန်နယ်ကို စတင်ရာတွင် အမှ�
 
 msgid "Error: %s"
 msgstr "အမှား- %s"
-
-msgid "Error: {}"
-msgstr "အမှား- {}"
 
 msgid "Exit"
 msgstr "ထွက်ပေါက်"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "အင်တာနက်ချိတ်ဆက်မှု မတွေ့ရှိရပါ။ သင့်ကွန်ရက်ကို စစ်ဆေးပါ။"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG အရင်းအမြစ်ကို EPGImport တွင် ဖွင့်မထားပါ။ EPGImport ဆက်တင်များတွင် ၎င်းကိုဖွင့်ပါ။"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "ချန်နယ်များ မတွေ့ပါ။"
 
@@ -456,9 +458,6 @@ msgstr "ပရောက်စီစတင်ဖွင့်ချိန် (စ�
 
 msgid "Proxy token refreshed successfully"
 msgstr "ပရောက်စီတိုကင်ကို အောင်မြင်စွာ ပြန်လည်စတင်ပြီးပါပြီ။"
-
-msgid "Ready"
-msgstr "အဆင်သင့်"
 
 msgid "Really close without saving settings?"
 msgstr "ဆက်တင်များကို မသိမ်းဘဲ အမှန်တကယ် ပိတ်မလား။"
@@ -601,9 +600,6 @@ msgstr "အပ်ဒိတ်ကြားကာလ (မိနစ်)-"
 msgid "Update now?"
 msgstr "EPG အပ်ဒိတ်ကို ယခု စတင်မလား။"
 
-msgid "Updating EPG..."
-msgstr "EPG ကို အပ်ဒိတ်လုပ်နေသည်..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo တိုက်ရိုက်လွှင့်"
@@ -677,6 +673,24 @@ msgstr "✗ ပရောက်စီအော့ဖ်လိုင်း"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ပြန်လည်စတင်ခြင်း မအောင်မြင်ပါ။"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG အပ်ဒိတ် ပြီးပါပြီ။"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG အပ်ဒိတ် မအောင်မြင်ပါ။"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG အပ်ဒိတ်ကို အောင်မြင်စွာ စတင်ခဲ့သည်။"
+
+#~ msgid "Error: {}"
+#~ msgstr "အမှား- {}"
+
+#~ msgid "Ready"
+#~ msgstr "အဆင်သင့်"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG ကို အပ်ဒိတ်လုပ်နေသည်..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "ကျေးဇူးပြု၍ အခြားချန်နယ်ကို စမ်းကြည့်ပါ။"

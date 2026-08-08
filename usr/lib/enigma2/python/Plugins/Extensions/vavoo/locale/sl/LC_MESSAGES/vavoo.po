@@ -235,6 +235,13 @@ msgstr "Ali želite popraviti obliko predpomnilnika?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Prag podobnosti EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo že deluje."
+
+msgid "EPG import started"
+msgstr "Uvoz EPG se je začel"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG je onemogočen. Najprej ga omogočite v nastavitvah Vavoo."
 
@@ -244,14 +251,8 @@ msgstr "Obdelava EPG končana (ni zadetkov)"
 msgid "EPG processing completed for {} channels"
 msgstr "Obdelava EPG končana za {} kanalov"
 
-msgid "EPG update completed"
-msgstr "Posodobitev EPG končana"
-
-msgid "EPG update failed"
-msgstr "Posodobitev EPG ni uspela"
-
-msgid "EPG update started successfully"
-msgstr "Posodobitev EPG se je uspešno začela"
+msgid "EPGImport plugin not found: {}"
+msgstr "Vtičnika EPGImport ni bilo mogoče najti: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Omogoči Vavoo EPG"
@@ -279,9 +280,6 @@ msgstr "Napaka pri zagonu kanala"
 
 msgid "Error: %s"
 msgstr "Napaka: %s"
-
-msgid "Error: {}"
-msgstr "Napaka: {}"
 
 msgid "Exit"
 msgstr "Izhod"
@@ -391,6 +389,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Ni internetne povezave. Preverite svoje omrežje."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vir Vavoo EPG ni omogočen v EPGImport. Omogočite ga v nastavitvah EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Ni kanalov"
 
@@ -457,9 +459,6 @@ msgstr "Časovna omejitev zagona strežnika proxy (sekunde)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy žeton je bil uspešno osvežen"
-
-msgid "Ready"
-msgstr "pripravljena"
 
 msgid "Really close without saving settings?"
 msgstr "Ali res zaprete brez shranjevanja nastavitev?"
@@ -602,9 +601,6 @@ msgstr "Interval posodabljanja (minute):"
 msgid "Update now?"
 msgstr "Začeti posodobitev EPG zdaj?"
 
-msgid "Updating EPG..."
-msgstr "Posodabljanje EPG ..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Posodabljanje Vavoo Stream Live ..."
 
@@ -677,6 +673,24 @@ msgstr "✗ Proxy brez povezave"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovni zagon ni uspel"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Posodobitev EPG končana"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Posodobitev EPG ni uspela"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Posodobitev EPG se je uspešno začela"
+
+#~ msgid "Error: {}"
+#~ msgstr "Napaka: {}"
+
+#~ msgid "Ready"
+#~ msgstr "pripravljena"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Posodabljanje EPG ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Poskusite z drugim kanalom."

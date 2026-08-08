@@ -234,6 +234,13 @@ msgstr "您想修復快取格式嗎？"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG相似度閾值(%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo 已經在運作。"
+
+msgid "EPG import started"
+msgstr "EPG導入開始"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG 已停用。請先在 Vavoo 設定中啟用它。"
 
@@ -243,14 +250,8 @@ msgstr "EPG 處理完成（無匹配項）"
 msgid "EPG processing completed for {} channels"
 msgstr "{} 個頻道的 EPG 處理已完成"
 
-msgid "EPG update completed"
-msgstr "EPG更新完成"
-
-msgid "EPG update failed"
-msgstr "EPG更新失敗"
-
-msgid "EPG update started successfully"
-msgstr "EPG更新成功開始"
+msgid "EPGImport plugin not found: {}"
+msgstr "未找到 EPGImport 外掛：{}"
 
 msgid "Enable Vavoo EPG"
 msgstr "啟用 Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "啟動頻道時出錯"
 
 msgid "Error: %s"
 msgstr "錯誤：%s"
-
-msgid "Error: {}"
-msgstr "錯誤： {}"
 
 msgid "Exit"
 msgstr "出口"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "未偵測到網路連線。請檢查您的網路。"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "EPGImport 中未啟用 Vavoo EPG 來源。請在 EGImport 設定中啟用它。"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "沒有找到頻道"
 
@@ -456,9 +458,6 @@ msgstr "代理啟動超時（秒）"
 
 msgid "Proxy token refreshed successfully"
 msgstr "代理令牌刷新成功"
-
-msgid "Ready"
-msgstr "準備好"
 
 msgid "Really close without saving settings?"
 msgstr "真的關閉而不儲存設定嗎？"
@@ -601,9 +600,6 @@ msgstr "更新間隔（分鐘）："
 msgid "Update now?"
 msgstr "現在開始EPG更新嗎？"
 
-msgid "Updating EPG..."
-msgstr "正在更新電子節目指南..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo 直播"
@@ -677,6 +673,24 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG更新完成"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG更新失敗"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG更新成功開始"
+
+#~ msgid "Error: {}"
+#~ msgstr "錯誤： {}"
+
+#~ msgid "Ready"
+#~ msgstr "準備好"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "正在更新電子節目指南..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "請嘗試其他頻道。"

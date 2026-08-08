@@ -234,6 +234,13 @@ msgstr "צי איר ווילן צו פאַרריכטן די קאַש פֿאָר�
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG ענלעכקייט שוועל (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "וואַוואָ איז שוין פליסנדיק."
+
+msgid "EPG import started"
+msgstr "עפּג אַרייַנפיר סטאַרטעד"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG איז פאַרקריפּלט. ביטע געבן עס אין Vavoo סעטטינגס ערשטער."
 
@@ -243,14 +250,8 @@ msgstr "EPG פּראַסעסינג געענדיקט (קיין שוועבעלעך
 msgid "EPG processing completed for {} channels"
 msgstr "EPG פּראַסעסינג געענדיקט פֿאַר {} טשאַנאַלז"
 
-msgid "EPG update completed"
-msgstr "EPG דערהייַנטיקן געענדיקט"
-
-msgid "EPG update failed"
-msgstr "EPG דערהייַנטיקן ניט אַנדערש"
-
-msgid "EPG update started successfully"
-msgstr "EPG דערהייַנטיקן סטאַרטעד הצלחה"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport פּלוגין ניט געפֿונען: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "געבן Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "טעות אָנהייב קאַנאַל"
 
 msgid "Error: %s"
 msgstr "טעות: %s"
-
-msgid "Error: {}"
-msgstr "טעות: {}"
 
 msgid "Exit"
 msgstr "אַרויסגאַנג"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "קיין אינטערנעט פֿאַרבינדונג דיטעקטאַד. ביטע טשעק דיין נעץ."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG מקור איז נישט ענייבאַלד אין EPGImport. ביטע געבן עס אין EPGImport סעטטינגס."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "קיין טשאַנאַלז געפונען"
 
@@ -456,9 +458,6 @@ msgstr "פּראַקסי סטאַרטאַפּ טיימאַוט (סעקונדן)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "פּראָקסי טאָקען דערקוויקט הצלחה"
-
-msgid "Ready"
-msgstr "גרייט"
 
 msgid "Really close without saving settings?"
 msgstr "טאַקע נאָענט אָן שפּאָרן סעטטינגס?"
@@ -601,9 +600,6 @@ msgstr "דערהייַנטיקן מעהאַלעך (מינוט):"
 msgid "Update now?"
 msgstr "אָנהייבן EPG דערהייַנטיקן איצט?"
 
-msgid "Updating EPG..."
-msgstr "דערהייַנטיקט EPG ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo סטרים לייוו"
@@ -677,6 +673,24 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG דערהייַנטיקן געענדיקט"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG דערהייַנטיקן ניט אַנדערש"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG דערהייַנטיקן סטאַרטעד הצלחה"
+
+#~ msgid "Error: {}"
+#~ msgstr "טעות: {}"
+
+#~ msgid "Ready"
+#~ msgstr "גרייט"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "דערהייַנטיקט EPG ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "ביטע פּרובירן אן אנדער קאַנאַל."

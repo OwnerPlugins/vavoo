@@ -234,6 +234,13 @@ msgstr "Ցանկանու՞մ եք շտկել քեշի ձևաչափը:"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG-ի նմանության շեմ (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo-ն արդեն վազում է:"
+
+msgid "EPG import started"
+msgstr "EPG ներմուծումը սկսվել է"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG-ն անջատված է: Խնդրում ենք նախ միացնել այն Vavoo-ի կարգավորումներում:"
 
@@ -243,14 +250,8 @@ msgstr "EPG մշակումն ավարտված է (համընկնում չկա)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG մշակումն ավարտված է {} ալիքների համար"
 
-msgid "EPG update completed"
-msgstr "EPG թարմացումն ավարտված է"
-
-msgid "EPG update failed"
-msgstr "EPG-ի թարմացումը ձախողվեց"
-
-msgid "EPG update started successfully"
-msgstr "EPG-ի թարմացումը հաջողությամբ սկսվեց"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport plugin-ը չի գտնվել՝ {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Միացնել Vavoo EPG-ն"
@@ -278,9 +279,6 @@ msgstr "Չհաջողվեց սկսել ալիքը"
 
 msgid "Error: %s"
 msgstr "Սխալ՝ %s"
-
-msgid "Error: {}"
-msgstr "Սխալ՝ {}"
 
 msgid "Exit"
 msgstr "Ելք"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Ինտերնետ կապ չի հայտնաբերվել: Խնդրում ենք ստուգել ձեր ցանցը:"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG աղբյուրը միացված չէ EPGImport-ում: Խնդրում ենք միացնել այն EPGImport կարգավորումներում:"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Ալիքներ չեն գտնվել"
 
@@ -456,9 +458,6 @@ msgstr "Պրոքսիի գործարկման ժամկետը (վայրկյան)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy-ի նշանը հաջողությամբ թարմացվել է"
-
-msgid "Ready"
-msgstr "Պատրաստ"
 
 msgid "Really close without saving settings?"
 msgstr "Իսկապե՞ս փակել առանց կարգավորումները պահելու:"
@@ -601,9 +600,6 @@ msgstr "Թարմացման ընդմիջում (րոպե)."
 msgid "Update now?"
 msgstr "Սկսե՞լ EPG թարմացումը հիմա:"
 
-msgid "Updating EPG..."
-msgstr "EPG-ի թարմացում..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live-ի թարմացում..."
 
@@ -676,6 +672,24 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG թարմացումն ավարտված է"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-ի թարմացումը ձախողվեց"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-ի թարմացումը հաջողությամբ սկսվեց"
+
+#~ msgid "Error: {}"
+#~ msgstr "Սխալ՝ {}"
+
+#~ msgid "Ready"
+#~ msgstr "Պատրաստ"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG-ի թարմացում..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Խնդրում ենք փորձել մեկ այլ ալիք:"

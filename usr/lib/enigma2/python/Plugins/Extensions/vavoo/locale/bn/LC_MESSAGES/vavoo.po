@@ -234,6 +234,13 @@ msgstr "আপনি ক্যাশে বিন্যাস ঠিক কর�
 msgid "EPG Similarity Threshold (%)"
 msgstr "ইপিজি মিল থ্রেশহোল্ড (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "ভাভু ইতিমধ্যেই চলছে।"
+
+msgid "EPG import started"
+msgstr "ইপিজি আমদানি শুরু হয়েছে"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "ইপিজি নিষ্ক্রিয়। প্রথমে Vavoo সেটিংসে এটি চালু করুন।"
 
@@ -243,14 +250,8 @@ msgstr "ইপিজি প্রক্রিয়াকরণ সম্পন�
 msgid "EPG processing completed for {} channels"
 msgstr "{} চ্যানেলের জন্য EPG প্রক্রিয়াকরণ সম্পন্ন হয়েছে৷"
 
-msgid "EPG update completed"
-msgstr "ইপিজি আপডেট সম্পন্ন হয়েছে"
-
-msgid "EPG update failed"
-msgstr "EPG আপডেট ব্যর্থ হয়েছে৷"
-
-msgid "EPG update started successfully"
-msgstr "EPG আপডেট সফলভাবে শুরু হয়েছে"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport প্লাগইন পাওয়া যায়নি: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG সক্ষম করুন"
@@ -278,9 +279,6 @@ msgstr "চ্যানেল শুরু করতে ত্রুটি৷"
 
 msgid "Error: %s"
 msgstr "ত্রুটি: %s"
-
-msgid "Error: {}"
-msgstr "ত্রুটি: {}"
 
 msgid "Exit"
 msgstr "প্রস্থান করুন"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "কোন ইন্টারনেট সংযোগ সনাক্ত করা হয়নি. আপনার নেটওয়ার্ক চেক করুন."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG উৎস EPGImport এ সক্ষম করা নেই। অনুগ্রহ করে EPGImport সেটিংসে এটি সক্ষম করুন৷"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "কোনো চ্যানেল পাওয়া যায়নি"
 
@@ -456,9 +458,6 @@ msgstr "প্রক্সি স্টার্টআপ টাইমআউট 
 
 msgid "Proxy token refreshed successfully"
 msgstr "প্রক্সি টোকেন সফলভাবে রিফ্রেশ করা হয়েছে৷"
-
-msgid "Ready"
-msgstr "প্রস্তুত"
 
 msgid "Really close without saving settings?"
 msgstr "সেটিংস সংরক্ষণ ছাড়া সত্যিই বন্ধ?"
@@ -601,9 +600,6 @@ msgstr "আপডেটের ব্যবধান (মিনিট):"
 msgid "Update now?"
 msgstr "এখন ইপিজি আপডেট শুরু করবেন?"
 
-msgid "Updating EPG..."
-msgstr "ইপিজি আপডেট করা হচ্ছে..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "ভাভু স্ট্রিম লাইভ"
@@ -677,6 +673,24 @@ msgstr "✗ প্রক্সি অফলাইন"
 
 msgid "✗ Restart Failed"
 msgstr "✗ পুনঃসূচনা ব্যর্থ হয়েছে৷"
+
+#~ msgid "EPG update completed"
+#~ msgstr "ইপিজি আপডেট সম্পন্ন হয়েছে"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG আপডেট ব্যর্থ হয়েছে৷"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG আপডেট সফলভাবে শুরু হয়েছে"
+
+#~ msgid "Error: {}"
+#~ msgstr "ত্রুটি: {}"
+
+#~ msgid "Ready"
+#~ msgstr "প্রস্তুত"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "ইপিজি আপডেট করা হচ্ছে..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "অন্য চ্যানেল চেষ্টা করুন."

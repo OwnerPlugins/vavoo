@@ -234,6 +234,13 @@ msgstr "Ma hûn dixwazin formata cache rast bikin?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Tîrêjê Wekheviya EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo jixwe dimeşe."
+
+msgid "EPG import started"
+msgstr "Importa EPG dest pê kir"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG neçalak e. Ji kerema xwe pêşî wê di mîhengên Vavoo de çalak bikin."
 
@@ -243,14 +250,8 @@ msgstr "Pêvajoya EPG qediya (bê maç)"
 msgid "EPG processing completed for {} channels"
 msgstr "Pêvajoya EPG ji bo {} kanalan qediya"
 
-msgid "EPG update completed"
-msgstr "Nûvekirina EPG qediya"
-
-msgid "EPG update failed"
-msgstr "Nûvekirina EPG têk çû"
-
-msgid "EPG update started successfully"
-msgstr "Nûvekirina EPG bi serfirazî dest pê kir"
+msgid "EPGImport plugin not found: {}"
+msgstr "Pêveka EPGImport nehat dîtin: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG çalak bike"
@@ -278,9 +279,6 @@ msgstr "Di destpêka kanalê de çewtî"
 
 msgid "Error: %s"
 msgstr "Çewtî: %s"
-
-msgid "Error: {}"
-msgstr "Çewtî: {}"
 
 msgid "Exit"
 msgstr "Derî"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Têkiliya Înternetê nehat dîtin. Ji kerema xwe tora xwe kontrol bikin."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Çavkaniya Vavoo EPG di EPGImport de neçalak e. Ji kerema xwe wê di mîhengên EPGImport de çalak bikin."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Tu kanal nehat dîtin"
 
@@ -456,9 +458,6 @@ msgstr "Dema destpêkirina proxy (çirkeyan)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Tokena proxy bi serfirazî hate nûve kirin"
-
-msgid "Ready"
-msgstr "Amade"
 
 msgid "Really close without saving settings?"
 msgstr "Bi rastî bêyî tomarkirina mîhengan bigire?"
@@ -601,9 +600,6 @@ msgstr "Navbera nûvekirinê (deqe):"
 msgid "Update now?"
 msgstr "Nûvekirina EPG-ê nuha dest pê bike?"
 
-msgid "Updating EPG..."
-msgstr "EPG nûvekirin..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Pêveka Zindî ya Vavoo Stream"
@@ -677,6 +673,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Nûvekirina EPG qediya"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Nûvekirina EPG têk çû"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Nûvekirina EPG bi serfirazî dest pê kir"
+
+#~ msgid "Error: {}"
+#~ msgstr "Çewtî: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Amade"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG nûvekirin..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Ji kerema xwe kanalek din biceribîne."

@@ -234,6 +234,13 @@ msgstr "Gusto mo bang ayusin ang format ng cache?"
 msgid "EPG Similarity Threshold (%)"
 msgstr ""
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Tumatakbo na si Vavoo."
+
+msgid "EPG import started"
+msgstr "Nagsimula ang pag-import ng EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Hindi pinagana ang EPG. Please enable it in Vavoo settings first."
 
@@ -243,14 +250,8 @@ msgstr "Nakumpleto ang pagproseso ng EPG (walang tugma)"
 msgid "EPG processing completed for {} channels"
 msgstr "Nakumpleto ang pagproseso ng EPG para sa mga channel ng {}."
 
-msgid "EPG update completed"
-msgstr "Nakumpleto ang pag-update ng EPG"
-
-msgid "EPG update failed"
-msgstr "Nabigo ang pag-update ng EPG"
-
-msgid "EPG update started successfully"
-msgstr "Matagumpay na nagsimula ang pag-update ng EPG"
+msgid "EPGImport plugin not found: {}"
+msgstr "Hindi nahanap ang EPGImport plugin: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Paganahin ang Vavoo EPG"
@@ -277,9 +278,6 @@ msgid "Error starting channel"
 msgstr "Error sa pagsisimula ng channel"
 
 msgid "Error: %s"
-msgstr ""
-
-msgid "Error: {}"
 msgstr ""
 
 msgid "Exit"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Walang natukoy na koneksyon sa Internet. Pakisuri ang iyong network."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Ang pinagmulan ng Vavoo EPG ay hindi pinagana sa EPGImport. Mangyaring paganahin ito sa mga setting ng EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Walang nakitang mga channel"
 
@@ -456,9 +458,6 @@ msgstr "Timeout ng pagsisimula ng proxy (mga segundo)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Matagumpay na na-refresh ang proxy token"
-
-msgid "Ready"
-msgstr "handa na"
 
 msgid "Really close without saving settings?"
 msgstr "Talagang malapit nang hindi nagse-save ng mga setting?"
@@ -601,9 +600,6 @@ msgstr "I-update ang pagitan (minuto):"
 msgid "Update now?"
 msgstr "Simulan ang pag-update ng EPG ngayon?"
 
-msgid "Updating EPG..."
-msgstr "Ina-update ang EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Live na Stream ng Vavoo"
@@ -677,6 +673,21 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Nakumpleto ang pag-update ng EPG"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Nabigo ang pag-update ng EPG"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Matagumpay na nagsimula ang pag-update ng EPG"
+
+#~ msgid "Ready"
+#~ msgstr "handa na"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Ina-update ang EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Mangyaring sumubok ng ibang channel."

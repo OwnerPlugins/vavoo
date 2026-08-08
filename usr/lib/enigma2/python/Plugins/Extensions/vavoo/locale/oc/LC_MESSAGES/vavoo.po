@@ -234,6 +234,13 @@ msgstr "Volètz corregir lo format de cache ?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Lindal de similitud EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo es ja en cors."
+
+msgid "EPG import started"
+msgstr "L'importacion d'EPG començada"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG es desactivat. Mercés de l'activar dins los paramètres de Vavoo d'en primièr."
 
@@ -243,14 +250,8 @@ msgstr "Tractament EPG completat (pas de correspondéncia)"
 msgid "EPG processing completed for {} channels"
 msgstr "Lo tractament EPG completat pels canals {}"
 
-msgid "EPG update completed"
-msgstr "Mesa a jorn EPG completada"
-
-msgid "EPG update failed"
-msgstr "La mesa a jorn EPG a fracassat"
-
-msgid "EPG update started successfully"
-msgstr "La mesa a jorn EPG a començat amb succès"
+msgid "EPGImport plugin not found: {}"
+msgstr "L'ensamblador EPGImport pas trobat : {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Activar Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "Error al començament del canal"
 
 msgid "Error: %s"
 msgstr "Error : %s"
-
-msgid "Error: {}"
-msgstr ""
 
 msgid "Exit"
 msgstr "Sortida"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Pas cap de connexion Internet detectada. Verificatz vòstra ret."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "La font Vavoo EPG es pas activada dins EPGImport. Activatz-lo dins los paramètres EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Cap de canal pas trobat"
 
@@ -456,9 +458,6 @@ msgstr "Temps d'arrenjament del proxy (segondas)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Lo geton mandatari actualizat amb succès"
-
-msgid "Ready"
-msgstr "Prèst"
 
 msgid "Really close without saving settings?"
 msgstr "Barrar vertadièrament sens enregistrar los paramètres?"
@@ -601,9 +600,6 @@ msgstr "Interval de mesa a jorn (minutas):"
 msgid "Update now?"
 msgstr "Començatz la mesa a jorn EPG ara?"
 
-msgid "Updating EPG..."
-msgstr "Actualizacion de l'EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream en dirècte"
@@ -677,6 +673,21 @@ msgstr "✗ Proxy fòra linha"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reaviada a fracassat"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Mesa a jorn EPG completada"
+
+#~ msgid "EPG update failed"
+#~ msgstr "La mesa a jorn EPG a fracassat"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "La mesa a jorn EPG a començat amb succès"
+
+#~ msgid "Ready"
+#~ msgstr "Prèst"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Actualizacion de l'EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Ensajatz un autre canal."

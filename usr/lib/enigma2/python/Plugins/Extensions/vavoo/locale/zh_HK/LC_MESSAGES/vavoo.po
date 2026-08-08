@@ -239,6 +239,13 @@ msgstr "是否要导出此节目列表？"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG相似度閾值(%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo 已在运行。"
+
+msgid "EPG import started"
+msgstr "EPG導入開始"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG 已禁用。请先在 Vavoo 设置中启用它。"
 
@@ -250,14 +257,8 @@ msgstr "已完成 %d 个频道的 EPG 处理"
 msgid "EPG processing completed for {} channels"
 msgstr "已完成 %d 个频道的 EPG 处理"
 
-msgid "EPG update completed"
-msgstr "EPG 更新完成"
-
-msgid "EPG update failed"
-msgstr "EPG 更新失败"
-
-msgid "EPG update started successfully"
-msgstr "EPG 更新成功启动"
+msgid "EPGImport plugin not found: {}"
+msgstr "未找到 EPGImport 外掛：{}"
 
 msgid "Enable Vavoo EPG"
 msgstr "启用 Vavoo EPG"
@@ -288,9 +289,6 @@ msgstr "启动频道时出错"
 
 msgid "Error: %s"
 msgstr "错误: %s"
-
-msgid "Error: {}"
-msgstr "错误: {}"
 
 msgid "Exit"
 msgstr "退出"
@@ -401,6 +399,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "未检测到互联网连接。请检查您的网络。"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG 源未在 EPGImport 中启用。请在 EPGImport 设置中启用它。"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "未找到频道"
 
@@ -467,9 +469,6 @@ msgstr "代理啟動超時（秒）"
 
 msgid "Proxy token refreshed successfully"
 msgstr "代理令牌刷新成功"
-
-msgid "Ready"
-msgstr "就绪"
 
 msgid "Really close without saving settings?"
 msgstr "确定不保存设置就关闭吗？"
@@ -614,9 +613,6 @@ msgstr "更新间隔（分钟）:"
 msgid "Update now?"
 msgstr "立即开始 EPG 更新？"
 
-msgid "Updating EPG..."
-msgstr "正在更新 EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo 直播流"
@@ -692,6 +688,24 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG 更新完成"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG 更新失败"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG 更新成功启动"
+
+#~ msgid "Error: {}"
+#~ msgstr "错误: {}"
+
+#~ msgid "Ready"
+#~ msgstr "就绪"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "正在更新 EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "请尝试其他频道。"

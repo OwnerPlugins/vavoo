@@ -234,6 +234,13 @@ msgstr "A bheil thu airson fòrmat an tasgadan a chàradh?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Ìre EPG Co-chosmhail (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Tha Vavoo a' ruith mu thràth."
+
+msgid "EPG import started"
+msgstr "Thòisich in-mhalairt EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Tha EPG à comas. Feuch an cuir thu an comas e ann an roghainnean Vavoo an toiseach."
 
@@ -243,14 +250,8 @@ msgstr "Giullachd EPG air a chrìochnachadh (chan eil maidsean ann)"
 msgid "EPG processing completed for {} channels"
 msgstr "Chaidh giollachd EPG a chrìochnachadh airson {} seanalan"
 
-msgid "EPG update completed"
-msgstr "Chaidh ùrachadh EPG a chrìochnachadh"
-
-msgid "EPG update failed"
-msgstr "Dh'fhàillig ùrachadh EPG"
-
-msgid "EPG update started successfully"
-msgstr "Thòisich ùrachadh EPG gu soirbheachail"
+msgid "EPGImport plugin not found: {}"
+msgstr "Cha deach plugan EPGImport a lorg: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Dèan comas air Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "Mearachd a' tòiseachadh an t-sianail"
 
 msgid "Error: %s"
 msgstr "Mearachd: %s"
-
-msgid "Error: {}"
-msgstr "Mearachd: {}"
 
 msgid "Exit"
 msgstr "Ar-a-mach"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Cha deach ceangal eadar-lìn a lorg. Feuch an toir thu sùil air an lìonra agad."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Chan eil stòr Vavoo EPG air a chomasachadh ann an EPGImport. Feuch an cuir thu an comas e ann an roghainnean EPGIimport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Cha deach sianalan a lorg"
 
@@ -456,9 +458,6 @@ msgstr "Ùine tòiseachaidh neach-ionaid (diogan)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Chaidh tòcan progsaidh ùrachadh gu soirbheachail"
-
-msgid "Ready"
-msgstr ""
 
 msgid "Really close without saving settings?"
 msgstr "Dùin dha-rìribh gun a bhith a’ sàbhaladh roghainnean?"
@@ -601,9 +600,6 @@ msgstr "Ùine ùrachaidh (mionaidean):"
 msgid "Update now?"
 msgstr "Tòisich ùrachadh EPG a-nis?"
 
-msgid "Updating EPG..."
-msgstr "Luchdaich a-nuas EPG.. ."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Plugin Vavoo Stream Live"
@@ -677,6 +673,21 @@ msgstr "✗ Neach-ionaid far-loidhne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Chaidh ùrachadh EPG a chrìochnachadh"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Dh'fhàillig ùrachadh EPG"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Thòisich ùrachadh EPG gu soirbheachail"
+
+#~ msgid "Error: {}"
+#~ msgstr "Mearachd: {}"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Luchdaich a-nuas EPG.. ."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Feuch sianal eile."

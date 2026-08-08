@@ -239,6 +239,13 @@ msgstr "Möchten Sie das Cache-Format korrigieren?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG-Ähnlichkeitsschwellenwert (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo läuft bereits."
+
+msgid "EPG import started"
+msgstr "EPG-Import gestartet"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ist deaktiviert. Bitte aktivieren Sie es zuerst in den Vavoo-Einstellungen."
 
@@ -248,14 +255,8 @@ msgstr "EPG-Verarbeitung abgeschlossen (keine Übereinstimmungen)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-Verarbeitung für {} Kanäle abgeschlossen"
 
-msgid "EPG update completed"
-msgstr "EPG-Aktualisierung abgeschlossen"
-
-msgid "EPG update failed"
-msgstr "EPG-Aktualisierung fehlgeschlagen"
-
-msgid "EPG update started successfully"
-msgstr "EPG-Aktualisierung erfolgreich gestartet"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport-Plugin nicht gefunden: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo-EPG aktivieren"
@@ -283,9 +284,6 @@ msgstr "Fehler beim Starten des Kanals"
 
 msgid "Error: %s"
 msgstr "Fehler: %s"
-
-msgid "Error: {}"
-msgstr "Fehler: {}"
 
 msgid "Exit"
 msgstr "Ausgang"
@@ -395,6 +393,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Keine Internetverbindung erkannt. Bitte überprüfen Sie Ihr Netzwerk."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo-EPG-Quelle ist in EPGImport nicht aktiviert. Bitte aktivieren Sie sie in den EPGImport-Einstellungen."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Keine Kanäle gefunden"
 
@@ -461,9 +463,6 @@ msgstr "Proxy-Start-Timeout (Sekunden)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy-Token erfolgreich aktualisiert"
-
-msgid "Ready"
-msgstr "Bereit"
 
 msgid "Really close without saving settings?"
 msgstr "Wirklich schließen, ohne Einstellungen zu speichern?"
@@ -606,9 +605,6 @@ msgstr "Aktualisierungsintervall (Minuten):"
 msgid "Update now?"
 msgstr "EPG-Aktualisierung jetzt starten?"
 
-msgid "Updating EPG..."
-msgstr "Aktualisiere EPG ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live"
@@ -682,6 +678,24 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Neustart fehlgeschlagen"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG-Aktualisierung abgeschlossen"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-Aktualisierung fehlgeschlagen"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-Aktualisierung erfolgreich gestartet"
+
+#~ msgid "Error: {}"
+#~ msgstr "Fehler: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Bereit"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Aktualisiere EPG ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Bitte versuchen Sie einen anderen Kanal."

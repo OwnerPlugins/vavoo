@@ -234,6 +234,13 @@ msgstr "Je, ungependa kurekebisha umbizo la akiba?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Kiwango cha Kufanana cha EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo tayari inaendeshwa."
+
+msgid "EPG import started"
+msgstr "Uingizaji wa EPG umeanza"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG imezimwa. Tafadhali iwashe katika mipangilio ya Vavoo kwanza."
 
@@ -243,14 +250,8 @@ msgstr "Uchakataji wa EPG umekamilika (hakuna mechi)"
 msgid "EPG processing completed for {} channels"
 msgstr "Uchakataji wa EPG umekamilika kwa vituo {}"
 
-msgid "EPG update completed"
-msgstr "Usasisho wa EPG umekamilika"
-
-msgid "EPG update failed"
-msgstr "Usasishaji wa EPG umeshindwa"
-
-msgid "EPG update started successfully"
-msgstr "Usasishaji wa EPG umeanza kwa mafanikio"
+msgid "EPGImport plugin not found: {}"
+msgstr "Programu-jalizi ya EPGI ya kuagiza haijapatikana: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Washa Vavoo EPG"
@@ -278,9 +279,6 @@ msgstr "Hitilafu ya kuanzisha kituo"
 
 msgid "Error: %s"
 msgstr "Hitilafu: %s"
-
-msgid "Error: {}"
-msgstr "Hitilafu: {}"
 
 msgid "Exit"
 msgstr "Utgång"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Hakuna muunganisho wa Mtandao uliogunduliwa. Tafadhali angalia mtandao wako."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Chanzo cha Vavoo EPG hakijawezeshwa katika EPGIMport. Tafadhali iwashe katika mipangilio ya EPGIMport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Hakuna vituo vilivyopatikana"
 
@@ -456,9 +458,6 @@ msgstr "Muda wa kuanza kwa seva mbadala (sekunde)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Tokeni ya seva mbadala imeonyeshwa upya"
-
-msgid "Ready"
-msgstr "Tayari"
 
 msgid "Really close without saving settings?"
 msgstr "Je, ungependa kufunga bila kuhifadhi mipangilio?"
@@ -601,9 +600,6 @@ msgstr "Sasisha muda (dakika):"
 msgid "Update now?"
 msgstr "Ungependa kuanza kusasisha EPG sasa?"
 
-msgid "Updating EPG..."
-msgstr "Inasasisha EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Tiririsha Moja kwa Moja"
@@ -677,6 +673,24 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Usasisho wa EPG umekamilika"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Usasishaji wa EPG umeshindwa"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Usasishaji wa EPG umeanza kwa mafanikio"
+
+#~ msgid "Error: {}"
+#~ msgstr "Hitilafu: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Tayari"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Inasasisha EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Tafadhali jaribu kituo kingine."

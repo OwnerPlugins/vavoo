@@ -234,6 +234,13 @@ msgstr "የመሸጎጫ ቅርጸቱን ማስተካከል ይፈልጋሉ?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "የ EPG ተመሳሳይነት ገደብ (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "ቫቮ አስቀድሞ እየሰራ ነው።"
+
+msgid "EPG import started"
+msgstr "EPG ማስመጣት ተጀምሯል።"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ተሰናክሏል። እባኮትን መጀመሪያ በቫቮኦ ቅንጅቶች ውስጥ አንቃው።"
 
@@ -243,14 +250,8 @@ msgstr "የ EPG ሂደት ተጠናቅቋል (ምንም ተዛማጅ የለም)"
 msgid "EPG processing completed for {} channels"
 msgstr "ለ{} ቻናሎች የEPG ሂደት ተጠናቅቋል"
 
-msgid "EPG update completed"
-msgstr "EPG ዝማኔ ተጠናቅቋል"
-
-msgid "EPG update failed"
-msgstr "EPG ማዘመን አልተሳካም።"
-
-msgid "EPG update started successfully"
-msgstr "የ EPG ዝማኔ በተሳካ ሁኔታ ተጀምሯል።"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport ተሰኪ አልተገኘም፦ {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPGን አንቃ"
@@ -278,9 +279,6 @@ msgstr "ቻናል መጀመር ላይ ስህተት"
 
 msgid "Error: %s"
 msgstr "ስህተት፡ %s"
-
-msgid "Error: {}"
-msgstr "ስህተት፡ {}"
 
 msgid "Exit"
 msgstr "ውጣ"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "ምንም የበይነመረብ ግንኙነት አልተገኘም። እባክህ አውታረ መረብህን አረጋግጥ።"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG ምንጭ በEPGImport ውስጥ አልነቃም። እባክዎ በEPGImport ቅንብሮች ውስጥ ያንቁት።"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "ምንም ሰርጦች አልተገኙም።"
 
@@ -456,9 +458,6 @@ msgstr "የተኪ ጅምር ጊዜ አለቀ (ሰከንዶች)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "የተኪ ቶከን በተሳካ ሁኔታ ታድሷል"
-
-msgid "Ready"
-msgstr "ዝግጁ"
 
 msgid "Really close without saving settings?"
 msgstr "ቅንብሮችን ሳታስቀምጥ በእርግጥ ይዘጋል?"
@@ -601,9 +600,6 @@ msgstr "የዝማኔ ክፍተት (ደቂቃዎች)"
 msgid "Update now?"
 msgstr "የ EPG ዝማኔ አሁን ይጀምር?"
 
-msgid "Updating EPG..."
-msgstr "EPG በማዘመን ላይ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "የቫቮ ዥረት ቀጥታ ስርጭት"
@@ -677,6 +673,24 @@ msgstr "✗ ተኪ ከመስመር ውጭ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ዳግም ማስጀመር አልተሳካም።"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG ዝማኔ ተጠናቅቋል"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG ማዘመን አልተሳካም።"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "የ EPG ዝማኔ በተሳካ ሁኔታ ተጀምሯል።"
+
+#~ msgid "Error: {}"
+#~ msgstr "ስህተት፡ {}"
+
+#~ msgid "Ready"
+#~ msgstr "ዝግጁ"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG በማዘመን ላይ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "እባክህ ሌላ ቻናል ሞክር።"

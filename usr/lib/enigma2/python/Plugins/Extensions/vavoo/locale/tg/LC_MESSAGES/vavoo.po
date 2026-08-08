@@ -234,6 +234,13 @@ msgstr "Оё шумо мехоҳед формати кэшро ислоҳ кун
 msgid "EPG Similarity Threshold (%)"
 msgstr "Ҳадди шабоҳати EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo аллакай кор мекунад."
+
+msgid "EPG import started"
+msgstr "Воридоти EPG оғоз шуд"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ғайрифаъол аст. Лутфан онро аввал дар танзимоти Vavoo фаъол созед."
 
@@ -243,14 +250,8 @@ msgstr "Коркарди EPG анҷом ёфт (нест мувофиқат)"
 msgid "EPG processing completed for {} channels"
 msgstr "Коркарди EPG барои {} канал анҷом ёфт"
 
-msgid "EPG update completed"
-msgstr "Навсозии EPG анҷом ёфт"
-
-msgid "EPG update failed"
-msgstr "Навсозии EPG ноком шуд"
-
-msgid "EPG update started successfully"
-msgstr "Навсозии EPG бомуваффақият оғоз шуд"
+msgid "EPGImport plugin not found: {}"
+msgstr "Васлкунаки EPGImport ёфт нашуд: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG-ро фаъол созед"
@@ -278,9 +279,6 @@ msgstr "Хатогӣ дар оғози канал"
 
 msgid "Error: %s"
 msgstr "Хатогӣ: %s"
-
-msgid "Error: {}"
-msgstr "Хатогӣ: {}"
 
 msgid "Exit"
 msgstr "Баромадгоҳ"
@@ -390,6 +388,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Пайвасти интернет ошкор нашудааст. Лутфан шабакаи худро санҷед."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Манбаи Vavoo EPG дар EPGImport фаъол нест. Лутфан онро дар танзимоти EPGImport фаъол созед."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Ягон канал ёфт нашуд"
 
@@ -456,9 +458,6 @@ msgstr "Вақтхушии оғози прокси (сонияҳо)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Аломати прокси бомуваффақият нав карда шуд"
-
-msgid "Ready"
-msgstr "Тайёр"
 
 msgid "Really close without saving settings?"
 msgstr "Дар ҳақиқат бе нигоҳ доштани танзимот пӯшида мешавад?"
@@ -601,9 +600,6 @@ msgstr "Фосилаи навсозӣ (дақиқа):"
 msgid "Update now?"
 msgstr "Навсозии EPG-ро ҳозир оғоз кунед?"
 
-msgid "Updating EPG..."
-msgstr "Навсозии EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Васлкунаки Зиндагӣ"
@@ -677,6 +673,24 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Бозоғозӣ ноком шуд"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Навсозии EPG анҷом ёфт"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Навсозии EPG ноком шуд"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Навсозии EPG бомуваффақият оғоз шуд"
+
+#~ msgid "Error: {}"
+#~ msgstr "Хатогӣ: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Тайёр"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Навсозии EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Лутфан канали дигарро санҷед."

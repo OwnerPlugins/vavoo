@@ -235,6 +235,13 @@ msgstr "Бажаєте виправити формат кешу?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Поріг схожості EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo вже працює."
+
+msgid "EPG import started"
+msgstr "Розпочато імпорт EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG вимкнено. Спочатку ввімкніть його в налаштуваннях Vavoo."
 
@@ -244,14 +251,8 @@ msgstr "Обробку EPG завершено (збігів немає)"
 msgid "EPG processing completed for {} channels"
 msgstr "Обробку EPG завершено для {} каналів"
 
-msgid "EPG update completed"
-msgstr "Оновлення EPG завершено"
-
-msgid "EPG update failed"
-msgstr "Не вдалося оновити EPG"
-
-msgid "EPG update started successfully"
-msgstr "Оновлення EPG розпочато успішно"
+msgid "EPGImport plugin not found: {}"
+msgstr "Плагін EPGImport не знайдено: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Увімкнути Vavoo EPG"
@@ -279,9 +280,6 @@ msgstr "Помилка запуску каналу"
 
 msgid "Error: %s"
 msgstr "Помилка: %s"
-
-msgid "Error: {}"
-msgstr "Помилка: {}"
 
 msgid "Exit"
 msgstr "Вихід"
@@ -391,6 +389,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Підключення до Інтернету не виявлено. Перевірте свою мережу."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Джерело EPG Vavoo не ввімкнено в EPGImport. Увімкніть його в налаштуваннях EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Канали не знайдено"
 
@@ -457,9 +459,6 @@ msgstr "Час очікування запуску проксі (секунди)
 
 msgid "Proxy token refreshed successfully"
 msgstr "Проксі-токен успішно оновлено"
-
-msgid "Ready"
-msgstr "Готовий"
 
 msgid "Really close without saving settings?"
 msgstr "Справді закрити без збереження налаштувань?"
@@ -602,9 +601,6 @@ msgstr "Інтервал оновлення (хвилини):"
 msgid "Update now?"
 msgstr "Почати оновлення EPG зараз?"
 
-msgid "Updating EPG..."
-msgstr "Оновлення EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Пряма трансляція Vavoo"
@@ -678,6 +674,24 @@ msgstr "✗ Проксі офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не вдалося перезапустити"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Оновлення EPG завершено"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Не вдалося оновити EPG"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Оновлення EPG розпочато успішно"
+
+#~ msgid "Error: {}"
+#~ msgstr "Помилка: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Готовий"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Оновлення EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Спробуйте інший канал."
