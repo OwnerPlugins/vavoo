@@ -492,7 +492,7 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Ukloniti izvezeni buket za ovu zemlju/kategoriju?"
 
 msgid "Removed exported bouquet: {}"
-msgstr ""
+msgstr "Uklonjen izvezeni buket: {}"
 
 msgid "Restarting..."
 msgstr "Ponovno pokretanje..."
