@@ -165,6 +165,9 @@ msgstr "Mál: {}"
 msgid "Changelog:"
 msgstr "Rásir"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Breytingaskrá: ({}/{}, notaðu upp/niður)"
+
 msgid "Channels"
 msgstr "Rásir"
 

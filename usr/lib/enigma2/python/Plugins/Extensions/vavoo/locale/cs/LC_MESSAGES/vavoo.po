@@ -172,6 +172,9 @@ msgstr "Případ: {}"
 msgid "Changelog:"
 msgstr "Kanály"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Seznam změn: ({}/{}, použijte nahoru/dolů)"
+
 msgid "Channels"
 msgstr "Kanály"
 

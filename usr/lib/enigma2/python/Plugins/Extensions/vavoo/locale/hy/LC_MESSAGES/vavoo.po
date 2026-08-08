@@ -165,6 +165,9 @@ msgstr "Գործ՝ {}"
 msgid "Changelog:"
 msgstr "Ալիքներ"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Փոփոխությունների մատյան՝ ({}/{}, օգտագործել վեր/ներքև)"
+
 msgid "Channels"
 msgstr "Ալիքներ"
 

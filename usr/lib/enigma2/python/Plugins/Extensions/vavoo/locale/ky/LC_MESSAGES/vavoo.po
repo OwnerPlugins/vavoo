@@ -165,6 +165,9 @@ msgstr "Иш: {}"
 msgid "Changelog:"
 msgstr "Каналдар"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Өзгөртүү журналы: ({}/{}, өйдө/төмөн колдонуу)"
+
 msgid "Channels"
 msgstr "Каналдар"
 

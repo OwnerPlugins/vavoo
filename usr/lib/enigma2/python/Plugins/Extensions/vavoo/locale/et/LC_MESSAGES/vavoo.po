@@ -166,6 +166,9 @@ msgstr "Juhtum: {}"
 msgid "Changelog:"
 msgstr "Kanalid"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Muudatuste logi: ({}/{}, kasutage üles/alla)"
+
 msgid "Channels"
 msgstr "Kanalid"
 

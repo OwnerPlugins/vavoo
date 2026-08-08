@@ -165,6 +165,9 @@ msgstr "案件： {}"
 msgid "Changelog:"
 msgstr "渠道"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "变更日志：（{}/{}，使用向上/向下）"
+
 msgid "Channels"
 msgstr "渠道"
 

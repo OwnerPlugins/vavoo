@@ -165,6 +165,9 @@ msgstr "กรณี: {}"
 msgid "Changelog:"
 msgstr "ช่อง"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "บันทึกการเปลี่ยนแปลง: ({}/{} ใช้ขึ้น/ลง)"
+
 msgid "Channels"
 msgstr "ช่อง"
 

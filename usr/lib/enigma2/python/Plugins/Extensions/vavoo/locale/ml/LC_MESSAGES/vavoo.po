@@ -165,6 +165,9 @@ msgstr "കേസ്: {}"
 msgid "Changelog:"
 msgstr "ചാനലുകൾ"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ചേഞ്ച്ലോഗ്: ({}/{}, മുകളിൽ/താഴോട്ട് ഉപയോഗിക്കുക)"
+
 msgid "Channels"
 msgstr "ചാനലുകൾ"
 

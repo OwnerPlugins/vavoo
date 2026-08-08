@@ -166,6 +166,9 @@ msgstr "場合： {}"
 msgid "Changelog:"
 msgstr "チャンネル"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "変更ログ: ({}/{}、上/下を使用)"
+
 msgid "Channels"
 msgstr "チャンネル"
 

@@ -166,6 +166,9 @@ msgstr "Sak: {}"
 msgid "Changelog:"
 msgstr "Kanaler"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Endringslogg: ({}/{}, bruk opp/ned)"
+
 msgid "Channels"
 msgstr "Kanaler"
 

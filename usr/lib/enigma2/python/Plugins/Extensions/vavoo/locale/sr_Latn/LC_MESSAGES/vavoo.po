@@ -165,6 +165,9 @@ msgstr "Случај: {}"
 msgid "Changelog:"
 msgstr "Канали"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Дневник промена: ({}/{}, користите горе/доле)"
+
 msgid "Channels"
 msgstr "Канали"
 

@@ -165,6 +165,9 @@ msgstr "Każ: {}"
 msgid "Changelog:"
 msgstr "Kanali"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "reġistru tal-bidliet: ({}/{}, uża 'l fuq/'l isfel)"
+
 msgid "Channels"
 msgstr "Kanali"
 

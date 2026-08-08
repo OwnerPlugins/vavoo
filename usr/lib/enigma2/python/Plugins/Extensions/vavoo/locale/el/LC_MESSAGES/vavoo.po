@@ -166,6 +166,9 @@ msgstr "Περίπτωση: {}"
 msgid "Changelog:"
 msgstr "Κανάλια"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Καταγραφή αλλαγών: ({}/{}, χρήση πάνω/κάτω)"
+
 msgid "Channels"
 msgstr "Κανάλια"
 

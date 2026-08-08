@@ -165,6 +165,9 @@ msgstr "Kasua: {}"
 msgid "Changelog:"
 msgstr "Kanalak"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Aldaketen erregistroa: ({}/{}, erabili gora/behera)"
+
 msgid "Channels"
 msgstr "Kanalak"
 

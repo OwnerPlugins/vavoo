@@ -165,6 +165,9 @@ msgstr "வழக்கு: {}"
 msgid "Changelog:"
 msgstr "சேனல்கள்"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "சேஞ்ச்லாக்: ({}/{}, மேல்/கீழே பயன்படுத்தவும்)"
+
 msgid "Channels"
 msgstr "சேனல்கள்"
 

@@ -165,6 +165,9 @@ msgstr "केस: {}"
 msgid "Changelog:"
 msgstr "चॅनेल"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "चेंजलॉग: ({}/{}, वर/खाली वापरा)"
+
 msgid "Channels"
 msgstr "चॅनेल"
 

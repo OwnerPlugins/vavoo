@@ -166,6 +166,9 @@ msgstr "Kazo: {}"
 msgid "Changelog:"
 msgstr "Kanaloj"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Ŝanĝprotokolo: ({}/{}, uzu supren/malsupren)"
+
 msgid "Channels"
 msgstr "Kanaloj"
 

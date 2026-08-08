@@ -165,6 +165,9 @@ msgstr "საქმე: {}"
 msgid "Changelog:"
 msgstr "არხები"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ცვლილებების ჟურნალი: ({}/{}, გამოყენება ზევით/ქვევით)"
+
 msgid "Channels"
 msgstr "არხები"
 

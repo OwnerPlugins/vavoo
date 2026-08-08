@@ -166,6 +166,9 @@ msgstr "Zadeva: {}"
 msgid "Changelog:"
 msgstr "Kanali"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Dnevnik sprememb: ({}/{}, uporabite gor/dol)"
+
 msgid "Channels"
 msgstr "Kanali"
 

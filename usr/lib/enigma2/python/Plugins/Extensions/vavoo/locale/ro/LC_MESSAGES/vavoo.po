@@ -166,6 +166,9 @@ msgstr "Caz: {}"
 msgid "Changelog:"
 msgstr "Canale"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Jurnal de modificări: ({}/{}, folosiți sus/jos)"
+
 msgid "Channels"
 msgstr "Canale"
 

@@ -165,6 +165,9 @@ msgstr "Cas: {}"
 msgid "Changelog:"
 msgstr "Canals"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Jornal de modificacions : ({}/{}, utilizatz amont/aval)"
+
 msgid "Channels"
 msgstr "Canals"
 

@@ -166,6 +166,9 @@ msgstr "Cás: {}"
 msgid "Changelog:"
 msgstr "Cainéil"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, úsáid suas/síos)"
+
 msgid "Channels"
 msgstr "Cainéil"
 

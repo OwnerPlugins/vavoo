@@ -165,6 +165,9 @@ msgstr "ករណី៖ {}"
 msgid "Changelog:"
 msgstr "ឆានែល"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "កំណត់ហេតុផ្លាស់ប្តូរ៖ ({}/{} ប្រើឡើង/ចុះ)"
+
 msgid "Channels"
 msgstr "ឆានែល"
 

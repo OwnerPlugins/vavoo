@@ -166,6 +166,9 @@ msgstr "Регістр: {}"
 msgid "Changelog:"
 msgstr "Канали"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Журнал змін: ({}/{}, використовуйте вгору/вниз)"
+
 msgid "Channels"
 msgstr "Канали"
 

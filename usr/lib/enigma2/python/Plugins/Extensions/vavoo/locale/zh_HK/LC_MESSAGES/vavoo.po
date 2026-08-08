@@ -168,6 +168,9 @@ msgstr "大小写: {}"
 msgid "Changelog:"
 msgstr "频道: %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "變更日誌：（{}/{}，使用向上/向下）"
+
 #, fuzzy
 msgid "Channels"
 msgstr "频道: %d"

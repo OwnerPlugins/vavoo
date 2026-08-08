@@ -165,6 +165,9 @@ msgstr "ကိစ္စ- {}"
 msgid "Changelog:"
 msgstr "ချန်နယ်များ"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ပြောင်းလဲမှုမှတ်တမ်း- ({}/{}၊ အပေါ်/အောက် သုံးပါ)"
+
 msgid "Channels"
 msgstr "ချန်နယ်များ"
 
