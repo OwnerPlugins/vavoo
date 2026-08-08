@@ -2855,7 +2855,14 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
 def write_epg_mapping_file(epg_entries, country_code):
     """
     Write the EPG mapping file for a specific country.
-    epg_entries: list of tuples (rytec_id, dvb_ref, channel_name)
+    epg_entries: list of tuples (rytec_id, full_service_ref, channel_name),
+    where full_service_ref is the DVB-style tuple *with the stream URL
+    appended* (e.g. "4097:0:1:...:0:0:0:http%3a//host/stream") - not the
+    bare tuple. EPGImport's own channelFilter() only fast-accepts a
+    channel ref if it contains an embedded URL; a bare tuple falls
+    through to a fake-recording probe that fails silently for it, so
+    passing the bare tuple here means the channel gets dropped entirely
+    during EPGImport's own channels.xml parse pass.
     """
     with _epg_lock:
         epg_dir = "/etc/epgimport"
@@ -2879,13 +2886,14 @@ def write_epg_mapping_file(epg_entries, country_code):
         feed_ids, feed_name_index = _get_epg_feed_index(country_code)
         matcher = get_epg_matcher() if feed_ids else None
 
-        # Use dvb_ref as key to avoid duplicates, but also store the channel
-        # name
+        # Use the full ref as key to avoid duplicates, but also store the
+        # channel name. Unlike a bare dvb_ref, a full_service_ref
+        # (tuple + URL) never needs a trailing-colon fixup - it already
+        # ends with the stream URL, and blindly appending ':' here would
+        # corrupt that URL instead of "completing" a bare tuple.
         unique = {}
         for epg_id, dvb_ref, ch_name in epg_entries:
             if dvb_ref and isinstance(dvb_ref, str) and dvb_ref.strip():
-                if not dvb_ref.endswith(':'):
-                    dvb_ref = dvb_ref + ':'
                 if feed_ids and epg_id not in feed_ids:
                     fallback_id = _find_feed_id_by_name(
                         ch_name, matcher, feed_name_index)
