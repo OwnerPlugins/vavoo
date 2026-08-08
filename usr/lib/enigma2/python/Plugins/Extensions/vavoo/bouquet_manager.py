@@ -334,8 +334,12 @@ def convert_bouquet_sync(
 
         # 7. Generate EPG mapping if enabled
         if matched and config.plugins.vavoo.epg_enabled.value:
-            # Now include the channel name as well
-            epg_entries = [(m['rytec_id'], m['dvb_ref'], m['name'])
+            # Use full_service_ref (dvb_ref + stream URL), not the bare
+            # dvb_ref - EPGImport's channelFilter() silently drops any
+            # channel ref without an embedded URL (see the comment in
+            # create_bouquet_file() above where full_service_ref is
+            # built).
+            epg_entries = [(m['rytec_id'], m['full_service_ref'], m['name'])
                            for m in matched if m['rytec_id']]
             if epg_entries:
                 try:
@@ -607,10 +611,23 @@ def process_epg_matching_background(
             if dvb_ref:
                 if dvb_ref.endswith(':'):
                     dvb_ref = dvb_ref[:-1]
+                # EPGImport's channelFilter() only fast-accepts a channel
+                # ref if it contains an embedded URL ("%3a//" in the
+                # string) - a bare DVB-tuple ref falls through to a
+                # fake-recording probe instead, which fails (silently, no
+                # exception) for a reference with no stream URL at all.
+                # Without this, write_epg_mapping_file() below wrote only
+                # the bare tuple and EPGImport dropped almost every
+                # channel during its own channels.xml parse pass, logging
+                # "[XMLTVConverter] Unknown channel: ..." for each one
+                # regardless of how good the id match was.
+                full_service_ref = "{}:{}".format(
+                    dvb_ref, ch['url'].replace(':', '%3a'))
                 matched.append({
                     'name': ch['original_name'],
                     'channel_id': ch['channel_id'],
                     'dvb_ref': dvb_ref,
+                    'full_service_ref': full_service_ref,
                     'rytec_id': rytec_id,
                     'original_url': ch['url']
                 })
@@ -643,6 +660,7 @@ def process_epg_matching_background(
 
         # 4. Rewrite the bouquet file with converted references
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
+        changes = 0
         if file_exists(bouquet_path):
             # Read current lines
             with io.open(bouquet_path, 'r', encoding='utf-8') as f:
@@ -650,7 +668,6 @@ def process_epg_matching_background(
 
             new_lines = []
             i = 0
-            changes = 0
             match_dict = {m['channel_id']: m['dvb_ref'] for m in matched}
 
             while i < len(lines):
@@ -688,15 +705,13 @@ def process_epg_matching_background(
                 print(
                     "[EPGBackground] Updated %d service lines in %s" %
                     (changes, bouquet_filename))
-                # Without this, Enigma2's live service database keeps
-                # using the fallback refs written in phase 1 until a
-                # manual reload/reboot, so the just-matched EPG never
-                # actually shows up despite the "completed" notification.
-                reactor.callFromThread(ReloadBouquets)
 
         # 5. Generate EPG mapping files
         if matched:
-            epg_entries = [(m['rytec_id'], m['dvb_ref'], m['name'])
+            # full_service_ref (dvb_ref + stream URL) - see the comment
+            # where it's built above; a bare dvb_ref gets silently
+            # dropped by EPGImport's channelFilter().
+            epg_entries = [(m['rytec_id'], m['full_service_ref'], m['name'])
                            for m in matched if m['rytec_id']]
             if epg_entries:
                 write_epg_mapping_file(epg_entries, country_code)
@@ -709,6 +724,18 @@ def process_epg_matching_background(
 
         # 7. Save matcher cache
         matcher.save_cache()
+
+        # Reload only now that the bouquet's #SERVICE lines, the EPG
+        # channel mapping, and sources.xml are all in their final state -
+        # without this, Enigma2's live service database keeps using the
+        # fallback refs written in phase 1 until a manual reload/reboot,
+        # so the just-matched EPG never actually shows up despite the
+        # "completed" notification. Reloading before the EPG
+        # mapping/sources files existed (the previous order) meant
+        # Enigma2 picked up the new service references before EPGImport
+        # had anything to associate with them for this export.
+        if changes > 0:
+            reactor.callFromThread(ReloadBouquets)
 
         # 8. Callback to notify completion
         print(

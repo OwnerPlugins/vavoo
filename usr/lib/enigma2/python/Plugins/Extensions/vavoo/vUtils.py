@@ -2060,8 +2060,22 @@ class VavooEPGMatcher:
         # threshold anyway, never a false negative. This loop runs against
         # every Rytec entry for the country on every uncached match, so it
         # matters most for countries with large Rytec databases (e.g. Italy).
+        source_tokens = clean_input.split()
         sm = SequenceMatcher(None, clean_input)
         for clean_entry, orig_name, rytec_id, service_ref in entries_to_scan:
+            # A shared textual prefix with a *different* word at a
+            # position both share is a strong signal these are
+            # different channels (e.g. "canal motogp" vs "canal plus
+            # foot") - raw character similarity alone can clear even a
+            # fairly high threshold for such pairs since most of the
+            # string still overlaps. A longer entry may still add
+            # trailing descriptive words - only a genuine word-for-word
+            # prefix mismatch is rejected.
+            if source_tokens:
+                entry_tokens = clean_entry.split()
+                if entry_tokens and not _tokens_compatible(
+                        source_tokens, entry_tokens):
+                    continue
             sm.set_seq2(clean_entry)
             if sm.real_quick_ratio() < self.similarity_threshold:
                 continue
@@ -2744,32 +2758,72 @@ def _get_epg_feed_index(country_code):
     try:
         url = "http://{}:{}/epg/{}.xml".format(
             PROXY_HOST, PORT, country_code.lower())
-        xml_data = getUrl(url, timeout=10)
+        # These feeds run several MB to 10+ MB (full multi-day guide for
+        # every channel in the country) - the default 10s/3-retries
+        # getUrl() timeout budget (tuned for small JSON/HTML responses)
+        # routinely isn't enough to pull one down over a set-top box's
+        # real-world connection, which silently disabled this whole
+        # id-correction path and left most channels stuck on their
+        # (usually wrong, see below) Rytec-matched id.
+        xml_data = getUrl(url, timeout=30, retries=2)
         if not xml_data:
+            warning(
+                "EPG feed fetch returned empty for {} - id-correction "
+                "fallback disabled for this export, channels will keep "
+                "their Rytec-matched id even if the feed uses a "
+                "different one".format(country_code))
             return None, None
-        root = ET.fromstring(xml_data)
-    except Exception as e:
-        debug("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
-        return None, None
 
-    matcher = get_epg_matcher()
-    feed_ids = set()
-    name_index = {}
-    for chan in root.findall('channel'):
-        chan_id = chan.get('id')
-        if not chan_id:
-            continue
-        feed_ids.add(chan_id)
-        for dn in chan.findall('display-name'):
-            dn_text = (dn.text or '').strip()
-            if not dn_text:
-                continue
-            clean_dn = matcher._clean_name_for_similarity(dn_text)
-            if clean_dn:
-                name_index[clean_dn] = chan_id
+        xml_source = io.BytesIO(
+            xml_data if isinstance(xml_data, binary_type)
+            else xml_data.encode('utf-8'))
+
+        matcher = get_epg_matcher()
+        feed_ids = set()
+        name_index = {}
+        # Stream-parse instead of ET.fromstring(): these feeds are almost
+        # entirely <programme> entries (tens of thousands of them) with
+        # the actual <channel> definitions front-loaded before any of
+        # them, per the XMLTV convention. Building a full DOM of the
+        # whole guide just to read the channel list is both slow and
+        # memory-heavy on box-class hardware - stop as soon as the
+        # <programme> section starts instead.
+        for event, elem in ET.iterparse(xml_source, events=('start', 'end')):
+            if event == 'end' and elem.tag == 'channel':
+                chan_id = elem.get('id')
+                if chan_id:
+                    feed_ids.add(chan_id)
+                    for dn in elem.findall('display-name'):
+                        dn_text = (dn.text or '').strip()
+                        if not dn_text:
+                            continue
+                        clean_dn = matcher._clean_name_for_similarity(dn_text)
+                        if clean_dn:
+                            name_index[clean_dn] = chan_id
+                elem.clear()
+            elif event == 'start' and elem.tag == 'programme':
+                break
+    except Exception as e:
+        warning("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
+        return None, None
 
     _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)
     return feed_ids, name_index
+
+
+def _tokens_compatible(a_tokens, b_tokens):
+    """True unless the two token lists differ at a shared position -
+    i.e. one is a genuine word-for-word prefix of the other (or
+    they're equal). A longer name is allowed to just add trailing
+    descriptive words (e.g. "sky sport" / "sky sport 4k"), but
+    substituting a different word at a position both share (e.g.
+    "canale 5" vs "canale 122", "france o" vs "france 3") means these
+    are actually different channels, no matter how high the raw
+    character-level similarity looks."""
+    shorter, longer = (
+        (a_tokens, b_tokens) if len(a_tokens) <= len(b_tokens)
+        else (b_tokens, a_tokens))
+    return shorter == longer[:len(shorter)]
 
 
 def _find_feed_id_by_name(channel_name, matcher, name_index):
@@ -2779,10 +2833,15 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
+    source_tokens = clean.split()
     best_score = 0.0
     best_id = None
     sm = SequenceMatcher(None, clean)
     for dn_key, dn_id in name_index.items():
+        candidate_tokens = dn_key.split()
+        if (source_tokens and candidate_tokens and
+                not _tokens_compatible(source_tokens, candidate_tokens)):
+            continue
         sm.set_seq2(dn_key)
         score = sm.ratio()
         if score > best_score:
@@ -2796,7 +2855,14 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
 def write_epg_mapping_file(epg_entries, country_code):
     """
     Write the EPG mapping file for a specific country.
-    epg_entries: list of tuples (rytec_id, dvb_ref, channel_name)
+    epg_entries: list of tuples (rytec_id, full_service_ref, channel_name),
+    where full_service_ref is the DVB-style tuple *with the stream URL
+    appended* (e.g. "4097:0:1:...:0:0:0:http%3a//host/stream") - not the
+    bare tuple. EPGImport's own channelFilter() only fast-accepts a
+    channel ref if it contains an embedded URL; a bare tuple falls
+    through to a fake-recording probe that fails silently for it, so
+    passing the bare tuple here means the channel gets dropped entirely
+    during EPGImport's own channels.xml parse pass.
     """
     with _epg_lock:
         epg_dir = "/etc/epgimport"
@@ -2820,13 +2886,14 @@ def write_epg_mapping_file(epg_entries, country_code):
         feed_ids, feed_name_index = _get_epg_feed_index(country_code)
         matcher = get_epg_matcher() if feed_ids else None
 
-        # Use dvb_ref as key to avoid duplicates, but also store the channel
-        # name
+        # Use the full ref as key to avoid duplicates, but also store the
+        # channel name. Unlike a bare dvb_ref, a full_service_ref
+        # (tuple + URL) never needs a trailing-colon fixup - it already
+        # ends with the stream URL, and blindly appending ':' here would
+        # corrupt that URL instead of "completing" a bare tuple.
         unique = {}
         for epg_id, dvb_ref, ch_name in epg_entries:
             if dvb_ref and isinstance(dvb_ref, str) and dvb_ref.strip():
-                if not dvb_ref.endswith(':'):
-                    dvb_ref = dvb_ref + ':'
                 if feed_ids and epg_id not in feed_ids:
                     fallback_id = _find_feed_id_by_name(
                         ch_name, matcher, feed_name_index)

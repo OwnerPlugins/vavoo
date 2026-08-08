@@ -1339,28 +1339,6 @@ class vavoo_config(Screen, ConfigListScreen):
         except Exception as e:
             print("[Vavoo] Error scheduling EPG update:", str(e))
 
-    def trigger_epg_update(self):
-        """Manually trigger an EPG update"""
-        try:
-            # Use EPGImport's command line interface if available
-            import subprocess
-            result = subprocess.call(['epgimport', '--import'], timeout=60)
-            if result == 0:
-                self.session.open(
-                    MessageBox,
-                    _("EPG update started successfully"),
-                    MessageBox.TYPE_INFO)
-            else:
-                self.session.open(
-                    MessageBox,
-                    _("EPG update failed"),
-                    MessageBox.TYPE_ERROR)
-        except Exception as e:
-            print("[Vavoo] Error triggering EPG update:", str(e))
-            self.session.open(
-                MessageBox, _("Error starting EPG update: {}").format(
-                    str(e)), MessageBox.TYPE_ERROR)
-
     def save(self):
         if self["config"].isChanged():
             old_position = getattr(cfg, 'list_position', None)
@@ -2747,42 +2725,65 @@ class MainVavoo(Screen):
         )
 
     def _epg_update_callback(self, answer):
-        if answer:
-            try:
-                # Call EPGImport via command line
-                import subprocess
-                self['name'].setText(_("Updating EPG..."))
-
-                # Run in background to not block UI. UI updates must be
-                # marshalled back onto the reactor thread - Enigma2's GUI
-                # components aren't thread-safe to touch directly from a
-                # background thread.
-                def update_thread():
-                    try:
-                        result = subprocess.call(
-                            ['epgimport', '--import'], timeout=300)
-                        if result == 0:
-                            reactor.callFromThread(
-                                self.session.open, MessageBox,
-                                _("EPG update completed"), MessageBox.TYPE_INFO)
-                        else:
-                            reactor.callFromThread(
-                                self.session.open, MessageBox,
-                                _("EPG update failed"), MessageBox.TYPE_ERROR)
-                    except Exception as e:
-                        print("[Vavoo] EPG update error:", str(e))
-                    finally:
-                        reactor.callFromThread(
-                            self['name'].setText, _("Ready"))
-
-                thread = threading.Thread(target=update_thread)
-                thread.setDaemon(True)
-                thread.start()
-
-            except Exception as e:
+        if not answer:
+            return
+        # There is no "epgimport" CLI binary on a normal Enigma2 image -
+        # EPGImport is a GUI plugin, not a command-line tool, and
+        # EPGImport.EPGImport itself isn't a Screen either - it's a plain
+        # importer class. Plugins/Extensions/EPGImport/plugin.py (every
+        # Enigma2 plugin has a lowercase plugin.py as its required entry
+        # point) keeps a module-level startImport() that's the exact same
+        # function EPGImport's own UI button calls, using a
+        # already-constructed singleton importer - calling it directly
+        # runs a real import with no screen/dialog of ours or theirs
+        # involved. It kicks off its own async work (threads/reactor)
+        # internally, same as EPGImport's own button does, so this can be
+        # called directly from here without our own threading.
+        try:
+            from Plugins.Extensions.EPGImport.plugin import (
+                epgimport, startImport, CONFIG_PATH)
+            from Plugins.Extensions.EPGImport import EPGConfig
+            if epgimport.isImportRunning():
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("EPG import already running"), 3)
+                return
+            # epgimport.beginImport() (called by startImport()) requires
+            # epgimport.sources to already be populated - its own
+            # docstring says so ("Set self.sources before calling
+            # this"). EPGImport's own UI only ever calls startImport()
+            # from EPGImportConfig.doimport(), which builds that list
+            # from the user's enabled-sources settings first; calling
+            # startImport() directly skips that step, so with an empty
+            # source list nextImport() just closes the import right
+            # away - "0 events imported" with no error, since nothing
+            # was actually queued to import in the first place.
+            cfg = EPGConfig.loadUserSettings()
+            sources = list(
+                EPGConfig.enumSources(CONFIG_PATH, filter=cfg["sources"]))
+            if not sources:
                 self.session.open(
-                    MessageBox, _("Error: {}").format(
-                        str(e)), MessageBox.TYPE_ERROR)
+                    MessageBox,
+                    _("No active EPG sources found in EPGImport. "
+                      "Please enable the Vavoo source in EPGImport settings."),
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
+                return
+            sources.reverse()
+            epgimport.sources = sources
+            startImport()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("EPG import started"), 3)
+        except ImportError as e:
+            print("[Vavoo] EPG update error:", str(e))
+            self.session.open(
+                MessageBox,
+                _("EPGImport plugin not found: {}").format(str(e)),
+                MessageBox.TYPE_ERROR)
+        except Exception as e:
+            print("[Vavoo] EPG update error:", str(e))
+            self.session.open(
+                MessageBox, _("Error starting EPG update: {}").format(
+                    str(e)), MessageBox.TYPE_ERROR)
 
     def msgdeleteBouquets(self):
         message_parts = []
