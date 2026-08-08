@@ -643,6 +643,7 @@ def process_epg_matching_background(
 
         # 4. Rewrite the bouquet file with converted references
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
+        changes = 0
         if file_exists(bouquet_path):
             # Read current lines
             with io.open(bouquet_path, 'r', encoding='utf-8') as f:
@@ -650,7 +651,6 @@ def process_epg_matching_background(
 
             new_lines = []
             i = 0
-            changes = 0
             match_dict = {m['channel_id']: m['dvb_ref'] for m in matched}
 
             while i < len(lines):
@@ -688,11 +688,6 @@ def process_epg_matching_background(
                 print(
                     "[EPGBackground] Updated %d service lines in %s" %
                     (changes, bouquet_filename))
-                # Without this, Enigma2's live service database keeps
-                # using the fallback refs written in phase 1 until a
-                # manual reload/reboot, so the just-matched EPG never
-                # actually shows up despite the "completed" notification.
-                reactor.callFromThread(ReloadBouquets)
 
         # 5. Generate EPG mapping files
         if matched:
@@ -709,6 +704,18 @@ def process_epg_matching_background(
 
         # 7. Save matcher cache
         matcher.save_cache()
+
+        # Reload only now that the bouquet's #SERVICE lines, the EPG
+        # channel mapping, and sources.xml are all in their final state -
+        # without this, Enigma2's live service database keeps using the
+        # fallback refs written in phase 1 until a manual reload/reboot,
+        # so the just-matched EPG never actually shows up despite the
+        # "completed" notification. Reloading before the EPG
+        # mapping/sources files existed (the previous order) meant
+        # Enigma2 picked up the new service references before EPGImport
+        # had anything to associate with them for this export.
+        if changes > 0:
+            reactor.callFromThread(ReloadBouquets)
 
         # 8. Callback to notify completion
         print(
