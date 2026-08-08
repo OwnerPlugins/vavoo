@@ -48,7 +48,6 @@ except ImportError:
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
-from Components.ScrollLabel import ScrollLabel
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
 from Components.Pixmap import Pixmap
@@ -1726,23 +1725,26 @@ class UpdatePopup(Screen):
         self["title"] = Label(_("Update Available"))
         self["subtitle"] = Label(
             _("v{} -> v{}").format(__version__, remote_version))
-        self["changelog_label"] = Label(_("Changelog:"))
-        # ScrollLabel, not a plain Label: the changelog can run well
-        # past what the fixed-height box fits (confirmed - a 9-entry
-        # changelog overflowed a plain Label with no way to see the
-        # rest). Construct it WITH the real text (same pattern
-        # EPGImport's own log screen uses successfully) so something is
-        # always visible even on images where pageHeight never comes
-        # out right - a previous attempt here that constructed with ""
-        # and deferred setText() entirely to onLayoutFinish left the box
-        # completely blank on at least OpenATV 7.6, not just
-        # mis-paginated. Still re-set it in onLayoutFinish too, once the
-        # widget's bound size is actually established, so pagination
-        # (pageUp/pageDown) is correct on images where the constructor
-        # call alone gets a wrong/zero pageHeight.
+        # Plain Label, not ScrollLabel: two different ScrollLabel setups
+        # (setText() deferred to onLayoutFinish, then constructing it
+        # with the real text directly) both rendered a completely empty
+        # box on real hardware (confirmed on OpenATV 7.6), even though
+        # every other widget on this same screen - including this one's
+        # own changelog_label right above it - renders fine. Label is
+        # the one widget type known to actually work here (it's what
+        # showed the changelog, truncated, before scrolling was added).
+        # Do our own manual pagination instead of relying on a
+        # component that isn't reliably rendering anything.
         self._changelog_text = changelog or _("No changelog provided.")
-        self["changelog"] = ScrollLabel(self._changelog_text)
-        self.onLayoutFinish.append(self._setChangelogText)
+        changelog_lines = self._changelog_text.split('\n')
+        lines_per_page = 8
+        self._changelog_pages = [
+            '\n'.join(changelog_lines[i:i + lines_per_page])
+            for i in range(0, len(changelog_lines), lines_per_page)
+        ] or ['']
+        self._changelog_page_index = 0
+        self["changelog_label"] = Label(self._changelogLabelText())
+        self["changelog"] = Label(self._changelog_pages[0])
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Yes, update now"))
 
@@ -1753,15 +1755,32 @@ class UpdatePopup(Screen):
                 "green": self.confirm,
                 "cancel": self.deny,
                 "red": self.deny,
-                "up": self["changelog"].pageUp,
-                "down": self["changelog"].pageDown,
-                "left": self["changelog"].pageUp,
-                "right": self["changelog"].pageDown,
+                "up": self._changelogPageUp,
+                "down": self._changelogPageDown,
+                "left": self._changelogPageUp,
+                "right": self._changelogPageDown,
             }, -1
         )
 
-    def _setChangelogText(self):
-        self["changelog"].setText(self._changelog_text)
+    def _changelogLabelText(self):
+        if len(self._changelog_pages) > 1:
+            return _("Changelog: ({}/{}, use up/down)").format(
+                self._changelog_page_index + 1, len(self._changelog_pages))
+        return _("Changelog:")
+
+    def _changelogPageUp(self):
+        if self._changelog_page_index > 0:
+            self._changelog_page_index -= 1
+            self["changelog"].setText(
+                self._changelog_pages[self._changelog_page_index])
+            self["changelog_label"].setText(self._changelogLabelText())
+
+    def _changelogPageDown(self):
+        if self._changelog_page_index < len(self._changelog_pages) - 1:
+            self._changelog_page_index += 1
+            self["changelog"].setText(
+                self._changelog_pages[self._changelog_page_index])
+            self["changelog_label"].setText(self._changelogLabelText())
 
     def confirm(self):
         self.close(True)
