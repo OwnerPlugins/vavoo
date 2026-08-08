@@ -2758,29 +2758,54 @@ def _get_epg_feed_index(country_code):
     try:
         url = "http://{}:{}/epg/{}.xml".format(
             PROXY_HOST, PORT, country_code.lower())
-        xml_data = getUrl(url, timeout=10)
+        # These feeds run several MB to 10+ MB (full multi-day guide for
+        # every channel in the country) - the default 10s/3-retries
+        # getUrl() timeout budget (tuned for small JSON/HTML responses)
+        # routinely isn't enough to pull one down over a set-top box's
+        # real-world connection, which silently disabled this whole
+        # id-correction path and left most channels stuck on their
+        # (usually wrong, see below) Rytec-matched id.
+        xml_data = getUrl(url, timeout=30, retries=2)
         if not xml_data:
+            warning(
+                "EPG feed fetch returned empty for {} - id-correction "
+                "fallback disabled for this export, channels will keep "
+                "their Rytec-matched id even if the feed uses a "
+                "different one".format(country_code))
             return None, None
-        root = ET.fromstring(xml_data)
-    except Exception as e:
-        debug("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
-        return None, None
 
-    matcher = get_epg_matcher()
-    feed_ids = set()
-    name_index = {}
-    for chan in root.findall('channel'):
-        chan_id = chan.get('id')
-        if not chan_id:
-            continue
-        feed_ids.add(chan_id)
-        for dn in chan.findall('display-name'):
-            dn_text = (dn.text or '').strip()
-            if not dn_text:
-                continue
-            clean_dn = matcher._clean_name_for_similarity(dn_text)
-            if clean_dn:
-                name_index[clean_dn] = chan_id
+        xml_source = io.BytesIO(
+            xml_data if isinstance(xml_data, binary_type)
+            else xml_data.encode('utf-8'))
+
+        matcher = get_epg_matcher()
+        feed_ids = set()
+        name_index = {}
+        # Stream-parse instead of ET.fromstring(): these feeds are almost
+        # entirely <programme> entries (tens of thousands of them) with
+        # the actual <channel> definitions front-loaded before any of
+        # them, per the XMLTV convention. Building a full DOM of the
+        # whole guide just to read the channel list is both slow and
+        # memory-heavy on box-class hardware - stop as soon as the
+        # <programme> section starts instead.
+        for event, elem in ET.iterparse(xml_source, events=('start', 'end')):
+            if event == 'end' and elem.tag == 'channel':
+                chan_id = elem.get('id')
+                if chan_id:
+                    feed_ids.add(chan_id)
+                    for dn in elem.findall('display-name'):
+                        dn_text = (dn.text or '').strip()
+                        if not dn_text:
+                            continue
+                        clean_dn = matcher._clean_name_for_similarity(dn_text)
+                        if clean_dn:
+                            name_index[clean_dn] = chan_id
+                elem.clear()
+            elif event == 'start' and elem.tag == 'programme':
+                break
+    except Exception as e:
+        warning("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
+        return None, None
 
     _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)
     return feed_ids, name_index
