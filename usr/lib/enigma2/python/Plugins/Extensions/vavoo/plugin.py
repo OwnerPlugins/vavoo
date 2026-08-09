@@ -4537,7 +4537,22 @@ class Playstream2(
 
         self.last_eof_time = current_time
 
-        if time_since_last_eof < 10:  # Less than 10 seconds between EOFs
+        # The retry backoff below already waits 4-8s (2 + eof_count*2,
+        # capped at eof_count==3) before the next restart attempt, plus
+        # whatever the resolve+reconnect itself takes (typically a
+        # couple more seconds) - a 10s "frequent" window was shorter
+        # than that combined delay could easily run, so a stream that
+        # kept failing immediately on every restart still measured each
+        # EOF as more than 10s after the previous one and reset
+        # eof_count back to 1 every time. That meant the "give up after
+        # 3 quick retries" safety net below could never actually
+        # trigger - a persistently broken stream would retry forever
+        # instead of eventually returning to the channel list. 45s
+        # comfortably covers the worst-case backoff+resolve time with
+        # margin, while still resetting correctly for a stream that
+        # played fine for a real stretch before an unrelated one-off
+        # EOF.
+        if time_since_last_eof < 45:
             self.eof_count += 1
             print(
                 "[Playstream2] Frequent EOF #" +
