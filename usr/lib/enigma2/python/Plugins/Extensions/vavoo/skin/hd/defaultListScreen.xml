@@ -11,7 +11,7 @@
     <eLabel backgroundColor="#00ff00" position="234,698" size="200,4" zPosition="4" />
     <eLabel backgroundColor="#ffff00" position="434,698" size="200,4" zPosition="4" />
     <eLabel backgroundColor="#0000ff" position="631,698" size="200,4" zPosition="4" />
-    <widget source="global.CurrentTime" render="Label" position="923,38" size="210,75" font="Lcdx; 56" halign="right" valign="center" backgroundColor="#914167" foregroundColor="#ffffff" transparent="1">
+    <widget source="global.CurrentTime" render="Label" position="923,38" size="210,75" font="LCD; 56" halign="right" valign="center" backgroundColor="#914167" foregroundColor="#ffffff" transparent="1">
         <convert type="ClockToText">Default</convert>
     </widget>
     <eLabel name="" position="0,0" size="1280,720" backgroundColor="#181b2e" foregroundColor="#ffffff" transparent="1" zPosition="-9" />

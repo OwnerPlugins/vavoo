@@ -5395,7 +5395,7 @@ def add_skin_font():
     print('**********addFont')
     from enigma import addFont
     FNT_Path = join(PLUGIN_PATH, "fonts")
-    addFont(join(FNT_Path, 'Lcdx.ttf'), 'Lcdx', 100, 0)
+    # addFont(join(FNT_Path, 'Lcdx.ttf'), 'Lcdx', 100, 0)
     addFont(join(FNT_Path, 'MavenPro-Medium.ttf'), 'cvfont', 100, 0)
 
 
