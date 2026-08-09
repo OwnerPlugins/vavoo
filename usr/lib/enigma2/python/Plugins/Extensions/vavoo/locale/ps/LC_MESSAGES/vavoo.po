@@ -165,6 +165,9 @@ msgstr "قضیه: {}"
 msgid "Changelog:"
 msgstr "چینلونه"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "بدلولوګ: ({}/{}، پورته / ښکته کارول)"
+
 msgid "Channels"
 msgstr "چینلونه"
 
@@ -234,6 +237,13 @@ msgstr "ایا تاسو غواړئ د کیچ بڼه سمه کړئ؟"
 msgid "EPG Similarity Threshold (%)"
 msgstr "د EPG ورته والی حد (٪)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo لا دمخه روانه ده."
+
+msgid "EPG import started"
+msgstr "د EPG واردات پیل شول"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG غیر فعال دی. مهرباني وکړئ دا لومړی د Vavoo تنظیماتو کې فعال کړئ."
 
@@ -243,14 +253,8 @@ msgstr "د EPG پروسس بشپړ شوی (هیڅ لوبه نشته)"
 msgid "EPG processing completed for {} channels"
 msgstr "د {} چینلونو لپاره د EPG پروسس بشپړ شو"
 
-msgid "EPG update completed"
-msgstr "د EPG تازه کول بشپړ شول"
-
-msgid "EPG update failed"
-msgstr "د EPG تازه کول ناکام شول"
-
-msgid "EPG update started successfully"
-msgstr "د EPG تازه کول په بریالیتوب سره پیل شول"
+msgid "EPGImport plugin not found: {}"
+msgstr "د EPGImport پلگ ان ونه موندل شو: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "د Vavoo EPG فعال کړئ"
@@ -278,9 +282,6 @@ msgstr "د چینل په پیل کولو کې تېروتنه"
 
 msgid "Error: %s"
 msgstr "تېروتنه: %s"
-
-msgid "Error: {}"
-msgstr "تېروتنه: {}"
 
 msgid "Exit"
 msgstr "وتل"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "د انټرنیټ پیوستون ندی موندل شوی. مهرباني وکړئ خپل شبکه وګورئ."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "د Vavoo EPG سرچینه په EPGImport کې فعاله شوې نه ده. مهرباني وکړئ دا د EPGImport ترتیباتو کې فعال کړئ."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "هیڅ چینل ونه موندل شو"
 
@@ -456,9 +461,6 @@ msgstr "د پراکسي پیل وخت پای (ثانوي)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "پراکسي نښه په بریالیتوب سره تازه شوه"
-
-msgid "Ready"
-msgstr "چمتو"
 
 msgid "Really close without saving settings?"
 msgstr "واقعیا د تنظیماتو خوندي کولو پرته تړل؟"
@@ -601,9 +603,6 @@ msgstr "د تازه کولو وقفه (دقیقې):"
 msgid "Update now?"
 msgstr "اوس د EPG تازه کول پیل کړئ؟"
 
-msgid "Updating EPG..."
-msgstr "د EPG تازه کول..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "په ژوندۍ بڼه وایو"
@@ -677,6 +676,24 @@ msgstr "✗ پراکسي آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ بیا پیل کول ناکام شول"
+
+#~ msgid "EPG update completed"
+#~ msgstr "د EPG تازه کول بشپړ شول"
+
+#~ msgid "EPG update failed"
+#~ msgstr "د EPG تازه کول ناکام شول"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "د EPG تازه کول په بریالیتوب سره پیل شول"
+
+#~ msgid "Error: {}"
+#~ msgstr "تېروتنه: {}"
+
+#~ msgid "Ready"
+#~ msgstr "چمتو"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "د EPG تازه کول..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "مهرباني وکړئ بل چینل هڅه وکړئ."

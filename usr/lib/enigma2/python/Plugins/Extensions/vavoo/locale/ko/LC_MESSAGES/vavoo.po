@@ -166,6 +166,9 @@ msgstr "사례: {}"
 msgid "Changelog:"
 msgstr "채널"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "변경 로그: ({}/{}, 위/아래 사용)"
+
 msgid "Channels"
 msgstr "채널"
 
@@ -235,6 +238,13 @@ msgstr "캐시 형식을 수정하시겠습니까?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG 유사성 임계값(%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo가 이미 실행 중입니다."
+
+msgid "EPG import started"
+msgstr "EPG 가져오기가 시작되었습니다."
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG가 비활성화되었습니다. 먼저 Vavoo 설정에서 활성화하십시오."
 
@@ -244,14 +254,8 @@ msgstr "EPG 처리 완료(일치 없음)"
 msgid "EPG processing completed for {} channels"
 msgstr "{}개 채널에 대한 EPG 처리가 완료되었습니다."
 
-msgid "EPG update completed"
-msgstr "EPG 업데이트 완료"
-
-msgid "EPG update failed"
-msgstr "EPG 업데이트 실패"
-
-msgid "EPG update started successfully"
-msgstr "EPG 업데이트가 성공적으로 시작되었습니다."
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport 플러그인을 찾을 수 없습니다: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG 활성화"
@@ -279,9 +283,6 @@ msgstr "채널을 시작하는 중에 오류가 발생했습니다."
 
 msgid "Error: %s"
 msgstr "오류: %s"
-
-msgid "Error: {}"
-msgstr "오류: {}"
 
 msgid "Exit"
 msgstr "출구"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "인터넷 연결이 감지되지 않았습니다. 네트워크를 확인하세요."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG 소스는 EPGImport에서 활성화되지 않습니다. EPGImport 설정에서 활성화하세요."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "채널을 찾을 수 없습니다"
 
@@ -457,9 +462,6 @@ msgstr "프록시 시작 시간 초과(초)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "프록시 토큰이 새로 고쳐졌습니다."
-
-msgid "Ready"
-msgstr "준비가 된"
 
 msgid "Really close without saving settings?"
 msgstr "설정을 저장하지 않고 닫으시겠습니까?"
@@ -602,9 +604,6 @@ msgstr "업데이트 간격(분):"
 msgid "Update now?"
 msgstr "지금 EPG 업데이트를 시작하시겠습니까?"
 
-msgid "Updating EPG..."
-msgstr "EPG 업데이트 중..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo 스트림 라이브"
@@ -678,6 +677,24 @@ msgstr "✗ 오프라인 프록시"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 다시 시작 실패"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG 업데이트 완료"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG 업데이트 실패"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG 업데이트가 성공적으로 시작되었습니다."
+
+#~ msgid "Error: {}"
+#~ msgstr "오류: {}"
+
+#~ msgid "Ready"
+#~ msgstr "준비가 된"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG 업데이트 중..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "다른 채널을 사용해 보세요."

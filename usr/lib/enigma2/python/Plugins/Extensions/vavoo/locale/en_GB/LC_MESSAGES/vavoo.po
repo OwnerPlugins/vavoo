@@ -171,6 +171,9 @@ msgstr "Case: {}"
 msgid "Changelog:"
 msgstr "Channels: %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr ""
+
 #, fuzzy
 msgid "Channels"
 msgstr "Channels: %d"
@@ -243,6 +246,12 @@ msgstr "Do you want to export this bouquet?"
 msgid "EPG Similarity Threshold (%)"
 msgstr ""
 
+msgid "EPG import already running"
+msgstr ""
+
+msgid "EPG import started"
+msgstr ""
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr ""
 
@@ -252,15 +261,8 @@ msgstr ""
 msgid "EPG processing completed for {} channels"
 msgstr ""
 
-msgid "EPG update completed"
+msgid "EPGImport plugin not found: {}"
 msgstr ""
-
-msgid "EPG update failed"
-msgstr ""
-
-#, fuzzy
-msgid "EPG update started successfully"
-msgstr "Configuration saved successfully!"
 
 msgid "Enable Vavoo EPG"
 msgstr ""
@@ -291,10 +293,6 @@ msgid "Error starting channel"
 msgstr "Error starting channel"
 
 msgid "Error: %s"
-msgstr "Error: %s"
-
-#, fuzzy
-msgid "Error: {}"
 msgstr "Error: %s"
 
 msgid "Exit"
@@ -403,6 +401,9 @@ msgstr ""
 msgid "No Internet connection detected. Please check your network."
 msgstr ""
 
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr ""
+
 #, fuzzy
 msgid "No changelog provided."
 msgstr "No channels found"
@@ -471,9 +472,6 @@ msgstr ""
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Vavoo bouquets removed successfully!"
-
-msgid "Ready"
-msgstr ""
 
 msgid "Really close without saving settings?"
 msgstr "Really close without saving settings?"
@@ -620,9 +618,6 @@ msgstr "Update interval (minutes):"
 msgid "Update now?"
 msgstr "Update Me"
 
-msgid "Updating EPG..."
-msgstr ""
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live"
@@ -696,6 +691,14 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr ""
+
+#, fuzzy
+#~ msgid "EPG update started successfully"
+#~ msgstr "Configuration saved successfully!"
+
+#, fuzzy
+#~ msgid "Error: {}"
+#~ msgstr "Error: %s"
 
 #~ msgid "Please try another channel."
 #~ msgstr "Please try another channel."

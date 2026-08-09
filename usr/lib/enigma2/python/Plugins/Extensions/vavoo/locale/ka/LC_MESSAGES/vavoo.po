@@ -165,6 +165,9 @@ msgstr "საქმე: {}"
 msgid "Changelog:"
 msgstr "არხები"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ცვლილებების ჟურნალი: ({}/{}, გამოყენება ზევით/ქვევით)"
+
 msgid "Channels"
 msgstr "არხები"
 
@@ -234,6 +237,13 @@ msgstr "გსურთ ქეშის ფორმატის დაფიქ
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG მსგავსების ბარიერი (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo უკვე გაშვებულია."
+
+msgid "EPG import started"
+msgstr "EPG იმპორტი დაიწყო"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG გამორთულია. გთხოვთ, ჩართოთ ის ჯერ Vavoo-ს პარამეტრებში."
 
@@ -243,14 +253,8 @@ msgstr "EPG დამუშავება დასრულდა (შემ�
 msgid "EPG processing completed for {} channels"
 msgstr "EPG დამუშავება დასრულდა {} არხისთვის"
 
-msgid "EPG update completed"
-msgstr "EPG განახლება დასრულდა"
-
-msgid "EPG update failed"
-msgstr "EPG განახლება ვერ მოხერხდა"
-
-msgid "EPG update started successfully"
-msgstr "EPG განახლება წარმატებით დაიწყო"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport დანამატი ვერ მოიძებნა: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "ჩართეთ Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "შეცდომა არხის გაშვებისას"
 
 msgid "Error: %s"
 msgstr "შეცდომა: %s"
-
-msgid "Error: {}"
-msgstr "შეცდომა: {}"
 
 msgid "Exit"
 msgstr "გასვლა"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "ინტერნეტ კავშირი არ არის აღმოჩენილი. გთხოვთ, შეამოწმოთ თქვენი ქსელი."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG წყარო არ არის ჩართული EPGImport-ში. გთხოვთ, ჩართოთ ის EPGImport პარამეტრებში."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "არხები ვერ მოიძებნა"
 
@@ -456,9 +461,6 @@ msgstr "პროქსის გაშვების ვადა (წამ�
 
 msgid "Proxy token refreshed successfully"
 msgstr "პროქსის ჟეტონი წარმატებით განახლდა"
-
-msgid "Ready"
-msgstr "მზადაა"
 
 msgid "Really close without saving settings?"
 msgstr "ნამდვილად დაიხურება პარამეტრების შენახვის გარეშე?"
@@ -601,9 +603,6 @@ msgstr "განახლების ინტერვალი (წუთე
 msgid "Update now?"
 msgstr "დაიწყოს EPG განახლება ახლა?"
 
-msgid "Updating EPG..."
-msgstr "მიმდინარეობს EPG-ის განახლება..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live-ის განახლება..."
 
@@ -676,6 +675,24 @@ msgstr "✗ პროქსი ხაზგარეშე"
 
 msgid "✗ Restart Failed"
 msgstr "✗ გადატვირთვა ვერ მოხერხდა"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG განახლება დასრულდა"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG განახლება ვერ მოხერხდა"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG განახლება წარმატებით დაიწყო"
+
+#~ msgid "Error: {}"
+#~ msgstr "შეცდომა: {}"
+
+#~ msgid "Ready"
+#~ msgstr "მზადაა"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "მიმდინარეობს EPG-ის განახლება..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "გთხოვთ სცადოთ სხვა არხი."

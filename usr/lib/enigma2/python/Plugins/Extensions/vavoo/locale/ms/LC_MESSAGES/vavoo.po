@@ -165,6 +165,9 @@ msgstr "Kes: {}"
 msgid "Changelog:"
 msgstr "Saluran"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, gunakan atas/bawah)"
+
 msgid "Channels"
 msgstr "Saluran"
 
@@ -234,6 +237,13 @@ msgstr "Adakah anda mahu membetulkan format cache?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Ambang Kesamaan EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo sudah berjalan."
+
+msgid "EPG import started"
+msgstr "Import EPG bermula"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG dilumpuhkan. Sila dayakannya dalam tetapan Vavoo dahulu."
 
@@ -243,14 +253,8 @@ msgstr "Pemprosesan EPG selesai (tiada padanan)"
 msgid "EPG processing completed for {} channels"
 msgstr "Pemprosesan EPG selesai untuk saluran {}."
 
-msgid "EPG update completed"
-msgstr "Kemas kini EPG selesai"
-
-msgid "EPG update failed"
-msgstr "Kemas kini EPG gagal"
-
-msgid "EPG update started successfully"
-msgstr "Kemas kini EPG berjaya dimulakan"
+msgid "EPGImport plugin not found: {}"
+msgstr "Pemalam EPGImport tidak ditemui: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Dayakan Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "Ralat memulakan saluran"
 
 msgid "Error: %s"
 msgstr "Ralat: %s"
-
-msgid "Error: {}"
-msgstr "Ralat: {}"
 
 msgid "Exit"
 msgstr "Keluar"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Tiada sambungan Internet dikesan. Sila semak rangkaian anda."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Sumber Vavoo EPG tidak didayakan dalam EPGImport. Sila dayakannya dalam tetapan EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Tiada saluran ditemui"
 
@@ -456,9 +461,6 @@ msgstr "Tamat masa permulaan proksi (saat)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Token proksi berjaya dimuat semula"
-
-msgid "Ready"
-msgstr "sedia"
 
 msgid "Really close without saving settings?"
 msgstr "Benar-benar tutup tanpa menyimpan tetapan?"
@@ -601,9 +603,6 @@ msgstr "Selang kemas kini (minit):"
 msgid "Update now?"
 msgstr "Mulakan kemas kini EPG sekarang?"
 
-msgid "Updating EPG..."
-msgstr "Mengemas kini EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Langsung"
@@ -677,6 +676,24 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Kemas kini EPG selesai"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Kemas kini EPG gagal"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Kemas kini EPG berjaya dimulakan"
+
+#~ msgid "Error: {}"
+#~ msgstr "Ralat: {}"
+
+#~ msgid "Ready"
+#~ msgstr "sedia"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Mengemas kini EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Sila cuba saluran lain."

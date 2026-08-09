@@ -165,6 +165,9 @@ msgstr "Эш: {}"
 msgid "Changelog:"
 msgstr "Каналлар"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Чангелог: ({} / {}, өскә / аска кулланыгыз)"
+
 msgid "Channels"
 msgstr "Каналлар"
 
@@ -234,6 +237,13 @@ msgstr "Кэш форматын төзәтергә телисезме?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG охшашлык бусагасы (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo эшли."
+
+msgid "EPG import started"
+msgstr "EPG импорт башланды"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG инвалид. Зинһар, аны башта Vavoo көйләүләрендә эшләгез."
 
@@ -243,14 +253,8 @@ msgstr "EPG эшкәртү тәмамланды (матчлар юк)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG эшкәртү {} каналлары өчен тәмамланды"
 
-msgid "EPG update completed"
-msgstr "EPG яңарту тәмамланды"
-
-msgid "EPG update failed"
-msgstr "EPG яңарту уңышсыз"
-
-msgid "EPG update started successfully"
-msgstr "EPG яңарту уңышлы башланды"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport плагины табылмады: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG кушу"
@@ -278,9 +282,6 @@ msgstr "Каналны башлауда хата"
 
 msgid "Error: %s"
 msgstr "Хата:% s"
-
-msgid "Error: {}"
-msgstr "Хата: {}"
 
 msgid "Exit"
 msgstr "Чык"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Интернетка тоташу табылмады. Зинһар, челтәрегезне тикшерегез."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG чыганагы EPGImport'та кушылмый. Зинһар, аны EPGImport көйләүләрендә эшләгез."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Канал табылмады"
 
@@ -456,9 +461,6 @@ msgstr "Прокси старт вакыты (секундлар)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Прокси билгесе уңышлы яңартылды"
-
-msgid "Ready"
-msgstr "Әзер"
 
 msgid "Really close without saving settings?"
 msgstr "Чыннан да көйләүләрне сакламыйча ябыкмы?"
@@ -601,9 +603,6 @@ msgstr "Яңарту интервалы (минутлар):"
 msgid "Update now?"
 msgstr "EPG яңартуны хәзер башлыйсызмы?"
 
-msgid "Updating EPG..."
-msgstr "EPG яңарту ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live Плагин"
@@ -677,6 +676,24 @@ msgstr "Off Оффлайн прокси"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Яңарту уңышсыз"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG яңарту тәмамланды"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG яңарту уңышсыз"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG яңарту уңышлы башланды"
+
+#~ msgid "Error: {}"
+#~ msgstr "Хата: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Әзер"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG яңарту ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Зинһар, бүтән каналны карагыз."

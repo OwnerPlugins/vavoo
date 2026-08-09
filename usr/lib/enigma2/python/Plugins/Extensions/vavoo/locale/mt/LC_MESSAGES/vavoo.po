@@ -165,6 +165,9 @@ msgstr "Każ: {}"
 msgid "Changelog:"
 msgstr "Kanali"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "reġistru tal-bidliet: ({}/{}, uża 'l fuq/'l isfel)"
+
 msgid "Channels"
 msgstr "Kanali"
 
@@ -234,6 +237,13 @@ msgstr "Trid tiffissa l-format tal-cache?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Limitu ta' Xebh EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo diġà qed jaħdem."
+
+msgid "EPG import started"
+msgstr "L-importazzjoni EPG bdiet"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG huwa diżattivat. Jekk jogħġbok ippermettiha fl-issettjar ta' Vavoo l-ewwel."
 
@@ -243,14 +253,8 @@ msgstr "L-ipproċessar tal-EPG tlesta (l-ebda taqbila)"
 msgid "EPG processing completed for {} channels"
 msgstr "L-ipproċessar tal-EPG tlesta għal {} kanali"
 
-msgid "EPG update completed"
-msgstr "Aġġornament EPG lest"
-
-msgid "EPG update failed"
-msgstr "L-aġġornament tal-EPG falla"
-
-msgid "EPG update started successfully"
-msgstr "L-aġġornament tal-EPG beda b'suċċess"
+msgid "EPGImport plugin not found: {}"
+msgstr "Plugin EPGImport ma nstabx: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Ippermetti Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "Żball fil-bidu tal-kanal"
 
 msgid "Error: %s"
 msgstr "Żball: %s"
-
-msgid "Error: {}"
-msgstr "Żball: {}"
 
 msgid "Exit"
 msgstr "Ħruġ"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Ebda konnessjoni tal-Internet misjuba. Jekk jogħġbok iċċekkja n-netwerk tiegħek."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Is-sors ta' Vavoo EPG mhuwiex attivat f'EPGImport. Jekk jogħġbok ippermettiha fis-settings tal-EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Ma nstab l-ebda kanal"
 
@@ -456,9 +461,6 @@ msgstr "Timeout tal-istartjar tal-prokura (sekondi)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token aggornat b'suċċess"
-
-msgid "Ready"
-msgstr "Lest"
 
 msgid "Really close without saving settings?"
 msgstr "Tassew tagħlaq mingħajr ma tissejvja s-settings?"
@@ -601,9 +603,6 @@ msgstr "Intervall tal-aġġornament (minuti):"
 msgid "Update now?"
 msgstr "Ibda l-aġġornament tal-EPG issa?"
 
-msgid "Updating EPG..."
-msgstr "Naġġorna l-EPG..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Naġġorna Vavoo Stream Live..."
 
@@ -676,6 +675,24 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Aġġornament EPG lest"
+
+#~ msgid "EPG update failed"
+#~ msgstr "L-aġġornament tal-EPG falla"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "L-aġġornament tal-EPG beda b'suċċess"
+
+#~ msgid "Error: {}"
+#~ msgstr "Żball: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Lest"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Naġġorna l-EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Jekk jogħġbok ipprova kanal ieħor."

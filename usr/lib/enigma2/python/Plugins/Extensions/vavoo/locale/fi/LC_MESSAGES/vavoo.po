@@ -165,6 +165,9 @@ msgstr "Kirjainkoko: {}"
 msgid "Changelog:"
 msgstr "Kanavat"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Muutosloki: ({}/{}, käytä ylös/alas)"
+
 msgid "Channels"
 msgstr "Kanavat"
 
@@ -234,6 +237,13 @@ msgstr "Haluatko korjata välimuistin muodon?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG:n samankaltaisuuden kynnys (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo on jo käynnissä."
+
+msgid "EPG import started"
+msgstr "EPG-tuonti aloitettu"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG on poissa käytöstä. Ota se ensin käyttöön Vavoo-asetuksista."
 
@@ -243,14 +253,8 @@ msgstr "EPG-käsittely valmis (ei osumia)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-käsittely valmistui {} kanavalle"
 
-msgid "EPG update completed"
-msgstr "EPG-päivitys valmistui"
-
-msgid "EPG update failed"
-msgstr "EPG-päivitys epäonnistui"
-
-msgid "EPG update started successfully"
-msgstr "EPG-päivitys käynnistyi onnistuneesti"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport-laajennusta ei löydy: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Ota Vavoo EPG käyttöön"
@@ -278,9 +282,6 @@ msgstr "Virhe käynnistettäessä kanavaa"
 
 msgid "Error: %s"
 msgstr "Virhe: %s"
-
-msgid "Error: {}"
-msgstr "Virhe: {}"
 
 msgid "Exit"
 msgstr "Poistu"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Internet-yhteyttä ei havaittu. Tarkista verkkosi."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG -lähde ei ole käytössä EPGImportissa. Ota se käyttöön EPGImport-asetuksista."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Kanavia ei löytynyt"
 
@@ -456,9 +461,6 @@ msgstr "Välityspalvelimen käynnistyksen aikakatkaisu (sekuntia)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Välityspalvelimen token päivitetty onnistuneesti"
-
-msgid "Ready"
-msgstr "Valmis"
 
 msgid "Really close without saving settings?"
 msgstr "Suljetaanko todella tallentamatta asetuksia?"
@@ -601,9 +603,6 @@ msgstr "Päivitysväli (minuutteina):"
 msgid "Update now?"
 msgstr "Käynnistetäänkö EPG-päivitys nyt?"
 
-msgid "Updating EPG..."
-msgstr "Päivitetään EPG:tä..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live"
@@ -677,6 +676,24 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG-päivitys valmistui"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-päivitys epäonnistui"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-päivitys käynnistyi onnistuneesti"
+
+#~ msgid "Error: {}"
+#~ msgstr "Virhe: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Valmis"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Päivitetään EPG:tä..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Yritä toista kanavaa."

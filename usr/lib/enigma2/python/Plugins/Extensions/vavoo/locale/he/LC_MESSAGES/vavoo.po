@@ -166,6 +166,9 @@ msgstr "מקרה: {}"
 msgid "Changelog:"
 msgstr "ערוצים"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "יומן שינויים: ({}/{}, השתמש למעלה/למטה)"
+
 msgid "Channels"
 msgstr "ערוצים"
 
@@ -235,6 +238,13 @@ msgstr "האם אתה רוצה לתקן את פורמט המטמון?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "סף דמיון EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo כבר פועל."
+
+msgid "EPG import started"
+msgstr "ייבוא ​​EPG התחיל"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG מושבת. אנא הפעל אותו בהגדרות Vavoo תחילה."
 
@@ -244,14 +254,8 @@ msgstr "עיבוד EPG הושלם (ללא התאמות)"
 msgid "EPG processing completed for {} channels"
 msgstr "עיבוד EPG הושלם עבור {} ערוצים"
 
-msgid "EPG update completed"
-msgstr "עדכון ה-EPG הושלם"
-
-msgid "EPG update failed"
-msgstr "עדכון ה-EPG נכשל"
-
-msgid "EPG update started successfully"
-msgstr "עדכון ה-EPG התחיל בהצלחה"
+msgid "EPGImport plugin not found: {}"
+msgstr "פלאגין EPGImport לא נמצא: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "הפעל את Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "שגיאה בהפעלת הערוץ"
 
 msgid "Error: %s"
 msgstr "שגיאה: %s"
-
-msgid "Error: {}"
-msgstr "שגיאה: {}"
 
 msgid "Exit"
 msgstr "יְצִיאָה"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "לא זוהה חיבור לאינטרנט. אנא בדוק את הרשת שלך."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "מקור EPG של Vavoo אינו מופעל ב-EPGImport. אנא הפעל אותו בהגדרות EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "לא נמצאו ערוצים"
 
@@ -457,9 +462,6 @@ msgstr "פסק זמן להפעלה של שרת proxy (שניות)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "אסימון ה-proxy רענן בהצלחה"
-
-msgid "Ready"
-msgstr "מוּכָן"
 
 msgid "Really close without saving settings?"
 msgstr "באמת לסגור בלי לשמור הגדרות?"
@@ -602,9 +604,6 @@ msgstr "מרווח עדכון (דקות):"
 msgid "Update now?"
 msgstr "להתחיל את עדכון ה-EPG עכשיו?"
 
-msgid "Updating EPG..."
-msgstr "מעדכן את ה-EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "זרם Vavoo בשידור חי"
@@ -678,6 +677,24 @@ msgstr "✗ פרוקסי לא מקוון"
 
 msgid "✗ Restart Failed"
 msgstr "✗ הפעלה מחדש נכשלה"
+
+#~ msgid "EPG update completed"
+#~ msgstr "עדכון ה-EPG הושלם"
+
+#~ msgid "EPG update failed"
+#~ msgstr "עדכון ה-EPG נכשל"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "עדכון ה-EPG התחיל בהצלחה"
+
+#~ msgid "Error: {}"
+#~ msgstr "שגיאה: {}"
+
+#~ msgid "Ready"
+#~ msgstr "מוּכָן"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "מעדכן את ה-EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "אנא נסה ערוץ אחר."

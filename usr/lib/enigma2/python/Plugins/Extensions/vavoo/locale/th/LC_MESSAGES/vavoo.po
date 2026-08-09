@@ -165,6 +165,9 @@ msgstr "กรณี: {}"
 msgid "Changelog:"
 msgstr "ช่อง"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "บันทึกการเปลี่ยนแปลง: ({}/{} ใช้ขึ้น/ลง)"
+
 msgid "Channels"
 msgstr "ช่อง"
 
@@ -234,6 +237,13 @@ msgstr "คุณต้องการแก้ไขรูปแบบแคช
 msgid "EPG Similarity Threshold (%)"
 msgstr "เกณฑ์ความคล้ายคลึงกันของ EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo กำลังทำงานอยู่แล้ว"
+
+msgid "EPG import started"
+msgstr "เริ่มนำเข้า EPG แล้ว"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ถูกปิดใช้งาน โปรดเปิดใช้งานในการตั้งค่า Vavoo ก่อน"
 
@@ -243,14 +253,8 @@ msgstr "การประมวลผล EPG เสร็จสมบูรณ�
 msgid "EPG processing completed for {} channels"
 msgstr "การประมวลผล EPG เสร็จสมบูรณ์สำหรับ {} ช่อง"
 
-msgid "EPG update completed"
-msgstr "การอัปเดต EPG เสร็จสมบูรณ์"
-
-msgid "EPG update failed"
-msgstr "การอัปเดต EPG ล้มเหลว"
-
-msgid "EPG update started successfully"
-msgstr "เริ่มการอัปเดต EPG สำเร็จแล้ว"
+msgid "EPGImport plugin not found: {}"
+msgstr "ไม่พบปลั๊กอิน EPGImport: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "เปิดใช้งาน Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "เกิดข้อผิดพลาดในการเริ่ม
 
 msgid "Error: %s"
 msgstr "ข้อผิดพลาด: %s"
-
-msgid "Error: {}"
-msgstr "ข้อผิดพลาด: {}"
 
 msgid "Exit"
 msgstr "ออก"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "ไม่พบการเชื่อมต่ออินเทอร์เน็ต โปรดตรวจสอบเครือข่ายของคุณ"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "แหล่งที่มา Vavoo EPG ไม่ได้เปิดใช้งานใน EPGImport โปรดเปิดใช้งานในการตั้งค่า EPGImport"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "ไม่พบช่อง"
 
@@ -456,9 +461,6 @@ msgstr "หมดเวลาเริ่มต้นพร็อกซี (ว�
 
 msgid "Proxy token refreshed successfully"
 msgstr "รีเฟรชโทเค็นพร็อกซีสำเร็จแล้ว"
-
-msgid "Ready"
-msgstr "พร้อม"
 
 msgid "Really close without saving settings?"
 msgstr "ปิดโดยไม่บันทึกการตั้งค่าจริงหรือ"
@@ -601,9 +603,6 @@ msgstr "ช่วงเวลาการอัพเดต (นาที):"
 msgid "Update now?"
 msgstr "เริ่มอัพเดต EPG ตอนนี้เลย?"
 
-msgid "Updating EPG..."
-msgstr "กำลังอัปเดต EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo สตรีมสด"
@@ -677,6 +676,24 @@ msgstr "✗ พร็อกซีออฟไลน์"
 
 msgid "✗ Restart Failed"
 msgstr "✗ การรีสตาร์ทล้มเหลว"
+
+#~ msgid "EPG update completed"
+#~ msgstr "การอัปเดต EPG เสร็จสมบูรณ์"
+
+#~ msgid "EPG update failed"
+#~ msgstr "การอัปเดต EPG ล้มเหลว"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "เริ่มการอัปเดต EPG สำเร็จแล้ว"
+
+#~ msgid "Error: {}"
+#~ msgstr "ข้อผิดพลาด: {}"
+
+#~ msgid "Ready"
+#~ msgstr "พร้อม"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "กำลังอัปเดต EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "โปรดลองช่องอื่น"

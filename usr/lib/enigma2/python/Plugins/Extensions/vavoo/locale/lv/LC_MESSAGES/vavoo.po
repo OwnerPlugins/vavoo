@@ -166,6 +166,9 @@ msgstr "Lieta: {}"
 msgid "Changelog:"
 msgstr "Kanāli"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Izmaiņu žurnāls: ({}/{}, izmantojiet uz augšu/uz leju)"
+
 msgid "Channels"
 msgstr "Kanāli"
 
@@ -235,6 +238,13 @@ msgstr "Vai vēlaties labot kešatmiņas formātu?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG līdzības slieksnis (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo jau darbojas."
+
+msgid "EPG import started"
+msgstr "Sākta EPG importēšana"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ir atspējota. Lūdzu, vispirms iespējojiet to Vavoo iestatījumos."
 
@@ -244,14 +254,8 @@ msgstr "EPG apstrāde pabeigta (nav atbilstības)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG apstrāde pabeigta {} kanāliem"
 
-msgid "EPG update completed"
-msgstr "EPG atjaunināšana pabeigta"
-
-msgid "EPG update failed"
-msgstr "EPG atjaunināšana neizdevās"
-
-msgid "EPG update started successfully"
-msgstr "EPG atjaunināšana veiksmīgi sākta"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport spraudnis netika atrasts: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Iespējot Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "Kļūda, startējot kanālu"
 
 msgid "Error: %s"
 msgstr "Kļūda: %s"
-
-msgid "Error: {}"
-msgstr "Kļūda: {}"
 
 msgid "Exit"
 msgstr "Iziet"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Nav atrasts interneta savienojums. Lūdzu, pārbaudiet savu tīklu."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG avots nav iespējots programmā EPGImport. Lūdzu, iespējojiet to EPGImport iestatījumos."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Nav atrasts neviens kanāls"
 
@@ -457,9 +462,6 @@ msgstr "Starpniekservera palaišanas taimauts (sekundēs)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Starpniekservera pilnvara ir veiksmīgi atsvaidzināta"
-
-msgid "Ready"
-msgstr "Gatavs"
 
 msgid "Really close without saving settings?"
 msgstr "Vai tiešām aizvērt, nesaglabājot iestatījumus?"
@@ -602,9 +604,6 @@ msgstr "Atjaunināšanas intervāls (minūtes):"
 msgid "Update now?"
 msgstr "Vai sākt EPG atjaunināšanu tūlīt?"
 
-msgid "Updating EPG..."
-msgstr "Notiek EPG atjaunināšana..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo straume tiešraidē"
@@ -678,6 +677,24 @@ msgstr "✗ Starpniekserveris bezsaistē"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restartēšana neizdevās"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG atjaunināšana pabeigta"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG atjaunināšana neizdevās"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG atjaunināšana veiksmīgi sākta"
+
+#~ msgid "Error: {}"
+#~ msgstr "Kļūda: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Gatavs"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Notiek EPG atjaunināšana..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Lūdzu, izmēģiniet citu kanālu."

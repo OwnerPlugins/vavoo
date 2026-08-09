@@ -166,6 +166,9 @@ msgstr "Trường hợp: {}"
 msgid "Changelog:"
 msgstr "Kênh"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Nhật ký thay đổi: ({}/{}, sử dụng lên/xuống)"
+
 msgid "Channels"
 msgstr "Kênh"
 
@@ -235,6 +238,13 @@ msgstr "Bạn có muốn sửa định dạng bộ đệm không?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Ngưỡng tương tự EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo đã chạy."
+
+msgid "EPG import started"
+msgstr "Đã bắt đầu nhập EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG bị vô hiệu hóa. Vui lòng kích hoạt nó trong cài đặt Vavoo trước."
 
@@ -244,14 +254,8 @@ msgstr "Quá trình xử lý EPG đã hoàn tất (không có kết quả trùng
 msgid "EPG processing completed for {} channels"
 msgstr "Quá trình xử lý EPG đã hoàn tất cho {} kênh"
 
-msgid "EPG update completed"
-msgstr "Cập nhật EPG đã hoàn tất"
-
-msgid "EPG update failed"
-msgstr "Cập nhật EPG không thành công"
-
-msgid "EPG update started successfully"
-msgstr "Cập nhật EPG đã bắt đầu thành công"
+msgid "EPGImport plugin not found: {}"
+msgstr "Không tìm thấy plugin EPGImport: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Kích hoạt Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "Lỗi bắt đầu kênh"
 
 msgid "Error: %s"
 msgstr "Lỗi: %s"
-
-msgid "Error: {}"
-msgstr "Lỗi: {}"
 
 msgid "Exit"
 msgstr "Ra"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Không có kết nối Internet được phát hiện. Vui lòng kiểm tra mạng của bạn."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Nguồn Vavoo EPG không được bật trong EPGImport. Vui lòng kích hoạt nó trong cài đặt EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Không tìm thấy kênh nào"
 
@@ -457,9 +462,6 @@ msgstr "Thời gian chờ khởi động proxy (giây)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Mã thông báo proxy được làm mới thành công"
-
-msgid "Ready"
-msgstr "Sẵn sàng"
 
 msgid "Really close without saving settings?"
 msgstr "Thực sự đóng mà không lưu cài đặt?"
@@ -602,9 +604,6 @@ msgstr "Khoảng thời gian cập nhật (phút):"
 msgid "Update now?"
 msgstr "Bắt đầu cập nhật EPG ngay bây giờ?"
 
-msgid "Updating EPG..."
-msgstr "Đang cập nhật EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream trực tiếp"
@@ -678,6 +677,24 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Cập nhật EPG đã hoàn tất"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Cập nhật EPG không thành công"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Cập nhật EPG đã bắt đầu thành công"
+
+#~ msgid "Error: {}"
+#~ msgstr "Lỗi: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Sẵn sàng"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Đang cập nhật EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Vui lòng thử kênh khác."

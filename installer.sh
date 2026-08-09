@@ -1,30 +1,26 @@
 #!/bin/bash
 
-version='1.84'
-changelog="- Fixed the plugin failing to load entirely on Python 2 images,
-  caused by an old-style class the notification manager relied on
-  __new__ for
-- Fixed background workers (update check, EPG fetch, proxy startup)
-  crashing on Python 2 with a Python-3-only Thread argument
-- Fixed the whole box freezing for up to two minutes when opening the
-  IMDb/info overlay on a slow or degraded network, by moving that EPG
-  lookup off the main thread
-- Fixed a leftover EPG fetch from a channel you'd already left still
-  running against the closed player screen
-- Fixed exported bouquets showing no EPG for channels whose matched ID
-  uses a different naming convention than the EPG guide feed - the
-  in-plugin overlay already had this fallback, exported/favorite
-  bouquets now do too
-- Fixed the proxy never actually starting automatically at boot, caused
-  by a startup flag collision that made it always think the plugin was
-  already open
-- Fixed manually-exported bouquets never being picked up by the
-  'Scheduled List' auto-update feature
-- Added a way to remove a single exported bouquet: the green button now
-  reads 'Remove Fav' instead of 'Export Fav' when a bouquet already
-  exists for that country/category
-- Added logging to previously-silent failure paths across the codebase
-  to make future issues easier to diagnose"
+version='1.85'
+changelog="- Fixed exported/favorite bouquets showing EPG for only a handful of
+  channels: EPGImport's own channel filter silently drops any mapping
+  entry that has no stream URL attached, which every exported channel
+  had - now the full playable reference is written, matching the
+  bouquet itself
+- Fixed the exported EPG id-correction fallback (for channels whose
+  matched ID uses a different naming convention than the EPG guide
+  feed) never actually running on real hardware, caused by fetching
+  and fully parsing the entire multi-day guide with too short a
+  timeout
+- Fixed 'Update EPG Now' starting an import with nothing queued, so it
+  always silently finished at 0 events despite reporting success
+- Fixed 'Update EPG Now' reloading bouquets before the EPG mapping
+  files it just generated actually existed
+- Fixed 'Update EPG Now' calling a CLI tool that doesn't exist on a
+  normal Enigma2 image - it now triggers EPGImport directly instead
+- Fixed EPG fallback matching substituting the wrong channel's guide
+  data in more cases, generalizing an existing digit-only guard
+- Fixed every channel resolve silently failing on Python 2
+- Added HTTP HEAD request support to the local proxy"
 
 
 echo "$changelog"

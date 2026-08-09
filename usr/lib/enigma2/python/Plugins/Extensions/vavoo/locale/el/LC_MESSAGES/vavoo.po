@@ -166,6 +166,9 @@ msgstr "Περίπτωση: {}"
 msgid "Changelog:"
 msgstr "Κανάλια"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Καταγραφή αλλαγών: ({}/{}, χρήση πάνω/κάτω)"
+
 msgid "Channels"
 msgstr "Κανάλια"
 
@@ -235,6 +238,13 @@ msgstr "Θέλετε να διορθωθεί η μορφή της cache;"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Όριο ομοιότητας EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Το Vavoo εκτελείται ήδη."
+
+msgid "EPG import started"
+msgstr "Η εισαγωγή του EPG ξεκίνησε"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Το EPG είναι απενεργοποιημένο. Παρακαλώ ενεργοποιήστε το πρώτα στις ρυθμίσεις Vavoo."
 
@@ -244,14 +254,8 @@ msgstr "Η επεξεργασία EPG ολοκληρώθηκε (χωρίς αν�
 msgid "EPG processing completed for {} channels"
 msgstr "Η επεξεργασία EPG ολοκληρώθηκε για {} κανάλια"
 
-msgid "EPG update completed"
-msgstr "Η ενημέρωση EPG ολοκληρώθηκε"
-
-msgid "EPG update failed"
-msgstr "Η ενημέρωση EPG απέτυχε"
-
-msgid "EPG update started successfully"
-msgstr "Η ενημέρωση EPG ξεκίνησε επιτυχώς"
+msgid "EPGImport plugin not found: {}"
+msgstr "Το πρόσθετο EPGImport δεν βρέθηκε: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Ενεργοποίηση Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "Σφάλμα εκκίνησης καναλιού"
 
 msgid "Error: %s"
 msgstr "Σφάλμα: %s"
-
-msgid "Error: {}"
-msgstr "Σφάλμα: {}"
 
 msgid "Exit"
 msgstr "Έξοδος"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Δεν εντοπίστηκε σύνδεση στο Διαδίκτυο. Παρακαλώ ελέγξτε το δίκτυό σας."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Η πηγή Vavoo EPG δεν είναι ενεργοποιημένη στο EPGImport. Παρακαλώ ενεργοποιήστε την στις ρυθμίσεις του EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Δεν βρέθηκαν κανάλια"
 
@@ -457,9 +462,6 @@ msgstr "Λήξη χρονικού ορίου εκκίνησης διακομισ
 
 msgid "Proxy token refreshed successfully"
 msgstr "Το token του proxy ανανεώθηκε με επιτυχία"
-
-msgid "Ready"
-msgstr "Έτοιμο"
 
 msgid "Really close without saving settings?"
 msgstr "Θέλετε πραγματικά να κλείσετε χωρίς αποθήκευση των ρυθμίσεων;"
@@ -602,9 +604,6 @@ msgstr "Διάστημα ενημέρωσης (λεπτά)"
 msgid "Update now?"
 msgstr "Να ξεκινήσει τώρα η ενημέρωση EPG;"
 
-msgid "Updating EPG..."
-msgstr "Ενημέρωση EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live"
@@ -678,6 +677,24 @@ msgstr "✗ Ο proxy είναι εκτός σύνδεσης"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Η επανεκκίνηση απέτυχε"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Η ενημέρωση EPG ολοκληρώθηκε"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Η ενημέρωση EPG απέτυχε"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Η ενημέρωση EPG ξεκίνησε επιτυχώς"
+
+#~ msgid "Error: {}"
+#~ msgstr "Σφάλμα: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Έτοιμο"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Ενημέρωση EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Παρακαλώ δοκιμάστε άλλο κανάλι."

@@ -165,6 +165,9 @@ msgstr "Hodisa: {}"
 msgid "Changelog:"
 msgstr "Kanallar"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "O'zgarishlar jurnali: ({}/{}, yuqoriga/pastga ishlating)"
+
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -234,6 +237,13 @@ msgstr "Kesh formatini tuzatmoqchimisiz?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG o'xshashlik chegarasi (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo allaqachon ishlamoqda."
+
+msgid "EPG import started"
+msgstr "EPG importi boshlandi"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG o'chirilgan. Iltimos, avval uni Vavoo sozlamalarida yoqing."
 
@@ -243,14 +253,8 @@ msgstr "EPG ishlovi tugallandi (mos kelmaydi)"
 msgid "EPG processing completed for {} channels"
 msgstr "{} ta kanal uchun EPG ishlovi tugallandi"
 
-msgid "EPG update completed"
-msgstr "EPG yangilanishi tugallandi"
-
-msgid "EPG update failed"
-msgstr "EPG yangilanmadi"
-
-msgid "EPG update started successfully"
-msgstr "EPG yangilanishi muvaffaqiyatli boshlandi"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport plagini topilmadi: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG-ni yoqing"
@@ -278,9 +282,6 @@ msgstr "Kanalni boshlashda xatolik yuz berdi"
 
 msgid "Error: %s"
 msgstr "Xato: %s"
-
-msgid "Error: {}"
-msgstr "Xato: {}"
 
 msgid "Exit"
 msgstr "Chiqish"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Internet aloqasi aniqlanmadi. Tarmoqingizni tekshiring."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "EPGImportda Vavoo EPG manbasi yoqilmagan. Iltimos, uni EPGImport sozlamalarida yoqing."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Hech qanday kanal topilmadi"
 
@@ -456,9 +461,6 @@ msgstr "Proksi-serverni ishga tushirish vaqti tugashi (sekundlar)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proksi tokeni muvaffaqiyatli yangilandi"
-
-msgid "Ready"
-msgstr "Tayyor"
 
 msgid "Really close without saving settings?"
 msgstr "Haqiqatan ham sozlamalar saqlanmasdan yopilsinmi?"
@@ -601,9 +603,6 @@ msgstr "Yangilash oralig'i (daqiqa):"
 msgid "Update now?"
 msgstr "EPG yangilanishi hozir boshlansinmi?"
 
-msgid "Updating EPG..."
-msgstr "EPG yangilanmoqda..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream jonli plagin"
@@ -677,6 +676,24 @@ msgstr "✗ Proksi oflayn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Qayta ishga tushirilmadi"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG yangilanishi tugallandi"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG yangilanmadi"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG yangilanishi muvaffaqiyatli boshlandi"
+
+#~ msgid "Error: {}"
+#~ msgstr "Xato: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Tayyor"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG yangilanmoqda..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Boshqa kanalni sinab ko'ring."

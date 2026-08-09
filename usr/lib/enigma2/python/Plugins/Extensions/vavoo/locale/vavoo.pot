@@ -153,6 +153,9 @@ msgstr ""
 msgid "Changelog:"
 msgstr ""
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr ""
+
 msgid "Channels"
 msgstr ""
 
@@ -222,6 +225,12 @@ msgstr ""
 msgid "EPG Similarity Threshold (%)"
 msgstr ""
 
+msgid "EPG import already running"
+msgstr ""
+
+msgid "EPG import started"
+msgstr ""
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr ""
 
@@ -231,13 +240,7 @@ msgstr ""
 msgid "EPG processing completed for {} channels"
 msgstr ""
 
-msgid "EPG update completed"
-msgstr ""
-
-msgid "EPG update failed"
-msgstr ""
-
-msgid "EPG update started successfully"
+msgid "EPGImport plugin not found: {}"
 msgstr ""
 
 msgid "Enable Vavoo EPG"
@@ -265,9 +268,6 @@ msgid "Error starting channel"
 msgstr ""
 
 msgid "Error: %s"
-msgstr ""
-
-msgid "Error: {}"
 msgstr ""
 
 msgid "Exit"
@@ -375,6 +375,9 @@ msgstr ""
 msgid "No Internet connection detected. Please check your network."
 msgstr ""
 
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr ""
+
 msgid "No changelog provided."
 msgstr ""
 
@@ -439,9 +442,6 @@ msgid "Proxy startup timeout (seconds)"
 msgstr ""
 
 msgid "Proxy token refreshed successfully"
-msgstr ""
-
-msgid "Ready"
 msgstr ""
 
 msgid "Really close without saving settings?"
@@ -580,9 +580,6 @@ msgid "Update interval (minutes):"
 msgstr ""
 
 msgid "Update now?"
-msgstr ""
-
-msgid "Updating EPG..."
 msgstr ""
 
 msgid "Updating Vavoo Stream Live..."

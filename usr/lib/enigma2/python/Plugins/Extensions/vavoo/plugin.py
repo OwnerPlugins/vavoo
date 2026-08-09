@@ -48,7 +48,6 @@ except ImportError:
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
-from Components.ScrollLabel import ScrollLabel
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
 from Components.Pixmap import Pixmap
@@ -1339,28 +1338,6 @@ class vavoo_config(Screen, ConfigListScreen):
         except Exception as e:
             print("[Vavoo] Error scheduling EPG update:", str(e))
 
-    def trigger_epg_update(self):
-        """Manually trigger an EPG update"""
-        try:
-            # Use EPGImport's command line interface if available
-            import subprocess
-            result = subprocess.call(['epgimport', '--import'], timeout=60)
-            if result == 0:
-                self.session.open(
-                    MessageBox,
-                    _("EPG update started successfully"),
-                    MessageBox.TYPE_INFO)
-            else:
-                self.session.open(
-                    MessageBox,
-                    _("EPG update failed"),
-                    MessageBox.TYPE_ERROR)
-        except Exception as e:
-            print("[Vavoo] Error triggering EPG update:", str(e))
-            self.session.open(
-                MessageBox, _("Error starting EPG update: {}").format(
-                    str(e)), MessageBox.TYPE_ERROR)
-
     def save(self):
         if self["config"].isChanged():
             old_position = getattr(cfg, 'list_position', None)
@@ -1748,18 +1725,26 @@ class UpdatePopup(Screen):
         self["title"] = Label(_("Update Available"))
         self["subtitle"] = Label(
             _("v{} -> v{}").format(__version__, remote_version))
-        self["changelog_label"] = Label(_("Changelog:"))
-        # ScrollLabel, not a plain Label: the changelog can run well
-        # past what the fixed-height box fits (confirmed - a 9-entry
-        # changelog overflowed a plain Label with no way to see the
-        # rest). ScrollLabel.setText()'s pageHeight is computed from the
-        # widget's bound size, which isn't reliably established yet in
-        # __init__ across images (comes out 0 on some) - deferring the
-        # setText() call to onLayoutFinish, after the skin has actually
-        # bound the widget, is the standard fix for that.
+        # Plain Label, not ScrollLabel: two different ScrollLabel setups
+        # (setText() deferred to onLayoutFinish, then constructing it
+        # with the real text directly) both rendered a completely empty
+        # box on real hardware (confirmed on OpenATV 7.6), even though
+        # every other widget on this same screen - including this one's
+        # own changelog_label right above it - renders fine. Label is
+        # the one widget type known to actually work here (it's what
+        # showed the changelog, truncated, before scrolling was added).
+        # Do our own manual pagination instead of relying on a
+        # component that isn't reliably rendering anything.
         self._changelog_text = changelog or _("No changelog provided.")
-        self["changelog"] = ScrollLabel("")
-        self.onLayoutFinish.append(self._setChangelogText)
+        changelog_lines = self._changelog_text.split('\n')
+        lines_per_page = 8
+        self._changelog_pages = [
+            '\n'.join(changelog_lines[i:i + lines_per_page])
+            for i in range(0, len(changelog_lines), lines_per_page)
+        ] or ['']
+        self._changelog_page_index = 0
+        self["changelog_label"] = Label(self._changelogLabelText())
+        self["changelog"] = Label(self._changelog_pages[0])
         self["key_red"] = Label(_("Cancel"))
         self["key_green"] = Label(_("Yes, update now"))
 
@@ -1770,15 +1755,32 @@ class UpdatePopup(Screen):
                 "green": self.confirm,
                 "cancel": self.deny,
                 "red": self.deny,
-                "up": self["changelog"].pageUp,
-                "down": self["changelog"].pageDown,
-                "left": self["changelog"].pageUp,
-                "right": self["changelog"].pageDown,
+                "up": self._changelogPageUp,
+                "down": self._changelogPageDown,
+                "left": self._changelogPageUp,
+                "right": self._changelogPageDown,
             }, -1
         )
 
-    def _setChangelogText(self):
-        self["changelog"].setText(self._changelog_text)
+    def _changelogLabelText(self):
+        if len(self._changelog_pages) > 1:
+            return _("Changelog: ({}/{}, use up/down)").format(
+                self._changelog_page_index + 1, len(self._changelog_pages))
+        return _("Changelog:")
+
+    def _changelogPageUp(self):
+        if self._changelog_page_index > 0:
+            self._changelog_page_index -= 1
+            self["changelog"].setText(
+                self._changelog_pages[self._changelog_page_index])
+            self["changelog_label"].setText(self._changelogLabelText())
+
+    def _changelogPageDown(self):
+        if self._changelog_page_index < len(self._changelog_pages) - 1:
+            self._changelog_page_index += 1
+            self["changelog"].setText(
+                self._changelog_pages[self._changelog_page_index])
+            self["changelog_label"].setText(self._changelogLabelText())
 
     def confirm(self):
         self.close(True)
@@ -2747,42 +2749,65 @@ class MainVavoo(Screen):
         )
 
     def _epg_update_callback(self, answer):
-        if answer:
-            try:
-                # Call EPGImport via command line
-                import subprocess
-                self['name'].setText(_("Updating EPG..."))
-
-                # Run in background to not block UI. UI updates must be
-                # marshalled back onto the reactor thread - Enigma2's GUI
-                # components aren't thread-safe to touch directly from a
-                # background thread.
-                def update_thread():
-                    try:
-                        result = subprocess.call(
-                            ['epgimport', '--import'], timeout=300)
-                        if result == 0:
-                            reactor.callFromThread(
-                                self.session.open, MessageBox,
-                                _("EPG update completed"), MessageBox.TYPE_INFO)
-                        else:
-                            reactor.callFromThread(
-                                self.session.open, MessageBox,
-                                _("EPG update failed"), MessageBox.TYPE_ERROR)
-                    except Exception as e:
-                        print("[Vavoo] EPG update error:", str(e))
-                    finally:
-                        reactor.callFromThread(
-                            self['name'].setText, _("Ready"))
-
-                thread = threading.Thread(target=update_thread)
-                thread.setDaemon(True)
-                thread.start()
-
-            except Exception as e:
+        if not answer:
+            return
+        # There is no "epgimport" CLI binary on a normal Enigma2 image -
+        # EPGImport is a GUI plugin, not a command-line tool, and
+        # EPGImport.EPGImport itself isn't a Screen either - it's a plain
+        # importer class. Plugins/Extensions/EPGImport/plugin.py (every
+        # Enigma2 plugin has a lowercase plugin.py as its required entry
+        # point) keeps a module-level startImport() that's the exact same
+        # function EPGImport's own UI button calls, using a
+        # already-constructed singleton importer - calling it directly
+        # runs a real import with no screen/dialog of ours or theirs
+        # involved. It kicks off its own async work (threads/reactor)
+        # internally, same as EPGImport's own button does, so this can be
+        # called directly from here without our own threading.
+        try:
+            from Plugins.Extensions.EPGImport.plugin import (
+                epgimport, startImport, CONFIG_PATH)
+            from Plugins.Extensions.EPGImport import EPGConfig
+            if epgimport.isImportRunning():
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("EPG import already running"), 3)
+                return
+            # epgimport.beginImport() (called by startImport()) requires
+            # epgimport.sources to already be populated - its own
+            # docstring says so ("Set self.sources before calling
+            # this"). EPGImport's own UI only ever calls startImport()
+            # from EPGImportConfig.doimport(), which builds that list
+            # from the user's enabled-sources settings first; calling
+            # startImport() directly skips that step, so with an empty
+            # source list nextImport() just closes the import right
+            # away - "0 events imported" with no error, since nothing
+            # was actually queued to import in the first place.
+            cfg = EPGConfig.loadUserSettings()
+            sources = list(
+                EPGConfig.enumSources(CONFIG_PATH, filter=cfg["sources"]))
+            if not sources:
                 self.session.open(
-                    MessageBox, _("Error: {}").format(
-                        str(e)), MessageBox.TYPE_ERROR)
+                    MessageBox,
+                    _("No active EPG sources found in EPGImport. "
+                      "Please enable the Vavoo source in EPGImport settings."),
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
+                return
+            sources.reverse()
+            epgimport.sources = sources
+            startImport()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("EPG import started"), 3)
+        except ImportError as e:
+            print("[Vavoo] EPG update error:", str(e))
+            self.session.open(
+                MessageBox,
+                _("EPGImport plugin not found: {}").format(str(e)),
+                MessageBox.TYPE_ERROR)
+        except Exception as e:
+            print("[Vavoo] EPG update error:", str(e))
+            self.session.open(
+                MessageBox, _("Error starting EPG update: {}").format(
+                    str(e)), MessageBox.TYPE_ERROR)
 
     def msgdeleteBouquets(self):
         message_parts = []

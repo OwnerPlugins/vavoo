@@ -165,6 +165,9 @@ msgstr "Achos: {}"
 msgid "Changelog:"
 msgstr "Sianeli"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, defnyddiwch i fyny/i lawr)"
+
 msgid "Channels"
 msgstr "Sianeli"
 
@@ -234,6 +237,13 @@ msgstr "Ydych chi am drwsio fformat y storfa?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Trothwy Tebygrwydd EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Mae Vavoo eisoes yn rhedeg."
+
+msgid "EPG import started"
+msgstr "Dechreuwyd mewnforio EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Mae EPG wedi'i analluogi. Galluogwch ef mewn gosodiadau Vavoo yn gyntaf."
 
@@ -243,14 +253,8 @@ msgstr "Prosesu EPG wedi'i chwblhau (dim cyfatebiaeth)"
 msgid "EPG processing completed for {} channels"
 msgstr "Cwblhawyd prosesu EPG ar gyfer {} sianel"
 
-msgid "EPG update completed"
-msgstr "Diweddariad EPG wedi'i gwblhau"
-
-msgid "EPG update failed"
-msgstr "Methodd diweddariad EPG"
-
-msgid "EPG update started successfully"
-msgstr "Dechreuodd diweddariad EPG yn llwyddiannus"
+msgid "EPGImport plugin not found: {}"
+msgstr "Heb ganfod ategyn EPGImport: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Galluogi Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "Gwall wrth gychwyn y sianel"
 
 msgid "Error: %s"
 msgstr "Gwall: %s"
-
-msgid "Error: {}"
-msgstr "Gwall: {}"
 
 msgid "Exit"
 msgstr "Ymadael"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Dim cysylltiad Rhyngrwyd wedi'i ganfod. Gwiriwch eich rhwydwaith."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Nid yw ffynhonnell EPG Vavoo wedi'i galluogi yn EPGImport. Galluogwch ef mewn gosodiadau EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Heb ganfod sianeli"
 
@@ -456,9 +461,6 @@ msgstr "Goramser cychwyn dirprwy (eiliadau)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Tocyn dirprwy wedi'i adnewyddu'n llwyddiannus"
-
-msgid "Ready"
-msgstr "Yn barod"
 
 msgid "Really close without saving settings?"
 msgstr "Cau iawn heb gadw gosodiadau?"
@@ -601,9 +603,6 @@ msgstr "Cyfnod diweddaru (munudau):"
 msgid "Update now?"
 msgstr "Dechrau diweddariad EPG nawr?"
 
-msgid "Updating EPG..."
-msgstr "Wrthi'n diweddaru EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Ategyn Vavoo Live Stream"
@@ -677,6 +676,24 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Diweddariad EPG wedi'i gwblhau"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Methodd diweddariad EPG"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Dechreuodd diweddariad EPG yn llwyddiannus"
+
+#~ msgid "Error: {}"
+#~ msgstr "Gwall: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Yn barod"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Wrthi'n diweddaru EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Rhowch gynnig ar sianel arall."

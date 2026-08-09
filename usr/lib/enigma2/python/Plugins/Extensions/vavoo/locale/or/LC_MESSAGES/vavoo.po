@@ -165,6 +165,9 @@ msgstr "ମାମଲା: {}"
 msgid "Changelog:"
 msgstr "ଚ୍ୟାନେଲଗୁଡିକ |"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ଚେଞ୍ଜେଲଗ୍: ({} / {}, ଅପ୍ / ଡାଉନ୍ ବ୍ୟବହାର କରନ୍ତୁ)"
+
 msgid "Channels"
 msgstr "ଚ୍ୟାନେଲଗୁଡିକ |"
 
@@ -234,6 +237,13 @@ msgstr "ଆପଣ କ୍ୟାଚ୍ ଫର୍ମାଟ୍ ଠିକ୍ କର�
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG ସମାନତା ଥ୍ରେସହୋଲ୍ଡ (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "ଭାଭୋ ପୂର୍ବରୁ ଚାଲିଛି |"
+
+msgid "EPG import started"
+msgstr "EPG ଆମଦାନି ଆରମ୍ଭ ହେଲା |"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ଅକ୍ଷମ ହୋଇଛି | ଦୟାକରି ଏହାକୁ ପ୍ରଥମେ ଭାଭୋ ସେଟିଂସମୂହରେ ସକ୍ଷମ କରନ୍ତୁ |"
 
@@ -243,14 +253,8 @@ msgstr "EPG ପ୍ରକ୍ରିୟାକରଣ ସମାପ୍ତ (କ matches
 msgid "EPG processing completed for {} channels"
 msgstr "{} ଚ୍ୟାନେଲଗୁଡ଼ିକ ପାଇଁ EPG ପ୍ରକ୍ରିୟାକରଣ ସମାପ୍ତ |"
 
-msgid "EPG update completed"
-msgstr "EPG ଅଦ୍ୟତନ ସମାପ୍ତ ହୋଇଛି |"
-
-msgid "EPG update failed"
-msgstr "EPG ଅଦ୍ୟତନ ବିଫଳ ହେଲା |"
-
-msgid "EPG update started successfully"
-msgstr "EPG ଅଦ୍ୟତନ ସଫଳତାର ସହିତ ଆରମ୍ଭ ହେଲା |"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport ପ୍ଲଗଇନ୍ ମିଳିଲା ନାହିଁ: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG ସକ୍ଷମ କରନ୍ତୁ |"
@@ -278,9 +282,6 @@ msgstr "ଚ୍ୟାନେଲ ଆରମ୍ଭ କରିବାରେ ତ୍ରୁ
 
 msgid "Error: %s"
 msgstr "ତ୍ରୁଟି:% s"
-
-msgid "Error: {}"
-msgstr "ତ୍ରୁଟି: {}"
 
 msgid "Exit"
 msgstr "ପ୍ରସ୍ଥାନ"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "କ Internet ଣସି ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଚିହ୍ନଟ ହୋଇନାହିଁ | ଦୟାକରି ଆପଣଙ୍କର ନେଟୱାର୍କ ଯାଞ୍ଚ କରନ୍ତୁ |"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG ଉତ୍ସ EPGImport ରେ ସକ୍ଷମ ନୁହେଁ | ଦୟାକରି ଏହାକୁ EPGImport ସେଟିଂରେ ସକ୍ଷମ କରନ୍ତୁ |"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "କ channels ଣସି ଚ୍ୟାନେଲ ମିଳିଲା ନାହିଁ |"
 
@@ -456,9 +461,6 @@ msgstr "ପ୍ରକ୍ସି ଷ୍ଟାର୍ଟଅପ୍ ସମୟ ସମା
 
 msgid "Proxy token refreshed successfully"
 msgstr "ପ୍ରକ୍ସି ଟୋକନ୍ ସଫଳତାର ସହିତ ସତେଜ ହେଲା |"
-
-msgid "Ready"
-msgstr "ପ୍ରସ୍ତୁତ |"
 
 msgid "Really close without saving settings?"
 msgstr "ସେଟିଂ ସେଭ୍ ନକରି ପ୍ରକୃତରେ ବନ୍ଦ?"
@@ -601,9 +603,6 @@ msgstr "ବ୍ୟବଧାନ ଅଦ୍ୟତନ କରନ୍ତୁ (ମିନ�
 msgid "Update now?"
 msgstr "ବର୍ତ୍ତମାନ EPG ଅଦ୍ୟତନ ଆରମ୍ଭ କରନ୍ତୁ?"
 
-msgid "Updating EPG..."
-msgstr "EPG ଅଦ୍ୟତନ କରୁଛି ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "ଭାଭୋ ଷ୍ଟ୍ରିମ୍ ଲାଇଭ୍ |"
@@ -677,6 +676,24 @@ msgstr "✗ ପ୍ରକ୍ସି ଅଫଲାଇନ୍ |"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ପୁନ art ଆରମ୍ଭ ବିଫଳ |"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG ଅଦ୍ୟତନ ସମାପ୍ତ ହୋଇଛି |"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG ଅଦ୍ୟତନ ବିଫଳ ହେଲା |"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG ଅଦ୍ୟତନ ସଫଳତାର ସହିତ ଆରମ୍ଭ ହେଲା |"
+
+#~ msgid "Error: {}"
+#~ msgstr "ତ୍ରୁଟି: {}"
+
+#~ msgid "Ready"
+#~ msgstr "ପ୍ରସ୍ତୁତ |"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG ଅଦ୍ୟତନ କରୁଛି ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "ଦୟାକରି ଅନ୍ୟ ଏକ ଚ୍ୟାନେଲ୍ ଚେଷ୍ଟା କରନ୍ତୁ |"

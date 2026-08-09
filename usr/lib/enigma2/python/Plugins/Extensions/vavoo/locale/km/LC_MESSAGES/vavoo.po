@@ -165,6 +165,9 @@ msgstr "ករណី៖ {}"
 msgid "Changelog:"
 msgstr "ឆានែល"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "កំណត់ហេតុផ្លាស់ប្តូរ៖ ({}/{} ប្រើឡើង/ចុះ)"
+
 msgid "Channels"
 msgstr "ឆានែល"
 
@@ -234,6 +237,13 @@ msgstr "តើអ្នកចង់ជួសជុលទ្រង់ទ្រា
 msgid "EPG Similarity Threshold (%)"
 msgstr "កម្រិតនៃភាពស្រដៀងគ្នា EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo កំពុងដំណើរការហើយ។"
+
+msgid "EPG import started"
+msgstr "ការនាំចូល EPG បានចាប់ផ្តើម"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ត្រូវបានបិទ។ សូមបើកវានៅក្នុងការកំណត់ Vavoo ជាមុនសិន។"
 
@@ -243,14 +253,8 @@ msgstr "ដំណើរការ EPG បានបញ្ចប់ (មិនម�
 msgid "EPG processing completed for {} channels"
 msgstr "ដំណើរការ EPG បានបញ្ចប់សម្រាប់ប៉ុស្តិ៍ {}"
 
-msgid "EPG update completed"
-msgstr "ការធ្វើបច្ចុប្បន្នភាព EPG បានបញ្ចប់"
-
-msgid "EPG update failed"
-msgstr "ការអាប់ដេត EPG បានបរាជ័យ"
-
-msgid "EPG update started successfully"
-msgstr "ការអាប់ដេត EPG បានចាប់ផ្តើមដោយជោគជ័យ"
+msgid "EPGImport plugin not found: {}"
+msgstr "រកមិនឃើញកម្មវិធីជំនួយ EPGImport៖ {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "បើកដំណើរការ Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "កំហុសក្នុងការចាប់ផ្តើមឆា
 
 msgid "Error: %s"
 msgstr "កំហុស៖ %s"
-
-msgid "Error: {}"
-msgstr "កំហុស៖ {}"
 
 msgid "Exit"
 msgstr "ចេញ"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "រកមិនឃើញការតភ្ជាប់អ៊ីនធឺណិតទេ។ សូមពិនិត្យមើលបណ្តាញរបស់អ្នក។"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "ប្រភព Vavoo EPG មិនត្រូវបានបើកនៅក្នុង EPGImport ទេ។ សូមបើកវានៅក្នុងការកំណត់ EPGImport ។"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "រកមិនឃើញឆានែលទេ។"
 
@@ -456,9 +461,6 @@ msgstr "អស់ពេលចាប់ផ្ដើមប្រូកស៊ី (�
 
 msgid "Proxy token refreshed successfully"
 msgstr "និមិត្តសញ្ញាប្រូកស៊ីត្រូវបានផ្ទុកឡើងវិញដោយជោគជ័យ"
-
-msgid "Ready"
-msgstr "រួចរាល់"
 
 msgid "Really close without saving settings?"
 msgstr "ពិតជាបិទដោយមិនរក្សាទុកការកំណត់មែនទេ?"
@@ -601,9 +603,6 @@ msgstr "ចន្លោះពេលធ្វើបច្ចុប្បន្ន
 msgid "Update now?"
 msgstr "ចាប់ផ្តើមអាប់ដេត EPG ឥឡូវនេះ?"
 
-msgid "Updating EPG..."
-msgstr "កំពុងអាប់ដេត EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream បានផ្សាយបន្តផ្ទាល់"
@@ -677,6 +676,24 @@ msgstr "✗ប្រូកស៊ីក្រៅបណ្តាញ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ការចាប់ផ្តើមឡើងវិញបានបរាជ័យ"
+
+#~ msgid "EPG update completed"
+#~ msgstr "ការធ្វើបច្ចុប្បន្នភាព EPG បានបញ្ចប់"
+
+#~ msgid "EPG update failed"
+#~ msgstr "ការអាប់ដេត EPG បានបរាជ័យ"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "ការអាប់ដេត EPG បានចាប់ផ្តើមដោយជោគជ័យ"
+
+#~ msgid "Error: {}"
+#~ msgstr "កំហុស៖ {}"
+
+#~ msgid "Ready"
+#~ msgstr "រួចរាល់"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "កំពុងអាប់ដេត EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "សូមសាកល្បងឆានែលផ្សេងទៀត។"

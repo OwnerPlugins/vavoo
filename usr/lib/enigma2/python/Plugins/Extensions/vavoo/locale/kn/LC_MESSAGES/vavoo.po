@@ -165,6 +165,9 @@ msgstr "ಪ್ರಕರಣ: {}"
 msgid "Changelog:"
 msgstr "ಚಾನೆಲ್‌ಗಳು"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ಚೇಂಜ್ಲಾಗ್: ({}/{}, ಮೇಲೆ/ಕೆಳಗೆ ಬಳಸಿ)"
+
 msgid "Channels"
 msgstr "ಚಾನೆಲ್‌ಗಳು"
 
@@ -234,6 +237,13 @@ msgstr "ನೀವು ಸಂಗ್ರಹ ಸ್ವರೂಪವನ್ನು ಸರ
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG ಹೋಲಿಕೆಯ ಮಿತಿ (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo ಈಗಾಗಲೇ ಚಾಲನೆಯಲ್ಲಿದೆ."
+
+msgid "EPG import started"
+msgstr "EPG ಆಮದು ಪ್ರಾರಂಭವಾಗಿದೆ"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಮೊದಲು ಅದನ್ನು Vavoo ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಿ."
 
@@ -243,14 +253,8 @@ msgstr "EPG ಪ್ರಕ್ರಿಯೆ ಪೂರ್ಣಗೊಂಡಿದೆ (�
 msgid "EPG processing completed for {} channels"
 msgstr "{} ಚಾನಲ್‌ಗಳಿಗೆ EPG ಪ್ರಕ್ರಿಯೆ ಪೂರ್ಣಗೊಂಡಿದೆ"
 
-msgid "EPG update completed"
-msgstr "EPG ನವೀಕರಣ ಪೂರ್ಣಗೊಂಡಿದೆ"
-
-msgid "EPG update failed"
-msgstr "EPG ಅಪ್‌ಡೇಟ್ ವಿಫಲವಾಗಿದೆ"
-
-msgid "EPG update started successfully"
-msgstr "EPG ಅಪ್‌ಡೇಟ್ ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಾರಂಭವಾಗಿದೆ"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport ಪ್ಲಗಿನ್ ಕಂಡುಬಂದಿಲ್ಲ: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
@@ -278,9 +282,6 @@ msgstr "ಚಾನಲ್ ಪ್ರಾರಂಭಿಸುವಲ್ಲಿ ದೋಷ"
 
 msgid "Error: %s"
 msgstr "ದೋಷ: %s"
-
-msgid "Error: {}"
-msgstr "ದೋಷ: {}"
 
 msgid "Exit"
 msgstr "ನಿರ್ಗಮಿಸಿ"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "ಯಾವುದೇ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ ಪತ್ತೆಯಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "EPGImport ನಲ್ಲಿ Vavoo EPG ಮೂಲವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಅದನ್ನು EPGImport ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಿ."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "ಯಾವುದೇ ಚಾನಲ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"
 
@@ -456,9 +461,6 @@ msgstr "ಪ್ರಾಕ್ಸಿ ಪ್ರಾರಂಭದ ಅವಧಿ ಮೀರ
 
 msgid "Proxy token refreshed successfully"
 msgstr "ಪ್ರಾಕ್ಸಿ ಟೋಕನ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗಿದೆ"
-
-msgid "Ready"
-msgstr "ಸಿದ್ಧವಾಗಿದೆ"
 
 msgid "Really close without saving settings?"
 msgstr "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಉಳಿಸದೆಯೇ ನಿಜವಾಗಿಯೂ ಮುಚ್ಚುವುದೇ?"
@@ -601,9 +603,6 @@ msgstr "ನವೀಕರಣ ಮಧ್ಯಂತರ (ನಿಮಿಷಗಳು):"
 msgid "Update now?"
 msgstr "ಈಗಲೇ EPG ಅಪ್‌ಡೇಟ್ ಆರಂಭಿಸುವುದೇ?"
 
-msgid "Updating EPG..."
-msgstr "EPG ಅನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "ವಾವೂ ಸ್ಟ್ರೀಮ್ ಲೈವ್"
@@ -677,6 +676,24 @@ msgstr "✗ ಪ್ರಾಕ್ಸಿ ಆಫ್‌ಲೈನ್"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ಮರುಪ್ರಾರಂಭ ವಿಫಲವಾಗಿದೆ"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG ನವೀಕರಣ ಪೂರ್ಣಗೊಂಡಿದೆ"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG ಅಪ್‌ಡೇಟ್ ವಿಫಲವಾಗಿದೆ"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG ಅಪ್‌ಡೇಟ್ ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಾರಂಭವಾಗಿದೆ"
+
+#~ msgid "Error: {}"
+#~ msgstr "ದೋಷ: {}"
+
+#~ msgid "Ready"
+#~ msgstr "ಸಿದ್ಧವಾಗಿದೆ"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG ಅನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "ದಯವಿಟ್ಟು ಇನ್ನೊಂದು ಚಾನಲ್ ಪ್ರಯತ್ನಿಸಿ."

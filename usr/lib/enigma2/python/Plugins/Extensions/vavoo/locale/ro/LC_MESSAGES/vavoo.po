@@ -166,6 +166,9 @@ msgstr "Caz: {}"
 msgid "Changelog:"
 msgstr "Canale"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Jurnal de modificări: ({}/{}, folosiți sus/jos)"
+
 msgid "Channels"
 msgstr "Canale"
 
@@ -235,6 +238,13 @@ msgstr "Doriți să remediați formatul cache-ului?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Pragul de similaritate EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo rulează deja."
+
+msgid "EPG import started"
+msgstr "Importul EPG a început"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG este dezactivat. Activați-l mai întâi în setările Vavoo."
 
@@ -244,14 +254,8 @@ msgstr "Procesare EPG finalizată (fără potriviri)"
 msgid "EPG processing completed for {} channels"
 msgstr "Procesarea EPG a fost finalizată pentru {} canale"
 
-msgid "EPG update completed"
-msgstr "Actualizare EPG finalizată"
-
-msgid "EPG update failed"
-msgstr "Actualizarea EPG a eșuat"
-
-msgid "EPG update started successfully"
-msgstr "Actualizarea EPG a început cu succes"
+msgid "EPGImport plugin not found: {}"
+msgstr "Pluginul EPGImport nu a fost găsit: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Activați Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "Eroare la pornirea canalului"
 
 msgid "Error: %s"
 msgstr "Eroare: %s"
-
-msgid "Error: {}"
-msgstr "Eroare: {}"
 
 msgid "Exit"
 msgstr "Ieșire"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Nu a fost detectată conexiune la internet. Vă rugăm să vă verificați rețeaua."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Sursa EPG Vavoo nu este activată în EPGImport. Activați-l în setările EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Nu s-au găsit canale"
 
@@ -457,9 +462,6 @@ msgstr "Timp de pornire proxy (secunde)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Indicativul proxy a fost reîmprospătat"
-
-msgid "Ready"
-msgstr "Gata"
 
 msgid "Really close without saving settings?"
 msgstr "Chiar se închide fără a salva setările?"
@@ -602,9 +604,6 @@ msgstr "Interval de actualizare (minute):"
 msgid "Update now?"
 msgstr "Porniți actualizarea EPG acum?"
 
-msgid "Updating EPG..."
-msgstr "Se actualizează EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Plugin Vavoo Stream Live"
@@ -678,6 +677,24 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Repornirea eșuată"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Actualizare EPG finalizată"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Actualizarea EPG a eșuat"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Actualizarea EPG a început cu succes"
+
+#~ msgid "Error: {}"
+#~ msgstr "Eroare: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Gata"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Se actualizează EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Vă rugăm să încercați un alt canal."

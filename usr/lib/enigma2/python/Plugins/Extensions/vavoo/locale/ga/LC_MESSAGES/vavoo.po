@@ -166,6 +166,9 @@ msgstr "Cás: {}"
 msgid "Changelog:"
 msgstr "Cainéil"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, úsáid suas/síos)"
+
 msgid "Channels"
 msgstr "Cainéil"
 
@@ -235,6 +238,13 @@ msgstr "Ar mhaith leat formáid an taisce a dheisiú?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Tairseach Cosúlachta EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Tá Vavoo ag rith cheana féin."
+
+msgid "EPG import started"
+msgstr "Cuireadh tús le hiompórtáil EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Tá EPG díchumasaithe. Cumasaigh é i socruithe Vavoo ar dtús."
 
@@ -244,14 +254,8 @@ msgstr "Próiseáil EPG críochnaithe (gan aon mheaitseáil)"
 msgid "EPG processing completed for {} channels"
 msgstr "Cuireadh próiseáil EPG i gcrích do {} chainéil"
 
-msgid "EPG update completed"
-msgstr "Nuashonrú EPG críochnaithe"
-
-msgid "EPG update failed"
-msgstr "Theip ar nuashonrú EPG"
-
-msgid "EPG update started successfully"
-msgstr "D'éirigh le nuashonrú EPG"
+msgid "EPGImport plugin not found: {}"
+msgstr "Níor aimsíodh an breiseán EPGImport: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Cumasaigh Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "Earráid agus an cainéal á thosú"
 
 msgid "Error: %s"
 msgstr "Earráid: %s"
-
-msgid "Error: {}"
-msgstr "Earráid: {}"
 
 msgid "Exit"
 msgstr "Scoir"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Níor aimsíodh aon nasc Idirlín. Seiceáil do líonra le do thoil."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Níl foinse Vavoo EPG cumasaithe in EPGImport. Cumasaigh é i socruithe EPGIimport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Níor aimsíodh aon chainéil"
 
@@ -457,9 +462,6 @@ msgstr "Teorainn ama tosaithe seachfhreastalaí (soicindí)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "D'éirigh le hathnuachan an tseachfhreastalaí"
-
-msgid "Ready"
-msgstr "Réidh"
 
 msgid "Really close without saving settings?"
 msgstr "Dún i ndáiríre gan socruithe a shábháil?"
@@ -602,9 +604,6 @@ msgstr "Eatramh nuashonraithe (nóiméid):"
 msgid "Update now?"
 msgstr "Tosaigh nuashonrú EPG anois?"
 
-msgid "Updating EPG..."
-msgstr "EPG á nuashonrú..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Sruth Beo"
@@ -678,6 +677,24 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Nuashonrú EPG críochnaithe"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Theip ar nuashonrú EPG"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "D'éirigh le nuashonrú EPG"
+
+#~ msgid "Error: {}"
+#~ msgstr "Earráid: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Réidh"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG á nuashonrú..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Bain triail as cainéal eile."

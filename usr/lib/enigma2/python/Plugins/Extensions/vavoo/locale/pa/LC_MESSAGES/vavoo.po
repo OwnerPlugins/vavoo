@@ -165,6 +165,9 @@ msgstr "ਕੇਸ: {}"
 msgid "Changelog:"
 msgstr "ਚੈਨਲ"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ਚੇਂਜਲੌਗ: ({}/{}, ਉੱਪਰ/ਹੇਠਾਂ ਵਰਤੋਂ)"
+
 msgid "Channels"
 msgstr "ਚੈਨਲ"
 
@@ -234,6 +237,13 @@ msgstr "ਕੀ ਤੁਸੀਂ ਕੈਸ਼ ਫਾਰਮੈਟ ਨੂੰ ਠੀ�
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG ਸਮਾਨਤਾ ਥ੍ਰੈਸ਼ਹੋਲਡ (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "ਵਾਵੂ ਪਹਿਲਾਂ ਹੀ ਚੱਲ ਰਿਹਾ ਹੈ।"
+
+msgid "EPG import started"
+msgstr "ਈਪੀਜੀ ਆਯਾਤ ਸ਼ੁਰੂ ਹੋਇਆ"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG ਅਯੋਗ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਨੂੰ ਪਹਿਲਾਂ Vavoo ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਚਾਲੂ ਕਰੋ।"
 
@@ -243,14 +253,8 @@ msgstr "EPG ਪ੍ਰੋਸੈਸਿੰਗ ਪੂਰੀ ਹੋਈ (ਕੋਈ ਮ
 msgid "EPG processing completed for {} channels"
 msgstr "{} ਚੈਨਲਾਂ ਲਈ EPG ਪ੍ਰਕਿਰਿਆ ਪੂਰੀ ਹੋਈ"
 
-msgid "EPG update completed"
-msgstr "EPG ਅੱਪਡੇਟ ਪੂਰਾ ਹੋਇਆ"
-
-msgid "EPG update failed"
-msgstr "EPG ਅੱਪਡੇਟ ਅਸਫਲ ਰਿਹਾ"
-
-msgid "EPG update started successfully"
-msgstr "EPG ਅੱਪਡੇਟ ਸਫਲਤਾਪੂਰਵਕ ਸ਼ੁਰੂ ਹੋਇਆ"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport ਪਲੱਗਇਨ ਨਹੀਂ ਲੱਭੀ: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ"
@@ -278,9 +282,6 @@ msgstr "ਚੈਨਲ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਤਰੁੱਟੀ"
 
 msgid "Error: %s"
 msgstr "ਤਰੁੱਟੀ: %s"
-
-msgid "Error: {}"
-msgstr "ਗਲਤੀ: {}"
 
 msgid "Exit"
 msgstr "ਨਿਕਾਸ"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "ਕੋਈ ਇੰਟਰਨੈਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਮਿਲਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਨੈੱਟਵਰਕ ਦੀ ਜਾਂਚ ਕਰੋ।"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG ਸਰੋਤ EPGImport ਵਿੱਚ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਨੂੰ EPGImport ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਯੋਗ ਕਰੋ।"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "ਕੋਈ ਚੈਨਲ ਨਹੀਂ ਮਿਲੇ"
 
@@ -456,9 +461,6 @@ msgstr "ਪ੍ਰੌਕਸੀ ਸ਼ੁਰੂਆਤੀ ਸਮਾਂ ਸਮਾਪ
 
 msgid "Proxy token refreshed successfully"
 msgstr "ਪ੍ਰੌਕਸੀ ਟੋਕਨ ਸਫਲਤਾਪੂਰਵਕ ਤਾਜ਼ਾ ਕੀਤਾ ਗਿਆ"
-
-msgid "Ready"
-msgstr "ਤਿਆਰ ਹੈ"
 
 msgid "Really close without saving settings?"
 msgstr "ਕੀ ਸੈਟਿੰਗਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਬਿਨਾਂ ਅਸਲ ਵਿੱਚ ਬੰਦ ਕਰਨਾ ਹੈ?"
@@ -601,9 +603,6 @@ msgstr "ਅੱਪਡੇਟ ਅੰਤਰਾਲ (ਮਿੰਟ):"
 msgid "Update now?"
 msgstr "ਕੀ ਹੁਣ EPG ਅੱਪਡੇਟ ਸ਼ੁਰੂ ਕਰਨਾ ਹੈ?"
 
-msgid "Updating EPG..."
-msgstr "EPG ਅੱਪਡੇਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "ਵਾਵੂ ਸਟ੍ਰੀਮ ਲਾਈਵ"
@@ -677,6 +676,24 @@ msgstr "✗ ਪ੍ਰੌਕਸੀ ਔਫਲਾਈਨ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ਮੁੜ ਚਾਲੂ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG ਅੱਪਡੇਟ ਪੂਰਾ ਹੋਇਆ"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG ਅੱਪਡੇਟ ਅਸਫਲ ਰਿਹਾ"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG ਅੱਪਡੇਟ ਸਫਲਤਾਪੂਰਵਕ ਸ਼ੁਰੂ ਹੋਇਆ"
+
+#~ msgid "Error: {}"
+#~ msgstr "ਗਲਤੀ: {}"
+
+#~ msgid "Ready"
+#~ msgstr "ਤਿਆਰ ਹੈ"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG ਅੱਪਡੇਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਹੋਰ ਚੈਨਲ ਅਜ਼ਮਾਓ।"

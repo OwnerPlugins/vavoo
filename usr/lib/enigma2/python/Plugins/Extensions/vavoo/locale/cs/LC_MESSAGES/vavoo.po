@@ -172,6 +172,9 @@ msgstr "Případ: {}"
 msgid "Changelog:"
 msgstr "Kanály"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Seznam změn: ({}/{}, použijte nahoru/dolů)"
+
 msgid "Channels"
 msgstr "Kanály"
 
@@ -242,6 +245,13 @@ msgstr "Chcete opravit formát mezipaměti?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "Práh podobnosti EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo již běží."
+
+msgid "EPG import started"
+msgstr "Import EPG byl zahájen"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG je zakázáno. Nejprve jej povolte v nastavení Vavoo."
 
@@ -253,14 +263,8 @@ msgstr "Zpracování EPG dokončeno pro %d kanálů"
 msgid "EPG processing completed for {} channels"
 msgstr "Zpracování EPG dokončeno pro %d kanálů"
 
-msgid "EPG update completed"
-msgstr "Aktualizace EPG dokončena"
-
-msgid "EPG update failed"
-msgstr "Aktualizace EPG selhala"
-
-msgid "EPG update started successfully"
-msgstr "Aktualizace EPG úspěšně spuštěna"
+msgid "EPGImport plugin not found: {}"
+msgstr "Plugin EPGImport nebyl nalezen: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Povolit Vavoo EPG"
@@ -292,9 +296,6 @@ msgstr "Chyba při spouštění aktualizace EPG: {}"
 
 #, fuzzy
 msgid "Error: %s"
-msgstr "Chyba: {}"
-
-msgid "Error: {}"
 msgstr "Chyba: {}"
 
 msgid "Exit"
@@ -407,6 +408,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Nebylo zjištěno žádné připojení k internetu. Zkontrolujte svou síť."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Zdroj Vavoo EPG není v EPGImport povolen. Povolte jej v nastavení EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Nebyly nalezeny žádné kanály"
 
@@ -473,9 +478,6 @@ msgstr "Časový limit spuštění proxy (v sekundách)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token úspěšně obnoven"
-
-msgid "Ready"
-msgstr "Připraveno"
 
 msgid "Really close without saving settings?"
 msgstr "Opravdu zavřít bez uložení nastavení?"
@@ -622,9 +624,6 @@ msgstr "Interval aktualizace (hodiny)"
 msgid "Update now?"
 msgstr "Spustit aktualizaci EPG nyní?"
 
-msgid "Updating EPG..."
-msgstr "Aktualizace EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Živý přenos Vavoo"
@@ -700,6 +699,24 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restart se nezdařil"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Aktualizace EPG dokončena"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Aktualizace EPG selhala"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "Aktualizace EPG úspěšně spuštěna"
+
+#~ msgid "Error: {}"
+#~ msgstr "Chyba: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Připraveno"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Aktualizace EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Zkuste prosím jiný kanál."

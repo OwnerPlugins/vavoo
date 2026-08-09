@@ -165,6 +165,9 @@ msgstr "مورد: {}"
 msgid "Changelog:"
 msgstr "کانال ها"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "تغییرات: ({}/{}، استفاده از بالا/پایین)"
+
 msgid "Channels"
 msgstr "کانال ها"
 
@@ -234,6 +237,13 @@ msgstr "آیا می خواهید فرمت کش را اصلاح کنید؟"
 msgid "EPG Similarity Threshold (%)"
 msgstr "آستانه تشابه EPG (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo در حال اجرا است."
+
+msgid "EPG import started"
+msgstr "واردات EPG شروع شد"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG غیرفعال است. لطفاً ابتدا آن را در تنظیمات Vavoo فعال کنید."
 
@@ -243,14 +253,8 @@ msgstr "پردازش EPG تکمیل شد (بدون مطابقت)"
 msgid "EPG processing completed for {} channels"
 msgstr "پردازش EPG برای {} کانال تکمیل شد"
 
-msgid "EPG update completed"
-msgstr "به روز رسانی EPG تکمیل شد"
-
-msgid "EPG update failed"
-msgstr "به روز رسانی EPG ناموفق بود"
-
-msgid "EPG update started successfully"
-msgstr "به روز رسانی EPG با موفقیت شروع شد"
+msgid "EPGImport plugin not found: {}"
+msgstr "افزونه EPGImport پیدا نشد: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG را فعال کنید"
@@ -278,9 +282,6 @@ msgstr "خطا در شروع کانال"
 
 msgid "Error: %s"
 msgstr "خطا: %s"
-
-msgid "Error: {}"
-msgstr "خطا: {}"
 
 msgid "Exit"
 msgstr "خارج شوید"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "هیچ اتصال اینترنتی شناسایی نشد. لطفا شبکه خود را بررسی کنید."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "منبع Vavoo EPG در EPGImport فعال نیست. لطفاً آن را در تنظیمات EPGImport فعال کنید."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "کانالی پیدا نشد"
 
@@ -456,9 +461,6 @@ msgstr "پایان زمان راه اندازی پروکسی (ثانیه)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "رمز پراکسی با موفقیت به روز شد"
-
-msgid "Ready"
-msgstr "آماده است"
 
 msgid "Really close without saving settings?"
 msgstr "آیا واقعاً بدون ذخیره تنظیمات بسته می شود؟"
@@ -601,9 +603,6 @@ msgstr "فاصله زمانی به روز رسانی (دقیقه):"
 msgid "Update now?"
 msgstr "به‌روزرسانی EPG اکنون شروع شود؟"
 
-msgid "Updating EPG..."
-msgstr "در حال به روز رسانی EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "افزونه Vavoo Stream Live"
@@ -677,6 +676,24 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "EPG update completed"
+#~ msgstr "به روز رسانی EPG تکمیل شد"
+
+#~ msgid "EPG update failed"
+#~ msgstr "به روز رسانی EPG ناموفق بود"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "به روز رسانی EPG با موفقیت شروع شد"
+
+#~ msgid "Error: {}"
+#~ msgstr "خطا: {}"
+
+#~ msgid "Ready"
+#~ msgstr "آماده است"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "در حال به روز رسانی EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "لطفا کانال دیگری را امتحان کنید."

@@ -165,6 +165,9 @@ msgstr "Kasua: {}"
 msgid "Changelog:"
 msgstr "Kanalak"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Aldaketen erregistroa: ({}/{}, erabili gora/behera)"
+
 msgid "Channels"
 msgstr "Kanalak"
 
@@ -234,6 +237,13 @@ msgstr "Cache formatua konpondu nahi duzu?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG antzekotasun atalasea (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo martxan dago jada."
+
+msgid "EPG import started"
+msgstr "EPG inportazioa hasi da"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG is disabled. Mesedez, gaitu lehenik Vavoo ezarpenetan."
 
@@ -243,14 +253,8 @@ msgstr "EPG prozesatu da (ez dago bat etortzerik)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG prozesatu da {} kanaletarako"
 
-msgid "EPG update completed"
-msgstr "EPG eguneratzea osatu da"
-
-msgid "EPG update failed"
-msgstr "EPG eguneratzeak huts egin du"
-
-msgid "EPG update started successfully"
-msgstr "EPG eguneratzea behar bezala hasi da"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport plugina ez da aurkitu: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Gaitu Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "Errore bat gertatu da kanala abiatzean"
 
 msgid "Error: %s"
 msgstr "Errorea: %s"
-
-msgid "Error: {}"
-msgstr "Errorea: {}"
 
 msgid "Exit"
 msgstr "Irten"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Ez da Interneteko konexiorik hauteman. Mesedez, egiaztatu zure sarea."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG iturburua ez dago gaituta EPGImport-en. Mesedez, gaitu EPGImport ezarpenetan."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Ez da kanalik aurkitu"
 
@@ -456,9 +461,6 @@ msgstr "Proxy-a abiarazteko denbora-muga (segundo)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy tokena behar bezala freskatu da"
-
-msgid "Ready"
-msgstr "Prest"
 
 msgid "Really close without saving settings?"
 msgstr "Benetan itxi ezarpenak gorde gabe?"
@@ -601,9 +603,6 @@ msgstr "Eguneratzeko tartea (minutuak):"
 msgid "Update now?"
 msgstr "EPG eguneratzea orain hasi?"
 
-msgid "Updating EPG..."
-msgstr "EPG eguneratzen..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Zuzenean"
@@ -677,6 +676,24 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG eguneratzea osatu da"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG eguneratzeak huts egin du"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG eguneratzea behar bezala hasi da"
+
+#~ msgid "Error: {}"
+#~ msgstr "Errorea: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Prest"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG eguneratzen..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Mesedez, saiatu beste kanal bat."

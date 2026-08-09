@@ -170,6 +170,9 @@ msgstr "Durum: {}"
 msgid "Changelog:"
 msgstr "Kanallar"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Değişiklik günlüğü: ({}/{}, yukarı/aşağı kullanın)"
+
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -239,6 +242,13 @@ msgstr "Önbellek formatını düzeltmek istiyor musunuz?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG Benzerlik Eşiği (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo zaten çalışıyor."
+
+msgid "EPG import started"
+msgstr "EPG içe aktarımı başladı"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG devre dışı. Lütfen önce Vavoo ayarlarından etkinleştirin."
 
@@ -248,14 +258,8 @@ msgstr "EPG işleme tamamlandı (eşleşme yok)"
 msgid "EPG processing completed for {} channels"
 msgstr "{} kanal için EPG işleme tamamlandı"
 
-msgid "EPG update completed"
-msgstr "EPG güncellemesi tamamlandı"
-
-msgid "EPG update failed"
-msgstr "EPG güncellemesi başarısız"
-
-msgid "EPG update started successfully"
-msgstr "EPG güncellemesi başarıyla başladı"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport eklentisi bulunamadı: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG'yi etkinleştir"
@@ -283,9 +287,6 @@ msgstr "Kanal başlatma hatası"
 
 msgid "Error: %s"
 msgstr "Hata: %s"
-
-msgid "Error: {}"
-msgstr "Hata: {}"
 
 msgid "Exit"
 msgstr "Çıkış"
@@ -395,6 +396,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "İnternet bağlantısı algılanamadı. Lütfen ağınızı kontrol edin."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG kaynağı EPGImport'ta etkin değil. Lütfen EPGImport ayarlarından etkinleştirin."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Kanal bulunamadı"
 
@@ -461,9 +466,6 @@ msgstr "Proxy başlangıç zaman aşımı (saniye)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token başarıyla yenilendi"
-
-msgid "Ready"
-msgstr "Hazır"
 
 msgid "Really close without saving settings?"
 msgstr "Ayarları kaydetmeden gerçekten kapatılsın mı?"
@@ -606,9 +608,6 @@ msgstr "Güncelleme aralığı (dakika):"
 msgid "Update now?"
 msgstr "EPG güncellemesi şimdi başlatılsın mı?"
 
-msgid "Updating EPG..."
-msgstr "EPG güncelleniyor..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Canlı Yayın"
@@ -682,6 +681,24 @@ msgstr "✗ Proxy çevrimdışı"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yeniden başlatma başarısız"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG güncellemesi tamamlandı"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG güncellemesi başarısız"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG güncellemesi başarıyla başladı"
+
+#~ msgid "Error: {}"
+#~ msgstr "Hata: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Hazır"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG güncelleniyor..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Lütfen başka bir kanal deneyin."

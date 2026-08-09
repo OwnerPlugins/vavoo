@@ -171,6 +171,9 @@ msgstr "Ügy: {}"
 msgid "Changelog:"
 msgstr "Csatornák: %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Változásnapló: ({}/{}, használja fel/le)"
+
 #, fuzzy
 msgid "Channels"
 msgstr "Csatornák: %d"
@@ -243,6 +246,13 @@ msgstr "Exportálni szeretné ezt a csokrot?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG hasonlósági küszöb (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "A Vavoo már fut."
+
+msgid "EPG import started"
+msgstr "Az EPG importálás megkezdődött"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "Az EPG le van tiltva. Először engedélyezze a Vavoo beállításaiban."
 
@@ -252,15 +262,8 @@ msgstr "Az EPG feldolgozása befejeződött (nincs találat)"
 msgid "EPG processing completed for {} channels"
 msgstr "Az EPG feldolgozás befejeződött {} csatornánál"
 
-msgid "EPG update completed"
-msgstr "Az EPG frissítés befejeződött"
-
-msgid "EPG update failed"
-msgstr "Az EPG frissítése nem sikerült"
-
-#, fuzzy
-msgid "EPG update started successfully"
-msgstr "Konfiguráció sikeresen mentve!"
+msgid "EPGImport plugin not found: {}"
+msgstr "Az EPGImport bővítmény nem található: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Engedélyezze a Vavoo EPG-t"
@@ -291,10 +294,6 @@ msgid "Error starting channel"
 msgstr "Hiba a csatorna indításakor"
 
 msgid "Error: %s"
-msgstr "Hiba: %s"
-
-#, fuzzy
-msgid "Error: {}"
 msgstr "Hiba: %s"
 
 msgid "Exit"
@@ -405,6 +404,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Nem észlelhető internetkapcsolat. Kérjük, ellenőrizze a hálózatát."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "A Vavoo EPG forrás nincs engedélyezve az EPGImportban. Kérjük, engedélyezze az EPGImport beállításainál."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Nem található csatorna a következőhöz: {}"
 
@@ -472,12 +475,9 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
-
-msgid "Ready"
-msgstr "Kész"
 
 msgid "Really close without saving settings?"
 msgstr "Tényleg bezárja a beállítások mentése nélkül?"
@@ -625,9 +625,6 @@ msgstr "Frissítési időköz (perc):"
 msgid "Update now?"
 msgstr "Frissítsen engem"
 
-msgid "Updating EPG..."
-msgstr "EPG frissítése..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream élőben"
@@ -649,7 +646,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -705,6 +702,26 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Az újraindítás sikertelen"
+
+#~ msgid "EPG update completed"
+#~ msgstr "Az EPG frissítés befejeződött"
+
+#~ msgid "EPG update failed"
+#~ msgstr "Az EPG frissítése nem sikerült"
+
+#, fuzzy
+#~ msgid "EPG update started successfully"
+#~ msgstr "Konfiguráció sikeresen mentve!"
+
+#, fuzzy
+#~ msgid "Error: {}"
+#~ msgstr "Hiba: %s"
+
+#~ msgid "Ready"
+#~ msgstr "Kész"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG frissítése..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Kérlek, próbálj meg egy másik csatornát."

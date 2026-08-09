@@ -165,6 +165,9 @@ msgstr "دېلو: {}"
 msgid "Changelog:"
 msgstr "قاناللار"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({} / {} ، ئىشلىتىش / ئاستى)"
+
 msgid "Channels"
 msgstr "قاناللار"
 
@@ -234,6 +237,13 @@ msgstr "غەملەك فورماتىنى ئوڭشىماقچىمۇ؟"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG ئوخشاشلىق چېكى (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo ئاللىقاچان ئىجرا بولۇۋاتىدۇ."
+
+msgid "EPG import started"
+msgstr "EPG ئىمپورت باشلاندى"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG چەكلەنگەن. ئالدى بىلەن Vavoo تەڭشىكىدە قوزغىتىڭ."
 
@@ -243,14 +253,8 @@ msgstr "EPG بىر تەرەپ قىلىش تاماملاندى (ماس كەلمە
 msgid "EPG processing completed for {} channels"
 msgstr "EPG بىر تەرەپ قىلىش {} قاناللىرى ئۈچۈن تاماملاندى"
 
-msgid "EPG update completed"
-msgstr "EPG يېڭىلاش تاماملاندى"
-
-msgid "EPG update failed"
-msgstr "EPG يېڭىلاش مەغلۇپ بولدى"
-
-msgid "EPG update started successfully"
-msgstr "EPG يېڭىلاش مۇۋەپپەقىيەتلىك باشلاندى"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport قىستۇرمىسى تېپىلمىدى: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG نى قوزغىتىڭ"
@@ -278,9 +282,6 @@ msgstr "باشلاش قانىلىدا خاتالىق"
 
 msgid "Error: %s"
 msgstr "خاتالىق:% s"
-
-msgid "Error: {}"
-msgstr "خاتالىق: {}"
 
 msgid "Exit"
 msgstr "چىقىش"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "تور ئۇلىنىشى بايقالمىدى. تورىڭىزنى تەكشۈرۈپ بېقىڭ."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "EPGImport دا Vavoo EPG مەنبەسى قوزغىتىلمىغان. ئۇنى EPGImport تەڭشىكىدە قوزغىتىڭ."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "ھېچقانداق قانال تېپىلمىدى"
 
@@ -456,9 +461,6 @@ msgstr "ۋاكالەتچى قوزغىلىش ۋاقتى (سېكۇنت)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "ۋاكالەتچى بەلگە مۇۋەپپەقىيەتلىك يېڭىلاندى"
-
-msgid "Ready"
-msgstr "تەييار"
 
 msgid "Really close without saving settings?"
 msgstr "تەڭشەكلەرنى ساقلىماي راستىنلا تاقامسىز؟"
@@ -601,9 +603,6 @@ msgstr "يېڭىلاش ئارىلىقى (مىنۇت):"
 msgid "Update now?"
 msgstr "ھازىر EPG يېڭىلاشنى باشلاڭ؟"
 
-msgid "Updating EPG..."
-msgstr "EPG نى يېڭىلاش ..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream Live قىستۇرمىسى"
@@ -677,6 +676,24 @@ msgstr "✗ ۋاكالەتچى Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ قايتا قوزغىتىش مەغلۇب بولدى"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG يېڭىلاش تاماملاندى"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG يېڭىلاش مەغلۇپ بولدى"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG يېڭىلاش مۇۋەپپەقىيەتلىك باشلاندى"
+
+#~ msgid "Error: {}"
+#~ msgstr "خاتالىق: {}"
+
+#~ msgid "Ready"
+#~ msgstr "تەييار"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG نى يېڭىلاش ..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "باشقا قانالنى سىناپ بېقىڭ."

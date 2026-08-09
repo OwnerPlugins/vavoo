@@ -165,6 +165,9 @@ msgstr "නඩුව: {}"
 msgid "Changelog:"
 msgstr "නාලිකා"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "චේන්ජ්ලොග්: ({}/{}, ඉහළ/පහළ භාවිත කරන්න)"
+
 msgid "Channels"
 msgstr "නාලිකා"
 
@@ -234,6 +237,13 @@ msgstr "ඔබට හැඹිලි ආකෘතිය නිවැරදි �
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG සමානතා සීමාව (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo දැනටමත් ක්රියාත්මක වේ."
+
+msgid "EPG import started"
+msgstr "EPG ආනයනය ආරම්භ විය"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG අක්‍රියයි. කරුණාකර එය පළමුව Vavoo සැකසුම් තුළ සබල කරන්න."
 
@@ -243,14 +253,8 @@ msgstr "EPG සැකසීම සම්පූර්ණයි (ගැලපී�
 msgid "EPG processing completed for {} channels"
 msgstr "නාලිකා {} සඳහා EPG සැකසීම සම්පූර්ණයි"
 
-msgid "EPG update completed"
-msgstr "EPG යාවත්කාලීන කිරීම සම්පූර්ණයි"
-
-msgid "EPG update failed"
-msgstr "EPG යාවත්කාලීන කිරීම අසාර්ථක විය"
-
-msgid "EPG update started successfully"
-msgstr "EPG යාවත්කාලීන කිරීම සාර්ථකව ආරම්භ විය"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport ප්ලගිනය හමු නොවීය: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG සබල කරන්න"
@@ -278,9 +282,6 @@ msgstr "නාලිකාව ආරම්භ කිරීමේ දෝෂයක
 
 msgid "Error: %s"
 msgstr "දෝෂය: %s"
-
-msgid "Error: {}"
-msgstr "දෝෂය: {}"
 
 msgid "Exit"
 msgstr "පිටවීම"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "අන්තර්ජාල සම්බන්ධතාවයක් අනාවරණය කර ගෙන නොමැත. කරුණාකර ඔබගේ ජාලය පරීක්ෂා කරන්න."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG මූලාශ්‍රය EPGImport හි සබල කර නැත. කරුණාකර එය EPGImport සැකසුම් තුළ සබල කරන්න."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "නාලිකා හමු නොවීය"
 
@@ -456,9 +461,6 @@ msgstr "ප්‍රොක්සි ආරම්භක කල් ඉකුත්
 
 msgid "Proxy token refreshed successfully"
 msgstr "ප්‍රොක්සි ටෝකනය සාර්ථකව නැවුම් කරන ලදී"
-
-msgid "Ready"
-msgstr "සූදානම්"
 
 msgid "Really close without saving settings?"
 msgstr "සැකසීම් සුරැකීමෙන් තොරව ඇත්තටම වසන්නද?"
@@ -601,9 +603,6 @@ msgstr "යාවත්කාලීන පරතරය (මිනිත්තු
 msgid "Update now?"
 msgstr "EPG යාවත්කාලීන කිරීම දැන් ආරම්භ කරන්නද?"
 
-msgid "Updating EPG..."
-msgstr "EPG යාවත්කාලීන කරමින්..."
-
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stream සජීවීව යාවත්කාලීන කරමින්..."
 
@@ -676,6 +675,24 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ නැවත ආරම්භ කිරීම අසාර්ථක විය"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG යාවත්කාලීන කිරීම සම්පූර්ණයි"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG යාවත්කාලීන කිරීම අසාර්ථක විය"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG යාවත්කාලීන කිරීම සාර්ථකව ආරම්භ විය"
+
+#~ msgid "Error: {}"
+#~ msgstr "දෝෂය: {}"
+
+#~ msgid "Ready"
+#~ msgstr "සූදානම්"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG යාවත්කාලීන කරමින්..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "කරුණාකර වෙනත් නාලිකාවක් උත්සාහ කරන්න."

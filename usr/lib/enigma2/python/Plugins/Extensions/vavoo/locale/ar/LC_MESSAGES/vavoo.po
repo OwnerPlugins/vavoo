@@ -165,6 +165,9 @@ msgstr "حالة الأحرف: {}"
 msgid "Changelog:"
 msgstr "القنوات"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "سجل التغيير: ({}/{}، استخدم لأعلى/لأسفل)"
+
 msgid "Channels"
 msgstr "القنوات"
 
@@ -234,6 +237,13 @@ msgstr "هل تريد إصلاح تنسيق ذاكرة التخزين المؤق
 msgid "EPG Similarity Threshold (%)"
 msgstr "عتبة تشابه دليل البرامج الإلكتروني (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo قيد التشغيل بالفعل."
+
+msgid "EPG import started"
+msgstr "بدأ استيراد EPG"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG معطل. الرجاء تفعيله في إعدادات Vavoo أولا."
 
@@ -243,14 +253,8 @@ msgstr "اكتملت معالجة دليل البرامج الإلكتروني (
 msgid "EPG processing completed for {} channels"
 msgstr "اكتملت معالجة دليل البرامج الإلكتروني لـ {} قناة"
 
-msgid "EPG update completed"
-msgstr "اكتمل تحديث EPG"
-
-msgid "EPG update failed"
-msgstr "فشل تحديث EPG"
-
-msgid "EPG update started successfully"
-msgstr "بدأ تحديث EPG بنجاح"
+msgid "EPGImport plugin not found: {}"
+msgstr "لم يتم العثور على البرنامج المساعد EPGImport: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "تفعيل EPG فافو"
@@ -278,9 +282,6 @@ msgstr "خطأ في بدء تشغيل القناة"
 
 msgid "Error: %s"
 msgstr "خطأ: %s"
-
-msgid "Error: {}"
-msgstr "خطأ: {}"
 
 msgid "Exit"
 msgstr "مخرج"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "لم يتم اكتشاف اتصال بالإنترنت. الرجاء فحص شبكتك."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "مصدر EPG فافو غير مفعل في EPGImport. الرجاء تفعيله في إعدادات EPGImport."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "لم يتم العثور على قنوات"
 
@@ -456,9 +461,6 @@ msgstr "مهلة بدء تشغيل الوكيل (بالثواني)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "تم تحديث رمز الوكيل بنجاح"
-
-msgid "Ready"
-msgstr "جاهز"
 
 msgid "Really close without saving settings?"
 msgstr "هل تريد الإغلاق دون حفظ الإعدادات؟"
@@ -601,9 +603,6 @@ msgstr "فاصل التحديث (بالدقائق):"
 msgid "Update now?"
 msgstr "بدء تحديث EPG الآن؟"
 
-msgid "Updating EPG..."
-msgstr "جاري تحديث EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "بث مباشر فافو"
@@ -677,6 +676,24 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "EPG update completed"
+#~ msgstr "اكتمل تحديث EPG"
+
+#~ msgid "EPG update failed"
+#~ msgstr "فشل تحديث EPG"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "بدأ تحديث EPG بنجاح"
+
+#~ msgid "Error: {}"
+#~ msgstr "خطأ: {}"
+
+#~ msgid "Ready"
+#~ msgstr "جاهز"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "جاري تحديث EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "الرجاء تجربة قناة أخرى."

@@ -165,6 +165,9 @@ msgstr "Тохиолдол: {}"
 msgid "Changelog:"
 msgstr "Сувгууд"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Өөрчлөлтийн бүртгэл: ({}/{}, дээш/доош ашиглах)"
+
 msgid "Channels"
 msgstr "Сувгууд"
 
@@ -234,6 +237,13 @@ msgstr "Та кэш форматыг засахыг хүсч байна уу?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG ижил төстэй байдлын босго (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo аль хэдийн ажиллаж байна."
+
+msgid "EPG import started"
+msgstr "EPG импорт хийж эхэлсэн"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG идэвхгүй болсон. Эхлээд үүнийг Vavoo тохиргооноос идэвхжүүлнэ үү."
 
@@ -243,14 +253,8 @@ msgstr "EPG боловсруулалт дууссан (тохирох зүйл �
 msgid "EPG processing completed for {} channels"
 msgstr "{} сувгийн EPG боловсруулалт дууссан"
 
-msgid "EPG update completed"
-msgstr "EPG шинэчлэлт дууссан"
-
-msgid "EPG update failed"
-msgstr "EPG шинэчлэл амжилтгүй боллоо"
-
-msgid "EPG update started successfully"
-msgstr "EPG шинэчлэлт амжилттай эхэлсэн"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport залгаас олдсонгүй: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG-г идэвхжүүл"
@@ -278,9 +282,6 @@ msgstr "Сувгийг эхлүүлэхэд алдаа гарлаа"
 
 msgid "Error: %s"
 msgstr "Алдаа: %s"
-
-msgid "Error: {}"
-msgstr "Алдаа: {}"
 
 msgid "Exit"
 msgstr "Гарах"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Интернэт холболт илэрсэнгүй. Сүлжээгээ шалгана уу."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG эх үүсвэрийг EPGImport-д идэвхжүүлээгүй байна. EPGImport тохиргооноос үүнийг идэвхжүүлнэ үү."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Суваг олдсонгүй"
 
@@ -456,9 +461,6 @@ msgstr "Прокси эхлүүлэх хугацаа (секунд)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Прокси токеныг амжилттай сэргээлээ"
-
-msgid "Ready"
-msgstr "Бэлэн"
 
 msgid "Really close without saving settings?"
 msgstr "Тохиргоог хадгалахгүйгээр үнэхээр хаах уу?"
@@ -601,9 +603,6 @@ msgstr "Шинэчлэх интервал (минут):"
 msgid "Update now?"
 msgstr "EPG шинэчлэлтийг одоо эхлүүлэх үү?"
 
-msgid "Updating EPG..."
-msgstr "EPG-г шинэчилж байна..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo шууд дамжуулалт"
@@ -677,6 +676,24 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Дахин эхлүүлэх амжилтгүй боллоо"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG шинэчлэлт дууссан"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG шинэчлэл амжилтгүй боллоо"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG шинэчлэлт амжилттай эхэлсэн"
+
+#~ msgid "Error: {}"
+#~ msgstr "Алдаа: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Бэлэн"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "EPG-г шинэчилж байна..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Өөр суваг үзээрэй."

@@ -165,6 +165,9 @@ msgstr "案件： {}"
 msgid "Changelog:"
 msgstr "渠道"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "变更日志：（{}/{}，使用向上/向下）"
+
 msgid "Channels"
 msgstr "渠道"
 
@@ -234,6 +237,13 @@ msgstr "您想修复缓存格式吗？"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG相似度阈值(%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo 已经在运行。"
+
+msgid "EPG import started"
+msgstr "EPG导入开始"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG 已禁用。请先在 Vavoo 设置中启用它。"
 
@@ -243,14 +253,8 @@ msgstr "EPG 处理完成（无匹配项）"
 msgid "EPG processing completed for {} channels"
 msgstr "{} 个频道的 EPG 处理已完成"
 
-msgid "EPG update completed"
-msgstr "EPG更新完成"
-
-msgid "EPG update failed"
-msgstr "EPG更新失败"
-
-msgid "EPG update started successfully"
-msgstr "EPG更新成功开始"
+msgid "EPGImport plugin not found: {}"
+msgstr "未找到 EPGImport 插件：{}"
 
 msgid "Enable Vavoo EPG"
 msgstr "启用 Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "启动频道时出错"
 
 msgid "Error: %s"
 msgstr "错误：%s"
-
-msgid "Error: {}"
-msgstr "错误： {}"
 
 msgid "Exit"
 msgstr "出口"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "未检测到互联网连接。请检查您的网络。"
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "EPGImport 中未启用 Vavoo EPG 源。请在 EGImport 设置中启用它。"
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "没有找到频道"
 
@@ -456,9 +461,6 @@ msgstr "代理启动超时（秒）"
 
 msgid "Proxy token refreshed successfully"
 msgstr "代理令牌刷新成功"
-
-msgid "Ready"
-msgstr "准备好"
 
 msgid "Really close without saving settings?"
 msgstr "真的关闭而不保存设置吗？"
@@ -601,9 +603,6 @@ msgstr "更新间隔（分钟）："
 msgid "Update now?"
 msgstr "现在开始EPG更新吗？"
 
-msgid "Updating EPG..."
-msgstr "正在更新电子节目指南..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo 直播"
@@ -677,6 +676,24 @@ msgstr "✗ 代理离线"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重启失败"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG更新完成"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG更新失败"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG更新成功开始"
+
+#~ msgid "Error: {}"
+#~ msgstr "错误： {}"
+
+#~ msgid "Ready"
+#~ msgstr "准备好"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "正在更新电子节目指南..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "请尝试其他频道。"

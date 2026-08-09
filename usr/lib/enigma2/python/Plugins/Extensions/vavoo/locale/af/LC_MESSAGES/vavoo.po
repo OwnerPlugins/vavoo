@@ -165,6 +165,9 @@ msgstr "Geval: {}"
 msgid "Changelog:"
 msgstr "Kanale"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Veranderlog: ({}/{}, gebruik op/af)"
+
 msgid "Channels"
 msgstr "Kanale"
 
@@ -234,6 +237,13 @@ msgstr "Wil jy die kasformaat regmaak?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG-ooreenkomsdrempel (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo hardloop reeds."
+
+msgid "EPG import started"
+msgstr "EPG-invoer het begin"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG is gedeaktiveer. Aktiveer dit asseblief eers in Vavoo-instellings."
 
@@ -243,14 +253,8 @@ msgstr "EPG-verwerking voltooi (geen passings nie)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-verwerking voltooi vir {} kanale"
 
-msgid "EPG update completed"
-msgstr "EPG-opdatering voltooi"
-
-msgid "EPG update failed"
-msgstr "EPG-opdatering het misluk"
-
-msgid "EPG update started successfully"
-msgstr "EPG-opdatering het suksesvol begin"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport-inprop nie gevind nie: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Aktiveer Vavoo EPG"
@@ -278,9 +282,6 @@ msgstr "Kon nie kanaal begin nie"
 
 msgid "Error: %s"
 msgstr "Fout: %s"
-
-msgid "Error: {}"
-msgstr "Fout: {}"
 
 msgid "Exit"
 msgstr "Verlaat"
@@ -390,6 +391,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Geen internetverbinding bespeur nie. Gaan asseblief jou netwerk na."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG-bron is nie in EPGImport geaktiveer nie. Aktiveer dit asseblief in EPGImport-instellings."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Geen kanale gevind nie"
 
@@ -456,9 +461,6 @@ msgstr "Gevolmagtigde opstart-uitteltyd (sekondes)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Volmagtoken is suksesvol herlaai"
-
-msgid "Ready"
-msgstr "Gereed"
 
 msgid "Really close without saving settings?"
 msgstr "Regtig toemaak sonder om instellings te stoor?"
@@ -601,9 +603,6 @@ msgstr "Opdateringsinterval (minute):"
 msgid "Update now?"
 msgstr "Begin EPG-opdatering nou?"
 
-msgid "Updating EPG..."
-msgstr "Dateer tans EPG op …"
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Stroom Regstreeks"
@@ -677,6 +676,24 @@ msgstr "✗ Proxy vanlyn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herbegin het misluk"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG-opdatering voltooi"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-opdatering het misluk"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-opdatering het suksesvol begin"
+
+#~ msgid "Error: {}"
+#~ msgstr "Fout: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Gereed"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Dateer tans EPG op …"
 
 #~ msgid "Please try another channel."
 #~ msgstr "Probeer asseblief 'n ander kanaal."

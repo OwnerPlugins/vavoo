@@ -166,6 +166,9 @@ msgstr "Fall: {}"
 msgid "Changelog:"
 msgstr "Kanaler"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Ändringslogg: ({}/{}, använd upp/ned)"
+
 msgid "Channels"
 msgstr "Kanaler"
 
@@ -235,6 +238,13 @@ msgstr "Vill du fixa cacheformatet?"
 msgid "EPG Similarity Threshold (%)"
 msgstr "EPG-likhetströskel (%)"
 
+#, fuzzy
+msgid "EPG import already running"
+msgstr "Vavoo är redan igång."
+
+msgid "EPG import started"
+msgstr "EPG-importen startade"
+
 msgid "EPG is disabled. Please enable it in Vavoo settings first."
 msgstr "EPG är inaktiverat. Vänligen aktivera det i Vavoo-inställningarna först."
 
@@ -244,14 +254,8 @@ msgstr "EPG-bearbetning slutförd (inga matchningar)"
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-bearbetning slutförd för {} kanaler"
 
-msgid "EPG update completed"
-msgstr "EPG-uppdateringen är klar"
-
-msgid "EPG update failed"
-msgstr "EPG-uppdatering misslyckades"
-
-msgid "EPG update started successfully"
-msgstr "EPG-uppdateringen startade framgångsrikt"
+msgid "EPGImport plugin not found: {}"
+msgstr "EPGImport plugin hittades inte: {}"
 
 msgid "Enable Vavoo EPG"
 msgstr "Aktivera Vavoo EPG"
@@ -279,9 +283,6 @@ msgstr "Fel vid start av kanal"
 
 msgid "Error: %s"
 msgstr "Fel: %s"
-
-msgid "Error: {}"
-msgstr "Fel: {}"
 
 msgid "Exit"
 msgstr "Utgång"
@@ -391,6 +392,10 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Ingen internetanslutning upptäcktes. Kontrollera ditt nätverk."
 
 #, fuzzy
+msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
+msgstr "Vavoo EPG-källa är inte aktiverad i EPGImport. Vänligen aktivera det i EPGImport-inställningarna."
+
+#, fuzzy
 msgid "No changelog provided."
 msgstr "Inga kanaler hittades"
 
@@ -457,9 +462,6 @@ msgstr "Timeout för proxystart (sekunder)"
 
 msgid "Proxy token refreshed successfully"
 msgstr "Proxytoken har uppdaterats"
-
-msgid "Ready"
-msgstr "Redo"
 
 msgid "Really close without saving settings?"
 msgstr "Stäng verkligen utan att spara inställningar?"
@@ -602,9 +604,6 @@ msgstr "Uppdateringsintervall (minuter):"
 msgid "Update now?"
 msgstr "Starta EPG-uppdatering nu?"
 
-msgid "Updating EPG..."
-msgstr "Uppdaterar EPG..."
-
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
 msgstr "Vavoo Streama Live"
@@ -678,6 +677,24 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart misslyckades"
+
+#~ msgid "EPG update completed"
+#~ msgstr "EPG-uppdateringen är klar"
+
+#~ msgid "EPG update failed"
+#~ msgstr "EPG-uppdatering misslyckades"
+
+#~ msgid "EPG update started successfully"
+#~ msgstr "EPG-uppdateringen startade framgångsrikt"
+
+#~ msgid "Error: {}"
+#~ msgstr "Fel: {}"
+
+#~ msgid "Ready"
+#~ msgstr "Redo"
+
+#~ msgid "Updating EPG..."
+#~ msgstr "Uppdaterar EPG..."
 
 #~ msgid "Please try another channel."
 #~ msgstr "Försök med en annan kanal."
