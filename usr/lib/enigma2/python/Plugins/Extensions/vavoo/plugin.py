@@ -1956,7 +1956,11 @@ class MainVavoo(Screen):
         # cache file (see bouquet_manager.process_epg_matching_background)
         # with no lock of its own - share export_lock so the two can't
         # interleave and corrupt/clobber each other's write.
-        if not export_lock.acquire(blocking=False):
+        # threading.Lock.acquire() only accepts blocking as a
+        # positional argument on Python 2 (the C implementation there
+        # doesn't support keyword arguments at all) - acquire(False)
+        # works identically on both Python 2 and 3.
+        if not export_lock.acquire(False):
             if NOTIFICATION_AVAILABLE:
                 quick_notify(
                     _("An export is in progress. Please wait before fixing the cache."), 4)
@@ -3451,7 +3455,11 @@ class vavoo(Screen):
         self._update_export_button_label()
 
     def message2(self, name, url, response):
-        if not export_lock.acquire(blocking=False):
+        # threading.Lock.acquire() only accepts blocking as a
+        # positional argument on Python 2 (the C implementation there
+        # doesn't support keyword arguments at all) - acquire(False)
+        # works identically on both Python 2 and 3.
+        if not export_lock.acquire(False):
             if NOTIFICATION_AVAILABLE:
                 quick_notify(
                     _("An export for another country is already in progress. Please wait."), 4)
