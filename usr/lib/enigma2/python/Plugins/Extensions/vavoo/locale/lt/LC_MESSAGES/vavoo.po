@@ -166,6 +166,9 @@ msgstr "Atvejis: {}"
 msgid "Changelog:"
 msgstr "Kanalai"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Pakeitimų žurnalas: ({}/{}, naudokite aukštyn / žemyn)"
+
 msgid "Channels"
 msgstr "Kanalai"
 

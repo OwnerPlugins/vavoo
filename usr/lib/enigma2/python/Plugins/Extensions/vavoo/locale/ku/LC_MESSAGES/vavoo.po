@@ -165,6 +165,9 @@ msgstr "Mesele: {}"
 msgid "Changelog:"
 msgstr "Kanal: %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Guhertin: ({}/{}, jor/xwarê bikar bîne)"
+
 msgid "Channels"
 msgstr ""
 

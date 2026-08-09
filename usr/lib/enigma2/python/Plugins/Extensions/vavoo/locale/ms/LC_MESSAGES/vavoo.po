@@ -165,6 +165,9 @@ msgstr "Kes: {}"
 msgid "Changelog:"
 msgstr "Saluran"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, gunakan atas/bawah)"
+
 msgid "Channels"
 msgstr "Saluran"
 

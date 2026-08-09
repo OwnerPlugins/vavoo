@@ -165,6 +165,9 @@ msgstr "Тохиолдол: {}"
 msgid "Changelog:"
 msgstr "Сувгууд"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Өөрчлөлтийн бүртгэл: ({}/{}, дээш/доош ашиглах)"
+
 msgid "Channels"
 msgstr "Сувгууд"
 

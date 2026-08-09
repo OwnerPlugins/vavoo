@@ -166,6 +166,9 @@ msgstr "Trường hợp: {}"
 msgid "Changelog:"
 msgstr "Kênh"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Nhật ký thay đổi: ({}/{}, sử dụng lên/xuống)"
+
 msgid "Channels"
 msgstr "Kênh"
 

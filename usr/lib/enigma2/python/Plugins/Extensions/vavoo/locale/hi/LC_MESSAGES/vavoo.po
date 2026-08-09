@@ -165,6 +165,9 @@ msgstr "मामला: {}"
 msgid "Changelog:"
 msgstr "चैनल"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "चेंजलॉग: ({}/{}, ऊपर/नीचे उपयोग करें)"
+
 msgid "Channels"
 msgstr "चैनल"
 

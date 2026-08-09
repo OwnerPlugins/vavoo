@@ -165,6 +165,9 @@ msgstr "Cùis: {}"
 msgid "Changelog:"
 msgstr "Sianalan"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, cleachd suas/sìos)"
+
 msgid "Channels"
 msgstr "Sianalan"
 

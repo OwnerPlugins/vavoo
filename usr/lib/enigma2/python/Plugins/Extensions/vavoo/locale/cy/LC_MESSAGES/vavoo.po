@@ -165,6 +165,9 @@ msgstr "Achos: {}"
 msgid "Changelog:"
 msgstr "Sianeli"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, defnyddiwch i fyny/i lawr)"
+
 msgid "Channels"
 msgstr "Sianeli"
 

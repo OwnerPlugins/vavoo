@@ -165,6 +165,9 @@ msgstr "کیس: {}"
 msgid "Changelog:"
 msgstr "چینلز"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "چینج لاگ: ({}/{}، اوپر/نیچے کا استعمال کریں)"
+
 msgid "Channels"
 msgstr "چینلز"
 

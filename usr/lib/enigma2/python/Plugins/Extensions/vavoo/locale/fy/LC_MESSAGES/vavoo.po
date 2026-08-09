@@ -165,6 +165,9 @@ msgstr "Geval: {}"
 msgid "Changelog:"
 msgstr "Kanalen: %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Feroaringslog: ({}/{}, brûk omheech/ûnder)"
+
 msgid "Channels"
 msgstr ""
 

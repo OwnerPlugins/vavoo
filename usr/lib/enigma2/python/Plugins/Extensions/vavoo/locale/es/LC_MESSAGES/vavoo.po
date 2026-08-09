@@ -179,6 +179,9 @@ msgstr "Mayúsculas/minúsculas: {}"
 msgid "Changelog:"
 msgstr "Canales: %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Registro de cambios: ({}/{}, usar arriba/abajo)"
+
 #, fuzzy
 msgid "Channels"
 msgstr "Canales: %d"

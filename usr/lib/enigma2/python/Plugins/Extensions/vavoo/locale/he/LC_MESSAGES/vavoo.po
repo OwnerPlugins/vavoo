@@ -166,6 +166,9 @@ msgstr "מקרה: {}"
 msgid "Changelog:"
 msgstr "ערוצים"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "יומן שינויים: ({}/{}, השתמש למעלה/למטה)"
+
 msgid "Channels"
 msgstr "ערוצים"
 

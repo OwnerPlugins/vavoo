@@ -165,6 +165,9 @@ msgstr "Kirjainkoko: {}"
 msgid "Changelog:"
 msgstr "Kanavat"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Muutosloki: ({}/{}, käytä ylös/alas)"
+
 msgid "Channels"
 msgstr "Kanavat"
 

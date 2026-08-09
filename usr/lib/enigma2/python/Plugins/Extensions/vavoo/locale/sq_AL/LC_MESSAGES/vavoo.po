@@ -165,6 +165,9 @@ msgstr "Rasti: {}"
 msgid "Changelog:"
 msgstr "Kanalet"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Ndryshimet: ({}/{}, përdorni lart/poshtë)"
+
 msgid "Channels"
 msgstr "Kanalet"
 

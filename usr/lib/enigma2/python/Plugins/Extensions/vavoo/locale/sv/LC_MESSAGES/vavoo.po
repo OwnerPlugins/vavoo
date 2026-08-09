@@ -166,6 +166,9 @@ msgstr "Fall: {}"
 msgid "Changelog:"
 msgstr "Kanaler"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Ändringslogg: ({}/{}, använd upp/ned)"
+
 msgid "Channels"
 msgstr "Kanaler"
 

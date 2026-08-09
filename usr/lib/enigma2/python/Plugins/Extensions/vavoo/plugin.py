@@ -3145,7 +3145,7 @@ class vavoo(Screen):
                 "ok": self.ok,
                 "green": self.message1,
                 "yellow": self.search_vavoo,
-                "blue": self._reload_services,
+                "blue": self.reload_bouquets_with_popup,
                 "cancel": self.backhome,
                 "menu": self.goConfig,
                 # "info": self.info,
@@ -3343,15 +3343,41 @@ class vavoo(Screen):
             print("[MainVavoo] Error updating proxy status: " + str(e))
             self['proxy_status'].setText(_("✗ Error"))
 
-    def _reload_services(self):
-        try:
-            db = eDVBDB.getInstance()
-            db.reloadBouquets()
-            db.reloadServicelist()
-            print("Bouquets reloaded successfully")
-        except Exception as e:
-            print("Error during service reload: " + str(e))
-            ReloadBouquets(500)
+    def reload_bouquets_with_popup(self):
+        """Reload bouquets with confirmation popup"""
+        debug("reload_bouquets_with_popup called")
+        self.session.openWithCallback(
+            self._confirm_reload_bouquets,
+            MessageBox,
+            _("Reload bouquets and service list?"),
+            MessageBox.TYPE_YESNO,
+            timeout=10,
+            default=True
+        )
+
+    def _confirm_reload_bouquets(self, result):
+        """Callback after user confirmation"""
+        if result:
+            debug("User confirmed reload")
+            try:
+                db = eDVBDB.getInstance()
+                db.reloadBouquets()
+                db.reloadServicelist()
+                print("Bouquets reloaded successfully")
+            except Exception as e:
+                print("Error during service reload: " + str(e))
+                ReloadBouquets(500)
+            try:
+                self.session.open(
+                    MessageBox,
+                    _("Bouquets reload scheduled."),
+                    MessageBox.TYPE_INFO,
+                    timeout=2
+                )
+            except Exception as e:
+                print("[MessageBox] Error:", e)
+        else:
+            debug("User cancelled reload")
 
     def ok(self):
         try:

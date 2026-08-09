@@ -165,6 +165,9 @@ msgstr "ମାମଲା: {}"
 msgid "Changelog:"
 msgstr "ଚ୍ୟାନେଲଗୁଡିକ |"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ଚେଞ୍ଜେଲଗ୍: ({} / {}, ଅପ୍ / ଡାଉନ୍ ବ୍ୟବହାର କରନ୍ତୁ)"
+
 msgid "Channels"
 msgstr "ଚ୍ୟାନେଲଗୁଡିକ |"
 

@@ -165,6 +165,9 @@ msgstr "కేసు: {}"
 msgid "Changelog:"
 msgstr "ఛానెల్‌లు"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "చేంజ్లాగ్: ({}/{}, అప్/డౌన్ ఉపయోగించండి)"
+
 msgid "Channels"
 msgstr "ఛానెల్‌లు"
 

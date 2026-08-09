@@ -165,6 +165,9 @@ msgstr "פאַל: {}"
 msgid "Changelog:"
 msgstr "טשאַנאַלז"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "טשאַנגעלאָג: ({}/{}, נוצן אַרויף / אַראָפּ)"
+
 msgid "Channels"
 msgstr "טשאַנאַלז"
 

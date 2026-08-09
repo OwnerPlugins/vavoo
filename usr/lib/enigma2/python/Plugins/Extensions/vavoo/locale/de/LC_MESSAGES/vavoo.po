@@ -170,6 +170,9 @@ msgstr "Groß-/Kleinschreibung: {}"
 msgid "Changelog:"
 msgstr "Kanäle"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Änderungsprotokoll: ({}/{}, nach oben/unten verwenden)"
+
 msgid "Channels"
 msgstr "Kanäle"
 

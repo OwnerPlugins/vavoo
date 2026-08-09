@@ -165,6 +165,9 @@ msgstr "Kaso: {}"
 msgid "Changelog:"
 msgstr "Mga channel"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({}/{}, gamitin pataas/pababa)"
+
 msgid "Channels"
 msgstr "Mga channel"
 

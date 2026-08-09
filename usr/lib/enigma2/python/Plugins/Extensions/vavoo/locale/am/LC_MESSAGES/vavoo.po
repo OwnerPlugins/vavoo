@@ -165,6 +165,9 @@ msgstr "ጉዳይ፡ {}"
 msgid "Changelog:"
 msgstr "ቻናሎች"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ለውጥ፡ ({}/{}፣ ወደላይ/ወደታች ተጠቀም)"
+
 msgid "Channels"
 msgstr "ቻናሎች"
 

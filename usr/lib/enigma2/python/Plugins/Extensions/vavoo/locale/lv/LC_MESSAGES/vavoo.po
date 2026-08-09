@@ -166,6 +166,9 @@ msgstr "Lieta: {}"
 msgid "Changelog:"
 msgstr "Kanāli"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Izmaiņu žurnāls: ({}/{}, izmantojiet uz augšu/uz leju)"
+
 msgid "Channels"
 msgstr "Kanāli"
 

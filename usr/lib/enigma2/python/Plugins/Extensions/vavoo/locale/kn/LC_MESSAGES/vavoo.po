@@ -165,6 +165,9 @@ msgstr "ಪ್ರಕರಣ: {}"
 msgid "Changelog:"
 msgstr "ಚಾನೆಲ್‌ಗಳು"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "ಚೇಂಜ್ಲಾಗ್: ({}/{}, ಮೇಲೆ/ಕೆಳಗೆ ಬಳಸಿ)"
+
 msgid "Channels"
 msgstr "ಚಾನೆಲ್‌ಗಳು"
 

@@ -165,6 +165,9 @@ msgstr "قضیه: {}"
 msgid "Changelog:"
 msgstr "چینلونه"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "بدلولوګ: ({}/{}، پورته / ښکته کارول)"
+
 msgid "Channels"
 msgstr "چینلونه"
 

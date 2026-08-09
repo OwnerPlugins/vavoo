@@ -166,6 +166,9 @@ msgstr "Veličina: {}"
 msgid "Changelog:"
 msgstr "Kanali"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Dnevnik promjena: ({}/{}, koristite gore/dolje)"
+
 msgid "Channels"
 msgstr "Kanali"
 

@@ -178,6 +178,9 @@ msgstr "Casse : {}"
 msgid "Changelog:"
 msgstr "Chaînes : %d"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Journal des modifications : ({}/{}, utilisez haut/bas)"
+
 #, fuzzy
 msgid "Channels"
 msgstr "Chaînes : %d"

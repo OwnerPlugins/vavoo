@@ -165,6 +165,9 @@ msgstr "مورد: {}"
 msgid "Changelog:"
 msgstr "کانال ها"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "تغییرات: ({}/{}، استفاده از بالا/پایین)"
+
 msgid "Channels"
 msgstr "کانال ها"
 

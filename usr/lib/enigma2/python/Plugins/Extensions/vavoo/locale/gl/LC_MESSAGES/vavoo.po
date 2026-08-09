@@ -165,6 +165,9 @@ msgstr "Caso: {}"
 msgid "Changelog:"
 msgstr "Canles"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Rexistro de cambios: ({}/{}, use arriba/abaixo)"
+
 msgid "Channels"
 msgstr "Canles"
 

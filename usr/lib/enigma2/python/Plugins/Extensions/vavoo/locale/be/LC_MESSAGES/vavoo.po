@@ -166,6 +166,9 @@ msgstr "Справа: {}"
 msgid "Changelog:"
 msgstr "Каналы"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Журнал змяненняў: ({}/{}, выкарыстоўвайце кнопкі ўверх/уніз)"
+
 msgid "Channels"
 msgstr "Каналы"
 

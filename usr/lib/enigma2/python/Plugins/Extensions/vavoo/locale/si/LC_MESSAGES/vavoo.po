@@ -165,6 +165,9 @@ msgstr "නඩුව: {}"
 msgid "Changelog:"
 msgstr "නාලිකා"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "චේන්ජ්ලොග්: ({}/{}, ඉහළ/පහළ භාවිත කරන්න)"
+
 msgid "Channels"
 msgstr "නාලිකා"
 

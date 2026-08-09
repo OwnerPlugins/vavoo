@@ -165,6 +165,9 @@ msgstr "دېلو: {}"
 msgid "Changelog:"
 msgstr "قاناللار"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Changelog: ({} / {} ، ئىشلىتىش / ئاستى)"
+
 msgid "Channels"
 msgstr "قاناللار"
 

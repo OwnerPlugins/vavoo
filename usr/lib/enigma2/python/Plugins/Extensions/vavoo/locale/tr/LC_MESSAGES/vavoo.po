@@ -170,6 +170,9 @@ msgstr "Durum: {}"
 msgid "Changelog:"
 msgstr "Kanallar"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Değişiklik günlüğü: ({}/{}, yukarı/aşağı kullanın)"
+
 msgid "Channels"
 msgstr "Kanallar"
 

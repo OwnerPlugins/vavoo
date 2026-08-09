@@ -165,6 +165,9 @@ msgstr "حالة الأحرف: {}"
 msgid "Changelog:"
 msgstr "القنوات"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "سجل التغيير: ({}/{}، استخدم لأعلى/لأسفل)"
+
 msgid "Channels"
 msgstr "القنوات"
 

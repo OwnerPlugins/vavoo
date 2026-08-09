@@ -165,6 +165,9 @@ msgstr "Ҳодиса: {}"
 msgid "Changelog:"
 msgstr "Каналҳо"
 
+msgid "Changelog: ({}/{}, use up/down)"
+msgstr "Гузориши тағирот: ({}/{}, боло/поёнро истифода баред)"
+
 msgid "Channels"
 msgstr "Каналҳо"
 
