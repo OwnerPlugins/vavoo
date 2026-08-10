@@ -1623,7 +1623,14 @@ def get_epg_matcher(similarity_threshold=None):
     global _epg_matcher
     # Se non viene passato un valore, usa quello dalla configurazione
     if similarity_threshold is None:
-        similarity_threshold = config.plugins.vavoo.similarity_threshold.value / 100.0
+        # ConfigSelectionNumber.value comes back as a str (not int) on
+        # at least some images/Python versions - confirmed via a
+        # user-submitted log where this crashed every single EPG lookup
+        # and every bouquet auto-update with "TypeError: unsupported
+        # operand type(s) for /: 'str' and 'float'". float() handles
+        # both str and numeric value types safely.
+        similarity_threshold = float(
+            config.plugins.vavoo.similarity_threshold.value) / 100.0
     if _epg_matcher is None:
         _epg_matcher = VavooEPGMatcher(similarity_threshold)
     else:
