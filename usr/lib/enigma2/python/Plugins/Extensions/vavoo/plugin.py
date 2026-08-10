@@ -920,8 +920,11 @@ class vavoo_config(Screen, ConfigListScreen):
             print("[M3U Export] Could not read local IP: %s" % str(e))
 
         choices = [
-            (_("Local only (127.0.0.1) - this device only"), PROXY_HOST),
-            (_("Network (%s) - other devices on the LAN") % network_ip, network_ip),
+            (_("Local only (127.0.0.1) - this device only"),
+             PROXY_HOST),
+            (_("Network (%s) - other devices on the LAN") %
+             network_ip,
+             network_ip),
         ]
 
         self.session.openWithCallback(
