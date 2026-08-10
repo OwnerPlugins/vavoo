@@ -600,7 +600,7 @@ def remove_pid_file():
 atexit.register(remove_pid_file)
 
 
-class VavooProxy:
+class VavooProxy(object):
     def __init__(self):
         self.session = requests.Session()
         self.session.headers.update(HEADERS)
@@ -1886,6 +1886,19 @@ def is_proxy_port_listening():
 def run_proxy_in_background(startup_timeout=30):
 
     global _starting
+
+    # Callers pass cfg.proxy_startup_timeout.value straight through, and
+    # ConfigSelectionNumber.value has been confirmed (via a user log) to
+    # come back as a str rather than an int on at least some
+    # images/Python versions - min(str, int) raises TypeError on Python
+    # 3, and even where it doesn't crash outright (Python 2's
+    # cross-type comparison happens to usually favor the int here), it's
+    # relying on undefined/fragile behavior rather than anything
+    # guaranteed. Coerce once at the top so every caller is covered.
+    try:
+        startup_timeout = int(startup_timeout)
+    except (TypeError, ValueError):
+        startup_timeout = 30
 
     # Wait (briefly) for another booting instance. This can run on the
     # caller's own thread - including the Enigma2 UI/reactor thread in some
