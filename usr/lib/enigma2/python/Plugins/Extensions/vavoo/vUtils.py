@@ -318,7 +318,7 @@ def get_screen_width():
         return 1920
 
 
-class AspectManager:
+class AspectManager(object):
     """Manages aspect ratio settings for the plugin"""
 
     def __init__(self):
@@ -1756,7 +1756,7 @@ RYTEC_COUNTRY_CODE_OVERRIDES = {
 }
 
 
-class VavooEPGMatcher:
+class VavooEPGMatcher(object):
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
         # (clean_name, original_name, service_ref)

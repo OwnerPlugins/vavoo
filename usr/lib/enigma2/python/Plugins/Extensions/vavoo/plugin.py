@@ -2407,7 +2407,16 @@ class MainVavoo(Screen):
         return success
 
     def _wait_for_proxy(self, attempts=0):
-        timeout_secs = cfg.proxy_startup_timeout.value
+        # ConfigSelectionNumber.value has been confirmed (via a user log)
+        # to come back as a str rather than an int on at least some
+        # images/Python versions - "str" * 2 doesn't raise, it silently
+        # repeats the string ("30" -> "3030"), which then compares
+        # against attempts (always an int) in a way that never behaves
+        # as the intended numeric timeout.
+        try:
+            timeout_secs = int(cfg.proxy_startup_timeout.value)
+        except (TypeError, ValueError):
+            timeout_secs = 30
         max_attempts = timeout_secs * 2   # ogni 0.5 sec
         if attempts > max_attempts:
             print(
@@ -5112,7 +5121,7 @@ class Playstream2(
         self.close()
 
 
-class AutoStartTimer:
+class AutoStartTimer(object):
     def __init__(self):
         print("*** AutoStartTimer Vavoo ***")
 
