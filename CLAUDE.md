@@ -174,8 +174,6 @@ Filenames don't always match their content — check behavior, not just the name
 - `pylint.yml` ("Python package") — actually runs **flake8** (`E9,F63,F7,F82`
   syntax-error gate, then a non-blocking full lint) across Python
   3.10–3.14, on push/PR to `main`.
-- `ruff.yml` — runs `ruff check .` inside
-  `usr/lib/enigma2/python/Plugins/Extensions/vavoo/` only, on push/PR.
 - `flake8.yml` ("PEP8 Aggressive Check and Fix") — **auto-formats**: converts
   tabs to spaces, runs `autopep8 --aggressive --aggressive` repo-wide, and
   **commits and pushes the result directly to `main`** on every push. Be
