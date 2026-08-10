@@ -112,7 +112,8 @@ from .bouquet_manager import (
     remove_bouquets_by_name,
     export_bouquet_async,
     is_bouquet_exported,
-    remove_favorite_entry
+    remove_favorite_entry,
+    get_local_ip
 )
 from .vUtils import (
     debug,
@@ -910,14 +911,7 @@ class vavoo_config(Screen, ConfigListScreen):
         the network)."""
         from Screens.ChoiceBox import ChoiceBox
 
-        network_ip = PROXY_HOST
-        try:
-            response = getUrl(PROXY_STATUS_URL, timeout=3)
-            if response:
-                status_data = loads(response)
-                network_ip = status_data.get("local_ip") or PROXY_HOST
-        except Exception as e:
-            print("[M3U Export] Could not read local IP: %s" % str(e))
+        network_ip = get_local_ip()
 
         choices = [
             (_("Local only (127.0.0.1) - this device only"), PROXY_HOST),
