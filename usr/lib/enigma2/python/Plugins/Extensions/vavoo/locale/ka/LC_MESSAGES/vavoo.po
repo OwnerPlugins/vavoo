@@ -362,6 +362,9 @@ msgstr "ბმული მთავარ მენიუში"
 msgid "Loading EPG..."
 msgstr "მიმდინარეობს EPG-ის განახლება..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "მხოლოდ ადგილობრივი (127.0.0.1) - მხოლოდ ეს მოწყობილობა"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ქვედა = ნაკლები შეფერხება, მაგრამ მეტი განახლება"
 
@@ -379,6 +382,9 @@ msgstr "მინიმალური მსგავსება შესა�
 
 msgid "Movie Services Reference"
 msgstr "ფილმის სერვისების მითითება"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "ქსელი (%s) - სხვა მოწყობილობები LAN-ზე"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "აირჩიეთ M3U ექსპორტის რეჟიმი
 
 msgid "Select country to export M3U:"
 msgstr "აირჩიეთ ქვეყანა M3U ექსპორტისთვის:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "აირჩიეთ IP მისამართი M3U ბმულებში გამოსაყენებლად:"
 
 msgid "Send Anonymous Statistics"
 msgstr "ანონიმური სტატისტიკის გაგზავნა"

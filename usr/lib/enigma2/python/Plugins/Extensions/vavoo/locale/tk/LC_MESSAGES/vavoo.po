@@ -362,6 +362,9 @@ msgstr "Esasy menýuda baglanyşyk"
 msgid "Loading EPG..."
 msgstr "EPG täzelenmek ..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Diňe ýerli (127.0.0.1) - diňe bu enjam"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Aşaky = az arakesme, ýöne has täzelenýär"
 
@@ -379,6 +382,9 @@ msgstr "Gabat gelýän kanallar üçin iň az meňzeşlik (has ýokary = has ber
 
 msgid "Movie Services Reference"
 msgstr "Kino hyzmatlaryna salgylanma"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Tor (% s) - LAN-daky beýleki enjamlar"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U eksport tertibini saýlaň:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U eksport etmek üçin ýurt saýlaň:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U baglanyşyklarynda ulanmak üçin IP adresi saýlaň:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Anonim statistika iberiň"

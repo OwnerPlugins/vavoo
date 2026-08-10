@@ -362,6 +362,9 @@ msgstr "主選單中的連結"
 msgid "Loading EPG..."
 msgstr "正在更新電子節目指南..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "僅本地 (127.0.0.1) - 僅此設備"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "較低=中斷較少但刷新較多"
 
@@ -379,6 +382,9 @@ msgstr "匹配通道的最小相似度（更高=更嚴格）。"
 
 msgid "Movie Services Reference"
 msgstr "電影服務參考"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "網路 (%s) - LAN 上的其他設備"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "選擇M3U導出模式："
 
 msgid "Select country to export M3U:"
 msgstr "選擇導出 M3U 的國家："
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "選擇要在 M3U 連結中使用的 IP 位址："
 
 msgid "Send Anonymous Statistics"
 msgstr "發送匿名統計數據"

@@ -362,6 +362,9 @@ msgstr "Lidhja në menunë kryesore"
 msgid "Loading EPG..."
 msgstr "Po përditëson EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Vetëm lokale (127.0.0.1) - vetëm kjo pajisje"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Më e ulët = më pak ndërprerje por më shumë rifreskim"
 
@@ -379,6 +382,9 @@ msgstr "Ngjashmëria minimale për kanalet që përputhen (më e lartë = më e 
 
 msgid "Movie Services Reference"
 msgstr "Referenca e Shërbimeve të Filmit"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Rrjeti (%s) - pajisje të tjera në LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Zgjidhni modalitetin e eksportit M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Zgjidh shtetin për të eksportuar M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Zgjidhni adresën IP për t'u përdorur në lidhjet M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Dërgo statistika anonime"

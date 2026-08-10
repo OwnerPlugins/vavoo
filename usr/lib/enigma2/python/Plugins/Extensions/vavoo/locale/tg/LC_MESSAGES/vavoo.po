@@ -362,6 +362,9 @@ msgstr "Истинод дар Менюи асосӣ"
 msgid "Loading EPG..."
 msgstr "Навсозии EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Танҳо маҳаллӣ (127.0.0.1) - танҳо ин дастгоҳ"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Поён = камтар халалдор, вале бозсозӣ бештар"
 
@@ -379,6 +382,9 @@ msgstr "Монандии ҳадди аққал барои каналҳои му�
 
 msgid "Movie Services Reference"
 msgstr "Маълумотнома дар бораи хидматҳои филм"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Шабака (%s) - дигар дастгоҳҳо дар LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Ҳолати содироти M3U-ро интихоб кунед:"
 
 msgid "Select country to export M3U:"
 msgstr "Кишвареро барои содироти M3U интихоб кунед:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Суроғаи IP-ро барои истифода дар истинодҳои M3U интихоб кунед:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Омори беном фиристед"

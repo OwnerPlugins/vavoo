@@ -362,6 +362,9 @@ msgstr "Հղում հիմնական ընտրացանկում"
 msgid "Loading EPG..."
 msgstr "EPG-ի թարմացում..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Միայն տեղական (127.0.0.1) - միայն այս սարքը"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Ավելի ցածր = ավելի քիչ ընդհատում, բայց ավելի շատ թարմացումներ"
 
@@ -379,6 +382,9 @@ msgstr "Համապատասխան ալիքների նվազագույն նման�
 
 msgid "Movie Services Reference"
 msgstr "Ֆիլմի ծառայությունների տեղեկանք"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Ցանց (%s) - այլ սարքեր LAN-ում"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Ընտրեք M3U արտահանման ռեժիմ."
 
 msgid "Select country to export M3U:"
 msgstr "Ընտրեք երկիրը M3U արտահանելու համար."
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Ընտրեք IP հասցեն M3U հղումներում օգտագործելու համար."
 
 msgid "Send Anonymous Statistics"
 msgstr "Ուղարկել անանուն վիճակագրություն"

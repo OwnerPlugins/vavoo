@@ -362,6 +362,9 @@ msgstr "Asosiy menyuda havola"
 msgid "Loading EPG..."
 msgstr "EPG yangilanmoqda..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Faqat mahalliy (127.0.0.1) - faqat ushbu qurilma"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Pastroq = kamroq uzilish, lekin ko'proq yangilanish"
 
@@ -379,6 +382,9 @@ msgstr "Mos keladigan kanallar uchun minimal o'xshashlik (yuqori = qattiqroq)."
 
 msgid "Movie Services Reference"
 msgstr "Kino xizmatlari uchun ma'lumotnoma"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Tarmoq (%s) - LANdagi boshqa qurilmalar"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U eksport rejimini tanlang:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U eksport qilinadigan mamlakatni tanlang:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U havolalarida foydalanish uchun IP manzilni tanlang:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Anonim statistikani yuboring"

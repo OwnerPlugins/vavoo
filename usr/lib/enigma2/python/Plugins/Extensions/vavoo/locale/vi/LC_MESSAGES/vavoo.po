@@ -363,6 +363,9 @@ msgstr "Liên kết trong Menu chính"
 msgid "Loading EPG..."
 msgstr "Đang cập nhật EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Chỉ cục bộ (127.0.0.1) - chỉ thiết bị này"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Thấp hơn = ít bị gián đoạn hơn nhưng được làm mới nhiều hơn"
 
@@ -380,6 +383,9 @@ msgstr "Độ tương tự tối thiểu đối với các kênh phù hợp (cao
 
 msgid "Movie Services Reference"
 msgstr "Tham khảo dịch vụ phim"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Mạng (%s) - các thiết bị khác trong mạng LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Chọn chế độ xuất M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Chọn quốc gia xuất M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Chọn địa chỉ IP sử dụng trong link M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Gửi số liệu thống kê ẩn danh"

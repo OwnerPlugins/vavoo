@@ -375,6 +375,9 @@ msgstr "Odkaz v hlavnom menu"
 msgid "Loading EPG..."
 msgstr "Aktualizácia EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Len lokálne (127.0.0.1) – iba toto zariadenie"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Nižšia = menej prerušení, ale viac osviežení"
 
@@ -392,6 +395,9 @@ msgstr "Minimálna podobnosť pre zodpovedajúce kanály (vyššia = prísnejši
 
 msgid "Movie Services Reference"
 msgstr "Odkaz na filmové služby"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Sieť (%s) – ostatné zariadenia v sieti LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -475,7 +481,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Really close without saving settings?"
@@ -559,6 +565,9 @@ msgstr "Vyberte režim exportu M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Vyberte krajinu, do ktorej chcete exportovať M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Vyberte adresu IP, ktorú chcete použiť v odkazoch M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Odoslať anonymné štatistiky"
@@ -645,7 +654,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."

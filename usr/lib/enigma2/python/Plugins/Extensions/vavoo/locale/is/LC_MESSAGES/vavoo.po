@@ -362,6 +362,9 @@ msgstr "Tengill í aðalvalmynd"
 msgid "Loading EPG..."
 msgstr "Uppfærir EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Aðeins staðbundið (127.0.0.1) - aðeins þetta tæki"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lægri = minni truflun en meira hressandi"
 
@@ -379,6 +382,9 @@ msgstr "Lágmarkslíkindi fyrir samsvarandi rásir (hærra = strangara)."
 
 msgid "Movie Services Reference"
 msgstr "Tilvísun í kvikmyndaþjónustu"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Net (%s) - önnur tæki á staðarnetinu"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Veldu M3U útflutningsham:"
 
 msgid "Select country to export M3U:"
 msgstr "Veldu land til að flytja út M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Veldu IP-tölu sem á að nota í M3U-tenglunum:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Sendu nafnlausa tölfræði"

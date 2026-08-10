@@ -362,6 +362,9 @@ msgstr "Main Menu တွင် လင့်ခ်"
 msgid "Loading EPG..."
 msgstr "EPG ကို အပ်ဒိတ်လုပ်နေသည်..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Local only (127.0.0.1) - ဤစက်ပစ္စည်းအတွက်သာ"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "အောက်ခြေ = အနှောင့်အယှက်နည်းပါးသော်လည်း ပိုမိုလန်းဆန်းစေသည်။"
 
@@ -379,6 +382,9 @@ msgstr "ကိုက်ညီသော ချန်နယ်များအတ�
 
 msgid "Movie Services Reference"
 msgstr "ရုပ်ရှင်ဝန်ဆောင်မှုများ အကိုးအကား"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "ကွန်ရက် (%s) - LAN ပေါ်ရှိ အခြားစက်ပစ္စည်းများ"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U ထုတ်ယူမှုမုဒ်ကို ရွေးပါ"
 
 msgid "Select country to export M3U:"
 msgstr "M3U တင်ပို့ရန် နိုင်ငံကို ရွေးပါ-"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U လင့်ခ်များတွင် အသုံးပြုရန် IP လိပ်စာကို ရွေးပါ-"
 
 msgid "Send Anonymous Statistics"
 msgstr "အမည်မသိ စာရင်းအင်းများ ပေးပို့ပါ။"

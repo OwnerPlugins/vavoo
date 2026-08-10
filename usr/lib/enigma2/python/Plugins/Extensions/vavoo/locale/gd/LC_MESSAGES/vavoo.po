@@ -362,6 +362,9 @@ msgstr "Ceangal sa phrìomh chlàr"
 msgid "Loading EPG..."
 msgstr "Luchdaich a-nuas EPG.. ."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Ionadail a-mhàin (127.0.0.1) - an inneal seo a-mhàin"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Nas ìsle = nas lugha de bhriseadh ach barrachd ùrachaidhean"
 
@@ -379,6 +382,9 @@ msgstr "Co-chosmhaileachd as ìsle airson seanalan a mhaidseadh (nas àirde = na
 
 msgid "Movie Services Reference"
 msgstr "Iomradh air seirbheisean film"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Lìonra (%s) - uidheaman eile air an LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Tagh modh às-mhalairt M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Tagh dùthaich airson M3U às-mhalairt:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Tagh an seòladh IP airson a chleachdadh anns na ceanglaichean M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Cuir Staitistigean Anonymous"

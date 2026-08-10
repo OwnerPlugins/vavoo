@@ -362,6 +362,9 @@ msgstr "ప్రధాన మెనూలో లింక్"
 msgid "Loading EPG..."
 msgstr "EPGని నవీకరిస్తోంది..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "స్థానికంగా మాత్రమే (127.0.0.1) - ఈ పరికరం మాత్రమే"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "తక్కువ = తక్కువ అంతరాయం కానీ మరింత రిఫ్రెష్"
 
@@ -379,6 +382,9 @@ msgstr "సరిపోలే ఛానెల్‌లకు కనీస సా
 
 msgid "Movie Services Reference"
 msgstr "సినిమా సేవల సూచన"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "నెట్‌వర్క్ (%s) - LANలోని ఇతర పరికరాలు"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U ఎగుమతి మోడ్‌ని ఎంచుకోండి
 
 msgid "Select country to export M3U:"
 msgstr "M3Uని ఎగుమతి చేయడానికి దేశాన్ని ఎంచుకోండి:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U లింక్‌లలో ఉపయోగించడానికి IP చిరునామాను ఎంచుకోండి:"
 
 msgid "Send Anonymous Statistics"
 msgstr "అనామక గణాంకాలను పంపండి"

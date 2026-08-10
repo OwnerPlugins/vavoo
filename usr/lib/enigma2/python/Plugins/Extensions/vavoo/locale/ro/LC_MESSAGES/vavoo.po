@@ -363,6 +363,9 @@ msgstr "Link în meniul principal"
 msgid "Loading EPG..."
 msgstr "Se actualizează EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Numai local (127.0.0.1) - numai pentru acest dispozitiv"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Mai mic = mai puține întreruperi, dar mai multe reîmprospătări"
 
@@ -380,6 +383,9 @@ msgstr "Similaritate minimă pentru canalele de potrivire (mai mare = mai strict
 
 msgid "Movie Services Reference"
 msgstr "Referință pentru servicii de film"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Rețea (%s) - alte dispozitive de pe LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Selectați modul de export M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Selectați țara pentru a exporta M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Selectați adresa IP de utilizat în legăturile M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Trimiteți statistici anonime"

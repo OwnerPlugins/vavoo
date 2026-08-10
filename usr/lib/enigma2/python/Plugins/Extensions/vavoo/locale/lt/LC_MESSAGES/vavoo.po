@@ -363,6 +363,9 @@ msgstr "Nuoroda pagrindiniame meniu"
 msgid "Loading EPG..."
 msgstr "Atnaujinamas EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Tik vietinis (127.0.0.1) – tik šis įrenginys"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Žemesnis = mažiau trukdžių, bet daugiau atnaujinimų"
 
@@ -380,6 +383,9 @@ msgstr "Mažiausias atitinkančių kanalų panašumas (didesnis = griežtesnis).
 
 msgid "Movie Services Reference"
 msgstr "Filmo paslaugų nuoroda"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Tinklas (%s) – kiti LAN įrenginiai"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Pasirinkite M3U eksporto režimą:"
 
 msgid "Select country to export M3U:"
 msgstr "Pasirinkite šalį, į kurią norite eksportuoti M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Pasirinkite IP adresą, kurį naudosite M3U nuorodose:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Siųsti anoniminę statistiką"

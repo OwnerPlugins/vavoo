@@ -362,6 +362,9 @@ msgstr "តំណភ្ជាប់នៅក្នុងម៉ឺនុយមេ
 msgid "Loading EPG..."
 msgstr "កំពុងអាប់ដេត EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "ក្នុងស្រុកតែប៉ុណ្ណោះ (127.0.0.1) - ឧបករណ៍នេះតែប៉ុណ្ណោះ"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ទាប = ការរំខានតិច ប៉ុន្តែធ្វើឱ្យស្រស់កាន់តែច្រើន"
 
@@ -379,6 +382,9 @@ msgstr "ភាពស្រដៀងគ្នាអប្បបរមាសម្
 
 msgid "Movie Services Reference"
 msgstr "ឯកសារយោងសេវាកម្មភាពយន្ត"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "បណ្តាញ (%s) - ឧបករណ៍ផ្សេងទៀតនៅលើបណ្តាញមូលដ្ឋាន"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "ជ្រើសរើសរបៀបនាំចេញ M3U៖"
 
 msgid "Select country to export M3U:"
 msgstr "ជ្រើសរើសប្រទេសដែលត្រូវនាំចេញ M3U៖"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "ជ្រើសរើសអាសយដ្ឋាន IP ដើម្បីប្រើក្នុងតំណភ្ជាប់ M3U៖"
 
 msgid "Send Anonymous Statistics"
 msgstr "ផ្ញើស្ថិតិអនាមិក"

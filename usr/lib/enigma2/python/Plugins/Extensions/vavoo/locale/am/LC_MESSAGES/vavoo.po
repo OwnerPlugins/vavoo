@@ -362,6 +362,9 @@ msgstr "በዋናው ምናሌ ውስጥ አገናኝ"
 msgid "Loading EPG..."
 msgstr "EPG በማዘመን ላይ..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "አካባቢያዊ ብቻ (127.0.0.1) - ይህ መሣሪያ ብቻ"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ዝቅተኛ = ያነሰ መቆራረጥ ግን ብዙ እድሳት"
 
@@ -379,6 +382,9 @@ msgstr "ለተዛማጅ ቻናሎች ዝቅተኛው ተመሳሳይነት (ከ�
 
 msgid "Movie Services Reference"
 msgstr "የፊልም አገልግሎቶች ማጣቀሻ"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "አውታረ መረብ (%s) - ሌሎች መሳሪያዎች በ LAN ላይ"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "የM3U ወደ ውጭ መላኪያ ሁነታን ይምረጡ፡-"
 
 msgid "Select country to export M3U:"
 msgstr "M3U ወደ ውጭ የሚላኩበትን አገር ይምረጡ፡-"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "በM3U አገናኞች ውስጥ ለመጠቀም የአይፒ አድራሻውን ይምረጡ፡-"
 
 msgid "Send Anonymous Statistics"
 msgstr "ስም-አልባ ስታትስቲክስ ላክ"

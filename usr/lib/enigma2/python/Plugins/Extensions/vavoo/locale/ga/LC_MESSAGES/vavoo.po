@@ -363,6 +363,9 @@ msgstr "Nasc sa Phríomh-Roghchlár"
 msgid "Loading EPG..."
 msgstr "EPG á nuashonrú..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Áitiúil amháin (127.0.0.1) - an gléas seo amháin"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Níos ísle = níos lú briseadh ach níos mó athnuachana"
 
@@ -380,6 +383,9 @@ msgstr "Cosúlacht íosta maidir le bealaí meaitseála (níos airde = níos dé
 
 msgid "Movie Services Reference"
 msgstr "Tagairt Seirbhísí Scannán"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Líonra (%s) - gléasanna eile ar an LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Roghnaigh mód easpórtála M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Roghnaigh tír chun M3U a easpórtáil:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Roghnaigh an seoladh IP le húsáid sna naisc M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Seol Staitisticí Gan Ainm"

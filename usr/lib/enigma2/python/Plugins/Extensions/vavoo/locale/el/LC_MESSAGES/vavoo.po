@@ -363,6 +363,9 @@ msgstr "Σύνδεσμος στο κύριο μενού"
 msgid "Loading EPG..."
 msgstr "Ενημέρωση EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Μόνο τοπικά (127.0.0.1) - μόνο αυτή η συσκευή"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Χαμηλότερα = λίγες διακοπές, πολλές ανανεώσεις"
 
@@ -380,6 +383,9 @@ msgstr "Ελάχιστη ομοιότητα για αντιστοίχιση κα
 
 msgid "Movie Services Reference"
 msgstr "Αναφορά υπηρεσιών ταινιών"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Δίκτυο (%s) - άλλες συσκευές στο LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Επιλέξτε λειτουργία εξαγωγής M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Επιλέξτε χώρα για εξαγωγή M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Επιλέξτε τη διεύθυνση IP που θα χρησιμοποιήσετε στους συνδέσμους M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Αποστολή Ανώνυμων Στατιστικών"

@@ -363,6 +363,9 @@ msgstr "Enllaç al menú principal"
 msgid "Loading EPG..."
 msgstr "S'està actualitzant l'EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Només local (127.0.0.1): només aquest dispositiu"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Menor = menys interrupció però més actualitzacions"
 
@@ -380,6 +383,9 @@ msgstr "Semblança mínima per als canals coincidents (més alt = més estricte)
 
 msgid "Movie Services Reference"
 msgstr "Referència de serveis de pel·lícules"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Xarxa (%s): altres dispositius a la LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Seleccioneu el mode d'exportació M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Seleccioneu el país per exportar M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Seleccioneu l'adreça IP que voleu utilitzar als enllaços M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Envia estadístiques anònimes"

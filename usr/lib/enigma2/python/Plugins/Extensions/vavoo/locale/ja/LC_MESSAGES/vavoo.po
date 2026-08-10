@@ -363,6 +363,9 @@ msgstr "メインメニューのリンク"
 msgid "Loading EPG..."
 msgstr "EPG を更新中..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "ローカルのみ (127.0.0.1) - このデバイスのみ"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "低い = 中断は少なくなりますが、リフレッシュが多くなります"
 
@@ -380,6 +383,9 @@ msgstr "一致するチャネルの最小類似性 (高いほど厳密)。"
 
 msgid "Movie Services Reference"
 msgstr "映画サービスのリファレンス"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "ネットワーク (%s) - LAN 上の他のデバイス"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "M3U エクスポート モードを選択します。"
 
 msgid "Select country to export M3U:"
 msgstr "M3U をエクスポートする国を選択してください:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U リンクで使用する IP アドレスを選択します。"
 
 msgid "Send Anonymous Statistics"
 msgstr "匿名の統計情報を送信する"

@@ -362,6 +362,9 @@ msgstr "باش تىزىملىكتىكى ئۇلىنىش"
 msgid "Loading EPG..."
 msgstr "EPG نى يېڭىلاش ..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "پەقەت يەرلىك (127.0.0.1) - پەقەت بۇ ئۈسكۈنى"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "تۆۋەن = ئۈزۈلۈپ قېلىش ئاز ، ئەمما تېخىمۇ يېڭىلاش"
 
@@ -379,6 +382,9 @@ msgstr "ماس كېلىدىغان قاناللارنىڭ ئەڭ تۆۋەن ئو�
 
 msgid "Movie Services Reference"
 msgstr "كىنو مۇلازىمىتى پايدىلىنىش ماتېرىيالى"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "تور (% s) - LAN دىكى باشقا ئۈسكۈنىلەر"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U ئېكسپورت ھالىتىنى تاللاڭ:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U ئېكسپورت قىلىدىغان دۆلەتنى تاللاڭ:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U ئۇلىنىشىدا ئىشلىتىدىغان IP ئادرېسىنى تاللاڭ:"
 
 msgid "Send Anonymous Statistics"
 msgstr "نامسىز ئىستاتىستىكا ئەۋەتىڭ"

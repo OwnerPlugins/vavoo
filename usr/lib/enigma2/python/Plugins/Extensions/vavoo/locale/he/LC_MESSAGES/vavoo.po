@@ -363,6 +363,9 @@ msgstr "קישור בתפריט הראשי"
 msgid "Loading EPG..."
 msgstr "מעדכן את ה-EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "מקומי בלבד (127.0.0.1) - מכשיר זה בלבד"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "נמוך יותר = פחות הפרעה אבל יותר מרענן"
 
@@ -380,6 +383,9 @@ msgstr "דמיון מינימלי לערוצים תואמים (גבוה יותר
 
 msgid "Movie Services Reference"
 msgstr "הפניה לשירותי סרטים"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "רשת (%s) - התקנים אחרים ברשת ה-LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "בחר מצב ייצוא M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "בחר מדינה לייצא M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "בחר את כתובת ה-IP לשימוש בקישורי M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "שלח סטטיסטיקה אנונימית"

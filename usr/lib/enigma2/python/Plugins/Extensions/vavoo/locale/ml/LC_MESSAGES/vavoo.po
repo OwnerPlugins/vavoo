@@ -362,6 +362,9 @@ msgstr "പ്രധാന മെനുവിലെ ലിങ്ക്"
 msgid "Loading EPG..."
 msgstr "EPG അപ്‌ഡേറ്റ് ചെയ്യുന്നു..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "പ്രാദേശികം മാത്രം (127.0.0.1) - ഈ ഉപകരണം മാത്രം"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "താഴ്ന്നത് = കുറവ് തടസ്സം എന്നാൽ കൂടുതൽ പുതുക്കുന്നു"
 
@@ -379,6 +382,9 @@ msgstr "പൊരുത്തപ്പെടുന്ന ചാനലുകൾ�
 
 msgid "Movie Services Reference"
 msgstr "സിനിമാ സേവനങ്ങളുടെ റഫറൻസ്"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "നെറ്റ്‌വർക്ക് (%s) - LAN-ലെ മറ്റ് ഉപകരണങ്ങൾ"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U കയറ്റുമതി മോഡ് തിരഞ്ഞെടു
 
 msgid "Select country to export M3U:"
 msgstr "M3U കയറ്റുമതി ചെയ്യാൻ രാജ്യം തിരഞ്ഞെടുക്കുക:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U ലിങ്കുകളിൽ ഉപയോഗിക്കുന്നതിന് IP വിലാസം തിരഞ്ഞെടുക്കുക:"
 
 msgid "Send Anonymous Statistics"
 msgstr "അജ്ഞാത സ്ഥിതിവിവരക്കണക്കുകൾ അയയ്ക്കുക"

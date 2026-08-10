@@ -362,6 +362,9 @@ msgstr "Ligam dins lo menut principal"
 msgid "Loading EPG..."
 msgstr "Actualizacion de l'EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Local solament (127.0.0.1) - aqueste periferic solament"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Mai bas = mens d'interrupcion mas mai d'actualizacions"
 
@@ -379,6 +382,9 @@ msgstr "Similitud minimala pels canals correspondents (mai naut = mai estricte).
 
 msgid "Movie Services Reference"
 msgstr "Referéncia dels servicis de cinèma"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Ret (%s) - autres periferics sus la LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Seleccionatz lo mòde d'exportacion M3U :"
 
 msgid "Select country to export M3U:"
 msgstr "Seleccionatz lo país per exportar M3U :"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Seleccionatz l'adreça IP d'utilizar dins los ligams M3U :"
 
 msgid "Send Anonymous Statistics"
 msgstr "Mandar d'estatisticas anonimas"

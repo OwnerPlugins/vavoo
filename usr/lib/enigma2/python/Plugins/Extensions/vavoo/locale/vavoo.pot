@@ -348,6 +348,9 @@ msgstr ""
 msgid "Loading EPG..."
 msgstr ""
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr ""
+
 msgid "Lower = less interruption but more refreshes"
 msgstr ""
 
@@ -364,6 +367,9 @@ msgid "Minimum similarity for matching channels (higher = stricter)."
 msgstr ""
 
 msgid "Movie Services Reference"
+msgstr ""
+
+msgid "Network (%s) - other devices on the LAN"
 msgstr ""
 
 msgid "New version available: v{}"
@@ -520,6 +526,9 @@ msgid "Select M3U export mode:"
 msgstr ""
 
 msgid "Select country to export M3U:"
+msgstr ""
+
+msgid "Select the IP address to use in the M3U links:"
 msgstr ""
 
 msgid "Send Anonymous Statistics"

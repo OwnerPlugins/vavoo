@@ -362,6 +362,9 @@ msgstr "Girêdana di menuya sereke de"
 msgid "Loading EPG..."
 msgstr "EPG nûvekirin..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Tenê herêmî (127.0.0.1) - tenê ev cîhaz"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Jêrîn = kêmbûnek lê bêtir nûvekirin"
 
@@ -379,6 +382,9 @@ msgstr "Wekheviya hindiktirîn ji bo kanalên lihevhatî (bilind = hişktir)."
 
 msgid "Movie Services Reference"
 msgstr "Çavkanî Xizmetên Movie"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Tora (%s) - cîhazên din ên li ser LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Moda hinartina M3U hilbijêrin:"
 
 msgid "Select country to export M3U:"
 msgstr "Ji bo hinardekirina M3U welatek hilbijêrin:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Navnîşana IP-ê hilbijêrin ku di girêdanên M3U de bikar bînin:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Statîstîkên Anonîm bişînin"

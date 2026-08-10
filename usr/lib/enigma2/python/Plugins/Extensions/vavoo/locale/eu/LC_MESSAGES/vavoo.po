@@ -362,6 +362,9 @@ msgstr "Esteka menu nagusian"
 msgid "Loading EPG..."
 msgstr "EPG eguneratzen..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Tokikoa soilik (127.0.0.1) - gailu hau soilik"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Baxuagoa = etenaldi gutxiago baina freskagarri gehiago"
 
@@ -379,6 +382,9 @@ msgstr "Bat datozen kanaletarako gutxieneko antzekotasuna (goiagoa = zorrotzagoa
 
 msgid "Movie Services Reference"
 msgstr "Film Zerbitzuen Erreferentzia"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Sarea (%s) - LANeko beste gailu batzuk"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Hautatu M3U esportazio modua:"
 
 msgid "Select country to export M3U:"
 msgstr "Hautatu M3U esportatzeko herrialdea:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Hautatu M3U esteketan erabili nahi duzun IP helbidea:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Bidali Estatistika Anonimoak"

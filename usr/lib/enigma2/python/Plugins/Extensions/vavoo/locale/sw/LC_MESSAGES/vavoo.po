@@ -362,6 +362,9 @@ msgstr "Unganisha kwenye Menyu kuu"
 msgid "Loading EPG..."
 msgstr "Inasasisha EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Ndani pekee (127.0.0.1) - kifaa hiki pekee"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Chini = usumbufu kidogo lakini viburudisho zaidi"
 
@@ -379,6 +382,9 @@ msgstr "Kiwango cha chini cha kufanana kwa chaneli zinazolingana (juu = kali)."
 
 msgid "Movie Services Reference"
 msgstr "Rejea ya Huduma za Filamu"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Mtandao (%s) - vifaa vingine kwenye LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Chagua hali ya uhamishaji ya M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Chagua nchi ya kuhamisha M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Chagua anwani ya IP ya kutumia katika viungo vya M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Tuma Takwimu Isiyojulikana"

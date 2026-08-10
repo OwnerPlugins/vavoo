@@ -362,6 +362,9 @@ msgstr "ප්‍රධාන මෙනුවේ සබැඳිය"
 msgid "Loading EPG..."
 msgstr "EPG යාවත්කාලීන කරමින්..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "දේශීය පමණක් (127.0.0.1) - මෙම උපාංගය පමණි"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "පහළ = අඩු බාධාවක් නමුත් වැඩි නැවුම් බවක්"
 
@@ -379,6 +382,9 @@ msgstr "ගැලපෙන නාලිකා සඳහා අවම සමා�
 
 msgid "Movie Services Reference"
 msgstr "චිත්‍රපට සේවා යොමුව"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "ජාලය (%s) - LAN මත අනෙකුත් උපාංග"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U අපනයන මාදිලිය තෝරන්න:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U අපනයනය කිරීමට රට තෝරන්න:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U සබැඳි භාවිතා කිරීමට IP ලිපිනය තෝරන්න:"
 
 msgid "Send Anonymous Statistics"
 msgstr "නිර්නාමික සංඛ්‍යාලේඛන යවන්න"
