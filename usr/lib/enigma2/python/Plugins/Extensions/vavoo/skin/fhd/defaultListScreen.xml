@@ -11,7 +11,7 @@
 	<widget name="green" position="357,995" size="297,59" font="cvfont;30" halign="center" valign="center" backgroundColor="#181b2e" foregroundColor="#ffffff" transparent="1" zPosition="2"/>
 	<widget name="yellow" position="653,995" size="297,59" font="cvfont;30" halign="center" valign="center" backgroundColor="#181b2e" foregroundColor="#ffffff" transparent="1" zPosition="2"/>
 	<widget name="blue" position="948,995" size="297,59" font="cvfont;30" halign="center" valign="center" backgroundColor="#181b2e" foregroundColor="#ffffff" transparent="1" zPosition="2"/>
-	<widget source="global.CurrentTime" render="Label" position="1438,70" size="316,117" font="Lcdx; 84" halign="right" valign="center" backgroundColor="#914167" foregroundColor="#00ffffff" transparent="1">
+	<widget source="global.CurrentTime" render="Label" position="1438,70" size="316,117" font="LCD; 84" halign="right" valign="center" backgroundColor="#914167" foregroundColor="#00ffffff" transparent="1">
 		<convert type="ClockToText">Default</convert>
 	</widget>
 	<widget source="session.CurrentService" render="Label" position="959,598" size="550,45" font="cvfont;26" foregroundColor="#ffffff" backgroundColor="#181b2e" transparent="1" halign="left" valign="center" zPosition="30" noWrap="1">

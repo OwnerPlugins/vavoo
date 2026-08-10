@@ -8,7 +8,7 @@
     <eLabel position="617,1048" size="300,6" zPosition="4" backgroundColor="#00ff00" />
     <widget name="red" position="58,995" size="297,59" font="cvfont;30" halign="center" valign="center" backgroundColor="#181b2e" foregroundColor="#ffffff" transparent="1" zPosition="1" />
     <widget name="green" position="617,995" size="297,59" font="cvfont;30" halign="center" valign="center" backgroundColor="#181b2e" foregroundColor="#ffffff" transparent="1" zPosition="1" />
-    <widget source="global.CurrentTime" render="Label" position="1438,70" size="316,117" font="Lcdx; 84" halign="right" valign="center" backgroundColor="#914167" foregroundColor="#ffffff" transparent="1" >
+    <widget source="global.CurrentTime" render="Label" position="1438,70" size="316,117" font="LCD; 84" halign="right" valign="center" backgroundColor="#914167" foregroundColor="#ffffff" transparent="1" >
         <convert type="ClockToText">Default</convert>
     </widget>
     <eLabel position="0,0" size="1920,1080" transparent="0" zPosition="-9" backgroundColor="#181b2e" foregroundColor="#ffffff" />
