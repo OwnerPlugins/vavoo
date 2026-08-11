@@ -362,6 +362,9 @@ msgstr "Skakel in Hoofkieslys"
 msgid "Loading EPG..."
 msgstr "Dateer tans EPG op …"
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Slegs plaaslik (127.0.0.1) - slegs hierdie toestel"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Laer = minder onderbreking maar meer verfris"
 
@@ -379,6 +382,9 @@ msgstr "Minimum ooreenkoms vir bypassende kanale (hoër = strenger)."
 
 msgid "Movie Services Reference"
 msgstr "Filmdiensteverwysing"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Netwerk (%s) - ander toestelle op die LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Kies M3U-uitvoermodus:"
 
 msgid "Select country to export M3U:"
 msgstr "Kies land om M3U uit te voer:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Kies die IP-adres om in die M3U-skakels te gebruik:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Stuur anonieme statistieke"

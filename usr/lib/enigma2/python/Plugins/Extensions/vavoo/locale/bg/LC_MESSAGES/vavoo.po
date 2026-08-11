@@ -363,6 +363,9 @@ msgstr "Връзка в главното меню"
 msgid "Loading EPG..."
 msgstr "EPG се актуализира..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Само локално (127.0.0.1) - само това устройство"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "По-ниско = по-малко прекъсване, но повече опреснявания"
 
@@ -380,6 +383,9 @@ msgstr "Минимално сходство за съвпадащи канали
 
 msgid "Movie Services Reference"
 msgstr "Справочник за филмови услуги"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Мрежа (%s) - други устройства в LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Изберете режим на експортиране на M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Изберете държава за експортиране на M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Изберете IP адреса, който да използвате в M3U връзките:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Изпращайте анонимни статистики"

@@ -362,6 +362,9 @@ msgstr "मुख्य मेनुमा लिङ्क"
 msgid "Loading EPG..."
 msgstr "EPG अद्यावधिक गर्दै..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "स्थानीय मात्र (१२७.०.०.१) - यो यन्त्र मात्र"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "तल्लो = कम अवरोध तर थप ताजा"
 
@@ -379,6 +382,9 @@ msgstr "मिल्दो च्यानलहरूको लागि न्
 
 msgid "Movie Services Reference"
 msgstr "चलचित्र सेवा सन्दर्भ"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "नेटवर्क (%s) - LAN मा अन्य उपकरणहरू"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U निर्यात मोड चयन गर्नुहोस�
 
 msgid "Select country to export M3U:"
 msgstr "M3U निर्यात गर्न देश चयन गर्नुहोस्:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U लिङ्कहरूमा प्रयोग गर्न आईपी ठेगाना चयन गर्नुहोस्:"
 
 msgid "Send Anonymous Statistics"
 msgstr "बेनामी तथ्याङ्क पठाउनुहोस्"

@@ -362,6 +362,9 @@ msgstr "رابط في القائمة الرئيسية"
 msgid "Loading EPG..."
 msgstr "جاري تحديث EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "محلي فقط (127.0.0.1) - هذا الجهاز فقط"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "قيمة أقل = انقطاع أقل ولكن تحديثات أكثر"
 
@@ -379,6 +382,9 @@ msgstr "الحد الأدنى من التشابه للقنوات المطابق�
 
 msgid "Movie Services Reference"
 msgstr "مرجع خدمات الأفلام"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "الشبكة (%s) - أجهزة أخرى على الشبكة المحلية (LAN)."
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "اختر وضع تصدير M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "اختر دولة لتصدير M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "حدد عنوان IP الذي تريد استخدامه في روابط M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "إرسال إحصائيات مجهولة"

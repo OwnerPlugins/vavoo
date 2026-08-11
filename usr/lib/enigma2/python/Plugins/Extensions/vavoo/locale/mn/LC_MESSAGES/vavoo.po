@@ -362,6 +362,9 @@ msgstr "Үндсэн цэс дэх холбоос"
 msgid "Loading EPG..."
 msgstr "EPG-г шинэчилж байна..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Зөвхөн орон нутгийн (127.0.0.1) - зөвхөн энэ төхөөрөмж"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Доод = тасалдал бага боловч илүү их сэргээнэ"
 
@@ -379,6 +382,9 @@ msgstr "Тохирох сувгуудын хамгийн бага ижил тө�
 
 msgid "Movie Services Reference"
 msgstr "Кино үйлчилгээний лавлагаа"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Сүлжээ (%s) - LAN дээрх бусад төхөөрөмжүүд"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U экспортын горимыг сонгоно уу:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U экспортлох улсыг сонгоно уу:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U холбоос дээр ашиглах IP хаягийг сонгоно уу:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Нэргүй статистикийг илгээх"

@@ -367,6 +367,9 @@ msgstr "Link im Hauptmenü"
 msgid "Loading EPG..."
 msgstr "Aktualisiere EPG ..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Nur lokal (127.0.0.1) – nur dieses Gerät"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Niedriger = weniger Unterbrechungen, aber mehr Aktualisierungen"
 
@@ -384,6 +387,9 @@ msgstr "Minimale Ähnlichkeit für übereinstimmende Kanäle (höher = strenger)
 
 msgid "Movie Services Reference"
 msgstr "Service-Referenz für Filme"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Netzwerk (%s) – andere Geräte im LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -545,6 +551,9 @@ msgstr "M3U-Exportmodus auswählen:"
 
 msgid "Select country to export M3U:"
 msgstr "Land für M3U-Export auswählen:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Wählen Sie die IP-Adresse aus, die in den M3U-Links verwendet werden soll:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Senden Sie anonyme Statistiken"

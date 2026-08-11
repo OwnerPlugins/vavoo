@@ -362,6 +362,9 @@ msgstr "په مین مینو کې لینک"
 msgid "Loading EPG..."
 msgstr "د EPG تازه کول..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "یوازې محلي (127.0.0.1) - یوازې دا وسیله"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "ټیټ = لږ مداخله مګر ډیر تازه کوي"
 
@@ -379,6 +382,9 @@ msgstr "د سمون چینلونو لپاره لږترلږه ورته والی (
 
 msgid "Movie Services Reference"
 msgstr "د فلم خدماتو حواله"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "شبکه (%s) - په LAN کې نور وسایل"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "د M3U صادراتو حالت غوره کړئ:"
 
 msgid "Select country to export M3U:"
 msgstr "د M3U صادرولو لپاره هیواد غوره کړئ:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "د M3U لینکونو کې کارولو لپاره IP پته غوره کړئ:"
 
 msgid "Send Anonymous Statistics"
 msgstr "بې نومه احصایې واستوئ"

@@ -362,6 +362,9 @@ msgstr "Link fil-Menu Prinċipali"
 msgid "Loading EPG..."
 msgstr "Naġġorna l-EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Lokali biss (127.0.0.1) - dan l-apparat biss"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lower = inqas interruzzjoni iżda aktar aġġornamenti"
 
@@ -379,6 +382,9 @@ msgstr "Xebh minimu għal kanali li jaqblu (ogħla = aktar stretti)."
 
 msgid "Movie Services Reference"
 msgstr "Referenza għas-Servizzi tal-films"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Netwerk (%s) - tagħmir ieħor fuq il-LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Agħżel il-mod ta' esportazzjoni M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Agħżel pajjiż biex tesporta M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Agħżel l-indirizz IP li għandek tuża fil-links M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Ibgħat Statistika Anonima"

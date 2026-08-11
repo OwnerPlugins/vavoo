@@ -362,6 +362,9 @@ msgstr "Төп менюда сылтама"
 msgid "Loading EPG..."
 msgstr "EPG яңарту ..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Localирле генә (127.0.0.1) - бу җайланма гына"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Түбән = азрак өзелү, ләкин күбрәк яңарту"
 
@@ -379,6 +382,9 @@ msgstr "Каналларга туры килү өчен минималь охш�
 
 msgid "Movie Services Reference"
 msgstr "Кино хезмәтләренә сылтама"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Челтәр (% s) - LANдагы башка җайланмалар"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U экспорт режимын сайлагыз:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U экспортлау өчен илне сайлагыз:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U сылтамаларында куллану өчен IP адресны сайлагыз:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Аноним статистика җибәрегез"

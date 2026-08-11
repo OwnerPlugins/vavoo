@@ -112,7 +112,8 @@ from .bouquet_manager import (
     remove_bouquets_by_name,
     export_bouquet_async,
     is_bouquet_exported,
-    remove_favorite_entry
+    remove_favorite_entry,
+    get_local_ip
 )
 from .vUtils import (
     debug,
@@ -901,39 +902,74 @@ class vavoo_config(Screen, ConfigListScreen):
                 cfg.genm3u.save()
                 return
 
-            # 2. Get country list from proxy
-            try:
-                countries = self.get_countries_from_proxy()
-                if not countries:
-                    raise Exception("No countries available")
+            # 2. Ask which IP the generated links should point at
+            self.show_m3u_ip_selection()
 
-                # 3. ASK MODE: single country or all?
-                from Screens.ChoiceBox import ChoiceBox
+    def show_m3u_ip_selection(self):
+        """Ask whether the M3U links should use 127.0.0.1 (playable only
+        on this box) or the box's LAN IP (playable from other devices on
+        the network)."""
+        from Screens.ChoiceBox import ChoiceBox
 
-                choices = [
-                    (_("All countries (%d)") % len(countries), "all"),
-                    (_("Only one specific country"), "single"),
-                    (_("Cancel"), "cancel")
-                ]
+        network_ip = get_local_ip()
 
-                self.session.openWithCallback(
-                    self.on_m3u_mode_selected,
-                    ChoiceBox,
-                    title=_("Select M3U export mode:"),
-                    list=choices
-                )
+        choices = [
+            (_("Local only (127.0.0.1) - this device only"),
+             PROXY_HOST),
+            (_("Network (%s) - other devices on the LAN") %
+             network_ip,
+             network_ip),
+        ]
 
-            except Exception as e:
-                print("[M3U Export] Error: %s" % str(e))
-                self.session.open(
-                    MessageBox,
-                    _("Error: %s") % str(e),
-                    MessageBox.TYPE_ERROR,
-                    timeout=5
-                )
+        self.session.openWithCallback(
+            self.on_m3u_ip_selected,
+            ChoiceBox,
+            title=_("Select the IP address to use in the M3U links:"),
+            list=choices
+        )
 
-                cfg.genm3u.setValue(0)
-                cfg.genm3u.save()
+    def on_m3u_ip_selected(self, result):
+        """Callback for M3U host selection"""
+        if result is None:
+            cfg.genm3u.setValue(0)
+            cfg.genm3u.save()
+            return
+
+        self._m3u_host = result[1]
+
+        # 3. Get country list from proxy
+        try:
+            countries = self.get_countries_from_proxy()
+            if not countries:
+                raise Exception("No countries available")
+
+            # 4. ASK MODE: single country or all?
+            from Screens.ChoiceBox import ChoiceBox
+
+            choices = [
+                (_("All countries (%d)") % len(countries), "all"),
+                (_("Only one specific country"), "single"),
+                (_("Cancel"), "cancel")
+            ]
+
+            self.session.openWithCallback(
+                self.on_m3u_mode_selected,
+                ChoiceBox,
+                title=_("Select M3U export mode:"),
+                list=choices
+            )
+
+        except Exception as e:
+            print("[M3U Export] Error: %s" % str(e))
+            self.session.open(
+                MessageBox,
+                _("Error: %s") % str(e),
+                MessageBox.TYPE_ERROR,
+                timeout=5
+            )
+
+            cfg.genm3u.setValue(0)
+            cfg.genm3u.save()
 
     def on_m3u_mode_selected(self, result):
         """Callback for M3U mode selection"""
@@ -1159,12 +1195,22 @@ class vavoo_config(Screen, ConfigListScreen):
             # M3U header
             m3u_content = "#EXTM3U\n"
 
+            host = getattr(self, '_m3u_host', None) or PROXY_HOST
+
             channel_count = 0
             for channel in channels:
                 try:
                     if isinstance(channel, dict):
                         channel_name = channel.get('name', 'Unknown')
-                        channel_url = channel.get('url', '')
+                        channel_id = channel.get('id', '')
+                        if channel_id:
+                            # Rebuild the proxy URL with the chosen host
+                            # instead of the LAN IP the proxy always
+                            # embeds in its /channels response.
+                            channel_url = "http://{}:{}/vavoo?channel={}".format(
+                                host, PORT, channel_id)
+                        else:
+                            channel_url = channel.get('url', '')
 
                         # Clean channel name
                         channel_name = decodeHtml(channel_name)
@@ -2407,7 +2453,16 @@ class MainVavoo(Screen):
         return success
 
     def _wait_for_proxy(self, attempts=0):
-        timeout_secs = cfg.proxy_startup_timeout.value
+        # ConfigSelectionNumber.value has been confirmed (via a user log)
+        # to come back as a str rather than an int on at least some
+        # images/Python versions - "str" * 2 doesn't raise, it silently
+        # repeats the string ("30" -> "3030"), which then compares
+        # against attempts (always an int) in a way that never behaves
+        # as the intended numeric timeout.
+        try:
+            timeout_secs = int(cfg.proxy_startup_timeout.value)
+        except (TypeError, ValueError):
+            timeout_secs = 30
         max_attempts = timeout_secs * 2   # ogni 0.5 sec
         if attempts > max_attempts:
             print(
@@ -5112,7 +5167,7 @@ class Playstream2(
         self.close()
 
 
-class AutoStartTimer:
+class AutoStartTimer(object):
     def __init__(self):
         print("*** AutoStartTimer Vavoo ***")
 

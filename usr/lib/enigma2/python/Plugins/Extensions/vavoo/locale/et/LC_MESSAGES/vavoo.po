@@ -363,6 +363,9 @@ msgstr "Link põhimenüüs"
 msgid "Loading EPG..."
 msgstr "EPG värskendamine..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Ainult kohalik (127.0.0.1) – ainult see seade"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Madalam = vähem katkestusi, kuid rohkem värskendusi"
 
@@ -380,6 +383,9 @@ msgstr "Sobivate kanalite minimaalne sarnasus (kõrgem = rangem)."
 
 msgid "Movie Services Reference"
 msgstr "Filmiteenuste viide"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Võrk (%s) – muud kohtvõrgus olevad seadmed"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -541,6 +547,9 @@ msgstr "Valige M3U ekspordirežiim:"
 
 msgid "Select country to export M3U:"
 msgstr "Valige riik M3U eksportimiseks:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Valige M3U linkides kasutatav IP-aadress:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Saada anonüümne statistika"

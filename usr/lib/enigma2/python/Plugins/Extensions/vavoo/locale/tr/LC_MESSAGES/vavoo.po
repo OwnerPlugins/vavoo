@@ -367,6 +367,9 @@ msgstr "Ana Menüde Bağlantı"
 msgid "Loading EPG..."
 msgstr "EPG güncelleniyor..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Yalnızca yerel (127.0.0.1) - yalnızca bu cihaz"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Düşük = daha az kesinti ama daha fazla yenileme"
 
@@ -384,6 +387,9 @@ msgstr "Eşleşen kanallar için minimum benzerlik (yüksek = daha katı)."
 
 msgid "Movie Services Reference"
 msgstr "Film Servis Referansı"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Ağ (%s) - LAN üzerindeki diğer cihazlar"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -545,6 +551,9 @@ msgstr "M3U dışa aktarma modunu seçin:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U dışa aktarılacak ülkeyi seçin:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U bağlantılarında kullanılacak IP adresini seçin:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Anonim İstatistikleri Gönder"

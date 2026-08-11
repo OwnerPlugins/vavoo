@@ -362,6 +362,9 @@ msgstr "Pautan dalam Menu Utama"
 msgid "Loading EPG..."
 msgstr "Mengemas kini EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Setempat sahaja (127.0.0.1) - peranti ini sahaja"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Lebih rendah = kurang gangguan tetapi lebih banyak menyegarkan"
 
@@ -379,6 +382,9 @@ msgstr "Persamaan minimum untuk saluran yang sepadan (lebih tinggi = lebih ketat
 
 msgid "Movie Services Reference"
 msgstr "Rujukan Perkhidmatan Filem"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Rangkaian (%s) - peranti lain pada LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Pilih mod eksport M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Pilih negara untuk mengeksport M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Pilih alamat IP untuk digunakan dalam pautan M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Hantar Statistik Tanpa Nama"

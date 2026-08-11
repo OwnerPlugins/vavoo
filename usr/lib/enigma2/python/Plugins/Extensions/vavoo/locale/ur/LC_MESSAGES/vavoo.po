@@ -362,6 +362,9 @@ msgstr "مین مینو میں لنک"
 msgid "Loading EPG..."
 msgstr "EPG کو اپ ڈیٹ کیا جا رہا ہے..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "صرف مقامی (127.0.0.1) - صرف یہ آلہ"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "کم = کم رکاوٹ لیکن زیادہ تروتازہ"
 
@@ -379,6 +382,9 @@ msgstr "مماثل چینلز کے لیے کم سے کم مماثلت (اعلی 
 
 msgid "Movie Services Reference"
 msgstr "مووی سروسز کا حوالہ"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "نیٹ ورک (%s) - LAN پر دیگر آلات"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "M3U ایکسپورٹ موڈ کو منتخب کریں:"
 
 msgid "Select country to export M3U:"
 msgstr "M3U برآمد کرنے کے لیے ملک منتخب کریں:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "M3U لنکس میں استعمال کرنے کے لیے آئی پی ایڈریس کو منتخب کریں:"
 
 msgid "Send Anonymous Statistics"
 msgstr "گمنام شماریات بھیجیں۔"

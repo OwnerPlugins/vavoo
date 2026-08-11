@@ -362,6 +362,9 @@ msgstr "Linkki päävalikossa"
 msgid "Loading EPG..."
 msgstr "Päivitetään EPG:tä..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Vain paikallinen (127.0.0.1) - vain tämä laite"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Pienempi = vähemmän keskeytyksiä mutta enemmän päivityksiä"
 
@@ -379,6 +382,9 @@ msgstr "Minimi samankaltaisuus vastaaville kanaville (suurempi = tiukempi)."
 
 msgid "Movie Services Reference"
 msgstr "Elokuvapalveluiden viite"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Verkko (%s) - muut lähiverkon laitteet"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Valitse M3U-vientitila:"
 
 msgid "Select country to export M3U:"
 msgstr "Valitse maa M3U:ta varten:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Valitse M3U-linkeissä käytettävä IP-osoite:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Lähetä nimettömät tilastot"

@@ -375,6 +375,9 @@ msgstr "Link a főmenüben"
 msgid "Loading EPG..."
 msgstr "EPG frissítése..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Csak helyi (127.0.0.1) – csak ez az eszköz"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Alacsonyabb = kevesebb megszakítás, de több frissítés"
 
@@ -392,6 +395,9 @@ msgstr "Minimális hasonlóság az egyező csatornákhoz (nagyobb = szigorúbb).
 
 msgid "Movie Services Reference"
 msgstr "Filmszolgáltatások referencia"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Hálózat (%s) – egyéb eszközök a LAN-on"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -475,7 +481,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -560,6 +566,9 @@ msgstr "Válassza ki az M3U exportálási módot:"
 
 msgid "Select country to export M3U:"
 msgstr "Válasszon országot az M3U exportálásához:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Válassza ki az M3U hivatkozásokban használni kívánt IP-címet:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Névtelen statisztikák küldése"
@@ -646,7 +655,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 

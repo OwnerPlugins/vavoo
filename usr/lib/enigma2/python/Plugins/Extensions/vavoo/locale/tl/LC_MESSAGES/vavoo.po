@@ -362,6 +362,9 @@ msgstr "Link sa Main Menu"
 msgid "Loading EPG..."
 msgstr "Ina-update ang EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Lokal lamang (127.0.0.1) - ang device na ito lamang"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Mas mababa = mas kaunting pagkaantala ngunit mas maraming pag-refresh"
 
@@ -379,6 +382,9 @@ msgstr "Minimum na pagkakapareho para sa mga tumutugmang channel (mas mataas = m
 
 msgid "Movie Services Reference"
 msgstr "Sanggunian sa Mga Serbisyo ng Pelikula"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Network (%s) - ibang mga device sa LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Piliin ang M3U export mode:"
 
 msgid "Select country to export M3U:"
 msgstr "Pumili ng bansa upang i-export ang M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Piliin ang IP address na gagamitin sa mga link ng M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Magpadala ng Anonymous Statistics"

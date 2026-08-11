@@ -73,7 +73,7 @@ def _http_post(url, payload):
         return None
 
 
-class AnonymousStats:
+class AnonymousStats(object):
     def __init__(self):
         self._session_id = None
         self._send_timer = None

@@ -362,6 +362,9 @@ msgstr "לינק אין די הויפּט מעניו"
 msgid "Loading EPG..."
 msgstr "דערהייַנטיקט EPG ..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "בלויז לאקאלע (127.0.0.1) - בלויז דעם מיטל"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "נידעריקער = ווייניקער יבעררייַס אָבער מער דערפרישן"
 
@@ -379,6 +382,9 @@ msgstr "מינימום ענלעכקייט פֿאַר וואָס ריכטן טש�
 
 msgid "Movie Services Reference"
 msgstr "פֿילם באַדינונגס רעפערענץ"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "נעץ (%s) - אנדערע דעוויסעס אויף די לאַן"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "אויסקלייַבן M3U אַרויספירן מאָדע:"
 
 msgid "Select country to export M3U:"
 msgstr "אויסקלייַבן לאַנד צו אַרויספירן M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "אויסקלייַבן די IP אַדרעס צו נוצן אין די M3U לינקס:"
 
 msgid "Send Anonymous Statistics"
 msgstr "שיקן אַנאָנימע באַנוצערס סטאַטיסטיק"

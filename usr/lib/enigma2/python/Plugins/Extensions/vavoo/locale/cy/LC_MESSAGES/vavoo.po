@@ -362,6 +362,9 @@ msgstr "Dolen yn y Brif Ddewislen"
 msgid "Loading EPG..."
 msgstr "Wrthi'n diweddaru EPG..."
 
+msgid "Local only (127.0.0.1) - this device only"
+msgstr "Lleol yn unig (127.0.0.1) - y ddyfais hon yn unig"
+
 msgid "Lower = less interruption but more refreshes"
 msgstr "Is = llai o ymyrraeth ond mwy o adnewyddu"
 
@@ -379,6 +382,9 @@ msgstr "Tebygrwydd lleiaf ar gyfer sianeli cyfatebol (uwch = llymach)."
 
 msgid "Movie Services Reference"
 msgstr "Cyfeirnod Gwasanaethau Ffilm"
+
+msgid "Network (%s) - other devices on the LAN"
+msgstr "Rhwydwaith (%s) - dyfeisiau eraill ar y LAN"
 
 #, fuzzy
 msgid "New version available: v{}"
@@ -540,6 +546,9 @@ msgstr "Dewiswch fodd allforio M3U:"
 
 msgid "Select country to export M3U:"
 msgstr "Dewiswch wlad i allforio M3U:"
+
+msgid "Select the IP address to use in the M3U links:"
+msgstr "Dewiswch y cyfeiriad IP i'w ddefnyddio yn y dolenni M3U:"
 
 msgid "Send Anonymous Statistics"
 msgstr "Anfon Ystadegau Dienw"
