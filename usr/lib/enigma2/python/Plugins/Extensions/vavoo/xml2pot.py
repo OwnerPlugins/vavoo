@@ -61,7 +61,11 @@ def main():
         sys.exit(1)
 
     xml_file = sys.argv[1]
-    pot_file = "locale/vavoo.pot"  # In locale/ folder
+    # Relative to this script's own directory, not the current working
+    # directory - running this from anywhere other than the plugin dir
+    # would otherwise silently read/write the wrong locale/ folder.
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    pot_file = os.path.join(script_dir, "locale", "vavoo.pot")
 
     if not os.path.exists(xml_file):
         print("File not found: %s" % xml_file)
@@ -79,8 +83,9 @@ def main():
         print("%d. %s" % (i + 1, text[:80]))
 
     # Create locale/ directory if it doesn't exist
-    if not os.path.exists("locale"):
-        os.makedirs("locale")
+    locale_dir = os.path.dirname(pot_file)
+    if not os.path.exists(locale_dir):
+        os.makedirs(locale_dir)
 
     # Write to .pot file
     try:

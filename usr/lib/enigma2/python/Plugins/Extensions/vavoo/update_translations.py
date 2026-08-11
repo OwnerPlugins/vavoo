@@ -171,7 +171,11 @@ def _cache_translation(text, target_lang, translated):
     cache_key = _get_cache_key(text, target_lang)
     _translation_cache[cache_key] = translated
     _cache_dirty = True
-    save_cache_to_disk()
+    # Don't save_cache_to_disk() here - this runs once per new string
+    # translated, so with the ~90-locale cache already at 1.5MB it made
+    # every run of this script O(n^2) in the number of new strings.
+    # main() saves once at the end of the run instead; save_cache_to_disk()
+    # itself is a no-op unless _cache_dirty is set, so nothing is lost.
     return translated
 
 
