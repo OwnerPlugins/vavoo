@@ -758,8 +758,8 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(
-                country_name) + "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
+            print("Getting channels for '" + str(country_name) + \
+                  "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
             encoded_country = quote(country_name.encode(
