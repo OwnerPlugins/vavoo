@@ -385,7 +385,8 @@ def auto_translate_po_file(po_file, target_lang):
                 if not msgstr_content.strip():
                     translated = translate_text(msgid, target_lang)
                     if translated and translated != msgid:
-                        msgstr_line = 'msgstr {}\n'.format(json.dumps(translated, ensure_ascii=False))
+                        msgstr_line = 'msgstr {}\n'.format(
+                            json.dumps(translated, ensure_ascii=False))
                         print("  [auto-translated] {}... -> {}...".format(
                             msgid[:40], translated[:40]))
                 new_lines.append(msgstr_line)
@@ -607,12 +608,14 @@ def fix_po_file(po_file):
 
             if prefix == 'msgid':
                 if content == '':
-                    if not any(l.startswith('msgid ""') for l in new_lines if l.startswith('msgid')):
+                    if not any(l.startswith('msgid ""')
+                               for l in new_lines if l.startswith('msgid')):
                         new_lines.append(new_line)
                 else:
                     if content in seen_msgids:
                         i += 1
-                        while i < len(lines) and not lines[i].strip().startswith('msgid "'):
+                        while i < len(lines) and not lines[i].strip(
+                        ).startswith('msgid "'):
                             i += 1
                         continue
                     else:
@@ -633,7 +636,8 @@ def fix_po_file(po_file):
         return False
 
     try:
-        subprocess.run(['msgfmt', '-c', po_file], check=False, capture_output=True)
+        subprocess.run(['msgfmt', '-c', po_file],
+                       check=False, capture_output=True)
     except Exception:
         pass
 
@@ -680,7 +684,11 @@ def create_template_po_file(po_file, lang_code):
             f.write('"Content-Type: text/plain; charset=UTF-8\\n"\n')
             f.write('"Content-Transfer-Encoding: 8bit\\n"\n\n')
             for msgid in msgid_blocks:
-                f.write('msgid {}\n'.format(json.dumps(msgid, ensure_ascii=False)))
+                f.write(
+                    'msgid {}\n'.format(
+                        json.dumps(
+                            msgid,
+                            ensure_ascii=False)))
                 f.write('msgstr ""\n\n')
         print(" ✓ Created clean template for: {}".format(lang_code))
         return True
