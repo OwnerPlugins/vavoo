@@ -528,13 +528,16 @@ def fix_po_file(po_file):
                 # Gestisci l'intestazione (msgid "")
                 if content == '':
                     # Se non abbiamo già una intestazione, la teniamo
-                    if not any(l.startswith('msgid ""') for l in new_lines if l.startswith('msgid')):
+                    if not any(l.startswith('msgid ""')
+                               for l in new_lines if l.startswith('msgid')):
                         new_lines.append(new_line)
                 else:
                     if content in seen_msgids:
-                        # Duplicato: salta questa voce e le righe successive fino al prossimo msgid
+                        # Duplicato: salta questa voce e le righe successive
+                        # fino al prossimo msgid
                         i += 1
-                        while i < len(lines) and not lines[i].strip().startswith('msgid "'):
+                        while i < len(lines) and not lines[i].strip(
+                        ).startswith('msgid "'):
                             i += 1
                         continue
                     else:
@@ -559,9 +562,12 @@ def fix_po_file(po_file):
 
     # Validazione con msgfmt (opzionale ma raccomandata)
     try:
-        result = subprocess.run(['msgfmt', '-c', po_file], check=False, capture_output=True)
+        result = subprocess.run(
+            ['msgfmt', '-c', po_file], check=False, capture_output=True)
         if result.returncode != 0:
-            print(f"⚠️ Validation failed for {po_file} (but file may still be usable):\n{result.stderr.decode()}")
+            print(
+                f"⚠️ Validation failed for {po_file} (but file may still be usable):\n{
+                    result.stderr.decode()}")
             # Non fallire, ma segnala
     except Exception:
         pass
@@ -649,7 +655,13 @@ def update_po_files():
             if not fix_po_file(po_file):
                 print(f"  ✗ Can't fix {po_file}, skipping")
                 continue
-            cmd = ['msgmerge', '--update', '--backup=none', '--no-wrap', po_file, POT_FILE]
+            cmd = [
+                'msgmerge',
+                '--update',
+                '--backup=none',
+                '--no-wrap',
+                po_file,
+                POT_FILE]
             try:
                 process = subprocess.Popen(
                     cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
