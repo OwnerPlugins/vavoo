@@ -3468,7 +3468,7 @@ class vavoo(Screen):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Removed exported bouquet: {}").format(self.name), 3)
-                self._reload_services()
+                self._confirm_reload_bouquets(True)
             else:
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
