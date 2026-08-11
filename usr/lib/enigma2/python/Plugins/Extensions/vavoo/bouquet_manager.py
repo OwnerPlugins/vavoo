@@ -193,6 +193,8 @@ def remove_bouquets_by_name(name=None):
                         '⟾',
                         '_').replace(
                         '->',
+                        '_').replace(
+                        '→',
                         '_')
                     if name_safe not in fname:
                         continue
@@ -257,7 +259,8 @@ def is_bouquet_exported(name):
             ' ', '_').replace(
             '➾', '_').replace(
             '⟾', '_').replace(
-            '->', '_')
+            '->', '_').replace(
+            '→', '_')
         for fname in listdir(ENIGMA_PATH):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):

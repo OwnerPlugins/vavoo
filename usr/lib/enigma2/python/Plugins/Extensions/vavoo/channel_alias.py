@@ -360,7 +360,16 @@ def normalize_channel_name(raw_name):
     # dedicated ALIAS_MAP entries - stripping it would silently merge
     # them into the wrong (non-4K) channel.
     name = sub(r'\s*\.(c|s|b)$', '', name, flags=IGNORECASE)
-    name = sub(r'\s*(HD|FHD|SD|HEVC|H265)$', '', name, flags=IGNORECASE)
+    # Only strip the quality suffix if the name doesn't already match a
+    # dedicated ALIAS_MAP entry that keeps it (e.g. "DMAX HD" ->
+    # DMAXHD.it is a different Rytec id than "DMAX" -> DMAX.it, same as
+    # the "SUPER TENNIS HD"/"HORSE TV HD"/etc. entries below) -
+    # stripping unconditionally silently reassigned the HD channel's
+    # EPG to its SD sibling and made these dedicated entries
+    # unreachable. Same reasoning "4K" is already exempted from
+    # stripping, just data-driven here instead of a blanket exemption.
+    if name not in ALIAS_MAP:
+        name = sub(r'\s*(HD|FHD|SD|HEVC|H265)$', '', name, flags=IGNORECASE)
     # Apply explicit rename rules. Exact match, not substring: several
     # patterns are single digits or short generic words ("8", "27",
     # "RAI", "SUPER") meant to disambiguate a channel literally named

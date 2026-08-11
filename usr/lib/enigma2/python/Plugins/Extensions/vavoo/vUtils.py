@@ -625,6 +625,11 @@ def set_cache(key, data, timeout):
     try:
         if not isinstance(data, dict):
             data = {"value": data}
+        # _is_cache_valid() requires both of these to consider a cache
+        # entry valid - previously never written here, so timeout had no
+        # effect and get_cache() would always treat this entry as expired.
+        data['sigValidUntil'] = int(time()) + timeout
+        data['ip'] = get_external_ip()
         if PY2:
             converted_data = convert_to_unicode(data)
             with io.open(file_path, 'w', encoding='utf-8') as cache_file:
@@ -1136,7 +1141,7 @@ def decodeHtml(text):
 
     replacements = {
         '&amp;': '&', '&apos;': "'", '&lt;': '<', '&gt;': '>', '&ndash;': '-',
-        '&quot;': '"', '&ntilde;': '~', '&rsquo;': "'", '&nbsp;': ' ',
+        '&quot;': '"', '&ntilde;': 'ñ', '&rsquo;': "'", '&nbsp;': ' ',
         '&equals;': '=', '&quest;': '?', '&comma;': ',', '&period;': '.',
         '&colon;': ':', '&lpar;': '(', '&rpar;': ')', '&excl;': '!',
         '&dollar;': '$', '&num;': '#', '&ast;': '*', '&lowbar;': '_',
@@ -1348,80 +1353,6 @@ def download_flag_online(
     except Exception as e:
         print("Flag download error: %s" % e)
         return False, "Flag download error: %s" % e
-
-
-def download_flag_with_size(
-        country_name,
-        size="40x30",
-        cache_dir=FLAG_CACHE_DIR):
-    """
-    Download flag with specific size (40x30, 80x60, etc.)
-    Returns: success (True/False)
-    """
-    try:
-        country_code = get_country_code(country_name)
-        if not country_code:
-            print("No code for: %s" % country_name)
-            return False
-
-        if "x" in size:
-            try:
-                width, height = size.split("x")
-                width = int(width)
-                height = int(height)
-            except BaseException:
-                width, height = 40, 30
-        else:
-            width, height = 40, 30
-
-        # URL with fixed size w/h
-        url = "https://flagcdn.com/w%d/h%d/%s.png" % (
-            width, height, country_code.lower())
-
-        print("Downloading %s flag %dx%d from: %s" %
-              (country_name, width, height, url))
-
-        if not exists(cache_dir):
-            try:
-                makedirs(cache_dir)
-            except Exception as e:
-                debug(
-                    "Could not create flag cache dir {}: {}".format(
-                        cache_dir, e))
-
-        cache_file = join(cache_dir, "%s.png" % country_code.lower())
-
-        req = Request(url, headers={'User-Agent': 'Vavoo-Stream/1.0'})
-
-        try:
-            if PY3:
-                response = urlopen(req, timeout=5, context=ssl_context)
-            else:
-                response = urlopen(req, timeout=5)
-        except Exception as e:
-            print("Network error: %s" % str(e))
-            return False
-
-        if response.getcode() == 200:
-            flag_data = response.read()
-            response.close()
-
-            # Save to cache
-            with open(cache_file, 'wb') as f:
-                f.write(flag_data)
-
-            print("✓ Flag %dx%d saved: %s (%d bytes)" %
-                  (width, height, cache_file, len(flag_data)))
-            return True
-        else:
-            print(
-                "✗ Download failed for %s (HTTP %d)" %
-                (country_name, response.getcode()))
-            return False
-
-    except Exception as e:
-        print("Error downloading %s: %s" % (country_name, str(e)))
-        return False
 
 
 def get_country_code_from_bouquet_name(name):
@@ -1779,7 +1710,11 @@ class VavooEPGMatcher(object):
     @staticmethod
     def is_valid_rytec_id(id_val):
         """Returns True if id_val appears to be a valid Rytec ID (e.g. 'Rai1.it')."""
-        if not id_val or not isinstance(id_val, str):
+        # isinstance(id_val, str) alone rejects every value on Python 2,
+        # where json.load()/XML parsing produce `unicode` (not a `str`
+        # subclass there) - use text_type (six.text_type) too so this
+        # doesn't silently reject every cached/parsed id on Python 2.
+        if not id_val or not isinstance(id_val, (str, text_type)):
             return False
         if '.' not in id_val:
             return False
@@ -2130,8 +2065,19 @@ class VavooEPGMatcher(object):
                 clean_entry, orig_name, rytec_id, service_ref
             ))
 
-        # Sort by adjusted score (highest first)
-        candidates.sort(key=lambda x: -x[0])
+        # Sort primarily by raw textual score, using the satellite/signal
+        # boost only as a tie-breaker among near-equal matches. Every
+        # candidate here already cleared similarity_threshold, so using
+        # `adjusted_score = score * boost` as the sort key let a marginal
+        # boosted candidate (e.g. score 0.71 * 1.5 = 1.065) always beat a
+        # near-perfect unboosted one (max possible 1.0 * 1.0) regardless of
+        # how much better the textual match actually was. Bucketing raw
+        # score into 0.05-wide bands means boost can only decide between
+        # candidates that are already comparably good matches.
+        _PRIORITY_TIE_BAND = 0.05
+        candidates.sort(
+            key=lambda x: (round(x[1] / _PRIORITY_TIE_BAND), x[0]),
+            reverse=True)
 
         for adj_score, orig_score, priority, orbpos, clean_entry, orig_name, rytec_id, service_ref in candidates:
             # Pick the first candidate above base similarity threshold
@@ -2900,7 +2846,11 @@ def write_epg_mapping_file(epg_entries, country_code):
         # corrupt that URL instead of "completing" a bare tuple.
         unique = {}
         for epg_id, dvb_ref, ch_name in epg_entries:
-            if dvb_ref and isinstance(dvb_ref, str) and dvb_ref.strip():
+            # isinstance(dvb_ref, (str, text_type)): plain `str` alone
+            # would drop every `unicode` dvb_ref on Python 2, silently
+            # writing an empty/near-empty EPG mapping file.
+            if dvb_ref and isinstance(
+                    dvb_ref, (str, text_type)) and dvb_ref.strip():
                 if feed_ids and epg_id not in feed_ids:
                     fallback_id = _find_feed_id_by_name(
                         ch_name, matcher, feed_name_index)

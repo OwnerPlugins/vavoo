@@ -16,7 +16,6 @@ from enigma import eDVBDB
 import xml.etree.ElementTree as ET
 import datetime
 from twisted.internet import reactor
-import select
 
 try:
     import requests
@@ -707,6 +706,7 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self.old_proxy_enabled = cfg.proxy_enabled.value
         self.old_back = cfg.back.value
+        self.old_list_position = cfg.list_position.value
 
         self.list = []
         self.onChangedEntry = []
@@ -736,7 +736,7 @@ class vavoo_config(Screen, ConfigListScreen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def update_status(self):
-        if cfg.autobouquetupdate:
+        if cfg.autobouquetupdate.value:
             self['statusbar'].setText(
                 _("Last channel update: %s") %
                 cfg.last_update.value)
@@ -890,20 +890,22 @@ class vavoo_config(Screen, ConfigListScreen):
 
     def generate_m3u(self, result):
         if result:
-            # 1. Check if the proxy is active
-            if not self.check_and_start_proxy():
-                self.session.open(
-                    MessageBox,
-                    _("Proxy not active. Unable to generate M3U file."),
-                    MessageBox.TYPE_ERROR,
-                    timeout=5
-                )
-                cfg.genm3u.setValue(0)
-                cfg.genm3u.save()
-                return
+            # 1. Check if the proxy is active (non-blocking - proceeds to
+            # step 2 via callback once ready, instead of freezing the GUI
+            # thread while polling)
+            self.check_and_start_proxy_async(
+                self.show_m3u_ip_selection,
+                self._m3u_proxy_unavailable)
 
-            # 2. Ask which IP the generated links should point at
-            self.show_m3u_ip_selection()
+    def _m3u_proxy_unavailable(self):
+        self.session.open(
+            MessageBox,
+            _("Proxy not active. Unable to generate M3U file."),
+            MessageBox.TYPE_ERROR,
+            timeout=5
+        )
+        cfg.genm3u.setValue(0)
+        cfg.genm3u.save()
 
     def show_m3u_ip_selection(self):
         """Ask whether the M3U links should use 127.0.0.1 (playable only
@@ -1147,15 +1149,15 @@ class vavoo_config(Screen, ConfigListScreen):
 
             # Show detailed result
             msg = _("M3U generation completed!")
-            msg += ""
+            msg += "\n"
             msg += _("Countries: %(generated)d/%(total)d") % {
                 'generated': generated, 'total': len(countries)}
-            msg += ""
+            msg += "\n"
             msg += _("Failed: %(failed)d") % {'failed': failed}
-            msg += ""
+            msg += "\n"
             msg += _("Total channels: %(total_channels)d") % {
                 'total_channels': total_channels}
-            msg += ""
+            msg += "\n"
             msg += _("Saved in: %(path)s") % {'path': downloadfree}
 
             self.session.open(
@@ -1264,27 +1266,37 @@ class vavoo_config(Screen, ConfigListScreen):
             print("[M3U] Error getting channels: %s" % str(e))
             return []
 
-    def check_and_start_proxy(self):
-        """Check and start the proxy if needed"""
+    def check_and_start_proxy_async(
+            self, on_ready, on_failed, attempts_left=10):
+        """Check and start the proxy if needed, then call on_ready()/
+        on_failed() once known - polls via reactor.callLater instead of
+        blocking the GUI thread with select.select()."""
         try:
             if not is_proxy_running():
                 print("[M3U Export] Starting proxy...")
                 if not run_proxy_in_background():
-                    return False
-
-            # Wait until the proxy is ready
-            for i in range(10):
-                if is_proxy_ready():
-                    return True
-                select.select([], [], [], 1)
-
-            return False
-
+                    on_failed()
+                    return
+            self._poll_proxy_ready_for_m3u(on_ready, on_failed, attempts_left)
         except Exception as e:
             print(
                 "[M3U Export][check_and_start_proxy] Proxy error: %s" %
                 str(e))
-            return False
+            on_failed()
+
+    def _poll_proxy_ready_for_m3u(self, on_ready, on_failed, attempts_left):
+        if is_proxy_ready():
+            on_ready()
+            return
+        if attempts_left <= 1:
+            on_failed()
+            return
+        reactor.callLater(
+            1,
+            self._poll_proxy_ready_for_m3u,
+            on_ready,
+            on_failed,
+            attempts_left - 1)
 
     def get_countries_from_proxy(self):
         """Get country list from the proxy"""
@@ -1383,10 +1395,6 @@ class vavoo_config(Screen, ConfigListScreen):
 
     def save(self):
         if self["config"].isChanged():
-            old_position = getattr(cfg, 'list_position', None)
-            if old_position:
-                old_position = old_position.value
-
             for x in self["config"].list:
                 x[1].save()
 
@@ -1429,8 +1437,13 @@ class vavoo_config(Screen, ConfigListScreen):
             if cfg.epg_enabled.value and cfg.epg_auto_update.value:
                 self.schedule_epg_update()
 
-            if old_position and old_position != cfg.list_position.value:
+            # Apply any change to the scheduled bouquet auto-update timer
+            # live, instead of requiring a reboot for it to take effect.
+            check_configuring()
+
+            if self.old_list_position != cfg.list_position.value:
                 self._reorganize_bouquets_position()
+                self.old_list_position = cfg.list_position.value
 
             configfile.save()
 
@@ -2101,6 +2114,10 @@ class MainVavoo(Screen):
                 self.proxy_watchdog_timer.stop()
             if hasattr(self, '_update_popup_timer'):
                 self._update_popup_timer.stop()
+            if hasattr(self, 'flag_refresh_timer'):
+                self.flag_refresh_timer.stop()
+            if hasattr(self, '_country_retry_timer'):
+                self._country_retry_timer.stop()
         except Exception as e:
             print("[Close] Error stopping timers: %s" % str(e))
 
@@ -2896,7 +2913,7 @@ class MainVavoo(Screen):
 
                 # Build message safely for translation
                 message = _("Vavoo bouquets removed successfully!")
-                message += ""
+                message += "\n"
                 message += _("(%s files deleted)") % removed_count
 
                 self.session.open(
@@ -5293,14 +5310,32 @@ class AutoStartTimer(object):
                     print("[AutoStartTimer] Failed to start proxy")
                     return
 
-            # 3. Wait for proxy to be ready (max 10s total; non-blocking via
-            # select)
-            for i in range(10):
-                if is_proxy_ready(timeout=3):
-                    break
-                print("[AutoStartTimer] Waiting for proxy (" + str(i + 1) + "/10)")
-                select.select([], [], [], 1)
+            # 3. Wait for proxy to be ready - polls via reactor.callLater
+            # instead of blocking this thread with select.select(), which
+            # would otherwise freeze the whole Enigma2 GUI (e.g. while the
+            # user is watching TV) for up to 10s during this unattended
+            # scheduled update.
+            self._wait_for_proxy_then_update(bouquets_to_update, 10)
 
+        except Exception as e:
+            print("[AutoStartTimer] Error: " + str(e))
+            import traceback
+            traceback.print_exc()
+
+    def _wait_for_proxy_then_update(self, bouquets_to_update, attempts_left):
+        if is_proxy_ready(timeout=3) or attempts_left <= 1:
+            self._update_bouquets(bouquets_to_update)
+            return
+        print("[AutoStartTimer] Waiting for proxy (" +
+              str(11 - attempts_left) + "/10)")
+        reactor.callLater(
+            1,
+            self._wait_for_proxy_then_update,
+            bouquets_to_update,
+            attempts_left - 1)
+
+    def _update_bouquets(self, bouquets_to_update):
+        try:
             # 4. Update each bouquet
             successful_updates = 0
             for name, url, export_type in bouquets_to_update:
@@ -5401,10 +5436,18 @@ def autostart(reason, session=None, **kwargs):
 
 
 def check_configuring():
-    """Check for new config values for auto start"""
+    """React to a live change of the scheduled auto-update settings,
+    instead of requiring a reboot for them to take effect."""
+    global auto_start_timer
     if cfg.autobouquetupdate.value is True:
-        if auto_start_timer is not None:
+        if auto_start_timer is None:
+            auto_start_timer = AutoStartTimer()
+        else:
             auto_start_timer.update()
+    else:
+        timer = getattr(auto_start_timer, 'timer', None)
+        if timer is not None:
+            timer.stop()
         return
 
 
