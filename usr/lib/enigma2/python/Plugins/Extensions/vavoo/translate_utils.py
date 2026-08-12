@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 # Copyright (c) @Lululla 2026
-# Google Translate API for Foreca One Weather Plugin
+# Google Translate API helpers for the Vavoo plugin
 
+import atexit
 import hashlib
 import json
 import socket
 import time
 from json import JSONDecodeError, loads
 from os import makedirs, remove
-from os.path import dirname, exists, join
+from os.path import abspath, dirname, exists, join
 
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -17,11 +18,24 @@ from urllib.request import Request, urlopen
 
 from Components.config import config
 
-from . import DEBUG, HEADERS, SYSTEM_DIR
-
 # ============================================================
 # CUSTOM CONFIGURATION
 # ============================================================
+# DEBUG/HEADERS/SYSTEM_DIR previously tried `from . import DEBUG, HEADERS,
+# SYSTEM_DIR`, but none of those names exist in this package's __init__.py
+# (they were never anything but local constants in the sibling
+# update_translations.py) - that import raised ImportError on load,
+# making this whole module unusable. Defined locally instead, same
+# pattern update_translations.py already uses for its own copies.
+SYSTEM_DIR = dirname(abspath(__file__))
+DEBUG = True   # Set to False to reduce output
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
+    'Connection': 'keep-alive',
+}
 
 # Translation API URL (can be changed if needed)
 TRANSLATE_API_URL = "https://translate.googleapis.com/translate_a/single"
@@ -98,7 +112,7 @@ def _log(message):
     """Custom logging"""
     if ENABLE_LOGGING and DEBUG:
         timestamp = time.time()
-        print(f"[Foreca-1-Translate][{timestamp:.2f}] {message}")
+        print(f"[Vavoo-Translate][{timestamp:.2f}] {message}")
 
 
 def _get_system_language():
@@ -204,13 +218,26 @@ def _get_cache_key(text, target_lang):
     return hashlib.md5(key_string).hexdigest()
 
 
+_CACHE_SAVE_THRESHOLD = 20
+_cache_dirty_count = 0
+
+
 def _cache_translation(text, target_lang, translated):
-    """Store a translation in the cache and save immediately to disk."""
-    global _cache_dirty
+    """Store a translation in the cache. Unlike a save on every single
+    call (which made a full-cache rewrite O(n^2) for n new strings -
+    the same bug already fixed in the sibling update_translations.py),
+    this flushes to disk every _CACHE_SAVE_THRESHOLD new entries, plus
+    once at process exit via the atexit hook registered below, so
+    nothing is lost even for a caller that translates just a handful of
+    strings and stops."""
+    global _cache_dirty, _cache_dirty_count
     cache_key = _get_cache_key(text, target_lang)
     _translation_cache[cache_key] = translated
     _cache_dirty = True
-    save_cache_to_disk()
+    _cache_dirty_count += 1
+    if _cache_dirty_count >= _CACHE_SAVE_THRESHOLD:
+        save_cache_to_disk()
+        _cache_dirty_count = 0
     return translated
 
 
@@ -570,7 +597,7 @@ def test_translation():
     ]
     if DEBUG:
         print("=" * 60)
-        print("Foreca One TRANSLATION TEST")
+        print("Vavoo TRANSLATION TEST")
         print("=" * 60)
 
     all_passed = True
@@ -605,10 +632,15 @@ def test_translation():
 # Load cache at module startup
 load_cache_from_disk()
 
+# Safety net for the threshold-based flush in _cache_translation() - makes
+# sure any not-yet-flushed cache entries are still written on normal
+# process exit.
+atexit.register(save_cache_to_disk)
+
 if __name__ == "__main__":
     # Test mode when run directly
     if DEBUG:
-        print("Google Translate API for Foreca")
+        print("Google Translate API for Vavoo")
         print("Enhanced custom version")
 
     if test_translation():
@@ -617,5 +649,5 @@ if __name__ == "__main__":
         print("✗ Some tests failed")
 else:
     # Imported as a module
-    _log("Foreca One translation module loaded")
+    _log("Vavoo translation module loaded")
     _log(f"System language: {_get_system_language()}")

@@ -457,15 +457,17 @@ BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 # # "user-agent": RequestAgent(),
 # "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
 # "Accept-Encoding": "gzip, deflate",
-# # NOTE: do NOT set "Connection": "close" here – it disables keep-alive
-# # for the entire session including streaming upstream connections.
 # }
+# NOTE: do NOT set "Connection": "close" here - self.session.headers is
+# applied to every request through this session (catalog pages, resolve
+# calls, and the /stream handler's upstream GET), so it would force a
+# fresh TCP/TLS handshake on all of them instead of reusing a pooled
+# connection from the HTTPAdapter configured below.
 HEADERS = {
     "accept": "*/*",
     "user-agent": "MediaHubMX/2",
     "Accept-Language": "de",
     "Accept-Encoding": "gzip, deflate",
-    "Connection": "close",
 }
 
 
