@@ -466,7 +466,11 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
 
     for i in range(retries):
         try:
-            socket.setdefaulttimeout(timeout)
+            # No socket.setdefaulttimeout() here - every urlopen() call
+            # below already gets an explicit timeout=timeout, and this
+            # runs in the same process as the proxy, whose own comments
+            # elsewhere warn that mutating the global default poisons
+            # unrelated sockets (e.g. streaming) that don't set their own.
             request = Request(url, headers=headers)
 
             if PY3:

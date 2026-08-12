@@ -4462,8 +4462,16 @@ class Playstream2(
 
         def _openForEpgText(epg_text):
             try:
-                if epg_text and epg_text not in [
-                        "EPG not available", "No programme found", ""]:
+                # get_current_epg() returns several distinct "EPG ..."
+                # error strings ("EPG not available (no country code)",
+                # "EPG not available (ID not found)", "EPG parsing
+                # error", "EPG error", ...), not just "EPG not
+                # available" - matching only that one exact string let
+                # every other error variant fall through and get passed
+                # to returnIMDB() as a search title instead of showing
+                # "No programme info available".
+                if epg_text and not epg_text.startswith(
+                        "EPG ") and epg_text != "No programme found":
                     if " - " in epg_text:
                         title = epg_text.split(" - ")[0].strip()
                         if " " in title and title[2] == ":":
@@ -5126,21 +5134,28 @@ class AutoStartTimer(object):
     def __init__(self):
         print("*** AutoStartTimer Vavoo ***")
 
-        # Check if there are bouquets to update
-        favorite_channel = join(PLUGIN_PATH, 'Favorite.txt')
-
-        if not isfile(favorite_channel):
-            print("[AutoStartTimer] No Favorite.txt - nothing to update")
-            return  # Exit, timer not needed
-
-        print("[AutoStartTimer] Favorite.txt found, starting timer...")
-
+        # self.timer must always exist after __init__ - check_configuring()
+        # can call update() on an already-constructed instance later (e.g.
+        # after a subsequent, unrelated config Save), and update()/on_timer()
+        # unconditionally call self.timer.stop(). Previously this attribute
+        # was only set below the early-return, so an instance created before
+        # any bouquet was ever exported/favorited would crash the *next*
+        # config Save with an AttributeError - silently aborting save()
+        # before it persisted the user's settings.
         self.timer = eTimer()
         try:
             self.timer.callback.append(self.on_timer)
         except BaseException:
             self.timer.timeout.connect(self.on_timer)
 
+        # Check if there are bouquets to update
+        favorite_channel = join(PLUGIN_PATH, 'Favorite.txt')
+
+        if not isfile(favorite_channel):
+            print("[AutoStartTimer] No Favorite.txt yet - timer created but idle")
+            return
+
+        print("[AutoStartTimer] Favorite.txt found, starting timer...")
         self.timer.start(100, True)
         self.update()
 
