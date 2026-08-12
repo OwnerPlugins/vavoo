@@ -16,7 +16,6 @@ from enigma import eDVBDB
 import xml.etree.ElementTree as ET
 import datetime
 from twisted.internet import reactor
-import select
 
 try:
     import requests
@@ -707,6 +706,7 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self.old_proxy_enabled = cfg.proxy_enabled.value
         self.old_back = cfg.back.value
+        self.old_list_position = cfg.list_position.value
 
         self.list = []
         self.onChangedEntry = []
@@ -736,7 +736,7 @@ class vavoo_config(Screen, ConfigListScreen):
         self.onLayoutFinish.append(self.layoutFinished)
 
     def update_status(self):
-        if cfg.autobouquetupdate:
+        if cfg.autobouquetupdate.value:
             self['statusbar'].setText(
                 _("Last channel update: %s") %
                 cfg.last_update.value)
@@ -890,20 +890,22 @@ class vavoo_config(Screen, ConfigListScreen):
 
     def generate_m3u(self, result):
         if result:
-            # 1. Check if the proxy is active
-            if not self.check_and_start_proxy():
-                self.session.open(
-                    MessageBox,
-                    _("Proxy not active. Unable to generate M3U file."),
-                    MessageBox.TYPE_ERROR,
-                    timeout=5
-                )
-                cfg.genm3u.setValue(0)
-                cfg.genm3u.save()
-                return
+            # 1. Check if the proxy is active (non-blocking - proceeds to
+            # step 2 via callback once ready, instead of freezing the GUI
+            # thread while polling)
+            self.check_and_start_proxy_async(
+                self.show_m3u_ip_selection,
+                self._m3u_proxy_unavailable)
 
-            # 2. Ask which IP the generated links should point at
-            self.show_m3u_ip_selection()
+    def _m3u_proxy_unavailable(self):
+        self.session.open(
+            MessageBox,
+            _("Proxy not active. Unable to generate M3U file."),
+            MessageBox.TYPE_ERROR,
+            timeout=5
+        )
+        cfg.genm3u.setValue(0)
+        cfg.genm3u.save()
 
     def show_m3u_ip_selection(self):
         """Ask whether the M3U links should use 127.0.0.1 (playable only
@@ -1150,15 +1152,15 @@ class vavoo_config(Screen, ConfigListScreen):
 
             # Show detailed result
             msg = _("M3U generation completed!")
-            msg += ""
+            msg += "\n"
             msg += _("Countries: %(generated)d/%(total)d") % {
                 'generated': generated, 'total': len(countries)}
-            msg += ""
+            msg += "\n"
             msg += _("Failed: %(failed)d") % {'failed': failed}
-            msg += ""
+            msg += "\n"
             msg += _("Total channels: %(total_channels)d") % {
                 'total_channels': total_channels}
-            msg += ""
+            msg += "\n"
             msg += _("Saved in: %(path)s") % {'path': downloadfree}
 
             self.session.open(
@@ -1267,27 +1269,37 @@ class vavoo_config(Screen, ConfigListScreen):
             print("[M3U] Error getting channels: %s" % str(e))
             return []
 
-    def check_and_start_proxy(self):
-        """Check and start the proxy if needed"""
+    def check_and_start_proxy_async(
+            self, on_ready, on_failed, attempts_left=10):
+        """Check and start the proxy if needed, then call on_ready()/
+        on_failed() once known - polls via reactor.callLater instead of
+        blocking the GUI thread with select.select()."""
         try:
             if not is_proxy_running():
                 print("[M3U Export] Starting proxy...")
                 if not run_proxy_in_background():
-                    return False
-
-            # Wait until the proxy is ready
-            for i in range(10):
-                if is_proxy_ready():
-                    return True
-                select.select([], [], [], 1)
-
-            return False
-
+                    on_failed()
+                    return
+            self._poll_proxy_ready_for_m3u(on_ready, on_failed, attempts_left)
         except Exception as e:
             print(
                 "[M3U Export][check_and_start_proxy] Proxy error: %s" %
                 str(e))
-            return False
+            on_failed()
+
+    def _poll_proxy_ready_for_m3u(self, on_ready, on_failed, attempts_left):
+        if is_proxy_ready():
+            on_ready()
+            return
+        if attempts_left <= 1:
+            on_failed()
+            return
+        reactor.callLater(
+            1,
+            self._poll_proxy_ready_for_m3u,
+            on_ready,
+            on_failed,
+            attempts_left - 1)
 
     def get_countries_from_proxy(self):
         """Get country list from the proxy"""
@@ -1386,10 +1398,6 @@ class vavoo_config(Screen, ConfigListScreen):
 
     def save(self):
         if self["config"].isChanged():
-            old_position = getattr(cfg, 'list_position', None)
-            if old_position:
-                old_position = old_position.value
-
             for x in self["config"].list:
                 x[1].save()
 
@@ -1432,8 +1440,13 @@ class vavoo_config(Screen, ConfigListScreen):
             if cfg.epg_enabled.value and cfg.epg_auto_update.value:
                 self.schedule_epg_update()
 
-            if old_position and old_position != cfg.list_position.value:
+            # Apply any change to the scheduled bouquet auto-update timer
+            # live, instead of requiring a reboot for it to take effect.
+            check_configuring()
+
+            if self.old_list_position != cfg.list_position.value:
                 self._reorganize_bouquets_position()
+                self.old_list_position = cfg.list_position.value
 
             configfile.save()
 
@@ -1835,6 +1848,92 @@ class UpdatePopup(Screen):
         self.close(False)
 
 
+def _shared_update_proxy_status_display(screen):
+    """Update the 'proxy_status' widget on screen (MainVavoo/vavoo share
+    this verbatim - kept in one place instead of two independently
+    maintained copies, which already drifted out of sync once before
+    for a sibling pair of constants, see PROXY_MONITOR_INTERVAL_MS
+    above)."""
+    try:
+        if not cfg.proxy_enabled.value:
+            screen['proxy_status'].setText(_("Proxy Disabled"))
+            return
+        if is_proxy_running():
+            try:
+                response = getUrl(
+                    PROXY_STATUS_URL, timeout=5)
+                if response:
+                    status_data = loads(response)
+
+                    if status_data.get(
+                            "initialized", False) and status_data.get(
+                            "addon_sig_valid", False):
+                        token_age = status_data.get("addon_sig_age", 0)
+
+                        if token_age < 300:
+                            status_text = "✓ Proxy OK"
+                        elif token_age < 540:
+                            ttl = 600 - token_age
+                            status_text = "✓ Proxy (" + \
+                                str(int(ttl)) + "s)"
+                        else:
+                            status_text = "Proxy (expiring)"
+                    else:
+                        status_text = "✗ Proxy Error"
+                else:
+                    status_text = "? Proxy Unknown"
+            except Exception:
+                status_text = "✓ Proxy Running"
+        else:
+            status_text = "✗ Proxy Offline"
+
+        screen['proxy_status'].setText(status_text)
+
+    except Exception as e:
+        print("[ProxyStatus] Error updating proxy status: " + str(e))
+        screen['proxy_status'].setText(_("✗ Error"))
+
+
+def _shared_reload_bouquets_with_popup(screen):
+    """Reload bouquets with confirmation popup (MainVavoo/vavoo share
+    this verbatim)."""
+    debug("reload_bouquets_with_popup called")
+    screen.session.openWithCallback(
+        screen._confirm_reload_bouquets,
+        MessageBox,
+        _("Reload bouquets and service list?"),
+        MessageBox.TYPE_YESNO,
+        timeout=10,
+        default=True
+    )
+
+
+def _shared_confirm_reload_bouquets(screen, result):
+    """Callback after user confirmation (MainVavoo/vavoo share this
+    verbatim)."""
+    if result:
+        debug("User confirmed reload")
+        try:
+            db = eDVBDB.getInstance()
+            db.reloadBouquets()
+            db.reloadServicelist()
+            print("Bouquets reloaded successfully")
+        except Exception as e:
+            print("Error during service reload: " + str(e))
+            ReloadBouquets(500)
+        try:
+            screen.session.open(
+                MessageBox,
+                _("Bouquets reload scheduled."),
+                MessageBox.TYPE_INFO,
+                timeout=2
+            )
+        except Exception as e:
+            print("[MessageBox] Error:", e)
+    else:
+        debug("User cancelled reload")
+
+
 class MainVavoo(Screen):
     def __init__(self, session):
         self.session = session
@@ -2057,39 +2156,11 @@ class MainVavoo(Screen):
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
-        debug("reload_bouquets_with_popup called")
-        self.session.openWithCallback(
-            self._confirm_reload_bouquets,
-            MessageBox,
-            _("Reload bouquets and service list?"),
-            MessageBox.TYPE_YESNO,
-            timeout=10,
-            default=True
-        )
+        _shared_reload_bouquets_with_popup(self)
 
     def _confirm_reload_bouquets(self, result):
         """Callback after user confirmation"""
-        if result:
-            debug("User confirmed reload")
-            try:
-                db = eDVBDB.getInstance()
-                db.reloadBouquets()
-                db.reloadServicelist()
-                print("Bouquets reloaded successfully")
-            except Exception as e:
-                print("Error during service reload: " + str(e))
-                ReloadBouquets(500)
-            try:
-                self.session.open(
-                    MessageBox,
-                    _("Bouquets reload scheduled."),
-                    MessageBox.TYPE_INFO,
-                    timeout=2
-                )
-            except Exception as e:
-                print("[MessageBox] Error:", e)
-        else:
-            debug("User cancelled reload")
+        _shared_confirm_reload_bouquets(self, result)
 
     def closex(self):
         debug("Exit from plugin. Cleaning up plugin timers...")
@@ -2104,6 +2175,10 @@ class MainVavoo(Screen):
                 self.proxy_watchdog_timer.stop()
             if hasattr(self, '_update_popup_timer'):
                 self._update_popup_timer.stop()
+            if hasattr(self, 'flag_refresh_timer'):
+                self.flag_refresh_timer.stop()
+            if hasattr(self, '_country_retry_timer'):
+                self._country_retry_timer.stop()
         except Exception as e:
             print("[Close] Error stopping timers: %s" % str(e))
 
@@ -2147,7 +2222,7 @@ class MainVavoo(Screen):
             downloaded = 0
             for i, country in enumerate(countries_list[:8]):  # First 8
                 try:
-                    success, _ = download_flag_online(
+                    success, _unused = download_flag_online(
                         country, screen_width=screen_width)
                     if success:
                         downloaded += 1
@@ -2168,7 +2243,7 @@ class MainVavoo(Screen):
                     downloaded_rest = 0
                     for country in countries_list[8:]:
                         try:
-                            success, _ = download_flag_online(
+                            success, _unused = download_flag_online(
                                 country, screen_width=screen_width)
                             if success:
                                 downloaded_rest += 1
@@ -2260,44 +2335,7 @@ class MainVavoo(Screen):
 
     def _update_proxy_status_display(self):
         """Internal method to update proxy status display"""
-        try:
-            if not cfg.proxy_enabled.value:
-                self['proxy_status'].setText(_("Proxy Disabled"))
-                return
-            if is_proxy_running():
-                try:
-                    response = getUrl(
-                        PROXY_STATUS_URL, timeout=5)
-                    if response:
-                        status_data = loads(response)
-
-                        if status_data.get(
-                                "initialized", False) and status_data.get(
-                                "addon_sig_valid", False):
-                            token_age = status_data.get("addon_sig_age", 0)
-
-                            if token_age < 300:
-                                status_text = "✓ Proxy OK"
-                            elif token_age < 540:
-                                ttl = 600 - token_age
-                                status_text = "✓ Proxy (" + \
-                                    str(int(ttl)) + "s)"
-                            else:
-                                status_text = "Proxy (expiring)"
-                        else:
-                            status_text = "✗ Proxy Error"
-                    else:
-                        status_text = "? Proxy Unknown"
-                except Exception:
-                    status_text = "✓ Proxy Running"
-            else:
-                status_text = "✗ Proxy Offline"
-
-            self['proxy_status'].setText(status_text)
-
-        except Exception as e:
-            print("[MainVavoo] Error updating proxy status: " + str(e))
-            self['proxy_status'].setText(_("✗ Error"))
+        _shared_update_proxy_status_display(self)
 
     def refresh_proxy(self):
         """Force proxy refresh"""
@@ -2473,29 +2511,6 @@ class MainVavoo(Screen):
             self._update_proxy_status_display()
         else:
             reactor.callLater(0.5, lambda: self._wait_for_proxy(attempts + 1))
-
-    def _check_proxy_ready_async(self, attempts=0):
-        if attempts > 20:
-            print("[MainVavoo] Proxy not ready after timeout")
-            return
-        if is_proxy_ready(timeout=0.5):
-            print("[MainVavoo] Proxy ready")
-            self._update_proxy_status_display()
-        else:
-            reactor.callLater(
-                0.5, lambda: self._check_proxy_ready_async(
-                    attempts + 1))
-
-    def _check_proxy_ready(self):
-        if is_proxy_ready(timeout=0.5):
-            print("[MainVavoo] Proxy ready")
-            self._update_proxy_status_display()
-            return
-        self._proxy_ready_attempts += 1
-        if self._proxy_ready_attempts < 20:      # 20 * 0.5 = 10 seconds max
-            reactor.callLater(0.5, self._check_proxy_ready)
-        else:
-            print("[MainVavoo] Proxy not ready after timeout")
 
     def _restart_proxy(self):
         """Restart the proxy asynchronously."""
@@ -2899,7 +2914,7 @@ class MainVavoo(Screen):
 
                 # Build message safely for translation
                 message = _("Vavoo bouquets removed successfully!")
-                message += ""
+                message += "\n"
                 message += _("(%s files deleted)") % removed_count
 
                 self.session.open(
@@ -3359,80 +3374,15 @@ class vavoo(Screen):
 
     def _update_proxy_status_display(self):
         """Internal method to update proxy status display"""
-        try:
-            if not cfg.proxy_enabled.value:
-                self['proxy_status'].setText(_("Proxy Disabled"))
-                return
-            if is_proxy_running():
-                try:
-                    response = getUrl(
-                        PROXY_STATUS_URL, timeout=5)
-                    if response:
-                        status_data = loads(response)
-
-                        if status_data.get(
-                                "initialized", False) and status_data.get(
-                                "addon_sig_valid", False):
-                            token_age = status_data.get("addon_sig_age", 0)
-
-                            if token_age < 300:
-                                status_text = "✓ Proxy OK"
-                            elif token_age < 540:
-                                ttl = 600 - token_age
-                                status_text = "✓ Proxy (" + \
-                                    str(int(ttl)) + "s)"
-                            else:
-                                status_text = "Proxy (expiring)"
-                        else:
-                            status_text = "✗ Proxy Error"
-                    else:
-                        status_text = "? Proxy Unknown"
-                except Exception:
-                    status_text = "✓ Proxy Running"
-            else:
-                status_text = "✗ Proxy Offline"
-
-            self['proxy_status'].setText(status_text)
-
-        except Exception as e:
-            print("[MainVavoo] Error updating proxy status: " + str(e))
-            self['proxy_status'].setText(_("✗ Error"))
+        _shared_update_proxy_status_display(self)
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
-        debug("reload_bouquets_with_popup called")
-        self.session.openWithCallback(
-            self._confirm_reload_bouquets,
-            MessageBox,
-            _("Reload bouquets and service list?"),
-            MessageBox.TYPE_YESNO,
-            timeout=10,
-            default=True
-        )
+        _shared_reload_bouquets_with_popup(self)
 
     def _confirm_reload_bouquets(self, result):
         """Callback after user confirmation"""
-        if result:
-            debug("User confirmed reload")
-            try:
-                db = eDVBDB.getInstance()
-                db.reloadBouquets()
-                db.reloadServicelist()
-                print("Bouquets reloaded successfully")
-            except Exception as e:
-                print("Error during service reload: " + str(e))
-                ReloadBouquets(500)
-            try:
-                self.session.open(
-                    MessageBox,
-                    _("Bouquets reload scheduled."),
-                    MessageBox.TYPE_INFO,
-                    timeout=2
-                )
-            except Exception as e:
-                print("[MessageBox] Error:", e)
-        else:
-            debug("User cancelled reload")
+        _shared_confirm_reload_bouquets(self, result)
 
     def ok(self):
         try:
@@ -4783,7 +4733,7 @@ class Playstream2(
 
             # Find Rytec ID - this is the expensive part
             match_start = time.time()
-            rytec_id, _ = matcher.find_match(
+            rytec_id, _unused = matcher.find_match(
                 clean_name, country_code=self.country_code)
             match_time = time.time() - match_start
 
@@ -5128,6 +5078,11 @@ class Playstream2(
 
     def cancel(self):
         """Close the player"""
+        # Reachable both from the cancel/back action bindings and from
+        # onClose (added below in __init__), which both fire on a normal
+        # user-initiated close - guard against running the cleanup twice.
+        if self._closed:
+            return
         print("[Playstream2] Closing player...")
         self._closed = True
         self.stopStream()
@@ -5296,14 +5251,32 @@ class AutoStartTimer(object):
                     print("[AutoStartTimer] Failed to start proxy")
                     return
 
-            # 3. Wait for proxy to be ready (max 10s total; non-blocking via
-            # select)
-            for i in range(10):
-                if is_proxy_ready(timeout=3):
-                    break
-                print("[AutoStartTimer] Waiting for proxy (" + str(i + 1) + "/10)")
-                select.select([], [], [], 1)
+            # 3. Wait for proxy to be ready - polls via reactor.callLater
+            # instead of blocking this thread with select.select(), which
+            # would otherwise freeze the whole Enigma2 GUI (e.g. while the
+            # user is watching TV) for up to 10s during this unattended
+            # scheduled update.
+            self._wait_for_proxy_then_update(bouquets_to_update, 10)
 
+        except Exception as e:
+            print("[AutoStartTimer] Error: " + str(e))
+            import traceback
+            traceback.print_exc()
+
+    def _wait_for_proxy_then_update(self, bouquets_to_update, attempts_left):
+        if is_proxy_ready(timeout=3) or attempts_left <= 1:
+            self._update_bouquets(bouquets_to_update)
+            return
+        print("[AutoStartTimer] Waiting for proxy (" +
+              str(11 - attempts_left) + "/10)")
+        reactor.callLater(
+            1,
+            self._wait_for_proxy_then_update,
+            bouquets_to_update,
+            attempts_left - 1)
+
+    def _update_bouquets(self, bouquets_to_update):
+        try:
             # 4. Update each bouquet
             successful_updates = 0
             for name, url, export_type in bouquets_to_update:
@@ -5404,10 +5377,18 @@ def autostart(reason, session=None, **kwargs):
 
 
 def check_configuring():
-    """Check for new config values for auto start"""
+    """React to a live change of the scheduled auto-update settings,
+    instead of requiring a reboot for them to take effect."""
+    global auto_start_timer
     if cfg.autobouquetupdate.value is True:
-        if auto_start_timer is not None:
+        if auto_start_timer is None:
+            auto_start_timer = AutoStartTimer()
+        else:
             auto_start_timer.update()
+    else:
+        timer = getattr(auto_start_timer, 'timer', None)
+        if timer is not None:
+            timer.stop()
         return
 
 
@@ -5464,11 +5445,13 @@ def cfgmain(menuid, **kwargs):
 def checkInternet():
     try:
         import socket
-        socket.setdefaulttimeout(0.5)
-        socket.socket(
-            socket.AF_INET, socket.SOCK_STREAM).connect(
-            ('8.8.8.8', 53))
-        return True
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.settimeout(0.5)
+            s.connect(('8.8.8.8', 53))
+            return True
+        finally:
+            s.close()
     except BaseException:
         return False
 

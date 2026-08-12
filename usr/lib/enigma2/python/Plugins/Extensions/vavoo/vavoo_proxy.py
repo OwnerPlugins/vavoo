@@ -1408,50 +1408,72 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         self.send_error(404, "Stream not resolved")
                         return
 
-                    # 2. Connect to upstream with streaming (timeout aumentato)
-                    upstream = proxy.session.get(
-                        stream_url, stream=True, timeout=(
-                            10, 90))  # (connect, read) 10s/90s
-                    upstream.raise_for_status()
-
-                    # 3. Send headers to player
-                    if not self.safe_send_response(200):
-                        return
-                    self.send_header(
-                        'Content-Type',
-                        upstream.headers.get(
-                            'Content-Type',
-                            'video/mp2t'))
-                    self.send_header('Connection', 'keep-alive')
-                    # Add headers to prevent caching
-                    self.send_header('Cache-Control', 'no-cache, no-store')
-                    self.end_headers()
-
-                    # 4. Forward data with timeout monitoring (chunk size
-                    # increased)
-                    last_data_time = time.time()
+                    # 2-4 all live under one try/finally so upstream is
+                    # always closed, including if raise_for_status() raises
+                    # or the client disconnects before headers are sent -
+                    # previously the connection/response was only closed if
+                    # the forwarding loop below was actually reached.
+                    upstream = None
+                    counted_stream = False
                     try:
-                        # Increase chunk size from 65536 to 262144 (256KB)
-                        for chunk in upstream.iter_content(chunk_size=262144):
-                            if chunk:
-                                self.wfile.write(chunk)
-                                self.wfile.flush()
-                                last_data_time = time.time()
-                            else:
-                                if time.time() - last_data_time > 15:
-                                    print(
-                                        "[Proxy Stream] Upstream stalled for: " + channel_id)
-                                    break
-                                select.select([], [], [], 0.1)
-                    except (socket.timeout, ConnectionError, BrokenPipeError) as e:
-                        print("[Proxy Stream] Network error: " + str(e))
-                    except Exception as e:
-                        print("[Proxy Stream] Unexpected error: " + str(e))
-                    finally:
+                        # 2. Connect to upstream with streaming (timeout
+                        # aumentato)
+                        upstream = proxy.session.get(
+                            stream_url, stream=True, timeout=(
+                                10, 90))  # (connect, read) 10s/90s
+                        upstream.raise_for_status()
+
+                        # 3. Send headers to player
+                        if not self.safe_send_response(200):
+                            return
+                        self.send_header(
+                            'Content-Type',
+                            upstream.headers.get(
+                                'Content-Type',
+                                'video/mp2t'))
+                        self.send_header('Connection', 'keep-alive')
+                        # Add headers to prevent caching
+                        self.send_header(
+                            'Cache-Control', 'no-cache, no-store')
+                        self.end_headers()
+
+                        # HEAD requests get headers only - the caller
+                        # (do_HEAD) wants to know the stream is reachable
+                        # without paying for the actual video transfer.
+                        if getattr(self, '_head_only', False):
+                            return
+
+                        # 4. Forward data with timeout monitoring (chunk
+                        # size increased)
+                        proxy.stream_started()
+                        counted_stream = True
+                        last_data_time = time.time()
                         try:
-                            upstream.close()
-                        except Exception:
-                            pass
+                            # Increase chunk size from 65536 to 262144 (256KB)
+                            for chunk in upstream.iter_content(
+                                    chunk_size=262144):
+                                if chunk:
+                                    self.wfile.write(chunk)
+                                    self.wfile.flush()
+                                    last_data_time = time.time()
+                                else:
+                                    if time.time() - last_data_time > 15:
+                                        print(
+                                            "[Proxy Stream] Upstream stalled for: " + channel_id)
+                                        break
+                                    select.select([], [], [], 0.1)
+                        except (socket.timeout, ConnectionError, BrokenPipeError) as e:
+                            print("[Proxy Stream] Network error: " + str(e))
+                        except Exception as e:
+                            print("[Proxy Stream] Unexpected error: " + str(e))
+                    finally:
+                        if upstream is not None:
+                            try:
+                                upstream.close()
+                            except Exception:
+                                pass
+                        if counted_stream:
+                            proxy.stream_ended()
                         print(
                             "[Proxy Stream] Finished for channel: " +
                             channel_id)

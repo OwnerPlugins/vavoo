@@ -210,11 +210,16 @@ class AnonymousStats(object):
         t.start()
 
         if self._heartbeat_active:
-            self._heartbeat_timer = eTimer()
-            if os.path.exists('/var/lib/dpkg/status'):
-                self._heartbeat_timer.timeout.connect(self._send_heartbeat)
-            else:
-                self._heartbeat_timer.callback.append(self._send_heartbeat)
+            # Reuse one persistent timer across cycles instead of
+            # allocating and reconnecting a new eTimer every 5 minutes.
+            if getattr(self, '_heartbeat_timer', None) is None:
+                self._heartbeat_timer = eTimer()
+                if os.path.exists('/var/lib/dpkg/status'):
+                    self._heartbeat_timer.timeout.connect(
+                        self._send_heartbeat)
+                else:
+                    self._heartbeat_timer.callback.append(
+                        self._send_heartbeat)
             self._heartbeat_timer.start(300000, True)
 
     def stop_heartbeat(self):
