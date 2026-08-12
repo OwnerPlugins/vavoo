@@ -389,7 +389,8 @@ def convert_bouquet_sync(
         # unmatched.json, unlike bouquets refreshed via a manual export
         # (process_epg_matching_background, which already does this).
         try:
-            update_complete_cache(matched, unmatched, country_code, servicetype)
+            update_complete_cache(
+                matched, unmatched, country_code, servicetype)
         except Exception as e:
             print("[Bouquet] Error updating unmatched cache: %s" % e)
 
