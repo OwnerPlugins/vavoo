@@ -128,10 +128,19 @@ class HybridNotificationManager(object):
 
     def _processPendingMessages(self):
         """Process pending messages after initialization"""
-        if self.pending_messages and self.notification_window:
-            for msg, duration in self.pending_messages:
-                self._showMessage(msg, duration)
+        if not self.notification_window:
+            return
+        # Snapshot-and-clear atomically under the lock, then show the
+        # messages outside it - otherwise a showMessage() call from
+        # another thread landing between the loop finishing and the
+        # list reset below could get silently dropped.
+        with self._lock:
+            if not self.pending_messages:
+                return
+            messages = self.pending_messages
             self.pending_messages = []
+        for msg, duration in messages:
+            self._showMessage(msg, duration)
 
     def _showMessage(self, message, duration):
         """Internal method to show message"""
@@ -168,9 +177,10 @@ class HybridNotificationManager(object):
         """
         # If not initialized yet, queue the message
         if not self.notification_window or not self.session:
-            self.pending_messages.append((message, duration))
-            if len(self.pending_messages) > 10:  # Limit queue size
-                self.pending_messages = self.pending_messages[-10:]
+            with self._lock:
+                self.pending_messages.append((message, duration))
+                if len(self.pending_messages) > 10:  # Limit queue size
+                    self.pending_messages = self.pending_messages[-10:]
             return
 
         reactor.callFromThread(self._showMessage, message, duration)
