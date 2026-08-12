@@ -1483,10 +1483,20 @@ def cleanup_old_temp_files(max_age_hours=1):
             "/tmp/tmp*.png"
         ]
 
+        # "/tmp/*vavoo*" also matches the proxy's own bookkeeping files
+        # (vavoo_proxy.py's PID_FILE/BOOTING_FILE - hardcoded here rather
+        # than imported to avoid a circular import, since vavoo_proxy.py
+        # itself imports from this module). Deleting either out from
+        # under a running/booting proxy would confuse its own PID/boot
+        # tracking.
+        excluded_basenames = ("vavoo_proxy.pid", "vavoo_proxy_booting")
+
         cleaned = 0
         for pattern in patterns:
             for filepath in glob.glob(pattern):
                 try:
+                    if basename(filepath) in excluded_basenames:
+                        continue
                     if isfile(filepath):
                         file_age = now - getmtime(filepath)
                         if file_age > max_age:
@@ -1694,6 +1704,11 @@ RYTEC_COUNTRY_CODE_OVERRIDES = {
 class VavooEPGMatcher(object):
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
+        # Guards the lazy-init blocks below (_configured_sats,
+        # _checked_temp_cache) against a TOCTOU race if find_match() is
+        # ever called concurrently on this same matcher instance from
+        # two threads.
+        self._lazy_init_lock = threading.Lock()
         # (clean_name, original_name, service_ref)
         self.rytec_entries = []
         # Same entries grouped by country code (from the id's suffix, e.g.
@@ -1745,15 +1760,19 @@ class VavooEPGMatcher(object):
         of paying for a full save_unmatched() read+write on every match.
         """
         if not hasattr(self, '_unmatched_keys'):
-            self._unmatched_keys = set()
-            try:
-                if exists(UNMATCHED_FILE):
-                    with open(UNMATCHED_FILE, 'r') as f:
-                        content = f.read().strip()
-                        if content:
-                            self._unmatched_keys = set(loads(content).keys())
-            except Exception as e:
-                debug("Could not load unmatched cache keys: {}".format(e))
+            with self._lazy_init_lock:
+                if not hasattr(self, '_unmatched_keys'):
+                    self._unmatched_keys = set()
+                    try:
+                        if exists(UNMATCHED_FILE):
+                            with open(UNMATCHED_FILE, 'r') as f:
+                                content = f.read().strip()
+                                if content:
+                                    self._unmatched_keys = set(
+                                        loads(content).keys())
+                    except Exception as e:
+                        debug(
+                            "Could not load unmatched cache keys: {}".format(e))
         key = "%s_%s" % (channel_name.strip(), country_code or '')
         if key in self._unmatched_keys:
             save_unmatched(
@@ -1969,9 +1988,11 @@ class VavooEPGMatcher(object):
 
         # Load user-configured satellites (e.g., [130] for 13°E)
         if not hasattr(self, '_configured_sats'):
-            self._configured_sats = get_configured_satellites()
-            print("[Match] User has {} configured satellites: {}".format(
-                len(self._configured_sats), self._configured_sats))
+            with self._lazy_init_lock:
+                if not hasattr(self, '_configured_sats'):
+                    self._configured_sats = get_configured_satellites()
+                    print("[Match] User has {} configured satellites: {}".format(
+                        len(self._configured_sats), self._configured_sats))
 
         candidates = []
 
@@ -2171,17 +2192,23 @@ class VavooEPGMatcher(object):
 
         # 2. Online cache
         if not hasattr(self, '_checked_temp_cache'):
-            self._checked_temp_cache = False
-            self._temp_cache = None
+            with self._lazy_init_lock:
+                if not hasattr(self, '_checked_temp_cache'):
+                    self._checked_temp_cache = False
+                    self._temp_cache = None
 
         if not self._checked_temp_cache:
-            print("[Match] Checking temp cache once...")
-            self._temp_cache = load_temp_cache()
-            if not self._temp_cache:
-                print("[Match] Temp cache not found, downloading once...")
-                if download_epg_cache_if_needed():
+            with self._lazy_init_lock:
+                # Re-check inside the lock - another thread may have
+                # already done this download/load while we were waiting.
+                if not self._checked_temp_cache:
+                    print("[Match] Checking temp cache once...")
                     self._temp_cache = load_temp_cache()
-            self._checked_temp_cache = True
+                    if not self._temp_cache:
+                        print("[Match] Temp cache not found, downloading once...")
+                        if download_epg_cache_if_needed():
+                            self._temp_cache = load_temp_cache()
+                    self._checked_temp_cache = True
 
         if self._temp_cache and search_key in self._temp_cache:
             cached = self._temp_cache[search_key]

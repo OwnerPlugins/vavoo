@@ -8,7 +8,7 @@ import threading
 import urllib3
 import select
 from json import loads
-from os import listdir, remove
+from os import listdir, remove, rename
 from os.path import exists as file_exists, isfile, join, basename
 from re import search
 from Components.config import config
@@ -142,9 +142,14 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
             new_lines = non_vavoo_lines + vavoo_lines
             position_info = "bottom"
 
-        # Write file
-        with io.open(main_bouquet_path, 'w', encoding='utf-8') as f:
+        # Write file atomically (temp file + rename) - this is
+        # Enigma2's entire channel/bouquet index, not just Vavoo's own
+        # bouquets; writing it in place would leave it truncated if the
+        # process is killed mid-write (STB power loss, OOM-kill).
+        temp_path = main_bouquet_path + ".tmp"
+        with io.open(temp_path, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
+        rename(temp_path, main_bouquet_path)
 
         ReloadBouquets(3000)
         print(
@@ -170,8 +175,13 @@ def deep_clean_bouquet_files():
                 # Keep only lines that do not contain ".vavoo_"
                 new_lines = [line for line in lines if '.vavoo_' not in line]
 
-                with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+                # Atomic write (temp file + rename) - same reasoning as
+                # _add_to_main_bouquet(): this is Enigma2's whole channel
+                # index, not just Vavoo's bouquets.
+                temp_path = bouquet_path + ".tmp"
+                with io.open(temp_path, 'w', encoding='utf-8') as f:
                     f.writelines(new_lines)
+                rename(temp_path, bouquet_path)
 
                 print("✓ Cleaned: " + bfile)
 
@@ -373,6 +383,16 @@ def convert_bouquet_sync(
         except Exception as e:
             print("[Bouquet] Error saving cache: %s" % e)
 
+        # 10. Persist unmatched channels too - without this, bouquets
+        # kept up to date via the scheduled auto-update path (this
+        # function) never accumulate retry/diagnostic data in
+        # unmatched.json, unlike bouquets refreshed via a manual export
+        # (process_epg_matching_background, which already does this).
+        try:
+            update_complete_cache(matched, unmatched, country_code, servicetype)
+        except Exception as e:
+            print("[Bouquet] Error updating unmatched cache: %s" % e)
+
         return ch_count
     except Exception as e:
         print("[Bouquet] Error in convert_bouquet_sync: " + str(e))
@@ -450,7 +470,7 @@ def export_bouquet_async(
             if channels_list:
                 process_epg_matching_background(
                     name, bouquet_filename, channels_list, country_code,
-                    parent_screen, callback
+                    parent_screen, callback, servicetype=servicetype
                 )
             else:
                 # No channels for EPG, just call callback again? Already
@@ -1160,8 +1180,12 @@ def reorganize_all_bouquets_position(list_position="bottom"):
             else:
                 new_lines = non_vavoo_lines + vavoo_lines
 
-            with io.open(main_bouquet_path, 'w', encoding='utf-8') as f:
+            # Atomic write (temp file + rename) - same reasoning as
+            # _add_to_main_bouquet()/deep_clean_bouquet_files().
+            temp_path = main_bouquet_path + ".tmp"
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.writelines(new_lines)
+            rename(temp_path, main_bouquet_path)
 
         print("Reorganized all Vavoo bouquets to " + list_position)
         return True

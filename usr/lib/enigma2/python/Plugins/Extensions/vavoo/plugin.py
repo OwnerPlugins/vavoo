@@ -1240,7 +1240,12 @@ class vavoo_config(Screen, ConfigListScreen):
                     (m3u_path, channel_count))
             except Exception as e:
                 print("[M3U] Error writing file: %s" % str(e))
-                with open(m3u_path, 'w') as f:
+                # Keep the same explicit utf-8 encoding as the primary
+                # write attempt above - a bare open() here would use the
+                # platform default encoding, which raises
+                # UnicodeEncodeError on Python 2 for the non-ASCII
+                # channel names decodeHtml() commonly produces.
+                with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
                     f.write(m3u_content)
 
             return channel_count
@@ -5156,6 +5161,11 @@ class AutoStartTimer(object):
                     now.tm_isdst
                 )))
                 return fwt
+            # cfg.timetype only ever offers "interval"/"fixed time"
+            # today, but fall back safely instead of implicitly
+            # returning None (which would TypeError in update()'s
+            # `if wake > 0`) if that ever changes.
+            return -1
         else:
             return -1
 
