@@ -1,26 +1,33 @@
 #!/bin/bash
 
-version='1.85'
-changelog="- Fixed exported/favorite bouquets showing EPG for only a handful of
-  channels: EPGImport's own channel filter silently drops any mapping
-  entry that has no stream URL attached, which every exported channel
-  had - now the full playable reference is written, matching the
-  bouquet itself
-- Fixed the exported EPG id-correction fallback (for channels whose
-  matched ID uses a different naming convention than the EPG guide
-  feed) never actually running on real hardware, caused by fetching
-  and fully parsing the entire multi-day guide with too short a
-  timeout
-- Fixed 'Update EPG Now' starting an import with nothing queued, so it
-  always silently finished at 0 events despite reporting success
-- Fixed 'Update EPG Now' reloading bouquets before the EPG mapping
-  files it just generated actually existed
-- Fixed 'Update EPG Now' calling a CLI tool that doesn't exist on a
-  normal Enigma2 image - it now triggers EPGImport directly instead
-- Fixed EPG fallback matching substituting the wrong channel's guide
-  data in more cases, generalizing an existing digit-only guard
-- Fixed every channel resolve silently failing on Python 2
-- Added HTTP HEAD request support to the local proxy"
+version='1.86'
+changelog="- Added a choice of Local (127.0.0.1) or Network IP when
+  generating M3U files, instead of always embedding the box's LAN IP
+- Fixed EPG assigned to the wrong (SD) channel for several HD
+  channels, e.g. DMAX HD, Discovery Channel HD, Super Tennis HD,
+  Eurosport 2
+- Fixed 'Bouquet Position in List' doing nothing when changed and
+  saved in Config
+- Fixed 'Scheduled List' (auto bouquet update) requiring a reboot to
+  take effect after being enabled, and a crash that could silently
+  lose your settings on a later Save
+- Fixed EPG and scheduled bouquet auto-update failing completely on
+  some images due to a config value type mismatch
+- Fixed the local proxy freezing the whole Enigma2 GUI for up to 30
+  seconds during M3U export and scheduled updates
+- Fixed the plugin crashing the whole box (green screen) on some
+  Python 2 images when exporting a bouquet
+- Fixed the update popup's changelog rendering as a totally blank box
+  on some images
+- Fixed in-player streams that fail repeatedly retrying forever
+  instead of eventually giving up and returning to the channel list
+- Fixed removing/checking bouquets whose category name uses a
+  particular separator character
+- Fixed a connection leak and a HEAD-request bug in the local proxy's
+  streaming endpoint
+- Added a confirmation popup before reloading bouquets
+- Hardened numerous Python 2/3 compatibility edge cases and file-write
+  safety across the plugin"
 
 
 echo "$changelog"
