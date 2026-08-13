@@ -2668,8 +2668,7 @@ def save_unmatched(
                                             'timestamp', strftime(
                                                 '%Y-%m-%d %H:%M:%S', localtime())), 'matched': False, 'attempts': 1}
                                     print(
-                                        "[Unmatched] Converted old format: %s" %
-                                        key)
+                                        "[Unmatched] Converted old format: %s" % key)
                 except Exception as read_error:
                     print(
                         "[Unmatched] Corrupted file, starting fresh: %s" %
