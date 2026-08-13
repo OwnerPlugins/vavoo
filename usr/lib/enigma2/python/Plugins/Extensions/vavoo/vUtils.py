@@ -107,6 +107,7 @@ except ImportError:
 
 _epg_lock = threading.Lock()
 _starting_lock = threading.Lock()
+_unmatched_lock = threading.Lock()
 
 LOG_MAX_BYTES = 1024 * 1024
 DEBUG_ENABLED = str(
@@ -2633,81 +2634,91 @@ def save_unmatched(
        If sref is provided, it will be used as the service reference;
        otherwise a fallback is built from servicetype.
     """
-    try:
-        unmatched_data = {}
+    # The whole read-modify-write cycle (not just the final write) needs
+    # to be serialized: this function is called once per unmatched
+    # channel from background EPG-matching threads, and two overlapping
+    # calls sharing the same fixed UNMATCHED_FILE + ".tmp" path could
+    # otherwise race on the final rename() - one call's rename succeeds,
+    # consuming the temp file, and the other's then fails with ENOENT
+    # since its own temp file was never created under that same path
+    # (confirmed via a user-submitted log showing exactly this error
+    # repeated hundreds of times during a multi-country export).
+    with _unmatched_lock:
+        try:
+            unmatched_data = {}
 
-        if exists(UNMATCHED_FILE):
-            try:
-                with open(UNMATCHED_FILE, 'r') as f:
-                    content = f.read().strip()
-                    if content:
-                        unmatched_data = loads(content)
+            if exists(UNMATCHED_FILE):
+                try:
+                    with open(UNMATCHED_FILE, 'r') as f:
+                        content = f.read().strip()
+                        if content:
+                            unmatched_data = loads(content)
 
-                        # Convert old format if needed
-                        for key, value in list(unmatched_data.items()):
-                            if 'matched' not in value:
-                                # Convert to new format
-                                unmatched_data[key] = {
-                                    'id': value.get(
-                                        'id', key), 'name': value.get(
-                                        'name', key.split('_')[0] if '_' in key else key), 'country': value.get(
-                                        'country', country_code), 'sref': value.get(
-                                        'sref', "%s:0:0:0:0:0:0:0:0:0:" %
-                                        servicetype), 'timestamp': value.get(
-                                        'timestamp', strftime(
-                                            '%Y-%m-%d %H:%M:%S', localtime())), 'matched': False, 'attempts': 1}
-                                print(
-                                    "[Unmatched] Converted old format: %s" %
-                                    key)
-            except Exception as read_error:
+                            # Convert old format if needed
+                            for key, value in list(unmatched_data.items()):
+                                if 'matched' not in value:
+                                    # Convert to new format
+                                    unmatched_data[key] = {
+                                        'id': value.get(
+                                            'id', key), 'name': value.get(
+                                            'name', key.split('_')[0] if '_' in key else key), 'country': value.get(
+                                            'country', country_code), 'sref': value.get(
+                                            'sref', "%s:0:0:0:0:0:0:0:0:0:" %
+                                            servicetype), 'timestamp': value.get(
+                                            'timestamp', strftime(
+                                                '%Y-%m-%d %H:%M:%S', localtime())), 'matched': False, 'attempts': 1}
+                                    print(
+                                        "[Unmatched] Converted old format: %s" %
+                                        key)
+                except Exception as read_error:
+                    print(
+                        "[Unmatched] Corrupted file, starting fresh: %s" %
+                        read_error)
+                    unmatched_data = {}
+
+            key = "%s_%s" % (channel_name.strip(), country_code or '')
+
+            if matched and key in unmatched_data:
+                # Remove if now matched
+                del unmatched_data[key]
+                print("[Unmatched] Removed matched channel: %s" % key)
+            elif not matched:
+                # Add or update unmatched
+                timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
+                # Use provided sref or build fallback
+                if sref is not None:
+                    fallback_sref = ensure_sref_trailing_colon(sref)
+                else:
+                    fallback_sref = "%s:0:0:0:0:0:0:0:0:0:" % servicetype
+
+                old_data = unmatched_data.get(key, {})
+                attempts = old_data.get('attempts', 0) + 1
+
+                unmatched_data[key] = {
+                    'id': key,
+                    'name': channel_name.strip(),
+                    'country': country_code or '',
+                    'sref': fallback_sref,
+                    'timestamp': timestamp,
+                    'matched': False,
+                    'attempts': attempts
+                }
                 print(
-                    "[Unmatched] Corrupted file, starting fresh: %s" %
-                    read_error)
-                unmatched_data = {}
+                    "[Unmatched] Added/updated: %s (attempt #%d)" %
+                    (key, attempts))
 
-        key = "%s_%s" % (channel_name.strip(), country_code or '')
+            # Write complete file
+            temp_file = UNMATCHED_FILE + ".tmp"
+            with open(temp_file, 'w') as f:
+                dump(unmatched_data, f, indent=4, sort_keys=True)
+            rename(temp_file, UNMATCHED_FILE)
 
-        if matched and key in unmatched_data:
-            # Remove if now matched
-            del unmatched_data[key]
-            print("[Unmatched] Removed matched channel: %s" % key)
-        elif not matched:
-            # Add or update unmatched
-            timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
-            # Use provided sref or build fallback
-            if sref is not None:
-                fallback_sref = ensure_sref_trailing_colon(sref)
-            else:
-                fallback_sref = "%s:0:0:0:0:0:0:0:0:0:" % servicetype
-
-            old_data = unmatched_data.get(key, {})
-            attempts = old_data.get('attempts', 0) + 1
-
-            unmatched_data[key] = {
-                'id': key,
-                'name': channel_name.strip(),
-                'country': country_code or '',
-                'sref': fallback_sref,
-                'timestamp': timestamp,
-                'matched': False,
-                'attempts': attempts
-            }
             print(
-                "[Unmatched] Added/updated: %s (attempt #%d)" %
-                (key, attempts))
+                "[Unmatched] Cache updated - total entries: %d" %
+                len(unmatched_data))
 
-        # Write complete file
-        temp_file = UNMATCHED_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(unmatched_data, f, indent=4, sort_keys=True)
-        rename(temp_file, UNMATCHED_FILE)
-
-        print(
-            "[Unmatched] Cache updated - total entries: %d" %
-            len(unmatched_data))
-
-    except Exception as e:
-        print("[Unmatched] Error: %s" % e)
+        except Exception as e:
+            print("[Unmatched] Error: %s" % e)
 
 
 # country_code -> (timestamp, set(ids), {clean_name: id})

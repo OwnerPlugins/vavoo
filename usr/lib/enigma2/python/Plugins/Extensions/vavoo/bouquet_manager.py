@@ -189,10 +189,58 @@ def deep_clean_bouquet_files():
         print("Error in deep clean: " + str(e))
 
 
+def _remove_bouquet_lines_from_main_files(removed_filenames):
+    """Remove only the bouquets.tv/.radio line(s) referencing the given
+    bouquet filenames, leaving every other Vavoo bouquet's registration
+    intact.
+
+    Unlike deep_clean_bouquet_files() (which unconditionally wipes every
+    ".vavoo_" line and is only correct for the "remove every Vavoo
+    bouquet" case), this is what remove_bouquets_by_name(name) needs when
+    scoped to one bouquet - otherwise, removing/recreating bouquet A
+    while bouquet B already exists wipes B's line too and never puts it
+    back, so B silently disappears from the channel list the next time
+    any other Vavoo bouquet is updated (confirmed via a user-submitted
+    log: exporting France then Portugal left bouquets.tv with only
+    Portugal's line, even though France's bouquet file was created fine).
+    """
+    if not removed_filenames:
+        return
+    try:
+        for bfile in ['bouquets.tv', 'bouquets.radio']:
+            bouquet_path = join(ENIGMA_PATH, bfile)
+            if not file_exists(bouquet_path):
+                continue
+
+            with io.open(bouquet_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+
+            new_lines = [
+                line for line in lines
+                if not any(fname in line for fname in removed_filenames)
+            ]
+
+            if len(new_lines) == len(lines):
+                continue
+
+            temp_path = bouquet_path + ".tmp"
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
+                f.writelines(new_lines)
+            rename(temp_path, bouquet_path)
+
+            print(
+                "✓ Removed %d line(s) from %s" %
+                (len(lines) - len(new_lines), bfile))
+
+    except Exception as e:
+        print("Error removing bouquet lines: " + str(e))
+
+
 def remove_bouquets_by_name(name=None):
     """Remove Vavoo bouquets by name. If name is None, remove all Vavoo bouquets."""
     try:
         removed_count = 0
+        removed_filenames = []
         for fname in listdir(ENIGMA_PATH):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
@@ -215,11 +263,20 @@ def remove_bouquets_by_name(name=None):
                 try:
                     remove(bouquet_path)
                     removed_count += 1
+                    removed_filenames.append(fname)
                     print("✓ Removed: " + fname)
                 except Exception as e:
                     print("Error removing " + fname + ": " + str(e))
 
-        deep_clean_bouquet_files()
+        if name is None:
+            # Removing every Vavoo bouquet - the blanket wipe is correct
+            # here.
+            deep_clean_bouquet_files()
+        else:
+            # Scoped to one bouquet - only strip that bouquet's own
+            # line(s), so any other already-exported Vavoo bouquet's
+            # registration in bouquets.tv/.radio survives.
+            _remove_bouquet_lines_from_main_files(removed_filenames)
 
         # --- also remove associated EPG files ---
         epg_dir = "/etc/epgimport"
