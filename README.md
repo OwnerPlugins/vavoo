@@ -21,9 +21,6 @@
     <img src="https://github.com/Belfagor2005/vavoo/actions/workflows/pylint.yml/badge.svg" alt="Pylint">
   </a>
 
-  <a href="https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml">
-    <img src="https://github.com/Belfagor2005/vavoo/actions/workflows/ruff.yml/badge.svg" alt="Ruff Status">
-  </a>
 </p>
 
 <p align="center">
