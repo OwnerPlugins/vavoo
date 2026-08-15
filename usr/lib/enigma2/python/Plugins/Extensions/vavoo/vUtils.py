@@ -2074,7 +2074,7 @@ class VavooEPGMatcher(object):
         # threshold anyway, never a false negative. This loop runs against
         # every Rytec entry for the country on every uncached match, so it
         # matters most for countries with large Rytec databases (e.g. Italy).
-        source_tokens = clean_input.split()
+        source_tokens = _tokenize_for_compat(clean_input)
         sm = SequenceMatcher(None, clean_input)
         for clean_entry, orig_name, rytec_id, service_ref in entries_to_scan:
             # A shared textual prefix with a *different* word at a
@@ -2086,7 +2086,7 @@ class VavooEPGMatcher(object):
             # trailing descriptive words - only a genuine word-for-word
             # prefix mismatch is rejected.
             if source_tokens:
-                entry_tokens = clean_entry.split()
+                entry_tokens = _tokenize_for_compat(clean_entry)
                 if entry_tokens and not _tokens_compatible(
                         source_tokens, entry_tokens):
                     continue
@@ -2887,6 +2887,32 @@ def _get_epg_feed_index(country_code):
     return feed_ids, name_index
 
 
+def _tokenize_for_compat(clean_name):
+    """Split an already-cleaned (lowercase) name into tokens for
+    _tokens_compatible(), first inserting a space between a letter and
+    an immediately-following digit (e.g. "sport1" -> "sport 1").
+
+    Rytec's own channel comments frequently glue a trailing channel
+    number straight onto the preceding word with no space - confirmed
+    ~780 times across a real rytec.channels.xml (e.g. "Bein Sport1",
+    "B1 TV", "Arena 1x2") - while Vavoo's own channel names always space
+    it out ("BEIN SPORTS 1"). Without this, an otherwise very close
+    match (0.92 similarity for "bein sports 1" vs "bein sport1") never
+    even reaches the similarity check, rejected outright by
+    _tokens_compatible() because "sport1" and "sports"+"1" don't
+    tokenize the same way.
+
+    This only affects tokenization for the compatibility gate -
+    _clean_name_for_similarity()'s output (used for actual scoring and
+    cache-key comparisons) is untouched, and two genuinely different
+    numbers still end up as distinct tokens (e.g. "france3" ->
+    ["france", "3"] vs "france5" -> ["france", "5"]), so the guard's
+    real job - rejecting a different word/number at a shared position -
+    is unaffected.
+    """
+    return sub(r'(?<=[a-z])(?=[0-9])', ' ', clean_name).split()
+
+
 def _tokens_compatible(a_tokens, b_tokens):
     """True unless the two token lists differ at a shared position -
     i.e. one is a genuine word-for-word prefix of the other (or
@@ -2909,12 +2935,12 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
-    source_tokens = clean.split()
+    source_tokens = _tokenize_for_compat(clean)
     best_score = 0.0
     best_id = None
     sm = SequenceMatcher(None, clean)
     for dn_key, dn_id in name_index.items():
-        candidate_tokens = dn_key.split()
+        candidate_tokens = _tokenize_for_compat(dn_key)
         if (source_tokens and candidate_tokens and
                 not _tokens_compatible(source_tokens, candidate_tokens)):
             continue
