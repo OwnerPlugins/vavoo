@@ -939,9 +939,16 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self._m3u_host = result[1]
 
-        # 3. Get country list from proxy
+        # 3. Get country list from proxy - in a background thread and
+        # continue in a callback: get_countries_from_proxy()'s getUrl()
+        # call can block for tens of seconds on a slow/unresponsive
+        # proxy, and this method runs directly on Enigma2's single GUI
+        # thread as a ChoiceBox callback - calling it here synchronously
+        # would freeze the whole box for that long.
+        self._fetch_countries_async(self._on_countries_for_mode_choice)
+
+    def _on_countries_for_mode_choice(self, countries):
         try:
-            countries = self.get_countries_from_proxy()
             if not countries:
                 raise Exception("No countries available")
 
@@ -981,9 +988,11 @@ class vavoo_config(Screen, ConfigListScreen):
             return
 
         mode = result[1]
+        self._fetch_countries_async(
+            lambda countries: self._on_countries_for_mode(mode, countries))
 
+    def _on_countries_for_mode(self, mode, countries):
         try:
-            countries = self.get_countries_from_proxy()
             if not countries:
                 raise Exception("No countries available")
 
@@ -1040,9 +1049,14 @@ class vavoo_config(Screen, ConfigListScreen):
 
         selected_country = result[1]
 
-        # Get channels for the selected country
-        channels = self.get_channels_for_country(selected_country)
+        # Get channels for the selected country - in a background
+        # thread, same reasoning as _fetch_countries_async().
+        self._fetch_channels_async(
+            selected_country,
+            lambda channels: self._on_channels_for_country(
+                selected_country, channels))
 
+    def _on_channels_for_country(self, selected_country, channels):
         if not channels or len(channels) == 0:
             self.session.open(
                 MessageBox,
@@ -1273,6 +1287,30 @@ class vavoo_config(Screen, ConfigListScreen):
         except Exception as e:
             print("[M3U] Error getting channels: %s" % str(e))
             return []
+
+    def _fetch_countries_async(self, on_done):
+        """Run get_countries_from_proxy() in a background thread and
+        deliver the result to on_done() on the reactor/GUI thread.
+        get_countries_from_proxy() is a synchronous getUrl() call that
+        can block for tens of seconds on a slow/unresponsive proxy -
+        every caller here is a ChoiceBox/ MessageBox callback, i.e.
+        already running on Enigma2's single GUI thread, so calling it
+        directly would freeze the whole box for that long."""
+        def task():
+            countries = self.get_countries_from_proxy()
+            reactor.callFromThread(on_done, countries)
+        t = threading.Thread(target=task)
+        t.setDaemon(True)
+        t.start()
+
+    def _fetch_channels_async(self, country_name, on_done):
+        """Same as _fetch_countries_async(), for get_channels_for_country()."""
+        def task():
+            channels = self.get_channels_for_country(country_name)
+            reactor.callFromThread(on_done, channels)
+        t = threading.Thread(target=task)
+        t.setDaemon(True)
+        t.start()
 
     def check_and_start_proxy_async(
             self, on_ready, on_failed, attempts_left=10):
@@ -5241,7 +5279,20 @@ class AutoStartTimer(object):
 
     def _wait_for_proxy_then_update(self, bouquets_to_update, attempts_left):
         if is_proxy_ready(timeout=3) or attempts_left <= 1:
-            self._update_bouquets(bouquets_to_update)
+            # _update_bouquets() does the real work: Rytec matching, EPG
+            # feed downloads, and bouquet file I/O for every favorited
+            # country, all synchronous - easily minutes for a multi-country
+            # update. This method runs via reactor.callLater, i.e. on
+            # Enigma2's single main/GUI thread (same one this class was
+            # already careful about above, for the much shorter proxy
+            # wait) - calling it directly here would freeze the whole box,
+            # unattended, for however long the update takes. Run it in a
+            # background thread instead, same pattern export_bouquet_async()
+            # already uses for the manual export path.
+            t = threading.Thread(
+                target=self._update_bouquets, args=(bouquets_to_update,))
+            t.daemon = True
+            t.start()
             return
         print("[AutoStartTimer] Waiting for proxy (" +
               str(11 - attempts_left) + "/10)")
@@ -5284,11 +5335,14 @@ class AutoStartTimer(object):
                 else:
                     print("[AutoStartTimer] ✗ Failed: " + name)
 
-            # 5. Update timestamp and show MessageBox
+            # 5. Update timestamp
             if successful_updates > 0:
                 localtime = time.asctime(time.localtime(time.time()))
-                cfg.last_update.value = localtime
-                cfg.last_update.save()
+
+                def _save_last_update():
+                    cfg.last_update.value = localtime
+                    cfg.last_update.save()
+                reactor.callFromThread(_save_last_update)
                 print("[AutoStartTimer] Updated " +
                       str(successful_updates) +
                       "/" +

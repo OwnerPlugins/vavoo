@@ -951,10 +951,18 @@ class VavooProxy(object):
             cursor = None
             page = 1
             max_retries = 3
+            # Safety cap: real catalogs run to a few thousand channels /
+            # a few dozen pages (300 items/page). Nothing should bound
+            # this loop otherwise - a buggy or malicious upstream
+            # response that kept returning a non-empty cursor forever
+            # would keep it running indefinitely, since each page fetch
+            # is a real network call that only stops the loop via an
+            # empty items list/cursor, not a page count.
+            max_pages = 200
 
             print("Loading catalog...")
 
-            while True:
+            while page <= max_pages:
                 catalog_payload = {
                     "language": self.current_language,
                     "region": self.current_region,

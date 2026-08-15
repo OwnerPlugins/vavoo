@@ -2985,63 +2985,71 @@ def write_epg_mapping_file(epg_entries, country_code):
     passing the bare tuple here means the channel gets dropped entirely
     during EPGImport's own channels.xml parse pass.
     """
+    epg_dir = "/etc/epgimport"
+    if not exists(epg_dir):
+        makedirs(epg_dir)
+
+    if country_code:
+        filename = "vavoo_{}.channels.xml".format(country_code.lower())
+    else:
+        filename = "vavoo.channels.xml"
+    channels_file = join(epg_dir, filename)
+
+    # Some channels' Rytec-matched id isn't one this country's actual
+    # feed uses for <channel id> (it has its own convention for a
+    # handful of channels, e.g. "RTP.1.HD.pt" vs the Rytec
+    # "rtp1.pt") - epgimport can't find programme data filed under
+    # an id the feed never defines. Fall back to the feed's own id,
+    # found by display-name match, but only when the Rytec id
+    # genuinely isn't one the feed already has - this never touches
+    # a channel that's already matching correctly.
+    #
+    # Deliberately outside _epg_lock below: this can fetch and parse a
+    # whole country's multi-MB XMLTV feed (up to ~60s across getUrl()'s
+    # own retries), only refreshed every 300s per _get_epg_feed_index()'s
+    # own cache. Holding a single global lock across that would make
+    # every other country's (unrelated) channels.xml write queue up
+    # behind whichever one's feed happens to be slow/uncached - the lock
+    # only needs to protect the actual file write below.
+    feed_ids, feed_name_index = _get_epg_feed_index(country_code)
+    matcher = get_epg_matcher() if feed_ids else None
+
+    # Use the full ref as key to avoid duplicates, but also store the
+    # channel name. Unlike a bare dvb_ref, a full_service_ref
+    # (tuple + URL) never needs a trailing-colon fixup - it already
+    # ends with the stream URL, and blindly appending ':' here would
+    # corrupt that URL instead of "completing" a bare tuple.
+    unique = {}
+    for epg_id, dvb_ref, ch_name in epg_entries:
+        # isinstance(dvb_ref, (str, text_type)): plain `str` alone
+        # would drop every `unicode` dvb_ref on Python 2, silently
+        # writing an empty/near-empty EPG mapping file.
+        if dvb_ref and isinstance(
+                dvb_ref, (str, text_type)) and dvb_ref.strip():
+            if feed_ids and epg_id not in feed_ids:
+                fallback_id = _find_feed_id_by_name(
+                    ch_name, matcher, feed_name_index)
+                if fallback_id:
+                    debug(
+                        "EPG mapping fallback: '{}' rytec id '{}' not "
+                        "in feed, using '{}' instead".format(
+                            ch_name, epg_id, fallback_id))
+                    epg_id = fallback_id
+            unique[dvb_ref] = (epg_id, ch_name)
+
+    if not unique:
+        print("[EPG] No entries to write, skipping.")
+        return None
+
+    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
+    for dvb_ref, (epg_id, ch_name) in unique.items():
+        # Add comment with channel name (optional but useful for
+        # readability)
+        xml_lines.append(
+            '  <channel id="{}">{}</channel><!-- {} -->'.format(epg_id, dvb_ref, ch_name))
+    xml_lines.append('</channels>')
+
     with _epg_lock:
-        epg_dir = "/etc/epgimport"
-        if not exists(epg_dir):
-            makedirs(epg_dir)
-
-        if country_code:
-            filename = "vavoo_{}.channels.xml".format(country_code.lower())
-        else:
-            filename = "vavoo.channels.xml"
-        channels_file = join(epg_dir, filename)
-
-        # Some channels' Rytec-matched id isn't one this country's actual
-        # feed uses for <channel id> (it has its own convention for a
-        # handful of channels, e.g. "RTP.1.HD.pt" vs the Rytec
-        # "rtp1.pt") - epgimport can't find programme data filed under
-        # an id the feed never defines. Fall back to the feed's own id,
-        # found by display-name match, but only when the Rytec id
-        # genuinely isn't one the feed already has - this never touches
-        # a channel that's already matching correctly.
-        feed_ids, feed_name_index = _get_epg_feed_index(country_code)
-        matcher = get_epg_matcher() if feed_ids else None
-
-        # Use the full ref as key to avoid duplicates, but also store the
-        # channel name. Unlike a bare dvb_ref, a full_service_ref
-        # (tuple + URL) never needs a trailing-colon fixup - it already
-        # ends with the stream URL, and blindly appending ':' here would
-        # corrupt that URL instead of "completing" a bare tuple.
-        unique = {}
-        for epg_id, dvb_ref, ch_name in epg_entries:
-            # isinstance(dvb_ref, (str, text_type)): plain `str` alone
-            # would drop every `unicode` dvb_ref on Python 2, silently
-            # writing an empty/near-empty EPG mapping file.
-            if dvb_ref and isinstance(
-                    dvb_ref, (str, text_type)) and dvb_ref.strip():
-                if feed_ids and epg_id not in feed_ids:
-                    fallback_id = _find_feed_id_by_name(
-                        ch_name, matcher, feed_name_index)
-                    if fallback_id:
-                        debug(
-                            "EPG mapping fallback: '{}' rytec id '{}' not "
-                            "in feed, using '{}' instead".format(
-                                ch_name, epg_id, fallback_id))
-                        epg_id = fallback_id
-                unique[dvb_ref] = (epg_id, ch_name)
-
-        if not unique:
-            print("[EPG] No entries to write, skipping.")
-            return None
-
-        xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
-        for dvb_ref, (epg_id, ch_name) in unique.items():
-            # Add comment with channel name (optional but useful for
-            # readability)
-            xml_lines.append(
-                '  <channel id="{}">{}</channel><!-- {} -->'.format(epg_id, dvb_ref, ch_name))
-        xml_lines.append('</channels>')
-
         try:
             with open(channels_file, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
                 f.write('\n'.join(xml_lines))
