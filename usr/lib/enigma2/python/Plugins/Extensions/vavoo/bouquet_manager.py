@@ -436,22 +436,15 @@ def convert_bouquet_sync(
         except Exception as e:
             print("[Bouquet] Error updating EPG sources: {}".format(e))
 
-        # 9. Save matcher cache (matched channels only - existing code)
-        try:
-            matcher.save_cache()
-        except Exception as e:
-            print("[Bouquet] Error saving cache: %s" % e)
-
-        # 10. Persist unmatched channels too - without this, bouquets
-        # kept up to date via the scheduled auto-update path (this
-        # function) never accumulate retry/diagnostic data in
-        # unmatched.json, unlike bouquets refreshed via a manual export
-        # (process_epg_matching_background, which already does this).
+        # 9. Save matcher cache (matched channels) and unmatched channels.
+        # update_complete_cache() is the sole CACHE_FILE writer here - see
+        # its docstring for why a separate matcher.save_cache() call isn't
+        # needed alongside it.
         try:
             update_complete_cache(
                 matched, unmatched, country_code, servicetype)
         except Exception as e:
-            print("[Bouquet] Error updating unmatched cache: %s" % e)
+            print("[Bouquet] Error updating cache: %s" % e)
 
         # save_unmatched() (called per-channel above, both inside
         # create_bouquet_file()'s matching and update_complete_cache()'s
@@ -763,11 +756,14 @@ def process_epg_matching_background(
         # 6. Update sources.xml
         update_epg_sources()
 
-        # 7. Save matcher cache
-        matcher.save_cache()
-
-        # save_unmatched() (called per-channel above) only stages changes
-        # in memory now - write them once here instead of once per channel.
+        # 7. Save matched and unmatched channels to the cache files.
+        # update_complete_cache() is the sole CACHE_FILE writer here - see
+        # its docstring for why a separate matcher.save_cache() call isn't
+        # needed alongside it. save_unmatched() (called per-channel above)
+        # only stages changes in memory - update_complete_cache() calls it
+        # again for each unmatched channel and flush_unmatched_cache()
+        # writes them all out once, instead of once per channel.
+        update_complete_cache(matched, unmatched, country_code, servicetype)
         flush_unmatched_cache()
 
         # Reload only now that the bouquet's #SERVICE lines, the EPG
@@ -800,10 +796,6 @@ def process_epg_matching_background(
         # _on_export_complete(), a UI-touching method, so marshal it onto
         # the reactor thread rather than calling it directly.
         reactor.callFromThread(_do_completion_callback)
-
-        # Update the complete cache with matched channels only;
-        # - unmatched go to unmatched.json.
-        update_complete_cache(matched, unmatched, country_code, servicetype)
 
     except Exception as exc:
         # Python 3 deletes an "except ... as exc" binding once this block

@@ -2376,8 +2376,8 @@ class VavooEPGMatcher(object):
                         existing_entry['matched'] = False
                         self.cache[existing_key] = existing_entry
                         self._index_cache_key(existing_key)
-                        # Not deferred to new_matches/save_cache(): that
-                        # method always writes matched=True, which would
+                        # Not deferred to new_matches/update_complete_cache():
+                        # that path always writes matched=True, which would
                         # be wrong here. This branch is rare (only when a
                         # previously-matched channel stops live-matching),
                         # so an eager write is an acceptable tradeoff.
@@ -2402,36 +2402,6 @@ class VavooEPGMatcher(object):
                 servicetype,
                 matched=False)
             return None, None
-
-    def save_cache(self):
-        if self.new_matches:
-            complete_cache = load_cache()
-            for key, value in self.new_matches.items():
-                # Use the original name if present
-                name = value.get('name')
-                if not name:
-                    parts = key.rsplit('_', 1)
-                    name = parts[0] if len(parts) > 1 else key
-                country = key.split('_')[-1] if '_' in key else ''
-                complete_cache[key] = {
-                    'id': value.get('id'),
-                    'sref': ensure_sref_trailing_colon(value.get('sref')),
-                    'name': name,   # <-- original name
-                    'country': country,
-                    'matched': True,
-                    'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-                }
-            complete_cache = _prune_cache_if_needed(complete_cache)
-            temp_file = CACHE_FILE + ".tmp"
-            with open(temp_file, 'w') as f:
-                dump(complete_cache, f, indent=2, sort_keys=True)
-            rename(temp_file, CACHE_FILE)
-            self.cache = complete_cache
-            self._build_normalized_index()
-            self.new_matches.clear()
-            print(
-                "[VavooEPGMatcher] Cache saved with {} entries".format(
-                    len(complete_cache)))
 
 
 # ==================== EPG CACHE FUNCTIONS ====================
@@ -2643,7 +2613,20 @@ def update_complete_cache(
         unmatched_channels,
         country_code,
         servicetype="4097"):
-    """Update the complete cache with matched channels only; unmatched go to unmatched.json."""
+    """Update the complete cache with matched channels only; unmatched go to unmatched.json.
+
+    This is the sole writer of CACHE_FILE for a bouquet export -
+    matched_channels (built by create_bouquet_file()/
+    process_epg_matching_background()) is already a full superset of
+    VavooEPGMatcher.new_matches (every entry added there came from a
+    find_match() call that also produced a matched_channels entry), so
+    a separate matcher.save_cache() call right before this one would
+    just re-read, re-write, and re-index the exact same file a second
+    time for no additional coverage. Clearing matcher.new_matches here
+    takes over save_cache()'s other job - without it, that dict (a
+    per-process singleton's, so never otherwise reset) would grow
+    unbounded across every export for the life of the process.
+    """
     try:
         matcher = get_epg_matcher()
         complete_cache = {}
@@ -2683,6 +2666,7 @@ def update_complete_cache(
         # Update matcher with new cache
         matcher.cache = complete_cache
         matcher._build_normalized_index()
+        matcher.new_matches.clear()
 
         # Process unmatched channels: save them to unmatched.json with their
         # original sref
@@ -2824,7 +2808,7 @@ def invalidate_unmatched_cache():
 def flush_unmatched_cache():
     """Write pending save_unmatched() updates to UNMATCHED_FILE, if any.
     Call once per batch (e.g. at the end of a bouquet export, alongside
-    VavooEPGMatcher.save_cache()) - not once per channel."""
+    update_complete_cache()) - not once per channel."""
     global _unmatched_cache_dirty
     with _unmatched_lock:
         if not _unmatched_cache_dirty or _unmatched_cache_data is None:
