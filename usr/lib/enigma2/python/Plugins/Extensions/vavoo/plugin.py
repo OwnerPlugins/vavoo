@@ -355,8 +355,14 @@ def _cache_epg_result(cache_key, result):
         oldest = sorted(
             _epg_result_cache, key=lambda k: _epg_result_cache[k][0]
         )[:len(_epg_result_cache) - _EPG_RESULT_CACHE_MAX]
+        # pop(k, None), not del: this runs unlocked from whichever
+        # per-channel EPG-fetch daemon thread last called
+        # get_current_epg() (see Playstream2), so two threads can race
+        # into eviction at once - the second one's `oldest` snapshot may
+        # include a key the first already removed. del would raise
+        # KeyError there; pop is a no-op instead.
         for k in oldest:
-            del _epg_result_cache[k]
+            _epg_result_cache.pop(k, None)
 
 
 def _cache_epg_xml(country_code, root, channel_index, display_name_index):
@@ -367,7 +373,7 @@ def _cache_epg_xml(country_code, root, channel_index, display_name_index):
             _epg_xml_cache, key=lambda k: _epg_xml_cache[k][0]
         )[:len(_epg_xml_cache) - _EPG_XML_CACHE_MAX]
         for k in oldest:
-            del _epg_xml_cache[k]
+            _epg_xml_cache.pop(k, None)
 
 
 # Auto-update check state, shared between startVavoo (kicks off the
@@ -5289,6 +5295,24 @@ class AutoStartTimer(object):
             # unattended, for however long the update takes. Run it in a
             # background thread instead, same pattern export_bouquet_async()
             # already uses for the manual export path.
+            #
+            # export_lock: _update_bouquets() ends up writing the same
+            # vavoo_epg_cache.json a manual export (message2()) or the
+            # cache-fix button (_fix_cache_format()) can also be writing -
+            # both of those already hold this lock for their whole run
+            # (see _fix_cache_format()'s own comment on why). Before this
+            # method ran in the background, that overlap was impossible -
+            # a synchronous scheduled update blocked the whole GUI, so the
+            # user couldn't trigger a manual export at the same time.
+            # Running here now makes that overlap real, so join the same
+            # lock: skip this cycle non-blockingly if one's already in
+            # progress rather than risk two concurrent read-modify-write
+            # cycles silently losing each other's cache updates.
+            if not export_lock.acquire(False):
+                print(
+                    "[AutoStartTimer] Export already in progress, "
+                    "skipping this scheduled update")
+                return
             t = threading.Thread(
                 target=self._update_bouquets, args=(bouquets_to_update,))
             t.daemon = True
@@ -5353,6 +5377,8 @@ class AutoStartTimer(object):
             print("[AutoStartTimer] Error: " + str(e))
             import traceback
             traceback.print_exc()
+        finally:
+            export_lock.release()
 
 
 delayed_start_timer = None
