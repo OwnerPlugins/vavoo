@@ -669,14 +669,17 @@ def process_epg_matching_background(
                 })
             else:
                 # Unmatched: keep the original sref from the fallback bouquet
-                # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync
+                # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync.
+                # dict.get()'s default arg is evaluated eagerly regardless
+                # of whether the key is present - `or` short-circuits so
+                # unique_fallback_sref() only actually runs on the rare
+                # miss, not on every unmatched channel.
                 unmatched.append({
                     'name': ch['original_name'],
                     'channel_id': ch['channel_id'],
                     'original_url': ch['url'],
-                    'original_sref': ch.get(
-                        'fallback_sref',
-                        unique_fallback_sref(servicetype, ch['channel_id']))
+                    'original_sref': ch.get('fallback_sref') or
+                    unique_fallback_sref(servicetype, ch['channel_id'])
                 })
             select.select([], [], [], 0.001)
 
@@ -1084,9 +1087,6 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                service_line = "#SERVICE {}{}".format(
-                    unique_fallback_sref(servicetype, channel_id),
-                    encoded_url)
                 rytec_id, dvb_ref = matcher.find_match(
                     channel_name, country_code)
 
@@ -1106,7 +1106,13 @@ def create_bouquet_file(
                 else:
                     # Fallback: sid:tsid derived from channel_id so
                     # unmatched channels don't all collide on one shared
-                    # eEPGCache key (see unique_fallback_sref()).
+                    # eEPGCache key (see unique_fallback_sref()). Only
+                    # computed here, not for every channel up front - the
+                    # majority end up matched and this result would just
+                    # be discarded.
+                    service_line = "#SERVICE {}{}".format(
+                        unique_fallback_sref(servicetype, channel_id),
+                        encoded_url)
                     unmatched.append({
                         'name': clean_name,
                         'channel_id': channel_id

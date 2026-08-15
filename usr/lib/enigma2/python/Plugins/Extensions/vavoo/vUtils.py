@@ -2915,7 +2915,14 @@ def _get_epg_feed_index(country_code):
                             continue
                         clean_dn = matcher._clean_name_for_similarity(dn_text)
                         if clean_dn:
-                            name_index[clean_dn] = chan_id
+                            # Tokens precomputed once here rather than by
+                            # every _find_feed_id_by_name() call that
+                            # scans this same index (once per channel
+                            # whose Rytec id isn't one this feed uses,
+                            # which - see write_epg_mapping_file() - can
+                            # be a large fraction of a country's channels).
+                            name_index[clean_dn] = (
+                                chan_id, _tokenize_for_compat(clean_dn))
                 elem.clear()
             elif event == 'start' and elem.tag == 'programme':
                 break
@@ -2998,8 +3005,7 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     best_score = 0.0
     best_id = None
     sm = SequenceMatcher(None, clean)
-    for dn_key, dn_id in name_index.items():
-        candidate_tokens = _tokenize_for_compat(dn_key)
+    for dn_key, (dn_id, candidate_tokens) in name_index.items():
         if (source_tokens and candidate_tokens and
                 not _tokens_compatible(source_tokens, candidate_tokens)):
             continue
