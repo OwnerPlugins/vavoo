@@ -28,6 +28,7 @@ from .vUtils import (
     sanitizeFilename,
     save_unmatched,
     trace_error,
+    unique_fallback_sref,
     update_complete_cache,
     update_epg_sources,
     write_epg_mapping_file,
@@ -663,7 +664,9 @@ def process_epg_matching_background(
                     'name': ch['original_name'],
                     'channel_id': ch['channel_id'],
                     'original_url': ch['url'],
-                    'original_sref': ch.get('fallback_sref', "4097:0:0:0:0:0:0:0:0:0:")
+                    'original_sref': ch.get(
+                        'fallback_sref',
+                        unique_fallback_sref(servicetype, ch['channel_id']))
                 })
             select.select([], [], [], 0.001)
 
@@ -910,9 +913,13 @@ def create_fallback_bouquet_sync(
                 # Encode URL
                 encoded_url = channel_url.replace(':', '%3a')
 
-                # Fallback service reference
-                service_line = "#SERVICE %s:0:0:0:0:0:0:0:0:0:%s" % (
-                    servicetype, encoded_url)
+                # Fallback service reference - sid:tsid derived from
+                # channel_id so unmatched channels don't all collide on
+                # one shared eEPGCache key (see unique_fallback_sref()).
+                fallback_dvb_ref = unique_fallback_sref(
+                    servicetype, channel_id)
+                service_line = "#SERVICE %s%s" % (
+                    fallback_dvb_ref, encoded_url)
                 lines.append(service_line)
                 lines.append("#DESCRIPTION %s" % clean_name)
                 channel_count += 1
@@ -923,7 +930,7 @@ def create_fallback_bouquet_sync(
                     'channel_id': channel_id,
                     'url': channel_url,
                     'original_name': channel_name,
-                    'fallback_sref': "%s:0:0:0:0:0:0:0:0:0:%s" % (servicetype, encoded_url)
+                    'fallback_sref': "%s%s" % (fallback_dvb_ref, encoded_url)
                 })
 
             except Exception as e:
@@ -1063,8 +1070,9 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                service_line = "#SERVICE {}:0:0:0:0:0:0:0:0:0:{}".format(
-                    servicetype, encoded_url)
+                service_line = "#SERVICE {}{}".format(
+                    unique_fallback_sref(servicetype, channel_id),
+                    encoded_url)
                 rytec_id, dvb_ref = matcher.find_match(
                     channel_name, country_code)
 
@@ -1082,8 +1090,9 @@ def create_bouquet_file(
                         'rytec_id': rytec_id
                     })
                 else:
-                    # Fallback: first 10 fields all zero (except servicetype
-                    # and third field = 1)
+                    # Fallback: sid:tsid derived from channel_id so
+                    # unmatched channels don't all collide on one shared
+                    # eEPGCache key (see unique_fallback_sref()).
                     unmatched.append({
                         'name': clean_name,
                         'channel_id': channel_id

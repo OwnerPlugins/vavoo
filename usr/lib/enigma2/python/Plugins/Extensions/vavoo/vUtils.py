@@ -12,6 +12,7 @@ import threading
 import types
 import urllib3
 import xml.etree.ElementTree as ET
+import zlib
 from datetime import datetime as _datetime
 from collections import OrderedDict
 from difflib import SequenceMatcher
@@ -1094,6 +1095,34 @@ def ensure_sref_trailing_colon(sref):
     if sref and not sref.endswith(':'):
         return sref + ':'
     return sref
+
+
+def unique_fallback_sref(servicetype, channel_id):
+    """Build a fallback (no Rytec/EPG match) service reference whose
+    sid:tsid pair is unique per Vavoo channel_id, instead of the old
+    literal "servicetype:0:0:0:0:0:0:0:0:0:" used for every unmatched
+    channel.
+
+    Enigma2's eEPGCache indexes events by the sid:tsid:onid:namespace
+    portion of a service reference, not by the stream URL appended after
+    it - so every unmatched channel sharing that identical all-zero
+    tuple was, as far as EPG lookup is concerned, literally the same
+    service: whatever programme data ever ended up cached under that one
+    shared null key got shown for all of them at once (confirmed via a
+    user's box: a cluster of unrelated, genuinely-unmatched channels -
+    "13EME RUE", "A LA CARTE 1-11", "20 MINUTES TV" - all displaying one
+    other channel's guide data).
+
+    onid/namespace are deliberately left at 0: every real Rytec-sourced
+    sref uses a non-zero namespace (the known satellite/terrestrial/
+    cable ranges), so a synthetic entry here can never collide with an
+    actual matched channel - only sid/tsid need to vary to keep
+    unmatched channels apart from each other.
+    """
+    h = zlib.crc32(ensure_str(channel_id, errors='ignore').encode('utf-8')) & 0xffffffff
+    sid = (h & 0xffff) or 1
+    tsid = ((h >> 16) & 0xffff) or 1
+    return "%s:0:1:%x:%x:0:0:0:0:0:" % (servicetype, sid, tsid)
 
 
 def sanitizeFilename(filename):
