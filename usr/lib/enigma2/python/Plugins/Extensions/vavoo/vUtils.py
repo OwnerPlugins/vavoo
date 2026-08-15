@@ -2913,11 +2913,28 @@ def _tokenize_for_compat(clean_name):
     return sub(r'(?<=[a-z])(?=[0-9])', ' ', clean_name).split()
 
 
+def _token_pair_compatible(a, b):
+    """Two tokens are compatible if identical, or if they differ only
+    by a trailing "s" on a non-numeric word (tolerates a singular/
+    plural naming difference, e.g. Rytec's "sport" vs Vavoo's
+    "sports"). Never applies when either token is purely numeric - a
+    different number at a shared position (e.g. "3" vs "5") is exactly
+    what _tokens_compatible() exists to catch, since that's what turns
+    an otherwise near-identical name into a genuinely different
+    channel."""
+    if a == b:
+        return True
+    if a.isdigit() or b.isdigit():
+        return False
+    return a + 's' == b or b + 's' == a
+
+
 def _tokens_compatible(a_tokens, b_tokens):
     """True unless the two token lists differ at a shared position -
     i.e. one is a genuine word-for-word prefix of the other (or
-    they're equal). A longer name is allowed to just add trailing
-    descriptive words (e.g. "sky sport" / "sky sport 4k"), but
+    they're equal, allowing singular/plural pairs - see
+    _token_pair_compatible()). A longer name is allowed to just add
+    trailing descriptive words (e.g. "sky sport" / "sky sport 4k"), but
     substituting a different word at a position both share (e.g.
     "canale 5" vs "canale 122", "france o" vs "france 3") means these
     are actually different channels, no matter how high the raw
@@ -2925,7 +2942,9 @@ def _tokens_compatible(a_tokens, b_tokens):
     shorter, longer = (
         (a_tokens, b_tokens) if len(a_tokens) <= len(b_tokens)
         else (b_tokens, a_tokens))
-    return shorter == longer[:len(shorter)]
+    prefix = longer[:len(shorter)]
+    return len(prefix) == len(shorter) and all(
+        _token_pair_compatible(x, y) for x, y in zip(shorter, prefix))
 
 
 def _find_feed_id_by_name(channel_name, matcher, name_index):
