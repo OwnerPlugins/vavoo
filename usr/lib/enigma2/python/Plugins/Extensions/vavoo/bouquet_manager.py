@@ -18,6 +18,7 @@ from .vUtils import (
     debug,
     decodeHtml,
     getUrl,
+    flush_unmatched_cache,
     get_country_code_from_bouquet_name,
     get_epg_matcher,
     is_proxy_ready,
@@ -452,6 +453,15 @@ def convert_bouquet_sync(
         except Exception as e:
             print("[Bouquet] Error updating unmatched cache: %s" % e)
 
+        # save_unmatched() (called per-channel above, both inside
+        # create_bouquet_file()'s matching and update_complete_cache()'s
+        # own loop) only stages changes in memory now - write them once
+        # here instead of once per channel.
+        try:
+            flush_unmatched_cache()
+        except Exception as e:
+            print("[Bouquet] Error flushing unmatched cache: %s" % e)
+
         return ch_count
     except Exception as e:
         print("[Bouquet] Error in convert_bouquet_sync: " + str(e))
@@ -752,6 +762,10 @@ def process_epg_matching_background(
 
         # 7. Save matcher cache
         matcher.save_cache()
+
+        # save_unmatched() (called per-channel above) only stages changes
+        # in memory now - write them once here instead of once per channel.
+        flush_unmatched_cache()
 
         # Reload only now that the bouquet's #SERVICE lines, the EPG
         # channel mapping, and sources.xml are all in their final state -

@@ -1798,32 +1798,23 @@ class VavooEPGMatcher(object):
         this (via save_unmatched(matched=True)); the alias/local-cache/
         temp-cache fast-path hits never did, leaving "ghost" unmatched
         entries around indefinitely for channels that actually match
-        fine now. Keeps an in-memory copy of the unmatched keys so this
-        check is cheap on the common case (nothing to clean up) instead
-        of paying for a full save_unmatched() read+write on every match.
+        fine now. Checks the same in-memory unmatched cache
+        save_unmatched() itself stages against (lazily loaded once, kept
+        for the process lifetime) - cheap on the common case (nothing to
+        clean up), and always current with anything staged earlier in
+        this same run, unlike a separate per-matcher-instance snapshot
+        would be.
         """
-        if not hasattr(self, '_unmatched_keys'):
-            with self._lazy_init_lock:
-                if not hasattr(self, '_unmatched_keys'):
-                    self._unmatched_keys = set()
-                    try:
-                        if exists(UNMATCHED_FILE):
-                            with open(UNMATCHED_FILE, 'r') as f:
-                                content = f.read().strip()
-                                if content:
-                                    self._unmatched_keys = set(
-                                        loads(content).keys())
-                    except Exception as e:
-                        debug(
-                            "Could not load unmatched cache keys: {}".format(e))
         key = "%s_%s" % (channel_name.strip(), country_code or '')
-        if key in self._unmatched_keys:
+        with _unmatched_lock:
+            _load_unmatched_cache_locked()
+            found = key in _unmatched_cache_data
+        if found:
             save_unmatched(
                 channel_name,
                 country_code,
                 servicetype,
                 matched=True)
-            self._unmatched_keys.discard(key)
 
     def _load_alias_map(self):
         if exists(ALIAS_FILE):
@@ -1876,7 +1867,15 @@ class VavooEPGMatcher(object):
 
                 # clean_name = self._clean_name(channel_name)
                 clean_name = self._clean_name_for_similarity(channel_name)
-                entry = (clean_name, channel_name, original_id, service_ref)
+                # Precomputed once here instead of on every _find_match_internal()
+                # call (which re-tokenized every candidate's clean_name on
+                # every single channel match, against what can be
+                # thousands of entries per country - this list never
+                # changes after load).
+                entry_tokens = _tokenize_for_compat(clean_name)
+                entry = (
+                    clean_name, channel_name, original_id, service_ref,
+                    entry_tokens)
                 self.rytec_entries.append(entry)
                 entry_country = original_id.split(
                     '.')[-1] if '.' in original_id else ""
@@ -2076,7 +2075,7 @@ class VavooEPGMatcher(object):
         # matters most for countries with large Rytec databases (e.g. Italy).
         source_tokens = _tokenize_for_compat(clean_input)
         sm = SequenceMatcher(None, clean_input)
-        for clean_entry, orig_name, rytec_id, service_ref in entries_to_scan:
+        for clean_entry, orig_name, rytec_id, service_ref, entry_tokens in entries_to_scan:
             # A shared textual prefix with a *different* word at a
             # position both share is a strong signal these are
             # different channels (e.g. "canal motogp" vs "canal plus
@@ -2086,7 +2085,6 @@ class VavooEPGMatcher(object):
             # trailing descriptive words - only a genuine word-for-word
             # prefix mismatch is rejected.
             if source_tokens:
-                entry_tokens = _tokenize_for_compat(clean_entry)
                 if entry_tokens and not _tokens_compatible(
                         source_tokens, entry_tokens):
                     continue
@@ -2712,56 +2710,23 @@ def save_unmatched(
         servicetype="4097",
         matched=False,
         sref=None):
-    """Save or update an unmatched channel with consistent format.
+    """Stage an unmatched-channel update in memory. Call flush_unmatched_cache()
+       once per batch (e.g. once per bouquet export) to actually write it -
+       see that function's docstring for why.
        If sref is provided, it will be used as the service reference;
        otherwise a fallback is built from servicetype.
     """
-    # The whole read-modify-write cycle (not just the final write) needs
-    # to be serialized: this function is called once per unmatched
-    # channel from background EPG-matching threads, and two overlapping
-    # calls sharing the same fixed UNMATCHED_FILE + ".tmp" path could
-    # otherwise race on the final rename() - one call's rename succeeds,
-    # consuming the temp file, and the other's then fails with ENOENT
-    # since its own temp file was never created under that same path
-    # (confirmed via a user-submitted log showing exactly this error
-    # repeated hundreds of times during a multi-country export).
+    global _unmatched_cache_dirty
     with _unmatched_lock:
         try:
-            unmatched_data = {}
-
-            if exists(UNMATCHED_FILE):
-                try:
-                    with open(UNMATCHED_FILE, 'r') as f:
-                        content = f.read().strip()
-                        if content:
-                            unmatched_data = loads(content)
-
-                            # Convert old format if needed
-                            for key, value in list(unmatched_data.items()):
-                                if 'matched' not in value:
-                                    # Convert to new format
-                                    unmatched_data[key] = {
-                                        'id': value.get(
-                                            'id', key), 'name': value.get(
-                                            'name', key.split('_')[0] if '_' in key else key), 'country': value.get(
-                                            'country', country_code), 'sref': value.get(
-                                            'sref', "%s:0:0:0:0:0:0:0:0:0:" %
-                                            servicetype), 'timestamp': value.get(
-                                            'timestamp', strftime(
-                                                '%Y-%m-%d %H:%M:%S', localtime())), 'matched': False, 'attempts': 1}
-                                    print(
-                                        "[Unmatched] Converted old format: %s" % key)
-                except Exception as read_error:
-                    print(
-                        "[Unmatched] Corrupted file, starting fresh: %s" %
-                        read_error)
-                    unmatched_data = {}
+            _load_unmatched_cache_locked()
 
             key = "%s_%s" % (channel_name.strip(), country_code or '')
 
-            if matched and key in unmatched_data:
+            if matched and key in _unmatched_cache_data:
                 # Remove if now matched
-                del unmatched_data[key]
+                del _unmatched_cache_data[key]
+                _unmatched_cache_dirty = True
                 print("[Unmatched] Removed matched channel: %s" % key)
             elif not matched:
                 # Add or update unmatched
@@ -2772,10 +2737,10 @@ def save_unmatched(
                 else:
                     fallback_sref = "%s:0:0:0:0:0:0:0:0:0:" % servicetype
 
-                old_data = unmatched_data.get(key, {})
+                old_data = _unmatched_cache_data.get(key, {})
                 attempts = old_data.get('attempts', 0) + 1
 
-                unmatched_data[key] = {
+                _unmatched_cache_data[key] = {
                     'id': key,
                     'name': channel_name.strip(),
                     'country': country_code or '',
@@ -2784,22 +2749,97 @@ def save_unmatched(
                     'matched': False,
                     'attempts': attempts
                 }
+                _unmatched_cache_dirty = True
                 print(
-                    "[Unmatched] Added/updated: %s (attempt #%d)" %
+                    "[Unmatched] Staged: %s (attempt #%d)" %
                     (key, attempts))
-
-            # Write complete file
-            temp_file = UNMATCHED_FILE + ".tmp"
-            with open(temp_file, 'w') as f:
-                dump(unmatched_data, f, indent=4, sort_keys=True)
-            rename(temp_file, UNMATCHED_FILE)
-
-            print(
-                "[Unmatched] Cache updated - total entries: %d" %
-                len(unmatched_data))
 
         except Exception as e:
             print("[Unmatched] Error: %s" % e)
+
+
+# In-memory mirror of UNMATCHED_FILE, lazily loaded once and kept for the
+# life of the process instead of every save_unmatched() call doing its
+# own full read+parse+write+rename - that was previously called once per
+# channel processed (both matched and unmatched) during every bouquet
+# export, from find_match() itself and again from callers looping over
+# their own matched/unmatched lists, making a multi-hundred-channel
+# export do a multi-hundred-entry full file rewrite that many times.
+# All access must go through _unmatched_lock.
+_unmatched_cache_data = None
+_unmatched_cache_dirty = False
+
+
+def _load_unmatched_cache_locked():
+    """Populate _unmatched_cache_data from disk if not already loaded.
+    Caller must already hold _unmatched_lock."""
+    global _unmatched_cache_data
+    if _unmatched_cache_data is not None:
+        return
+    data = {}
+    if exists(UNMATCHED_FILE):
+        try:
+            with open(UNMATCHED_FILE, 'r') as f:
+                content = f.read().strip()
+                if content:
+                    data = loads(content)
+                    # Convert old format if needed
+                    for key, value in list(data.items()):
+                        if 'matched' not in value:
+                            data[key] = {
+                                'id': value.get('id', key),
+                                'name': value.get(
+                                    'name',
+                                    key.split('_')[0] if '_' in key else key),
+                                'country': value.get('country', ''),
+                                'sref': value.get(
+                                    'sref', "4097:0:0:0:0:0:0:0:0:0:"),
+                                'timestamp': value.get(
+                                    'timestamp', strftime(
+                                        '%Y-%m-%d %H:%M:%S', localtime())),
+                                'matched': False,
+                                'attempts': 1}
+                            print(
+                                "[Unmatched] Converted old format: %s" % key)
+        except Exception as read_error:
+            print(
+                "[Unmatched] Corrupted file, starting fresh: %s" %
+                read_error)
+            data = {}
+    _unmatched_cache_data = data
+
+
+def invalidate_unmatched_cache():
+    """Force the next save_unmatched()/flush_unmatched_cache() call to
+    reload from disk. Call this after anything writes UNMATCHED_FILE
+    directly instead of through save_unmatched() (e.g. a cache-repair
+    routine), so a later flush doesn't overwrite that write with a
+    stale in-memory copy."""
+    global _unmatched_cache_data, _unmatched_cache_dirty
+    with _unmatched_lock:
+        _unmatched_cache_data = None
+        _unmatched_cache_dirty = False
+
+
+def flush_unmatched_cache():
+    """Write pending save_unmatched() updates to UNMATCHED_FILE, if any.
+    Call once per batch (e.g. at the end of a bouquet export, alongside
+    VavooEPGMatcher.save_cache()) - not once per channel."""
+    global _unmatched_cache_dirty
+    with _unmatched_lock:
+        if not _unmatched_cache_dirty or _unmatched_cache_data is None:
+            return
+        try:
+            temp_file = UNMATCHED_FILE + ".tmp"
+            with open(temp_file, 'w') as f:
+                dump(_unmatched_cache_data, f, indent=4, sort_keys=True)
+            rename(temp_file, UNMATCHED_FILE)
+            _unmatched_cache_dirty = False
+            print(
+                "[Unmatched] Cache flushed - total entries: %d" %
+                len(_unmatched_cache_data))
+        except Exception as e:
+            print("[Unmatched] Error flushing cache: %s" % e)
 
 
 # country_code -> (timestamp, set(ids), {clean_name: id})
