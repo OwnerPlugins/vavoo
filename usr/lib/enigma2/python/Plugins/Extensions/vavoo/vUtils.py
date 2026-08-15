@@ -1744,6 +1744,19 @@ class VavooEPGMatcher(object):
         suffix = parts[-1]
         return len(suffix) in (2, 3) and suffix.isalpha()
 
+    @staticmethod
+    def _normalize_rytec_sref(raw_sref):
+        """Apply the same "1:" -> "4097:" type conversion
+        _find_match_internal() applies to a freshly-matched Rytec sref,
+        plus trailing-colon normalization, so a raw self.rytec_by_id[...]
+        value can be compared against a cached sref on equal terms."""
+        if not raw_sref:
+            return None
+        parts = raw_sref.split(':')
+        if parts and parts[0] == '1':
+            parts[0] = '4097'
+        return ensure_sref_trailing_colon(':'.join(parts))
+
     def _cleanup_stale_unmatched(
             self,
             channel_name,
@@ -1917,11 +1930,15 @@ class VavooEPGMatcher(object):
         4 = Other / IPTV or unknown
         """
         parts = service_ref.split(':')
-        if len(parts) < 4:
+        if len(parts) < 7:
             return 4  # Unknown / other
 
         try:
-            namespace_str = parts[3] if parts[3] else '0'
+            # sref format: type:flags:servicetype:sid:tsid:onid:namespace:...
+            # - namespace (what encodes orbital position / terrestrial /
+            # cable, checked below) is field 6, not field 3 (that's the
+            # sid).
+            namespace_str = parts[6] if parts[6] else '0'
             namespace = int(namespace_str, 16)
 
             # Known satellite namespaces. Enigma2 encodes orbital position
@@ -2169,17 +2186,33 @@ class VavooEPGMatcher(object):
                 if rytec_clean:
                     channel_clean = self._clean_name_for_similarity(
                         channel_name)
-                    if channel_clean == rytec_clean:
+                    current_rytec_sref = self._normalize_rytec_sref(
+                        self.rytec_by_id.get(id_val))
+                    cached_sref = ensure_sref_trailing_colon(
+                        cached.get('sref'))
+                    if channel_clean == rytec_clean and (
+                            not current_rytec_sref or
+                            cached_sref == current_rytec_sref):
                         print(
                             "[Match] Local cache HIT (valid ID & name match): {}".format(cached_key))
                         self._cleanup_stale_unmatched(
                             channel_name, country_code, servicetype)
                         return cached.get('id'), cached.get('sref')
-                    else:
+                    elif channel_clean != rytec_clean:
                         print(
                             "[Match] Cache ID '{}' name mismatch (channel='{}', rytec='{}'), will re-match".format(
                                 id_val, channel_clean, rytec_clean))
                         # Do not return, proceed with live matching
+                    else:
+                        # Name still matches, but the cached sref no
+                        # longer matches what Rytec has for this id -
+                        # leftover from a stale/mismatched match (see
+                        # find_match()'s live-rematch branch below).
+                        # Re-match instead of trusting a sref that
+                        # actually belongs to a different real channel.
+                        print(
+                            "[Match] Cache ID '{}' sref stale for '{}' (cached={}, rytec={}), will re-match".format(
+                                id_val, channel_name, cached_sref, current_rytec_sref))
                 else:
                     # We don't have the Rytec name, accept the cache
                     print(
@@ -2259,11 +2292,31 @@ class VavooEPGMatcher(object):
         if result_id and result_sref:
             # Decide which sref to keep
             final_sref = result_sref
-            if existing_entry:
+            if existing_entry and existing_entry.get('id') == result_id:
+                # Only reuse the previously cached sref when it's for the
+                # SAME matched id - this keeps re-matches of an unchanged
+                # channel stable. When the freshly matched id differs
+                # from what's cached, the old sref belongs to whatever
+                # channel the cache used to (possibly wrongly) point at;
+                # blindly keeping it here is exactly how an id gets
+                # updated to the right channel while its sref silently
+                # keeps pointing at a different one.
                 existing_sref = existing_entry.get('sref')
-                # If the existing one has a valid sref (not fallback), preserve
-                # it
-                if existing_sref and existing_sref != "4097:0:0:0:0:0:0:0:0:0:":
+                current_rytec_sref = self._normalize_rytec_sref(
+                    self.rytec_by_id.get(result_id))
+                # If the existing one has a valid sref (not fallback) that
+                # still agrees with what Rytec currently has for this id,
+                # preserve it - this is a no-op in the common case
+                # (result_sref should already match) and only matters for
+                # candidate-selection ties. If it disagrees, it's stale
+                # (e.g. left over from before this id was matched
+                # correctly) - fall through to the freshly matched
+                # result_sref instead of re-entrenching it.
+                if (existing_sref and
+                        existing_sref != "4097:0:0:0:0:0:0:0:0:0:" and
+                        (not current_rytec_sref or
+                         ensure_sref_trailing_colon(existing_sref) ==
+                         current_rytec_sref)):
                     final_sref = existing_sref
                     print(
                         "[Match] Preserving existing sref: {}".format(existing_sref))
