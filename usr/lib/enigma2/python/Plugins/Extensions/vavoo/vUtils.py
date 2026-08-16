@@ -3154,6 +3154,61 @@ def update_epg_sources():
     except Exception as e:
         print("[EPG] Error writing sources file: %s" % e)
 
+    ensure_vavoo_epg_sources_enabled()
+
+
+def ensure_vavoo_epg_sources_enabled():
+    """Auto-enable every currently-exported Vavoo EPG source ("Vavoo
+    <COUNTRY>", one per exported country - see the <description> built
+    above) in EPGImport's own settings, using its proper save API
+    (EPGConfig.storeUserSettings()) instead of hand-editing
+    epgimport.conf - that file is a pickle blob, not plain text, and an
+    earlier attempt at this by appending a raw line to it corrupted
+    EPGImport's own config. Merges into whatever the user already has
+    enabled there; never removes anything.
+
+    Only runs when the user has opted in via the "EPG Auto Update"
+    config toggle - otherwise EPGImport's own source list is left
+    exactly as the user configured it, same as the existing manual
+    "Start EPG update now?" flow (which still requires the source to
+    already be enabled). Never raises - this is a best-effort
+    convenience a failure here shouldn't be allowed to break bouquet
+    export over.
+    """
+    try:
+        if not (config.plugins.vavoo.epg_enabled.value and
+                config.plugins.vavoo.epg_auto_update.value):
+            return
+
+        epg_dir = "/etc/epgimport"
+        pattern = join(epg_dir, "vavoo_*.channels.xml")
+        files = glob.glob(pattern)
+        if not files:
+            return
+
+        wanted = set()
+        for f in files:
+            basename_file = basename(f)
+            parts = basename_file.replace(".channels.xml", "").split("_")
+            country_code = parts[1].upper() if len(parts) > 1 else "UNKNOWN"
+            wanted.add("Vavoo {}".format(country_code))
+
+        from Plugins.Extensions.EPGImport import EPGConfig
+        settings = EPGConfig.loadUserSettings()
+        current = list(settings.get("sources") or [])
+        missing = sorted(wanted - set(current))
+        if not missing:
+            return
+        EPGConfig.storeUserSettings(sources=current + missing)
+        print(
+            "[EPG] Auto-enabled EPGImport source(s): %s" %
+            ", ".join(missing))
+    except ImportError:
+        # EPGImport not installed - nothing to enable.
+        pass
+    except Exception as e:
+        print("[EPG] Error auto-enabling EPGImport sources: %s" % e)
+
 
 def fix_cache_format(
         remove_duplicates=True,

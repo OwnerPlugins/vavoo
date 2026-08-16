@@ -118,6 +118,7 @@ from .vUtils import (
     debug,
     make_print,
     update_epg_sources,
+    ensure_vavoo_epg_sources_enabled,
     get_epg_matcher,
     get_proxy_status,
     cleanup_old_temp_files,
@@ -525,8 +526,6 @@ cfg.epg_enabled = ConfigEnableDisable(default=False)
 cfg.epg_auto_update = ConfigEnableDisable(default=False)
 cfg.similarity_threshold = ConfigSelectionNumber(
     default=75, min=50, max=100, stepwidth=5)
-cfg.epg_update_interval = ConfigSelectionNumber(
-    default=6, min=1, max=24, stepwidth=1)
 cfg.timerupdate = ConfigSelectionNumber(default=5, min=1, max=60, stepwidth=1)
 cfg.timetype = ConfigSelection(
     default="interval", choices=[
@@ -801,19 +800,15 @@ class vavoo_config(Screen, ConfigListScreen):
             self.list.append(getConfigListEntry(
                 _("Auto-update EPG"),
                 cfg.epg_auto_update,
-                _("Automatically trigger EPG update after source creation")
+                _("Automatically enable the Vavoo EPG source(s) in EPGImport "
+                  "after each export, so you don't have to enable them there "
+                  "yourself.")
             ))
             self.list.append(
                 getConfigListEntry(
                     _("EPG Similarity Threshold (%)"),
                     cfg.similarity_threshold,
                     _("Minimum similarity for matching channels (higher = stricter).")))
-            if cfg.epg_auto_update.value:
-                self.list.append(
-                    getConfigListEntry(
-                        _("Update interval (hours)"),
-                        cfg.epg_update_interval,
-                        _("How often to auto-update the EPG (requires EPGImport scheduler)")))
 
         self.list.append(
             getConfigListEntry(
@@ -1429,18 +1424,23 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=3)
 
     def schedule_epg_update(self):
-        """Schedule automatic EPG updates using EPGImport's own scheduler"""
+        """Auto-enable Vavoo's EPG source(s) in EPGImport's own settings.
+
+        EPGImport's own scheduler (its "wakeup"/"repeat import" settings,
+        configured directly in EPGImport's own screen) is what actually
+        runs periodic imports - this doesn't add a second, competing
+        schedule. It just removes the friction of having to separately
+        go enable the Vavoo source there yourself: an earlier version
+        tried to do this by opening EPGIMPORT_CONF in text mode and
+        appending a "sources=..." line to it, but that file is actually
+        a binary serialized blob (not the plain-text format this
+        assumed), so every append corrupted EPGImport's own config.
+        ensure_vavoo_epg_sources_enabled() (vUtils.py) uses EPGImport's
+        own save API instead, so it's safe to call here.
+        """
         try:
-            # EPGImport's own scheduler picks up whatever sources the user
-            # has enabled in ITS config screen - we used to try to enable
-            # our source here by opening EPGIMPORT_CONF in text mode and
-            # appending a "sources=..." line to it, but that file is
-            # actually a binary serialized blob (not the plain-text format
-            # this assumed), so every append corrupted EPGImport's own
-            # config. Enabling the Vavoo source is left to the user via
-            # EPGImport's settings screen instead.
             if cfg.epg_auto_update.value:
-                pass
+                ensure_vavoo_epg_sources_enabled()
 
         except Exception as e:
             print("[Vavoo] Error scheduling EPG update:", str(e))
