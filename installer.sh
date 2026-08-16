@@ -83,20 +83,24 @@ if ! command -v wget >/dev/null 2>&1; then
     esac
 fi
 
-if python --version 2>&1 | grep -q '^Python 3\.'; then
+if command -v python3 >/dev/null 2>&1; then
     echo "Python3 image detected"
     PYTHON="PY3"
     Packagesix="python3-six"
     Packagerequests="python3-requests"
-else
+elif command -v python >/dev/null 2>&1 && python --version 2>&1 | grep -q '^Python 3\.'; then
+    echo "Python3 image detected (via 'python')"
+    PYTHON="PY3"
+    Packagesix="python3-six"
+    Packagerequests="python3-requests"
+elif command -v python >/dev/null 2>&1; then
     echo "Python2 image detected"
     PYTHON="PY2"
+    Packagesix="python-six"
     Packagerequests="python-requests"
-    if [ "$OSTYPE" = "DreamOs" ] || [ "$OSTYPE" = "Debian" ]; then
-        Packagesix="python-six"
-    else
-        Packagesix="python-six"
-    fi
+else
+    echo "No Python interpreter found (neither python3 nor python). Cannot continue."
+    exit 1
 fi
 
 install_pkg() {
@@ -126,7 +130,7 @@ else
 fi
 
 
-[ "$PYTHON" = "PY3" ] && install_pkg "$Packagesix"
+install_pkg "$Packagesix"
 install_pkg "$Packagerequests"
 
 if [ "$OSTYPE" = "OE" ]; then
@@ -213,7 +217,13 @@ fi
 
 [ -z "$distro_value" ] && distro_value="Unknown"
 [ -z "$distro_version" ] && distro_version="Unknown"
-python_vers=$(python --version 2>&1)
+if command -v python3 >/dev/null 2>&1; then
+    python_vers=$(python3 --version 2>&1)
+elif command -v python >/dev/null 2>&1; then
+    python_vers=$(python --version 2>&1)
+else
+    python_vers="not found"
+fi
 
 cat <<EOF
 
