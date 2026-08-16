@@ -5,7 +5,10 @@ import io
 import time
 import glob
 import threading
-import urllib3
+try:
+    import urllib3
+except ImportError:
+    urllib3 = None
 import select
 from json import loads
 from os import listdir, remove, rename
@@ -76,7 +79,8 @@ except ImportError:
 
 
 # Disable SSL warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+if urllib3 is not None:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_local_ip():
@@ -734,8 +738,10 @@ def process_epg_matching_background(
                     i += 1
 
             if changes > 0:
-                with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+                temp_path = bouquet_path + ".tmp"
+                with io.open(temp_path, 'w', encoding='utf-8') as f:
                     f.writelines(new_lines)
+                rename(temp_path, bouquet_path)
                 print(
                     "[EPGBackground] Updated %d service lines in %s" %
                     (changes, bouquet_filename))
@@ -952,10 +958,12 @@ def create_fallback_bouquet_sync(
             print("[FallbackBouquet] No valid channels for %s" % name)
             return 0, "", [], ""
 
-        # 7. Write bouquet file
+        # 7. Write bouquet file atomically (temp file + rename)
+        temp_path = bouquet_path + ".tmp"
         try:
-            with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(lines))
+            rename(temp_path, bouquet_path)
             print(
                 "[FallbackBouquet] File created: %s (%d channels)" %
                 (bouquet_filename, channel_count))
@@ -964,8 +972,9 @@ def create_fallback_bouquet_sync(
                 "[FallbackBouquet] Error writing file with encoding: %s" %
                 str(e))
             try:
-                with open(bouquet_path, 'wb') as f:
+                with open(temp_path, 'wb') as f:
                     f.write(('\n'.join(lines)).encode('utf-8', 'ignore'))
+                rename(temp_path, bouquet_path)
                 print(
                     "[FallbackBouquet] File created (binary fallback): %s (%d channels)" %
                     (bouquet_filename, channel_count))
@@ -1129,18 +1138,21 @@ def create_bouquet_file(
             print("[Bouquet] No valid channels for %s" % name)
             return 0, "", [], []
 
-        # Write bouquet file
+        # Write bouquet file atomically (temp file + rename)
+        temp_path = bouquet_path + ".tmp"
         try:
-            with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(tv_lines))
+            rename(temp_path, bouquet_path)
             print(
                 "[Bouquet] File created: %s (%d channels)" %
                 (bouquet_filename, channel_count))
         except Exception as e:
             print("[Bouquet] Error writing file with encoding: %s" % str(e))
             try:
-                with open(bouquet_path, 'wb') as f:
+                with open(temp_path, 'wb') as f:
                     f.write(('\n'.join(tv_lines)).encode('utf-8', 'ignore'))
+                rename(temp_path, bouquet_path)
                 print(
                     "[Bouquet] File created (binary fallback): %s (%d channels)" %
                     (bouquet_filename, channel_count))
@@ -1192,13 +1204,15 @@ def _update_favorite_file(name, url, export_type):
         'timestamp': str(time.time())
     }
 
-    # Write file
+    # Write file atomically (temp file + rename)
     try:
-        with io.open(favorite_path, 'w', encoding='utf-8') as f:
+        temp_path = favorite_path + ".tmp"
+        with io.open(temp_path, 'w', encoding='utf-8') as f:
             for bouq_name, bouq_data in sorted(existing_bouquets.items()):
                 line = bouq_name + "|" + \
                     bouq_data['url'] + "|" + bouq_data['export_type'] + "|" + bouq_data['timestamp']
                 f.write(line + "\n")
+        rename(temp_path, favorite_path)
 
         print("[Bouquet] Favorite.txt updated with " +
               str(len(existing_bouquets)) + " bouquets")
@@ -1230,8 +1244,10 @@ def remove_favorite_entry(name):
                 remaining.append(line.rstrip('\n'))
 
         if remaining:
-            with io.open(favorite_path, 'w', encoding='utf-8') as f:
+            temp_path = favorite_path + ".tmp"
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(remaining) + '\n')
+            rename(temp_path, favorite_path)
         else:
             remove(favorite_path)
         print("[Bouquet] Removed {} from Favorite.txt".format(name))
