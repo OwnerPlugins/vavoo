@@ -777,5 +777,6 @@
   "db79e9d5510613906df6f747f65a2315": "每次导出后自动在 EPGImport 中启用 Vavoo EPG 源，因此您不必自己在那里启用它们。",
   "edd0929f06c6db59d6b430212264c963": "每次匯出後自動在 EPGImport 中啟用 Vavoo EPG 來源，因此您不必自己在那裡啟用它們。",
   "b113d990fd363f7812154565f38fd72e": "每次导出后自动在 EPGImport 中启用 Vavoo EPG 源，因此您不必自己在那里启用它们。",
-  "528a43c7112c6e770553122845144995": "每次匯出後自動在 EPGImport 中啟用 Vavoo EPG 來源，因此您不必自己在那裡啟用它們。"
+  "528a43c7112c6e770553122845144995": "每次匯出後自動在 EPGImport 中啟用 Vavoo EPG 來源，因此您不必自己在那裡啟用它們。",
+  "30e605caa4c90cb893f306023b4e1bd2": "Aktivizo automatikisht burimin(et) e Vavoo EPG në EPGImport pas çdo eksporti, në mënyrë që të mos kesh nevojë t'i aktivizosh vetë atje."
 }

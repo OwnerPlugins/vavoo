@@ -117,7 +117,7 @@ msgid "Auto-update EPG"
 msgstr "Përditëso automatikisht EPG"
 
 msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
-msgstr ""
+msgstr "Aktivizo automatikisht burimin(et) e Vavoo EPG në EPGImport pas çdo eksporti, në mënyrë që të mos kesh nevojë t'i aktivizosh vetë atje."
 
 msgid "Back"
 msgstr "Mbrapa"
