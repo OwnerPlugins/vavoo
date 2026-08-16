@@ -116,8 +116,8 @@ msgstr "ଲେଖକ:"
 msgid "Auto-update EPG"
 msgstr "EPG ଅଟୋ-ଅପଡେଟ୍ |"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ଉତ୍ସ ସୃଷ୍ଟି ପରେ ସ୍ୱୟଂଚାଳିତ ଭାବରେ EPG ଅଦ୍ୟତନକୁ ଟ୍ରିଗର କରନ୍ତୁ |"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ପ୍ରତ୍ୟେକ ରପ୍ତାନି ପରେ EPGImport ରେ Vavoo EPG ଉତ୍ସ (ଗୁଡିକ) କୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ସକ୍ଷମ କରନ୍ତୁ, ତେଣୁ ଆପଣଙ୍କୁ ସେଠାରେ ସେମାନଙ୍କୁ ସକ୍ଷମ କରିବାକୁ ପଡିବ ନାହିଁ |"
 
 msgid "Back"
 msgstr "ପଛକୁ"
@@ -333,9 +333,6 @@ msgstr ".M3u ଫାଇଲଗୁଡିକ ସୃଷ୍ଟି କରନ୍ତୁ �
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ସମସ୍ତ% d ଦେଶ ପାଇଁ .m3u ଫାଇଲ ସୃଷ୍ଟି କରନ୍ତୁ?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "କେତେଥର EPG କୁ ଅଟୋ-ଅପଡେଟ୍ କରିବାକୁ (EPGImport ନିର୍ଧାରକ ଆବଶ୍ୟକ କରେ)"
 
 msgid "Important Notes:"
 msgstr "ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଟିପ୍ପଣୀ:"
@@ -602,9 +599,6 @@ msgstr "UPPERCASE |"
 msgid "Update Available"
 msgstr "କ items ଣସି ଆଇଟମ୍ ଉପଲବ୍ଧ ନାହିଁ |"
 
-msgid "Update interval (hours)"
-msgstr "ବ୍ୟବଧାନ ଅଦ୍ୟତନ କରନ୍ତୁ (ଘଣ୍ଟା)"
-
 msgid "Update interval (minutes):"
 msgstr "ବ୍ୟବଧାନ ଅଦ୍ୟତନ କରନ୍ତୁ (ମିନିଟ୍):"
 
@@ -685,6 +679,15 @@ msgstr "✗ ପ୍ରକ୍ସି ଅଫଲାଇନ୍ |"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ପୁନ art ଆରମ୍ଭ ବିଫଳ |"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ଉତ୍ସ ସୃଷ୍ଟି ପରେ ସ୍ୱୟଂଚାଳିତ ଭାବରେ EPG ଅଦ୍ୟତନକୁ ଟ୍ରିଗର କରନ୍ତୁ |"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "କେତେଥର EPG କୁ ଅଟୋ-ଅପଡେଟ୍ କରିବାକୁ (EPGImport ନିର୍ଧାରକ ଆବଶ୍ୟକ କରେ)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "ବ୍ୟବଧାନ ଅଦ୍ୟତନ କରନ୍ତୁ (ଘଣ୍ଟା)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG ଅଦ୍ୟତନ ସମାପ୍ତ ହୋଇଛି |"

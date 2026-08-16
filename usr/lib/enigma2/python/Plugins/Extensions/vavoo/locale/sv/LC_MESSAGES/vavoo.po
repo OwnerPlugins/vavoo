@@ -117,8 +117,8 @@ msgstr "Författare:"
 msgid "Auto-update EPG"
 msgstr "Automatisk uppdatering av EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Utlös EPG-uppdatering automatiskt efter att källan skapats"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Aktivera automatiskt Vavoo EPG-källorna i EPGImport efter varje export, så att du inte behöver aktivera dem där själv."
 
 msgid "Back"
 msgstr "Tillbaka"
@@ -334,9 +334,6 @@ msgstr "Generera .m3u-filer och spara på enheten %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generera .m3u-filer för ALLA %d länder?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Hur ofta man automatiskt uppdaterar EPG (kräver EPGImport-schemaläggare)"
 
 msgid "Important Notes:"
 msgstr "Viktiga anmärkningar:"
@@ -603,9 +600,6 @@ msgstr "VERSAL"
 msgid "Update Available"
 msgstr "Inga artiklar tillgängliga"
 
-msgid "Update interval (hours)"
-msgstr "Uppdateringsintervall (timmar)"
-
 msgid "Update interval (minutes):"
 msgstr "Uppdateringsintervall (minuter):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart misslyckades"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Utlös EPG-uppdatering automatiskt efter att källan skapats"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Hur ofta man automatiskt uppdaterar EPG (kräver EPGImport-schemaläggare)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Uppdateringsintervall (timmar)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG-uppdateringen är klar"

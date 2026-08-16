@@ -117,8 +117,8 @@ msgstr "著者："
 msgid "Auto-update EPG"
 msgstr "EPG の自動更新"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ソース作成後に EPG 更新を自動的にトリガーする"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "各エクスポート後に EPGImport で Vavoo EPG ソースが自動的に有効になるため、そこで自分で有効にする必要はありません。"
 
 msgid "Back"
 msgstr "戻る"
@@ -334,9 +334,6 @@ msgstr ".m3u ファイルを生成してデバイス %s に保存しますか?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "%d か国すべての .m3u ファイルを生成しますか?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPG を自動更新する頻度 (EPGImport スケジューラが必要)"
 
 msgid "Important Notes:"
 msgstr "重要な注意事項:"
@@ -603,9 +600,6 @@ msgstr "大文字"
 msgid "Update Available"
 msgstr "利用可能なアイテムはありません"
 
-msgid "Update interval (hours)"
-msgstr "更新間隔 (時間)"
-
 msgid "Update interval (minutes):"
 msgstr "更新間隔 (分):"
 
@@ -686,6 +680,15 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ソース作成後に EPG 更新を自動的にトリガーする"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPG を自動更新する頻度 (EPGImport スケジューラが必要)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "更新間隔 (時間)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG更新完了"

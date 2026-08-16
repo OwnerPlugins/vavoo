@@ -116,8 +116,8 @@ msgstr "రచయిత:"
 msgid "Auto-update EPG"
 msgstr "EPGని స్వయంచాలకంగా నవీకరించండి"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "మూలాధారాన్ని సృష్టించిన తర్వాత స్వయంచాలకంగా EPG నవీకరణను ట్రిగ్గర్ చేయండి"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ప్రతి ఎగుమతి తర్వాత EPGImportలో Vavoo EPG మూలం(లు)ని స్వయంచాలకంగా ప్రారంభించండి, కాబట్టి మీరు వాటిని మీరే ప్రారంభించాల్సిన అవసరం లేదు."
 
 msgid "Back"
 msgstr "వెనుకకు"
@@ -333,9 +333,6 @@ msgstr ".m3u ఫైల్‌లను రూపొందించి, పరి�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "అన్ని %d దేశాల కోసం .m3u ఫైల్‌లను రూపొందించాలా?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPGని ఎంత తరచుగా స్వయంచాలకంగా నవీకరించాలి (EPGImport షెడ్యూలర్ అవసరం)"
 
 msgid "Important Notes:"
 msgstr "ముఖ్యమైన గమనికలు:"
@@ -602,9 +599,6 @@ msgstr "పెద్ద అక్షరం"
 msgid "Update Available"
 msgstr "ఏ వస్తువులు అందుబాటులో లేవు"
 
-msgid "Update interval (hours)"
-msgstr "నవీకరణ విరామం (గంటలు)"
-
 msgid "Update interval (minutes):"
 msgstr "నవీకరణ విరామం (నిమిషాలు):"
 
@@ -685,6 +679,15 @@ msgstr "✗ ప్రాక్సీ ఆఫ్‌లైన్"
 
 msgid "✗ Restart Failed"
 msgstr "✗ పునఃప్రారంభం విఫలమైంది"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "మూలాధారాన్ని సృష్టించిన తర్వాత స్వయంచాలకంగా EPG నవీకరణను ట్రిగ్గర్ చేయండి"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPGని ఎంత తరచుగా స్వయంచాలకంగా నవీకరించాలి (EPGImport షెడ్యూలర్ అవసరం)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "నవీకరణ విరామం (గంటలు)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG అప్‌డేట్ పూర్తయింది"

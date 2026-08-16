@@ -116,8 +116,8 @@ msgstr "Awtory:"
 msgid "Auto-update EPG"
 msgstr "EPG-ni awtomatiki täzeläň"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Çeşme döredilenden soň EPG täzelenmesini awtomatiki usulda işlediň"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Her eksportdan soň EPGImport-daky Vavoo EPG çeşmesini awtomatiki usulda işlediň, şonuň üçin olary özüňiz açmaly dälsiňiz."
 
 msgid "Back"
 msgstr "Yzyna"
@@ -333,9 +333,6 @@ msgstr ".M3u faýllaryny dörediň we% s enjamyna ýazdyryň?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ALhli% d ýurtlar üçin .m3u faýl dörediň?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPG-ni näçe gezek awtomatiki täzelemeli (EPGImport meýilnamasyny talap edýär)"
 
 msgid "Important Notes:"
 msgstr "Möhüm bellikler:"
@@ -602,9 +599,6 @@ msgstr "ÜPJÜNÇILIK"
 msgid "Update Available"
 msgstr "Hiç zat ýok"
 
-msgid "Update interval (hours)"
-msgstr "Aralygy täzeläň (sagat)"
-
 msgid "Update interval (minutes):"
 msgstr "Aralyk aralygy (minutlar):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Çeşme döredilenden soň EPG täzelenmesini awtomatiki usulda işlediň"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPG-ni näçe gezek awtomatiki täzelemeli (EPGImport meýilnamasyny talap edýär)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Aralygy täzeläň (sagat)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG täzelenmesi tamamlandy"

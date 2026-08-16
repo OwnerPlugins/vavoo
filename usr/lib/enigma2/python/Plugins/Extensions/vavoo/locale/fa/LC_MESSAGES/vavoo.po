@@ -116,8 +116,8 @@ msgstr "نویسنده:"
 msgid "Auto-update EPG"
 msgstr "به روز رسانی خودکار EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "به‌روزرسانی EPG به‌طور خودکار پس از ایجاد منبع فعال شود"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "پس از هر بار صادرات، منبع(های) Vavoo EPG را در EPGImport به طور خودکار فعال کنید، بنابراین لازم نیست خودتان آنها را در آنجا فعال کنید."
 
 msgid "Back"
 msgstr "برگشت"
@@ -333,9 +333,6 @@ msgstr "فایل‌های m3u. تولید و در دستگاه %s ذخیره ش�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "فایل‌های m3u. برای همه %d کشور ایجاد شود؟"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "هر چند وقت یکبار به‌روزرسانی خودکار EPG (به زمان‌بندی EPGImport نیاز دارد)"
 
 msgid "Important Notes:"
 msgstr "نکات مهم:"
@@ -602,9 +599,6 @@ msgstr "حروف بزرگ"
 msgid "Update Available"
 msgstr "هیچ موردی در دسترس نیست"
 
-msgid "Update interval (hours)"
-msgstr "فاصله زمانی به روز رسانی (ساعت)"
-
 msgid "Update interval (minutes):"
 msgstr "فاصله زمانی به روز رسانی (دقیقه):"
 
@@ -685,6 +679,15 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "به‌روزرسانی EPG به‌طور خودکار پس از ایجاد منبع فعال شود"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "هر چند وقت یکبار به‌روزرسانی خودکار EPG (به زمان‌بندی EPGImport نیاز دارد)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "فاصله زمانی به روز رسانی (ساعت)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "به روز رسانی EPG تکمیل شد"

@@ -117,8 +117,8 @@ msgstr "Avtor:"
 msgid "Auto-update EPG"
 msgstr "Samodejno posodabljanje EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Samodejno sproži posodobitev EPG po ustvarjanju vira"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Samodejno omogočite vir(e) Vavoo EPG v EPGImport po vsakem izvozu, tako da vam jih tam ni treba omogočiti sami."
 
 msgid "Back"
 msgstr "Nazaj"
@@ -334,9 +334,6 @@ msgstr "Ustvarite datoteke .m3u in jih shranite v napravo %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ustvariti datoteke .m3u za VSEh %d držav?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kako pogosto samodejno posodobiti EPG (zahteva načrtovalnik EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Pomembne opombe:"
@@ -603,9 +600,6 @@ msgstr "VELIKE ČRKE"
 msgid "Update Available"
 msgstr "Ni artiklov na voljo"
 
-msgid "Update interval (hours)"
-msgstr "Interval posodabljanja (ure)"
-
 msgid "Update interval (minutes):"
 msgstr "Interval posodabljanja (minute):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proxy brez povezave"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovni zagon ni uspel"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Samodejno sproži posodobitev EPG po ustvarjanju vira"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kako pogosto samodejno posodobiti EPG (zahteva načrtovalnik EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Interval posodabljanja (ure)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Posodobitev EPG končana"

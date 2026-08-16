@@ -116,8 +116,8 @@ msgstr "Autor:"
 msgid "Auto-update EPG"
 msgstr "Mesa a jorn automatica de l'EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Accionar automaticament la mesa a jorn EPG après la creacion de la font"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Activatz automaticament la(s) font(s) Vavoo EPG dins EPGImport après cada exportacion, per que los ajatz pas activar vos-meteis."
 
 msgid "Back"
 msgstr "Arrièr"
@@ -333,9 +333,6 @@ msgstr "Generar de fichièrs .m3u e enregistrar sul periferic %s ?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generar de fichièrs .m3u per TOTES los %d païses ?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Qué frequéncia metre a jorn automaticament l'EPG (necessita lo planificator EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Nòtas importantas:"
@@ -602,9 +599,6 @@ msgstr "MAJUSCULAS"
 msgid "Update Available"
 msgstr "Cap d'article disponible"
 
-msgid "Update interval (hours)"
-msgstr "Interval de mesa a jorn (oras)"
-
 msgid "Update interval (minutes):"
 msgstr "Interval de mesa a jorn (minutas):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proxy fòra linha"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reaviada a fracassat"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Accionar automaticament la mesa a jorn EPG après la creacion de la font"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Qué frequéncia metre a jorn automaticament l'EPG (necessita lo planificator EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Interval de mesa a jorn (oras)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Mesa a jorn EPG completada"

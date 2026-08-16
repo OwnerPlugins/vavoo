@@ -117,8 +117,8 @@ msgstr "Forfatter:"
 msgid "Auto-update EPG"
 msgstr "Automatisk oppdatering av EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Utløs EPG-oppdatering automatisk etter kildeoppretting"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Aktiver automatisk Vavoo EPG-kilden(e) i EPGImport etter hver eksport, slik at du ikke trenger å aktivere dem der selv."
 
 msgid "Back"
 msgstr "Tilbake"
@@ -334,9 +334,6 @@ msgstr "Generere .m3u-filer og lagre på enheten %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generere .m3u-filer for ALLE %d land?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Hvor ofte skal du automatisk oppdatere EPG (krever EPGImport-planlegger)"
 
 msgid "Important Notes:"
 msgstr "Viktige merknader:"
@@ -603,9 +600,6 @@ msgstr "STORE BOKSTAVER"
 msgid "Update Available"
 msgstr "Ingen varer tilgjengelig"
 
-msgid "Update interval (hours)"
-msgstr "Oppdateringsintervall (timer)"
-
 msgid "Update interval (minutes):"
 msgstr "Oppdateringsintervall (minutter):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proxy frakoblet"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart mislyktes"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Utløs EPG-oppdatering automatisk etter kildeoppretting"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Hvor ofte skal du automatisk oppdatere EPG (krever EPGImport-planlegger)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Oppdateringsintervall (timer)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG-oppdatering fullført"

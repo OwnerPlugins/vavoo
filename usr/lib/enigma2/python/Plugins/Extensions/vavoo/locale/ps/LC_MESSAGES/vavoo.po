@@ -116,8 +116,8 @@ msgstr "لیکوال:"
 msgid "Auto-update EPG"
 msgstr "د EPG اتومات تازه کول"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "د سرچینې رامینځته کولو وروسته په اتوماتيک ډول د EPG تازه کول پیل کړئ"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "په اتوماتيک ډول د هر صادراتو وروسته په EPGImport کې د Vavoo EPG سرچینې فعال کړئ، نو تاسو اړتیا نلرئ چې پخپله هلته فعال کړئ."
 
 msgid "Back"
 msgstr "شاته"
@@ -333,9 +333,6 @@ msgstr "د .m3u فایلونه جوړ کړئ او په %s کې خوندي کړئ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "د ټولو %d هیوادونو لپاره .m3u فایلونه جوړ کړئ؟"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "څو ځله د EPG اتومات تازه کول (د EPGImport مهالویش ته اړتیا لري)"
 
 msgid "Important Notes:"
 msgstr "مهم یادښتونه:"
@@ -602,9 +599,6 @@ msgstr "پورته کیسه"
 msgid "Update Available"
 msgstr "هیڅ توکي شتون نلري"
 
-msgid "Update interval (hours)"
-msgstr "د تازه کولو وقفه (ساعتونه)"
-
 msgid "Update interval (minutes):"
 msgstr "د تازه کولو وقفه (دقیقې):"
 
@@ -685,6 +679,15 @@ msgstr "✗ پراکسي آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ بیا پیل کول ناکام شول"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "د سرچینې رامینځته کولو وروسته په اتوماتيک ډول د EPG تازه کول پیل کړئ"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "څو ځله د EPG اتومات تازه کول (د EPGImport مهالویش ته اړتیا لري)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "د تازه کولو وقفه (ساعتونه)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "د EPG تازه کول بشپړ شول"

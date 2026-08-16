@@ -116,8 +116,8 @@ msgstr "Հեղինակ:"
 msgid "Auto-update EPG"
 msgstr "EPG-ի ավտոմատ թարմացում"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Աղբյուրի ստեղծումից հետո ավտոմատ կերպով միացնել EPG թարմացումը"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Յուրաքանչյուր արտահանումից հետո ավտոմատ կերպով միացրեք Vavoo EPG աղբյուր(ներ)ը EPGImport-ում, այնպես որ դուք ստիպված չեք լինի ինքնուրույն միացնել դրանք այնտեղ:"
 
 msgid "Back"
 msgstr "Ետ"
@@ -333,9 +333,6 @@ msgstr "Ստեղծե՞լ .m3u ֆայլեր և պահել %s սարքում:"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ստեղծե՞լ .m3u ֆայլեր ԲՈԼՈՐ %d երկրների համար:"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Որքա՞ն հաճախ կարելի է ավտոմատ թարմացնել EPG-ը (պահանջվում է EPGImport ժամանակացույց)"
 
 msgid "Important Notes:"
 msgstr "Կարևոր նշումներ."
@@ -602,9 +599,6 @@ msgstr "Մեծատառ"
 msgid "Update Available"
 msgstr "Նյութեր չկան"
 
-msgid "Update interval (hours)"
-msgstr "Թարմացման ընդմիջում (ժամ)"
-
 msgid "Update interval (minutes):"
 msgstr "Թարմացման ընդմիջում (րոպե)."
 
@@ -684,6 +678,15 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Աղբյուրի ստեղծումից հետո ավտոմատ կերպով միացնել EPG թարմացումը"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Որքա՞ն հաճախ կարելի է ավտոմատ թարմացնել EPG-ը (պահանջվում է EPGImport ժամանակացույց)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Թարմացման ընդմիջում (ժամ)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG թարմացումն ավարտված է"

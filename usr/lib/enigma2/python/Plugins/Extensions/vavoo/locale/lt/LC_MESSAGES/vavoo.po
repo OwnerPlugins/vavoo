@@ -117,8 +117,8 @@ msgstr "Autorius:"
 msgid "Auto-update EPG"
 msgstr "Automatinis EPG atnaujinimas"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Sukūrus šaltinį, automatiškai suaktyvinkite EPG naujinimą"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Automatiškai įgalinkite Vavoo EPG šaltinį (-ius) programoje EPGImport po kiekvieno eksportavimo, kad jums nereikėtų jų ten įjungti patiems."
 
 msgid "Back"
 msgstr "Atgal"
@@ -334,9 +334,6 @@ msgstr "Sugeneruoti .m3u failus ir išsaugoti įrenginyje %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generuoti .m3u failus VISIEMS %d šalių?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kaip dažnai automatiškai atnaujinti EPG (reikalingas EPGImport planuoklis)"
 
 msgid "Important Notes:"
 msgstr "Svarbios pastabos:"
@@ -603,9 +600,6 @@ msgstr "DIDŽIOSIOS raidės"
 msgid "Update Available"
 msgstr "Prekių nėra"
 
-msgid "Update interval (hours)"
-msgstr "Atnaujinimo intervalas (valandos)"
-
 msgid "Update interval (minutes):"
 msgstr "Atnaujinimo intervalas (minutės):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Tarpinis serveris neprisijungęs"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nepavyko paleisti iš naujo"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Sukūrus šaltinį, automatiškai suaktyvinkite EPG naujinimą"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kaip dažnai automatiškai atnaujinti EPG (reikalingas EPGImport planuoklis)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Atnaujinimo intervalas (valandos)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG atnaujinimas baigtas"

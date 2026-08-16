@@ -119,7 +119,7 @@ msgstr "Author:"
 msgid "Auto-update EPG"
 msgstr ""
 
-msgid "Automatically trigger EPG update after source creation"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
 msgstr ""
 
 msgid "Back"
@@ -345,9 +345,6 @@ msgstr "Generate .m3u files and save to device %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generate .m3u files for ALL %d countries?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr ""
 
 msgid "Important Notes:"
 msgstr "Important Notes:"
@@ -616,10 +613,6 @@ msgstr "UPPERCASE"
 msgid "Update Available"
 msgstr "Update Aborted!"
 
-#, fuzzy
-msgid "Update interval (hours)"
-msgstr "Update interval (minutes):"
-
 msgid "Update interval (minutes):"
 msgstr "Update interval (minutes):"
 
@@ -700,6 +693,10 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Update interval (hours)"
+#~ msgstr "Update interval (minutes):"
 
 #, fuzzy
 #~ msgid "EPG update started successfully"

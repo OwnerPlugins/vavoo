@@ -116,8 +116,8 @@ msgstr "Pengarang:"
 msgid "Auto-update EPG"
 msgstr "Autokemas kini EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Cetuskan kemas kini EPG secara automatik selepas penciptaan sumber"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Dayakan sumber EPG Vavoo secara automatik dalam EPGImport selepas setiap eksport, jadi anda tidak perlu mendayakannya sendiri di sana."
 
 msgid "Back"
 msgstr "belakang"
@@ -333,9 +333,6 @@ msgstr "Hasilkan fail .m3u dan simpan ke peranti %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Hasilkan fail .m3u untuk SEMUA %d negara?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kekerapan untuk mengemas kini EPG secara automatik (memerlukan penjadual EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Nota Penting:"
@@ -602,9 +599,6 @@ msgstr "HURUF BESAR"
 msgid "Update Available"
 msgstr "Tiada item tersedia"
 
-msgid "Update interval (hours)"
-msgstr "Kemas kini selang (jam)"
-
 msgid "Update interval (minutes):"
 msgstr "Selang kemas kini (minit):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Cetuskan kemas kini EPG secara automatik selepas penciptaan sumber"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kekerapan untuk mengemas kini EPG secara automatik (memerlukan penjadual EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Kemas kini selang (jam)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Kemas kini EPG selesai"

@@ -116,8 +116,8 @@ msgstr "المؤلف:"
 msgid "Auto-update EPG"
 msgstr "تحديث EPG التلقائي"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "تشغيل تحديث EPG تلقائيا بعد إنشاء المصدر"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "قم بتمكين مصدر (مصادر) Vavoo EPG تلقائيًا في EPGImport بعد كل عملية تصدير، لذلك لا يتعين عليك تمكينها هناك بنفسك."
 
 msgid "Back"
 msgstr "خلف"
@@ -333,9 +333,6 @@ msgstr "إنشاء ملفات .m3u وحفظها على الجهاز %s؟"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "إنشاء ملفات .m3u لجميع %d دولة؟"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "عدد مرات التحديث التلقائي لـ EPG (يتطلب جدولة EPGImport)"
 
 msgid "Important Notes:"
 msgstr "ملاحظات مهمة:"
@@ -602,9 +599,6 @@ msgstr "أحرف كبيرة"
 msgid "Update Available"
 msgstr "لا توجد عناصر متاحة"
 
-msgid "Update interval (hours)"
-msgstr "فاصل التحديث (بالساعات)"
-
 msgid "Update interval (minutes):"
 msgstr "فاصل التحديث (بالدقائق):"
 
@@ -685,6 +679,15 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "تشغيل تحديث EPG تلقائيا بعد إنشاء المصدر"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "عدد مرات التحديث التلقائي لـ EPG (يتطلب جدولة EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "فاصل التحديث (بالساعات)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "اكتمل تحديث EPG"

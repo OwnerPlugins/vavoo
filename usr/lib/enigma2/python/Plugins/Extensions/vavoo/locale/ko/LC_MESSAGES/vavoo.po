@@ -117,8 +117,8 @@ msgstr "작가:"
 msgid "Auto-update EPG"
 msgstr "EPG 자동 업데이트"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "소스 생성 후 EPG 업데이트 자동 트리거"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "각 내보내기 후에 EPGImport에서 Vavoo EPG 소스를 자동으로 활성화하므로 직접 활성화할 필요가 없습니다."
 
 msgid "Back"
 msgstr "뒤쪽에"
@@ -334,9 +334,6 @@ msgstr ".m3u 파일을 생성하고 %s 장치에 저장하시겠습니까?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "모든 %d개 국가에 대한 .m3u 파일을 생성하시겠습니까?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPG 자동 업데이트 빈도(EPGImport 스케줄러 필요)"
 
 msgid "Important Notes:"
 msgstr "중요 사항:"
@@ -603,9 +600,6 @@ msgstr "대문자"
 msgid "Update Available"
 msgstr "사용 가능한 항목이 없습니다."
 
-msgid "Update interval (hours)"
-msgstr "업데이트 간격(시간)"
-
 msgid "Update interval (minutes):"
 msgstr "업데이트 간격(분):"
 
@@ -686,6 +680,15 @@ msgstr "✗ 오프라인 프록시"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 다시 시작 실패"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "소스 생성 후 EPG 업데이트 자동 트리거"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPG 자동 업데이트 빈도(EPGImport 스케줄러 필요)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "업데이트 간격(시간)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG 업데이트 완료"

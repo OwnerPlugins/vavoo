@@ -116,8 +116,8 @@ msgstr "ஆசிரியர்:"
 msgid "Auto-update EPG"
 msgstr "EPG ஐ தானாக புதுப்பிக்கவும்"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "மூல உருவாக்கத்திற்குப் பிறகு தானாகவே EPG புதுப்பிப்பைத் தூண்டும்"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ஒவ்வொரு ஏற்றுமதிக்குப் பிறகும் EPGImport இல் Vavoo EPG மூல(களை) தானாக இயக்கவும், எனவே அவற்றை நீங்களே இயக்க வேண்டியதில்லை."
 
 msgid "Back"
 msgstr "மீண்டும்"
@@ -333,9 +333,6 @@ msgstr ".m3u கோப்புகளை உருவாக்கி %s சா�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "அனைத்து %d நாடுகளுக்கும் .m3u கோப்புகளை உருவாக்கவா?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPGஐ எவ்வளவு அடிக்கடி தானாகப் புதுப்பிக்க வேண்டும் (EPGImport திட்டமிடுபவர் தேவை)"
 
 msgid "Important Notes:"
 msgstr "முக்கிய குறிப்புகள்:"
@@ -602,9 +599,6 @@ msgstr "பெரிய எழுத்து"
 msgid "Update Available"
 msgstr "பொருட்கள் எதுவும் கிடைக்கவில்லை"
 
-msgid "Update interval (hours)"
-msgstr "புதுப்பிப்பு இடைவெளி (மணிநேரம்)"
-
 msgid "Update interval (minutes):"
 msgstr "புதுப்பிப்பு இடைவெளி (நிமிடங்கள்):"
 
@@ -685,6 +679,15 @@ msgstr "✗ ப்ராக்ஸி ஆஃப்லைன்"
 
 msgid "✗ Restart Failed"
 msgstr "✗ மறுதொடக்கம் தோல்வியடைந்தது"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "மூல உருவாக்கத்திற்குப் பிறகு தானாகவே EPG புதுப்பிப்பைத் தூண்டும்"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPGஐ எவ்வளவு அடிக்கடி தானாகப் புதுப்பிக்க வேண்டும் (EPGImport திட்டமிடுபவர் தேவை)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "புதுப்பிப்பு இடைவெளி (மணிநேரம்)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG புதுப்பிப்பு முடிந்தது"

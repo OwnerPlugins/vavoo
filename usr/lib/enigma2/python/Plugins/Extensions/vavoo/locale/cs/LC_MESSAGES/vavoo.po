@@ -121,8 +121,8 @@ msgstr "Autor:"
 msgid "Auto-update EPG"
 msgstr "Automatická aktualizace EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Automaticky spustit aktualizaci EPG po vytvoření zdroje"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Automaticky povolte zdroj (zdroje) Vavoo EPG v EPGImport po každém exportu, takže je tam nemusíte povolovat sami."
 
 msgid "Back"
 msgstr "Zadní"
@@ -349,9 +349,6 @@ msgstr "Vygenerovat soubory .m3u a uložit do zařízení %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Vygenerovat soubory .m3u pro VŠECHNY %d země?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Jak často automaticky aktualizovat EPG (vyžaduje plánovač EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Důležité poznámky:"
@@ -622,9 +619,6 @@ msgstr "VELKÁ PÍSMENA"
 msgid "Update Available"
 msgstr "Nejsou k dispozici žádné položky"
 
-msgid "Update interval (hours)"
-msgstr "Interval aktualizace (hodiny)"
-
 #, fuzzy
 msgid "Update interval (minutes):"
 msgstr "Interval aktualizace (hodiny)"
@@ -708,6 +702,15 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restart se nezdařil"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Automaticky spustit aktualizaci EPG po vytvoření zdroje"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Jak často automaticky aktualizovat EPG (vyžaduje plánovač EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Interval aktualizace (hodiny)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Aktualizace EPG dokončena"

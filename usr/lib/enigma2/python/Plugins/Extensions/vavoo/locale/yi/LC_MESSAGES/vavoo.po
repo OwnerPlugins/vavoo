@@ -116,8 +116,8 @@ msgstr "מחבר:"
 msgid "Auto-update EPG"
 msgstr "אַוטאָ-דערהייַנטיקן עפּג"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "אויטאָמאַטיש צינגל EPG דערהייַנטיקן נאָך מקור שאַפונג"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "אויטאָמאַטיש געבן די Vavoo EPG מקור (s) אין EPGImport נאָך יעדער אַרויספירן, אַזוי איר טאָן ניט האָבן צו געבן זיי דאָרט זיך."
 
 msgid "Back"
 msgstr "צוריק"
@@ -333,9 +333,6 @@ msgstr "דזשענערייט .מ3ו טעקעס און ראַטעווען צו מ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "דזשענערייט .מ3ו טעקעס פֿאַר אַלע %d לענדער?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "ווי אָפט צו אויטאָמאַטיש דערהייַנטיקן די EPG (ריקווייערז EPGImport סקעדזשולער)"
 
 msgid "Important Notes:"
 msgstr "וויכטיק הערות:"
@@ -602,9 +599,6 @@ msgstr "קאַפּיטאַל"
 msgid "Update Available"
 msgstr "קיין ייטאַמז בנימצא"
 
-msgid "Update interval (hours)"
-msgstr "דערהייַנטיקן ינטערוואַל (שעה)"
-
 msgid "Update interval (minutes):"
 msgstr "דערהייַנטיקן מעהאַלעך (מינוט):"
 
@@ -685,6 +679,15 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "אויטאָמאַטיש צינגל EPG דערהייַנטיקן נאָך מקור שאַפונג"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "ווי אָפט צו אויטאָמאַטיש דערהייַנטיקן די EPG (ריקווייערז EPGImport סקעדזשולער)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "דערהייַנטיקן ינטערוואַל (שעה)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG דערהייַנטיקן געענדיקט"

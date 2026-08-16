@@ -119,8 +119,8 @@ msgstr "Szerző:"
 msgid "Auto-update EPG"
 msgstr "Az EPG automatikus frissítése"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "A forrás létrehozása után automatikusan elindítja az EPG frissítést"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Minden exportálás után automatikusan engedélyezze a Vavoo EPG-forrás(oka)t az EPGImportban, így nem kell saját maga engedélyeznie őket."
 
 msgid "Back"
 msgstr "Vissza"
@@ -347,9 +347,6 @@ msgstr ".m3u fájlok generálása és mentése a(z) %s eszközre?"
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr ".m3u fájlok generálása MINDEN %d ország számára?"
 
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Milyen gyakran kell automatikusan frissíteni az EPG-t (EPGImport ütemező szükséges)"
-
 msgid "Important Notes:"
 msgstr "Fontos megjegyzések:"
 
@@ -481,7 +478,7 @@ msgstr "Proxy indítási időtúllépése (másodperc)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "A proxy token sikeresen frissítve"
-"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
+"A proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveA proxy token sikeresen frissítveVavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -623,10 +620,6 @@ msgstr "NAGYBETŰS"
 msgid "Update Available"
 msgstr "Nincsenek elérhető tételek"
 
-#, fuzzy
-msgid "Update interval (hours)"
-msgstr "Frissítési időköz (perc):"
-
 msgid "Update interval (minutes):"
 msgstr "Frissítési időköz (perc):"
 
@@ -655,7 +648,7 @@ msgstr "Vavoo élő közvetítés bővítmény"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo csokrok sikeresen eltávolítva!"
-"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
+"Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!Vavoo csokrok sikeresen eltávolítva!\n"
 "\n"
 "(%s fájl törölve)"
 
@@ -711,6 +704,16 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Az újraindítás sikertelen"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "A forrás létrehozása után automatikusan elindítja az EPG frissítést"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Milyen gyakran kell automatikusan frissíteni az EPG-t (EPGImport ütemező szükséges)"
+
+#, fuzzy
+#~ msgid "Update interval (hours)"
+#~ msgstr "Frissítési időköz (perc):"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Az EPG frissítés befejeződött"

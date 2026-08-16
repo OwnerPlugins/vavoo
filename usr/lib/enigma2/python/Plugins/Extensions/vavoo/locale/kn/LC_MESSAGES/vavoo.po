@@ -116,8 +116,8 @@ msgstr "ಲೇಖಕ:"
 msgid "Auto-update EPG"
 msgstr "ಸ್ವಯಂ-ನವೀಕರಿಸಿ EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ಮೂಲ ರಚನೆಯ ನಂತರ ಸ್ವಯಂಚಾಲಿತವಾಗಿ EPG ನವೀಕರಣವನ್ನು ಟ್ರಿಗರ್ ಮಾಡಿ"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ಪ್ರತಿ ರಫ್ತು ನಂತರ EPGImport ನಲ್ಲಿ Vavoo EPG ಮೂಲ(ಗಳನ್ನು) ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಿ, ಆದ್ದರಿಂದ ನೀವು ಅವುಗಳನ್ನು ನೀವೇ ಸಕ್ರಿಯಗೊಳಿಸಬೇಕಾಗಿಲ್ಲ."
 
 msgid "Back"
 msgstr "ಹಿಂದೆ"
@@ -333,9 +333,6 @@ msgstr ".m3u ಫೈಲ್‌ಗಳನ್ನು ರಚಿಸಿ ಮತ್ತು �
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ಎಲ್ಲಾ %d ದೇಶಗಳಿಗೆ .m3u ಫೈಲ್‌ಗಳನ್ನು ರಚಿಸುವುದೇ?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPG ಅನ್ನು ಎಷ್ಟು ಬಾರಿ ಸ್ವಯಂ-ನವೀಕರಿಸಲು (EPGImport ಶೆಡ್ಯೂಲರ್ ಅಗತ್ಯವಿದೆ)"
 
 msgid "Important Notes:"
 msgstr "ಪ್ರಮುಖ ಟಿಪ್ಪಣಿಗಳು:"
@@ -602,9 +599,6 @@ msgstr "ದೊಡ್ಡ ಅಕ್ಷರ"
 msgid "Update Available"
 msgstr "ಯಾವುದೇ ಐಟಂಗಳು ಲಭ್ಯವಿಲ್ಲ"
 
-msgid "Update interval (hours)"
-msgstr "ಮಧ್ಯಂತರವನ್ನು ನವೀಕರಿಸಿ (ಗಂಟೆಗಳು)"
-
 msgid "Update interval (minutes):"
 msgstr "ನವೀಕರಣ ಮಧ್ಯಂತರ (ನಿಮಿಷಗಳು):"
 
@@ -685,6 +679,15 @@ msgstr "✗ ಪ್ರಾಕ್ಸಿ ಆಫ್‌ಲೈನ್"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ಮರುಪ್ರಾರಂಭ ವಿಫಲವಾಗಿದೆ"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ಮೂಲ ರಚನೆಯ ನಂತರ ಸ್ವಯಂಚಾಲಿತವಾಗಿ EPG ನವೀಕರಣವನ್ನು ಟ್ರಿಗರ್ ಮಾಡಿ"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPG ಅನ್ನು ಎಷ್ಟು ಬಾರಿ ಸ್ವಯಂ-ನವೀಕರಿಸಲು (EPGImport ಶೆಡ್ಯೂಲರ್ ಅಗತ್ಯವಿದೆ)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "ಮಧ್ಯಂತರವನ್ನು ನವೀಕರಿಸಿ (ಗಂಟೆಗಳು)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG ನವೀಕರಣ ಪೂರ್ಣಗೊಂಡಿದೆ"

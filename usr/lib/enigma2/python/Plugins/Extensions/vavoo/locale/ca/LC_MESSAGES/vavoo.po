@@ -117,8 +117,8 @@ msgstr "Autor:"
 msgid "Auto-update EPG"
 msgstr "Actualització automàtica de l'EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Activa automàticament l'actualització de l'EPG després de la creació de la font"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Activeu automàticament les fonts EPG de Vavoo a EPGImport després de cada exportació, de manera que no cal que les habiliteu vosaltres mateixos."
 
 msgid "Back"
 msgstr "Enrere"
@@ -334,9 +334,6 @@ msgstr "Voleu generar fitxers .m3u i desar-los al dispositiu %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Voleu generar fitxers .m3u per a TOTS els %d països?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Amb quina freqüència s'actualitza automàticament l'EPG (requereix el programador EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Notes importants:"
@@ -603,9 +600,6 @@ msgstr "MAJÚSCULA"
 msgid "Update Available"
 msgstr "No hi ha articles disponibles"
 
-msgid "Update interval (hours)"
-msgstr "Interval d'actualització (hores)"
-
 msgid "Update interval (minutes):"
 msgstr "Interval d'actualització (minuts):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Proxy fora de línia"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Error de reinici"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Activa automàticament l'actualització de l'EPG després de la creació de la font"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Amb quina freqüència s'actualitza automàticament l'EPG (requereix el programador EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Interval d'actualització (hores)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "S'ha completat l'actualització de l'EPG"

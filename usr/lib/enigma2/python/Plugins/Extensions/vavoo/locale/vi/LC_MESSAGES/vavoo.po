@@ -117,8 +117,8 @@ msgstr "Tác giả:"
 msgid "Auto-update EPG"
 msgstr "Tự động cập nhật EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Tự động kích hoạt cập nhật EPG sau khi tạo nguồn"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Tự động kích hoạt (các) nguồn Vavoo EPG trong EPGImport sau mỗi lần xuất, do đó bạn không cần phải tự mình kích hoạt chúng ở đó."
 
 msgid "Back"
 msgstr "Mặt sau"
@@ -334,9 +334,6 @@ msgstr "Tạo tệp .m3u và lưu vào thiết bị %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Tạo tệp .m3u cho TẤT CẢ các quốc gia %d?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Tần suất tự động cập nhật EPG (yêu cầu bộ lập lịch EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Lưu ý quan trọng:"
@@ -603,9 +600,6 @@ msgstr "CHỮ HOA"
 msgid "Update Available"
 msgstr "Không có mặt hàng nào"
 
-msgid "Update interval (hours)"
-msgstr "Khoảng thời gian cập nhật (giờ)"
-
 msgid "Update interval (minutes):"
 msgstr "Khoảng thời gian cập nhật (phút):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Tự động kích hoạt cập nhật EPG sau khi tạo nguồn"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Tần suất tự động cập nhật EPG (yêu cầu bộ lập lịch EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Khoảng thời gian cập nhật (giờ)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Cập nhật EPG đã hoàn tất"

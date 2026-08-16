@@ -116,8 +116,8 @@ msgstr "អ្នកនិពន្ធ៖"
 msgid "Auto-update EPG"
 msgstr "ធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ចាប់ផ្តើមការអាប់ដេត EPG ដោយស្វ័យប្រវត្តិបន្ទាប់ពីការបង្កើតប្រភព"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "បើកដំណើរការប្រភព Vavoo EPG ដោយស្វ័យប្រវត្តិនៅក្នុង EPGImport បន្ទាប់ពីការនាំចេញនីមួយៗ ដូច្នេះអ្នកមិនចាំបាច់បើកពួកវានៅទីនោះដោយខ្លួនឯងទេ។"
 
 msgid "Back"
 msgstr "ត្រឡប់មកវិញ"
@@ -333,9 +333,6 @@ msgstr "បង្កើតឯកសារ .m3u ហើយរក្សាទុក
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "បង្កើតឯកសារ .m3u សម្រាប់ %d ប្រទេសទាំងអស់?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "តើត្រូវធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិនូវ EPG ញឹកញាប់ប៉ុណ្ណា (តម្រូវឱ្យមានកម្មវិធីកំណត់ពេល EPGImport)"
 
 msgid "Important Notes:"
 msgstr "កំណត់ចំណាំសំខាន់ៗ៖"
@@ -602,9 +599,6 @@ msgstr "ករណីខាងលើ"
 msgid "Update Available"
 msgstr "មិនមានធាតុដែលអាចប្រើបានទេ។"
 
-msgid "Update interval (hours)"
-msgstr "ធ្វើបច្ចុប្បន្នភាពចន្លោះពេល (ម៉ោង)"
-
 msgid "Update interval (minutes):"
 msgstr "ចន្លោះពេលធ្វើបច្ចុប្បន្នភាព (នាទី)៖"
 
@@ -685,6 +679,15 @@ msgstr "✗ប្រូកស៊ីក្រៅបណ្តាញ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ការចាប់ផ្តើមឡើងវិញបានបរាជ័យ"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ចាប់ផ្តើមការអាប់ដេត EPG ដោយស្វ័យប្រវត្តិបន្ទាប់ពីការបង្កើតប្រភព"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "តើត្រូវធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិនូវ EPG ញឹកញាប់ប៉ុណ្ណា (តម្រូវឱ្យមានកម្មវិធីកំណត់ពេល EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "ធ្វើបច្ចុប្បន្នភាពចន្លោះពេល (ម៉ោង)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "ការធ្វើបច្ចុប្បន្នភាព EPG បានបញ្ចប់"

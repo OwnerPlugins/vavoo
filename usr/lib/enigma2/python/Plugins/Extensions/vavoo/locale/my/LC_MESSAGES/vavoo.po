@@ -116,8 +116,8 @@ msgstr "ရေးသားသူ-"
 msgid "Auto-update EPG"
 msgstr "EPG ကို အလိုအလျောက် အပ်ဒိတ်လုပ်ပါ။"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "အရင်းအမြစ်ဖန်တီးပြီးနောက် EPG အပ်ဒိတ်ကို အလိုအလျောက် အစပျိုးသည်။"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ထုတ်ယူမှုတစ်ခုစီပြီးနောက် EPGImport တွင် Vavoo EPG အရင်းအမြစ်(များ) ကို အလိုအလျောက်ဖွင့်ထားသောကြောင့် ၎င်းတို့ကို ထိုနေရာတွင် သင်ကိုယ်တိုင်ဖွင့်ရန် မလိုအပ်ပါ။"
 
 msgid "Back"
 msgstr "ကျော"
@@ -333,9 +333,6 @@ msgstr ".m3u ဖိုင်များကို ထုတ်လုပ်ပြ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "နိုင်ငံပေါင်း %d နိုင်ငံအတွက် .m3u ဖိုင်များကို ဖန်တီးမလား။"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPG ကို အလိုအလျောက် အပ်ဒိတ်လုပ်ရန် မည်မျှ မကြာခဏ (EPGImport အစီအစဉ်ကို လိုအပ်သည်)"
 
 msgid "Important Notes:"
 msgstr "အရေးကြီးသော မှတ်စုများ-"
@@ -602,9 +599,6 @@ msgstr ""
 msgid "Update Available"
 msgstr "ပစ္စည်းမရရှိနိုင်ပါ။"
 
-msgid "Update interval (hours)"
-msgstr "အပ်ဒိတ်ကြားကာလ (နာရီ)"
-
 msgid "Update interval (minutes):"
 msgstr "အပ်ဒိတ်ကြားကာလ (မိနစ်)-"
 
@@ -685,6 +679,15 @@ msgstr "✗ ပရောက်စီအော့ဖ်လိုင်း"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ပြန်လည်စတင်ခြင်း မအောင်မြင်ပါ။"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "အရင်းအမြစ်ဖန်တီးပြီးနောက် EPG အပ်ဒိတ်ကို အလိုအလျောက် အစပျိုးသည်။"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPG ကို အလိုအလျောက် အပ်ဒိတ်လုပ်ရန် မည်မျှ မကြာခဏ (EPGImport အစီအစဉ်ကို လိုအပ်သည်)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "အပ်ဒိတ်ကြားကာလ (နာရီ)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG အပ်ဒိတ် ပြီးပါပြီ။"

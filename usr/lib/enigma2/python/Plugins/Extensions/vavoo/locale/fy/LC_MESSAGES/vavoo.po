@@ -116,8 +116,8 @@ msgstr "Skriuwer:"
 msgid "Auto-update EPG"
 msgstr "Automatysk bywurkje EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Aktivearje automatysk EPG-fernijing nei oanmeitsjen fan boarne"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Skeakelje de Vavoo EPG-boarnen automatysk yn EPGImport nei elke eksport yn, sadat jo se dêr sels net ynskeakelje moatte."
 
 msgid "Back"
 msgstr "Rêch"
@@ -333,9 +333,6 @@ msgstr ".m3u-bestannen generearje en opslaan op apparaat %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr ".m3u-bestannen generearje foar ALLE %d lannen?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Hoe faak de EPG automatysk bywurkje (fereasket EPGImport-skemader)"
 
 msgid "Important Notes:"
 msgstr "Wichtige notysjes:"
@@ -602,9 +599,6 @@ msgstr "HOOFLETTERS"
 msgid "Update Available"
 msgstr "Gjin items beskikber"
 
-msgid "Update interval (hours)"
-msgstr "Update ynterval (oeren)"
-
 msgid "Update interval (minutes):"
 msgstr "Update ynterval (minuten):"
 
@@ -684,6 +678,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herstart mislearre"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Aktivearje automatysk EPG-fernijing nei oanmeitsjen fan boarne"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Hoe faak de EPG automatysk bywurkje (fereasket EPGImport-skemader)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Update ynterval (oeren)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG-fernijing foltôge"

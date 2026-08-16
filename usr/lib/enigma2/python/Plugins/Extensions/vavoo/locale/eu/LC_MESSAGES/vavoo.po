@@ -116,8 +116,8 @@ msgstr "Egilea:"
 msgid "Auto-update EPG"
 msgstr "EPG automatikoki eguneratu"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Abiarazi automatikoki EPG eguneratzea iturburua sortu ondoren"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Automatikoki gaitu Vavoo EPG iturburuak EPGImport-en esportazio bakoitzaren ondoren, beraz, ez dituzu zuk zeuk gaitu beharrik."
 
 msgid "Back"
 msgstr "Itzuli"
@@ -333,9 +333,6 @@ msgstr ".m3u fitxategiak sortu eta %s gailuan gorde?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "%d herrialde GUZTIETARentzako .m3u fitxategiak sortu?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Zenbatero eguneratu automatikoki EPG (EPGImport programatzailea behar du)"
 
 msgid "Important Notes:"
 msgstr "Ohar garrantzitsuak:"
@@ -602,9 +599,6 @@ msgstr "MAIUSKULA"
 msgid "Update Available"
 msgstr "Ez dago elementurik eskuragarri"
 
-msgid "Update interval (hours)"
-msgstr "Eguneratzeko tartea (orduak)"
-
 msgid "Update interval (minutes):"
 msgstr "Eguneratzeko tartea (minutuak):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Abiarazi automatikoki EPG eguneratzea iturburua sortu ondoren"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Zenbatero eguneratu automatikoki EPG (EPGImport programatzailea behar du)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Eguneratzeko tartea (orduak)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG eguneratzea osatu da"

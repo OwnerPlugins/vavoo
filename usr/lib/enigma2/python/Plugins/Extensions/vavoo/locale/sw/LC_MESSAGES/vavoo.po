@@ -116,8 +116,8 @@ msgstr "Mwandishi:"
 msgid "Auto-update EPG"
 msgstr "Sasisha EPG kiotomatiki"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Anzisha sasisho la EPG kiotomatiki baada ya kuunda chanzo"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Washa kiotomatiki chanzo/vyanzo vya Vavoo EPG katika EPGI Import baada ya kila uhamishaji, ili si lazima uwashe wewe mwenyewe hapo."
 
 msgid "Back"
 msgstr "Nyuma"
@@ -333,9 +333,6 @@ msgstr "Je, ungependa kuzalisha faili za .m3u na uhifadhi kwenye kifaa %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Je, ungependa kuzalisha faili za .m3u kwa nchi %d ZOTE?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Ni mara ngapi kusasisha EPG kiotomatiki (inahitaji kipanga ratiba cha EPGI)"
 
 msgid "Important Notes:"
 msgstr "Vidokezo Muhimu:"
@@ -602,9 +599,6 @@ msgstr "KUBWA"
 msgid "Update Available"
 msgstr "Hakuna vipengee vinavyopatikana"
 
-msgid "Update interval (hours)"
-msgstr "Sasisha muda (saa)"
-
 msgid "Update interval (minutes):"
 msgstr "Sasisha muda (dakika):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Anzisha sasisho la EPG kiotomatiki baada ya kuunda chanzo"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Ni mara ngapi kusasisha EPG kiotomatiki (inahitaji kipanga ratiba cha EPGI)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Sasisha muda (saa)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Usasisho wa EPG umekamilika"

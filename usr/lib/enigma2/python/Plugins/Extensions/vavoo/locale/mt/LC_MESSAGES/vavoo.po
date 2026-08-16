@@ -116,8 +116,8 @@ msgstr "Awtur:"
 msgid "Auto-update EPG"
 msgstr "Aġġorna l-EPG awtomatikament"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Ixpruna awtomatikament l-aġġornament tal-EPG wara l-ħolqien tas-sors"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Ippermetti awtomatikament is-sors(i) ta' Vavoo EPG f'EPGImport wara kull esportazzjoni, sabiex ma jkollokx għalfejn tappermettihom hemm lilek innifsek."
 
 msgid "Back"
 msgstr "Lura"
@@ -333,9 +333,6 @@ msgstr "Iġġenera fajls .m3u u ssejvja fuq it-tagħmir %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Iġġenera fajls .m3u għal %d pajjiżi KOLLHA?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kemm-il darba taġġorna l-EPG awtomatikament (jeħtieġ EPGImport Scheduler)"
 
 msgid "Important Notes:"
 msgstr "Noti Importanti:"
@@ -602,9 +599,6 @@ msgstr "MAJUSKU"
 msgid "Update Available"
 msgstr "Ebda oġġetti disponibbli"
 
-msgid "Update interval (hours)"
-msgstr "Intervall tal-aġġornament (sigħat)"
-
 msgid "Update interval (minutes):"
 msgstr "Intervall tal-aġġornament (minuti):"
 
@@ -684,6 +678,15 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Ixpruna awtomatikament l-aġġornament tal-EPG wara l-ħolqien tas-sors"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kemm-il darba taġġorna l-EPG awtomatikament (jeħtieġ EPGImport Scheduler)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Intervall tal-aġġornament (sigħat)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Aġġornament EPG lest"

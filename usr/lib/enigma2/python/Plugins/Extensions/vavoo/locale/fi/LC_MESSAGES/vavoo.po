@@ -116,8 +116,8 @@ msgstr "Tekijä:"
 msgid "Auto-update EPG"
 msgstr "Automaattinen EPG-päivitys"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Käynnistä EPG-päivitys automaattisesti lähteen luonnin jälkeen"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Ota Vavoo EPG -lähteet automaattisesti käyttöön EPGImportissa jokaisen viennin jälkeen, joten sinun ei tarvitse ottaa niitä käyttöön siellä itse."
 
 msgid "Back"
 msgstr "Takaisin"
@@ -333,9 +333,6 @@ msgstr "Luodaanko .m3u-tiedostot ja tallennetaan laitteelle %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Luodaanko .m3u-tiedostot KAIKILLE %d maalle?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kuinka usein EPG päivitetään automaattisesti (vaatii EPGImport-ajastimen)"
 
 msgid "Important Notes:"
 msgstr "Tärkeitä huomautuksia:"
@@ -602,9 +599,6 @@ msgstr "SUURAAKKOSET"
 msgid "Update Available"
 msgstr "Ei kohteita saatavilla"
 
-msgid "Update interval (hours)"
-msgstr "Päivitysväli (tunteina)"
-
 msgid "Update interval (minutes):"
 msgstr "Päivitysväli (minuutteina):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Käynnistä EPG-päivitys automaattisesti lähteen luonnin jälkeen"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kuinka usein EPG päivitetään automaattisesti (vaatii EPGImport-ajastimen)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Päivitysväli (tunteina)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG-päivitys valmistui"

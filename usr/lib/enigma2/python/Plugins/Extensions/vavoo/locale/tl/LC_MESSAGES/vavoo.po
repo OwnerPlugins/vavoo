@@ -116,8 +116,8 @@ msgstr "May-akda:"
 msgid "Auto-update EPG"
 msgstr "Awtomatikong i-update ang EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Awtomatikong i-trigger ang pag-update ng EPG pagkatapos gumawa ng source"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Awtomatikong paganahin ang (mga) pinagmulan ng Vavoo EPG sa EPGImport pagkatapos ng bawat pag-export, kaya hindi mo na kailangang i-enable ang mga ito doon."
 
 msgid "Back"
 msgstr "Bumalik"
@@ -333,9 +333,6 @@ msgstr "Bumuo ng mga .m3u na file at i-save sa device %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Bumuo ng mga .m3u na file para sa LAHAT ng %d na bansa?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Gaano kadalas i-auto-update ang EPG (nangangailangan ng EPGImport scheduler)"
 
 msgid "Important Notes:"
 msgstr "Mahahalagang Paalala:"
@@ -602,9 +599,6 @@ msgstr ""
 msgid "Update Available"
 msgstr "Walang available na item"
 
-msgid "Update interval (hours)"
-msgstr "I-update ang pagitan (mga oras)"
-
 msgid "Update interval (minutes):"
 msgstr "I-update ang pagitan (minuto):"
 
@@ -685,6 +679,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Awtomatikong i-trigger ang pag-update ng EPG pagkatapos gumawa ng source"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Gaano kadalas i-auto-update ang EPG (nangangailangan ng EPGImport scheduler)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "I-update ang pagitan (mga oras)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Nakumpleto ang pag-update ng EPG"

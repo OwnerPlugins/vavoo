@@ -116,8 +116,8 @@ msgstr "Autori:"
 msgid "Auto-update EPG"
 msgstr "Përditëso automatikisht EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Aktivizoni automatikisht përditësimin EPG pas krijimit të burimit"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Aktivizo automatikisht burimin(et) e Vavoo EPG në EPGImport pas çdo eksporti, në mënyrë që të mos kesh nevojë t'i aktivizosh vetë atje."
 
 msgid "Back"
 msgstr "Mbrapa"
@@ -333,9 +333,6 @@ msgstr "Të gjenerohen skedarë .m3u dhe të ruhen në pajisjen %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Të gjenerohen skedarë .m3u për të GJITHA %d vendet?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Sa shpesh të përditësohet automatikisht EPG (kërkon programuesin EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Shënime të rëndësishme:"
@@ -602,9 +599,6 @@ msgstr "SHQIPËRI"
 msgid "Update Available"
 msgstr "Nuk ka artikuj të disponueshëm"
 
-msgid "Update interval (hours)"
-msgstr "Intervali i përditësimit (orë)"
-
 msgid "Update interval (minutes):"
 msgstr "Intervali i përditësimit (minuta):"
 
@@ -685,6 +679,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Aktivizoni automatikisht përditësimin EPG pas krijimit të burimit"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Sa shpesh të përditësohet automatikisht EPG (kërkon programuesin EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Intervali i përditësimit (orë)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Përditësimi i EPG përfundoi"

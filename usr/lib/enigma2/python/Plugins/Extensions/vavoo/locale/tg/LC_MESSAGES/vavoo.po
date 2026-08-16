@@ -116,8 +116,8 @@ msgstr "Муаллиф:"
 msgid "Auto-update EPG"
 msgstr "Навсозии худкори EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Пас аз эҷоди манбаъ ба таври худкор навсозии EPG-ро оғоз кунед"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Манбаъ(ҳо)-и Vavoo EPG-ро дар EPGImport пас аз ҳар содирот ба таври худкор фаъол созед, аз ин рӯ ба шумо лозим нест, ки онҳоро худатон дар он ҷо фаъол созед."
 
 msgid "Back"
 msgstr "Бозгашт"
@@ -333,9 +333,6 @@ msgstr "Файлҳои .m3u тавлид кунед ва дар дастгоҳи
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Барои ҲАМАИ %d кишвар файлҳои .m3u тавлид кунед?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Чӣ қадар вақт ба таври худкор навсозии EPG (нақшаи EPGImport лозим аст)"
 
 msgid "Important Notes:"
 msgstr "Эзоҳҳои муҳим:"
@@ -602,9 +599,6 @@ msgstr "ХАРФИ КАЛОН"
 msgid "Update Available"
 msgstr "Ягон ашё дастрас нест"
 
-msgid "Update interval (hours)"
-msgstr "Фосилаи навсозӣ (соат)"
-
 msgid "Update interval (minutes):"
 msgstr "Фосилаи навсозӣ (дақиқа):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Бозоғозӣ ноком шуд"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Пас аз эҷоди манбаъ ба таври худкор навсозии EPG-ро оғоз кунед"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Чӣ қадар вақт ба таври худкор навсозии EPG (нақшаи EPGImport лозим аст)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Фосилаи навсозӣ (соат)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Навсозии EPG анҷом ёфт"

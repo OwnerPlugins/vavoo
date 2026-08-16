@@ -116,8 +116,8 @@ msgstr "Аутор:"
 msgid "Auto-update EPG"
 msgstr "Аутоматско ажурирање ЕПГ-а"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Аутоматски покрени ажурирање ЕПГ-а након креирања извора"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Аутоматски омогућите Вавоо ЕПГ извор(е) у ЕПГИмпорт-у након сваког извоза, тако да не морате сами да их тамо омогућавате."
 
 msgid "Back"
 msgstr "Назад"
@@ -333,9 +333,6 @@ msgstr "Генерисати .м3у датотеке и сачувати их н
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Генерисати .м3у датотеке за СВЕ %д земље?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Колико често да се аутоматски ажурира ЕПГ (захтева ЕПГИмпорт планер)"
 
 msgid "Important Notes:"
 msgstr "Важне напомене:"
@@ -602,9 +599,6 @@ msgstr "ВЕЛИКА СЛОВА"
 msgid "Update Available"
 msgstr "Нема доступних ставки"
 
-msgid "Update interval (hours)"
-msgstr "Интервал ажурирања (сати)"
-
 msgid "Update interval (minutes):"
 msgstr "Интервал ажурирања (минути):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Прокси ван мреже"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Поновно покретање није успело"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Аутоматски покрени ажурирање ЕПГ-а након креирања извора"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Колико често да се аутоматски ажурира ЕПГ (захтева ЕПГИмпорт планер)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Интервал ажурирања (сати)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Ажурирање ЕПГ-а је завршено"

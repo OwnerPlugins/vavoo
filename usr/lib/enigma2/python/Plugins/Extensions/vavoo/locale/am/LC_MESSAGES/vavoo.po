@@ -116,8 +116,8 @@ msgstr "ደራሲ፡"
 msgid "Auto-update EPG"
 msgstr "ራስ-አዘምን EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ከምንጩ ፈጠራ በኋላ የ EPG ዝመናን በራስ-ሰር ያስጀምሩ"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ከእያንዳንዱ ወደ ውጪ መላክ በኋላ የቫቮኦ ኢፒጂ ምንጭ(ዎች)ን በEPGImport ውስጥ በራስ ሰር ያንቁ፣ስለዚህ እራስዎ እነሱን ማንቃት የለብዎትም።"
 
 msgid "Back"
 msgstr "ተመለስ"
@@ -333,9 +333,6 @@ msgstr ".m3u ፋይሎችን ያመንጩ እና ወደ መሣሪያ %s ይቀ�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ለሁሉም %d አገሮች .m3u ፋይሎች ይፈጠሩ?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "ምን ያህል ጊዜ EPGን በራስ-ማዘመን (EPGImport መርሐግብር ያስፈልገዋል)"
 
 msgid "Important Notes:"
 msgstr "ጠቃሚ ማስታወሻዎች፡-"
@@ -602,9 +599,6 @@ msgstr "ከፍተኛ"
 msgid "Update Available"
 msgstr "ምንም እቃዎች አይገኙም።"
 
-msgid "Update interval (hours)"
-msgstr "የዝማኔ ክፍተት (ሰዓታት)"
-
 msgid "Update interval (minutes):"
 msgstr "የዝማኔ ክፍተት (ደቂቃዎች)"
 
@@ -685,6 +679,15 @@ msgstr "✗ ተኪ ከመስመር ውጭ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ዳግም ማስጀመር አልተሳካም።"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ከምንጩ ፈጠራ በኋላ የ EPG ዝመናን በራስ-ሰር ያስጀምሩ"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "ምን ያህል ጊዜ EPGን በራስ-ማዘመን (EPGImport መርሐግብር ያስፈልገዋል)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "የዝማኔ ክፍተት (ሰዓታት)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG ዝማኔ ተጠናቅቋል"

@@ -117,8 +117,8 @@ msgstr "Συγγραφέας:"
 msgid "Auto-update EPG"
 msgstr "Αυτόματη ενημέρωση EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Αυτόματη ενεργοποίηση ενημέρωσης EPG μετά τη δημιουργία πηγής"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Ενεργοποιήστε αυτόματα την πηγή(ες) Vavoo EPG στο EPGImport μετά από κάθε εξαγωγή, ώστε να μην χρειάζεται να τις ενεργοποιήσετε μόνοι σας εκεί."
 
 msgid "Back"
 msgstr "Πίσω"
@@ -334,9 +334,6 @@ msgstr "Να γίνει δημιουργία αρχείων .m3u και να α�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Να γίνει δημιουργία αρχείων .m3u για ΟΛΕΣ τις %d χώρες;"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Πόσο συχνά θα γίνεται αυτόματη ενημέρωση του EPG (απαιτείται προγραμματιστής EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Σημαντικές σημειώσεις:"
@@ -603,9 +600,6 @@ msgstr "ΚΕΦΑΛΑΙΑ"
 msgid "Update Available"
 msgstr "Δεν υπάρχουν διαθέσιμα στοιχεία"
 
-msgid "Update interval (hours)"
-msgstr "Διάστημα ενημέρωσης (ώρες)"
-
 msgid "Update interval (minutes):"
 msgstr "Διάστημα ενημέρωσης (λεπτά)"
 
@@ -686,6 +680,15 @@ msgstr "✗ Ο proxy είναι εκτός σύνδεσης"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Η επανεκκίνηση απέτυχε"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Αυτόματη ενεργοποίηση ενημέρωσης EPG μετά τη δημιουργία πηγής"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Πόσο συχνά θα γίνεται αυτόματη ενημέρωση του EPG (απαιτείται προγραμματιστής EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Διάστημα ενημέρωσης (ώρες)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Η ενημέρωση EPG ολοκληρώθηκε"

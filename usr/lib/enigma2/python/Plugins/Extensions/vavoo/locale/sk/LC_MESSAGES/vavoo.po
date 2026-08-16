@@ -119,8 +119,8 @@ msgstr "Autor:"
 msgid "Auto-update EPG"
 msgstr "Automatická aktualizácia EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Automaticky spustiť aktualizáciu EPG po vytvorení zdroja"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Automaticky povoľte zdroj (zdroje) Vavoo EPG v EPGImport po každom exporte, takže ich tam nemusíte povoľovať sami."
 
 msgid "Back"
 msgstr "Späť"
@@ -347,9 +347,6 @@ msgstr "Vygenerovať súbory .m3u a uložiť ich do zariadenia %s?"
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generovať súbory .m3u pre VŠETKY %d krajiny?"
 
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Ako často automaticky aktualizovať EPG (vyžaduje plánovač EPGImport)"
-
 msgid "Important Notes:"
 msgstr "Dôležité poznámky:"
 
@@ -481,7 +478,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Really close without saving settings?"
@@ -622,10 +619,6 @@ msgstr "VEĽKÉ (UPPERCASE)"
 msgid "Update Available"
 msgstr "Nie sú k dispozícii žiadne položky"
 
-#, fuzzy
-msgid "Update interval (hours)"
-msgstr "Interval aktualizácie (v minútach):"
-
 msgid "Update interval (minutes):"
 msgstr "Interval aktualizácie (v minútach):"
 
@@ -654,7 +647,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -709,6 +702,16 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reštart zlyhal"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Automaticky spustiť aktualizáciu EPG po vytvorení zdroja"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Ako často automaticky aktualizovať EPG (vyžaduje plánovač EPGImport)"
+
+#, fuzzy
+#~ msgid "Update interval (hours)"
+#~ msgstr "Interval aktualizácie (v minútach):"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Aktualizácia EPG dokončená"

@@ -117,8 +117,8 @@ msgstr "Автор:"
 msgid "Auto-update EPG"
 msgstr "Автообновление EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Автоматически запускать обновление EPG после создания источника"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Автоматически включайте источники Vavoo EPG в EPGImport после каждого экспорта, чтобы вам не приходилось включать их там самостоятельно."
 
 msgid "Back"
 msgstr "Назад"
@@ -342,9 +342,6 @@ msgstr "Сгенерировать файлы .m3u и сохранить на у
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Сгенерировать файлы .m3u для ВСЕХ %d стран?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Как часто автоматически обновлять EPG (требуется планировщик EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Важные замечания:"
@@ -613,9 +610,6 @@ msgstr "ВЕРХНИЙ РЕГИСТР"
 msgid "Update Available"
 msgstr "Нет доступных товаров"
 
-msgid "Update interval (hours)"
-msgstr "Интервал обновления (часы)"
-
 msgid "Update interval (minutes):"
 msgstr "Интервал обновления (минуты):"
 
@@ -698,6 +692,15 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не удалось перезапустить"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Автоматически запускать обновление EPG после создания источника"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Как часто автоматически обновлять EPG (требуется планировщик EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Интервал обновления (часы)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Обновление EPG завершено"

@@ -117,8 +117,8 @@ msgstr "מְחַבֵּר:"
 msgid "Auto-update EPG"
 msgstr "עדכון אוטומטי של EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "הפעל אוטומטית עדכון EPG לאחר יצירת המקור"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "הפעל אוטומטית את מקור/י Vavoo EPG ב-EPGImport לאחר כל ייצוא, כך שלא תצטרך להפעיל אותם שם בעצמך."
 
 msgid "Back"
 msgstr "בְּחֲזָרָה"
@@ -334,9 +334,6 @@ msgstr "האם ליצור קבצי ‎.m3u ולשמור במכשיר %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ליצור קבצי .m3u עבור כל %d המדינות?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "באיזו תדירות לעדכן אוטומטית את ה-EPG (דורש מתזמן EPGImport)"
 
 msgid "Important Notes:"
 msgstr "הערות חשובות:"
@@ -603,9 +600,6 @@ msgstr "אותיות רישיות"
 msgid "Update Available"
 msgstr "אין פריטים זמינים"
 
-msgid "Update interval (hours)"
-msgstr "מרווח עדכון (שעות)"
-
 msgid "Update interval (minutes):"
 msgstr "מרווח עדכון (דקות):"
 
@@ -686,6 +680,15 @@ msgstr "✗ פרוקסי לא מקוון"
 
 msgid "✗ Restart Failed"
 msgstr "✗ הפעלה מחדש נכשלה"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "הפעל אוטומטית עדכון EPG לאחר יצירת המקור"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "באיזו תדירות לעדכן אוטומטית את ה-EPG (דורש מתזמן EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "מרווח עדכון (שעות)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "עדכון ה-EPG הושלם"

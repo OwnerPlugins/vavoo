@@ -117,8 +117,8 @@ msgstr "Údar:"
 msgid "Auto-update EPG"
 msgstr "Uath-nuashonrú EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Cuir tús le nuashonrú EPG go huathoibríoch tar éis cruthú na foinse"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Cumasaigh foinse(anna) Vavoo EPG in EPGImport go huathoibríoch tar éis gach easpórtála, mar sin ní gá duit iad a chumasú ann tú féin."
 
 msgid "Back"
 msgstr "Ar ais"
@@ -334,9 +334,6 @@ msgstr "Gin comhaid .m3u agus sábháil ar ghléas %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Gin comhaid .m3u do GACH tír %d?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Cé chomh minic is féidir an EPG a nuashonrú go huathoibríoch (tá sceidealóir EPGImport ag teastáil)"
 
 msgid "Important Notes:"
 msgstr "Nótaí Tábhachtacha:"
@@ -603,9 +600,6 @@ msgstr "UACHTARACH"
 msgid "Update Available"
 msgstr "Níl aon earraí ar fáil"
 
-msgid "Update interval (hours)"
-msgstr "Eatramh nuashonraithe (uaireanta)"
-
 msgid "Update interval (minutes):"
 msgstr "Eatramh nuashonraithe (nóiméid):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Cuir tús le nuashonrú EPG go huathoibríoch tar éis cruthú na foinse"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Cé chomh minic is féidir an EPG a nuashonrú go huathoibríoch (tá sceidealóir EPGImport ag teastáil)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Eatramh nuashonraithe (uaireanta)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Nuashonrú EPG críochnaithe"

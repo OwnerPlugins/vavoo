@@ -116,8 +116,8 @@ msgstr "作者："
 msgid "Auto-update EPG"
 msgstr "自動更新EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "來源創建後自動觸發EPG更新"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "每次匯出後自動在 EPGImport 中啟用 Vavoo EPG 來源，因此您不必自己在那裡啟用它們。"
 
 msgid "Back"
 msgstr "後退"
@@ -333,9 +333,6 @@ msgstr "產生 .m3u 檔案並儲存到裝置 %s 嗎？"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "為所有 %d 個國家產生 .m3u 檔案嗎？"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "自動更新 EPG 的頻率（需要 EPGImport 調度程式）"
 
 msgid "Important Notes:"
 msgstr "重要提示："
@@ -602,9 +599,6 @@ msgstr "大寫"
 msgid "Update Available"
 msgstr "沒有可用的項目"
 
-msgid "Update interval (hours)"
-msgstr "更新間隔（小時）"
-
 msgid "Update interval (minutes):"
 msgstr "更新間隔（分鐘）："
 
@@ -685,6 +679,15 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "來源創建後自動觸發EPG更新"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "自動更新 EPG 的頻率（需要 EPGImport 調度程式）"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "更新間隔（小時）"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG更新完成"

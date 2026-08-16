@@ -117,8 +117,8 @@ msgstr "Aŭtoro:"
 msgid "Auto-update EPG"
 msgstr "Aŭtomate ĝisdatigi EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Aŭtomate ekfunkciigu EPG-ĝisdatigon post kreado de fonto"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Aŭtomate ebligu la fonton(j)n de Vavoo EPG en EPGImport post ĉiu eksporto, por ke vi ne devas ebligi ilin mem tie."
 
 msgid "Back"
 msgstr "Reen"
@@ -334,9 +334,6 @@ msgstr "Ĉu krei .m3u dosierojn kaj konservi al aparato %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ĉu generi .m3u dosierojn por ĈIUJ %d landoj?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kiom ofte aŭtomate ĝisdatigi la EPG (postulas EPGImport-planilon)"
 
 msgid "Important Notes:"
 msgstr "Gravaj Notoj:"
@@ -603,9 +600,6 @@ msgstr "MAJUSKLOJ"
 msgid "Update Available"
 msgstr "Neniuj eroj haveblaj"
 
-msgid "Update interval (hours)"
-msgstr "Ĝisdatigu intervalon (horoj)"
-
 msgid "Update interval (minutes):"
 msgstr "Ĝisdatigu intervalon (minutoj):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Prokura eksterrete"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rekomenco Malsukcesis"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Aŭtomate ekfunkciigu EPG-ĝisdatigon post kreado de fonto"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kiom ofte aŭtomate ĝisdatigi la EPG (postulas EPGImport-planilon)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Ĝisdatigu intervalon (horoj)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG-ĝisdatigo finiĝis"

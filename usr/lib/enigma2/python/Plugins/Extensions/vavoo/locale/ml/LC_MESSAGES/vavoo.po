@@ -116,8 +116,8 @@ msgstr "രചയിതാവ്:"
 msgid "Auto-update EPG"
 msgstr "EPG സ്വയമേവ അപ്ഡേറ്റ് ചെയ്യുക"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ഉറവിടം സൃഷ്‌ടിച്ചതിന് ശേഷം ഇപിജി അപ്‌ഡേറ്റ് സ്വയമേവ ട്രിഗർ ചെയ്യുക"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ഓരോ എക്‌സ്‌പോർട്ടിനും ശേഷം EPGImport-ൽ Vavoo EPG ഉറവിടം(കൾ) സ്വയമേവ പ്രവർത്തനക്ഷമമാക്കുക, അതിനാൽ നിങ്ങൾ അവ അവിടെ തന്നെ പ്രവർത്തനക്ഷമമാക്കേണ്ടതില്ല."
 
 msgid "Back"
 msgstr "തിരികെ"
@@ -333,9 +333,6 @@ msgstr ".m3u ഫയലുകൾ സൃഷ്ടിച്ച് %s ഉപകര�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "എല്ലാ %d രാജ്യങ്ങൾക്കുമായി .m3u ഫയലുകൾ സൃഷ്ടിക്കണോ?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "എത്ര തവണ EPG സ്വയമേവ അപ്ഡേറ്റ് ചെയ്യണം (EPGImport ഷെഡ്യൂളർ ആവശ്യമാണ്)"
 
 msgid "Important Notes:"
 msgstr "പ്രധാന കുറിപ്പുകൾ:"
@@ -602,9 +599,6 @@ msgstr "അപ്പർകേസ്"
 msgid "Update Available"
 msgstr "ഇനങ്ങളൊന്നും ലഭ്യമല്ല"
 
-msgid "Update interval (hours)"
-msgstr "അപ്ഡേറ്റ് ഇടവേള (മണിക്കൂറുകൾ)"
-
 msgid "Update interval (minutes):"
 msgstr "അപ്ഡേറ്റ് ഇടവേള (മിനിറ്റുകൾ):"
 
@@ -685,6 +679,15 @@ msgstr "✗ പ്രോക്സി ഓഫ്‌ലൈൻ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ പുനരാരംഭിക്കൽ പരാജയപ്പെട്ടു"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ഉറവിടം സൃഷ്‌ടിച്ചതിന് ശേഷം ഇപിജി അപ്‌ഡേറ്റ് സ്വയമേവ ട്രിഗർ ചെയ്യുക"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "എത്ര തവണ EPG സ്വയമേവ അപ്ഡേറ്റ് ചെയ്യണം (EPGImport ഷെഡ്യൂളർ ആവശ്യമാണ്)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "അപ്ഡേറ്റ് ഇടവേള (മണിക്കൂറുകൾ)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG അപ്‌ഡേറ്റ് പൂർത്തിയായി"

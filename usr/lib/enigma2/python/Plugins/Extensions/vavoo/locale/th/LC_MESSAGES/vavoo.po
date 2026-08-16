@@ -116,8 +116,8 @@ msgstr "ผู้เขียน:"
 msgid "Auto-update EPG"
 msgstr "อัปเดต EPG อัตโนมัติ"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ทริกเกอร์การอัปเดต EPG โดยอัตโนมัติหลังจากการสร้างแหล่งที่มา"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "เปิดใช้งานแหล่งที่มา Vavoo EPG ใน EPGImport โดยอัตโนมัติหลังจากการส่งออกแต่ละครั้ง ดังนั้นคุณไม่จำเป็นต้องเปิดใช้งานแหล่งที่มาเหล่านั้นด้วยตนเอง"
 
 msgid "Back"
 msgstr "กลับ"
@@ -333,9 +333,6 @@ msgstr "สร้างไฟล์ .m3u และบันทึกลงใน
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "สร้างไฟล์ .m3u สำหรับ %d ประเทศทั้งหมดหรือไม่"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "ความถี่ในการอัปเดต EPG อัตโนมัติ (ต้องใช้ตัวกำหนดเวลา EPGImport)"
 
 msgid "Important Notes:"
 msgstr "หมายเหตุสำคัญ:"
@@ -602,9 +599,6 @@ msgstr "ตัวพิมพ์ใหญ่"
 msgid "Update Available"
 msgstr "ไม่มีรายการที่มีอยู่"
 
-msgid "Update interval (hours)"
-msgstr "ช่วงเวลาการอัพเดต (ชั่วโมง)"
-
 msgid "Update interval (minutes):"
 msgstr "ช่วงเวลาการอัพเดต (นาที):"
 
@@ -685,6 +679,15 @@ msgstr "✗ พร็อกซีออฟไลน์"
 
 msgid "✗ Restart Failed"
 msgstr "✗ การรีสตาร์ทล้มเหลว"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ทริกเกอร์การอัปเดต EPG โดยอัตโนมัติหลังจากการสร้างแหล่งที่มา"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "ความถี่ในการอัปเดต EPG อัตโนมัติ (ต้องใช้ตัวกำหนดเวลา EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "ช่วงเวลาการอัพเดต (ชั่วโมง)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "การอัปเดต EPG เสร็จสมบูรณ์"

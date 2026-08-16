@@ -117,8 +117,8 @@ msgstr "Autors:"
 msgid "Auto-update EPG"
 msgstr "Automātiski atjaunināt EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Automātiski aktivizēt EPG atjaunināšanu pēc avota izveides"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Automātiski iespējojiet Vavoo EPG avotu(-us) programmā EPGImport pēc katras eksportēšanas, lai jums pašiem tie nebūtu jāiespējo."
 
 msgid "Back"
 msgstr "Atpakaļ"
@@ -334,9 +334,6 @@ msgstr "Vai ģenerēt .m3u failus un saglabāt ierīcē %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Vai ģenerēt .m3u failus VISĀM %d valstīm?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Cik bieži EPG automātiski atjaunināt (nepieciešams EPGImport plānotājs)"
 
 msgid "Important Notes:"
 msgstr "Svarīgas piezīmes:"
@@ -603,9 +600,6 @@ msgstr "LIELAIS RAKSTS"
 msgid "Update Available"
 msgstr "Nav pieejams neviens vienums"
 
-msgid "Update interval (hours)"
-msgstr "Atjaunināšanas intervāls (stundas)"
-
 msgid "Update interval (minutes):"
 msgstr "Atjaunināšanas intervāls (minūtes):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Starpniekserveris bezsaistē"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Restartēšana neizdevās"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Automātiski aktivizēt EPG atjaunināšanu pēc avota izveides"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Cik bieži EPG automātiski atjaunināt (nepieciešams EPGImport plānotājs)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Atjaunināšanas intervāls (stundas)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG atjaunināšana pabeigta"

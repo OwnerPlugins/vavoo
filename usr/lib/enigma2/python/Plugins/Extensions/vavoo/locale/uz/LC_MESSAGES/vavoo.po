@@ -116,8 +116,8 @@ msgstr "Muallif:"
 msgid "Auto-update EPG"
 msgstr "EPGni avtomatik yangilash"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Manba yaratilgandan keyin avtomatik ravishda EPG yangilanishini ishga tushiring"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Vavoo EPG manba(lar)ini har eksportdan keyin EPGImport-da avtomatik ravishda yoqing, shuning uchun ularni o'zingiz yoqishingiz shart emas."
 
 msgid "Back"
 msgstr "Orqaga"
@@ -333,9 +333,6 @@ msgstr ".m3u fayllarini yaratib, %s qurilmasiga saqlansinmi?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "HAMMA %d ta mamlakat uchun .m3u fayllar yaratilsinmi?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPGni qanchalik tez-tez avtomatik yangilash kerak (EPGImport rejalashtiruvchisi kerak)"
 
 msgid "Important Notes:"
 msgstr "Muhim eslatmalar:"
@@ -602,9 +599,6 @@ msgstr "YTH"
 msgid "Update Available"
 msgstr "Hech narsa mavjud emas"
 
-msgid "Update interval (hours)"
-msgstr "Yangilanish oralig'i (soat)"
-
 msgid "Update interval (minutes):"
 msgstr "Yangilash oralig'i (daqiqa):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proksi oflayn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Qayta ishga tushirilmadi"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Manba yaratilgandan keyin avtomatik ravishda EPG yangilanishini ishga tushiring"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPGni qanchalik tez-tez avtomatik yangilash kerak (EPGImport rejalashtiruvchisi kerak)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Yangilanish oralig'i (soat)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG yangilanishi tugallandi"

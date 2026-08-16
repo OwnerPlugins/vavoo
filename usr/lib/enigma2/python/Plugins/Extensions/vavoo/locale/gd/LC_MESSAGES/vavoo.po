@@ -116,8 +116,8 @@ msgstr "Ùghdar:"
 msgid "Auto-update EPG"
 msgstr "Luchdaich a-nuas EPG gu fèin-obrachail"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Cuir air bhog ùrachadh EPG gu fèin-ghluasadach às deidh cruthachadh stòr"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Cuir an comas stòr(an) Vavoo EPG gu fèin-ghluasadach ann an EPGImport às deidh gach às-mhalairt, gus nach fheum thu an comas a thoirt dhaibh fhèin an sin."
 
 msgid "Back"
 msgstr "Air ais"
@@ -333,9 +333,6 @@ msgstr "Cruthaich faidhlichean .m3u is sàbhail dhan uidheam %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Cruthaich faidhlichean .m3u airson GACH %d dùthaich?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Dè cho tric airson an EPG ùrachadh gu fèin-ghluasadach (feumar clàr-ama EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Notaichean Cudromach:"
@@ -602,9 +599,6 @@ msgstr "URNAIGHEAN"
 msgid "Update Available"
 msgstr "Chan eil stuthan ri fhaighinn"
 
-msgid "Update interval (hours)"
-msgstr "Ùrachadh eadar-ama (uairean)"
-
 msgid "Update interval (minutes):"
 msgstr "Ùine ùrachaidh (mionaidean):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Neach-ionaid far-loidhne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Cuir air bhog ùrachadh EPG gu fèin-ghluasadach às deidh cruthachadh stòr"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Dè cho tric airson an EPG ùrachadh gu fèin-ghluasadach (feumar clàr-ama EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Ùrachadh eadar-ama (uairean)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Chaidh ùrachadh EPG a chrìochnachadh"

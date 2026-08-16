@@ -116,8 +116,8 @@ msgstr "Höfundur:"
 msgid "Auto-update EPG"
 msgstr "Sjálfvirk uppfærsla EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Kveiktu sjálfkrafa á EPG uppfærslu eftir stofnun uppruna"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Virkjaðu sjálfkrafa Vavoo EPG heimildina í EPGImport eftir hvern útflutning, svo þú þarft ekki að virkja þær þar sjálfur."
 
 msgid "Back"
 msgstr "Til baka"
@@ -333,9 +333,6 @@ msgstr "Búa til .m3u skrár og vista í tæki %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Búa til .m3u skrár fyrir ÖLL %d lönd?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Hversu oft á að uppfæra EPG sjálfkrafa (þarf EPGImport tímaáætlun)"
 
 msgid "Important Notes:"
 msgstr "Mikilvægar athugasemdir:"
@@ -602,9 +599,6 @@ msgstr "Hástafir"
 msgid "Update Available"
 msgstr "Engir hlutir í boði"
 
-msgid "Update interval (hours)"
-msgstr "Uppfærslubil (klst.)"
-
 msgid "Update interval (minutes):"
 msgstr "Uppfærslubil (mínútur):"
 
@@ -684,6 +678,15 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Kveiktu sjálfkrafa á EPG uppfærslu eftir stofnun uppruna"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Hversu oft á að uppfæra EPG sjálfkrafa (þarf EPGImport tímaáætlun)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Uppfærslubil (klst.)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG uppfærslu lokið"

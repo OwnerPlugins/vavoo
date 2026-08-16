@@ -116,8 +116,8 @@ msgstr "Nivîskar:"
 msgid "Auto-update EPG"
 msgstr "EPG-ê bixweber nûve bikin"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Piştî afirandina çavkaniyê, nûvekirina EPG-ê bixweber bike"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Piştî her hinardekirinê bixweber çavkaniya(ên) Vavoo EPG di EPGImport de çalak bikin, ji ber vê yekê hûn neçar in ku wan bixwe li wir çalak bikin."
 
 msgid "Back"
 msgstr "Paş"
@@ -333,9 +333,6 @@ msgstr "Pelên .m3u biafirînin û li cîhaza %s tomar bikin?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ji bo HEMÛ %d welatan pelên .m3u biafirînin?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Çi caran meriv EPG-ê bixweber nûve bike (pêdivî ye ku nexşerêya EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Têbînîyên Girîng:"
@@ -602,9 +599,6 @@ msgstr ""
 msgid "Update Available"
 msgstr "Tiştek tune"
 
-msgid "Update interval (hours)"
-msgstr "Navbera nûvekirinê (saet)"
-
 msgid "Update interval (minutes):"
 msgstr "Navbera nûvekirinê (deqe):"
 
@@ -685,6 +679,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Piştî afirandina çavkaniyê, nûvekirina EPG-ê bixweber bike"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Çi caran meriv EPG-ê bixweber nûve bike (pêdivî ye ku nexşerêya EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Navbera nûvekirinê (saet)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Nûvekirina EPG qediya"

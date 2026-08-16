@@ -116,8 +116,8 @@ msgstr "Awdur:"
 msgid "Auto-update EPG"
 msgstr "Diweddaru EPG yn awtomatig"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Sbardun diweddariad EPG yn awtomatig ar ôl creu ffynhonnell"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Galluogwch ffynhonnell(au) Vavoo EPG yn EPGImport yn awtomatig ar ôl pob allforio, felly nid oes rhaid i chi eu galluogi yno eich hun."
 
 msgid "Back"
 msgstr "Yn ol"
@@ -333,9 +333,6 @@ msgstr "Cynhyrchu ffeiliau .m3u a chadw i ddyfais %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Cynhyrchu ffeiliau .m3u ar gyfer POB gwlad %d?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Pa mor aml i ddiweddaru'r EPG yn awtomatig (angen amserlennydd EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Nodiadau Pwysig:"
@@ -602,9 +599,6 @@ msgstr "UCHAF"
 msgid "Update Available"
 msgstr "Dim eitemau ar gael"
 
-msgid "Update interval (hours)"
-msgstr "Ysbaid diweddaru (oriau)"
-
 msgid "Update interval (minutes):"
 msgstr "Cyfnod diweddaru (munudau):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Sbardun diweddariad EPG yn awtomatig ar ôl creu ffynhonnell"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Pa mor aml i ddiweddaru'r EPG yn awtomatig (angen amserlennydd EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Ysbaid diweddaru (oriau)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Diweddariad EPG wedi'i gwblhau"

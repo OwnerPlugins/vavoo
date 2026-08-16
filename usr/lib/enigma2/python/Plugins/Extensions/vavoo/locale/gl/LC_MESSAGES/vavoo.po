@@ -116,8 +116,8 @@ msgstr "Autor:"
 msgid "Auto-update EPG"
 msgstr "Actualización automática de EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Activar automaticamente a actualización de EPG despois da creación da fonte"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Activa automaticamente as fontes EPG de Vavoo en EPGImport despois de cada exportación, para que non teñas que activalas alí ti mesmo."
 
 msgid "Back"
 msgstr "De volta"
@@ -333,9 +333,6 @@ msgstr "Queres xerar ficheiros .m3u e gardalos no dispositivo %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Queres xerar ficheiros .m3u para TODOS os %d países?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Con que frecuencia se actualiza automaticamente o EPG (require o programador EPGImport)"
 
 msgid "Important Notes:"
 msgstr "Notas importantes:"
@@ -602,9 +599,6 @@ msgstr "MAIÚSCULAS"
 msgid "Update Available"
 msgstr "Non hai elementos dispoñibles"
 
-msgid "Update interval (hours)"
-msgstr "Intervalo de actualización (horas)"
-
 msgid "Update interval (minutes):"
 msgstr "Intervalo de actualización (minutos):"
 
@@ -685,6 +679,15 @@ msgstr "✗ Proxy fóra de liña"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Fallou o reinicio"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Activar automaticamente a actualización de EPG despois da creación da fonte"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Con que frecuencia se actualiza automaticamente o EPG (require o programador EPGImport)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Intervalo de actualización (horas)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "Actualización de EPG completada"

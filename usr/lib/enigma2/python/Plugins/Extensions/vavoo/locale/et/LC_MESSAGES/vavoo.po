@@ -117,8 +117,8 @@ msgstr "Autor:"
 msgid "Auto-update EPG"
 msgstr "EPG automaatne värskendamine"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "Käivitage EPG värskendus automaatselt pärast allika loomist"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "Luba Vavoo EPG allika(d) automaatselt rakenduses EPGImport pärast iga eksporti, nii et sa ei pea neid seal ise lubama."
 
 msgid "Back"
 msgstr "Tagasi"
@@ -334,9 +334,6 @@ msgstr "Kas luua .m3u-failid ja salvestada need seadmesse %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Kas luua .m3u-failid KÕIGI %d riigi jaoks?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "Kui sageli EPG-d automaatselt värskendada (vaja on EPGIimpordi ajakava)"
 
 msgid "Important Notes:"
 msgstr "Olulised märkused:"
@@ -603,9 +600,6 @@ msgstr "SUURTÄHED"
 msgid "Update Available"
 msgstr "Ükski üksus pole saadaval"
 
-msgid "Update interval (hours)"
-msgstr "Värskenduste intervall (tunnid)"
-
 msgid "Update interval (minutes):"
 msgstr "Värskendusintervall (minutid):"
 
@@ -686,6 +680,15 @@ msgstr "✗ Puhverserver võrguühenduseta"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Taaskäivitamine ebaõnnestus"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "Käivitage EPG värskendus automaatselt pärast allika loomist"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "Kui sageli EPG-d automaatselt värskendada (vaja on EPGIimpordi ajakava)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "Värskenduste intervall (tunnid)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG värskendus on lõpetatud"

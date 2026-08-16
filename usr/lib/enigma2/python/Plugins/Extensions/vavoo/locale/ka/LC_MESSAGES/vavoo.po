@@ -116,8 +116,8 @@ msgstr "ავტორი:"
 msgid "Auto-update EPG"
 msgstr "ავტომატური განახლება EPG"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "ავტომატური ჩართვა EPG განახლება წყაროს შექმნის შემდეგ"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ავტომატურად ჩართეთ Vavoo EPG წყარო(ებ)ი EPGImport-ში ყოველი ექსპორტის შემდეგ, ასე რომ თქვენ არ გჭირდებათ მათი ჩართვა."
 
 msgid "Back"
 msgstr "უკან"
@@ -333,9 +333,6 @@ msgstr "გსურთ .m3u ფაილების გენერირე�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "გსურთ .m3u ფაილების გენერირება ყველა %d ქვეყნისთვის?"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "რამდენად ხშირად ხდება EPG-ის ავტომატური განახლება (საჭიროებს EPGImport განრიგს)"
 
 msgid "Important Notes:"
 msgstr "მნიშვნელოვანი შენიშვნები:"
@@ -602,9 +599,6 @@ msgstr "ზედა"
 msgid "Update Available"
 msgstr "არ არის ხელმისაწვდომი ნივთები"
 
-msgid "Update interval (hours)"
-msgstr "განახლების ინტერვალი (საათები)"
-
 msgid "Update interval (minutes):"
 msgstr "განახლების ინტერვალი (წუთები):"
 
@@ -684,6 +678,15 @@ msgstr "✗ პროქსი ხაზგარეშე"
 
 msgid "✗ Restart Failed"
 msgstr "✗ გადატვირთვა ვერ მოხერხდა"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "ავტომატური ჩართვა EPG განახლება წყაროს შექმნის შემდეგ"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "რამდენად ხშირად ხდება EPG-ის ავტომატური განახლება (საჭიროებს EPGImport განრიგს)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "განახლების ინტერვალი (საათები)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG განახლება დასრულდა"

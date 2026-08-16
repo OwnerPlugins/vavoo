@@ -116,8 +116,8 @@ msgstr "ئاپتور:"
 msgid "Auto-update EPG"
 msgstr "EPG نى ئاپتوماتىك يېڭىلاش"
 
-msgid "Automatically trigger EPG update after source creation"
-msgstr "مەنبە قۇرۇلغاندىن كېيىن EPG يېڭىلانمىسىنى ئاپتوماتىك قوزغىتىدۇ"
+msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+msgstr "ھەر قېتىملىق ئېكسپورتتىن كېيىن EPGImport دىكى Vavoo EPG مەنبە (لەر) نى ئاپتوماتىك قوزغىتىڭ ، شۇڭا ئۇلارنى ئۆزىڭىز قوزغىتىشىڭىزنىڭ ھاجىتى يوق."
 
 msgid "Back"
 msgstr "قايتىش"
@@ -333,9 +333,6 @@ msgstr ".M3u ھۆججىتىنى ھاسىل قىلىپ ،% s ئۈسكۈنىگە �
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ALL% d دۆلەتلىرى ئۈچۈن .m3u ھۆججىتى ھاسىل قىلىڭ؟"
-
-msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
-msgstr "EPG نى قانچە قېتىم ئاپتوماتىك يېڭىلايمىز (EPGImport ۋاقىت جەدۋىلىنى تەلەپ قىلىدۇ)"
 
 msgid "Important Notes:"
 msgstr "مۇھىم خاتىرىلەر:"
@@ -602,9 +599,6 @@ msgstr ""
 msgid "Update Available"
 msgstr "ھېچقانداق تۈر يوق"
 
-msgid "Update interval (hours)"
-msgstr "ئارىلىقنى يېڭىلاش (سائەت)"
-
 msgid "Update interval (minutes):"
 msgstr "يېڭىلاش ئارىلىقى (مىنۇت):"
 
@@ -685,6 +679,15 @@ msgstr "✗ ۋاكالەتچى Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ قايتا قوزغىتىش مەغلۇب بولدى"
+
+#~ msgid "Automatically trigger EPG update after source creation"
+#~ msgstr "مەنبە قۇرۇلغاندىن كېيىن EPG يېڭىلانمىسىنى ئاپتوماتىك قوزغىتىدۇ"
+
+#~ msgid "How often to auto-update the EPG (requires EPGImport scheduler)"
+#~ msgstr "EPG نى قانچە قېتىم ئاپتوماتىك يېڭىلايمىز (EPGImport ۋاقىت جەدۋىلىنى تەلەپ قىلىدۇ)"
+
+#~ msgid "Update interval (hours)"
+#~ msgstr "ئارىلىقنى يېڭىلاش (سائەت)"
 
 #~ msgid "EPG update completed"
 #~ msgstr "EPG يېڭىلاش تاماملاندى"
