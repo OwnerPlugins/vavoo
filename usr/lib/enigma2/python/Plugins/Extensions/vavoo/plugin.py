@@ -268,8 +268,7 @@ try:
     from Components.UsageConfig import defaultMoviePath
     downloadfree = defaultMoviePath()
 except BaseException:
-    if file_exists("/usr/bin/apt-get"):
-        downloadfree = ('/media/hdd/movie/')
+    downloadfree = ('/media/hdd/movie/')
 
 
 def get_enigma2_path():
@@ -1282,7 +1281,7 @@ class vavoo_config(Screen, ConfigListScreen):
                 print("[M3U] No response for %s" % country_name)
                 return []
 
-            channels = loads(response)
+            channels = loads(ensure_str(response))
             return channels
 
         except Exception as e:
@@ -1706,7 +1705,7 @@ class startVavoo(Screen):
         if is_proxy_running():
             try:
                 response = getUrl(PROXY_STATUS_URL, timeout=0.5, retries=1)
-                data = loads(response) if response else None
+                data = loads(ensure_str(response)) if response else None
             except Exception:
                 data = None
 
@@ -1912,7 +1911,7 @@ def _shared_update_proxy_status_display(screen):
                 response = getUrl(
                     PROXY_STATUS_URL, timeout=5)
                 if response:
-                    status_data = loads(response)
+                    status_data = loads(ensure_str(response))
 
                     if status_data.get(
                             "initialized", False) and status_data.get(
@@ -2409,7 +2408,7 @@ class MainVavoo(Screen):
                 response = getUrl(
                     PROXY_REFRESH_URL, timeout=5)
                 if response:
-                    data = loads(response)
+                    data = loads(ensure_str(response))
                     if data.get("status") == "success":
                         self.session.open(
                             MessageBox,
@@ -2619,7 +2618,7 @@ class MainVavoo(Screen):
             # Fetch countries from the proxy
             response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
             if response:
-                countries = loads(response)
+                countries = loads(ensure_str(response))
                 print(
                     "[MainVavoo] Got {} countries from proxy".format(
                         len(countries)))
@@ -3297,7 +3296,7 @@ class vavoo(Screen):
                     "/channels?country={}".format(country_encoded)
                 debug("Fetching from proxy: " + proxy_url)
 
-                content = getUrl(proxy_url, timeout=10)
+                content = ensure_str(getUrl(proxy_url, timeout=10))
 
                 if content and content.strip() and content != "null":
                     channels_data = loads(content)
@@ -3324,7 +3323,7 @@ class vavoo(Screen):
 
             # Retrieve data directly from vavoo.to
             url = vUtils.b64decoder(stripurl)
-            content = getUrl(url, timeout=10)
+            content = ensure_str(getUrl(url, timeout=10))
 
             # 451-aware mirror fallback
             if (not content) or (content == HTTP_451_SENTINEL):
@@ -3332,7 +3331,7 @@ class vavoo(Screen):
                 print(
                     "[Fallback] Primary source blocked/empty, trying mirror: %s" %
                     fb)
-                content = getUrl(fb, timeout=10)
+                content = ensure_str(getUrl(fb, timeout=10))
                 if content == HTTP_451_SENTINEL:
                     content = ""
 
@@ -5243,7 +5242,7 @@ class AutoStartTimer(object):
         try:
             # 1. Read bouquets
             bouquets_to_update = []
-            with open(favorite_channel, 'r') as f:
+            with codecs.open(favorite_channel, 'r', encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
                     if line and '|' in line:
