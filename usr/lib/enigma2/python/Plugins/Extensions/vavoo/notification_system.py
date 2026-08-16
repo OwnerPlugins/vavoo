@@ -88,9 +88,10 @@ class HybridNotificationManager(object):
             return cls._instance
 
     def __init__(self):
-        if self._initialized:
-            return
-        self._initialized = True
+        with self._lock:
+            if self._initialized:
+                return
+            self._initialized = True
         self.notification_window = None
         self.session = None
         self.hide_timer = eTimer()
