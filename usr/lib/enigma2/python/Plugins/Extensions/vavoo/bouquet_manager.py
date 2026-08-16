@@ -5,7 +5,10 @@ import io
 import time
 import glob
 import threading
-import urllib3
+try:
+    import urllib3
+except ImportError:
+    urllib3 = None
 import select
 from json import loads
 from os import listdir, remove, rename
@@ -18,6 +21,7 @@ from .vUtils import (
     debug,
     decodeHtml,
     getUrl,
+    flush_unmatched_cache,
     get_country_code_from_bouquet_name,
     get_epg_matcher,
     is_proxy_ready,
@@ -28,6 +32,7 @@ from .vUtils import (
     sanitizeFilename,
     save_unmatched,
     trace_error,
+    unique_fallback_sref,
     update_complete_cache,
     update_epg_sources,
     write_epg_mapping_file,
@@ -74,7 +79,8 @@ except ImportError:
 
 
 # Disable SSL warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+if urllib3 is not None:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_local_ip():
@@ -434,22 +440,24 @@ def convert_bouquet_sync(
         except Exception as e:
             print("[Bouquet] Error updating EPG sources: {}".format(e))
 
-        # 9. Save matcher cache (matched channels only - existing code)
-        try:
-            matcher.save_cache()
-        except Exception as e:
-            print("[Bouquet] Error saving cache: %s" % e)
-
-        # 10. Persist unmatched channels too - without this, bouquets
-        # kept up to date via the scheduled auto-update path (this
-        # function) never accumulate retry/diagnostic data in
-        # unmatched.json, unlike bouquets refreshed via a manual export
-        # (process_epg_matching_background, which already does this).
+        # 9. Save matcher cache (matched channels) and unmatched channels.
+        # update_complete_cache() is the sole CACHE_FILE writer here - see
+        # its docstring for why a separate matcher.save_cache() call isn't
+        # needed alongside it.
         try:
             update_complete_cache(
                 matched, unmatched, country_code, servicetype)
         except Exception as e:
-            print("[Bouquet] Error updating unmatched cache: %s" % e)
+            print("[Bouquet] Error updating cache: %s" % e)
+
+        # save_unmatched() (called per-channel above, both inside
+        # create_bouquet_file()'s matching and update_complete_cache()'s
+        # own loop) only stages changes in memory now - write them once
+        # here instead of once per channel.
+        try:
+            flush_unmatched_cache()
+        except Exception as e:
+            print("[Bouquet] Error flushing unmatched cache: %s" % e)
 
         return ch_count
     except Exception as e:
@@ -658,12 +666,17 @@ def process_epg_matching_background(
                 })
             else:
                 # Unmatched: keep the original sref from the fallback bouquet
-                # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync
+                # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync.
+                # dict.get()'s default arg is evaluated eagerly regardless
+                # of whether the key is present - `or` short-circuits so
+                # unique_fallback_sref() only actually runs on the rare
+                # miss, not on every unmatched channel.
                 unmatched.append({
                     'name': ch['original_name'],
                     'channel_id': ch['channel_id'],
                     'original_url': ch['url'],
-                    'original_sref': ch.get('fallback_sref', "4097:0:0:0:0:0:0:0:0:0:")
+                    'original_sref': ch.get('fallback_sref') or
+                    unique_fallback_sref(servicetype, ch['channel_id'])
                 })
             select.select([], [], [], 0.001)
 
@@ -725,8 +738,10 @@ def process_epg_matching_background(
                     i += 1
 
             if changes > 0:
-                with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+                temp_path = bouquet_path + ".tmp"
+                with io.open(temp_path, 'w', encoding='utf-8') as f:
                     f.writelines(new_lines)
+                rename(temp_path, bouquet_path)
                 print(
                     "[EPGBackground] Updated %d service lines in %s" %
                     (changes, bouquet_filename))
@@ -747,8 +762,15 @@ def process_epg_matching_background(
         # 6. Update sources.xml
         update_epg_sources()
 
-        # 7. Save matcher cache
-        matcher.save_cache()
+        # 7. Save matched and unmatched channels to the cache files.
+        # update_complete_cache() is the sole CACHE_FILE writer here - see
+        # its docstring for why a separate matcher.save_cache() call isn't
+        # needed alongside it. save_unmatched() (called per-channel above)
+        # only stages changes in memory - update_complete_cache() calls it
+        # again for each unmatched channel and flush_unmatched_cache()
+        # writes them all out once, instead of once per channel.
+        update_complete_cache(matched, unmatched, country_code, servicetype)
+        flush_unmatched_cache()
 
         # Reload only now that the bouquet's #SERVICE lines, the EPG
         # channel mapping, and sources.xml are all in their final state -
@@ -780,10 +802,6 @@ def process_epg_matching_background(
         # _on_export_complete(), a UI-touching method, so marshal it onto
         # the reactor thread rather than calling it directly.
         reactor.callFromThread(_do_completion_callback)
-
-        # Update the complete cache with matched channels only;
-        # - unmatched go to unmatched.json.
-        update_complete_cache(matched, unmatched, country_code, servicetype)
 
     except Exception as exc:
         # Python 3 deletes an "except ... as exc" binding once this block
@@ -910,9 +928,13 @@ def create_fallback_bouquet_sync(
                 # Encode URL
                 encoded_url = channel_url.replace(':', '%3a')
 
-                # Fallback service reference
-                service_line = "#SERVICE %s:0:0:0:0:0:0:0:0:0:%s" % (
-                    servicetype, encoded_url)
+                # Fallback service reference - sid:tsid derived from
+                # channel_id so unmatched channels don't all collide on
+                # one shared eEPGCache key (see unique_fallback_sref()).
+                fallback_dvb_ref = unique_fallback_sref(
+                    servicetype, channel_id)
+                service_line = "#SERVICE %s%s" % (
+                    fallback_dvb_ref, encoded_url)
                 lines.append(service_line)
                 lines.append("#DESCRIPTION %s" % clean_name)
                 channel_count += 1
@@ -923,7 +945,7 @@ def create_fallback_bouquet_sync(
                     'channel_id': channel_id,
                     'url': channel_url,
                     'original_name': channel_name,
-                    'fallback_sref': "%s:0:0:0:0:0:0:0:0:0:%s" % (servicetype, encoded_url)
+                    'fallback_sref': "%s%s" % (fallback_dvb_ref, encoded_url)
                 })
 
             except Exception as e:
@@ -936,10 +958,12 @@ def create_fallback_bouquet_sync(
             print("[FallbackBouquet] No valid channels for %s" % name)
             return 0, "", [], ""
 
-        # 7. Write bouquet file
+        # 7. Write bouquet file atomically (temp file + rename)
+        temp_path = bouquet_path + ".tmp"
         try:
-            with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(lines))
+            rename(temp_path, bouquet_path)
             print(
                 "[FallbackBouquet] File created: %s (%d channels)" %
                 (bouquet_filename, channel_count))
@@ -948,8 +972,9 @@ def create_fallback_bouquet_sync(
                 "[FallbackBouquet] Error writing file with encoding: %s" %
                 str(e))
             try:
-                with open(bouquet_path, 'wb') as f:
+                with open(temp_path, 'wb') as f:
                     f.write(('\n'.join(lines)).encode('utf-8', 'ignore'))
+                rename(temp_path, bouquet_path)
                 print(
                     "[FallbackBouquet] File created (binary fallback): %s (%d channels)" %
                     (bouquet_filename, channel_count))
@@ -1063,8 +1088,6 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                service_line = "#SERVICE {}:0:0:0:0:0:0:0:0:0:{}".format(
-                    servicetype, encoded_url)
                 rytec_id, dvb_ref = matcher.find_match(
                     channel_name, country_code)
 
@@ -1082,8 +1105,15 @@ def create_bouquet_file(
                         'rytec_id': rytec_id
                     })
                 else:
-                    # Fallback: first 10 fields all zero (except servicetype
-                    # and third field = 1)
+                    # Fallback: sid:tsid derived from channel_id so
+                    # unmatched channels don't all collide on one shared
+                    # eEPGCache key (see unique_fallback_sref()). Only
+                    # computed here, not for every channel up front - the
+                    # majority end up matched and this result would just
+                    # be discarded.
+                    service_line = "#SERVICE {}{}".format(
+                        unique_fallback_sref(servicetype, channel_id),
+                        encoded_url)
                     unmatched.append({
                         'name': clean_name,
                         'channel_id': channel_id
@@ -1096,23 +1126,33 @@ def create_bouquet_file(
             except Exception as e:
                 print("[Bouquet] Error processing channel: %s" % str(e))
                 continue
+            # Yield after every channel, same as process_epg_matching_background()'s
+            # loop - this is the scheduled auto-update's own matching pass
+            # (see create_bouquet_file()'s only caller, convert_bouquet_sync(),
+            # called from AutoStartTimer._update_bouquets()), which otherwise
+            # runs the CPU-heavy fuzzy-matcher back to back for every channel
+            # with no yield point at all, unlike the manual-export path.
+            select.select([], [], [], 0.001)
 
         if channel_count == 0:
             print("[Bouquet] No valid channels for %s" % name)
             return 0, "", [], []
 
-        # Write bouquet file
+        # Write bouquet file atomically (temp file + rename)
+        temp_path = bouquet_path + ".tmp"
         try:
-            with io.open(bouquet_path, 'w', encoding='utf-8') as f:
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(tv_lines))
+            rename(temp_path, bouquet_path)
             print(
                 "[Bouquet] File created: %s (%d channels)" %
                 (bouquet_filename, channel_count))
         except Exception as e:
             print("[Bouquet] Error writing file with encoding: %s" % str(e))
             try:
-                with open(bouquet_path, 'wb') as f:
+                with open(temp_path, 'wb') as f:
                     f.write(('\n'.join(tv_lines)).encode('utf-8', 'ignore'))
+                rename(temp_path, bouquet_path)
                 print(
                     "[Bouquet] File created (binary fallback): %s (%d channels)" %
                     (bouquet_filename, channel_count))
@@ -1164,13 +1204,15 @@ def _update_favorite_file(name, url, export_type):
         'timestamp': str(time.time())
     }
 
-    # Write file
+    # Write file atomically (temp file + rename)
     try:
-        with io.open(favorite_path, 'w', encoding='utf-8') as f:
+        temp_path = favorite_path + ".tmp"
+        with io.open(temp_path, 'w', encoding='utf-8') as f:
             for bouq_name, bouq_data in sorted(existing_bouquets.items()):
                 line = bouq_name + "|" + \
                     bouq_data['url'] + "|" + bouq_data['export_type'] + "|" + bouq_data['timestamp']
                 f.write(line + "\n")
+        rename(temp_path, favorite_path)
 
         print("[Bouquet] Favorite.txt updated with " +
               str(len(existing_bouquets)) + " bouquets")
@@ -1202,8 +1244,10 @@ def remove_favorite_entry(name):
                 remaining.append(line.rstrip('\n'))
 
         if remaining:
-            with io.open(favorite_path, 'w', encoding='utf-8') as f:
+            temp_path = favorite_path + ".tmp"
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(remaining) + '\n')
+            rename(temp_path, favorite_path)
         else:
             remove(favorite_path)
         print("[Bouquet] Removed {} from Favorite.txt".format(name))

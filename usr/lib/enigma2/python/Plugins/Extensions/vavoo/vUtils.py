@@ -4,14 +4,26 @@ from __future__ import absolute_import, print_function
 import base64
 import glob
 import io
-import six
+try:
+    import six
+except ImportError:
+    # six is a hard runtime dependency (python3-six, declared in
+    # CONTROL/control) used throughout this module for Py2/3 text
+    # helpers - there is no functional fallback without it, but a clear
+    # message here beats a bare traceback on images missing the package.
+    print("[VUTILS] FATAL: 'six' package not found - install python3-six")
+    raise
 import socket
 import ssl
 import select
 import threading
 import types
-import urllib3
+try:
+    import urllib3
+except ImportError:
+    urllib3 = None
 import xml.etree.ElementTree as ET
+import zlib
 from datetime import datetime as _datetime
 from collections import OrderedDict
 from difflib import SequenceMatcher
@@ -71,7 +83,8 @@ from . import (
 """
 
 # Disable SSL warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+if urllib3 is not None:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _original_getaddrinfo = socket.getaddrinfo
 
 try:
@@ -297,13 +310,21 @@ def getDNSinfo():
     return dns_box, dns_external
 
 
-try:
-    dns_box, dns_ext = getDNSinfo()
-except Exception:
-    dns_box, dns_ext = "n/a", "n/a"
+def _log_dns_info_async():
+    """Runs getDNSinfo() (a real network call) off the import path so
+    plugin/menu load never blocks on a slow/unreachable network."""
+    try:
+        dns_box, dns_ext = getDNSinfo()
+    except Exception:
+        dns_box, dns_ext = "n/a", "n/a"
+    print("DNS box:", dns_box)
+    print("DNS out:", dns_ext)
+
+
 print("Vavoo Version: ", __version__)
-print("DNS box:", dns_box)
-print("DNS out:", dns_ext)
+_dns_info_thread = threading.Thread(target=_log_dns_info_async)
+_dns_info_thread.setDaemon(True)
+_dns_info_thread.start()
 
 
 def get_screen_width():
@@ -635,17 +656,19 @@ def set_cache(key, data, timeout):
         # effect and get_cache() would always treat this entry as expired.
         data['sigValidUntil'] = int(time()) + timeout
         data['ip'] = get_external_ip()
+        temp_path = file_path + ".tmp"
         if PY2:
             converted_data = convert_to_unicode(data)
-            with io.open(file_path, 'w', encoding='utf-8') as cache_file:
+            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
                 dump(
                     converted_data,
                     cache_file,
                     indent=4,
                     ensure_ascii=False)
         else:
-            with io.open(file_path, 'w', encoding='utf-8') as cache_file:
+            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
                 dump(data, cache_file, indent=4, ensure_ascii=False)
+        rename(temp_path, file_path)
     except Exception as e:
         print("Error saving cache:", e)
         trace_error()
@@ -703,8 +726,10 @@ def _read_json_file(file_path):
 
 
 def _write_json_file(file_path, data):
-    with io.open(file_path, 'w', encoding='utf-8') as f:
+    temp_path = file_path + ".tmp"
+    with io.open(temp_path, 'w', encoding='utf-8') as f:
         dump(data, f, indent=4, ensure_ascii=False)
+    rename(temp_path, file_path)
 
 
 def _is_cache_valid(data):
@@ -1094,6 +1119,34 @@ def ensure_sref_trailing_colon(sref):
     if sref and not sref.endswith(':'):
         return sref + ':'
     return sref
+
+
+def unique_fallback_sref(servicetype, channel_id):
+    """Build a fallback (no Rytec/EPG match) service reference whose
+    sid:tsid pair is unique per Vavoo channel_id, instead of the old
+    literal "servicetype:0:0:0:0:0:0:0:0:0:" used for every unmatched
+    channel.
+
+    Enigma2's eEPGCache indexes events by the sid:tsid:onid:namespace
+    portion of a service reference, not by the stream URL appended after
+    it - so every unmatched channel sharing that identical all-zero
+    tuple was, as far as EPG lookup is concerned, literally the same
+    service: whatever programme data ever ended up cached under that one
+    shared null key got shown for all of them at once (confirmed via a
+    user's box: a cluster of unrelated, genuinely-unmatched channels -
+    "13EME RUE", "A LA CARTE 1-11", "20 MINUTES TV" - all displaying one
+    other channel's guide data).
+
+    onid/namespace are deliberately left at 0: every real Rytec-sourced
+    sref uses a non-zero namespace (the known satellite/terrestrial/
+    cable ranges), so a synthetic entry here can never collide with an
+    actual matched channel - only sid/tsid need to vary to keep
+    unmatched channels apart from each other.
+    """
+    h = zlib.crc32(ensure_str(channel_id, errors='ignore').encode('utf-8')) & 0xffffffff
+    sid = (h & 0xffff) or 1
+    tsid = ((h >> 16) & 0xffff) or 1
+    return "%s:0:1:%x:%x:0:0:0:0:0:" % (servicetype, sid, tsid)
 
 
 def sanitizeFilename(filename):
@@ -1563,6 +1616,7 @@ def preload_country_flags(country_list, cache_dir=FLAG_CACHE_DIR):
 
 # ==================== START EPG ====================
 _epg_matcher = None
+_epg_matcher_lock = threading.Lock()
 
 
 def get_epg_matcher(similarity_threshold=None):
@@ -1578,10 +1632,12 @@ def get_epg_matcher(similarity_threshold=None):
         similarity_threshold = float(
             config.plugins.vavoo.similarity_threshold.value) / 100.0
     if _epg_matcher is None:
-        _epg_matcher = VavooEPGMatcher(similarity_threshold)
-    else:
-        # Aggiorna la soglia nel matcher esistente (per modifiche dinamiche)
-        _epg_matcher.similarity_threshold = similarity_threshold
+        with _epg_matcher_lock:
+            if _epg_matcher is None:
+                _epg_matcher = VavooEPGMatcher(similarity_threshold)
+                return _epg_matcher
+    # Aggiorna la soglia nel matcher esistente (per modifiche dinamiche)
+    _epg_matcher.similarity_threshold = similarity_threshold
     return _epg_matcher
 
 
@@ -1744,6 +1800,19 @@ class VavooEPGMatcher(object):
         suffix = parts[-1]
         return len(suffix) in (2, 3) and suffix.isalpha()
 
+    @staticmethod
+    def _normalize_rytec_sref(raw_sref):
+        """Apply the same "1:" -> "4097:" type conversion
+        _find_match_internal() applies to a freshly-matched Rytec sref,
+        plus trailing-colon normalization, so a raw self.rytec_by_id[...]
+        value can be compared against a cached sref on equal terms."""
+        if not raw_sref:
+            return None
+        parts = raw_sref.split(':')
+        if parts and parts[0] == '1':
+            parts[0] = '4097'
+        return ensure_sref_trailing_colon(':'.join(parts))
+
     def _cleanup_stale_unmatched(
             self,
             channel_name,
@@ -1756,32 +1825,23 @@ class VavooEPGMatcher(object):
         this (via save_unmatched(matched=True)); the alias/local-cache/
         temp-cache fast-path hits never did, leaving "ghost" unmatched
         entries around indefinitely for channels that actually match
-        fine now. Keeps an in-memory copy of the unmatched keys so this
-        check is cheap on the common case (nothing to clean up) instead
-        of paying for a full save_unmatched() read+write on every match.
+        fine now. Checks the same in-memory unmatched cache
+        save_unmatched() itself stages against (lazily loaded once, kept
+        for the process lifetime) - cheap on the common case (nothing to
+        clean up), and always current with anything staged earlier in
+        this same run, unlike a separate per-matcher-instance snapshot
+        would be.
         """
-        if not hasattr(self, '_unmatched_keys'):
-            with self._lazy_init_lock:
-                if not hasattr(self, '_unmatched_keys'):
-                    self._unmatched_keys = set()
-                    try:
-                        if exists(UNMATCHED_FILE):
-                            with open(UNMATCHED_FILE, 'r') as f:
-                                content = f.read().strip()
-                                if content:
-                                    self._unmatched_keys = set(
-                                        loads(content).keys())
-                    except Exception as e:
-                        debug(
-                            "Could not load unmatched cache keys: {}".format(e))
         key = "%s_%s" % (channel_name.strip(), country_code or '')
-        if key in self._unmatched_keys:
+        with _unmatched_lock:
+            _load_unmatched_cache_locked()
+            found = key in _unmatched_cache_data
+        if found:
             save_unmatched(
                 channel_name,
                 country_code,
                 servicetype,
                 matched=True)
-            self._unmatched_keys.discard(key)
 
     def _load_alias_map(self):
         if exists(ALIAS_FILE):
@@ -1834,7 +1894,15 @@ class VavooEPGMatcher(object):
 
                 # clean_name = self._clean_name(channel_name)
                 clean_name = self._clean_name_for_similarity(channel_name)
-                entry = (clean_name, channel_name, original_id, service_ref)
+                # Precomputed once here instead of on every _find_match_internal()
+                # call (which re-tokenized every candidate's clean_name on
+                # every single channel match, against what can be
+                # thousands of entries per country - this list never
+                # changes after load).
+                entry_tokens = _tokenize_for_compat(clean_name)
+                entry = (
+                    clean_name, channel_name, original_id, service_ref,
+                    entry_tokens)
                 self.rytec_entries.append(entry)
                 entry_country = original_id.split(
                     '.')[-1] if '.' in original_id else ""
@@ -1917,11 +1985,15 @@ class VavooEPGMatcher(object):
         4 = Other / IPTV or unknown
         """
         parts = service_ref.split(':')
-        if len(parts) < 4:
+        if len(parts) < 7:
             return 4  # Unknown / other
 
         try:
-            namespace_str = parts[3] if parts[3] else '0'
+            # sref format: type:flags:servicetype:sid:tsid:onid:namespace:...
+            # - namespace (what encodes orbital position / terrestrial /
+            # cable, checked below) is field 6, not field 3 (that's the
+            # sid).
+            namespace_str = parts[6] if parts[6] else '0'
             namespace = int(namespace_str, 16)
 
             # Known satellite namespaces. Enigma2 encodes orbital position
@@ -2028,9 +2100,9 @@ class VavooEPGMatcher(object):
         # threshold anyway, never a false negative. This loop runs against
         # every Rytec entry for the country on every uncached match, so it
         # matters most for countries with large Rytec databases (e.g. Italy).
-        source_tokens = clean_input.split()
+        source_tokens = _tokenize_for_compat(clean_input)
         sm = SequenceMatcher(None, clean_input)
-        for clean_entry, orig_name, rytec_id, service_ref in entries_to_scan:
+        for clean_entry, orig_name, rytec_id, service_ref, entry_tokens in entries_to_scan:
             # A shared textual prefix with a *different* word at a
             # position both share is a strong signal these are
             # different channels (e.g. "canal motogp" vs "canal plus
@@ -2040,7 +2112,6 @@ class VavooEPGMatcher(object):
             # trailing descriptive words - only a genuine word-for-word
             # prefix mismatch is rejected.
             if source_tokens:
-                entry_tokens = clean_entry.split()
                 if entry_tokens and not _tokens_compatible(
                         source_tokens, entry_tokens):
                     continue
@@ -2169,17 +2240,33 @@ class VavooEPGMatcher(object):
                 if rytec_clean:
                     channel_clean = self._clean_name_for_similarity(
                         channel_name)
-                    if channel_clean == rytec_clean:
+                    current_rytec_sref = self._normalize_rytec_sref(
+                        self.rytec_by_id.get(id_val))
+                    cached_sref = ensure_sref_trailing_colon(
+                        cached.get('sref'))
+                    if channel_clean == rytec_clean and (
+                            not current_rytec_sref or
+                            cached_sref == current_rytec_sref):
                         print(
                             "[Match] Local cache HIT (valid ID & name match): {}".format(cached_key))
                         self._cleanup_stale_unmatched(
                             channel_name, country_code, servicetype)
                         return cached.get('id'), cached.get('sref')
-                    else:
+                    elif channel_clean != rytec_clean:
                         print(
                             "[Match] Cache ID '{}' name mismatch (channel='{}', rytec='{}'), will re-match".format(
                                 id_val, channel_clean, rytec_clean))
                         # Do not return, proceed with live matching
+                    else:
+                        # Name still matches, but the cached sref no
+                        # longer matches what Rytec has for this id -
+                        # leftover from a stale/mismatched match (see
+                        # find_match()'s live-rematch branch below).
+                        # Re-match instead of trusting a sref that
+                        # actually belongs to a different real channel.
+                        print(
+                            "[Match] Cache ID '{}' sref stale for '{}' (cached={}, rytec={}), will re-match".format(
+                                id_val, channel_name, cached_sref, current_rytec_sref))
                 else:
                     # We don't have the Rytec name, accept the cache
                     print(
@@ -2259,11 +2346,31 @@ class VavooEPGMatcher(object):
         if result_id and result_sref:
             # Decide which sref to keep
             final_sref = result_sref
-            if existing_entry:
+            if existing_entry and existing_entry.get('id') == result_id:
+                # Only reuse the previously cached sref when it's for the
+                # SAME matched id - this keeps re-matches of an unchanged
+                # channel stable. When the freshly matched id differs
+                # from what's cached, the old sref belongs to whatever
+                # channel the cache used to (possibly wrongly) point at;
+                # blindly keeping it here is exactly how an id gets
+                # updated to the right channel while its sref silently
+                # keeps pointing at a different one.
                 existing_sref = existing_entry.get('sref')
-                # If the existing one has a valid sref (not fallback), preserve
-                # it
-                if existing_sref and existing_sref != "4097:0:0:0:0:0:0:0:0:0:":
+                current_rytec_sref = self._normalize_rytec_sref(
+                    self.rytec_by_id.get(result_id))
+                # If the existing one has a valid sref (not fallback) that
+                # still agrees with what Rytec currently has for this id,
+                # preserve it - this is a no-op in the common case
+                # (result_sref should already match) and only matters for
+                # candidate-selection ties. If it disagrees, it's stale
+                # (e.g. left over from before this id was matched
+                # correctly) - fall through to the freshly matched
+                # result_sref instead of re-entrenching it.
+                if (existing_sref and
+                        existing_sref != "4097:0:0:0:0:0:0:0:0:0:" and
+                        (not current_rytec_sref or
+                         ensure_sref_trailing_colon(existing_sref) ==
+                         current_rytec_sref)):
                     final_sref = existing_sref
                     print(
                         "[Match] Preserving existing sref: {}".format(existing_sref))
@@ -2296,8 +2403,8 @@ class VavooEPGMatcher(object):
                         existing_entry['matched'] = False
                         self.cache[existing_key] = existing_entry
                         self._index_cache_key(existing_key)
-                        # Not deferred to new_matches/save_cache(): that
-                        # method always writes matched=True, which would
+                        # Not deferred to new_matches/update_complete_cache():
+                        # that path always writes matched=True, which would
                         # be wrong here. This branch is rare (only when a
                         # previously-matched channel stops live-matching),
                         # so an eager write is an acceptable tradeoff.
@@ -2322,36 +2429,6 @@ class VavooEPGMatcher(object):
                 servicetype,
                 matched=False)
             return None, None
-
-    def save_cache(self):
-        if self.new_matches:
-            complete_cache = load_cache()
-            for key, value in self.new_matches.items():
-                # Use the original name if present
-                name = value.get('name')
-                if not name:
-                    parts = key.rsplit('_', 1)
-                    name = parts[0] if len(parts) > 1 else key
-                country = key.split('_')[-1] if '_' in key else ''
-                complete_cache[key] = {
-                    'id': value.get('id'),
-                    'sref': ensure_sref_trailing_colon(value.get('sref')),
-                    'name': name,   # <-- original name
-                    'country': country,
-                    'matched': True,
-                    'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-                }
-            complete_cache = _prune_cache_if_needed(complete_cache)
-            temp_file = CACHE_FILE + ".tmp"
-            with open(temp_file, 'w') as f:
-                dump(complete_cache, f, indent=2, sort_keys=True)
-            rename(temp_file, CACHE_FILE)
-            self.cache = complete_cache
-            self._build_normalized_index()
-            self.new_matches.clear()
-            print(
-                "[VavooEPGMatcher] Cache saved with {} entries".format(
-                    len(complete_cache)))
 
 
 # ==================== EPG CACHE FUNCTIONS ====================
@@ -2548,8 +2625,10 @@ def download_epg_cache_if_needed():
 
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            with open(temp_file, 'wb') as f:
+            download_tmp = temp_file + ".tmp"
+            with open(download_tmp, 'wb') as f:
                 f.write(response.content)
+            rename(download_tmp, temp_file)
             print("[Cache] Downloaded to: {}".format(temp_file))
             return True
     except Exception as e:
@@ -2563,7 +2642,20 @@ def update_complete_cache(
         unmatched_channels,
         country_code,
         servicetype="4097"):
-    """Update the complete cache with matched channels only; unmatched go to unmatched.json."""
+    """Update the complete cache with matched channels only; unmatched go to unmatched.json.
+
+    This is the sole writer of CACHE_FILE for a bouquet export -
+    matched_channels (built by create_bouquet_file()/
+    process_epg_matching_background()) is already a full superset of
+    VavooEPGMatcher.new_matches (every entry added there came from a
+    find_match() call that also produced a matched_channels entry), so
+    a separate matcher.save_cache() call right before this one would
+    just re-read, re-write, and re-index the exact same file a second
+    time for no additional coverage. Clearing matcher.new_matches here
+    takes over save_cache()'s other job - without it, that dict (a
+    per-process singleton's, so never otherwise reset) would grow
+    unbounded across every export for the life of the process.
+    """
     try:
         matcher = get_epg_matcher()
         complete_cache = {}
@@ -2603,6 +2695,7 @@ def update_complete_cache(
         # Update matcher with new cache
         matcher.cache = complete_cache
         matcher._build_normalized_index()
+        matcher.new_matches.clear()
 
         # Process unmatched channels: save them to unmatched.json with their
         # original sref
@@ -2630,56 +2723,23 @@ def save_unmatched(
         servicetype="4097",
         matched=False,
         sref=None):
-    """Save or update an unmatched channel with consistent format.
+    """Stage an unmatched-channel update in memory. Call flush_unmatched_cache()
+       once per batch (e.g. once per bouquet export) to actually write it -
+       see that function's docstring for why.
        If sref is provided, it will be used as the service reference;
        otherwise a fallback is built from servicetype.
     """
-    # The whole read-modify-write cycle (not just the final write) needs
-    # to be serialized: this function is called once per unmatched
-    # channel from background EPG-matching threads, and two overlapping
-    # calls sharing the same fixed UNMATCHED_FILE + ".tmp" path could
-    # otherwise race on the final rename() - one call's rename succeeds,
-    # consuming the temp file, and the other's then fails with ENOENT
-    # since its own temp file was never created under that same path
-    # (confirmed via a user-submitted log showing exactly this error
-    # repeated hundreds of times during a multi-country export).
+    global _unmatched_cache_dirty
     with _unmatched_lock:
         try:
-            unmatched_data = {}
-
-            if exists(UNMATCHED_FILE):
-                try:
-                    with open(UNMATCHED_FILE, 'r') as f:
-                        content = f.read().strip()
-                        if content:
-                            unmatched_data = loads(content)
-
-                            # Convert old format if needed
-                            for key, value in list(unmatched_data.items()):
-                                if 'matched' not in value:
-                                    # Convert to new format
-                                    unmatched_data[key] = {
-                                        'id': value.get(
-                                            'id', key), 'name': value.get(
-                                            'name', key.split('_')[0] if '_' in key else key), 'country': value.get(
-                                            'country', country_code), 'sref': value.get(
-                                            'sref', "%s:0:0:0:0:0:0:0:0:0:" %
-                                            servicetype), 'timestamp': value.get(
-                                            'timestamp', strftime(
-                                                '%Y-%m-%d %H:%M:%S', localtime())), 'matched': False, 'attempts': 1}
-                                    print(
-                                        "[Unmatched] Converted old format: %s" % key)
-                except Exception as read_error:
-                    print(
-                        "[Unmatched] Corrupted file, starting fresh: %s" %
-                        read_error)
-                    unmatched_data = {}
+            _load_unmatched_cache_locked()
 
             key = "%s_%s" % (channel_name.strip(), country_code or '')
 
-            if matched and key in unmatched_data:
+            if matched and key in _unmatched_cache_data:
                 # Remove if now matched
-                del unmatched_data[key]
+                del _unmatched_cache_data[key]
+                _unmatched_cache_dirty = True
                 print("[Unmatched] Removed matched channel: %s" % key)
             elif not matched:
                 # Add or update unmatched
@@ -2690,10 +2750,10 @@ def save_unmatched(
                 else:
                     fallback_sref = "%s:0:0:0:0:0:0:0:0:0:" % servicetype
 
-                old_data = unmatched_data.get(key, {})
+                old_data = _unmatched_cache_data.get(key, {})
                 attempts = old_data.get('attempts', 0) + 1
 
-                unmatched_data[key] = {
+                _unmatched_cache_data[key] = {
                     'id': key,
                     'name': channel_name.strip(),
                     'country': country_code or '',
@@ -2702,22 +2762,97 @@ def save_unmatched(
                     'matched': False,
                     'attempts': attempts
                 }
+                _unmatched_cache_dirty = True
                 print(
-                    "[Unmatched] Added/updated: %s (attempt #%d)" %
+                    "[Unmatched] Staged: %s (attempt #%d)" %
                     (key, attempts))
-
-            # Write complete file
-            temp_file = UNMATCHED_FILE + ".tmp"
-            with open(temp_file, 'w') as f:
-                dump(unmatched_data, f, indent=4, sort_keys=True)
-            rename(temp_file, UNMATCHED_FILE)
-
-            print(
-                "[Unmatched] Cache updated - total entries: %d" %
-                len(unmatched_data))
 
         except Exception as e:
             print("[Unmatched] Error: %s" % e)
+
+
+# In-memory mirror of UNMATCHED_FILE, lazily loaded once and kept for the
+# life of the process instead of every save_unmatched() call doing its
+# own full read+parse+write+rename - that was previously called once per
+# channel processed (both matched and unmatched) during every bouquet
+# export, from find_match() itself and again from callers looping over
+# their own matched/unmatched lists, making a multi-hundred-channel
+# export do a multi-hundred-entry full file rewrite that many times.
+# All access must go through _unmatched_lock.
+_unmatched_cache_data = None
+_unmatched_cache_dirty = False
+
+
+def _load_unmatched_cache_locked():
+    """Populate _unmatched_cache_data from disk if not already loaded.
+    Caller must already hold _unmatched_lock."""
+    global _unmatched_cache_data
+    if _unmatched_cache_data is not None:
+        return
+    data = {}
+    if exists(UNMATCHED_FILE):
+        try:
+            with open(UNMATCHED_FILE, 'r') as f:
+                content = f.read().strip()
+                if content:
+                    data = loads(content)
+                    # Convert old format if needed
+                    for key, value in list(data.items()):
+                        if 'matched' not in value:
+                            data[key] = {
+                                'id': value.get('id', key),
+                                'name': value.get(
+                                    'name',
+                                    key.split('_')[0] if '_' in key else key),
+                                'country': value.get('country', ''),
+                                'sref': value.get(
+                                    'sref', "4097:0:0:0:0:0:0:0:0:0:"),
+                                'timestamp': value.get(
+                                    'timestamp', strftime(
+                                        '%Y-%m-%d %H:%M:%S', localtime())),
+                                'matched': False,
+                                'attempts': 1}
+                            print(
+                                "[Unmatched] Converted old format: %s" % key)
+        except Exception as read_error:
+            print(
+                "[Unmatched] Corrupted file, starting fresh: %s" %
+                read_error)
+            data = {}
+    _unmatched_cache_data = data
+
+
+def invalidate_unmatched_cache():
+    """Force the next save_unmatched()/flush_unmatched_cache() call to
+    reload from disk. Call this after anything writes UNMATCHED_FILE
+    directly instead of through save_unmatched() (e.g. a cache-repair
+    routine), so a later flush doesn't overwrite that write with a
+    stale in-memory copy."""
+    global _unmatched_cache_data, _unmatched_cache_dirty
+    with _unmatched_lock:
+        _unmatched_cache_data = None
+        _unmatched_cache_dirty = False
+
+
+def flush_unmatched_cache():
+    """Write pending save_unmatched() updates to UNMATCHED_FILE, if any.
+    Call once per batch (e.g. at the end of a bouquet export, alongside
+    update_complete_cache()) - not once per channel."""
+    global _unmatched_cache_dirty
+    with _unmatched_lock:
+        if not _unmatched_cache_dirty or _unmatched_cache_data is None:
+            return
+        try:
+            temp_file = UNMATCHED_FILE + ".tmp"
+            with open(temp_file, 'w') as f:
+                dump(_unmatched_cache_data, f, indent=4, sort_keys=True)
+            rename(temp_file, UNMATCHED_FILE)
+            _unmatched_cache_dirty = False
+            print(
+                "[Unmatched] Cache flushed - total entries: %d" %
+                len(_unmatched_cache_data))
+        except Exception as e:
+            print("[Unmatched] Error flushing cache: %s" % e)
 
 
 # country_code -> (timestamp, set(ids), {clean_name: id})
@@ -2793,7 +2928,14 @@ def _get_epg_feed_index(country_code):
                             continue
                         clean_dn = matcher._clean_name_for_similarity(dn_text)
                         if clean_dn:
-                            name_index[clean_dn] = chan_id
+                            # Tokens precomputed once here rather than by
+                            # every _find_feed_id_by_name() call that
+                            # scans this same index (once per channel
+                            # whose Rytec id isn't one this feed uses,
+                            # which - see write_epg_mapping_file() - can
+                            # be a large fraction of a country's channels).
+                            name_index[clean_dn] = (
+                                chan_id, _tokenize_for_compat(clean_dn))
                 elem.clear()
             elif event == 'start' and elem.tag == 'programme':
                 break
@@ -2805,11 +2947,54 @@ def _get_epg_feed_index(country_code):
     return feed_ids, name_index
 
 
+def _tokenize_for_compat(clean_name):
+    """Split an already-cleaned (lowercase) name into tokens for
+    _tokens_compatible(), first inserting a space between a letter and
+    an immediately-following digit (e.g. "sport1" -> "sport 1").
+
+    Rytec's own channel comments frequently glue a trailing channel
+    number straight onto the preceding word with no space - confirmed
+    ~780 times across a real rytec.channels.xml (e.g. "Bein Sport1",
+    "B1 TV", "Arena 1x2") - while Vavoo's own channel names always space
+    it out ("BEIN SPORTS 1"). Without this, an otherwise very close
+    match (0.92 similarity for "bein sports 1" vs "bein sport1") never
+    even reaches the similarity check, rejected outright by
+    _tokens_compatible() because "sport1" and "sports"+"1" don't
+    tokenize the same way.
+
+    This only affects tokenization for the compatibility gate -
+    _clean_name_for_similarity()'s output (used for actual scoring and
+    cache-key comparisons) is untouched, and two genuinely different
+    numbers still end up as distinct tokens (e.g. "france3" ->
+    ["france", "3"] vs "france5" -> ["france", "5"]), so the guard's
+    real job - rejecting a different word/number at a shared position -
+    is unaffected.
+    """
+    return sub(r'(?<=[a-z])(?=[0-9])', ' ', clean_name).split()
+
+
+def _token_pair_compatible(a, b):
+    """Two tokens are compatible if identical, or if they differ only
+    by a trailing "s" on a non-numeric word (tolerates a singular/
+    plural naming difference, e.g. Rytec's "sport" vs Vavoo's
+    "sports"). Never applies when either token is purely numeric - a
+    different number at a shared position (e.g. "3" vs "5") is exactly
+    what _tokens_compatible() exists to catch, since that's what turns
+    an otherwise near-identical name into a genuinely different
+    channel."""
+    if a == b:
+        return True
+    if a.isdigit() or b.isdigit():
+        return False
+    return a + 's' == b or b + 's' == a
+
+
 def _tokens_compatible(a_tokens, b_tokens):
     """True unless the two token lists differ at a shared position -
     i.e. one is a genuine word-for-word prefix of the other (or
-    they're equal). A longer name is allowed to just add trailing
-    descriptive words (e.g. "sky sport" / "sky sport 4k"), but
+    they're equal, allowing singular/plural pairs - see
+    _token_pair_compatible()). A longer name is allowed to just add
+    trailing descriptive words (e.g. "sky sport" / "sky sport 4k"), but
     substituting a different word at a position both share (e.g.
     "canale 5" vs "canale 122", "france o" vs "france 3") means these
     are actually different channels, no matter how high the raw
@@ -2817,7 +3002,9 @@ def _tokens_compatible(a_tokens, b_tokens):
     shorter, longer = (
         (a_tokens, b_tokens) if len(a_tokens) <= len(b_tokens)
         else (b_tokens, a_tokens))
-    return shorter == longer[:len(shorter)]
+    prefix = longer[:len(shorter)]
+    return len(prefix) == len(shorter) and all(
+        _token_pair_compatible(x, y) for x, y in zip(shorter, prefix))
 
 
 def _find_feed_id_by_name(channel_name, matcher, name_index):
@@ -2827,12 +3014,11 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
-    source_tokens = clean.split()
+    source_tokens = _tokenize_for_compat(clean)
     best_score = 0.0
     best_id = None
     sm = SequenceMatcher(None, clean)
-    for dn_key, dn_id in name_index.items():
-        candidate_tokens = dn_key.split()
+    for dn_key, (dn_id, candidate_tokens) in name_index.items():
         if (source_tokens and candidate_tokens and
                 not _tokens_compatible(source_tokens, candidate_tokens)):
             continue
@@ -2858,66 +3044,76 @@ def write_epg_mapping_file(epg_entries, country_code):
     passing the bare tuple here means the channel gets dropped entirely
     during EPGImport's own channels.xml parse pass.
     """
+    epg_dir = "/etc/epgimport"
+    if not exists(epg_dir):
+        makedirs(epg_dir)
+
+    if country_code:
+        filename = "vavoo_{}.channels.xml".format(country_code.lower())
+    else:
+        filename = "vavoo.channels.xml"
+    channels_file = join(epg_dir, filename)
+
+    # Some channels' Rytec-matched id isn't one this country's actual
+    # feed uses for <channel id> (it has its own convention for a
+    # handful of channels, e.g. "RTP.1.HD.pt" vs the Rytec
+    # "rtp1.pt") - epgimport can't find programme data filed under
+    # an id the feed never defines. Fall back to the feed's own id,
+    # found by display-name match, but only when the Rytec id
+    # genuinely isn't one the feed already has - this never touches
+    # a channel that's already matching correctly.
+    #
+    # Deliberately outside _epg_lock below: this can fetch and parse a
+    # whole country's multi-MB XMLTV feed (up to ~60s across getUrl()'s
+    # own retries), only refreshed every 300s per _get_epg_feed_index()'s
+    # own cache. Holding a single global lock across that would make
+    # every other country's (unrelated) channels.xml write queue up
+    # behind whichever one's feed happens to be slow/uncached - the lock
+    # only needs to protect the actual file write below.
+    feed_ids, feed_name_index = _get_epg_feed_index(country_code)
+    matcher = get_epg_matcher() if feed_ids else None
+
+    # Use the full ref as key to avoid duplicates, but also store the
+    # channel name. Unlike a bare dvb_ref, a full_service_ref
+    # (tuple + URL) never needs a trailing-colon fixup - it already
+    # ends with the stream URL, and blindly appending ':' here would
+    # corrupt that URL instead of "completing" a bare tuple.
+    unique = {}
+    for epg_id, dvb_ref, ch_name in epg_entries:
+        # isinstance(dvb_ref, (str, text_type)): plain `str` alone
+        # would drop every `unicode` dvb_ref on Python 2, silently
+        # writing an empty/near-empty EPG mapping file.
+        if dvb_ref and isinstance(
+                dvb_ref, (str, text_type)) and dvb_ref.strip():
+            if feed_ids and epg_id not in feed_ids:
+                fallback_id = _find_feed_id_by_name(
+                    ch_name, matcher, feed_name_index)
+                if fallback_id:
+                    debug(
+                        "EPG mapping fallback: '{}' rytec id '{}' not "
+                        "in feed, using '{}' instead".format(
+                            ch_name, epg_id, fallback_id))
+                    epg_id = fallback_id
+            unique[dvb_ref] = (epg_id, ch_name)
+
+    if not unique:
+        print("[EPG] No entries to write, skipping.")
+        return None
+
+    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
+    for dvb_ref, (epg_id, ch_name) in unique.items():
+        # Add comment with channel name (optional but useful for
+        # readability)
+        xml_lines.append(
+            '  <channel id="{}">{}</channel><!-- {} -->'.format(epg_id, dvb_ref, ch_name))
+    xml_lines.append('</channels>')
+
     with _epg_lock:
-        epg_dir = "/etc/epgimport"
-        if not exists(epg_dir):
-            makedirs(epg_dir)
-
-        if country_code:
-            filename = "vavoo_{}.channels.xml".format(country_code.lower())
-        else:
-            filename = "vavoo.channels.xml"
-        channels_file = join(epg_dir, filename)
-
-        # Some channels' Rytec-matched id isn't one this country's actual
-        # feed uses for <channel id> (it has its own convention for a
-        # handful of channels, e.g. "RTP.1.HD.pt" vs the Rytec
-        # "rtp1.pt") - epgimport can't find programme data filed under
-        # an id the feed never defines. Fall back to the feed's own id,
-        # found by display-name match, but only when the Rytec id
-        # genuinely isn't one the feed already has - this never touches
-        # a channel that's already matching correctly.
-        feed_ids, feed_name_index = _get_epg_feed_index(country_code)
-        matcher = get_epg_matcher() if feed_ids else None
-
-        # Use the full ref as key to avoid duplicates, but also store the
-        # channel name. Unlike a bare dvb_ref, a full_service_ref
-        # (tuple + URL) never needs a trailing-colon fixup - it already
-        # ends with the stream URL, and blindly appending ':' here would
-        # corrupt that URL instead of "completing" a bare tuple.
-        unique = {}
-        for epg_id, dvb_ref, ch_name in epg_entries:
-            # isinstance(dvb_ref, (str, text_type)): plain `str` alone
-            # would drop every `unicode` dvb_ref on Python 2, silently
-            # writing an empty/near-empty EPG mapping file.
-            if dvb_ref and isinstance(
-                    dvb_ref, (str, text_type)) and dvb_ref.strip():
-                if feed_ids and epg_id not in feed_ids:
-                    fallback_id = _find_feed_id_by_name(
-                        ch_name, matcher, feed_name_index)
-                    if fallback_id:
-                        debug(
-                            "EPG mapping fallback: '{}' rytec id '{}' not "
-                            "in feed, using '{}' instead".format(
-                                ch_name, epg_id, fallback_id))
-                        epg_id = fallback_id
-                unique[dvb_ref] = (epg_id, ch_name)
-
-        if not unique:
-            print("[EPG] No entries to write, skipping.")
-            return None
-
-        xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
-        for dvb_ref, (epg_id, ch_name) in unique.items():
-            # Add comment with channel name (optional but useful for
-            # readability)
-            xml_lines.append(
-                '  <channel id="{}">{}</channel><!-- {} -->'.format(epg_id, dvb_ref, ch_name))
-        xml_lines.append('</channels>')
-
         try:
-            with open(channels_file, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
+            temp_path = channels_file + ".tmp"
+            with open(temp_path, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
                 f.write('\n'.join(xml_lines))
+            rename(temp_path, channels_file)
             print(
                 "[EPG] Written {} entries to {}".format(
                     len(unique), filename))
@@ -2938,9 +3134,10 @@ def update_epg_sources():
     files = glob.glob(pattern)
 
     if not files:
-        if exists(sources_file):
-            remove(sources_file)
-            print("[EPG] Removed sources file (no channels).")
+        with _epg_lock:
+            if exists(sources_file):
+                remove(sources_file)
+                print("[EPG] Removed sources file (no channels).")
         return
 
     sources_list = []
@@ -2979,8 +3176,11 @@ def update_epg_sources():
 </sources>'''.format("\n".join(sources_list))
 
     try:
-        with open(sources_file, "w") as f:
-            f.write(sources_xml)
+        with _epg_lock:
+            temp_path = sources_file + ".tmp"
+            with open(temp_path, "w") as f:
+                f.write(sources_xml)
+            rename(temp_path, sources_file)
 
         print(
             "[EPG] Sources file updated with %d entries." %
@@ -2988,6 +3188,61 @@ def update_epg_sources():
 
     except Exception as e:
         print("[EPG] Error writing sources file: %s" % e)
+
+    ensure_vavoo_epg_sources_enabled()
+
+
+def ensure_vavoo_epg_sources_enabled():
+    """Auto-enable every currently-exported Vavoo EPG source ("Vavoo
+    <COUNTRY>", one per exported country - see the <description> built
+    above) in EPGImport's own settings, using its proper save API
+    (EPGConfig.storeUserSettings()) instead of hand-editing
+    epgimport.conf - that file is a pickle blob, not plain text, and an
+    earlier attempt at this by appending a raw line to it corrupted
+    EPGImport's own config. Merges into whatever the user already has
+    enabled there; never removes anything.
+
+    Only runs when the user has opted in via the "EPG Auto Update"
+    config toggle - otherwise EPGImport's own source list is left
+    exactly as the user configured it, same as the existing manual
+    "Start EPG update now?" flow (which still requires the source to
+    already be enabled). Never raises - this is a best-effort
+    convenience a failure here shouldn't be allowed to break bouquet
+    export over.
+    """
+    try:
+        if not (config.plugins.vavoo.epg_enabled.value and
+                config.plugins.vavoo.epg_auto_update.value):
+            return
+
+        epg_dir = "/etc/epgimport"
+        pattern = join(epg_dir, "vavoo_*.channels.xml")
+        files = glob.glob(pattern)
+        if not files:
+            return
+
+        wanted = set()
+        for f in files:
+            basename_file = basename(f)
+            parts = basename_file.replace(".channels.xml", "").split("_")
+            country_code = parts[1].upper() if len(parts) > 1 else "UNKNOWN"
+            wanted.add("Vavoo {}".format(country_code))
+
+        from Plugins.Extensions.EPGImport import EPGConfig
+        settings = EPGConfig.loadUserSettings()
+        current = list(settings.get("sources") or [])
+        missing = sorted(wanted - set(current))
+        if not missing:
+            return
+        EPGConfig.storeUserSettings(sources=current + missing)
+        print(
+            "[EPG] Auto-enabled EPGImport source(s): %s" %
+            ", ".join(missing))
+    except ImportError:
+        # EPGImport not installed - nothing to enable.
+        pass
+    except Exception as e:
+        print("[EPG] Error auto-enabling EPGImport sources: %s" % e)
 
 
 def fix_cache_format(

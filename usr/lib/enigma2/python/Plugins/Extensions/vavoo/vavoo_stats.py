@@ -214,11 +214,11 @@ class AnonymousStats(object):
             # allocating and reconnecting a new eTimer every 5 minutes.
             if getattr(self, '_heartbeat_timer', None) is None:
                 self._heartbeat_timer = eTimer()
-                if os.path.exists('/var/lib/dpkg/status'):
-                    self._heartbeat_timer.timeout.connect(
-                        self._send_heartbeat)
-                else:
+                try:
                     self._heartbeat_timer.callback.append(
+                        self._send_heartbeat)
+                except AttributeError:
+                    self._heartbeat_timer.timeout.connect(
                         self._send_heartbeat)
             self._heartbeat_timer.start(300000, True)
 
@@ -237,12 +237,15 @@ class AnonymousStats(object):
 
 
 _stats_instance = None
+_stats_instance_lock = threading.Lock()
 
 
 def get_stats_collector():
     global _stats_instance
     if _stats_instance is None:
-        _stats_instance = AnonymousStats()
+        with _stats_instance_lock:
+            if _stats_instance is None:
+                _stats_instance = AnonymousStats()
     return _stats_instance
 
 

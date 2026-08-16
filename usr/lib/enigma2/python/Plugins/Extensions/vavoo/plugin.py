@@ -118,6 +118,7 @@ from .vUtils import (
     debug,
     make_print,
     update_epg_sources,
+    ensure_vavoo_epg_sources_enabled,
     get_epg_matcher,
     get_proxy_status,
     cleanup_old_temp_files,
@@ -267,8 +268,7 @@ try:
     from Components.UsageConfig import defaultMoviePath
     downloadfree = defaultMoviePath()
 except BaseException:
-    if file_exists("/usr/bin/apt-get"):
-        downloadfree = ('/media/hdd/movie/')
+    downloadfree = ('/media/hdd/movie/')
 
 
 def get_enigma2_path():
@@ -355,8 +355,14 @@ def _cache_epg_result(cache_key, result):
         oldest = sorted(
             _epg_result_cache, key=lambda k: _epg_result_cache[k][0]
         )[:len(_epg_result_cache) - _EPG_RESULT_CACHE_MAX]
+        # pop(k, None), not del: this runs unlocked from whichever
+        # per-channel EPG-fetch daemon thread last called
+        # get_current_epg() (see Playstream2), so two threads can race
+        # into eviction at once - the second one's `oldest` snapshot may
+        # include a key the first already removed. del would raise
+        # KeyError there; pop is a no-op instead.
         for k in oldest:
-            del _epg_result_cache[k]
+            _epg_result_cache.pop(k, None)
 
 
 def _cache_epg_xml(country_code, root, channel_index, display_name_index):
@@ -367,7 +373,7 @@ def _cache_epg_xml(country_code, root, channel_index, display_name_index):
             _epg_xml_cache, key=lambda k: _epg_xml_cache[k][0]
         )[:len(_epg_xml_cache) - _EPG_XML_CACHE_MAX]
         for k in oldest:
-            del _epg_xml_cache[k]
+            _epg_xml_cache.pop(k, None)
 
 
 # Auto-update check state, shared between startVavoo (kicks off the
@@ -519,14 +525,12 @@ cfg.epg_enabled = ConfigEnableDisable(default=False)
 cfg.epg_auto_update = ConfigEnableDisable(default=False)
 cfg.similarity_threshold = ConfigSelectionNumber(
     default=75, min=50, max=100, stepwidth=5)
-cfg.epg_update_interval = ConfigSelectionNumber(
-    default=6, min=1, max=24, stepwidth=1)
 cfg.timerupdate = ConfigSelectionNumber(default=5, min=1, max=60, stepwidth=1)
 cfg.timetype = ConfigSelection(
     default="interval", choices=[
         ("interval", _("interval")), ("fixed time", _("fixed time"))])
 cfg.updateinterval = ConfigSelectionNumber(
-    default=5, min=5, max=3600, stepwidth=5)
+    default=360, min=5, max=3600, stepwidth=5)
 cfg.fixedtime = ConfigClock(default=46800)
 cfg.last_update = ConfigText(default="Never")
 cfg.stmain = ConfigYesNo(default=True)
@@ -795,19 +799,15 @@ class vavoo_config(Screen, ConfigListScreen):
             self.list.append(getConfigListEntry(
                 _("Auto-update EPG"),
                 cfg.epg_auto_update,
-                _("Automatically trigger EPG update after source creation")
+                _("Automatically enable the Vavoo EPG source(s) in EPGImport "
+                  "after each export, so you don't have to enable them there "
+                  "yourself.")
             ))
             self.list.append(
                 getConfigListEntry(
                     _("EPG Similarity Threshold (%)"),
                     cfg.similarity_threshold,
                     _("Minimum similarity for matching channels (higher = stricter).")))
-            if cfg.epg_auto_update.value:
-                self.list.append(
-                    getConfigListEntry(
-                        _("Update interval (hours)"),
-                        cfg.epg_update_interval,
-                        _("How often to auto-update the EPG (requires EPGImport scheduler)")))
 
         self.list.append(
             getConfigListEntry(
@@ -939,9 +939,16 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self._m3u_host = result[1]
 
-        # 3. Get country list from proxy
+        # 3. Get country list from proxy - in a background thread and
+        # continue in a callback: get_countries_from_proxy()'s getUrl()
+        # call can block for tens of seconds on a slow/unresponsive
+        # proxy, and this method runs directly on Enigma2's single GUI
+        # thread as a ChoiceBox callback - calling it here synchronously
+        # would freeze the whole box for that long.
+        self._fetch_countries_async(self._on_countries_for_mode_choice)
+
+    def _on_countries_for_mode_choice(self, countries):
         try:
-            countries = self.get_countries_from_proxy()
             if not countries:
                 raise Exception("No countries available")
 
@@ -981,9 +988,11 @@ class vavoo_config(Screen, ConfigListScreen):
             return
 
         mode = result[1]
+        self._fetch_countries_async(
+            lambda countries: self._on_countries_for_mode(mode, countries))
 
+    def _on_countries_for_mode(self, mode, countries):
         try:
-            countries = self.get_countries_from_proxy()
             if not countries:
                 raise Exception("No countries available")
 
@@ -1040,9 +1049,14 @@ class vavoo_config(Screen, ConfigListScreen):
 
         selected_country = result[1]
 
-        # Get channels for the selected country
-        channels = self.get_channels_for_country(selected_country)
+        # Get channels for the selected country - in a background
+        # thread, same reasoning as _fetch_countries_async().
+        self._fetch_channels_async(
+            selected_country,
+            lambda channels: self._on_channels_for_country(
+                selected_country, channels))
 
+    def _on_channels_for_country(self, selected_country, channels):
         if not channels or len(channels) == 0:
             self.session.open(
                 MessageBox,
@@ -1267,12 +1281,36 @@ class vavoo_config(Screen, ConfigListScreen):
                 print("[M3U] No response for %s" % country_name)
                 return []
 
-            channels = loads(response)
+            channels = loads(ensure_str(response))
             return channels
 
         except Exception as e:
             print("[M3U] Error getting channels: %s" % str(e))
             return []
+
+    def _fetch_countries_async(self, on_done):
+        """Run get_countries_from_proxy() in a background thread and
+        deliver the result to on_done() on the reactor/GUI thread.
+        get_countries_from_proxy() is a synchronous getUrl() call that
+        can block for tens of seconds on a slow/unresponsive proxy -
+        every caller here is a ChoiceBox/ MessageBox callback, i.e.
+        already running on Enigma2's single GUI thread, so calling it
+        directly would freeze the whole box for that long."""
+        def task():
+            countries = self.get_countries_from_proxy()
+            reactor.callFromThread(on_done, countries)
+        t = threading.Thread(target=task)
+        t.setDaemon(True)
+        t.start()
+
+    def _fetch_channels_async(self, country_name, on_done):
+        """Same as _fetch_countries_async(), for get_channels_for_country()."""
+        def task():
+            channels = self.get_channels_for_country(country_name)
+            reactor.callFromThread(on_done, channels)
+        t = threading.Thread(target=task)
+        t.setDaemon(True)
+        t.start()
 
     def check_and_start_proxy_async(
             self, on_ready, on_failed, attempts_left=10):
@@ -1385,18 +1423,23 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=3)
 
     def schedule_epg_update(self):
-        """Schedule automatic EPG updates using EPGImport's own scheduler"""
+        """Auto-enable Vavoo's EPG source(s) in EPGImport's own settings.
+
+        EPGImport's own scheduler (its "wakeup"/"repeat import" settings,
+        configured directly in EPGImport's own screen) is what actually
+        runs periodic imports - this doesn't add a second, competing
+        schedule. It just removes the friction of having to separately
+        go enable the Vavoo source there yourself: an earlier version
+        tried to do this by opening EPGIMPORT_CONF in text mode and
+        appending a "sources=..." line to it, but that file is actually
+        a binary serialized blob (not the plain-text format this
+        assumed), so every append corrupted EPGImport's own config.
+        ensure_vavoo_epg_sources_enabled() (vUtils.py) uses EPGImport's
+        own save API instead, so it's safe to call here.
+        """
         try:
-            # EPGImport's own scheduler picks up whatever sources the user
-            # has enabled in ITS config screen - we used to try to enable
-            # our source here by opening EPGIMPORT_CONF in text mode and
-            # appending a "sources=..." line to it, but that file is
-            # actually a binary serialized blob (not the plain-text format
-            # this assumed), so every append corrupted EPGImport's own
-            # config. Enabling the Vavoo source is left to the user via
-            # EPGImport's settings screen instead.
             if cfg.epg_auto_update.value:
-                pass
+                ensure_vavoo_epg_sources_enabled()
 
         except Exception as e:
             print("[Vavoo] Error scheduling EPG update:", str(e))
@@ -1662,7 +1705,7 @@ class startVavoo(Screen):
         if is_proxy_running():
             try:
                 response = getUrl(PROXY_STATUS_URL, timeout=0.5, retries=1)
-                data = loads(response) if response else None
+                data = loads(ensure_str(response)) if response else None
             except Exception:
                 data = None
 
@@ -1868,7 +1911,7 @@ def _shared_update_proxy_status_display(screen):
                 response = getUrl(
                     PROXY_STATUS_URL, timeout=5)
                 if response:
-                    status_data = loads(response)
+                    status_data = loads(ensure_str(response))
 
                     if status_data.get(
                             "initialized", False) and status_data.get(
@@ -2365,7 +2408,7 @@ class MainVavoo(Screen):
                 response = getUrl(
                     PROXY_REFRESH_URL, timeout=5)
                 if response:
-                    data = loads(response)
+                    data = loads(ensure_str(response))
                     if data.get("status") == "success":
                         self.session.open(
                             MessageBox,
@@ -2575,7 +2618,7 @@ class MainVavoo(Screen):
             # Fetch countries from the proxy
             response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
             if response:
-                countries = loads(response)
+                countries = loads(ensure_str(response))
                 print(
                     "[MainVavoo] Got {} countries from proxy".format(
                         len(countries)))
@@ -3253,7 +3296,7 @@ class vavoo(Screen):
                     "/channels?country={}".format(country_encoded)
                 debug("Fetching from proxy: " + proxy_url)
 
-                content = getUrl(proxy_url, timeout=10)
+                content = ensure_str(getUrl(proxy_url, timeout=10))
 
                 if content and content.strip() and content != "null":
                     channels_data = loads(content)
@@ -3280,7 +3323,7 @@ class vavoo(Screen):
 
             # Retrieve data directly from vavoo.to
             url = vUtils.b64decoder(stripurl)
-            content = getUrl(url, timeout=10)
+            content = ensure_str(getUrl(url, timeout=10))
 
             # 451-aware mirror fallback
             if (not content) or (content == HTTP_451_SENTINEL):
@@ -3288,7 +3331,7 @@ class vavoo(Screen):
                 print(
                     "[Fallback] Primary source blocked/empty, trying mirror: %s" %
                     fb)
-                content = getUrl(fb, timeout=10)
+                content = ensure_str(getUrl(fb, timeout=10))
                 if content == HTTP_451_SENTINEL:
                     content = ""
 
@@ -5199,7 +5242,7 @@ class AutoStartTimer(object):
         try:
             # 1. Read bouquets
             bouquets_to_update = []
-            with open(favorite_channel, 'r') as f:
+            with codecs.open(favorite_channel, 'r', encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
                     if line and '|' in line:
@@ -5241,7 +5284,38 @@ class AutoStartTimer(object):
 
     def _wait_for_proxy_then_update(self, bouquets_to_update, attempts_left):
         if is_proxy_ready(timeout=3) or attempts_left <= 1:
-            self._update_bouquets(bouquets_to_update)
+            # _update_bouquets() does the real work: Rytec matching, EPG
+            # feed downloads, and bouquet file I/O for every favorited
+            # country, all synchronous - easily minutes for a multi-country
+            # update. This method runs via reactor.callLater, i.e. on
+            # Enigma2's single main/GUI thread (same one this class was
+            # already careful about above, for the much shorter proxy
+            # wait) - calling it directly here would freeze the whole box,
+            # unattended, for however long the update takes. Run it in a
+            # background thread instead, same pattern export_bouquet_async()
+            # already uses for the manual export path.
+            #
+            # export_lock: _update_bouquets() ends up writing the same
+            # vavoo_epg_cache.json a manual export (message2()) or the
+            # cache-fix button (_fix_cache_format()) can also be writing -
+            # both of those already hold this lock for their whole run
+            # (see _fix_cache_format()'s own comment on why). Before this
+            # method ran in the background, that overlap was impossible -
+            # a synchronous scheduled update blocked the whole GUI, so the
+            # user couldn't trigger a manual export at the same time.
+            # Running here now makes that overlap real, so join the same
+            # lock: skip this cycle non-blockingly if one's already in
+            # progress rather than risk two concurrent read-modify-write
+            # cycles silently losing each other's cache updates.
+            if not export_lock.acquire(False):
+                print(
+                    "[AutoStartTimer] Export already in progress, "
+                    "skipping this scheduled update")
+                return
+            t = threading.Thread(
+                target=self._update_bouquets, args=(bouquets_to_update,))
+            t.daemon = True
+            t.start()
             return
         print("[AutoStartTimer] Waiting for proxy (" +
               str(11 - attempts_left) + "/10)")
@@ -5284,11 +5358,14 @@ class AutoStartTimer(object):
                 else:
                     print("[AutoStartTimer] ✗ Failed: " + name)
 
-            # 5. Update timestamp and show MessageBox
+            # 5. Update timestamp
             if successful_updates > 0:
                 localtime = time.asctime(time.localtime(time.time()))
-                cfg.last_update.value = localtime
-                cfg.last_update.save()
+
+                def _save_last_update():
+                    cfg.last_update.value = localtime
+                    cfg.last_update.save()
+                reactor.callFromThread(_save_last_update)
                 print("[AutoStartTimer] Updated " +
                       str(successful_updates) +
                       "/" +
@@ -5299,6 +5376,8 @@ class AutoStartTimer(object):
             print("[AutoStartTimer] Error: " + str(e))
             import traceback
             traceback.print_exc()
+        finally:
+            export_lock.release()
 
 
 delayed_start_timer = None

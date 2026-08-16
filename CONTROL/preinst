@@ -49,18 +49,18 @@ else
     echo "✓ No previous installation found"
 fi
 
-# Determine python command and install dependencies
+# This package requires Python 3 (see CONTROL/control's Depends:
+# python3-requests, python3-six - opkg already refuses to install this
+# package on a system without a python3-requests candidate, so there is
+# no supported Python 2 fallback here).
 echo "Installing required dependencies..."
+PY="python3"
+SIXPKG="python3-six"
+REQPKG="python3-requests"
 if [ -e "/usr/bin/python3" ]; then
-    PY="python3"
-    SIXPKG="python3-six"
-    REQPKG="python3-requests"
     echo "✓ Using Python 3"
 else
-    PY="python"
-    SIXPKG="python-six"
-    REQPKG="python-requests"
-    echo "✓ Using Python 2.7"
+    echo "⚠ /usr/bin/python3 not found, but continuing (required by package dependencies)"
 fi
 
 # Update package list and install dependencies

@@ -4,13 +4,24 @@ from __future__ import absolute_import, print_function
 
 import base64
 import gzip
-import requests
+try:
+    import requests
+except ImportError:
+    # requests is a hard runtime dependency (python3-requests, declared
+    # in CONTROL/control) - VavooProxy is built directly on
+    # requests.Session() and cannot function without it, but a clear
+    # message here beats a bare traceback on images missing the package.
+    print("[PROXY] FATAL: 'requests' package not found - install python3-requests")
+    raise
 # import uuid
 import time
 import threading
 import socket
 import select
-import urllib3
+try:
+    import urllib3
+except ImportError:
+    urllib3 = None
 import atexit
 import os
 from collections import OrderedDict
@@ -91,7 +102,8 @@ except ImportError:
 
 
 # Disable SSL warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+if urllib3 is not None:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
@@ -640,6 +652,7 @@ class VavooProxy(object):
         self.refresh_timer = None
         # ordered for deterministic LRU eviction (Py2+3)
         self.resolve_cache = OrderedDict()
+        self.resolve_cache_lock = threading.Lock()
         # stream URLs valid for ~5min; was 30s (too aggressive)
         self.resolve_cache_ttl = 300
         self.server = None
@@ -951,10 +964,18 @@ class VavooProxy(object):
             cursor = None
             page = 1
             max_retries = 3
+            # Safety cap: real catalogs run to a few thousand channels /
+            # a few dozen pages (300 items/page). Nothing should bound
+            # this loop otherwise - a buggy or malicious upstream
+            # response that kept returning a non-empty cursor forever
+            # would keep it running indefinitely, since each page fetch
+            # is a real network call that only stops the loop via an
+            # empty items list/cursor, not a page count.
+            max_pages = 200
 
             print("Loading catalog...")
 
-            while True:
+            while page <= max_pages:
                 catalog_payload = {
                     "language": self.current_language,
                     "region": self.current_region,
@@ -1157,7 +1178,8 @@ class VavooProxy(object):
 
         now = time.time()
         if not force_refresh:
-            cached = self.resolve_cache.get(channel_url)
+            with self.resolve_cache_lock:
+                cached = self.resolve_cache.get(channel_url)
             if cached and (now - cached["ts"] < self.resolve_cache_ttl):
                 return cached["url"]
 
@@ -1224,15 +1246,16 @@ class VavooProxy(object):
                     # order rather than last use, and could drop a
                     # channel that's actively being refreshed while
                     # keeping one nobody has touched in a while.
-                    self.resolve_cache.pop(channel_url, None)
-                    self.resolve_cache[channel_url] = {
-                        "url": stream_url, "ts": time.time()}
-                    # Evict oldest 500 entries (OrderedDict preserves insertion
-                    # order in Py2+3)
-                    if len(self.resolve_cache) > 1000:
-                        keys = list(self.resolve_cache.keys())[:-500]
-                        for key in keys:
-                            self.resolve_cache.pop(key, None)
+                    with self.resolve_cache_lock:
+                        self.resolve_cache.pop(channel_url, None)
+                        self.resolve_cache[channel_url] = {
+                            "url": stream_url, "ts": time.time()}
+                        # Evict oldest 500 entries (OrderedDict preserves
+                        # insertion order in Py2+3)
+                        if len(self.resolve_cache) > 1000:
+                            keys = list(self.resolve_cache.keys())[:-500]
+                            for key in keys:
+                                self.resolve_cache.pop(key, None)
                     print(" Successfully resolved channel URL")
                     return stream_url
                 print(" Resolve response missing URL")
