@@ -1117,6 +1117,13 @@ def create_bouquet_file(
             except Exception as e:
                 print("[Bouquet] Error processing channel: %s" % str(e))
                 continue
+            # Yield after every channel, same as process_epg_matching_background()'s
+            # loop - this is the scheduled auto-update's own matching pass
+            # (see create_bouquet_file()'s only caller, convert_bouquet_sync(),
+            # called from AutoStartTimer._update_bouquets()), which otherwise
+            # runs the CPU-heavy fuzzy-matcher back to back for every channel
+            # with no yield point at all, unlike the manual-export path.
+            select.select([], [], [], 0.001)
 
         if channel_count == 0:
             print("[Bouquet] No valid channels for %s" % name)
