@@ -793,7 +793,7 @@ def get_proxy_channels(country_name):
 
     for attempt in range(max_retries):
         try:
-            print("Getting channels for '" + str(country_name) + \
+            print("Getting channels for '" + str(country_name) +
                   "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
 
             # URL-encode
@@ -1143,7 +1143,10 @@ def unique_fallback_sref(servicetype, channel_id):
     actual matched channel - only sid/tsid need to vary to keep
     unmatched channels apart from each other.
     """
-    h = zlib.crc32(ensure_str(channel_id, errors='ignore').encode('utf-8')) & 0xffffffff
+    h = zlib.crc32(
+        ensure_str(
+            channel_id,
+            errors='ignore').encode('utf-8')) & 0xffffffff
     sid = (h & 0xffff) or 1
     tsid = ((h >> 16) & 0xffff) or 1
     return "%s:0:1:%x:%x:0:0:0:0:0:" % (servicetype, sid, tsid)
