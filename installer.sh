@@ -1,33 +1,20 @@
 #!/bin/bash
 
-version='1.86'
-changelog="- Added a choice of Local (127.0.0.1) or Network IP when
-  generating M3U files, instead of always embedding the box's LAN IP
-- Fixed EPG assigned to the wrong (SD) channel for several HD
-  channels, e.g. DMAX HD, Discovery Channel HD, Super Tennis HD,
-  Eurosport 2
-- Fixed 'Bouquet Position in List' doing nothing when changed and
-  saved in Config
-- Fixed 'Scheduled List' (auto bouquet update) requiring a reboot to
-  take effect after being enabled, and a crash that could silently
-  lose your settings on a later Save
-- Fixed EPG and scheduled bouquet auto-update failing completely on
-  some images due to a config value type mismatch
-- Fixed the local proxy freezing the whole Enigma2 GUI for up to 30
-  seconds during M3U export and scheduled updates
-- Fixed the plugin crashing the whole box (green screen) on some
-  Python 2 images when exporting a bouquet
-- Fixed the update popup's changelog rendering as a totally blank box
-  on some images
-- Fixed in-player streams that fail repeatedly retrying forever
-  instead of eventually giving up and returning to the channel list
-- Fixed removing/checking bouquets whose category name uses a
-  particular separator character
-- Fixed a connection leak and a HEAD-request bug in the local proxy's
-  streaming endpoint
-- Added a confirmation popup before reloading bouquets
-- Hardened numerous Python 2/3 compatibility edge cases and file-write
-  safety across the plugin"
+version='1.87'
+changelog="- Fixed a Python 3 bytes/str comparison bug that silently broke the
+  proxy-null-response fallback when browsing channels
+- Fixed a stream-resolution cache race condition in the local proxy
+  under concurrent requests
+- Fixed bouquet, favorites, and EPG cache files being left corrupted
+  if the box lost power mid-write
+- Fixed the plugin blocking for up to 5 seconds on a slow/unreachable
+  network every time it loads
+- Fixed the installer misdetecting Python 2 vs 3 on images without an
+  unversioned 'python' binary
+- Made 'Auto-update EPG' actually enable the EPGImport source instead
+  of doing nothing
+- Removed dead proxy-launch scripts and synced install dependencies
+  across all three packaging paths"
 
 
 echo "$changelog"
