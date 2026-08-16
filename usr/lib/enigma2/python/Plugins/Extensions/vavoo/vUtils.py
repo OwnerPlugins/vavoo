@@ -4,13 +4,24 @@ from __future__ import absolute_import, print_function
 import base64
 import glob
 import io
-import six
+try:
+    import six
+except ImportError:
+    # six is a hard runtime dependency (python3-six, declared in
+    # CONTROL/control) used throughout this module for Py2/3 text
+    # helpers - there is no functional fallback without it, but a clear
+    # message here beats a bare traceback on images missing the package.
+    print("[VUTILS] FATAL: 'six' package not found - install python3-six")
+    raise
 import socket
 import ssl
 import select
 import threading
 import types
-import urllib3
+try:
+    import urllib3
+except ImportError:
+    urllib3 = None
 import xml.etree.ElementTree as ET
 import zlib
 from datetime import datetime as _datetime
@@ -72,7 +83,8 @@ from . import (
 """
 
 # Disable SSL warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+if urllib3 is not None:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _original_getaddrinfo = socket.getaddrinfo
 
 try:
@@ -298,13 +310,21 @@ def getDNSinfo():
     return dns_box, dns_external
 
 
-try:
-    dns_box, dns_ext = getDNSinfo()
-except Exception:
-    dns_box, dns_ext = "n/a", "n/a"
+def _log_dns_info_async():
+    """Runs getDNSinfo() (a real network call) off the import path so
+    plugin/menu load never blocks on a slow/unreachable network."""
+    try:
+        dns_box, dns_ext = getDNSinfo()
+    except Exception:
+        dns_box, dns_ext = "n/a", "n/a"
+    print("DNS box:", dns_box)
+    print("DNS out:", dns_ext)
+
+
 print("Vavoo Version: ", __version__)
-print("DNS box:", dns_box)
-print("DNS out:", dns_ext)
+_dns_info_thread = threading.Thread(target=_log_dns_info_async)
+_dns_info_thread.setDaemon(True)
+_dns_info_thread.start()
 
 
 def get_screen_width():
@@ -636,17 +656,19 @@ def set_cache(key, data, timeout):
         # effect and get_cache() would always treat this entry as expired.
         data['sigValidUntil'] = int(time()) + timeout
         data['ip'] = get_external_ip()
+        temp_path = file_path + ".tmp"
         if PY2:
             converted_data = convert_to_unicode(data)
-            with io.open(file_path, 'w', encoding='utf-8') as cache_file:
+            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
                 dump(
                     converted_data,
                     cache_file,
                     indent=4,
                     ensure_ascii=False)
         else:
-            with io.open(file_path, 'w', encoding='utf-8') as cache_file:
+            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
                 dump(data, cache_file, indent=4, ensure_ascii=False)
+        rename(temp_path, file_path)
     except Exception as e:
         print("Error saving cache:", e)
         trace_error()
@@ -704,8 +726,10 @@ def _read_json_file(file_path):
 
 
 def _write_json_file(file_path, data):
-    with io.open(file_path, 'w', encoding='utf-8') as f:
+    temp_path = file_path + ".tmp"
+    with io.open(temp_path, 'w', encoding='utf-8') as f:
         dump(data, f, indent=4, ensure_ascii=False)
+    rename(temp_path, file_path)
 
 
 def _is_cache_valid(data):
@@ -1592,6 +1616,7 @@ def preload_country_flags(country_list, cache_dir=FLAG_CACHE_DIR):
 
 # ==================== START EPG ====================
 _epg_matcher = None
+_epg_matcher_lock = threading.Lock()
 
 
 def get_epg_matcher(similarity_threshold=None):
@@ -1607,10 +1632,12 @@ def get_epg_matcher(similarity_threshold=None):
         similarity_threshold = float(
             config.plugins.vavoo.similarity_threshold.value) / 100.0
     if _epg_matcher is None:
-        _epg_matcher = VavooEPGMatcher(similarity_threshold)
-    else:
-        # Aggiorna la soglia nel matcher esistente (per modifiche dinamiche)
-        _epg_matcher.similarity_threshold = similarity_threshold
+        with _epg_matcher_lock:
+            if _epg_matcher is None:
+                _epg_matcher = VavooEPGMatcher(similarity_threshold)
+                return _epg_matcher
+    # Aggiorna la soglia nel matcher esistente (per modifiche dinamiche)
+    _epg_matcher.similarity_threshold = similarity_threshold
     return _epg_matcher
 
 
@@ -2598,8 +2625,10 @@ def download_epg_cache_if_needed():
 
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            with open(temp_file, 'wb') as f:
+            download_tmp = temp_file + ".tmp"
+            with open(download_tmp, 'wb') as f:
                 f.write(response.content)
+            rename(download_tmp, temp_file)
             print("[Cache] Downloaded to: {}".format(temp_file))
             return True
     except Exception as e:
@@ -3081,8 +3110,10 @@ def write_epg_mapping_file(epg_entries, country_code):
 
     with _epg_lock:
         try:
-            with open(channels_file, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
+            temp_path = channels_file + ".tmp"
+            with open(temp_path, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
                 f.write('\n'.join(xml_lines))
+            rename(temp_path, channels_file)
             print(
                 "[EPG] Written {} entries to {}".format(
                     len(unique), filename))
@@ -3103,9 +3134,10 @@ def update_epg_sources():
     files = glob.glob(pattern)
 
     if not files:
-        if exists(sources_file):
-            remove(sources_file)
-            print("[EPG] Removed sources file (no channels).")
+        with _epg_lock:
+            if exists(sources_file):
+                remove(sources_file)
+                print("[EPG] Removed sources file (no channels).")
         return
 
     sources_list = []
@@ -3144,8 +3176,11 @@ def update_epg_sources():
 </sources>'''.format("\n".join(sources_list))
 
     try:
-        with open(sources_file, "w") as f:
-            f.write(sources_xml)
+        with _epg_lock:
+            temp_path = sources_file + ".tmp"
+            with open(temp_path, "w") as f:
+                f.write(sources_xml)
+            rename(temp_path, sources_file)
 
         print(
             "[EPG] Sources file updated with %d entries." %
