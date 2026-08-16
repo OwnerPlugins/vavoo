@@ -11,7 +11,6 @@ from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 import gettext
 import os
-import subprocess
 from sys import version_info
 import threading
 
@@ -40,7 +39,6 @@ LOG_FILE = "/tmp/vavoo.log"
 PRIMARY_BASE_URL = "https://vavoo.to"
 FALLBACK_BASE_URL = "https://kool.to"
 BASE_SITES = [PRIMARY_BASE_URL, FALLBACK_BASE_URL]
-START_PROXY_SCRIPT = os.path.join(PLUGIN_ROOT, "start_proxy.sh")
 PY2 = version_info[0] == 2
 PY3 = version_info[0] == 3
 
@@ -126,15 +124,6 @@ else:
 
 localeInit()
 language.addCallback(localeInit)
-
-try:
-    subprocess.run(["chmod", "+x", START_PROXY_SCRIPT])
-except AttributeError:
-    subprocess.call(["chmod", "+x", START_PROXY_SCRIPT])
-except Exception as e:
-    _init_log(
-        "chmod +x failed for {}: {}".format(START_PROXY_SCRIPT, e),
-        level="WARNING")
 
 country_codes = {
     # Africa

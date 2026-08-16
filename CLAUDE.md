@@ -24,7 +24,8 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   __init__.py            # constants, paths, PROXY_* URLs, PLUGIN_ROOT, PY2/PY3 flags
   plugin.py              # ~5000 lines: all Enigma2 Screens (UI), PluginDescriptor, autostart, main()
   vavoo_proxy.py         # local HTTP proxy (127.0.0.1:4323): auth/token handling, stream resolution, EPG redirects
-  start_proxy.py / start_proxy.sh   # spawns vavoo_proxy.py as a detached background process
+                          #   started as an in-process daemon thread (see plugin.py's proxy-start helpers,
+                          #   not a separate subprocess)
   bouquet_manager.py     # builds/exports Enigma2 bouquets (flat + hierarchical) pointing at the proxy
   channel_alias.py       # channel name normalization/aliasing for EPG matching
   vUtils.py              # grab-bag: logging, HTTP helpers, caching, proxy status/health helpers,
@@ -63,9 +64,10 @@ config (`vavoo_config`), channel/category browsing (`vavoo`), search
 `Plugins(**kwargs)` at the bottom is the Enigma2 entry point returning
 `PluginDescriptor`s for the menu, plugin-menu, and autostart hooks.
 
-**Local proxy (`vavoo_proxy.py`)** — a separate, long-running background
-process (started via `start_proxy.sh`/`start_proxy.py`, monitored/restarted
-by `plugin.py` and `ProxyHealthMonitor`) listening on `127.0.0.1:4323`. It:
+**Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
+started as an in-process daemon thread (`threading.Thread(target=
+start_proxy)`, spawned from `run_proxy_in_background()`), monitored/restarted
+by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
 - Obtains/renews the Vavoo auth signature/token (`TOKEN_ADDON_SIG`, renewed
   every ~8-9 min) so bouquets never hit Vavoo's 10-minute anonymous block.
 - Resolves `/vavoo?channel=<id>` to a real stream URL via 302 redirect.
