@@ -640,7 +640,8 @@ def process_epg_matching_background(
             debug("original_name in ch: {}".format(repr(ch['original_name'])))
 
             rytec_id, dvb_ref = matcher.find_match(
-                ch['original_name'], country_code)
+                ch['original_name'], country_code, servicetype,
+                channel_id=ch['channel_id'])
             if dvb_ref:
                 if dvb_ref.endswith(':'):
                     dvb_ref = dvb_ref[:-1]
@@ -1089,7 +1090,8 @@ def create_bouquet_file(
 
                 # Perform matching once
                 rytec_id, dvb_ref = matcher.find_match(
-                    channel_name, country_code)
+                    channel_name, country_code, servicetype,
+                    channel_id=channel_id)
 
                 if dvb_ref:
                     if dvb_ref.endswith(':'):

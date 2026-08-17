@@ -2052,7 +2052,9 @@ class VavooEPGMatcher(object):
         except (ValueError, TypeError):
             return 4
 
-    def _find_match_internal(self, channel_name, country_code):
+    def _find_match_internal(
+            self, channel_name, country_code, channel_id=None,
+            servicetype="4097"):
         """
         Search for a match in ALL Rytec channels, then apply boost based on user configuration.
         """
@@ -2197,10 +2199,38 @@ class VavooEPGMatcher(object):
 
                 return rytec_id, converted
 
+        # No Rytec candidate matched. Before giving up, try this
+        # country's own EPG programme feed directly - some countries
+        # (confirmed for es/pl/tr and others) have far richer channel
+        # coverage in their own epg_<cc>.xml than Rytec does; Rytec may
+        # simply never have catalogued this channel at all. Reuses the
+        # same feed-index/name-matching machinery write_epg_mapping_file()
+        # already uses as a same-purpose fallback for the opposite case
+        # (Rytec matched, but under an id the feed itself doesn't use).
+        # The feed only gives an id, not a real DVB service ref (it's
+        # programme-guide metadata, not satellite broadcast data), so a
+        # synthesized, collision-free sref is generated the same way an
+        # otherwise-unmatched channel already gets one.
+        if channel_id and country_code:
+            feed_ids, name_index = _get_epg_feed_index(country_code)
+            if name_index:
+                feed_match_id = _find_feed_id_by_name(
+                    channel_name, self, name_index)
+                if feed_match_id:
+                    fallback_sref = unique_fallback_sref(
+                        servicetype, channel_id)
+                    print(
+                        "[Match] FEED-DIRECT MATCH: '{}' -> {} "
+                        "(own EPG feed, no Rytec entry)".format(
+                            channel_name, feed_match_id))
+                    return feed_match_id, fallback_sref
+
         print("[Match] No match found for '{}'".format(channel_name))
         return None, "4097:0:0:0:0:0:0:0:0:0:"
 
-    def find_match(self, channel_name, country_code=None, servicetype="4097"):
+    def find_match(
+            self, channel_name, country_code=None, servicetype="4097",
+            channel_id=None):
         if not channel_name:
             return None, None
 
@@ -2333,7 +2363,8 @@ class VavooEPGMatcher(object):
             return m['id'], m['sref']
 
         result_id, result_sref = self._find_match_internal(
-            channel_name, country_code)
+            channel_name, country_code, channel_id=channel_id,
+            servicetype=servicetype)
 
         # Is there already an entry in the cache (even with invalid ID)?
         # Resolve via normalized_index first: the raw key an entry is
@@ -2904,6 +2935,13 @@ def _get_epg_feed_index(country_code):
                 "fallback disabled for this export, channels will keep "
                 "their Rytec-matched id even if the feed uses a "
                 "different one".format(country_code))
+            # Cache the failure too (empty result, same TTL) - without
+            # this, a country with no feed at all (most of them - only
+            # a minority of country codes have one) would re-attempt this
+            # same failing network fetch for every single unmatched
+            # channel once _find_match_internal() starts consulting this
+            # index as a fallback, instead of once per TTL window.
+            _epg_feed_index_cache[country_code] = (time(), None, None)
             return None, None
 
         xml_source = io.BytesIO(
@@ -2944,6 +2982,10 @@ def _get_epg_feed_index(country_code):
                 break
     except Exception as e:
         warning("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
+        # Same reasoning as the empty-response branch above: cache the
+        # failure so repeated calls for this country within the TTL
+        # window short-circuit instead of retrying the network fetch.
+        _epg_feed_index_cache[country_code] = (time(), None, None)
         return None, None
 
     _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)
