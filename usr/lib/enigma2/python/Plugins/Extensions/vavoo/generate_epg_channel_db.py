@@ -191,7 +191,13 @@ def generate_for_country(country, proxy_host, proxy_port, threshold):
     for ch in channels:
         best_id, score = find_best_match(ch["name"], feed_index, threshold)
         if best_id:
-            matched[ch["name"]] = best_id
+            # Keyed by the same normalized form VavooEPGMatcher itself
+            # compares against at match time (see vUtils.py's
+            # _clean_name_for_similarity() calls) - a raw-name key
+            # would miss on-box lookups over small formatting
+            # differences (case, whitespace) between generation time
+            # and match time.
+            matched[clean_name_for_similarity(ch["name"])] = best_id
         else:
             review.append(
                 {"name": ch["name"], "best_score": round(score, 3)})

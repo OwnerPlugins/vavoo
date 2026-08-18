@@ -2409,6 +2409,26 @@ class VavooEPGMatcher(object):
                 print(
                     "[Match] Temp cache has invalid ID for {}, ignoring".format(search_key))
 
+        # 2.5 Community-curated channel database (see
+        # generate_epg_channel_db.py): a pre-solved name -> this
+        # country's own EPG feed id mapping, built and reviewed offline
+        # instead of guessed live by fuzzy-matching against Rytec.
+        # Country-scoped by construction (one file per country), so no
+        # collision risk from unrelated countries sharing a name.
+        if country_code:
+            curated_db = _load_curated_channel_db(country_code)
+            if curated_db:
+                curated_key = self._clean_name_for_similarity(channel_name)
+                curated_id = curated_db.get(curated_key)
+                if curated_id and channel_id:
+                    print(
+                        "[Match] CURATED DB HIT: {} -> {}".format(
+                            channel_name, curated_id))
+                    self._cleanup_stale_unmatched(
+                        channel_name, country_code, servicetype)
+                    return curated_id, unique_fallback_sref(
+                        servicetype, channel_id)
+
         # 3. Live matching
         print("[Match] Doing local matching for: {}".format(channel_name))
         if search_key in self.new_matches:
@@ -2722,6 +2742,48 @@ def download_epg_cache_if_needed():
         print("[Cache] Download error: {}".format(e))
 
     return False
+
+
+_curated_channel_db_cache = {}
+_CURATED_CHANNEL_DB_TTL = 86400
+
+
+def _load_curated_channel_db(country_code):
+    """Fetch/cache this country's community-curated Vavoo channel name
+    -> EPG feed channel id mapping (see generate_epg_channel_db.py),
+    used as a fast, pre-solved alternative to live Rytec fuzzy-matching
+    for names Rytec doesn't cover well. Keys are normalized the same
+    way _clean_name_for_similarity() normalizes names for comparison
+    elsewhere in this file - the generator script uses the identical
+    normalization when building the file.
+
+    Never raises - returns {} on any failure so callers just fall
+    through to the existing matching chain, same convention as
+    _get_epg_feed_index().
+    """
+    if not country_code:
+        return {}
+
+    cached = _curated_channel_db_cache.get(country_code)
+    if cached and (time() - cached[0] < _CURATED_CHANNEL_DB_TTL):
+        return cached[1]
+
+    db = {}
+    try:
+        url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
+            HOST_MAIN, country_code.lower())
+        data = getUrl(url, timeout=15, retries=1)
+        if data:
+            parsed = loads(ensure_str(data))
+            if isinstance(parsed, dict):
+                db = parsed
+    except Exception as e:
+        debug(
+            "Could not fetch curated channel db for {}: {}".format(
+                country_code, e))
+
+    _curated_channel_db_cache[country_code] = (time(), db)
+    return db
 
 
 def update_complete_cache(
