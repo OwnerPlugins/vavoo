@@ -2247,15 +2247,38 @@ class VavooEPGMatcher(object):
                 alias_id = self.alias_map.get(
                     norm_name) or channel_alias.ALIAS_MAP.get(norm_name)
                 if alias_id:
-                    alias_sref = self.rytec_by_id.get(alias_id)
-                    if alias_sref:
-                        if alias_sref.startswith('1:'):
-                            alias_sref = '4097' + alias_sref[1:]
-                        print(
-                            "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
-                        self._cleanup_stale_unmatched(
-                            channel_name, country_code, servicetype)
-                        return alias_id, alias_sref
+                    # ALIAS_MAP is curated for Italian channels
+                    # specifically (~300 hand-mapped entries, see
+                    # channel_alias.py's own header), but this lookup
+                    # had no country check - it fired identically for
+                    # every country whose channel list happened to
+                    # share a name with one of those entries (e.g.
+                    # generic pan-European brands like "Eurosport 1" or
+                    # "Nickelodeon"), so Poland's and Spain's own
+                    # exports both got Italy's Rytec sref and collided
+                    # in eEPGCache, since they became the same physical
+                    # DVB tuple. Only trust the hit when the alias id's
+                    # own country suffix agrees with the country
+                    # actually being matched (same convention
+                    # _load_rytec_database() uses to bucket entries) -
+                    # or no country was specified at all (e.g. the
+                    # in-player "now playing" overlay).
+                    alias_country = (
+                        alias_id.rsplit('.', 1)[-1].lower()
+                        if '.' in alias_id else "")
+                    effective_country = RYTEC_COUNTRY_CODE_OVERRIDES.get(
+                        country_code, country_code) if country_code else None
+                    if (not effective_country or not alias_country or
+                            alias_country == effective_country.lower()):
+                        alias_sref = self.rytec_by_id.get(alias_id)
+                        if alias_sref:
+                            if alias_sref.startswith('1:'):
+                                alias_sref = '4097' + alias_sref[1:]
+                            print(
+                                "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
+                            self._cleanup_stale_unmatched(
+                                channel_name, country_code, servicetype)
+                            return alias_id, alias_sref
 
         # Normalize the original name for key generation
         search_key = self._normalize_key(channel_name, country_code or "")
