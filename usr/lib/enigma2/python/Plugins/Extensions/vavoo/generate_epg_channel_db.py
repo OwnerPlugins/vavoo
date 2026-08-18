@@ -296,7 +296,12 @@ def find_best_match(vavoo_name, feed_index, threshold):
     return None, best_score
 
 
-def generate_for_country(query_name, feed_code, proxy_host, proxy_port, threshold):
+def generate_for_country(
+        query_name,
+        feed_code,
+        proxy_host,
+        proxy_port,
+        threshold):
     """query_name is what vavoo_proxy's /channels endpoint expects
     (Vavoo's own raw catalog country field - a display name, e.g.
     "portugal"); feed_code is the 2-letter code epg_<cc>.xml is named
