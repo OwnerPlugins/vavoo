@@ -16,6 +16,14 @@ name: Generate EPG Channel Database
 #      runner ends up, set repository variables VAVOO_PROXY_HOST /
 #      VAVOO_PROXY_PORT (Settings -> Secrets and variables -> Actions
 #      -> Variables) to the right host/port instead.
+#
+# IMPORTANT: this only commits back to the repo it runs in. The live
+# plugin reads epg-channel-db/ from Belfagor2005/vavoo's main branch
+# (HOST_MAIN in __init__.py) - a fork of that repo running this workflow
+# only updates its own history, not the upstream one. For this to
+# actually reach the running plugin, either this workflow needs to run
+# inside Belfagor2005/vavoo itself, or this fork's commits need to flow
+# upstream through its normal PR/merge process.
 
 on:
   schedule:
@@ -26,7 +34,7 @@ on:
   workflow_dispatch:
     inputs:
       countries:
-        description: 'Space-separated country codes (default: known-covered set)'
+        description: 'Space-separated country codes to override the default --all sweep (e.g. "fr ru" to retry just those)'
         required: false
         default: ''
 
@@ -50,16 +58,24 @@ jobs:
           VAVOO_PROXY_PORT: ${{ vars.VAVOO_PROXY_PORT || '4323' }}
           COUNTRIES_INPUT: ${{ github.event.inputs.countries }}
         run: |
-          # Default set: confirmed (manual HEAD-check sweep) to have a
-          # real epg_<cc>.xml feed - not necessarily exhaustive, expand
-          # here as more are confirmed.
-          DEFAULT_COUNTRIES="al bg ch de es fr gb hr it nl pl pt ro ru tr"
-          COUNTRIES="${COUNTRIES_INPUT:-$DEFAULT_COUNTRIES}"
-          echo "Generating for: $COUNTRIES"
-          python3 generate_epg_channel_db.py $COUNTRIES \
-            --proxy-host "$VAVOO_PROXY_HOST" \
-            --proxy-port "$VAVOO_PROXY_PORT" \
-            --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
+          # Default: every country Vavoo's own catalog actually offers
+          # (VAVOO_COUNTRIES in the script) - countries with no
+          # epg_<cc>.xml feed are skipped, not treated as failures.
+          # Pass a manual `countries` input to override with an explicit
+          # subset instead (e.g. to skip ru, which has no usable feed).
+          if [ -n "$COUNTRIES_INPUT" ]; then
+            echo "Generating for: $COUNTRIES_INPUT"
+            python3 generate_epg_channel_db.py $COUNTRIES_INPUT \
+              --proxy-host "$VAVOO_PROXY_HOST" \
+              --proxy-port "$VAVOO_PROXY_PORT" \
+              --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
+          else
+            echo "Generating for: --all"
+            python3 generate_epg_channel_db.py --all \
+              --proxy-host "$VAVOO_PROXY_HOST" \
+              --proxy-port "$VAVOO_PROXY_PORT" \
+              --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
+          fi
 
       - name: Commit and push changes
         run: |
