@@ -46,6 +46,7 @@ import sys
 from difflib import SequenceMatcher
 from io import BytesIO
 from os.path import join
+from urllib.parse import quote
 from urllib.request import Request, urlopen
 from xml.etree import ElementTree as ET
 
@@ -197,8 +198,10 @@ def fetch_url(url, timeout=60):
 def fetch_vavoo_channels(proxy_host, proxy_port, country):
     """Fetch {name, id} pairs for a country from a running vavoo_proxy
     instance's /channels endpoint (see vavoo_proxy.py's handler)."""
+    # quote(): country names can contain spaces (e.g. "France Sport") -
+    # an unescaped space in the query string breaks the request.
     url = "http://{}:{}/channels?country={}".format(
-        proxy_host, proxy_port, country)
+        proxy_host, proxy_port, quote(country))
     print("Fetching {} ...".format(url))
     data = fetch_url(url, timeout=30)
     channels = json.loads(data.decode("utf-8"))
@@ -296,21 +299,20 @@ def generate_for_country(query_name, feed_code, proxy_host, proxy_port, threshol
     return matched, review
 
 
-# Non-ISO meta-entries in COUNTRY_CODES that don't correspond to a
-# single Vavoo/epg_<cc>.xml country - "bk" (Balkans) is 2 letters like
-# a real code so the length check alone doesn't catch it.
-_NON_COUNTRY_CODES = {"bk"}
-
-
-def all_known_codes():
-    """Every real 2-letter code in COUNTRY_CODES, deduplicated - skips
-    the non-ISO meta-entries also in that dict (africa, internat,
-    baltic, scandinavia, bk), which would just 404 against
-    epg_<cc>.xml."""
-    codes = {
-        c for c in COUNTRY_CODES.values()
-        if re.fullmatch(r'[a-z]{2}', c) and c not in _NON_COUNTRY_CODES}
-    return sorted(codes)
+# The actual set of countries Vavoo's own catalog offers, as reported
+# directly against a live box - NOT every country COUNTRY_CODES
+# recognizes has real Vavoo content, so sweeping that whole dict (an
+# earlier version of --all did this) tried ~100 countries with nothing
+# to find. "France Sport" and "Arabia"/"Balkans" aren't plain ISO
+# countries - resolve_country() falls through to a best-effort
+# lowercased attempt for anything not in COUNTRY_CODES by name, so an
+# unmapped one like "France Sport" still gets tried, just without a
+# guaranteed-correct feed code guess.
+VAVOO_COUNTRIES = [
+    "Albania", "Arabia", "Balkans", "Bulgaria", "Croatia", "France",
+    "France Sport", "Germany", "Italy", "Netherlands", "Poland",
+    "Portugal", "Romania", "Russia", "Spain", "Turkey", "United Kingdom",
+]
 
 
 def main():
@@ -328,9 +330,9 @@ def main():
              "every known country.")
     parser.add_argument(
         "--all", action="store_true",
-        help="Try every 2-letter country code COUNTRY_CODES knows "
-             "about, instead of an explicit list. Most won't have an "
-             "epg_<cc>.xml feed - that's expected, not an error, and is "
+        help="Try every country Vavoo's own catalog actually offers "
+             "(VAVOO_COUNTRIES), instead of an explicit list. Some of "
+             "these still won't have an epg_<cc>.xml feed - that's "
              "reported as 'skipped (no feed)' rather than a failure.")
     parser.add_argument(
         "--proxy-host", default="127.0.0.1",
@@ -353,7 +355,7 @@ def main():
     if not args.all and not args.countries:
         parser.error("pass at least one country, or --all")
 
-    countries = all_known_codes() if args.all else args.countries
+    countries = VAVOO_COUNTRIES if args.all else args.countries
 
     generated = 0
     skipped_no_feed = 0
