@@ -19,9 +19,11 @@ fuzzy-matching (and its own epg-feed fallback) already solve on-box,
 just precomputed once here instead of redone on every user's export.
 
 Run this against a box's running proxy (or point --proxy-host at one
-over the LAN):
+over the LAN). Country codes or display names both work (see
+resolve_country()):
 
     python generate_epg_channel_db.py es pl tr --proxy-host 192.168.1.50
+    python generate_epg_channel_db.py Spain Poland Turkey --proxy-host 192.168.1.50
 
 Writes, per country, into --output-dir (default: current directory):
   vavoo_channels_<cc>.json         auto-matched (name -> feed channel id)
@@ -51,6 +53,90 @@ DEFAULT_THRESHOLD = 0.70
 EPG_FEED_URL_TEMPLATE = (
     "https://raw.githubusercontent.com/Belfagor2005/vavoo-player/"
     "master/epg_{}.xml")
+
+# Mirrors __init__.py's country_codes dict - display name -> 2-letter
+# code. Two DIFFERENT things need two DIFFERENT strings and this
+# script previously conflated them into a single "country" argument:
+#   - vavoo_proxy.py's /channels endpoint filters on Vavoo's own raw
+#     catalog "country" field, which holds the full display name
+#     (e.g. "portugal"), NOT a 2-letter code - confirmed by a user
+#     run where --proxy-host .../channels?country=portugal correctly
+#     returned 291 channels.
+#   - epg_<cc>.xml (the GitHub-hosted programme feed) is always named
+#     with the 2-letter ISO-style code (e.g. "epg_pt.xml") - a request
+#     for "epg_portugal.xml" 404s.
+# resolve_country() below turns either form the user types into both.
+COUNTRY_CODES = {
+    # Africa
+    "Africa": "africa", "Algeria": "dz", "Egypt": "eg", "Ethiopia": "et",
+    "Ghana": "gh", "Kenya": "ke", "Libya": "ly", "Morocco": "ma",
+    "Nigeria": "ng", "South Africa": "za", "Sudan": "sd", "Tanzania": "tz",
+    "Tunisia": "tn", "Uganda": "ug",
+    # Americas
+    "America": "us", "Argentina": "ar", "Bolivia": "bo", "Brazil": "br",
+    "Canada": "ca", "Chile": "cl", "Colombia": "co", "Costa Rica": "cr",
+    "Cuba": "cu", "Dominican Republic": "do", "Ecuador": "ec",
+    "Guatemala": "gt", "Honduras": "hn", "Jamaica": "jm", "Mexico": "mx",
+    "Nicaragua": "ni", "Panama": "pa", "Paraguay": "py", "Peru": "pe",
+    "Puerto Rico": "pr", "Salvador": "sv", "El Salvador": "sv",
+    "Uruguay": "uy", "USA": "us", "United States": "us", "Venezuela": "ve",
+    # Asia
+    "Afghanistan": "af", "Arabia": "sa", "Azerbaijan": "az",
+    "Bangladesh": "bd", "China": "cn", "Georgia": "ge", "Hong Kong": "hk",
+    "India": "in", "Indonesia": "id", "Iran": "ir", "Iraq": "iq",
+    "Israel": "il", "Japan": "jp", "Jordan": "jo", "Kazakhstan": "kz",
+    "Kuwait": "kw", "Lebanon": "lb", "Malaysia": "my", "Mongolia": "mn",
+    "Myanmar": "mm", "Nepal": "np", "North Korea": "kp", "Oman": "om",
+    "Pakistan": "pk", "Palestine": "ps", "Philippines": "ph", "Qatar": "qa",
+    "Saudi Arabia": "sa", "Singapore": "sg", "South Korea": "kr",
+    "Sri Lanka": "lk", "Syria": "sy", "Taiwan": "tw", "Thailand": "th",
+    "UAE": "ae", "United Arab Emirates": "ae", "Uzbekistan": "uz",
+    "Vietnam": "vn", "Yemen": "ye",
+    # Europe
+    "Albania": "al", "Andorra": "ad", "Austria": "at", "Balkans": "bk",
+    "Baltic": "baltic", "Belarus": "by", "Belgium": "be", "Bosnia": "ba",
+    "Bosnia Herzegovina": "ba", "Bulgaria": "bg", "Croatia": "hr",
+    "Cyprus": "cy", "Czech": "cz", "Czech Republic": "cz", "Denmark": "dk",
+    "Estonia": "ee", "Finland": "fi", "France": "fr", "Germany": "de",
+    "Greece": "gr", "Holy See": "va", "Hungary": "hu", "Iceland": "is",
+    "Ireland": "ie", "Italy": "it", "Kosovo": "xk", "Latvia": "lv",
+    "Liechtenstein": "li", "Lithuania": "lt", "Luxembourg": "lu",
+    "Malta": "mt", "Moldova": "md", "Monaco": "mc", "Montenegro": "me",
+    "Netherlands": "nl", "North Macedonia": "mk", "Norway": "no",
+    "Poland": "pl", "Portugal": "pt", "Romania": "ro", "Russia": "ru",
+    "Russian Federation": "ru", "San Marino": "sm",
+    "Scandinavia": "scandinavia", "Serbia": "rs", "Slovak Republic": "sk",
+    "Slovakia": "sk", "Slovenia": "si", "Spain": "es", "Sweden": "se",
+    "Switzerland": "ch", "Turkey": "tr", "UK": "gb", "Ukraine": "ua",
+    "United Kingdom": "gb", "Vatican City": "va",
+    # International / Catch-all
+    "Global": "internat", "Great Britain": "gb", "Internat": "internat",
+    "International": "internat", "Internaz": "internat", "World": "internat",
+    # Oceania
+    "Australia": "au", "New Zealand": "nz",
+}
+
+
+def resolve_country(user_input):
+    """Turn whatever the user typed (a display name like "Portugal" or
+    a 2-letter code like "pt") into (proxy_query_name, feed_code).
+
+    Falls back to using user_input as-is for whichever side it wasn't
+    recognized for, so an unmapped/new country still gets a best-effort
+    attempt instead of a hard failure - resolve_for_country() prints
+    what it resolved to either way, so a bad guess is visible."""
+    stripped = user_input.strip()
+    lower = stripped.lower()
+
+    for name, code in COUNTRY_CODES.items():
+        if name.lower() == lower:
+            return name.lower(), code
+
+    for name, code in COUNTRY_CODES.items():
+        if code == lower:
+            return name.lower(), code
+
+    return lower, lower
 
 
 # ---------------------------------------------------------------------
@@ -180,11 +266,15 @@ def find_best_match(vavoo_name, feed_index, threshold):
     return None, best_score
 
 
-def generate_for_country(country, proxy_host, proxy_port, threshold):
-    channels = fetch_vavoo_channels(proxy_host, proxy_port, country)
-    print("{}: {} Vavoo channels".format(country.upper(), len(channels)))
-    feed_index = fetch_feed_index(country)
-    print("{}: {} feed channels".format(country.upper(), len(feed_index)))
+def generate_for_country(query_name, feed_code, proxy_host, proxy_port, threshold):
+    """query_name is what vavoo_proxy's /channels endpoint expects
+    (Vavoo's own raw catalog country field - a display name, e.g.
+    "portugal"); feed_code is the 2-letter code epg_<cc>.xml is named
+    with (e.g. "pt"). See resolve_country()."""
+    channels = fetch_vavoo_channels(proxy_host, proxy_port, query_name)
+    print("{}: {} Vavoo channels".format(feed_code.upper(), len(channels)))
+    feed_index = fetch_feed_index(feed_code)
+    print("{}: {} feed channels".format(feed_code.upper(), len(feed_index)))
 
     matched = {}
     review = []
@@ -215,7 +305,9 @@ def main():
             "feed instead of Rytec."))
     parser.add_argument(
         "countries", nargs="+",
-        help="Country code(s) to generate, e.g. es pl tr")
+        help="Country code(s) or display name(s) to generate, e.g. "
+             "'es pl tr' or 'Spain Poland Turkey' - either form works, "
+             "see resolve_country()")
     parser.add_argument(
         "--proxy-host", default="127.0.0.1",
         help="Host of a running vavoo_proxy instance (default: 127.0.0.1)")
@@ -234,10 +326,13 @@ def main():
 
     exit_code = 0
     for country in args.countries:
-        cc = country.lower()
+        query_name, cc = resolve_country(country)
+        print("'{}' resolved to: proxy query='{}', feed code='{}'".format(
+            country, query_name, cc))
         try:
             matched, review = generate_for_country(
-                cc, args.proxy_host, args.proxy_port, args.threshold)
+                query_name, cc, args.proxy_host, args.proxy_port,
+                args.threshold)
         except Exception as e:
             print("ERROR generating {}: {}".format(cc, e))
             exit_code = 1
