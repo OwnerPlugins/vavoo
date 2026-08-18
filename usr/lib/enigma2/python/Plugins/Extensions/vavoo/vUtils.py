@@ -2782,7 +2782,14 @@ def _load_curated_channel_db(country_code):
             "Could not fetch curated channel db for {}: {}".format(
                 country_code, e))
 
-    _curated_channel_db_cache[country_code] = (time(), db)
+    if db:
+        # Only cache successful, non-empty results. An empty result
+        # (missing file, transient error) isn't cached at all, so the
+        # next export retries instead of being stuck on a stale miss
+        # for up to _CURATED_CHANNEL_DB_TTL - unlike
+        # _get_epg_feed_index(), this is called once per country per
+        # export, not per channel, so the retry cost is negligible.
+        _curated_channel_db_cache[country_code] = (time(), db)
     return db
 
 
