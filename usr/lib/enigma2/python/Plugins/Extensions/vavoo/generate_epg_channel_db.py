@@ -133,6 +133,16 @@ def resolve_country(user_input):
         if name.lower() == lower:
             return name.lower(), code
 
+    # A code can map to several display names (e.g. "gb" <- "UK",
+    # "United Kingdom", "Great Britain"). Prefer whichever one matches
+    # a real Vavoo catalog country (VAVOO_COUNTRIES) over an arbitrary
+    # first-in-dict alias, since only the catalog's own string works
+    # against /channels?country=.
+    vavoo_lower = {c.lower() for c in VAVOO_COUNTRIES}
+    for name, code in COUNTRY_CODES.items():
+        if code == lower and name.lower() in vavoo_lower:
+            return name.lower(), code
+
     for name, code in COUNTRY_CODES.items():
         if code == lower:
             return name.lower(), code
@@ -221,7 +231,11 @@ def fetch_feed_index(country):
     vUtils.py's _get_epg_feed_index() does on-box, fetched directly
     from GitHub here instead of via the local proxy's redirect, since
     this script may run off-box."""
-    url = EPG_FEED_URL_TEMPLATE.format(country.lower())
+    # quote(): country falls through to a raw, unmapped feed code for
+    # anything not in COUNTRY_CODES (e.g. "france sport") - an unescaped
+    # space there breaks the request, same class of bug as in
+    # fetch_vavoo_channels() above.
+    url = EPG_FEED_URL_TEMPLATE.format(quote(country.lower()))
     print("Fetching {} ...".format(url))
     data = fetch_url(url, timeout=120)
     index = []
