@@ -1,0 +1,2494 @@
+[
+  {
+    "name": "CUFO2 TV .b",
+    "best_score": 0.667
+  },
+  {
+    "name": "EURONEWS .c",
+    "best_score": 0.667
+  },
+  {
+    "name": "RTSH SAT .s",
+    "best_score": 0.667
+  },
+  {
+    "name": "RTV 21 JUNIOR .b",
+    "best_score": 0.632
+  },
+  {
+    "name": "RTV 21 JUNIOR .s",
+    "best_score": 0.632
+  },
+  {
+    "name": "KLAN PLUS HD .b",
+    "best_score": 0.615
+  },
+  {
+    "name": "RTSH FILM .c",
+    "best_score": 0.615
+  },
+  {
+    "name": "RTSH FILM .s",
+    "best_score": 0.615
+  },
+  {
+    "name": "RTSH KORCA .c",
+    "best_score": 0.571
+  },
+  {
+    "name": "RTSH KORCA .s",
+    "best_score": 0.571
+  },
+  {
+    "name": "RTSH SPORT .c",
+    "best_score": 0.571
+  },
+  {
+    "name": "RTSH SPORT .s",
+    "best_score": 0.571
+  },
+  {
+    "name": "RTSH SPORT (BACKUP) .s",
+    "best_score": 0.571
+  },
+  {
+    "name": "RTV 21 MACEDONIA .s",
+    "best_score": 0.545
+  },
+  {
+    "name": "RTV 21 POPULLORE .b",
+    "best_score": 0.545
+  },
+  {
+    "name": "RTV 21 POPULLORE .c",
+    "best_score": 0.545
+  },
+  {
+    "name": "RTV 21 POPULLORE .s",
+    "best_score": 0.545
+  },
+  {
+    "name": "RTSH FEMIJE .b",
+    "best_score": 0.533
+  },
+  {
+    "name": "RTSH FEMIJE .c",
+    "best_score": 0.533
+  },
+  {
+    "name": "RTSH FEMIJE .s",
+    "best_score": 0.533
+  },
+  {
+    "name": "RTSH KUKESI .c",
+    "best_score": 0.533
+  },
+  {
+    "name": "RTSH KUVEND .c",
+    "best_score": 0.533
+  },
+  {
+    "name": "BBF MUSIC .s",
+    "best_score": 0.5
+  },
+  {
+    "name": "RTSH SATELIT .c",
+    "best_score": 0.5
+  },
+  {
+    "name": "RTSH SHKODRA .c",
+    "best_score": 0.5
+  },
+  {
+    "name": "RTSH SHKOLLE .c",
+    "best_score": 0.5
+  },
+  {
+    "name": "STAR+ SHKODER .s",
+    "best_score": 0.5
+  },
+  {
+    "name": "A2 NEWS .c",
+    "best_score": 0.444
+  },
+  {
+    "name": "KLAN MACEDONIA .c",
+    "best_score": 0.444
+  },
+  {
+    "name": "KLAN NOSTALGJI .c",
+    "best_score": 0.444
+  },
+  {
+    "name": "BBF MUSIC TV .b",
+    "best_score": 0.4
+  },
+  {
+    "name": "BBF MUSIC TV .c",
+    "best_score": 0.4
+  },
+  {
+    "name": "RTSH GJIROKASTRA .c",
+    "best_score": 0.4
+  },
+  {
+    "name": "RTSH GJIROKASTRA .s",
+    "best_score": 0.4
+  },
+  {
+    "name": "KTV KOHAVISION .c",
+    "best_score": 0.353
+  },
+  {
+    "name": "T CHANNEL .c",
+    "best_score": 0.2
+  },
+  {
+    "name": "24 KITCHEN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "24 KITCHEN .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "4+SHQIP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "7 NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "8OVA DRAME .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ABC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ABC NEWS .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ABC NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ABC STORY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AHWAZ .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALAM (360P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALB ISLAM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALB SWISS HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALBDREAMS TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALBFLIX STUPCAT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALBKANALE MUZIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALBUK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALBUK .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALJAZEERA BALKANS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AMOL TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ANIMAL PLANET .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ANIMAL PLANET HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ANTENA TV SHKODER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "APOLLON TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARABIYA (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARABIYA AL HADATH (FHD) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA PREMIUM 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA SPORT 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA SPORT 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA SPORT 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA SPORT 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA SPORT 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART DOKU 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART DOKU 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART KINO 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART KINO 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART KINO 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART KINO 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART KINO 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART KINO 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 3 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 6 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARTA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARTA NEWS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ASHK TV 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ASHK TV 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ASHK TV 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ASHKALI TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ASHKALI TV 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "AYAM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY BUS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY SHARK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BALKANIKA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BESA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BESA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BESA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BIG BROTHER .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BIG BROTHER 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BIG BROTHER 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BIG BROTHER 2 KS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINEMA 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINEMA 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINEMAX 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR FANTASY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR TV 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR TV 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR TV COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR TV PREMIERE 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR TV PREMIERE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CITY NEWS ALBANIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CITY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CNA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "D FILMA24 FAMILY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK ASHKALI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK CLASSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FANTAZI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FANTAZY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FARA E FLLIQT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FESTIVE 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FESTIVE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FESTIVE 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK FILMA SHQIP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK GEZUAR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK HINDI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK KAFENEJA JONE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK KRYETARI I MIRE ME SHOK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK MIXHA BIB .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK NETFLIX 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK NETFLIX 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK NETFLIX 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK NETFLIX 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK NETFLIX 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK POPULLORE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK PRIME 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK PRIME 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK PRIME 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK PRIME 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK SPECIAL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK SPECIAL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK STUPCAT EGJELI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK STUPCAT SKEÇE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK THRILLER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK TOM & JERRY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DARK UJQIT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DASMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DASMA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DASMA TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "DIELLI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DIGI GOLD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DIGITALB 20 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DING DONG .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY CHANNEL .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY CHANNEL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY SCIENCE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DIVA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DOCUBOX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DRITA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUBLUAR NE SHQIP 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUBLUAR NE SHQIP 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUCK TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EHSAAN TV (720P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "EKHBARIYA (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELKALEM TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ERA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ERA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EURO AL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EURO FILM 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER HISTORI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER HISTORI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER NATYRA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER NATYRA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER NATYRA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER SHKENCE .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER SHKENCE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER SHKENCE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA ADVENTURE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA AKTION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA DRAMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA GOLD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA GOLD 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA HORROR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA HORROR 24 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA ROMANCE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA SCI-FI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON CINEMA THRILLER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON PREMIUM 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON PREMIUM 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON PREMIUM 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON PREMIUM 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON PREMIUM 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FALCON PREMIUM 6 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FASHION TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FIERI TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FIGHT BOX .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM ACTION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM BOX ARTHOUSE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM BOX PLUS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM DY FHD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM DY HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM FAMILY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM GOLD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM GOLD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM GOLD 1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM GOLD 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM GOLD 3 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM GOLD 4 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM JUNIOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM MAX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM NJE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM NJE HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM STINET .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 ACTION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 ADVENTURE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 ANIMATION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 AVENTURE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 AZIATIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 BIOGRAFI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 DRAME .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 FAMILY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 FANTAZI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 HINDI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 HISTORY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 HITS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 HORROR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 KOMEDI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 KRIM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 LUFTE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 MYSTERY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 PREMIERE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 PREMIUM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 ROMANCE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 SCI-FI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 THRILLER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 TURK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 WESTERN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FIRST TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FLUTRA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FLUTURA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOLKLORIT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX CRIME .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX CRIME .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX LIFE .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX LIFE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX LIFE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX MOVIES .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX MOVIES .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FX MEDIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "GLOBI TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HAYAT TV (720P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HAYAT TV (720P) (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HBO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HBO 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HBO 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HETUESIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HISTORI SHQIPTARE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HISTORY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HORREYA TV (720P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS ASHKALI TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS EGJELI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS HORE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SELECT SHQIP INFO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 10 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 6 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 7 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 8 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS SHQIP CINEMA 9 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS TALLAVA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS TALLAVA CLASSICS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HS TREGIM POPULLOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HUMOR TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HUMOR TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN CINEMA PREMIERE 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN CINEMA PREMIERE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN FESTIVE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN KIDS ROZI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN KIDS TOMI JERRY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN NETFLIX AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN NETFLIX AVENTURE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ILLYRIAN NETFLIX LUFT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INVESTIGATION DISCOVERY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "IRAQIA (720P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "IRAQIA NEWS (720P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP DRAMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP FILM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP HITS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP KOMEDI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP MREKULLI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISP PIKEPYTJE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISTIQAMA TV (576P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ISTOGU CHANNEL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ITTIHAD (552P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JAZEERA DOCUMENTARY (270P) [GEO-BLOCKED] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JAZEERA DOCUMENTARY (270P) [GEO-BLOCKED] (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JAZEERA MUBASHER (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JAZEERA MUBASHER (FHD) (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JETIMAT E BALLKANIT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "JOLLY .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "JOLLY HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JUG TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "K SPORT 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "K SPORT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "K SPORT 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "K SPORT 4 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANAL D DRAMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANAL D DRAMA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KHALIJ (720P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KINEMA AGIMI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KINEMA AKSION .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KINEMA MILENIUM 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KOHA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KOMEDI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KORCA PLUS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS CIFTELIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS EPIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS HOME ALONE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS ISLAM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS ISLAM FILM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS KIDS .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS PREMIERE 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS PREMIERE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS PREMIERE 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS PREMIERE 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 1 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 2 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 3 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KUJTESA SPORT 4 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR DASMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR FARA E FLLIQT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR FILM SHQIP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR HALO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR KIDS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR KRYETARI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR LA CASA DE PAPEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR MASHA & BEAR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR MIXHA BIBE & MARTIN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR POPULLORE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR QUMILI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "L-STAR SUPERMAN & LOIS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIONTV HUMOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIONTV MUSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIONTV PARLAMENTI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIONTV SHQIP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIRIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIRIA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "LUGINA ILAHI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LUGINA ISLAM 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "LUGINA SERIALE TURKE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAALI TV (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAAREF (350P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAHDI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAMLAKA TV (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MANAR (576P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MASAR TV (576P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MASHA DHE ARIU .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MASIRAH MUBACHER (642P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAYADEEN (576P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MCN TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MCN TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "MEDINA LIVE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MEKKA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MELODY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "METITV COMEDY .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "METITV LUFTË .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "MIMI TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MR. BEAN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MTV KOSOVA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MTV KOSOVA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "MUSIC HITS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAEEM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO WILD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NATIONAL GEOGRAPHIC .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "NEWS 24 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "NEWS 24 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NEWS 24 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOJABA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY BABY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY COLLECTION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY NETFLIX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY PRIME 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY PRIME 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY PRIME 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ONEPLAY PRIME DRAMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OPINIONI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "OPOJA TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ORA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ORA NEWS .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ORA NEWS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ORA NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PANORAMA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PARTIZANI CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PENDIMI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PODUJEVA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "POLLOGU .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PORTOKALLI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PREMIER SPORTS 2 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PREMIERE 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "QANAT 9 (720P) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "QURAN AL KAREEM TV (MECCA) (720P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "QURAN TV MAKKAH .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RASHEED (408P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RAYYAN (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RAYYAN AL QADEEM (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "REPORT TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ROMA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ROMA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ROZAFA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RROKUM TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RROKUM TV HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ALDI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ARBERIA 4 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV DUKAGJINI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV DUKAGJINI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV DUKAGJINI HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV FONTANA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV FONTANA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV FONTANA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ISLAM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ISLAM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ISLAM .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PENDIMI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PENDIMI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PENDIMI HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PRESHEVA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV SHARRI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SCAN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHALLAL TV (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHARQIYA (FHD) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHARQIYA MIN KABLA (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHARQIYA NEWS (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHOTA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHOTA TV 4K UHD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHQIPTV ISLAM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SIRAT TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY ACTION .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY DRAMA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY KOMEDI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY KOMEDI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY KOMEDI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY MAX .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY MAX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY MAX .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY NOVELA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SOLE TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KOSOVA 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KOSOVA 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "STATION BOX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STATION CINE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STATION PRIME .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUNNAH AL NABAWIYAH TV (MEDINA) (720P) [NOT 24/7] .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SONIC TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 1 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 2 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 3 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 3 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 3 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 4 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 4 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 4 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 5 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 5 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT 6 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORT NEWS HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORTS 5 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER SPORTS NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPERSPORT NEWS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SYRI NEWS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SYRI VISION .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SYRI VISION .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SYRI VIZION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TALEEA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TDC .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TDC/DIZI CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 3 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 4 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 5 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 6 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE 6 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE CRIME .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE DRAMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE EPIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE FANTAZI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE ONE GOLD COLLECTION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE+ CINEMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELEVIZIJA 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEMA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TETOVA HUMOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TETOVA TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEUTA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEVE AKSION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEVE COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TËVË DOKU 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEVE FANTASY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TËVË NOVELA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEVE SHQIP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TËVË1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIBO ACTION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIBO COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIBO DRAMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIBO SERIALE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIBO THRILLER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIP TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIP TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIP TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIRANA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIRANA 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIRANA TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TLC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOM & JERRY .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOM & JERRY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOP ESTRADA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOP ESTRADA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRAVEL CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRAVEL CHANNEL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING INTERNACIONAL .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING INTERNATIONAL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING MAX .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SMILE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 1 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 2 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 3 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SPORT NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TROPOJA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TROPOJA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TURBO CHANNEL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV 21 MACEDONIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV 7 ALBANIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV ARBËRIA 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV ASHKALI ILAHI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV DIASPORA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV DIELLI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV KOHA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV KOHA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV KOPLIKU .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV OPOJA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV PRIZRENI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV TEMA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV TEMA FERIZAJ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV USKANA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV VALI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV VUSHTRIA MUZIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TVSH .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ULQINI TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "WEBSTAR CHUCHU .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "WEBSTAR KOMEDI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "WOUSTA TV (FHD) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X ACTION HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "X COMEDY HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X DARK HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X DRAMA HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X FAMILY HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X FILMA 24 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "X PREMIUM 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X PREMIUM 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X PREMIUM 3 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X PREMIUM 4 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X SCI-FI HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "X THRILER HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZERI TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZHUNICA HUMOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZHUNICA SHQIP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZJARR TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZJARR TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZJARR TV .s",
+    "best_score": 0.0
+  }
+]

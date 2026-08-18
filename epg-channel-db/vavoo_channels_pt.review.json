@@ -1,0 +1,474 @@
+[
+  {
+    "name": "DISCOVERY CHANNEL HD .b",
+    "best_score": 0.692
+  },
+  {
+    "name": "TVI 24 .b",
+    "best_score": 0.667
+  },
+  {
+    "name": "TVI FIC .b",
+    "best_score": 0.6
+  },
+  {
+    "name": "GLOBO BRAZIL .c",
+    "best_score": 0.588
+  },
+  {
+    "name": "TVI FICÇÃO .c",
+    "best_score": 0.545
+  },
+  {
+    "name": "DIZI CHANNEL .c",
+    "best_score": 0.5
+  },
+  {
+    "name": "SYFY PORTUGAL .c",
+    "best_score": 0.471
+  },
+  {
+    "name": "SIC NOTICIAS .c",
+    "best_score": 0.4
+  },
+  {
+    "name": "SIC NOTICIAS HD .b",
+    "best_score": 0.4
+  },
+  {
+    "name": "E! .c",
+    "best_score": 0.125
+  },
+  {
+    "name": "24 KITCHEN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "24 KITCHEN HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "A&E .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALMA LUSA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AR TV CANAL PARLAMENTO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BENFICA TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BENFICA TV (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BIGGS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BLAZE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOM SOM CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CAÇAVISION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CACCIA E PESCA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CAMPO PEQUENO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CANCAO NOVA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CASA & PESCA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CAZA Y PESCA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CBS REALITY .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CBS REALITY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINE MUNDO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CM TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CM TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "COMBATE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CRIME DISTRICT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CRIME INVISTIGATION .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CRIME+ INVESTIGATION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DAZN 6 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISNEY+ PIXAR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DOG TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 1 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 2 (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 3 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 4 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 5 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORT 6 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 1 HD (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 2 HD (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 3 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 3 HD (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 4 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 4 HD (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 5 FHD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 5 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 6 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ELEVEN SPORTS 6 HD (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FASHIONTV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FATIMA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FIREMAN SAM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX COMEDY HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX CRIME HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX LIFE HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX MOVIES HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HBO 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HBO PORTUGAL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HISTORIA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HISTORIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HOLLYWOOD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HOLLYWOOD HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "INVESTIGATION DISCOVERY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "JIM JAM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "JIMJAM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANUCA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KOMBAT SPORT .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KOMBAT SPORT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KOMBAT SPORT (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KURIAKOS KIDS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LOCAL VISÃO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MOTO GP HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MTV 00S .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MTV LIVE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO WILD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO WILD HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "NBA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NICK JUNIOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OPTO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PANDA BIGGS .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PATRULHA PATA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PFC .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PFC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PFC (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTP 3 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTP 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTP ACORES .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTP AFRICA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SANTIAGO DOS MARES .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SAUDE+ .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STINGRAY CMUSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STINGRAY LOUD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STINGRAY RETRO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STV NOTICIAS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOROS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOROS TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TOROS TV (BACKUP) .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRAVELXP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV GLOBO .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV GLOBO NOW .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV MANA 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV MANA 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV RECORD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "UNIFE TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "V+ TVI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "VH1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "VH1 .c",
+    "best_score": 0.0
+  }
+]

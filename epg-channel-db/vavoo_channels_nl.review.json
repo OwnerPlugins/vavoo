@@ -1,0 +1,526 @@
+[
+  {
+    "name": "DISCOVERY CHANNEL .s",
+    "best_score": 0.692
+  },
+  {
+    "name": "ONS TV .s",
+    "best_score": 0.667
+  },
+  {
+    "name": "XITE ROCK .c",
+    "best_score": 0.615
+  },
+  {
+    "name": "HISTORY CHANNEL .s",
+    "best_score": 0.583
+  },
+  {
+    "name": "L1 .c",
+    "best_score": 0.571
+  },
+  {
+    "name": "L1 TV LIMBURG .s",
+    "best_score": 0.556
+  },
+  {
+    "name": "MTV HITS .s",
+    "best_score": 0.545
+  },
+  {
+    "name": "MTV LIVE .s",
+    "best_score": 0.545
+  },
+  {
+    "name": "RTL ZWEE .c",
+    "best_score": 0.545
+  },
+  {
+    "name": "XITE GOSPEL .c",
+    "best_score": 0.533
+  },
+  {
+    "name": "100% .c",
+    "best_score": 0.5
+  },
+  {
+    "name": "MTV 24 MUSIC .s",
+    "best_score": 0.4
+  },
+  {
+    "name": "XITE CLASSIC COUNTRY .c",
+    "best_score": 0.333
+  },
+  {
+    "name": "E! ENTERTAINMENT .s",
+    "best_score": 0.125
+  },
+  {
+    "name": "192 TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "192 TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "1ALMERE TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "1TWENTE TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "24 KITCHEN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "24 KITCHEN .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "A1 TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BBC FIRST .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BBC FIRST .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BNR NIEUWSRADIO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BR6 TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BVN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BVN .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CBS REALITY .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CRIME &INVESTIGATION .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CRIME+ INVESTIGATION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DANCE TELEVISION .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DANCE TRIPPIN .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DAZN SOPORT 3 HD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DEN HAAG FM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISNEY XD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUCK TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EX SPORT (MATCH TIME) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXTREME SPORTS CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FASHIONTV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX CHANNEL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX SPORTS 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX SPORTS 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX SPORTS 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX SPORTS 4 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "HBO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ICONCERTS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "IDEAAL TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INFAST .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INPLUS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INTROUBLE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INULTRA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INVESTIGATION DISCOVERY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "INWONDER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LANSINGERLAND TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LOE TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO WILD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NAT GEO WILD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NICK JUNIOR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NICK MUSIC .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NICK TOONS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NICKMUSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NPO EXTRA 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NPO NIEUWS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NPO ZAPPELIN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NPO ZAPPELIN EXTRA/HUMOR .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "OMROEP FRYSLAN .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "OMROEP HULST TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OMROEP TILBURG .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OMROEP WEST .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OMROEP WEST .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "OPEN ROTTERDAM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ORTS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OUT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "OUT TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PEBBLE TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PEBBLE TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "QMUSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "REGIO TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ARNHEM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV ARNHEM .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV CONNECT TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV MAASTRICHT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV MAASTRICHT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV NOF .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV OOST .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PARKSTAD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PARKSTAD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PURMEREND .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV PURMEREND .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV RIJNSTREEK TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV SLINGELAND .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SALTO 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SALTO 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SALTO BRASA MUSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SALTO MA LIVE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SAMEN1 TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SLAM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SLAM! TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPIKE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "STREEK TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRAVELXP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV ELLEF .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV GELDERLAND .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV NOORD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV OOST .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV RIJNMOND .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "USTAD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "VECHTDAL TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "VERONICA DISNEY XD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "WOS TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZFM ZOETERMEER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO DOCU .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT DOCU .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT DOCU (ZIGGO SPORT 5) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT GOLF .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT GOLF (ZIGGO SPORT 6) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT RACING .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT RACING (ZIGGO SPORT 3) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT SELECT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT SELECT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT TENNIS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT TENNIS (ZIGGO SPORT 4) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT VOETBAL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT VOETBAL (ZIGGO SPORT 2) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZO!34 .c",
+    "best_score": 0.0
+  }
+]

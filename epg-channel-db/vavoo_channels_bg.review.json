@@ -1,0 +1,342 @@
+[
+  {
+    "name": "COMEDY PLUS .s",
+    "best_score": 0.6
+  },
+  {
+    "name": "HISTORY CHANNEL .s",
+    "best_score": 0.583
+  },
+  {
+    "name": "TLC .c",
+    "best_score": 0.429
+  },
+  {
+    "name": "TLC .s",
+    "best_score": 0.429
+  },
+  {
+    "name": "ALJAZEERA ENGLISH .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA COMEDY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARENA LIFE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AUTO MOTOR SPORT .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AUTO MOTOR SPORT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BALKANIKA MUSIC TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BBC EARTH .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BG MUSIC .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BG MUSIC CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BNT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BNT 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BNT 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOX TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BULGARIA 24 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BULGARIA 24 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINEMA PLUS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CITY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CODE FASHION TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CODE HEALTH TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DESTINATIONS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY SCIENCE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY WORLD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DIZI CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DOCUBOX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DSTV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DSTV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUCK TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUCK TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EVROKOM .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EVROKOM .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FEN FOLK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FEN TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FEN TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FIGHTBOX .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM PLUS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM PLUS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOLKLOR .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOLKLOR TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX CRIME .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "HGTV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HOBBY LOV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HOPE CHANNEL BULGARIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ICONCERTS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "JIM JAM .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANAL 0 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANAL 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIGHT CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAGIC TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MAGIC TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "MOVIE STAR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MOVIE STAR .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "MTV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MTV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOVA NEWS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOVA NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOVA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOVA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON AIR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RETRO MUSIC .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RING .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RING .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ROMA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKAT (СКАТ) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKAT TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "STAR CRIME .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STAR LIFE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STINGRAY ICONCERTS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "THIS IS BULGARIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIANKOV FOLK .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIANKOV ORIENT FOLK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV 1000 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV EVROPA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV EVROPA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "V2BEAT TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "VIASAT KINO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "VTK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "WNESS TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "WORLD FASHION CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "WORLD FIGHT CHANNEL .s",
+    "best_score": 0.0
+  }
+]
