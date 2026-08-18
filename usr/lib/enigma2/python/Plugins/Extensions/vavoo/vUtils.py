@@ -2197,6 +2197,24 @@ class VavooEPGMatcher(object):
                     orig_score, adj_score, priority
                 ))
 
+                # Many Rytec entries (pan-European channels like
+                # Eurosport, Nickelodeon, Discovery, DMAX...) genuinely
+                # broadcast via one shared satellite transponder
+                # serving multiple countries, so Rytec correctly has
+                # separate per-country ids that all point at the exact
+                # same real DVB tuple. Every country whose Vavoo
+                # catalog matches to one of those would otherwise
+                # collide on that identical tuple in Enigma2's EPG
+                # cache (which keys purely on the tuple, not the
+                # embedded stream URL), showing one country's
+                # programme data for all of them. Give this Vavoo
+                # channel its own unique reference instead - the
+                # correct id above still goes into channels.xml, and
+                # EPGImport's own parser already supports one id
+                # fanning out to multiple different service refs.
+                if channel_id:
+                    return rytec_id, unique_fallback_sref(
+                        servicetype, channel_id)
                 return rytec_id, converted
 
         # No Rytec candidate matched. Before giving up, try this
@@ -2278,6 +2296,18 @@ class VavooEPGMatcher(object):
                                 "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
                             self._cleanup_stale_unmatched(
                                 channel_name, country_code, servicetype)
+                            # Rytec's raw tuple can be (correctly)
+                            # shared by several countries' entries for
+                            # the same pan-European channel brand - see
+                            # the synthetic-sref note on the Rytec
+                            # candidate match below. Same fix here:
+                            # give this Vavoo channel its own unique
+                            # reference instead of reusing the shared
+                            # one directly, when we have a channel_id
+                            # to key it off.
+                            if channel_id:
+                                return alias_id, unique_fallback_sref(
+                                    servicetype, channel_id)
                             return alias_id, alias_sref
 
         # Normalize the original name for key generation
