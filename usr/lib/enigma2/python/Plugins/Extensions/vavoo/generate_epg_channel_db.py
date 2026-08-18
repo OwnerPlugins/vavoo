@@ -147,6 +147,19 @@ def resolve_country(user_input):
         if code == lower:
             return name.lower(), code
 
+    # Substring fallback, mirroring vUtils.py's get_country_code() - a
+    # group name that embeds a real country name (e.g. "France Sport"
+    # contains "France") resolves to that country's EPG feed code. This
+    # is what the live plugin actually does for EPG matching, so the
+    # generator needs to agree: "France Sport" -> feed code "fr". The
+    # proxy query name stays the original input though (Vavoo's catalog
+    # country field is the literal "France Sport", not "France" - only
+    # the feed code should borrow from the matched country).
+    for name, code in COUNTRY_CODES.items():
+        name_lower = name.lower()
+        if name_lower in lower or lower in name_lower:
+            return lower, code
+
     return lower, lower
 
 
