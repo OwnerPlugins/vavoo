@@ -2052,7 +2052,9 @@ class VavooEPGMatcher(object):
         except (ValueError, TypeError):
             return 4
 
-    def _find_match_internal(self, channel_name, country_code):
+    def _find_match_internal(
+            self, channel_name, country_code, channel_id=None,
+            servicetype="4097"):
         """
         Search for a match in ALL Rytec channels, then apply boost based on user configuration.
         """
@@ -2195,12 +2197,58 @@ class VavooEPGMatcher(object):
                     orig_score, adj_score, priority
                 ))
 
+                # Many Rytec entries (pan-European channels like
+                # Eurosport, Nickelodeon, Discovery, DMAX...) genuinely
+                # broadcast via one shared satellite transponder
+                # serving multiple countries, so Rytec correctly has
+                # separate per-country ids that all point at the exact
+                # same real DVB tuple. Every country whose Vavoo
+                # catalog matches to one of those would otherwise
+                # collide on that identical tuple in Enigma2's EPG
+                # cache (which keys purely on the tuple, not the
+                # embedded stream URL), showing one country's
+                # programme data for all of them. Give this Vavoo
+                # channel its own unique reference instead - the
+                # correct id above still goes into channels.xml, and
+                # EPGImport's own parser already supports one id
+                # fanning out to multiple different service refs.
+                if channel_id:
+                    return rytec_id, unique_fallback_sref(
+                        servicetype, channel_id)
                 return rytec_id, converted
+
+        # No Rytec candidate matched. Before giving up, try this
+        # country's own EPG programme feed directly - some countries
+        # (confirmed for es/pl/tr and others) have far richer channel
+        # coverage in their own epg_<cc>.xml than Rytec does; Rytec may
+        # simply never have catalogued this channel at all. Reuses the
+        # same feed-index/name-matching machinery write_epg_mapping_file()
+        # already uses as a same-purpose fallback for the opposite case
+        # (Rytec matched, but under an id the feed itself doesn't use).
+        # The feed only gives an id, not a real DVB service ref (it's
+        # programme-guide metadata, not satellite broadcast data), so a
+        # synthesized, collision-free sref is generated the same way an
+        # otherwise-unmatched channel already gets one.
+        if channel_id and country_code:
+            feed_ids, name_index = _get_epg_feed_index(country_code)
+            if name_index:
+                feed_match_id = _find_feed_id_by_name(
+                    channel_name, self, name_index)
+                if feed_match_id:
+                    fallback_sref = unique_fallback_sref(
+                        servicetype, channel_id)
+                    print(
+                        "[Match] FEED-DIRECT MATCH: '{}' -> {} "
+                        "(own EPG feed, no Rytec entry)".format(
+                            channel_name, feed_match_id))
+                    return feed_match_id, fallback_sref
 
         print("[Match] No match found for '{}'".format(channel_name))
         return None, "4097:0:0:0:0:0:0:0:0:0:"
 
-    def find_match(self, channel_name, country_code=None, servicetype="4097"):
+    def find_match(
+            self, channel_name, country_code=None, servicetype="4097",
+            channel_id=None):
         if not channel_name:
             return None, None
 
@@ -2217,15 +2265,50 @@ class VavooEPGMatcher(object):
                 alias_id = self.alias_map.get(
                     norm_name) or channel_alias.ALIAS_MAP.get(norm_name)
                 if alias_id:
-                    alias_sref = self.rytec_by_id.get(alias_id)
-                    if alias_sref:
-                        if alias_sref.startswith('1:'):
-                            alias_sref = '4097' + alias_sref[1:]
-                        print(
-                            "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
-                        self._cleanup_stale_unmatched(
-                            channel_name, country_code, servicetype)
-                        return alias_id, alias_sref
+                    # ALIAS_MAP is curated for Italian channels
+                    # specifically (~300 hand-mapped entries, see
+                    # channel_alias.py's own header), but this lookup
+                    # had no country check - it fired identically for
+                    # every country whose channel list happened to
+                    # share a name with one of those entries (e.g.
+                    # generic pan-European brands like "Eurosport 1" or
+                    # "Nickelodeon"), so Poland's and Spain's own
+                    # exports both got Italy's Rytec sref and collided
+                    # in eEPGCache, since they became the same physical
+                    # DVB tuple. Only trust the hit when the alias id's
+                    # own country suffix agrees with the country
+                    # actually being matched (same convention
+                    # _load_rytec_database() uses to bucket entries) -
+                    # or no country was specified at all (e.g. the
+                    # in-player "now playing" overlay).
+                    alias_country = (
+                        alias_id.rsplit('.', 1)[-1].lower()
+                        if '.' in alias_id else "")
+                    effective_country = RYTEC_COUNTRY_CODE_OVERRIDES.get(
+                        country_code, country_code) if country_code else None
+                    if (not effective_country or not alias_country or
+                            alias_country == effective_country.lower()):
+                        alias_sref = self.rytec_by_id.get(alias_id)
+                        if alias_sref:
+                            if alias_sref.startswith('1:'):
+                                alias_sref = '4097' + alias_sref[1:]
+                            print(
+                                "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
+                            self._cleanup_stale_unmatched(
+                                channel_name, country_code, servicetype)
+                            # Rytec's raw tuple can be (correctly)
+                            # shared by several countries' entries for
+                            # the same pan-European channel brand - see
+                            # the synthetic-sref note on the Rytec
+                            # candidate match below. Same fix here:
+                            # give this Vavoo channel its own unique
+                            # reference instead of reusing the shared
+                            # one directly, when we have a channel_id
+                            # to key it off.
+                            if channel_id:
+                                return alias_id, unique_fallback_sref(
+                                    servicetype, channel_id)
+                            return alias_id, alias_sref
 
         # Normalize the original name for key generation
         search_key = self._normalize_key(channel_name, country_code or "")
@@ -2326,6 +2409,26 @@ class VavooEPGMatcher(object):
                 print(
                     "[Match] Temp cache has invalid ID for {}, ignoring".format(search_key))
 
+        # 2.5 Community-curated channel database (see
+        # generate_epg_channel_db.py): a pre-solved name -> this
+        # country's own EPG feed id mapping, built and reviewed offline
+        # instead of guessed live by fuzzy-matching against Rytec.
+        # Country-scoped by construction (one file per country), so no
+        # collision risk from unrelated countries sharing a name.
+        if country_code:
+            curated_db = _load_curated_channel_db(country_code)
+            if curated_db:
+                curated_key = self._clean_name_for_similarity(channel_name)
+                curated_id = curated_db.get(curated_key)
+                if curated_id and channel_id:
+                    print(
+                        "[Match] CURATED DB HIT: {} -> {}".format(
+                            channel_name, curated_id))
+                    self._cleanup_stale_unmatched(
+                        channel_name, country_code, servicetype)
+                    return curated_id, unique_fallback_sref(
+                        servicetype, channel_id)
+
         # 3. Live matching
         print("[Match] Doing local matching for: {}".format(channel_name))
         if search_key in self.new_matches:
@@ -2333,7 +2436,8 @@ class VavooEPGMatcher(object):
             return m['id'], m['sref']
 
         result_id, result_sref = self._find_match_internal(
-            channel_name, country_code)
+            channel_name, country_code, channel_id=channel_id,
+            servicetype=servicetype)
 
         # Is there already an entry in the cache (even with invalid ID)?
         # Resolve via normalized_index first: the raw key an entry is
@@ -2640,6 +2744,48 @@ def download_epg_cache_if_needed():
     return False
 
 
+_curated_channel_db_cache = {}
+_CURATED_CHANNEL_DB_TTL = 86400
+
+
+def _load_curated_channel_db(country_code):
+    """Fetch/cache this country's community-curated Vavoo channel name
+    -> EPG feed channel id mapping (see generate_epg_channel_db.py),
+    used as a fast, pre-solved alternative to live Rytec fuzzy-matching
+    for names Rytec doesn't cover well. Keys are normalized the same
+    way _clean_name_for_similarity() normalizes names for comparison
+    elsewhere in this file - the generator script uses the identical
+    normalization when building the file.
+
+    Never raises - returns {} on any failure so callers just fall
+    through to the existing matching chain, same convention as
+    _get_epg_feed_index().
+    """
+    if not country_code:
+        return {}
+
+    cached = _curated_channel_db_cache.get(country_code)
+    if cached and (time() - cached[0] < _CURATED_CHANNEL_DB_TTL):
+        return cached[1]
+
+    db = {}
+    try:
+        url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
+            HOST_MAIN, country_code.lower())
+        data = getUrl(url, timeout=15, retries=1)
+        if data:
+            parsed = loads(ensure_str(data))
+            if isinstance(parsed, dict):
+                db = parsed
+    except Exception as e:
+        debug(
+            "Could not fetch curated channel db for {}: {}".format(
+                country_code, e))
+
+    _curated_channel_db_cache[country_code] = (time(), db)
+    return db
+
+
 def update_complete_cache(
         matched_channels,
         unmatched_channels,
@@ -2904,6 +3050,13 @@ def _get_epg_feed_index(country_code):
                 "fallback disabled for this export, channels will keep "
                 "their Rytec-matched id even if the feed uses a "
                 "different one".format(country_code))
+            # Cache the failure too (empty result, same TTL) - without
+            # this, a country with no feed at all (most of them - only
+            # a minority of country codes have one) would re-attempt this
+            # same failing network fetch for every single unmatched
+            # channel once _find_match_internal() starts consulting this
+            # index as a fallback, instead of once per TTL window.
+            _epg_feed_index_cache[country_code] = (time(), None, None)
             return None, None
 
         xml_source = io.BytesIO(
@@ -2944,6 +3097,10 @@ def _get_epg_feed_index(country_code):
                 break
     except Exception as e:
         warning("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
+        # Same reasoning as the empty-response branch above: cache the
+        # failure so repeated calls for this country within the TTL
+        # window short-circuit instead of retrying the network fetch.
+        _epg_feed_index_cache[country_code] = (time(), None, None)
         return None, None
 
     _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)

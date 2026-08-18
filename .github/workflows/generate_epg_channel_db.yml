@@ -1,0 +1,91 @@
+name: Generate EPG Channel Database
+
+# Regenerates the curated Vavoo channel name -> EPG feed id mapping
+# (epg-channel-db/vavoo_channels_<cc>.json) that vUtils.py's
+# _load_curated_channel_db() downloads on-box. Needs a live,
+# authenticated vavoo_proxy instance to fetch Vavoo's current channel
+# list, which only exists inside actual Enigma2-coupled code - so this
+# MUST run on a self-hosted runner that can reach that proxy (the box
+# itself, or the same LAN), not GitHub's hosted cloud runners.
+#
+# One-time setup required (not done by this file):
+#   1. Register a self-hosted runner: repo Settings -> Actions ->
+#      Runners -> New self-hosted runner, installed on/near the box
+#      running vavoo_proxy.
+#   2. If the proxy isn't reachable at 127.0.0.1:4323 from wherever the
+#      runner ends up, set repository variables VAVOO_PROXY_HOST /
+#      VAVOO_PROXY_PORT (Settings -> Secrets and variables -> Actions
+#      -> Variables) to the right host/port instead.
+#
+# IMPORTANT: this only commits back to the repo it runs in. The live
+# plugin reads epg-channel-db/ from Belfagor2005/vavoo's main branch
+# (HOST_MAIN in __init__.py) - a fork of that repo running this workflow
+# only updates its own history, not the upstream one. For this to
+# actually reach the running plugin, either this workflow needs to run
+# inside Belfagor2005/vavoo itself, or this fork's commits need to flow
+# upstream through its normal PR/merge process.
+
+on:
+  schedule:
+    # Weekly - Vavoo's catalog and the epg_<cc>.xml feeds don't churn
+    # fast enough to need this more often, and a self-hosted runner is
+    # presumably shared with the box's own normal workload.
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      countries:
+        description: 'Space-separated country codes to override the default --all sweep (e.g. "fr ru" to retry just those)'
+        required: false
+        default: ''
+
+jobs:
+  generate:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate channel database
+        working-directory: usr/lib/enigma2/python/Plugins/Extensions/vavoo
+        env:
+          VAVOO_PROXY_HOST: ${{ vars.VAVOO_PROXY_HOST || '172.23.1.5' }}
+          VAVOO_PROXY_PORT: ${{ vars.VAVOO_PROXY_PORT || '4323' }}
+          COUNTRIES_INPUT: ${{ github.event.inputs.countries }}
+        run: |
+          # Default: every country Vavoo's own catalog actually offers
+          # (VAVOO_COUNTRIES in the script) - countries with no
+          # epg_<cc>.xml feed are skipped, not treated as failures.
+          # Pass a manual `countries` input to override with an explicit
+          # subset instead (e.g. to skip ru, which has no usable feed).
+          if [ -n "$COUNTRIES_INPUT" ]; then
+            echo "Generating for: $COUNTRIES_INPUT"
+            python3 generate_epg_channel_db.py $COUNTRIES_INPUT \
+              --proxy-host "$VAVOO_PROXY_HOST" \
+              --proxy-port "$VAVOO_PROXY_PORT" \
+              --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
+          else
+            echo "Generating for: --all"
+            python3 generate_epg_channel_db.py --all \
+              --proxy-host "$VAVOO_PROXY_HOST" \
+              --proxy-port "$VAVOO_PROXY_PORT" \
+              --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add epg-channel-db/
+          if ! git diff --cached --quiet; then
+            git commit -m "Update curated EPG channel database"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "${GITHUB_REF_NAME}"
+          else
+            echo "No changes to commit"
+          fi

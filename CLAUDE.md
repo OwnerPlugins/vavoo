@@ -36,6 +36,9 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   update_translations.py # dev-time script: extracts strings, updates .po/.pot, compiles .mo
   xml2pot.py             # dev-time helper: pulls translatable strings out of skin XML into .pot
   check_skin_consistency.py # dev-time script: compares widget name= sets across hd/fhd/wqhd skins
+  generate_epg_channel_db.py # dev-time script: matches a country's live Vavoo channel list
+                          #   against its own epg_<cc>.xml feed (not Rytec) to bootstrap a
+                          #   curated channel-name -> EPG-feed-id mapping
   locale/<lang>/LC_MESSAGES/vavoo.{po,mo}  # gettext translations, ~90 languages
   skin/{hd,fhd,wqhd}/*.xml   # per-resolution skin layouts (HD, FullHD, WQHD/4K)
   skin/cowntry/*.png, skin/pics/*.png, skin/images*/*.png  # flags/backgrounds
