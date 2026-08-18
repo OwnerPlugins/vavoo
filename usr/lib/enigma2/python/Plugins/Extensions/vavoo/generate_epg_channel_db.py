@@ -296,6 +296,23 @@ def generate_for_country(query_name, feed_code, proxy_host, proxy_port, threshol
     return matched, review
 
 
+# Non-ISO meta-entries in COUNTRY_CODES that don't correspond to a
+# single Vavoo/epg_<cc>.xml country - "bk" (Balkans) is 2 letters like
+# a real code so the length check alone doesn't catch it.
+_NON_COUNTRY_CODES = {"bk"}
+
+
+def all_known_codes():
+    """Every real 2-letter code in COUNTRY_CODES, deduplicated - skips
+    the non-ISO meta-entries also in that dict (africa, internat,
+    baltic, scandinavia, bk), which would just 404 against
+    epg_<cc>.xml."""
+    codes = {
+        c for c in COUNTRY_CODES.values()
+        if re.fullmatch(r'[a-z]{2}', c) and c not in _NON_COUNTRY_CODES}
+    return sorted(codes)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description=(
@@ -304,10 +321,17 @@ def main():
             "list against that country's own epg_<cc>.xml programme "
             "feed instead of Rytec."))
     parser.add_argument(
-        "countries", nargs="+",
+        "countries", nargs="*",
         help="Country code(s) or display name(s) to generate, e.g. "
              "'es pl tr' or 'Spain Poland Turkey' - either form works, "
-             "see resolve_country()")
+             "see resolve_country(). Omit and pass --all instead to try "
+             "every known country.")
+    parser.add_argument(
+        "--all", action="store_true",
+        help="Try every 2-letter country code COUNTRY_CODES knows "
+             "about, instead of an explicit list. Most won't have an "
+             "epg_<cc>.xml feed - that's expected, not an error, and is "
+             "reported as 'skipped (no feed)' rather than a failure.")
     parser.add_argument(
         "--proxy-host", default="127.0.0.1",
         help="Host of a running vavoo_proxy instance (default: 127.0.0.1)")
@@ -324,8 +348,17 @@ def main():
              ".review.json into (default: current directory)")
     args = parser.parse_args()
 
-    exit_code = 0
-    for country in args.countries:
+    if args.all and args.countries:
+        parser.error("pass either country arguments or --all, not both")
+    if not args.all and not args.countries:
+        parser.error("pass at least one country, or --all")
+
+    countries = all_known_codes() if args.all else args.countries
+
+    generated = 0
+    skipped_no_feed = 0
+    errors = 0
+    for country in countries:
         query_name, cc = resolve_country(country)
         print("'{}' resolved to: proxy query='{}', feed code='{}'".format(
             country, query_name, cc))
@@ -334,8 +367,12 @@ def main():
                 query_name, cc, args.proxy_host, args.proxy_port,
                 args.threshold)
         except Exception as e:
-            print("ERROR generating {}: {}".format(cc, e))
-            exit_code = 1
+            if "404" in str(e):
+                print("{}: skipped (no epg_{}.xml feed)".format(cc, cc))
+                skipped_no_feed += 1
+            else:
+                print("ERROR generating {}: {}".format(cc, e))
+                errors += 1
             continue
 
         out_path = join(args.output_dir, "vavoo_channels_{}.json".format(cc))
@@ -351,8 +388,12 @@ def main():
         print("{}: {} auto-matched -> {}".format(cc, len(matched), out_path))
         print("{}: {} need manual review -> {}".format(
             cc, len(review), review_path))
+        generated += 1
 
-    return exit_code
+    print("\n{} generated, {} skipped (no feed), {} errors".format(
+        generated, skipped_no_feed, errors))
+
+    return 1 if errors else 0
 
 
 if __name__ == "__main__":
