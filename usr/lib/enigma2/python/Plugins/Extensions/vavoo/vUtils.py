@@ -60,6 +60,12 @@ from . import (
     ALIAS_FILE,
     INSTALLER_URL
 )
+from .epg_name_utils import (
+    clean_name_for_similarity,
+    tokenize_for_compat,
+    token_pair_compatible,
+    tokens_compatible,
+)
 """
 #########################################################
 #                                                       #
@@ -1486,11 +1492,23 @@ def get_country_code(country_name):
         return _EXTRA_COUNTRY_ALIASES[name_lower]
 
     # Partial match against the canonical table, for group names that
-    # embed a country name inside a longer string
-    for key, code in country_codes.items():
-        key_lower = key.lower()
-        if key_lower in name_lower or name_lower in key_lower:
-            return code
+    # embed a country name inside a longer string (e.g. "France Sport"
+    # contains "France"). Deliberately one-directional: only "a known
+    # country name is a substring of the input" - never the reverse
+    # ("input is a substring of a country name"), which used to let a
+    # short/abbreviated input spuriously match any country name that
+    # happens to contain those letters (e.g. "Ira" matching "United
+    # Arab Emirates" via "em-IRA-tes") with no real use case needing
+    # it - any legitimate abbreviation is already handled by the
+    # exact-match loop above via its own country_codes entry. Prefer
+    # the longest/most specific matching name when more than one embeds
+    # in the input, alphabetically tie-broken so the result never
+    # depends on Python's dict iteration order (not guaranteed on
+    # Python 2).
+    candidates = [key for key in country_codes if key.lower() in name_lower]
+    if candidates:
+        best = sorted(candidates, key=lambda k: (-len(k), k))[0]
+        return country_codes[best]
 
     return ""
 
@@ -1760,6 +1778,12 @@ RYTEC_COUNTRY_CODE_OVERRIDES = {
     'gb': 'uk',
 }
 
+# channel_alias.ALIAS_MAP is curated for Italian channels specifically
+# (see its own module docstring) - used by find_match()'s country-gate
+# below to always trust an alias hit when matching for Italy itself,
+# even for the handful of entries pinned to a non-".it" Rytec id.
+_ALIAS_MAP_HOME_COUNTRY = "it"
+
 
 class VavooEPGMatcher(object):
     def __init__(self, similarity_threshold=0.70):
@@ -1769,6 +1793,11 @@ class VavooEPGMatcher(object):
         # ever called concurrently on this same matcher instance from
         # two threads.
         self._lazy_init_lock = threading.Lock()
+        # Guards self.cache/self.normalized_index/self.new_matches -
+        # see find_match()'s docstring. RLock: _find_match_internal()
+        # (called from inside find_match()'s locked section) does its
+        # own lazy-init re-entrancy on this same thread.
+        self._cache_lock = threading.RLock()
         # (clean_name, original_name, service_ref)
         self.rytec_entries = []
         # Same entries grouped by country code (from the id's suffix, e.g.
@@ -1933,27 +1962,11 @@ class VavooEPGMatcher(object):
         return cleaned
 
     def _clean_name_for_similarity(self, name):
-        """Pulisce il nome per il calcolo della similarità: rimuove suffissi .c, .s, .b e indicatori."""
-        if not name:
-            return ""
-        n = name.upper()  # usiamo maiuscolo come nell'esterno, poi abbassiamo
-        n = sub(r'\[.*\]', '', n)
-        n = sub(r'\(.*\)', '', n)
-        # Vavoo suffix (.c, .s, .b, ...) must be stripped BEFORE the
-        # quality-tag strip below: names very often carry both (e.g.
-        # "6TER FHD .b"), and the quality tag isn't at the string's end
-        # while the Vavoo suffix is still there - stripping in the other
-        # order left "FHD"/"HD" stuck in the cleaned name (e.g. "6ter
-        # fhd" instead of "6ter"), which tanks the similarity score
-        # against the plain Rytec name and was silently failing to match
-        # a large fraction of channels that carry both suffixes.
-        if not n.startswith("HISTORY"):
-            n = sub(r'\s+\.[A-Z0-9]{1,3}$', '', n)
-        n = sub(r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$', '', n)
-        n = sub(r'\s+\+$', '', n)
-        n = sub(r'[^A-Z0-9 ]', '', n)
-        n = sub(r'\s+', ' ', n)
-        return n.strip().lower()
+        """Normalize a channel name for similarity comparison - see
+        epg_name_utils.clean_name_for_similarity() (single source of
+        truth, shared with generate_epg_channel_db.py's off-box
+        mirror)."""
+        return clean_name_for_similarity(name)
 
     def _normalize_key(self, channel_name, country_code):
         clean_name = self._clean_name_for_key(channel_name)
@@ -2249,6 +2262,30 @@ class VavooEPGMatcher(object):
     def find_match(
             self, channel_name, country_code=None, servicetype="4097",
             channel_id=None):
+        """Public entry point - serializes the whole lookup (including
+        every self.cache/self.normalized_index/self.new_matches read
+        and write below) behind self._cache_lock. This matcher is a
+        per-process singleton (get_epg_matcher()) called concurrently
+        from real, sanctioned usage - a bouquet export's background
+        thread looping this per channel, while watching an already
+        exported channel spawns a separate per-channel EPG-overlay
+        daemon thread that also calls this - and those dicts were
+        previously mutated with no locking at all: reassigning
+        self.normalized_index mid-iteration elsewhere
+        (_build_normalized_index(), also called from
+        update_complete_cache() - see its matching lock use there) could
+        raise "dictionary changed size during iteration" and abort EPG
+        matching for a whole country's remaining channels, or silently
+        drop a concurrent thread's cache write. An RLock (not a plain
+        Lock) since _find_match_internal() below can itself re-enter
+        lazy-init code paths on this same instance/thread."""
+        with self._cache_lock:
+            return self._find_match_locked(
+                channel_name, country_code, servicetype, channel_id)
+
+    def _find_match_locked(
+            self, channel_name, country_code=None, servicetype="4097",
+            channel_id=None):
         if not channel_name:
             return None, None
 
@@ -2286,7 +2323,18 @@ class VavooEPGMatcher(object):
                         if '.' in alias_id else "")
                     effective_country = RYTEC_COUNTRY_CODE_OVERRIDES.get(
                         country_code, country_code) if country_code else None
+                    # ALIAS_MAP's home country (see its own docstring) -
+                    # always trust a hit when matching for Italy itself,
+                    # even if the curator pinned a specific entry to a
+                    # non-".it" Rytec id (e.g. "DISNEY CHANNEL"/"DISNEY
+                    # JUNIOR" -> a ".ch" id, because Italy's own Rytec
+                    # catalog has no native entry for them). The suffix
+                    # check below still guards every OTHER country
+                    # against reusing one of these curated Italian
+                    # picks for an unrelated channel of the same name.
                     if (not effective_country or not alias_country or
+                            effective_country.lower() ==
+                            _ALIAS_MAP_HOME_COUNTRY or
                             alias_country == effective_country.lower()):
                         alias_sref = self.rytec_by_id.get(alias_id)
                         if alias_sref:
@@ -2691,8 +2739,9 @@ def clean_cache_and_unmatched():
     with open(unmatched_temp, 'w') as f:
         dump(unmatched, f, indent=2)
     rename(unmatched_temp, UNMATCHED_FILE)
-    matcher.cache = new_main
-    matcher._build_normalized_index()
+    with matcher._cache_lock:
+        matcher.cache = new_main
+        matcher._build_normalized_index()
     print("[Cache] Cleanup completed: moved {} entries to unmatched".format(moved))
     return moved
 
@@ -2848,10 +2897,16 @@ def update_complete_cache(
             dump(complete_cache, f, indent=4, sort_keys=True)
         rename(temp_file, CACHE_FILE)
 
-        # Update matcher with new cache
-        matcher.cache = complete_cache
-        matcher._build_normalized_index()
-        matcher.new_matches.clear()
+        # Update matcher with new cache - under the same lock find_match()
+        # holds around its own cache/normalized_index/new_matches use,
+        # since this wholesale swap+clear can otherwise race with a
+        # concurrent find_match() call on the same singleton (e.g. the
+        # Now Playing EPG overlay) reading/writing those same attributes
+        # mid-export.
+        with matcher._cache_lock:
+            matcher.cache = complete_cache
+            matcher._build_normalized_index()
+            matcher.new_matches.clear()
 
         # Process unmatched channels: save them to unmatched.json with their
         # original sref
@@ -3014,6 +3069,16 @@ def flush_unmatched_cache():
 # country_code -> (timestamp, set(ids), {clean_name: id})
 _epg_feed_index_cache = {}
 _EPG_FEED_INDEX_TTL = 300
+# getUrl() swallows the HTTP status code on any failure (always returns
+# "" whether it was a genuine 404 or a transient timeout/connection
+# error), so a permanent "this country has no feed" can't be reliably
+# told apart from a one-off blip here. Cache a failure/empty result
+# much more briefly than a real success - still long enough to avoid
+# re-fetching per unmatched channel within one export (which can be
+# hundreds of calls in a few seconds), but short enough that a
+# transient failure doesn't keep the feed-fallback disabled for the
+# rest of an in-progress export or an immediate retry.
+_EPG_FEED_INDEX_NEGATIVE_TTL = 60
 
 
 def _get_epg_feed_index(country_code):
@@ -3037,8 +3102,12 @@ def _get_epg_feed_index(country_code):
         return None, None
 
     cached = _epg_feed_index_cache.get(country_code)
-    if cached and (time() - cached[0] < _EPG_FEED_INDEX_TTL):
-        return cached[1], cached[2]
+    if cached:
+        cached_time, cached_ids, cached_index = cached
+        ttl = (_EPG_FEED_INDEX_TTL if cached_ids is not None
+               else _EPG_FEED_INDEX_NEGATIVE_TTL)
+        if time() - cached_time < ttl:
+            return cached_ids, cached_index
 
     try:
         url = "http://{}:{}/epg/{}.xml".format(
@@ -3114,64 +3183,14 @@ def _get_epg_feed_index(country_code):
     return feed_ids, name_index
 
 
-def _tokenize_for_compat(clean_name):
-    """Split an already-cleaned (lowercase) name into tokens for
-    _tokens_compatible(), first inserting a space between a letter and
-    an immediately-following digit (e.g. "sport1" -> "sport 1").
-
-    Rytec's own channel comments frequently glue a trailing channel
-    number straight onto the preceding word with no space - confirmed
-    ~780 times across a real rytec.channels.xml (e.g. "Bein Sport1",
-    "B1 TV", "Arena 1x2") - while Vavoo's own channel names always space
-    it out ("BEIN SPORTS 1"). Without this, an otherwise very close
-    match (0.92 similarity for "bein sports 1" vs "bein sport1") never
-    even reaches the similarity check, rejected outright by
-    _tokens_compatible() because "sport1" and "sports"+"1" don't
-    tokenize the same way.
-
-    This only affects tokenization for the compatibility gate -
-    _clean_name_for_similarity()'s output (used for actual scoring and
-    cache-key comparisons) is untouched, and two genuinely different
-    numbers still end up as distinct tokens (e.g. "france3" ->
-    ["france", "3"] vs "france5" -> ["france", "5"]), so the guard's
-    real job - rejecting a different word/number at a shared position -
-    is unaffected.
-    """
-    return sub(r'(?<=[a-z])(?=[0-9])', ' ', clean_name).split()
-
-
-def _token_pair_compatible(a, b):
-    """Two tokens are compatible if identical, or if they differ only
-    by a trailing "s" on a non-numeric word (tolerates a singular/
-    plural naming difference, e.g. Rytec's "sport" vs Vavoo's
-    "sports"). Never applies when either token is purely numeric - a
-    different number at a shared position (e.g. "3" vs "5") is exactly
-    what _tokens_compatible() exists to catch, since that's what turns
-    an otherwise near-identical name into a genuinely different
-    channel."""
-    if a == b:
-        return True
-    if a.isdigit() or b.isdigit():
-        return False
-    return a + 's' == b or b + 's' == a
-
-
-def _tokens_compatible(a_tokens, b_tokens):
-    """True unless the two token lists differ at a shared position -
-    i.e. one is a genuine word-for-word prefix of the other (or
-    they're equal, allowing singular/plural pairs - see
-    _token_pair_compatible()). A longer name is allowed to just add
-    trailing descriptive words (e.g. "sky sport" / "sky sport 4k"), but
-    substituting a different word at a position both share (e.g.
-    "canale 5" vs "canale 122", "france o" vs "france 3") means these
-    are actually different channels, no matter how high the raw
-    character-level similarity looks."""
-    shorter, longer = (
-        (a_tokens, b_tokens) if len(a_tokens) <= len(b_tokens)
-        else (b_tokens, a_tokens))
-    prefix = longer[:len(shorter)]
-    return len(prefix) == len(shorter) and all(
-        _token_pair_compatible(x, y) for x, y in zip(shorter, prefix))
+# _tokenize_for_compat/_token_pair_compatible/_tokens_compatible are
+# thin aliases onto epg_name_utils - single source of truth, shared
+# with generate_epg_channel_db.py's off-box mirror. Kept as
+# module-level names here since they're called that way throughout
+# this file.
+_tokenize_for_compat = tokenize_for_compat
+_token_pair_compatible = token_pair_compatible
+_tokens_compatible = tokens_compatible
 
 
 def _find_feed_id_by_name(channel_name, matcher, name_index):
@@ -3184,17 +3203,31 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     source_tokens = _tokenize_for_compat(clean)
     best_score = 0.0
     best_id = None
+    threshold = matcher.similarity_threshold
     sm = SequenceMatcher(None, clean)
+    # Only the threshold-or-above outcome is ever used by callers (a
+    # below-threshold best_score is never returned), so - same as the
+    # equivalent Rytec-scanning loop in _find_match_internal() - a
+    # candidate whose cheap upper-bound estimate already can't reach the
+    # threshold can be skipped before paying for the full ratio()
+    # computation. Feed indexes run into the hundreds/thousands of
+    # entries (see this function's callers), scanned once per exported
+    # channel whose Rytec id isn't in this feed's own id set, so this
+    # matters for country-wide export time.
     for dn_key, (dn_id, candidate_tokens) in name_index.items():
         if (source_tokens and candidate_tokens and
                 not _tokens_compatible(source_tokens, candidate_tokens)):
             continue
         sm.set_seq2(dn_key)
+        if sm.real_quick_ratio() < threshold:
+            continue
+        if sm.quick_ratio() < threshold:
+            continue
         score = sm.ratio()
         if score > best_score:
             best_score = score
             best_id = dn_id
-    if best_id and best_score >= matcher.similarity_threshold:
+    if best_id and best_score >= threshold:
         return best_id
     return None
 
