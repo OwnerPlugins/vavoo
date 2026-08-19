@@ -45,7 +45,7 @@
   },
   {
     "name": "TV 5 .s",
-    "best_score": 0.615
+    "best_score": 0.6
   },
   {
     "name": "HISTORY CHANNEL .s",
@@ -112,10 +112,6 @@
     "best_score": 0.348
   },
   {
-    "name": "24 KITCHEN .c",
-    "best_score": 0.0
-  },
-  {
     "name": "24 KITCHEN .s",
     "best_score": 0.0
   },
@@ -161,10 +157,6 @@
   },
   {
     "name": "CBS REALITY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "CC EXTRA .b",
     "best_score": 0.0
   },
   {
@@ -424,6 +416,10 @@
     "best_score": 0.0
   },
   {
+    "name": "MAX SPORT 1 .c",
+    "best_score": 0.0
+  },
+  {
     "name": "MAXCRO SELECT 2 .s",
     "best_score": 0.0
   },
@@ -469,10 +465,6 @@
   },
   {
     "name": "NEON TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "NETIP CINEMA 1 .c",
     "best_score": 0.0
   },
   {
@@ -529,6 +521,10 @@
   },
   {
     "name": "RTS ZIVOT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RTV BUDVA .c",
     "best_score": 0.0
   },
   {

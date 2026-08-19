@@ -1,5 +1,13 @@
 [
   {
+    "name": ".BLACK .b",
+    "best_score": 0.0
+  },
+  {
+    "name": ".RED HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": ".SCI‑FI .b",
     "best_score": 0.0
   },
@@ -125,10 +133,6 @@
   },
   {
     "name": "BOLLYWOOD HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "BOOMERANG .b",
     "best_score": 0.0
   },
   {
@@ -712,10 +716,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
     "name": "PARAMOUNT COMEDY .b",
     "best_score": 0.0
   },
@@ -1025,10 +1025,6 @@
   },
   {
     "name": "TV XXI .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV XXI (TV21) .s",
     "best_score": 0.0
   },
   {
@@ -1373,42 +1369,6 @@
   },
   {
     "name": "МОСФИЛЬМ. ЗОЛОТАЯ КОЛЛЕКЦИЯ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МОТОРСПОРТ ТВ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МОЯ ПЛАНЕТА .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МОЯ СТИХИЯ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МУЖСКОЕ КИНО .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МУЖСКОЕ КИНО .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "МУЖСКОЙ ТВ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МУЗ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МУЗ СОЮЗ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "МУЛЬТ .b",
     "best_score": 0.0
   },
   {

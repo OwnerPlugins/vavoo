@@ -80,10 +80,6 @@
     "best_score": 0.0
   },
   {
-    "name": "7 YOU & ME .c",
-    "best_score": 0.0
-  },
-  {
     "name": "70-80.IT .c",
     "best_score": 0.0
   },
@@ -132,6 +128,10 @@
     "best_score": 0.0
   },
   {
+    "name": "ANTENNA 2 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ARANCIA TV .c",
     "best_score": 0.0
   },
@@ -141,6 +141,10 @@
   },
   {
     "name": "AURORA ARTE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AURORA ARTE .s",
     "best_score": 0.0
   },
   {
@@ -168,11 +172,19 @@
     "best_score": 0.0
   },
   {
+    "name": "BIANCONERA JUVENTUS TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BLAZE .c",
     "best_score": 0.0
   },
   {
     "name": "BYOBLU .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BYOBLU .s",
     "best_score": 0.0
   },
   {
@@ -188,10 +200,6 @@
     "best_score": 0.0
   },
   {
-    "name": "CANALE 122 .c",
-    "best_score": 0.0
-  },
-  {
     "name": "CANALE 2 .c",
     "best_score": 0.0
   },
@@ -200,7 +208,15 @@
     "best_score": 0.0
   },
   {
+    "name": "CANALE 21 CAMPANIA .c",
+    "best_score": 0.0
+  },
+  {
     "name": "CANALE 21 EXTRA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CANALE 21 LAZIO .s",
     "best_score": 0.0
   },
   {
@@ -249,10 +265,6 @@
   },
   {
     "name": "CUSANO NEWS7 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY DMAX .s",
     "best_score": 0.0
   },
   {
@@ -368,19 +380,15 @@
     "best_score": 0.0
   },
   {
+    "name": "FM ITALIA TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "GIOVANNI PAOLO .s",
     "best_score": 0.0
   },
   {
     "name": "GLOBUS TELEVISION .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "GOLD TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "GRANDE FRATELLO .c",
     "best_score": 0.0
   },
   {
@@ -637,6 +645,10 @@
   },
   {
     "name": "RADIO BIRIKINA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RADIO CAPITAL .s",
     "best_score": 0.0
   },
   {
@@ -952,10 +964,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SPORT ITALIA SOLO CALCIO [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SPORTITALIA PLUS .c",
     "best_score": 0.0
   },
@@ -985,6 +993,10 @@
   },
   {
     "name": "STEREO 5 TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "STEREO 5 TV .s",
     "best_score": 0.0
   },
   {
@@ -1029,6 +1041,10 @@
   },
   {
     "name": "TELE PAVIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELE PAVIA .s",
     "best_score": 0.0
   },
   {
@@ -1141,6 +1157,10 @@
   },
   {
     "name": "TELETRICOLORE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELETUTTO .c",
     "best_score": 0.0
   },
   {

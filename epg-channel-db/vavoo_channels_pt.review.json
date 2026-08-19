@@ -16,16 +16,16 @@
     "best_score": 0.588
   },
   {
-    "name": "TVI FICÇÃO .c",
-    "best_score": 0.545
-  },
-  {
     "name": "DIZI CHANNEL .c",
     "best_score": 0.5
   },
   {
     "name": "SYFY PORTUGAL .c",
     "best_score": 0.471
+  },
+  {
+    "name": "TVI FICÇÃO .c",
+    "best_score": 0.462
   },
   {
     "name": "SIC NOTICIAS .c",
@@ -69,10 +69,6 @@
   },
   {
     "name": "BIGGS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BLAZE .c",
     "best_score": 0.0
   },
   {
@@ -180,10 +176,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ELEVEN SPORT 6 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "ELEVEN SPORTS 1 HD .b",
     "best_score": 0.0
   },
@@ -233,10 +225,6 @@
   },
   {
     "name": "FASHIONTV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "FATIMA TV .c",
     "best_score": 0.0
   },
   {
@@ -461,10 +449,6 @@
   },
   {
     "name": "V+ TVI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VH1 .b",
     "best_score": 0.0
   },
   {

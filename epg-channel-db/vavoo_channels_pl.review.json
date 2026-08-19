@@ -56,6 +56,10 @@
     "best_score": 0.6
   },
   {
+    "name": "KSW PPV (MATCH TIME) .c",
+    "best_score": 0.6
+  },
+  {
     "name": "POLSAT JIM JAM .b",
     "best_score": 0.6
   },
@@ -213,10 +217,6 @@
   },
   {
     "name": "ATM ROZRYWKA TV .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CANAL NOW .b",
     "best_score": 0.0
   },
   {
@@ -428,10 +428,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SUPER EXPRESS TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "SUPERSTACJA .b",
     "best_score": 0.0
   },
@@ -489,10 +485,6 @@
   },
   {
     "name": "W POLSCE POLSAT UHD .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ZEST TV .b",
     "best_score": 0.0
   }
 ]

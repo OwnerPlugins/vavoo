@@ -28,10 +28,6 @@
     "best_score": 0.5
   },
   {
-    "name": "RT HD .b",
-    "best_score": 0.5
-  },
-  {
     "name": "BBC TWO NORTHERN IRELAND .s",
     "best_score": 0.452
   },
@@ -73,10 +69,6 @@
   },
   {
     "name": "ASTRO CRICKET .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ASTRO FOOTBALL .s",
     "best_score": 0.0
   },
   {
@@ -168,6 +160,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BEIN SPORTS 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BEIN SPORTS 1 PL .s",
     "best_score": 0.0
   },
@@ -176,7 +172,7 @@
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS LA LIGA .b",
+    "name": "BEIN SPORTS ENGLISH 2 .s",
     "best_score": 0.0
   },
   {
@@ -213,6 +209,10 @@
   },
   {
     "name": "BRISTOL ROVERS F.C. .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BROMLEY FC .s",
     "best_score": 0.0
   },
   {
@@ -288,10 +288,6 @@
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "CBS DRAMA .b",
     "best_score": 0.0
   },
@@ -305,6 +301,10 @@
   },
   {
     "name": "CBS REALITY+1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CELEBRATION TV .b",
     "best_score": 0.0
   },
   {
@@ -628,10 +628,6 @@
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "EUROSPORT 1 .s",
     "best_score": 0.0
   },
@@ -640,19 +636,15 @@
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "EUROSPORT 2 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "EUROSPORT 2 .s",
     "best_score": 0.0
   },
   {
     "name": "EUROSPORT 2 (BACKUP) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 2 HD .b",
     "best_score": 0.0
   },
   {
@@ -681,10 +673,6 @@
   },
   {
     "name": "FIVE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "FLEETWOOD TOWN .s",
     "best_score": 0.0
   },
   {
@@ -729,10 +717,6 @@
   },
   {
     "name": "GOOD FOOD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "GREAT! CLASS+1 .b",
     "best_score": 0.0
   },
   {
@@ -1084,10 +1068,6 @@
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 7 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ORIGINALS MOVIES .s",
     "best_score": 0.0
   },
@@ -1169,6 +1149,10 @@
   },
   {
     "name": "ROTHERHAM UNITED F.C. .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RT HD .b",
     "best_score": 0.0
   },
   {
@@ -1265,38 +1249,6 @@
   },
   {
     "name": "SKY CINEMA DISNEY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA DISNEY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA DRAMA .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA DRAMA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA FAMILY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA FAMILY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA FAMILY (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA GREATS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA GREATS .s",
     "best_score": 0.0
   },
   {
@@ -1580,6 +1532,58 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY STORE PREMIERE 11 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 15 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 16 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 17 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 18 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 2 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 21 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 22 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 26 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 28 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 3 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 30 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 6 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY STORE PREMIERE 9 ᴴᴰ .s",
     "best_score": 0.0
   },
@@ -1597,6 +1601,10 @@
   },
   {
     "name": "SPFL 01 (MATCH TIME) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPFL 02 (MATCH TIME) .s",
     "best_score": 0.0
   },
   {
@@ -1669,6 +1677,14 @@
   },
   {
     "name": "SUPERSPORT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPERSPORT 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPERSPORT ACTION .s",
     "best_score": 0.0
   },
   {

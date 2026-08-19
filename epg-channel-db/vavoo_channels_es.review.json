@@ -20,6 +20,10 @@
     "best_score": 0.667
   },
   {
+    "name": "BLOOMBERG TV EUROPE .c",
+    "best_score": 0.643
+  },
+  {
     "name": "CANAL SUR ANDALUCIA .c",
     "best_score": 0.643
   },
@@ -48,12 +52,12 @@
     "best_score": 0.545
   },
   {
-    "name": "FOX LIFE HD .b",
+    "name": "PUNT 3 VALL UIXO .c",
     "best_score": 0.545
   },
   {
-    "name": "PUNT 3 VALL UIXO .c",
-    "best_score": 0.545
+    "name": "AXN WHITE .c",
+    "best_score": 0.5
   },
   {
     "name": "AXN WHITE HD .b",
@@ -96,7 +100,7 @@
     "best_score": 0.375
   },
   {
-    "name": "101 TV .c",
+    "name": "13 REALITIES .c",
     "best_score": 0.0
   },
   {
@@ -165,10 +169,6 @@
   },
   {
     "name": "ARTEQUATRE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BARCA TV .b",
     "best_score": 0.0
   },
   {
@@ -280,6 +280,10 @@
     "best_score": 0.0
   },
   {
+    "name": "CLASSICA .b",
+    "best_score": 0.0
+  },
+  {
     "name": "CNN EN ESPANOL .c",
     "best_score": 0.0
   },
@@ -317,6 +321,10 @@
   },
   {
     "name": "DISCOVERY WORLD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISNEY JUNIOR .b",
     "best_score": 0.0
   },
   {
@@ -368,10 +376,6 @@
     "best_score": 0.0
   },
   {
-    "name": "GOL TV HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "HAMAIKA TELEBISTA .c",
     "best_score": 0.0
   },
@@ -401,6 +405,10 @@
   },
   {
     "name": "LA LIGA TV BAR HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "LA LIGA TV HD .b",
     "best_score": 0.0
   },
   {
@@ -437,6 +445,10 @@
   },
   {
     "name": "LOGOS TV KIDS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LOGOS TV SALUD .c",
     "best_score": 0.0
   },
   {
@@ -521,6 +533,10 @@
   },
   {
     "name": "MOVISTAR LA LIGA 2 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MOVISTAR LA LIGA 3 .b",
     "best_score": 0.0
   },
   {
@@ -680,10 +696,6 @@
     "best_score": 0.0
   },
   {
-    "name": "STAR TVE .c",
-    "best_score": 0.0
-  },
-  {
     "name": "SURF CHANNEL .c",
     "best_score": 0.0
   },
@@ -709,10 +721,6 @@
   },
   {
     "name": "TELEVIGO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEVISIÓN MELILLA .c",
     "best_score": 0.0
   },
   {

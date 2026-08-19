@@ -48,10 +48,6 @@
     "best_score": 0.571
   },
   {
-    "name": "RTSH SPORT (BACKUP) .s",
-    "best_score": 0.571
-  },
-  {
     "name": "RTV 21 MACEDONIA .s",
     "best_score": 0.545
   },
@@ -136,10 +132,6 @@
     "best_score": 0.4
   },
   {
-    "name": "KTV KOHAVISION .c",
-    "best_score": 0.353
-  },
-  {
     "name": "T CHANNEL .c",
     "best_score": 0.2
   },
@@ -180,10 +172,6 @@
     "best_score": 0.0
   },
   {
-    "name": "AHWAZ .b",
-    "best_score": 0.0
-  },
-  {
     "name": "ALAM (360P) [NOT 24/7] .b",
     "best_score": 0.0
   },
@@ -221,6 +209,10 @@
   },
   {
     "name": "AMOL TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "AMOL TV .s",
     "best_score": 0.0
   },
   {
@@ -372,10 +364,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ASHKALI TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ASHKALI TV 1 .s",
     "best_score": 0.0
   },
@@ -421,6 +409,10 @@
   },
   {
     "name": "BIG BROTHER .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BIG BROTHER 1 .c",
     "best_score": 0.0
   },
   {
@@ -948,6 +940,10 @@
     "best_score": 0.0
   },
   {
+    "name": "FILMA24 DOKUMENTAR .c",
+    "best_score": 0.0
+  },
+  {
     "name": "FILMA24 DRAME .c",
     "best_score": 0.0
   },
@@ -1264,10 +1260,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ISTOGU CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ITTIHAD (552P) [NOT 24/7] .b",
     "best_score": 0.0
   },
@@ -1356,10 +1348,6 @@
     "best_score": 0.0
   },
   {
-    "name": "KS CIFTELIA .c",
-    "best_score": 0.0
-  },
-  {
     "name": "KS COMEDY .c",
     "best_score": 0.0
   },
@@ -1380,23 +1368,15 @@
     "best_score": 0.0
   },
   {
-    "name": "KS KIDS .b",
-    "best_score": 0.0
-  },
-  {
     "name": "KS PREMIERE 1 .c",
     "best_score": 0.0
   },
   {
-    "name": "KS PREMIERE 2 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "KS PREMIERE 3 .c",
-    "best_score": 0.0
-  },
-  {
     "name": "KS PREMIERE 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS THRILLER .c",
     "best_score": 0.0
   },
   {
@@ -1461,10 +1441,6 @@
   },
   {
     "name": "L-STAR MIXHA BIBE & MARTIN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "L-STAR POPULLORE .c",
     "best_score": 0.0
   },
   {
@@ -1716,10 +1692,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PORTOKALLI .c",
-    "best_score": 0.0
-  },
-  {
     "name": "PREMIER SPORTS 2 [LIVE DURING EVENTS ONLY] .s",
     "best_score": 0.0
   },
@@ -1749,10 +1721,6 @@
   },
   {
     "name": "RAYYAN AL QADEEM (FHD) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "REPORT TV .c",
     "best_score": 0.0
   },
   {
@@ -2240,10 +2208,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TOM & JERRY .c",
-    "best_score": 0.0
-  },
-  {
     "name": "TOP ESTRADA .c",
     "best_score": 0.0
   },
@@ -2369,10 +2333,6 @@
   },
   {
     "name": "TV OPOJA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV PRIZRENI .c",
     "best_score": 0.0
   },
   {

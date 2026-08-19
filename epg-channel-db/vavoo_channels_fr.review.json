@@ -1,6 +1,6 @@
 [
   {
-    "name": "DAZN EVENT 10 .s",
+    "name": "DAZN EVENT 1 .s",
     "best_score": 0.0
   },
   {
@@ -28,11 +28,23 @@
     "best_score": 0.0
   },
   {
+    "name": "DAZN EVENT 17 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "DAZN EVENT 18 .s",
     "best_score": 0.0
   },
   {
     "name": "DAZN EVENT 19 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DAZN EVENT 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DAZN EVENT 20 .s",
     "best_score": 0.0
   },
   {
@@ -72,11 +84,15 @@
     "best_score": 0.0
   },
   {
-    "name": "LIGUE 4 FHD .s",
+    "name": "LIGUE 12 HD .s",
     "best_score": 0.0
   },
   {
-    "name": "LIGUE 5 FHD .s",
+    "name": "LIGUE 3 FHD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "LIGUE 4 FHD .s",
     "best_score": 0.0
   },
   {
@@ -88,7 +104,7 @@
     "best_score": 0.0
   },
   {
-    "name": "LIGUE 8 FHD .s",
+    "name": "LIGUE 9 FHD .s",
     "best_score": 0.0
   }
 ]

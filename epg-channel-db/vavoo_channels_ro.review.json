@@ -4,10 +4,6 @@
     "best_score": 0.583
   },
   {
-    "name": "DIGI 4K TV .s",
-    "best_score": 0.571
-  },
-  {
     "name": "AXN WITH .b",
     "best_score": 0.545
   },
@@ -641,6 +637,18 @@
   },
   {
     "name": "TVR TIMISOARA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TVRI .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "U TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "VH1 .s",
     "best_score": 0.0
   },
   {

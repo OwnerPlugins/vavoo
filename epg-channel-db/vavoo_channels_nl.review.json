@@ -4,10 +4,6 @@
     "best_score": 0.692
   },
   {
-    "name": "ONS TV .s",
-    "best_score": 0.667
-  },
-  {
     "name": "XITE ROCK .c",
     "best_score": 0.615
   },
@@ -140,23 +136,11 @@
     "best_score": 0.0
   },
   {
-    "name": "DAZN SOPORT 3 HD .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DEN HAAG FM .c",
     "best_score": 0.0
   },
   {
     "name": "DISNEY XD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DUCK TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EX SPORT (MATCH TIME) .s",
     "best_score": 0.0
   },
   {
@@ -237,10 +221,6 @@
   },
   {
     "name": "NAT GEO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "NAT GEO WILD .c",
     "best_score": 0.0
   },
   {
@@ -325,6 +305,10 @@
   },
   {
     "name": "QMUSIC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RADIO 350 .c",
     "best_score": 0.0
   },
   {
