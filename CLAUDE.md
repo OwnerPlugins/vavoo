@@ -30,6 +30,9 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   channel_alias.py       # channel name normalization/aliasing for EPG matching
   vUtils.py              # grab-bag: logging, HTTP helpers, caching, proxy status/health helpers,
                           #   EPG download/parse/cache + Rytec/satellite-priority channel matching
+  epg_name_utils.py      # channel-name normalization/token-compatibility helpers, shared
+                          #   as-is by vUtils.py (on-box) and generate_epg_channel_db.py (off-box) -
+                          #   has zero Enigma2 imports so both sides can use the exact same code
   notification_system.py # singleton, thread-safe on-screen notification/toast manager
   vavoo_stats.py         # anonymous opt-out startup/heartbeat telemetry (no PII)
   Console.py             # generic subprocess-output Screen used for shell commands in the UI
@@ -94,6 +97,39 @@ does satellite-priority matching: it reads the user's configured satellites
 from Enigma2's `NimManager` and boosts matches from those (1.5x) and from
 Italian satellites/13°E HotBird/5°W Eutelsat (1.3x) as a fallback for
 Italian channels. Priority order: Satellite > Terrestrial > Cable > IPTV.
+`find_match()`'s full priority chain: country-gated `channel_alias.ALIAS_MAP`
+→ local per-box cache → downloaded Rytec-based temp cache → **curated
+channel database** (below) → live Rytec fuzzy matching → live own-feed
+fallback → unmatched. `VavooEPGMatcher` is a per-process singleton
+(`get_epg_matcher()`) called concurrently from real usage (a bouquet
+export's background thread vs. a per-channel EPG-overlay daemon thread
+spawned by watching TV) — its `cache`/`normalized_index`/`new_matches`
+mutations are guarded by `self._cache_lock` (an `RLock`), taken by
+`find_match()` and by every external mutator
+(`update_complete_cache()`, `clean_cache_and_unmatched()`).
+
+**Curated EPG channel database** — a Rytec-independent matching path
+added to cover countries Rytec handles poorly (e.g. Spain, Poland,
+Turkey). `epg-channel-db/vavoo_channels_<cc>.json` in this repo maps
+`channel name -> EPG feed id`, generated offline by
+`generate_epg_channel_db.py` (dev-time script, run against a live
+`vavoo_proxy` instance — fuzzy-matches Vavoo's live channel list
+against that country's own `epg_<cc>.xml` feed, using name-normalization
+helpers shared with the runtime matcher via `epg_name_utils.py`, a
+plain-Python module with no Enigma2 dependency so it can be imported
+both on-box and off-box). `vUtils.py`'s `_load_curated_channel_db()`
+downloads and caches it in-memory for 24h (only on a successful,
+non-empty fetch — a failure/empty result isn't cached, so a transient
+blip doesn't get stuck rejecting real data until the next restart or
+TTL). Every match this path (and Rytec, and the alias table) produces
+gets a synthetic, per-channel-unique service reference via
+`unique_fallback_sref()` rather than a shared Rytec tuple, so different
+channels/countries can never collide in Enigma2's `eEPGCache` (which
+indexes purely by the DVB tuple, ignoring the embedded stream URL) even
+when they share the same EPG id. `.github/workflows/generate_epg_channel_db.yml`
+regenerates this weekly (plus on-demand) on a self-hosted runner — required
+since fetching Vavoo's live channel list needs an authenticated
+`vavoo_proxy` instance, unreachable from GitHub's hosted cloud runners.
 
 **Notifications (`notification_system.py`)** — singleton
 `HybridNotificationManager`, thread-safe (lock-protected), with a message
