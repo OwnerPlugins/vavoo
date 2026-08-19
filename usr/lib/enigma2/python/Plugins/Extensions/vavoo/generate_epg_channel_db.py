@@ -410,6 +410,19 @@ def main():
 
     countries = VAVOO_COUNTRIES if args.all else args.countries
 
+    # cc -> (matched_dict, review_by_name_dict), accumulated across the
+    # whole run. Some VAVOO_COUNTRIES entries have no epg_<cc>.xml feed
+    # of their own and resolve through resolve_country()'s substring
+    # fallback to an EXISTING country's code instead (e.g. "France
+    # Sport" -> "fr", same as "France" itself). Without merging, writing
+    # each country's own result directly let a later entry silently
+    # overwrite an earlier, better one sharing the same code - confirmed
+    # in production: "France Sport" (a narrow, sports-only catalog
+    # bucket) clobbered "France"'s real ~155-entry curated file with its
+    # own much smaller match set whenever --all ran both, since it's
+    # listed right after "France" in VAVOO_COUNTRIES.
+    combined = {}
+
     generated = 0
     skipped_no_feed = 0
     errors = 0
@@ -426,6 +439,19 @@ def main():
                 query_name, cc, args.proxy_host, args.proxy_port,
                 args.threshold)
 
+            prev_matched, prev_review = combined.get(cc, ({}, {}))
+            merged_matched = dict(prev_matched)
+            merged_matched.update(matched)
+            merged_review = dict(prev_review)
+            for r in review:
+                existing = merged_review.get(r["name"])
+                if not existing or r["best_score"] > existing["best_score"]:
+                    merged_review[r["name"]] = r
+            combined[cc] = (merged_matched, merged_review)
+            review_list = sorted(
+                merged_review.values(),
+                key=lambda r: r["best_score"], reverse=True)
+
             out_path = join(
                 args.output_dir, "vavoo_channels_{}.json".format(cc))
             review_path = join(
@@ -433,15 +459,15 @@ def main():
 
             with open(out_path, "w", encoding="utf-8") as f:
                 json.dump(
-                    matched, f, indent=2, sort_keys=True,
+                    merged_matched, f, indent=2, sort_keys=True,
                     ensure_ascii=False)
             with open(review_path, "w", encoding="utf-8") as f:
-                json.dump(review, f, indent=2, ensure_ascii=False)
+                json.dump(review_list, f, indent=2, ensure_ascii=False)
 
             print("{}: {} auto-matched -> {}".format(
-                cc, len(matched), out_path))
+                cc, len(merged_matched), out_path))
             print("{}: {} need manual review -> {}".format(
-                cc, len(review), review_path))
+                cc, len(review_list), review_path))
             generated += 1
         except EmptyResultError as e:
             print("{}: skipped ({})".format(cc, e))
