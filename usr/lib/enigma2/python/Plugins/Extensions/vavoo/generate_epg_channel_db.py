@@ -270,6 +270,21 @@ def fetch_feed_index(country):
     return index
 
 
+def _load_existing_matched(output_dir, feed_code):
+    """Load a previously-committed vavoo_channels_<cc>.json, if any, so
+    this run's result can be merged on top of it instead of replacing
+    it outright - the matched file is meant to only ever grow. Never
+    raises - a missing, unreadable, or malformed file just means
+    "nothing to merge with yet", same as a fresh country."""
+    path = join(output_dir, "vavoo_channels_{}.json".format(feed_code))
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (IOError, OSError, ValueError):
+        return {}
+
+
 def find_best_match(vavoo_name, feed_index, threshold):
     """Mirrors vUtils.py's module-level _find_feed_id_by_name(), but
     returns the best score too (even below threshold) so unmatched
@@ -411,16 +426,23 @@ def main():
     countries = VAVOO_COUNTRIES if args.all else args.countries
 
     # cc -> (matched_dict, review_by_name_dict), accumulated across the
-    # whole run. Some VAVOO_COUNTRIES entries have no epg_<cc>.xml feed
-    # of their own and resolve through resolve_country()'s substring
+    # whole run and seeded from whatever vavoo_channels_<cc>.json already
+    # exists on disk (see _load_existing_matched()) - the matched file is
+    # meant to only ever grow: a channel confirmed in an earlier run
+    # stays confirmed even if this run's live fetch/match doesn't
+    # reproduce it (a transient miss, a channel temporarily absent from
+    # the catalog, etc.). Only a genuine re-match of the same channel
+    # name overwrites its id (an upgrade, trusting the freshest result),
+    # never a plain absence. This is also what fixes the same-feed-code
+    # collision - some VAVOO_COUNTRIES entries have no epg_<cc>.xml of
+    # their own and resolve through resolve_country()'s substring
     # fallback to an EXISTING country's code instead (e.g. "France
-    # Sport" -> "fr", same as "France" itself). Without merging, writing
-    # each country's own result directly let a later entry silently
-    # overwrite an earlier, better one sharing the same code - confirmed
-    # in production: "France Sport" (a narrow, sports-only catalog
-    # bucket) clobbered "France"'s real ~155-entry curated file with its
-    # own much smaller match set whenever --all ran both, since it's
-    # listed right after "France" in VAVOO_COUNTRIES.
+    # Sport" -> "fr", same as "France" itself), so without merging,
+    # writing each country's own result directly let a later entry
+    # silently overwrite an earlier, better one sharing the same code -
+    # confirmed in production: "France Sport" (a narrow, sports-only
+    # catalog bucket) clobbered "France"'s real ~155-entry curated file
+    # with its own much smaller match set whenever --all ran both.
     combined = {}
 
     generated = 0
@@ -439,7 +461,10 @@ def main():
                 query_name, cc, args.proxy_host, args.proxy_port,
                 args.threshold)
 
-            prev_matched, prev_review = combined.get(cc, ({}, {}))
+            if cc not in combined:
+                combined[cc] = (_load_existing_matched(
+                    args.output_dir, cc), {})
+            prev_matched, prev_review = combined[cc]
             merged_matched = dict(prev_matched)
             merged_matched.update(matched)
             merged_review = dict(prev_review)
@@ -448,8 +473,15 @@ def main():
                 if not existing or r["best_score"] > existing["best_score"]:
                     merged_review[r["name"]] = r
             combined[cc] = (merged_matched, merged_review)
+            # The review file is disposable/working data, not
+            # authoritative like the matched file - freely regenerated
+            # each run, but never lists a channel that's already
+            # confirmed (whether matched just now or already on disk
+            # from an earlier run) as still needing manual review.
             review_list = sorted(
-                merged_review.values(),
+                (r for r in merged_review.values()
+                 if clean_name_for_similarity(r["name"])
+                 not in merged_matched),
                 key=lambda r: r["best_score"], reverse=True)
 
             out_path = join(
