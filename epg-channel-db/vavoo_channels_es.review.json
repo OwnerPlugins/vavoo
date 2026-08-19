@@ -12,16 +12,8 @@
     "best_score": 0.696
   },
   {
-    "name": "CLAN .b",
-    "best_score": 0.667
-  },
-  {
     "name": "MEZZO .c",
     "best_score": 0.667
-  },
-  {
-    "name": "BLOOMBERG TV EUROPE .c",
-    "best_score": 0.643
   },
   {
     "name": "CANAL SUR ANDALUCIA .c",
@@ -98,6 +90,10 @@
   {
     "name": "TV3 CATALUNYA .c",
     "best_score": 0.375
+  },
+  {
+    "name": "101 TV .c",
+    "best_score": 0.0
   },
   {
     "name": "13 REALITIES .c",
@@ -288,10 +284,6 @@
     "best_score": 0.0
   },
   {
-    "name": "COMEDIA ESPANOLA .c",
-    "best_score": 0.0
-  },
-  {
     "name": "COSMOPOLITAN TV .c",
     "best_score": 0.0
   },
@@ -320,14 +312,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY WORLD .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISNEY JUNIOR .b",
-    "best_score": 0.0
-  },
-  {
     "name": "DW ESPAÑOL .c",
     "best_score": 0.0
   },
@@ -352,10 +336,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ESPN 3 .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ESPN DEPORTES .c",
     "best_score": 0.0
   },
@@ -373,6 +353,10 @@
   },
   {
     "name": "GOIENA EUS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "GOL TV HD .b",
     "best_score": 0.0
   },
   {
@@ -405,10 +389,6 @@
   },
   {
     "name": "LA LIGA TV BAR HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "LA LIGA TV HD .b",
     "best_score": 0.0
   },
   {
@@ -552,6 +532,10 @@
     "best_score": 0.0
   },
   {
+    "name": "MTV ESPANA .c",
+    "best_score": 0.0
+  },
+  {
     "name": "NAT GEO .c",
     "best_score": 0.0
   },
@@ -589,10 +573,6 @@
   },
   {
     "name": "PARAMOUNT CHANNEL .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "PEQUERADIO .c",
     "best_score": 0.0
   },
   {
@@ -696,6 +676,10 @@
     "best_score": 0.0
   },
   {
+    "name": "STAR TVE .c",
+    "best_score": 0.0
+  },
+  {
     "name": "SURF CHANNEL .c",
     "best_score": 0.0
   },
@@ -721,6 +705,10 @@
   },
   {
     "name": "TELEVIGO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TELEVISIÓN MELILLA .c",
     "best_score": 0.0
   },
   {

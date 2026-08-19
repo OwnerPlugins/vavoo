@@ -64,6 +64,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BNT 1 .c",
+    "best_score": 0.0
+  },
+  {
     "name": "BNT 2 .s",
     "best_score": 0.0
   },
@@ -80,6 +84,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BOX TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BULGARIA 24 .c",
     "best_score": 0.0
   },
@@ -89,10 +97,6 @@
   },
   {
     "name": "CINEMA PLUS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CITY TV .c",
     "best_score": 0.0
   },
   {
@@ -132,7 +136,15 @@
     "best_score": 0.0
   },
   {
+    "name": "DUCK TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "DUCK TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EURONEWS .c",
     "best_score": 0.0
   },
   {
@@ -293,10 +305,6 @@
   },
   {
     "name": "THIS IS BULGARIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TIANKOV FOLK .s",
     "best_score": 0.0
   },
   {

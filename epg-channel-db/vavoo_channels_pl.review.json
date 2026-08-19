@@ -16,10 +16,6 @@
     "best_score": 0.632
   },
   {
-    "name": "CINEMAX POLAND 1 FHD .b",
-    "best_score": 0.609
-  },
-  {
     "name": "CINEMAX POLAND 2 FHD .b",
     "best_score": 0.609
   },
@@ -82,14 +78,6 @@
   {
     "name": "TVP 3 POZNAN .c",
     "best_score": 0.588
-  },
-  {
-    "name": "CINEMAX POLAND 10 FHD .b",
-    "best_score": 0.583
-  },
-  {
-    "name": "CINEMAX POLAND 11 FHD .b",
-    "best_score": 0.583
   },
   {
     "name": "CINEMAX POLAND 12 FHD .b",
@@ -217,6 +205,10 @@
   },
   {
     "name": "ATM ROZRYWKA TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CANAL NOW .b",
     "best_score": 0.0
   },
   {
@@ -428,6 +420,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SUPER EXPRESS TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "SUPERSTACJA .b",
     "best_score": 0.0
   },
@@ -485,6 +481,10 @@
   },
   {
     "name": "W POLSCE POLSAT UHD .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZEST TV .b",
     "best_score": 0.0
   }
 ]

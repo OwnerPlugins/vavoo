@@ -12,12 +12,12 @@
     "best_score": 0.692
   },
   {
-    "name": "DISCOVERY SCIENCE .s",
+    "name": "DISCOVERY SCIENCE .b",
     "best_score": 0.692
   },
   {
-    "name": "E! .s",
-    "best_score": 0.667
+    "name": "DISCOVERY SCIENCE .s",
+    "best_score": 0.692
   },
   {
     "name": "NAT GEO PEOPLE .b",
@@ -160,10 +160,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 1 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BEIN SPORTS 1 PL .s",
     "best_score": 0.0
   },
@@ -173,6 +169,10 @@
   },
   {
     "name": "BEIN SPORTS ENGLISH 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BEIN SPORTS LA LIGA .b",
     "best_score": 0.0
   },
   {
@@ -285,6 +285,10 @@
   },
   {
     "name": "CARTOON NETWORK (BACKUP) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CARTOON NETWORK HD .b",
     "best_score": 0.0
   },
   {
@@ -628,11 +632,19 @@
     "best_score": 0.0
   },
   {
+    "name": "EUROSPORT 1 .b",
+    "best_score": 0.0
+  },
+  {
     "name": "EUROSPORT 1 .s",
     "best_score": 0.0
   },
   {
     "name": "EUROSPORT 1 (BACKUP) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 2 .b",
     "best_score": 0.0
   },
   {
@@ -673,6 +685,10 @@
   },
   {
     "name": "FIVE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FLEETWOOD TOWN .s",
     "best_score": 0.0
   },
   {
@@ -717,6 +733,10 @@
   },
   {
     "name": "GOOD FOOD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "GREAT! CLASS+1 .b",
     "best_score": 0.0
   },
   {
@@ -772,10 +792,6 @@
     "best_score": 0.0
   },
   {
-    "name": "HORROR CHANNEL .b",
-    "best_score": 0.0
-  },
-  {
     "name": "HORROR CHANNEL .s",
     "best_score": 0.0
   },
@@ -821,14 +837,6 @@
   },
   {
     "name": "HUB PREMIER 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HUB PREMIER 4 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HUB PREMIER 5 .s",
     "best_score": 0.0
   },
   {
@@ -1068,6 +1076,10 @@
     "best_score": 0.0
   },
   {
+    "name": "NOW SPORTS 7 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ORIGINALS MOVIES .s",
     "best_score": 0.0
   },
@@ -1252,6 +1264,38 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY CINEMA DISNEY .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA DRAMA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA DRAMA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA FAMILY .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA FAMILY .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA FAMILY (BACKUP) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA GREATS .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY CINEMA GREATS .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY CINEMA PREMIERE .b",
     "best_score": 0.0
   },
@@ -1432,26 +1476,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS MAIN EVENT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT HD .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SKY SPORTS MIX .b",
     "best_score": 0.0
   },
@@ -1528,6 +1552,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY SPORTS ULTRA 1 4K (EVENT ONLY) .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY STORE PREMIERE 10 ᴴᴰ .s",
     "best_score": 0.0
   },
@@ -1537,10 +1565,6 @@
   },
   {
     "name": "SKY STORE PREMIERE 15 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 16 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1577,10 +1601,6 @@
   },
   {
     "name": "SKY STORE PREMIERE 30 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 6 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1801,10 +1821,6 @@
   },
   {
     "name": "VIAPLAY EVENT 15 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 2 .s",
     "best_score": 0.0
   },
   {
