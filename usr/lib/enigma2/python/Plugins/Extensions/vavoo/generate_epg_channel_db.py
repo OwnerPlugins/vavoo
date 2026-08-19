@@ -159,7 +159,7 @@ def resolve_country(user_input):
     # instead, tie-broken alphabetically so the result never depends on
     # dict iteration order (which Python 2 does not guarantee).
     code_candidates = [name for name, c in COUNTRY_CODES.items()
-                        if c == lower]
+                       if c == lower]
     if code_candidates:
         best = sorted(code_candidates, key=lambda n: (-len(n), n))[0]
         return best.lower(), lower
@@ -458,8 +458,11 @@ def main():
             print("ERROR generating {}: {}".format(cc, e))
             errors += 1
 
-    print("\n{} generated, {} skipped (no feed/empty result), {} errors".format(
-        generated, skipped_no_feed, errors))
+    print(
+        "\n{} generated, {} skipped (no feed/empty result), {} errors".format(
+            generated,
+            skipped_no_feed,
+            errors))
 
     return 1 if errors else 0
 
