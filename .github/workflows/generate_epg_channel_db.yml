@@ -12,10 +12,15 @@ name: Generate EPG Channel Database
 #   1. Register a self-hosted runner: repo Settings -> Actions ->
 #      Runners -> New self-hosted runner, installed on/near the box
 #      running vavoo_proxy.
-#   2. If the proxy isn't reachable at 127.0.0.1:4323 from wherever the
-#      runner ends up, set repository variables VAVOO_PROXY_HOST /
-#      VAVOO_PROXY_PORT (Settings -> Secrets and variables -> Actions
-#      -> Variables) to the right host/port instead.
+#   2. REQUIRED for this repo's actual setup: the proxy is not reachable
+#      at 127.0.0.1:4323 from the runner, so set repository variable
+#      VAVOO_PROXY_HOST (Settings -> Secrets and variables -> Actions ->
+#      Variables) to the box's real LAN address. This used to be
+#      hardcoded here as a literal IP - moved out to a repo variable so
+#      the source doesn't bake in internal network topology, but that
+#      means this step is no longer optional: without it, the fallback
+#      here is the portable-but-wrong 127.0.0.1, and every run will fail
+#      to reach the proxy.
 #
 # IMPORTANT: this only commits back to the repo it runs in. The live
 # plugin reads epg-channel-db/ from Belfagor2005/vavoo's main branch
@@ -24,6 +29,14 @@ name: Generate EPG Channel Database
 # actually reach the running plugin, either this workflow needs to run
 # inside Belfagor2005/vavoo itself, or this fork's commits need to flow
 # upstream through its normal PR/merge process.
+
+# Scheduled + manual-dispatch runs can otherwise overlap (a manual
+# retry during the weekly run, or two manual runs) and race on the
+# commit step's git pull --rebase + push - queue them instead of
+# letting a losing push just fail outright.
+concurrency:
+  group: generate-epg-channel-db
+  cancel-in-progress: false
 
 on:
   schedule:
@@ -54,7 +67,7 @@ jobs:
       - name: Generate channel database
         working-directory: usr/lib/enigma2/python/Plugins/Extensions/vavoo
         env:
-          VAVOO_PROXY_HOST: ${{ vars.VAVOO_PROXY_HOST || '172.23.1.5' }}
+          VAVOO_PROXY_HOST: ${{ vars.VAVOO_PROXY_HOST || '127.0.0.1' }}
           VAVOO_PROXY_PORT: ${{ vars.VAVOO_PROXY_PORT || '4323' }}
           COUNTRIES_INPUT: ${{ github.event.inputs.countries }}
         run: |
