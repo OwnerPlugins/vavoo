@@ -4738,10 +4738,27 @@ class Playstream2(
             # Get matcher (singleton, already loaded)
             matcher = get_epg_matcher()
 
+            # Extract channel ID from URL (same as playProxyStream()) -
+            # find_match()'s curated-channel-db lookup only returns a
+            # hit when channel_id is given (it's needed to build a
+            # collision-free synthetic sref via unique_fallback_sref()),
+            # so without this the curated DB - the primary EPG source
+            # for countries with weak Rytec coverage like Spain/Poland/
+            # Turkey - was silently never consulted here, even though
+            # bouquet export (which does pass channel_id) uses it fine.
+            # The sref this call gets back is discarded either way
+            # (_unused below), so this doesn't add any collision risk.
+            channel_id = None
+            if self.url and "vavoo?channel=" in self.url:
+                channel_id = self.url.split("vavoo?channel=")[1]
+            if channel_id and '?' in channel_id:
+                channel_id = channel_id.split('?')[0]
+
             # Find Rytec ID - this is the expensive part
             match_start = time.time()
             rytec_id, _unused = matcher.find_match(
-                clean_name, country_code=self.country_code)
+                clean_name, country_code=self.country_code,
+                channel_id=channel_id)
             match_time = time.time() - match_start
 
             if match_time > 0.1:

@@ -41,14 +41,21 @@ sync if that logic changes there.
 """
 import argparse
 import json
-import re
 import sys
 from difflib import SequenceMatcher
 from io import BytesIO
 from os.path import join
+from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 from xml.etree import ElementTree as ET
+
+from epg_name_utils import (
+    clean_name_for_similarity,
+    tokenize_for_compat,
+    token_pair_compatible,
+    tokens_compatible,
+)
 
 DEFAULT_THRESHOLD = 0.70
 EPG_FEED_URL_TEMPLATE = (
@@ -143,9 +150,19 @@ def resolve_country(user_input):
         if code == lower and name.lower() in vavoo_lower:
             return name.lower(), code
 
-    for name, code in COUNTRY_CODES.items():
-        if code == lower:
-            return name.lower(), code
+    # No VAVOO_COUNTRIES-verified alias for this code - several display
+    # names can still map to it (e.g. "cz" <- "Czech"/"Czech Republic",
+    # "us" <- "America"/"USA"/"United States"). Picking dict-insertion
+    # order here was a real bug (silently resolved "gb" to "UK" instead
+    # of "United Kingdom", which don't match the same catalog string) -
+    # deterministically prefer the longest (most specific/complete) name
+    # instead, tie-broken alphabetically so the result never depends on
+    # dict iteration order (which Python 2 does not guarantee).
+    code_candidates = [name for name, c in COUNTRY_CODES.items()
+                        if c == lower]
+    if code_candidates:
+        best = sorted(code_candidates, key=lambda n: (-len(n), n))[0]
+        return best.lower(), lower
 
     # Substring fallback, mirroring vUtils.py's get_country_code() - a
     # group name that embeds a real country name (e.g. "France Sport"
@@ -155,58 +172,39 @@ def resolve_country(user_input):
     # proxy query name stays the original input though (Vavoo's catalog
     # country field is the literal "France Sport", not "France" - only
     # the feed code should borrow from the matched country).
-    for name, code in COUNTRY_CODES.items():
-        name_lower = name.lower()
-        if name_lower in lower or lower in name_lower:
-            return lower, code
+    #
+    # Deliberately one-directional: only "country name is a substring
+    # of the input" (name_lower in lower), never the reverse ("input is
+    # a substring of the country name"). The reverse direction is what
+    # made a short input like "Ira" or "Korea" spuriously match against
+    # any country name that happens to *contain* those letters
+    # (formerly picked "United Arab Emirates" for "Ira" - "ira" is
+    # buried inside "emIRAtes" - or an arbitrary Korea) with nothing
+    # like the "France Sport" use case to justify it: any real
+    # abbreviation-style input (e.g. "UK") is already resolved by the
+    # exact-name-match branch above via its own country_codes entry, so
+    # this fallback never legitimately needs that direction.
+    substring_candidates = [
+        name for name in COUNTRY_CODES if name.lower() in lower]
+    if substring_candidates:
+        # Prefer a VAVOO_COUNTRIES-verified name first (this is what
+        # makes "France Sport" reliably resolve via "France" rather
+        # than any other substring hit), then the longest/most specific
+        # name, alphabetically tie-broken so the result never depends
+        # on Python's dict iteration order.
+        vavoo_hits = [n for n in substring_candidates
+                      if n.lower() in vavoo_lower]
+        pool = vavoo_hits or substring_candidates
+        best = sorted(pool, key=lambda n: (-len(n), n))[0]
+        return lower, COUNTRY_CODES[best]
 
     return lower, lower
 
 
-# ---------------------------------------------------------------------
-# Name-cleaning / token-compatibility helpers - mirror VavooEPGMatcher
-# in vUtils.py so this generator's matches agree with what the live
-# plugin would do for the same names.
-# ---------------------------------------------------------------------
-
-def clean_name_for_similarity(name):
-    """Mirrors VavooEPGMatcher._clean_name_for_similarity()."""
-    if not name:
-        return ""
-    n = name.upper()
-    n = re.sub(r'\[.*\]', '', n)
-    n = re.sub(r'\(.*\)', '', n)
-    if not n.startswith("HISTORY"):
-        n = re.sub(r'\s+\.[A-Z0-9]{1,3}$', '', n)
-    n = re.sub(r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$', '', n)
-    n = re.sub(r'\s+\+$', '', n)
-    n = re.sub(r'[^A-Z0-9 ]', '', n)
-    n = re.sub(r'\s+', ' ', n)
-    return n.strip().lower()
-
-
-def tokenize_for_compat(clean_name):
-    """Mirrors vUtils.py's module-level _tokenize_for_compat()."""
-    return re.sub(r'(?<=[a-z])(?=[0-9])', ' ', clean_name).split()
-
-
-def token_pair_compatible(a, b):
-    """Mirrors vUtils.py's module-level _token_pair_compatible()."""
-    if a == b:
-        return True
-    if a.isdigit() or b.isdigit():
-        return False
-    return a + 's' == b or b + 's' == a
-
-
-def tokens_compatible(a_tokens, b_tokens):
-    """Mirrors vUtils.py's module-level _tokens_compatible()."""
-    shorter, longer = (
-        (a_tokens, b_tokens) if len(a_tokens) <= len(b_tokens)
-        else (b_tokens, a_tokens))
-    prefix = longer[:len(shorter)]
-    return len(prefix) == len(shorter) and all(
-        token_pair_compatible(x, y) for x, y in zip(shorter, prefix))
+# Name-cleaning / token-compatibility helpers live in epg_name_utils.py
+# (imported above) - single source of truth shared with VavooEPGMatcher
+# in vUtils.py, so the two can no longer silently drift apart the way
+# two independently hand-maintained copies could.
 
 
 def fetch_url(url, timeout=60):
@@ -296,6 +294,18 @@ def find_best_match(vavoo_name, feed_index, threshold):
     return None, best_score
 
 
+class EmptyResultError(Exception):
+    """Raised when a fetch technically succeeded (no HTTPError) but
+    returned nothing usable - zero Vavoo channels for the query, or an
+    epg_<cc>.xml that parsed to zero channel entries. Deliberately
+    distinct from a 404: the caller must NOT write an output file for
+    this case, since main()'s "generated" write happens unconditionally
+    otherwise and would silently overwrite a previously-good curated
+    file with an empty one on a bad/typo'd query or a transient feed
+    blip - exactly what wiped France's real data out via an automated
+    CI run once already."""
+
+
 def generate_for_country(
         query_name,
         feed_code,
@@ -308,8 +318,17 @@ def generate_for_country(
     with (e.g. "pt"). See resolve_country()."""
     channels = fetch_vavoo_channels(proxy_host, proxy_port, query_name)
     print("{}: {} Vavoo channels".format(feed_code.upper(), len(channels)))
+    if not channels:
+        raise EmptyResultError(
+            "0 Vavoo channels for query '{}' - bad country name, or "
+            "the catalog genuinely has none right now".format(query_name))
+
     feed_index = fetch_feed_index(feed_code)
     print("{}: {} feed channels".format(feed_code.upper(), len(feed_index)))
+    if not feed_index:
+        raise EmptyResultError(
+            "epg_{}.xml parsed to 0 channels - missing/empty feed, or "
+            "a transient fetch failure".format(feed_code))
 
     matched = {}
     review = []
@@ -386,6 +405,8 @@ def main():
         parser.error("pass either country arguments or --all, not both")
     if not args.all and not args.countries:
         parser.error("pass at least one country, or --all")
+    if not (0.0 <= args.threshold <= 1.0):
+        parser.error("--threshold must be between 0.0 and 1.0")
 
     countries = VAVOO_COUNTRIES if args.all else args.countries
 
@@ -396,35 +417,48 @@ def main():
         query_name, cc = resolve_country(country)
         print("'{}' resolved to: proxy query='{}', feed code='{}'".format(
             country, query_name, cc))
+        # Fetch/match AND the file writes below all live inside this one
+        # try - a filesystem error on the write step used to be able to
+        # propagate straight out of this loop and abort every remaining
+        # country in an --all run instead of being counted and skipped.
         try:
             matched, review = generate_for_country(
                 query_name, cc, args.proxy_host, args.proxy_port,
                 args.threshold)
-        except Exception as e:
-            if "404" in str(e):
+
+            out_path = join(
+                args.output_dir, "vavoo_channels_{}.json".format(cc))
+            review_path = join(
+                args.output_dir, "vavoo_channels_{}.review.json".format(cc))
+
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(
+                    matched, f, indent=2, sort_keys=True,
+                    ensure_ascii=False)
+            with open(review_path, "w", encoding="utf-8") as f:
+                json.dump(review, f, indent=2, ensure_ascii=False)
+
+            print("{}: {} auto-matched -> {}".format(
+                cc, len(matched), out_path))
+            print("{}: {} need manual review -> {}".format(
+                cc, len(review), review_path))
+            generated += 1
+        except EmptyResultError as e:
+            print("{}: skipped ({})".format(cc, e))
+            skipped_no_feed += 1
+        except HTTPError as e:
+            if e.code == 404:
                 print("{}: skipped (no epg_{}.xml feed)".format(cc, cc))
                 skipped_no_feed += 1
             else:
-                print("ERROR generating {}: {}".format(cc, e))
+                print("ERROR generating {}: HTTP {} - {}".format(
+                    cc, e.code, e))
                 errors += 1
-            continue
+        except Exception as e:
+            print("ERROR generating {}: {}".format(cc, e))
+            errors += 1
 
-        out_path = join(args.output_dir, "vavoo_channels_{}.json".format(cc))
-        review_path = join(
-            args.output_dir, "vavoo_channels_{}.review.json".format(cc))
-
-        with open(out_path, "w", encoding="utf-8") as f:
-            json.dump(
-                matched, f, indent=2, sort_keys=True, ensure_ascii=False)
-        with open(review_path, "w", encoding="utf-8") as f:
-            json.dump(review, f, indent=2, ensure_ascii=False)
-
-        print("{}: {} auto-matched -> {}".format(cc, len(matched), out_path))
-        print("{}: {} need manual review -> {}".format(
-            cc, len(review), review_path))
-        generated += 1
-
-    print("\n{} generated, {} skipped (no feed), {} errors".format(
+    print("\n{} generated, {} skipped (no feed/empty result), {} errors".format(
         generated, skipped_no_feed, errors))
 
     return 1 if errors else 0
