@@ -1589,8 +1589,15 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
             # Redirect per-country EPG requests to GitHub raw files
             elif parsed_path.path.startswith('/epg/') and parsed_path.path.endswith('.xml'):
+                # Lowercase: the actual files on GitHub are lowercase
+                # (epg_it.xml, epg_fr.xml, ...) and raw.githubusercontent.com
+                # paths are case-sensitive, unlike every other caller of a
+                # country code in this codebase (_get_epg_feed_index(),
+                # update_epg_sources(), etc.), which already lowercase
+                # first - an uppercase/mixed-case request here would
+                # otherwise redirect straight to a 404.
                 country_code = parsed_path.path.split(
-                    '/')[-1].replace('.xml', '')
+                    '/')[-1].replace('.xml', '').lower()
                 github_url = "{}/vavoo-player/master/epg_{}.xml".format(
                     HOST_GIT, country_code)
                 self.send_response(302)
