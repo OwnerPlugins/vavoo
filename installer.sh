@@ -1,20 +1,17 @@
 #!/bin/bash
 
-version='1.87'
-changelog="- Fixed a Python 3 bytes/str comparison bug that silently broke the
-  proxy-null-response fallback when browsing channels
-- Fixed a stream-resolution cache race condition in the local proxy
-  under concurrent requests
-- Fixed bouquet, favorites, and EPG cache files being left corrupted
-  if the box lost power mid-write
-- Fixed the plugin blocking for up to 5 seconds on a slow/unreachable
-  network every time it loads
-- Fixed the installer misdetecting Python 2 vs 3 on images without an
-  unversioned 'python' binary
-- Made 'Auto-update EPG' actually enable the EPGImport source instead
-  of doing nothing
-- Removed dead proxy-launch scripts and synced install dependencies
-  across all three packaging paths"
+version='1.88'
+changelog="- Added a self-hosted, Rytec-independent curated EPG channel database
+  for countries Rytec covers poorly (e.g. Spain, Poland, Turkey)
+- Fixed cross-country EPG collisions that could show the wrong
+  country's programme guide on some channels
+- Fixed the live 'Now Playing' EPG overlay never using the curated
+  database, even though bouquet export already did
+- Added wraparound Up/Down navigation on the country and channel
+  lists (pressing Up on the first entry jumps to the last, and
+  vice versa) - now consistent across every Enigma2 image
+- Fixed the installer failing to download on images (e.g. OpenPLi)
+  whose wget has limited HTTPS support, by trying curl first"
 
 
 echo "$changelog"
