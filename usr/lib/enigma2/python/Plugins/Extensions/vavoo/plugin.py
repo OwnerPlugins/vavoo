@@ -880,11 +880,14 @@ class vavoo_config(Screen, ConfigListScreen):
                 try:
                     self.list.append(
                         getConfigListEntry(
-                            2 * indent + _("Time to start EPG/bouquet update:"),
+                            2 *
+                            indent +
+                            _("Time to start EPG/bouquet update:"),
                             cfg.fixedtime,
                             _("Configure at a fixed time")))
                 except Exception as e:
-                    print("Error building 'Time to start update' config entry:", e)
+                    print(
+                        "Error building 'Time to start update' config entry:", e)
 
         self.list.append(
             getConfigListEntry(
