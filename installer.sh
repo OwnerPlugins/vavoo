@@ -70,6 +70,24 @@ if ! command -v wget >/dev/null 2>&1; then
     esac
 fi
 
+# Best-effort curl install - NOT fatal if it fails, unlike wget above.
+# Some images (e.g. OpenPLi) ship a BusyBox wget applet whose HTTPS/TLS
+# support is too limited for GitHub's current requirements ("wget:
+# error getting response: Connection reset by peer" mid-handshake,
+# despite DNS/TCP succeeding) even though the exact same URL downloads
+# fine via curl on the same box. wget stays the fallback either way.
+if ! command -v curl >/dev/null 2>&1; then
+    echo "Installing curl (best-effort, for a more reliable HTTPS download)..."
+    case "$OSTYPE" in
+        "DreamOs"|"Debian")
+            apt-get update && apt-get install -y curl
+            ;;
+        "OE")
+            opkg update && opkg install curl
+            ;;
+    esac
+fi
+
 if command -v python3 >/dev/null 2>&1; then
     echo "Python3 image detected"
     PYTHON="PY3"
@@ -131,8 +149,18 @@ cleanup
 mkdir -p "$TMPPATH"
 
 echo "Downloading vavoo..."
-wget --no-check-certificate 'https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz' -O "$FILEPATH"
-if [ $? -ne 0 ]; then
+DOWNLOAD_URL='https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz'
+DOWNLOAD_OK=1
+if command -v curl >/dev/null 2>&1; then
+    curl -fL --insecure -o "$FILEPATH" "$DOWNLOAD_URL"
+    DOWNLOAD_OK=$?
+fi
+if [ "$DOWNLOAD_OK" -ne 0 ]; then
+    echo "Falling back to wget for the download..."
+    wget --no-check-certificate "$DOWNLOAD_URL" -O "$FILEPATH"
+    DOWNLOAD_OK=$?
+fi
+if [ "$DOWNLOAD_OK" -ne 0 ]; then
     echo "Failed to download vavoo package!"
     cleanup
     exit 1
