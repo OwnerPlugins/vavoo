@@ -841,27 +841,50 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self.list.append(
             getConfigListEntry(
-                _("Scheduled List:"),
+                _("Scheduled EPG/Bouquet Update:"),
                 cfg.autobouquetupdate,
-                _("Active Automatic Bouquet Update")))
+                _("Periodically re-match EPG and refresh bouquets for your "
+                  "favorited countries in the background.")))
         if cfg.autobouquetupdate.value is True:
-            self.list.append(
-                getConfigListEntry(
-                    indent + _("Schedule type:"),
-                    cfg.timetype,
-                    _("At an interval hours or fixed time")))
+            try:
+                self.list.append(
+                    getConfigListEntry(
+                        indent + _("Schedule type:"),
+                        cfg.timetype,
+                        _("At an interval hours or fixed time")))
+            except Exception as e:
+                print("Error building 'Schedule type' config entry:", e)
+            # Each sub-entry is wrapped independently: getConfigListEntry()
+            # touches Enigma2 core config widgets (ConfigSelectionNumber/
+            # ConfigClock) outside this repo, whose behavior can differ by
+            # image/build (same class of issue as this session's wraparound-
+            # navigation fix). createSetup() has no exception handling
+            # anywhere else, and self["config"].l.setList(self.list) only
+            # runs once at the very end - previously, a single entry
+            # raising here silently aborted the ENTIRE rebuild, freezing
+            # the screen on whatever it showed before with no visible
+            # error, which is exactly what made "Update interval" (and
+            # everything listed after it) appear to have vanished for one
+            # user while working fine for another on a different image.
             if cfg.timetype.value == "interval":
-                self.list.append(
-                    getConfigListEntry(
-                        2 * indent + _("Update interval (minutes):"),
-                        cfg.updateinterval,
-                        _("Configure interval minutes from now")))
+                try:
+                    self.list.append(
+                        getConfigListEntry(
+                            2 * indent + _("EPG/Bouquet update interval (minutes):"),
+                            cfg.updateinterval,
+                            _("How often to re-match EPG and refresh "
+                              "bouquets, counting from now.")))
+                except Exception as e:
+                    print("Error building 'Update interval' config entry:", e)
             if cfg.timetype.value == "fixed time":
-                self.list.append(
-                    getConfigListEntry(
-                        2 * indent + _("Time to start update:"),
-                        cfg.fixedtime,
-                        _("Configure at a fixed time")))
+                try:
+                    self.list.append(
+                        getConfigListEntry(
+                            2 * indent + _("Time to start EPG/bouquet update:"),
+                            cfg.fixedtime,
+                            _("Configure at a fixed time")))
+                except Exception as e:
+                    print("Error building 'Time to start update' config entry:", e)
 
         self.list.append(
             getConfigListEntry(
