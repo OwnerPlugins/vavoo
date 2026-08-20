@@ -92,9 +92,6 @@ msgstr "- {} записи се ажурирани"
 msgid "? Proxy Unknown"
 msgstr "? Непознат прокси"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Активно автоматско ажурирање на букет"
-
 msgid "All countries (%d)"
 msgstr "Сите земји (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Конфигурирајте ја главната слика за по�
 msgid "Configure at a fixed time"
 msgstr "Конфигурирајте во фиксно време"
 
-msgid "Configure interval minutes from now"
-msgstr "Конфигурирајте интервал минути од сега"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Конфигурирајте ја услугата Референца Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Обработката на EPG е завршена (нема совпа
 
 msgid "EPG processing completed for {} channels"
 msgstr "Обработката на EPG е завршена за {} канали"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Интервал за ажурирање (минути):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Не е пронајден приклучокот EPGImport: {}"
@@ -333,6 +331,9 @@ msgstr "Да се ​​генерираат датотеки .m3u и да се 
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Да се ​​генерираат датотеки .m3u за СИТЕ %d земји?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Важни забелешки:"
@@ -428,6 +429,9 @@ msgstr "Сега %s"
 msgid "Only one specific country"
 msgstr "Само една конкретна земја"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Позиција на букетите Vavoo во главната листа"
 
@@ -520,8 +524,9 @@ msgstr "Зачувано во: %s"
 msgid "Schedule type:"
 msgstr "Тип на распоред:"
 
-msgid "Scheduled List:"
-msgstr "Закажана листа:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Тип на распоред:"
 
 msgid "Search"
 msgstr "Пребарување"
@@ -583,7 +588,8 @@ msgstr "Ова ќе го отстрани:"
 msgid "This will:"
 msgstr "Ова ќе:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Време е да започнете со ажурирање:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ГОЛЕМИ букви"
 #, fuzzy
 msgid "Update Available"
 msgstr "Нема достапни ставки"
-
-msgid "Update interval (minutes):"
-msgstr "Интервал за ажурирање (минути):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Офлајн прокси"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Рестартирањето не успеа"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Активно автоматско ажурирање на букет"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Конфигурирајте интервал минути од сега"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Закажана листа:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Автоматски активирајте го ажурирањето на EPG по создавањето на изворот"

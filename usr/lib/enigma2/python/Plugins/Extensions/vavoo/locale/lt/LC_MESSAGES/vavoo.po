@@ -93,9 +93,6 @@ msgstr "- Atnaujinti {} įrašai"
 msgid "? Proxy Unknown"
 msgstr "? Tarpinis serveris nežinomas"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktyvus automatinis puokštės atnaujinimas"
-
 msgid "All countries (%d)"
 msgstr "Visos šalys (%d)"
 
@@ -190,9 +187,6 @@ msgstr "Konfigūruoti pagrindinį fono vaizdą."
 msgid "Configure at a fixed time"
 msgstr "Konfigūruoti nustatytu laiku"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfigūruokite intervalo minutes nuo dabar"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfigūruoti paslaugą Nuoroda Iptv-Gstreamer-Exteplayer3"
 
@@ -253,6 +247,10 @@ msgstr "EPG apdorojimas baigtas (attikimų nėra)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG apdorojimas baigtas {} kanalams"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Atnaujinimo intervalas (minutės):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport papildinys nerastas: {}"
@@ -334,6 +332,9 @@ msgstr "Sugeneruoti .m3u failus ir išsaugoti įrenginyje %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generuoti .m3u failus VISIEMS %d šalių?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Svarbios pastabos:"
@@ -429,6 +430,9 @@ msgstr "Dabar %s"
 msgid "Only one specific country"
 msgstr "Tik viena konkreti šalis"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo puokščių padėtis pagrindiniame sąraše"
 
@@ -521,8 +525,9 @@ msgstr "Išsaugota: %s"
 msgid "Schedule type:"
 msgstr "Tvarkaraščio tipas:"
 
-msgid "Scheduled List:"
-msgstr "Suplanuotas sąrašas:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Tvarkaraščio tipas:"
 
 msgid "Search"
 msgstr "Ieškoti"
@@ -584,7 +589,8 @@ msgstr "Tai pašalins:"
 msgid "This will:"
 msgstr "Taip bus:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Laikas pradėti naujinimą:"
 
 msgid "Top"
@@ -599,9 +605,6 @@ msgstr "DIDŽIOSIOS raidės"
 #, fuzzy
 msgid "Update Available"
 msgstr "Prekių nėra"
-
-msgid "Update interval (minutes):"
-msgstr "Atnaujinimo intervalas (minutės):"
 
 #, fuzzy
 msgid "Update now?"
@@ -680,6 +683,15 @@ msgstr "✗ Tarpinis serveris neprisijungęs"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nepavyko paleisti iš naujo"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktyvus automatinis puokštės atnaujinimas"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfigūruokite intervalo minutes nuo dabar"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Suplanuotas sąrašas:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Sukūrus šaltinį, automatiškai suaktyvinkite EPG naujinimą"

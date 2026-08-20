@@ -92,9 +92,6 @@ msgstr "- {} تۈرلەر يېڭىلاندى"
 msgid "? Proxy Unknown"
 msgstr "؟ ۋاكالەتچى نامەلۇم"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "ئاكتىپ ئاپتوماتىك گۈل يېڭىلاش"
-
 msgid "All countries (%d)"
 msgstr "بارلىق دۆلەتلەر (% d)"
 
@@ -189,9 +186,6 @@ msgstr "ئاساسىي تەگلىك سۈرىتىنى سەپلەڭ."
 msgid "Configure at a fixed time"
 msgstr "بەلگىلەنگەن ۋاقىتتا سەپلەڭ"
 
-msgid "Configure interval minutes from now"
-msgstr "ئارىلىق مىنۇتلىرىنى ھازىردىن باشلاپ تەڭشەڭ"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "مۇلازىمەتنى تەڭشەش پايدىلىنىش Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG بىر تەرەپ قىلىش تاماملاندى (ماس كەلمە
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG بىر تەرەپ قىلىش {} قاناللىرى ئۈچۈن تاماملاندى"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "يېڭىلاش ئارىلىقى (مىنۇت):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport قىستۇرمىسى تېپىلمىدى: {}"
@@ -333,6 +331,9 @@ msgstr ".M3u ھۆججىتىنى ھاسىل قىلىپ ،% s ئۈسكۈنىگە �
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ALL% d دۆلەتلىرى ئۈچۈن .m3u ھۆججىتى ھاسىل قىلىڭ؟"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "مۇھىم خاتىرىلەر:"
@@ -428,6 +429,9 @@ msgstr "ھازىر% s"
 msgid "Only one specific country"
 msgstr "پەقەت بىرلا ئالاھىدە دۆلەت"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo گۈللىرىنىڭ ئاساسلىق تىزىملىكتىكى ئورنى"
 
@@ -520,8 +524,9 @@ msgstr "ساقلانغان:% s"
 msgid "Schedule type:"
 msgstr "ۋاقىت جەدۋىلى:"
 
-msgid "Scheduled List:"
-msgstr "پىلانلانغان تىزىملىك:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "ۋاقىت جەدۋىلى:"
 
 msgid "Search"
 msgstr "ئىزدەش"
@@ -583,7 +588,8 @@ msgstr "بۇ چىقىرىۋېتىلىدۇ:"
 msgid "This will:"
 msgstr "بۇ:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "يېڭىلاشنى باشلاش ۋاقتى:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr ""
 #, fuzzy
 msgid "Update Available"
 msgstr "ھېچقانداق تۈر يوق"
-
-msgid "Update interval (minutes):"
-msgstr "يېڭىلاش ئارىلىقى (مىنۇت):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ ۋاكالەتچى Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ قايتا قوزغىتىش مەغلۇب بولدى"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "ئاكتىپ ئاپتوماتىك گۈل يېڭىلاش"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ئارىلىق مىنۇتلىرىنى ھازىردىن باشلاپ تەڭشەڭ"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "پىلانلانغان تىزىملىك:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "مەنبە قۇرۇلغاندىن كېيىن EPG يېڭىلانمىسىنى ئاپتوماتىك قوزغىتىدۇ"

@@ -93,9 +93,6 @@ msgstr "- {} エントリが更新されました"
 msgid "? Proxy Unknown"
 msgstr "?プロキシが不明"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "アクティブな自動花束更新"
-
 msgid "All countries (%d)"
 msgstr "すべての国 (%d)"
 
@@ -190,9 +187,6 @@ msgstr "メインの背景画像を設定します。"
 msgid "Configure at a fixed time"
 msgstr "決まった時間に設定する"
 
-msgid "Configure interval minutes from now"
-msgstr "今からの間隔を分単位で設定します"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "サービスの構成リファレンス Iptv-Gstreamer-Exteplayer3"
 
@@ -253,6 +247,10 @@ msgstr "EPG 処理が完了しました (一致しません)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} チャンネルの EPG 処理が完了しました"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "更新間隔 (分):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport プラグインが見つかりません: {}"
@@ -334,6 +332,9 @@ msgstr ".m3u ファイルを生成してデバイス %s に保存しますか?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "%d か国すべての .m3u ファイルを生成しますか?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "重要な注意事項:"
@@ -429,6 +430,9 @@ msgstr "現在 %s"
 msgid "Only one specific country"
 msgstr "特定の国は 1 つだけ"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "メインリストにおけるVavooブーケの位置"
 
@@ -521,8 +525,9 @@ msgstr "保存場所: %s"
 msgid "Schedule type:"
 msgstr "スケジュールの種類:"
 
-msgid "Scheduled List:"
-msgstr "スケジュール済みリスト:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "スケジュールの種類:"
 
 msgid "Search"
 msgstr "検索"
@@ -584,7 +589,8 @@ msgstr "これにより以下が削除されます:"
 msgid "This will:"
 msgstr "これにより、次のことが行われます。"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "アップデートを開始する時間:"
 
 msgid "Top"
@@ -599,9 +605,6 @@ msgstr "大文字"
 #, fuzzy
 msgid "Update Available"
 msgstr "利用可能なアイテムはありません"
-
-msgid "Update interval (minutes):"
-msgstr "更新間隔 (分):"
 
 #, fuzzy
 msgid "Update now?"
@@ -680,6 +683,15 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "アクティブな自動花束更新"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "今からの間隔を分単位で設定します"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "スケジュール済みリスト:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ソース作成後に EPG 更新を自動的にトリガーする"

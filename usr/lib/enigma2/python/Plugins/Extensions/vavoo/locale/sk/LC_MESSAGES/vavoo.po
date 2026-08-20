@@ -94,9 +94,6 @@ msgstr "- Počet aktualizovaných záznamov: {}"
 msgid "? Proxy Unknown"
 msgstr "? Proxy neznámy"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktívna automatická aktualizácia kytice"
-
 msgid "All countries (%d)"
 msgstr "Všetky krajiny (%d)"
 
@@ -196,10 +193,6 @@ msgstr "Konfigurácia hlavného obrázka na pozadí."
 msgid "Configure at a fixed time"
 msgstr "Konfigurujte v pevnom čase"
 
-#, fuzzy
-msgid "Configure interval minutes from now"
-msgstr "Odteraz konfigurujte každý interval minút"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfigurácia služby Referencia Iptv-Gstreamer-Exteplayer3"
 
@@ -261,6 +254,10 @@ msgstr "Spracovanie EPG dokončené (žiadne zhody)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Spracovanie EPG bolo dokončené pre {} kanálov"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Interval aktualizácie (v minútach):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Doplnok EPGImport sa nenašiel: {}"
@@ -346,6 +343,9 @@ msgstr "Vygenerovať súbory .m3u a uložiť ich do zariadenia %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generovať súbory .m3u pre VŠETKY %d krajiny?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Dôležité poznámky:"
@@ -441,6 +441,9 @@ msgstr "Teraz %s"
 msgid "Only one specific country"
 msgstr "Iba jedna konkrétna krajina"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozícia kytíc Vavoo v hlavnom zozname"
 
@@ -478,7 +481,7 @@ msgstr "Časový limit spustenia servera proxy (v sekundách)"
 #, fuzzy
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token bol úspešne obnovený"
-"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
+"Proxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýProxy token bol úspešne obnovenýKytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Really close without saving settings?"
@@ -539,8 +542,8 @@ msgid "Schedule type:"
 msgstr "Typ rozvrhu:"
 
 #, fuzzy
-msgid "Scheduled List:"
-msgstr "Plánovaná aktualizácia zoznamu:"
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Plánovaná aktualizácia kytice:"
 
 msgid "Search"
 msgstr "Hľadať"
@@ -603,7 +606,8 @@ msgstr "Týmto sa odstráni:"
 msgid "This will:"
 msgstr "Týmto sa odstráni:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Čas na spustenie aktualizácie:"
 
 msgid "Top"
@@ -618,9 +622,6 @@ msgstr "VEĽKÉ (UPPERCASE)"
 #, fuzzy
 msgid "Update Available"
 msgstr "Nie sú k dispozícii žiadne položky"
-
-msgid "Update interval (minutes):"
-msgstr "Interval aktualizácie (v minútach):"
 
 #, fuzzy
 msgid "Update now?"
@@ -647,7 +648,7 @@ msgstr "Doplnok Vavoo Stream Live"
 
 msgid "Vavoo bouquets removed successfully!"
 msgstr "Vavoo kytice boli úspešne odstránené!"
-"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
+"Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Vavoo kytice boli úspešne odstránené!Kytice Vavoo boli úspešne odstránené!\n"
 "(Odstránených súborov: %s)"
 
 msgid "Vavoo is already running."
@@ -702,6 +703,17 @@ msgstr "✗ Proxy offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reštart zlyhal"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktívna automatická aktualizácia kytice"
+
+#, fuzzy
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Odteraz konfigurujte každý interval minút"
+
+#, fuzzy
+#~ msgid "Scheduled List:"
+#~ msgstr "Plánovaná aktualizácia zoznamu:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Automaticky spustiť aktualizáciu EPG po vytvorení zdroja"
@@ -847,6 +859,3 @@ msgstr "✗ Reštart zlyhal"
 
 #~ msgid "Error starting stream via proxy"
 #~ msgstr "Chyba pri spustení streamu cez proxy"
-
-#~ msgid "Scheduled Bouquet Update:"
-#~ msgstr "Plánovaná aktualizácia kytice:"

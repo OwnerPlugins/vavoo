@@ -92,9 +92,6 @@ msgstr "- {} ਐਂਟਰੀਆਂ ਅੱਪਡੇਟ ਕੀਤੀਆਂ ਗਈ�
 msgid "? Proxy Unknown"
 msgstr "? ਪ੍ਰੌਕਸੀ ਅਗਿਆਤ"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "ਕਿਰਿਆਸ਼ੀਲ ਆਟੋਮੈਟਿਕ ਗੁਲਦਸਤਾ ਅੱਪਡੇਟ"
-
 msgid "All countries (%d)"
 msgstr "ਸਾਰੇ ਦੇਸ਼ (%d)"
 
@@ -189,9 +186,6 @@ msgstr "ਮੁੱਖ ਬੈਕਗ੍ਰਾਊਂਡ ਚਿੱਤਰ ਨੂੰ �
 msgid "Configure at a fixed time"
 msgstr "ਇੱਕ ਨਿਸ਼ਚਿਤ ਸਮੇਂ 'ਤੇ ਕੌਂਫਿਗਰ ਕਰੋ"
 
-msgid "Configure interval minutes from now"
-msgstr "ਹੁਣ ਤੋਂ ਅੰਤਰਾਲ ਮਿੰਟਾਂ ਦੀ ਸੰਰਚਨਾ ਕਰੋ"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "ਸੇਵਾ ਸੰਦਰਭ Iptv-Gstreamer-Exteplayer3 ਕੌਂਫਿਗਰ ਕਰੋ"
 
@@ -252,6 +246,10 @@ msgstr "EPG ਪ੍ਰੋਸੈਸਿੰਗ ਪੂਰੀ ਹੋਈ (ਕੋਈ ਮ
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} ਚੈਨਲਾਂ ਲਈ EPG ਪ੍ਰਕਿਰਿਆ ਪੂਰੀ ਹੋਈ"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "ਅੱਪਡੇਟ ਅੰਤਰਾਲ (ਮਿੰਟ):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport ਪਲੱਗਇਨ ਨਹੀਂ ਲੱਭੀ: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u ਫਾਈਲਾਂ ਬਣਾਉ ਅਤੇ ਡਿਵਾਈਸ %s ਵ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ਕੀ ਸਾਰੇ %d ਦੇਸ਼ਾਂ ਲਈ .m3u ਫਾਈਲਾਂ ਬਣਾਉਣੀਆਂ ਹਨ?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "ਮਹੱਤਵਪੂਰਨ ਨੋਟ:"
@@ -428,6 +429,9 @@ msgstr "ਹੁਣ %s"
 msgid "Only one specific country"
 msgstr "ਸਿਰਫ਼ ਇੱਕ ਖਾਸ ਦੇਸ਼"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ਮੁੱਖ ਸੂਚੀ ਵਿੱਚ ਵਾਵੂ ਗੁਲਦਸਤੇ ਦੀ ਸਥਿਤੀ"
 
@@ -520,8 +524,9 @@ msgstr "ਇਸ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਗਿਆ: %s"
 msgid "Schedule type:"
 msgstr "ਸਮਾਂ-ਸੂਚੀ ਦੀ ਕਿਸਮ:"
 
-msgid "Scheduled List:"
-msgstr "ਅਨੁਸੂਚਿਤ ਸੂਚੀ:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "ਸਮਾਂ-ਸੂਚੀ ਦੀ ਕਿਸਮ:"
 
 msgid "Search"
 msgstr "ਖੋਜ"
@@ -583,7 +588,8 @@ msgstr "ਇਹ ਹਟਾ ਦੇਵੇਗਾ:"
 msgid "This will:"
 msgstr "ਇਹ ਕਰੇਗਾ:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "ਅੱਪਡੇਟ ਸ਼ੁਰੂ ਕਰਨ ਦਾ ਸਮਾਂ:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ਅੱਪਰਕੇਸ"
 #, fuzzy
 msgid "Update Available"
 msgstr "ਕੋਈ ਆਈਟਮਾਂ ਉਪਲਬਧ ਨਹੀਂ ਹਨ"
-
-msgid "Update interval (minutes):"
-msgstr "ਅੱਪਡੇਟ ਅੰਤਰਾਲ (ਮਿੰਟ):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ ਪ੍ਰੌਕਸੀ ਔਫਲਾਈਨ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ਮੁੜ ਚਾਲੂ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "ਕਿਰਿਆਸ਼ੀਲ ਆਟੋਮੈਟਿਕ ਗੁਲਦਸਤਾ ਅੱਪਡੇਟ"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ਹੁਣ ਤੋਂ ਅੰਤਰਾਲ ਮਿੰਟਾਂ ਦੀ ਸੰਰਚਨਾ ਕਰੋ"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "ਅਨੁਸੂਚਿਤ ਸੂਚੀ:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ਸਰੋਤ ਬਣਾਉਣ ਤੋਂ ਬਾਅਦ ਸਵੈਚਲਿਤ ਤੌਰ 'ਤੇ EPG ਅੱਪਡੇਟ ਨੂੰ ਟਰਿੱਗਰ ਕਰੋ"

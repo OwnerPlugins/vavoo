@@ -92,9 +92,6 @@ msgstr "- تم تحديث {} الإدخالات"
 msgid "? Proxy Unknown"
 msgstr "؟ الوكيل غير معروف"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "تحديث الباقات التلقائي نشط"
-
 msgid "All countries (%d)"
 msgstr "جميع الدول (%d)"
 
@@ -189,9 +186,6 @@ msgstr "تكوين صورة الخلفية الرئيسية."
 msgid "Configure at a fixed time"
 msgstr "تكوين في وقت محدد"
 
-msgid "Configure interval minutes from now"
-msgstr "تكوين الفاصل الزمني بالدقائق من الآن"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "تكوين مرجع الخدمة Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "اكتملت معالجة دليل البرامج الإلكتروني (
 
 msgid "EPG processing completed for {} channels"
 msgstr "اكتملت معالجة دليل البرامج الإلكتروني لـ {} قناة"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "فاصل التحديث (بالدقائق):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "لم يتم العثور على البرنامج المساعد EPGImport: {}"
@@ -333,6 +331,9 @@ msgstr "إنشاء ملفات .m3u وحفظها على الجهاز %s؟"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "إنشاء ملفات .m3u لجميع %d دولة؟"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "ملاحظات مهمة:"
@@ -428,6 +429,9 @@ msgstr "الآن %s"
 msgid "Only one specific country"
 msgstr "دولة محددة واحدة فقط"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "موضع باقات Vavoo في القائمة الرئيسية"
 
@@ -520,8 +524,9 @@ msgstr "تم الحفظ في: %s"
 msgid "Schedule type:"
 msgstr "نوع الجدولة:"
 
-msgid "Scheduled List:"
-msgstr "القائمة المجدولة:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "نوع الجدولة:"
 
 msgid "Search"
 msgstr "بحث"
@@ -583,7 +588,8 @@ msgstr "سيؤدي هذا إلى إزالة:"
 msgid "This will:"
 msgstr "هذا سوف:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "وقت بدء التحديث:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "أحرف كبيرة"
 #, fuzzy
 msgid "Update Available"
 msgstr "لا توجد عناصر متاحة"
-
-msgid "Update interval (minutes):"
-msgstr "فاصل التحديث (بالدقائق):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "تحديث الباقات التلقائي نشط"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "تكوين الفاصل الزمني بالدقائق من الآن"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "القائمة المجدولة:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "تشغيل تحديث EPG تلقائيا بعد إنشاء المصدر"

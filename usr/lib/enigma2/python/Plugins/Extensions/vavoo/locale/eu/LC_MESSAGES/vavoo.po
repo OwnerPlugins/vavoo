@@ -92,9 +92,6 @@ msgstr "- {} sarrera eguneratu dira"
 msgid "? Proxy Unknown"
 msgstr "? Proxy ezezaguna"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Bouquet eguneratze automatiko aktiboa"
-
 msgid "All countries (%d)"
 msgstr "Herrialde guztiak (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Konfiguratu atzeko planoko irudi nagusia."
 msgid "Configure at a fixed time"
 msgstr "Konfiguratu ordutegi finko batean"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfiguratu hemendik minutuko tartea"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfiguratu zerbitzua Erreferentzia Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG prozesatu da (ez dago bat etortzerik)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG prozesatu da {} kanaletarako"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Eguneratzeko tartea (minutuak):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport plugina ez da aurkitu: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u fitxategiak sortu eta %s gailuan gorde?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "%d herrialde GUZTIETARentzako .m3u fitxategiak sortu?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Ohar garrantzitsuak:"
@@ -428,6 +429,9 @@ msgstr "Orain %s"
 msgid "Only one specific country"
 msgstr "Herrialde zehatz bakarra"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo sorten posizioa zerrenda nagusian"
 
@@ -520,8 +524,9 @@ msgstr "Hemen gordeta: %s"
 msgid "Schedule type:"
 msgstr "Ordutegi mota:"
 
-msgid "Scheduled List:"
-msgstr "Programatutako zerrenda:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Ordutegi mota:"
 
 msgid "Search"
 msgstr "Bilatu"
@@ -583,7 +588,8 @@ msgstr "Honek kenduko du:"
 msgid "This will:"
 msgstr "Honek:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Eguneratzen hasteko ordua:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "MAIUSKULA"
 #, fuzzy
 msgid "Update Available"
 msgstr "Ez dago elementurik eskuragarri"
-
-msgid "Update interval (minutes):"
-msgstr "Eguneratzeko tartea (minutuak):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proxy Lineaz kanpo"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Berrabiarazi huts egin du"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Bouquet eguneratze automatiko aktiboa"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfiguratu hemendik minutuko tartea"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Programatutako zerrenda:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Abiarazi automatikoki EPG eguneratzea iturburua sortu ondoren"

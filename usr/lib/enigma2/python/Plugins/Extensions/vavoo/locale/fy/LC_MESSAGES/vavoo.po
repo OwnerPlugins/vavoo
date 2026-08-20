@@ -92,9 +92,6 @@ msgstr "- {} ynstjoerings bywurke"
 msgid "? Proxy Unknown"
 msgstr "? Proxy Unbekend"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktive Automatyske Bouquet Update"
-
 msgid "All countries (%d)"
 msgstr "Alle lannen (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Konfigurearje Main Eftergrûnôfbylding."
 msgid "Configure at a fixed time"
 msgstr "Konfigurearje op in fêste tiid"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfigurearje yntervalminuten fan no ôf"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfigurearje tsjinst Reference Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG-ferwurking foltôge (gjin wedstriden)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-ferwurking foltôge foar {} kanalen"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Update ynterval (minuten):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport plugin net fûn: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u-bestannen generearje en opslaan op apparaat %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr ".m3u-bestannen generearje foar ALLE %d lannen?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Wichtige notysjes:"
@@ -428,6 +429,9 @@ msgstr "No %s"
 msgid "Only one specific country"
 msgstr "Allinnich ien spesifyk lân"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posysje fan Vavoo-boeketten yn 'e haadlist"
 
@@ -520,8 +524,9 @@ msgstr "Opslein yn: %s"
 msgid "Schedule type:"
 msgstr "Skema type:"
 
-msgid "Scheduled List:"
-msgstr "Planne list:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Skema type:"
 
 msgid "Search"
 msgstr "Sykje"
@@ -583,7 +588,8 @@ msgstr "Dit sil fuortsmite:"
 msgid "This will:"
 msgstr "Dit sil:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Tiid om update te begjinnen:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "HOOFLETTERS"
 #, fuzzy
 msgid "Update Available"
 msgstr "Gjin items beskikber"
-
-msgid "Update interval (minutes):"
-msgstr "Update ynterval (minuten):"
 
 #, fuzzy
 msgid "Update now?"
@@ -678,6 +681,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herstart mislearre"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktive Automatyske Bouquet Update"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfigurearje yntervalminuten fan no ôf"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Planne list:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Aktivearje automatysk EPG-fernijing nei oanmeitsjen fan boarne"

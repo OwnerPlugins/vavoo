@@ -92,9 +92,6 @@ msgstr "- {} உள்ளீடுகள் புதுப்பிக்கப
 msgid "? Proxy Unknown"
 msgstr "? ப்ராக்ஸி தெரியவில்லை"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "செயலில் தானியங்கி பூச்செண்டு புதுப்பிப்பு"
-
 msgid "All countries (%d)"
 msgstr "அனைத்து நாடுகளும் (%d)"
 
@@ -189,9 +186,6 @@ msgstr "பிரதான பின்னணி படத்தை உள்ள
 msgid "Configure at a fixed time"
 msgstr "ஒரு குறிப்பிட்ட நேரத்தில் கட்டமைக்கவும்"
 
-msgid "Configure interval minutes from now"
-msgstr "இப்போதிலிருந்து இடைவெளி நிமிடங்களை உள்ளமைக்கவும்"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "சேவை குறிப்பு Iptv-Gstreamer-Exteplayer3 ஐ உள்ளமைக்கவும்"
 
@@ -252,6 +246,10 @@ msgstr "EPG செயலாக்கம் முடிந்தது (பொ�
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} சேனல்களுக்கான EPG செயலாக்கம் முடிந்தது"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "புதுப்பிப்பு இடைவெளி (நிமிடங்கள்):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport செருகுநிரல் கிடைக்கவில்லை: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u கோப்புகளை உருவாக்கி %s சா�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "அனைத்து %d நாடுகளுக்கும் .m3u கோப்புகளை உருவாக்கவா?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "முக்கிய குறிப்புகள்:"
@@ -428,6 +429,9 @@ msgstr "இப்போது %s"
 msgid "Only one specific country"
 msgstr "ஒரே ஒரு குறிப்பிட்ட நாடு"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "முக்கிய பட்டியலில் Vavoo பூங்கொத்துகளின் நிலை"
 
@@ -520,8 +524,9 @@ msgstr "இதில் சேமிக்கப்பட்டது: %s"
 msgid "Schedule type:"
 msgstr "அட்டவணை வகை:"
 
-msgid "Scheduled List:"
-msgstr "திட்டமிடப்பட்ட பட்டியல்:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "அட்டவணை வகை:"
 
 msgid "Search"
 msgstr "தேடு"
@@ -583,7 +588,8 @@ msgstr "இது அகற்றும்:"
 msgid "This will:"
 msgstr "இது:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "புதுப்பிப்பைத் தொடங்குவதற்கான நேரம்:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "பெரிய எழுத்து"
 #, fuzzy
 msgid "Update Available"
 msgstr "பொருட்கள் எதுவும் கிடைக்கவில்லை"
-
-msgid "Update interval (minutes):"
-msgstr "புதுப்பிப்பு இடைவெளி (நிமிடங்கள்):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ ப்ராக்ஸி ஆஃப்லைன்"
 
 msgid "✗ Restart Failed"
 msgstr "✗ மறுதொடக்கம் தோல்வியடைந்தது"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "செயலில் தானியங்கி பூச்செண்டு புதுப்பிப்பு"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "இப்போதிலிருந்து இடைவெளி நிமிடங்களை உள்ளமைக்கவும்"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "திட்டமிடப்பட்ட பட்டியல்:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "மூல உருவாக்கத்திற்குப் பிறகு தானாகவே EPG புதுப்பிப்பைத் தூண்டும்"

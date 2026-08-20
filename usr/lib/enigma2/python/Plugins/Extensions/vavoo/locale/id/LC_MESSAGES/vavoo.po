@@ -92,9 +92,6 @@ msgstr "- Entri {} diperbarui"
 msgid "? Proxy Unknown"
 msgstr "? Proksi Tidak Diketahui"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Pembaruan Buket Otomatis Aktif"
-
 msgid "All countries (%d)"
 msgstr "Semua negara (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Konfigurasikan Gambar Latar Belakang Utama."
 msgid "Configure at a fixed time"
 msgstr "Konfigurasikan pada waktu yang tetap"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfigurasikan menit interval dari sekarang"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfigurasikan layanan Referensi Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Pemrosesan EPG selesai (tidak ada kecocokan)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Pemrosesan EPG selesai untuk {} saluran"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Interval pembaruan (menit):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Plugin EPGImport tidak ditemukan: {}"
@@ -333,6 +331,9 @@ msgstr "Hasilkan file .m3u dan simpan ke perangkat %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Hasilkan file .m3u untuk SEMUA %d negara?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Catatan Penting:"
@@ -428,6 +429,9 @@ msgstr "Sekarang %s"
 msgid "Only one specific country"
 msgstr "Hanya satu negara tertentu"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisi karangan bunga Vavoo di daftar utama"
 
@@ -520,8 +524,9 @@ msgstr "Disimpan di: %s"
 msgid "Schedule type:"
 msgstr "Jenis jadwal:"
 
-msgid "Scheduled List:"
-msgstr "Daftar Terjadwal:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Jenis jadwal:"
 
 msgid "Search"
 msgstr "Mencari"
@@ -583,7 +588,8 @@ msgstr "Ini akan menghapus:"
 msgid "This will:"
 msgstr "Ini akan:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Saatnya memulai pembaruan:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "HURUF BESAR"
 #, fuzzy
 msgid "Update Available"
 msgstr "Tidak ada item yang tersedia"
-
-msgid "Update interval (minutes):"
-msgstr "Interval pembaruan (menit):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proksi Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Mulai Ulang Gagal"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Pembaruan Buket Otomatis Aktif"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfigurasikan menit interval dari sekarang"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Daftar Terjadwal:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Secara otomatis memicu pembaruan EPG setelah pembuatan sumber"

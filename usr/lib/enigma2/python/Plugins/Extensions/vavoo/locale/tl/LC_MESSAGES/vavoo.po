@@ -92,9 +92,6 @@ msgstr "- Na-update ang mga entry ng {}."
 msgid "? Proxy Unknown"
 msgstr "? Hindi Kilala ang Proxy"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktibong Awtomatikong Bouquet Update"
-
 msgid "All countries (%d)"
 msgstr "Lahat ng bansa (%d)"
 
@@ -189,9 +186,6 @@ msgstr "I-configure ang Pangunahing Larawan sa Background."
 msgid "Configure at a fixed time"
 msgstr "I-configure sa isang nakapirming oras"
 
-msgid "Configure interval minutes from now"
-msgstr "I-configure ang pagitan ng mga minuto mula ngayon"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "I-configure ang Reference ng serbisyo Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Nakumpleto ang pagproseso ng EPG (walang tugma)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Nakumpleto ang pagproseso ng EPG para sa mga channel ng {}."
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "I-update ang pagitan (minuto):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Hindi nahanap ang EPGImport plugin: {}"
@@ -333,6 +331,9 @@ msgstr "Bumuo ng mga .m3u na file at i-save sa device %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Bumuo ng mga .m3u na file para sa LAHAT ng %d na bansa?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Mahahalagang Paalala:"
@@ -428,6 +429,9 @@ msgstr "Ngayon %s"
 msgid "Only one specific country"
 msgstr "Isang partikular na bansa lamang"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisyon ng mga bouquet ng Vavoo sa pangunahing listahan"
 
@@ -520,8 +524,9 @@ msgstr "Na-save sa: %s"
 msgid "Schedule type:"
 msgstr "Uri ng iskedyul:"
 
-msgid "Scheduled List:"
-msgstr "Naka-iskedyul na Listahan:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Uri ng iskedyul:"
 
 msgid "Search"
 msgstr "Maghanap"
@@ -583,7 +588,8 @@ msgstr "Aalisin nito ang:"
 msgid "This will:"
 msgstr "Ito ay:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Oras para simulan ang pag-update:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr ""
 #, fuzzy
 msgid "Update Available"
 msgstr "Walang available na item"
-
-msgid "Update interval (minutes):"
-msgstr "I-update ang pagitan (minuto):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Nabigo ang pag-restart"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktibong Awtomatikong Bouquet Update"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "I-configure ang pagitan ng mga minuto mula ngayon"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Naka-iskedyul na Listahan:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Awtomatikong i-trigger ang pag-update ng EPG pagkatapos gumawa ng source"

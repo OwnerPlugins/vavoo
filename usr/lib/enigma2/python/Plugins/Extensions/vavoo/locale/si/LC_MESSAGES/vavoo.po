@@ -92,9 +92,6 @@ msgstr "- {} ඇතුළත් කිරීම් යාවත්කාලී�
 msgid "? Proxy Unknown"
 msgstr "? ප්‍රොක්සි නොදන්නා"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "සක්‍රීය ස්වයංක්‍රීය මල් කළඹ යාවත්කාලීන කිරීම"
-
 msgid "All countries (%d)"
 msgstr "සියලුම රටවල් (%d)"
 
@@ -189,9 +186,6 @@ msgstr "ප්‍රධාන පසුබිම් රූපය වින්‍
 msgid "Configure at a fixed time"
 msgstr "නිශ්චිත වේලාවක වින්‍යාස කරන්න"
 
-msgid "Configure interval minutes from now"
-msgstr "දැන් සිට විරාම මිනිත්තු වින්‍යාස කරන්න"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "සේවා Reference Iptv-Gstreamer-Exteplayer3 වින්‍යාස කරන්න"
 
@@ -252,6 +246,10 @@ msgstr "EPG සැකසීම සම්පූර්ණයි (ගැලපී�
 
 msgid "EPG processing completed for {} channels"
 msgstr "නාලිකා {} සඳහා EPG සැකසීම සම්පූර්ණයි"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "යාවත්කාලීන පරතරය (මිනිත්තු):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport ප්ලගිනය හමු නොවීය: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u ගොනු උත්පාදනය කර උපාංගය %s 
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "සියලුම රටවල් %d සඳහා .m3u ගොනු උත්පාදනය කරන්නද?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "වැදගත් සටහන්:"
@@ -428,6 +429,9 @@ msgstr "දැන් %s"
 msgid "Only one specific country"
 msgstr "එක් නිශ්චිත රටක් පමණි"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ප්රධාන ලැයිස්තුවේ Vavoo bouquets පිහිටීම"
 
@@ -520,8 +524,9 @@ msgstr "සුරකින ලද්දේ: %s"
 msgid "Schedule type:"
 msgstr "කාලසටහන් වර්ගය:"
 
-msgid "Scheduled List:"
-msgstr "උපලේඛනගත ලැයිස්තුව:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "කාලසටහන් වර්ගය:"
 
 msgid "Search"
 msgstr "සොයන්න"
@@ -583,7 +588,8 @@ msgstr "මෙය ඉවත් කරනු ඇත:"
 msgid "This will:"
 msgstr "මෙය සිදු වනු ඇත:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "යාවත්කාලීන කිරීම ආරම්භ කිරීමට කාලය:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "විශාල අකුරු"
 #, fuzzy
 msgid "Update Available"
 msgstr "අයිතම නොමැත"
-
-msgid "Update interval (minutes):"
-msgstr "යාවත්කාලීන පරතරය (මිනිත්තු):"
 
 #, fuzzy
 msgid "Update now?"
@@ -678,6 +681,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ නැවත ආරම්භ කිරීම අසාර්ථක විය"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "සක්‍රීය ස්වයංක්‍රීය මල් කළඹ යාවත්කාලීන කිරීම"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "දැන් සිට විරාම මිනිත්තු වින්‍යාස කරන්න"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "උපලේඛනගත ලැයිස්තුව:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "මූලාශ්‍ර සෑදීමෙන් පසු EPG යාවත්කාලීන ස්වයංක්‍රීයව ක්‍රියාරම්භ කරන්න"

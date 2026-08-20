@@ -92,9 +92,6 @@ msgstr "- {} unosa je ažurirano"
 msgid "? Proxy Unknown"
 msgstr ""
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktivno automatsko ažuriranje buketa"
-
 msgid "All countries (%d)"
 msgstr "Sve zemlje (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Konfigurirajte glavnu pozadinsku sliku."
 msgid "Configure at a fixed time"
 msgstr "Konfigurirajte u određeno vrijeme"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfigurirajte intervalne minute od sada"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfiguracija usluge Reference Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG obrada završena (nema podudaranja)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG obrada je završena za {} kanala"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Interval ažuriranja (minuta):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Dodatak EPGImport nije pronađen: {}"
@@ -333,6 +331,9 @@ msgstr "Generirati .m3u fajlove i sačuvati na uređaju %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generirati .m3u fajlove za SVE %d zemlje?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Važne napomene:"
@@ -428,6 +429,9 @@ msgstr "Sada %s"
 msgid "Only one specific country"
 msgstr "Samo jedna određena država"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozicija Vavoo buketa na glavnoj listi"
 
@@ -520,8 +524,9 @@ msgstr "Sačuvano u: %s"
 msgid "Schedule type:"
 msgstr "Vrsta rasporeda:"
 
-msgid "Scheduled List:"
-msgstr "Planirana lista:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Vrsta rasporeda:"
 
 msgid "Search"
 msgstr "Traži"
@@ -583,7 +588,8 @@ msgstr "Ovo će ukloniti:"
 msgid "This will:"
 msgstr "Ovo će:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Vrijeme je za početak ažuriranja:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "VELIKA SLOVA"
 #, fuzzy
 msgid "Update Available"
 msgstr "Nema dostupnih artikala"
-
-msgid "Update interval (minutes):"
-msgstr "Interval ažuriranja (minuta):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ponovno pokretanje nije uspjelo"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktivno automatsko ažuriranje buketa"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfigurirajte intervalne minute od sada"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Planirana lista:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Automatski pokrenite ažuriranje EPG-a nakon kreiranja izvora"

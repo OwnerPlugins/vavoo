@@ -93,9 +93,6 @@ msgstr "- {} iontráil nuashonraithe"
 msgid "? Proxy Unknown"
 msgstr "? Seachfhreastalaí Anaithnid"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Nuashonrú Gníomhach Bouquet Uathoibríoch"
-
 msgid "All countries (%d)"
 msgstr "Gach tír (%d)"
 
@@ -190,9 +187,6 @@ msgstr "Cumraigh Príomhíomhá Chúlra."
 msgid "Configure at a fixed time"
 msgstr "Cumraigh ag am socraithe"
 
-msgid "Configure interval minutes from now"
-msgstr "Cumraigh nóiméad eatramh as seo amach"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Cumraigh an tseirbhís Tagairt Iptv-Gstreamer-Exteplayer3"
 
@@ -253,6 +247,10 @@ msgstr "Próiseáil EPG críochnaithe (gan aon mheaitseáil)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Cuireadh próiseáil EPG i gcrích do {} chainéil"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Eatramh nuashonraithe (nóiméid):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Níor aimsíodh an breiseán EPGImport: {}"
@@ -334,6 +332,9 @@ msgstr "Gin comhaid .m3u agus sábháil ar ghléas %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Gin comhaid .m3u do GACH tír %d?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Nótaí Tábhachtacha:"
@@ -429,6 +430,9 @@ msgstr "Anois %s"
 msgid "Only one specific country"
 msgstr "Tír ar leith amháin"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Seasamh bouquets Vavoo ar an liosta is mó"
 
@@ -521,8 +525,9 @@ msgstr "Sábháilte i: %s"
 msgid "Schedule type:"
 msgstr "Cineál sceidil:"
 
-msgid "Scheduled List:"
-msgstr "Liosta Sceidealta:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Cineál sceidil:"
 
 msgid "Search"
 msgstr "Cuardach"
@@ -584,7 +589,8 @@ msgstr "Bainfidh sé seo:"
 msgid "This will:"
 msgstr "Déanfaidh sé seo:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Tá sé in am chun nuashonrú a thosú:"
 
 msgid "Top"
@@ -599,9 +605,6 @@ msgstr "UACHTARACH"
 #, fuzzy
 msgid "Update Available"
 msgstr "Níl aon earraí ar fáil"
-
-msgid "Update interval (minutes):"
-msgstr "Eatramh nuashonraithe (nóiméid):"
 
 #, fuzzy
 msgid "Update now?"
@@ -680,6 +683,15 @@ msgstr "✗ Seachfhreastalaí As Líne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Theip ar an atosú"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Nuashonrú Gníomhach Bouquet Uathoibríoch"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Cumraigh nóiméad eatramh as seo amach"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Liosta Sceidealta:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Cuir tús le nuashonrú EPG go huathoibríoch tar éis cruthú na foinse"

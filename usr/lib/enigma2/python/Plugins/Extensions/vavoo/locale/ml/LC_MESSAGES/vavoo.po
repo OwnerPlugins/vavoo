@@ -92,9 +92,6 @@ msgstr "- {} എൻട്രികൾ അപ്ഡേറ്റ് ചെയ്�
 msgid "? Proxy Unknown"
 msgstr "? പ്രോക്സി അജ്ഞാതം"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "സജീവമായ ഓട്ടോമാറ്റിക് പൂച്ചെണ്ട് അപ്ഡേറ്റ്"
-
 msgid "All countries (%d)"
 msgstr "എല്ലാ രാജ്യങ്ങളും (%d)"
 
@@ -189,9 +186,6 @@ msgstr "പ്രധാന പശ്ചാത്തല ചിത്രം കോ
 msgid "Configure at a fixed time"
 msgstr "ഒരു നിശ്ചിത സമയത്ത് കോൺഫിഗർ ചെയ്യുക"
 
-msgid "Configure interval minutes from now"
-msgstr "ഇപ്പോൾ മുതൽ ഇടവേള മിനിറ്റ് കോൺഫിഗർ ചെയ്യുക"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "സേവന റഫറൻസ് Iptv-Gstreamer-Exteplayer3 കോൺഫിഗർ ചെയ്യുക"
 
@@ -252,6 +246,10 @@ msgstr "EPG പ്രോസസ്സിംഗ് പൂർത്തിയായ�
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} ചാനലുകൾക്കുള്ള EPG പ്രോസസ്സിംഗ് പൂർത്തിയായി"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "അപ്ഡേറ്റ് ഇടവേള (മിനിറ്റുകൾ):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport പ്ലഗിൻ കണ്ടെത്തിയില്ല: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u ഫയലുകൾ സൃഷ്ടിച്ച് %s ഉപകര�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "എല്ലാ %d രാജ്യങ്ങൾക്കുമായി .m3u ഫയലുകൾ സൃഷ്ടിക്കണോ?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "പ്രധാന കുറിപ്പുകൾ:"
@@ -428,6 +429,9 @@ msgstr "ഇപ്പോൾ %s"
 msgid "Only one specific country"
 msgstr "ഒരു പ്രത്യേക രാജ്യം മാത്രം"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "പ്രധാന പട്ടികയിൽ വാവോ പൂച്ചെണ്ടുകളുടെ സ്ഥാനം"
 
@@ -520,8 +524,9 @@ msgstr "ഇതിൽ സംരക്ഷിച്ചു: %s"
 msgid "Schedule type:"
 msgstr "ഷെഡ്യൂൾ തരം:"
 
-msgid "Scheduled List:"
-msgstr "ഷെഡ്യൂൾ ചെയ്ത പട്ടിക:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "ഷെഡ്യൂൾ തരം:"
 
 msgid "Search"
 msgstr "തിരയുക"
@@ -583,7 +588,8 @@ msgstr "ഇത് നീക്കം ചെയ്യും:"
 msgid "This will:"
 msgstr "ഇത് ചെയ്യും:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "അപ്‌ഡേറ്റ് ആരംഭിക്കാനുള്ള സമയം:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "അപ്പർകേസ്"
 #, fuzzy
 msgid "Update Available"
 msgstr "ഇനങ്ങളൊന്നും ലഭ്യമല്ല"
-
-msgid "Update interval (minutes):"
-msgstr "അപ്ഡേറ്റ് ഇടവേള (മിനിറ്റുകൾ):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ പ്രോക്സി ഓഫ്‌ലൈൻ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ പുനരാരംഭിക്കൽ പരാജയപ്പെട്ടു"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "സജീവമായ ഓട്ടോമാറ്റിക് പൂച്ചെണ്ട് അപ്ഡേറ്റ്"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ഇപ്പോൾ മുതൽ ഇടവേള മിനിറ്റ് കോൺഫിഗർ ചെയ്യുക"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "ഷെഡ്യൂൾ ചെയ്ത പട്ടിക:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ഉറവിടം സൃഷ്‌ടിച്ചതിന് ശേഷം ഇപിജി അപ്‌ഡേറ്റ് സ്വയമേവ ട്രിഗർ ചെയ്യുക"

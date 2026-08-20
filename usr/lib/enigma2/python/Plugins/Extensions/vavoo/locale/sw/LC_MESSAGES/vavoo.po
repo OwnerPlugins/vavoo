@@ -92,9 +92,6 @@ msgstr "- {} maingizo yalisasishwa"
 msgid "? Proxy Unknown"
 msgstr "? Wakala Haijulikani"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Sasisho la Bouque ya Kiotomatiki inayotumika"
-
 msgid "All countries (%d)"
 msgstr "Nchi zote (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Sanidi Picha Kuu ya Mandharinyuma."
 msgid "Configure at a fixed time"
 msgstr "Sanidi kwa wakati uliowekwa"
 
-msgid "Configure interval minutes from now"
-msgstr "Sanidi dakika za muda kutoka sasa"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Sanidi Marejeleo ya huduma Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Uchakataji wa EPG umekamilika (hakuna mechi)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Uchakataji wa EPG umekamilika kwa vituo {}"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Sasisha muda (dakika):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Programu-jalizi ya EPGI ya kuagiza haijapatikana: {}"
@@ -333,6 +331,9 @@ msgstr "Je, ungependa kuzalisha faili za .m3u na uhifadhi kwenye kifaa %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Je, ungependa kuzalisha faili za .m3u kwa nchi %d ZOTE?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Vidokezo Muhimu:"
@@ -428,6 +429,9 @@ msgstr "Sasa %s"
 msgid "Only one specific country"
 msgstr "Nchi moja tu maalum"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Nafasi ya bouquets ya Vavoo katika orodha kuu"
 
@@ -520,8 +524,9 @@ msgstr "Imehifadhiwa katika: %s"
 msgid "Schedule type:"
 msgstr "Aina ya ratiba:"
 
-msgid "Scheduled List:"
-msgstr "Orodha Iliyoratibiwa:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Aina ya ratiba:"
 
 msgid "Search"
 msgstr "Tafuta"
@@ -583,7 +588,8 @@ msgstr "Hii itaondoa:"
 msgid "This will:"
 msgstr "Hii itakuwa:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Wakati wa kuanza sasisho:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "KUBWA"
 #, fuzzy
 msgid "Update Available"
 msgstr "Hakuna vipengee vinavyopatikana"
-
-msgid "Update interval (minutes):"
-msgstr "Sasisha muda (dakika):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Wakala Nje ya Mtandao"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Imeshindwa Kuanzisha upya"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Sasisho la Bouque ya Kiotomatiki inayotumika"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Sanidi dakika za muda kutoka sasa"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Orodha Iliyoratibiwa:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Anzisha sasisho la EPG kiotomatiki baada ya kuunda chanzo"

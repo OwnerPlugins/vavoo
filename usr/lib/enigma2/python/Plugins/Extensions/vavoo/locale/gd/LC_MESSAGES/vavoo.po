@@ -92,9 +92,6 @@ msgstr "- {} inntrigeadh air ùrachadh"
 msgid "? Proxy Unknown"
 msgstr "? Neach-ionaid Neo-aithnichte"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Ùrachadh bouquet fèin-ghluasadach gnìomhach"
-
 msgid "All countries (%d)"
 msgstr "A h-uile dùthaich (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Dèan rèiteachadh air a' phrìomh ìomhaigh cùl-fhiosrachaidh."
 msgid "Configure at a fixed time"
 msgstr "Dèan rèiteachadh aig àm stèidhichte"
 
-msgid "Configure interval minutes from now"
-msgstr "Dèan rèiteachadh air mionaidean eadar-ama bho seo a-mach"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Dèan rèiteachadh air an t-seirbheis Iomradh Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Giullachd EPG air a chrìochnachadh (chan eil maidsean ann)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Chaidh giollachd EPG a chrìochnachadh airson {} seanalan"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Ùine ùrachaidh (mionaidean):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Cha deach plugan EPGImport a lorg: {}"
@@ -333,6 +331,9 @@ msgstr "Cruthaich faidhlichean .m3u is sàbhail dhan uidheam %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Cruthaich faidhlichean .m3u airson GACH %d dùthaich?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Notaichean Cudromach:"
@@ -428,6 +429,9 @@ msgstr "A-nis %s"
 msgid "Only one specific country"
 msgstr "Dìreach aon dùthaich shònraichte"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Suidheachadh bouquets Vavoo anns a’ phrìomh liosta"
 
@@ -520,8 +524,9 @@ msgstr "Air a shàbhaladh ann an: %s"
 msgid "Schedule type:"
 msgstr "Seòrsa clàr-ama:"
 
-msgid "Scheduled List:"
-msgstr "Clàr clàraichte:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Seòrsa clàr-ama:"
 
 msgid "Search"
 msgstr "Rannsaich"
@@ -583,7 +588,8 @@ msgstr "Bheir seo air falbh:"
 msgid "This will:"
 msgstr "Bidh seo:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Tha an t-àm ann tòiseachadh air ùrachadh:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "URNAIGHEAN"
 #, fuzzy
 msgid "Update Available"
 msgstr "Chan eil stuthan ri fhaighinn"
-
-msgid "Update interval (minutes):"
-msgstr "Ùine ùrachaidh (mionaidean):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Neach-ionaid far-loidhne"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Dh'fhàillig ath-thòiseachadh"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Ùrachadh bouquet fèin-ghluasadach gnìomhach"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Dèan rèiteachadh air mionaidean eadar-ama bho seo a-mach"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Clàr clàraichte:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Cuir air bhog ùrachadh EPG gu fèin-ghluasadach às deidh cruthachadh stòr"

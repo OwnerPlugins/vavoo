@@ -92,9 +92,6 @@ msgstr "- {} գրառում թարմացվել է"
 msgid "? Proxy Unknown"
 msgstr "? Անհայտ վստահված անձ"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Ակտիվ ավտոմատ ծաղկեփնջի թարմացում"
-
 msgid "All countries (%d)"
 msgstr "Բոլոր երկրները (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Կազմաձևեք հիմնական ֆոնային պատկերը:"
 msgid "Configure at a fixed time"
 msgstr "Կարգավորել ֆիքսված ժամանակում"
 
-msgid "Configure interval minutes from now"
-msgstr "Կազմաձևեք ինտերվալ րոպեները այսուհետ"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Կարգավորել ծառայության տեղեկանք Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG մշակումն ավարտված է (համընկնում չկա)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG մշակումն ավարտված է {} ալիքների համար"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Թարմացման ընդմիջում (րոպե)."
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport plugin-ը չի գտնվել՝ {}"
@@ -333,6 +331,9 @@ msgstr "Ստեղծե՞լ .m3u ֆայլեր և պահել %s սարքում:"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ստեղծե՞լ .m3u ֆայլեր ԲՈԼՈՐ %d երկրների համար:"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Կարևոր նշումներ."
@@ -428,6 +429,9 @@ msgstr "Այժմ %s"
 msgid "Only one specific country"
 msgstr "Միայն մեկ կոնկրետ երկիր"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo ծաղկեփնջերի դիրքը հիմնական ցանկում"
 
@@ -520,8 +524,9 @@ msgstr "Պահպանված է՝ %s"
 msgid "Schedule type:"
 msgstr "Ժամանակացույցի տեսակը."
 
-msgid "Scheduled List:"
-msgstr "Պլանավորված ցուցակ."
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Ժամանակացույցի տեսակը."
 
 msgid "Search"
 msgstr "Որոնում"
@@ -583,7 +588,8 @@ msgstr "Սա կհեռացնի՝"
 msgid "This will:"
 msgstr "Սա կլինի."
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Թարմացումը սկսելու ժամանակը."
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "Մեծատառ"
 #, fuzzy
 msgid "Update Available"
 msgstr "Նյութեր չկան"
-
-msgid "Update interval (minutes):"
-msgstr "Թարմացման ընդմիջում (րոպե)."
 
 #, fuzzy
 msgid "Update now?"
@@ -678,6 +681,15 @@ msgstr "✗ Անցանց վստահված անձ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Չհաջողվեց վերագործարկել"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Ակտիվ ավտոմատ ծաղկեփնջի թարմացում"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Կազմաձևեք ինտերվալ րոպեները այսուհետ"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Պլանավորված ցուցակ."
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Աղբյուրի ստեղծումից հետո ավտոմատ կերպով միացնել EPG թարմացումը"

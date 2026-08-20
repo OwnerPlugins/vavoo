@@ -92,9 +92,6 @@ msgstr "- entri {} dikemas kini"
 msgid "? Proxy Unknown"
 msgstr "? Proksi Tidak Diketahui"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Kemas Kini Bouquet Automatik Aktif"
-
 msgid "All countries (%d)"
 msgstr "Semua negara (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Konfigurasi Imej Latar Belakang Utama."
 msgid "Configure at a fixed time"
 msgstr "Konfigurasikan pada masa yang ditetapkan"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfigurasi selang minit dari sekarang"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfigurasi Rujukan perkhidmatan Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Pemprosesan EPG selesai (tiada padanan)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Pemprosesan EPG selesai untuk saluran {}."
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Selang kemas kini (minit):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Pemalam EPGImport tidak ditemui: {}"
@@ -333,6 +331,9 @@ msgstr "Hasilkan fail .m3u dan simpan ke peranti %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Hasilkan fail .m3u untuk SEMUA %d negara?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Nota Penting:"
@@ -428,6 +429,9 @@ msgstr "Sekarang %s"
 msgid "Only one specific country"
 msgstr "Hanya satu negara tertentu"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Kedudukan sejambak Vavoo dalam senarai utama"
 
@@ -520,8 +524,9 @@ msgstr "Disimpan dalam: %s"
 msgid "Schedule type:"
 msgstr "Jenis jadual:"
 
-msgid "Scheduled List:"
-msgstr "Senarai Berjadual:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Jenis jadual:"
 
 msgid "Search"
 msgstr "Cari"
@@ -583,7 +588,8 @@ msgstr "Ini akan mengalih keluar:"
 msgid "This will:"
 msgstr "Ini akan:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Masa untuk memulakan kemas kini:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "HURUF BESAR"
 #, fuzzy
 msgid "Update Available"
 msgstr "Tiada item tersedia"
-
-msgid "Update interval (minutes):"
-msgstr "Selang kemas kini (minit):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proksi Luar Talian"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Gagal Mulakan Semula"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Kemas Kini Bouquet Automatik Aktif"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfigurasi selang minit dari sekarang"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Senarai Berjadual:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Cetuskan kemas kini EPG secara automatik selepas penciptaan sumber"

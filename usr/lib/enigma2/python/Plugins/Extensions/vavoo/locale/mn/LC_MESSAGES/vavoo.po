@@ -92,9 +92,6 @@ msgstr "- {} оруулгуудыг шинэчилсэн"
 msgid "? Proxy Unknown"
 msgstr "? Прокси тодорхойгүй"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Идэвхтэй автомат баглааг шинэчлэх"
-
 msgid "All countries (%d)"
 msgstr "Бүх улс (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Үндсэн дэвсгэр зургийг тохируулах."
 msgid "Configure at a fixed time"
 msgstr "Тогтсон цагт тохируулна уу"
 
-msgid "Configure interval minutes from now"
-msgstr "Одооноос интервалын минутыг тохируулна уу"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Iptv-Gstreamer-Exteplayer3 лавлах үйлчилгээний тохиргоог хийнэ үү"
 
@@ -252,6 +246,10 @@ msgstr "EPG боловсруулалт дууссан (тохирох зүйл �
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} сувгийн EPG боловсруулалт дууссан"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Шинэчлэх интервал (минут):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport залгаас олдсонгүй: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u файл үүсгэж, %s төхөөрөмжид хадгалах �
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "БҮХ %d улсад .m3u файл үүсгэх үү?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Чухал тэмдэглэл:"
@@ -428,6 +429,9 @@ msgstr "Одоо %s"
 msgid "Only one specific country"
 msgstr "Зөвхөн нэг тодорхой улс"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Үндсэн жагсаалтад Vavoo баглаагуудын байрлал"
 
@@ -520,8 +524,9 @@ msgstr "Хадгалсан: %s"
 msgid "Schedule type:"
 msgstr "Хуваарийн төрөл:"
 
-msgid "Scheduled List:"
-msgstr "Төлөвлөсөн жагсаалт:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Хуваарийн төрөл:"
 
 msgid "Search"
 msgstr "Хайх"
@@ -583,7 +588,8 @@ msgstr "Энэ нь устгах болно:"
 msgid "This will:"
 msgstr "Энэ нь:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Шинэчлэлтийг эхлүүлэх цаг:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ТОМ үсгээр"
 #, fuzzy
 msgid "Update Available"
 msgstr "Байгаа зүйл алга"
-
-msgid "Update interval (minutes):"
-msgstr "Шинэчлэх интервал (минут):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Дахин эхлүүлэх амжилтгүй боллоо"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Идэвхтэй автомат баглааг шинэчлэх"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Одооноос интервалын минутыг тохируулна уу"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Төлөвлөсөн жагсаалт:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Эх сурвалж үүсгэсний дараа EPG шинэчлэлтийг автоматаар идэвхжүүлнэ"

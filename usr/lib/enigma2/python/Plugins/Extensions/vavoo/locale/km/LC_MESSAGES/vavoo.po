@@ -92,9 +92,6 @@ msgstr "- ធាតុ {} បានធ្វើបច្ចុប្បន្ន
 msgid "? Proxy Unknown"
 msgstr "? ប្រូកស៊ីមិនស្គាល់"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "ធ្វើឱ្យទាន់សម័យភួងដោយស្វ័យប្រវត្តិសកម្ម"
-
 msgid "All countries (%d)"
 msgstr "ប្រទេសទាំងអស់ (%d)"
 
@@ -189,9 +186,6 @@ msgstr "កំណត់រចនាសម្ព័ន្ធរូបភាពផ
 msgid "Configure at a fixed time"
 msgstr "កំណត់រចនាសម្ព័ន្ធនៅពេលកំណត់"
 
-msgid "Configure interval minutes from now"
-msgstr "កំណត់រចនាសម្ព័ន្ធនាទីចន្លោះពេលចាប់ពីពេលនេះ"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "កំណត់រចនាសម្ព័ន្ធសេវាកម្មយោង Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "ដំណើរការ EPG បានបញ្ចប់ (មិនម�
 
 msgid "EPG processing completed for {} channels"
 msgstr "ដំណើរការ EPG បានបញ្ចប់សម្រាប់ប៉ុស្តិ៍ {}"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "ចន្លោះពេលធ្វើបច្ចុប្បន្នភាព (នាទី)៖"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "រកមិនឃើញកម្មវិធីជំនួយ EPGImport៖ {}"
@@ -333,6 +331,9 @@ msgstr "បង្កើតឯកសារ .m3u ហើយរក្សាទុក
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "បង្កើតឯកសារ .m3u សម្រាប់ %d ប្រទេសទាំងអស់?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "កំណត់ចំណាំសំខាន់ៗ៖"
@@ -428,6 +429,9 @@ msgstr "ឥឡូវនេះ %s"
 msgid "Only one specific country"
 msgstr "ប្រទេសជាក់លាក់តែមួយ"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ទីតាំងនៃភួង Vavoo នៅក្នុងបញ្ជីសំខាន់"
 
@@ -520,8 +524,9 @@ msgstr "បានរក្សាទុកក្នុង៖ %s"
 msgid "Schedule type:"
 msgstr "ប្រភេទកាលវិភាគ៖"
 
-msgid "Scheduled List:"
-msgstr "បញ្ជីដែលបានគ្រោងទុក៖"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "ប្រភេទកាលវិភាគ៖"
 
 msgid "Search"
 msgstr "ស្វែងរក"
@@ -583,7 +588,8 @@ msgstr "វានឹងដកចេញ៖"
 msgid "This will:"
 msgstr "នេះនឹង៖"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "ដល់ពេលចាប់ផ្តើមអាប់ដេត៖"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ករណីខាងលើ"
 #, fuzzy
 msgid "Update Available"
 msgstr "មិនមានធាតុដែលអាចប្រើបានទេ។"
-
-msgid "Update interval (minutes):"
-msgstr "ចន្លោះពេលធ្វើបច្ចុប្បន្នភាព (នាទី)៖"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ប្រូកស៊ីក្រៅបណ្តាញ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ការចាប់ផ្តើមឡើងវិញបានបរាជ័យ"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "ធ្វើឱ្យទាន់សម័យភួងដោយស្វ័យប្រវត្តិសកម្ម"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "កំណត់រចនាសម្ព័ន្ធនាទីចន្លោះពេលចាប់ពីពេលនេះ"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "បញ្ជីដែលបានគ្រោងទុក៖"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ចាប់ផ្តើមការអាប់ដេត EPG ដោយស្វ័យប្រវត្តិបន្ទាប់ពីការបង្កើតប្រភព"

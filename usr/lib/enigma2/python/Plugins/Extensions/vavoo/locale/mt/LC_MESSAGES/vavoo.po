@@ -92,9 +92,6 @@ msgstr "- {} entrati aġġornati"
 msgid "? Proxy Unknown"
 msgstr "? Prokura Mhux Magħruf"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aġġornament Attiv tal-Bukkett Awtomatiku"
-
 msgid "All countries (%d)"
 msgstr "Il-pajjiżi kollha (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Ikkonfigura l-Immaġni Prinċipali ta' Sfond."
 msgid "Configure at a fixed time"
 msgstr "Ikkonfigura f'ħin fiss"
 
-msgid "Configure interval minutes from now"
-msgstr "Ikkonfigura minuti intervall minn issa"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Ikkonfigura s-servizz Referenza Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "L-ipproċessar tal-EPG tlesta (l-ebda taqbila)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "L-ipproċessar tal-EPG tlesta għal {} kanali"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Intervall tal-aġġornament (minuti):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Plugin EPGImport ma nstabx: {}"
@@ -333,6 +331,9 @@ msgstr "Iġġenera fajls .m3u u ssejvja fuq it-tagħmir %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Iġġenera fajls .m3u għal %d pajjiżi KOLLHA?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Noti Importanti:"
@@ -428,6 +429,9 @@ msgstr "Issa %s"
 msgid "Only one specific country"
 msgstr "Pajjiż speċifiku wieħed biss"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pożizzjoni tal-bukketti Vavoo fil-lista prinċipali"
 
@@ -520,8 +524,9 @@ msgstr "Issejvjat fi: %s"
 msgid "Schedule type:"
 msgstr "Tip ta' Skeda:"
 
-msgid "Scheduled List:"
-msgstr "Lista Skedata:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Tip ta' Skeda:"
 
 msgid "Search"
 msgstr "Fittex"
@@ -583,7 +588,8 @@ msgstr "Dan se jneħħi:"
 msgid "This will:"
 msgstr "Dan se:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Ħin biex tibda l-aġġornament:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "MAJUSKU"
 #, fuzzy
 msgid "Update Available"
 msgstr "Ebda oġġetti disponibbli"
-
-msgid "Update interval (minutes):"
-msgstr "Intervall tal-aġġornament (minuti):"
 
 #, fuzzy
 msgid "Update now?"
@@ -678,6 +681,15 @@ msgstr "✗ Prokura Offline"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ristartja Falliet"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aġġornament Attiv tal-Bukkett Awtomatiku"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Ikkonfigura minuti intervall minn issa"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Lista Skedata:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Ixpruna awtomatikament l-aġġornament tal-EPG wara l-ħolqien tas-sors"

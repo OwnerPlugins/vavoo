@@ -92,9 +92,6 @@ msgstr "- {} איינסן דערהייַנטיקט"
 msgid "? Proxy Unknown"
 msgstr "? פּראָקסי אומבאַקאַנט"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "אַקטיוו אָטאַמאַטיק בוקיי דערהייַנטיקן"
-
 msgid "All countries (%d)"
 msgstr "אַלע לענדער (%ד)"
 
@@ -189,9 +186,6 @@ msgstr "קאַנפיגיער הויפּט הינטערגרונט בילד."
 msgid "Configure at a fixed time"
 msgstr "קאַנפיגיער אין אַ פאַרפעסטיקט צייט"
 
-msgid "Configure interval minutes from now"
-msgstr "קאַנפיגיער ינטערוואַל מינוט פון איצט"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "קאַנפיגיער סערוויס רעפערענץ Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG פּראַסעסינג געענדיקט (קיין שוועבעלעך
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG פּראַסעסינג געענדיקט פֿאַר {} טשאַנאַלז"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "דערהייַנטיקן מעהאַלעך (מינוט):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport פּלוגין ניט געפֿונען: {}"
@@ -333,6 +331,9 @@ msgstr "דזשענערייט .מ3ו טעקעס און ראַטעווען צו מ
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "דזשענערייט .מ3ו טעקעס פֿאַר אַלע %d לענדער?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "וויכטיק הערות:"
@@ -428,6 +429,9 @@ msgstr "איצט %s"
 msgid "Only one specific country"
 msgstr "בלויז איין ספּעציפיש לאַנד"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "שטעלע פון ​​וואַוואָ באָוקייז אין די הויפּט רשימה"
 
@@ -520,8 +524,9 @@ msgstr "געראטעוועט אין: %s"
 msgid "Schedule type:"
 msgstr "טיפּ פון פּלאַן:"
 
-msgid "Scheduled List:"
-msgstr "סקעדזשולד רשימה:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "טיפּ פון פּלאַן:"
 
 msgid "Search"
 msgstr "זוכן"
@@ -583,7 +588,8 @@ msgstr "דאָס וועט אַראָפּנעמען:"
 msgid "This will:"
 msgstr "דאָס וועט:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "צייט צו אָנהייבן דערהייַנטיקן:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "קאַפּיטאַל"
 #, fuzzy
 msgid "Update Available"
 msgstr "קיין ייטאַמז בנימצא"
-
-msgid "Update interval (minutes):"
-msgstr "דערהייַנטיקן מעהאַלעך (מינוט):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ פּראָקסי אָפפלינע"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ריסטאַרט ניט אַנדערש"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "אַקטיוו אָטאַמאַטיק בוקיי דערהייַנטיקן"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "קאַנפיגיער ינטערוואַל מינוט פון איצט"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "סקעדזשולד רשימה:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "אויטאָמאַטיש צינגל EPG דערהייַנטיקן נאָך מקור שאַפונג"

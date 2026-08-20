@@ -92,9 +92,6 @@ msgstr "- 更新了 {} 個條目"
 msgid "? Proxy Unknown"
 msgstr "？代理未知"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "激活自动节目列表更新"
-
 msgid "All countries (%d)"
 msgstr "所有国家 (%d)"
 
@@ -193,9 +190,6 @@ msgstr "配置主背景图像。"
 msgid "Configure at a fixed time"
 msgstr "在固定时间配置"
 
-msgid "Configure interval minutes from now"
-msgstr "从现在开始配置间隔分钟"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "配置服务参考 Iptv-Gstreamer-Exteplayer3"
 
@@ -259,6 +253,10 @@ msgstr "已完成 %d 个频道的 EPG 处理"
 #, fuzzy
 msgid "EPG processing completed for {} channels"
 msgstr "已完成 %d 个频道的 EPG 处理"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "更新间隔（分钟）:"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "未找到 EPGImport 外掛：{}"
@@ -344,6 +342,9 @@ msgstr "生成 .m3u 文件并保存到设备 %s？"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "为所有 %d 个国家生成 .m3u 文件？"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "重要说明:"
@@ -439,6 +440,9 @@ msgstr "现在 %s"
 msgid "Only one specific country"
 msgstr "仅限一个特定国家"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo 节目列表在主列表中的位置"
 
@@ -532,8 +536,9 @@ msgstr "保存在: %s"
 msgid "Schedule type:"
 msgstr "计划类型:"
 
-msgid "Scheduled List:"
-msgstr "计划列表:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "计划类型:"
 
 msgid "Search"
 msgstr "搜索"
@@ -596,7 +601,8 @@ msgstr "这将移除:"
 msgid "This will:"
 msgstr "这将移除:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "开始更新时间:"
 
 msgid "Top"
@@ -611,9 +617,6 @@ msgstr "大写"
 #, fuzzy
 msgid "Update Available"
 msgstr "沒有可用的項目"
-
-msgid "Update interval (minutes):"
-msgstr "更新间隔（分钟）:"
 
 #, fuzzy
 msgid "Update now?"
@@ -694,6 +697,15 @@ msgstr "✗ 代理離線"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 重啟失敗"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "激活自动节目列表更新"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "从现在开始配置间隔分钟"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "计划列表:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "创建源后自动触发 EPG 更新"

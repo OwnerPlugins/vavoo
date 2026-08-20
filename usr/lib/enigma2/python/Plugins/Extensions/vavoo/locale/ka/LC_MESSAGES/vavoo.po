@@ -92,9 +92,6 @@ msgstr "- განახლებულია {} ჩანაწერი"
 msgid "? Proxy Unknown"
 msgstr "? პროქსი უცნობია"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "აქტიური ავტომატური ბუკეტის განახლება"
-
 msgid "All countries (%d)"
 msgstr "ყველა ქვეყანა (%d)"
 
@@ -189,9 +186,6 @@ msgstr "ძირითადი ფონის სურათის კონ
 msgid "Configure at a fixed time"
 msgstr "კონფიგურაცია ფიქსირებულ დროს"
 
-msgid "Configure interval minutes from now"
-msgstr "ინტერვალის წუთების კონფიგურაცია ამიერიდან"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "სერვისის კონფიგურაციის მითითება Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG დამუშავება დასრულდა (შემ�
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG დამუშავება დასრულდა {} არხისთვის"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "განახლების ინტერვალი (წუთები):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport დანამატი ვერ მოიძებნა: {}"
@@ -333,6 +331,9 @@ msgstr "გსურთ .m3u ფაილების გენერირე�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "გსურთ .m3u ფაილების გენერირება ყველა %d ქვეყნისთვის?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "მნიშვნელოვანი შენიშვნები:"
@@ -428,6 +429,9 @@ msgstr "ახლა %s"
 msgid "Only one specific country"
 msgstr "მხოლოდ ერთი კონკრეტული ქვეყანა"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo-ს თაიგულების პოზიცია ძირითად სიაში"
 
@@ -520,8 +524,9 @@ msgstr "შენახულია: %s"
 msgid "Schedule type:"
 msgstr "განრიგის ტიპი:"
 
-msgid "Scheduled List:"
-msgstr "დაგეგმილი სია:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "განრიგის ტიპი:"
 
 msgid "Search"
 msgstr "ძიება"
@@ -583,7 +588,8 @@ msgstr "ეს ამოიღებს:"
 msgid "This will:"
 msgstr "ეს იქნება:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "განახლების დაწყების დრო:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ზედა"
 #, fuzzy
 msgid "Update Available"
 msgstr "არ არის ხელმისაწვდომი ნივთები"
-
-msgid "Update interval (minutes):"
-msgstr "განახლების ინტერვალი (წუთები):"
 
 #, fuzzy
 msgid "Update now?"
@@ -678,6 +681,15 @@ msgstr "✗ პროქსი ხაზგარეშე"
 
 msgid "✗ Restart Failed"
 msgstr "✗ გადატვირთვა ვერ მოხერხდა"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "აქტიური ავტომატური ბუკეტის განახლება"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ინტერვალის წუთების კონფიგურაცია ამიერიდან"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "დაგეგმილი სია:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ავტომატური ჩართვა EPG განახლება წყაროს შექმნის შემდეგ"

@@ -92,9 +92,6 @@ msgstr "- {} ግቤቶች ተዘምነዋል"
 msgid "? Proxy Unknown"
 msgstr "? ፕሮክሲ ያልታወቀ"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "ንቁ አውቶማቲክ ቡኬት ዝማኔ"
-
 msgid "All countries (%d)"
 msgstr "ሁሉም አገሮች (%d)"
 
@@ -189,9 +186,6 @@ msgstr "ዋናውን ዳራ ምስል ያዋቅሩ።"
 msgid "Configure at a fixed time"
 msgstr "በተወሰነ ጊዜ አዋቅር"
 
-msgid "Configure interval minutes from now"
-msgstr "ከአሁን በኋላ ክፍተቶችን ያዋቅሩ"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "የአገልግሎት ማጣቀሻ Iptv-Gstreamer-Exteplayer3 አዋቅር"
 
@@ -252,6 +246,10 @@ msgstr "የ EPG ሂደት ተጠናቅቋል (ምንም ተዛማጅ የለም)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "ለ{} ቻናሎች የEPG ሂደት ተጠናቅቋል"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "የዝማኔ ክፍተት (ደቂቃዎች)"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport ተሰኪ አልተገኘም፦ {}"
@@ -333,6 +331,9 @@ msgstr ".m3u ፋይሎችን ያመንጩ እና ወደ መሣሪያ %s ይቀ�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ለሁሉም %d አገሮች .m3u ፋይሎች ይፈጠሩ?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "ጠቃሚ ማስታወሻዎች፡-"
@@ -428,6 +429,9 @@ msgstr "አሁን %s"
 msgid "Only one specific country"
 msgstr "አንድ የተወሰነ ሀገር ብቻ"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "በዋናው ዝርዝር ውስጥ የቫቮ እቅፍ አበባዎች አቀማመጥ"
 
@@ -520,8 +524,9 @@ msgstr "ተቀምጧል፡ %s"
 msgid "Schedule type:"
 msgstr "የመርሃግብር አይነት፡"
 
-msgid "Scheduled List:"
-msgstr "የታቀደ ዝርዝር፡-"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "የመርሃግብር አይነት፡"
 
 msgid "Search"
 msgstr "ፈልግ"
@@ -583,7 +588,8 @@ msgstr "ይህ ያስወግዳል፡-"
 msgid "This will:"
 msgstr "ይህ ይሆናል፡-"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "ማዘመን ለመጀመር ጊዜ:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ከፍተኛ"
 #, fuzzy
 msgid "Update Available"
 msgstr "ምንም እቃዎች አይገኙም።"
-
-msgid "Update interval (minutes):"
-msgstr "የዝማኔ ክፍተት (ደቂቃዎች)"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ ተኪ ከመስመር ውጭ"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ዳግም ማስጀመር አልተሳካም።"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "ንቁ አውቶማቲክ ቡኬት ዝማኔ"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ከአሁን በኋላ ክፍተቶችን ያዋቅሩ"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "የታቀደ ዝርዝር፡-"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ከምንጩ ፈጠራ በኋላ የ EPG ዝመናን በራስ-ሰር ያስጀምሩ"

@@ -92,9 +92,6 @@ msgstr "- {} merkintää päivitetty"
 msgid "? Proxy Unknown"
 msgstr "? Välityspalvelin Tuntematon"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktiivinen automaattinen nippupäivitys"
-
 msgid "All countries (%d)"
 msgstr "Kaikki maat (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Määritä päätaustakuva."
 msgid "Configure at a fixed time"
 msgstr "Määritä kiinteänä aikana"
 
-msgid "Configure interval minutes from now"
-msgstr "Määritä aikaväli minuutteina tästä hetkestä"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Määritä palveluviite Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG-käsittely valmis (ei osumia)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-käsittely valmistui {} kanavalle"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Päivitysväli (minuutteina):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport-laajennusta ei löydy: {}"
@@ -333,6 +331,9 @@ msgstr "Luodaanko .m3u-tiedostot ja tallennetaan laitteelle %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Luodaanko .m3u-tiedostot KAIKILLE %d maalle?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Tärkeitä huomautuksia:"
@@ -428,6 +429,9 @@ msgstr "Nyt %s"
 msgid "Only one specific country"
 msgstr "Vain yksi tietty maa"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo-nippujen sijainti päähakemistossa"
 
@@ -520,8 +524,9 @@ msgstr "Tallennettu: %s"
 msgid "Schedule type:"
 msgstr "Ajoituksen tyyppi:"
 
-msgid "Scheduled List:"
-msgstr "Ajoitettu lista:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Ajoituksen tyyppi:"
 
 msgid "Search"
 msgstr "Hae"
@@ -583,7 +588,8 @@ msgstr "Tämä poistaa:"
 msgid "This will:"
 msgstr "Tämä:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Aika aloittaa päivitys:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "SUURAAKKOSET"
 #, fuzzy
 msgid "Update Available"
 msgstr "Ei kohteita saatavilla"
-
-msgid "Update interval (minutes):"
-msgstr "Päivitysväli (minuutteina):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Välityspalvelin offline-tilassa"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Uudelleenkäynnistys epäonnistui"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktiivinen automaattinen nippupäivitys"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Määritä aikaväli minuutteina tästä hetkestä"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Ajoitettu lista:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Käynnistä EPG-päivitys automaattisesti lähteen luonnin jälkeen"

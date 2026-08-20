@@ -92,9 +92,6 @@ msgstr "- {} ورودی به روز شد"
 msgid "? Proxy Unknown"
 msgstr "? پروکسی ناشناس"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "به روز رسانی خودکار دسته گل"
-
 msgid "All countries (%d)"
 msgstr "همه کشورها (%d)"
 
@@ -189,9 +186,6 @@ msgstr "پیکربندی تصویر پس زمینه اصلی"
 msgid "Configure at a fixed time"
 msgstr "در یک زمان ثابت پیکربندی کنید"
 
-msgid "Configure interval minutes from now"
-msgstr "از هم اکنون فاصله زمانی را پیکربندی کنید"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "پیکربندی سرویس مرجع Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "پردازش EPG تکمیل شد (بدون مطابقت)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "پردازش EPG برای {} کانال تکمیل شد"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "فاصله زمانی به روز رسانی (دقیقه):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "افزونه EPGImport پیدا نشد: {}"
@@ -333,6 +331,9 @@ msgstr "فایل‌های m3u. تولید و در دستگاه %s ذخیره ش�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "فایل‌های m3u. برای همه %d کشور ایجاد شود؟"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "نکات مهم:"
@@ -428,6 +429,9 @@ msgstr "اکنون %s"
 msgid "Only one specific country"
 msgstr "فقط یک کشور خاص"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "جایگاه دسته گل های Vavoo در لیست اصلی"
 
@@ -520,8 +524,9 @@ msgstr "ذخیره شده در: %s"
 msgid "Schedule type:"
 msgstr "نوع برنامه:"
 
-msgid "Scheduled List:"
-msgstr "لیست برنامه ریزی شده:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "نوع برنامه:"
 
 msgid "Search"
 msgstr "جستجو کنید"
@@ -583,7 +588,8 @@ msgstr "این حذف خواهد کرد:"
 msgid "This will:"
 msgstr "این خواهد شد:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "زمان شروع به روز رسانی:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "حروف بزرگ"
 #, fuzzy
 msgid "Update Available"
 msgstr "هیچ موردی در دسترس نیست"
-
-msgid "Update interval (minutes):"
-msgstr "فاصله زمانی به روز رسانی (دقیقه):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "به روز رسانی خودکار دسته گل"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "از هم اکنون فاصله زمانی را پیکربندی کنید"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "لیست برنامه ریزی شده:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "به‌روزرسانی EPG به‌طور خودکار پس از ایجاد منبع فعال شود"

@@ -92,9 +92,6 @@ msgstr "- {} færslur uppfærðar"
 msgid "? Proxy Unknown"
 msgstr "? Umboð óþekkt"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Virk sjálfvirk uppfærsla á vöndum"
-
 msgid "All countries (%d)"
 msgstr "Öll lönd (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Stilla aðalbakgrunnsmynd."
 msgid "Configure at a fixed time"
 msgstr "Stilla á ákveðnum tíma"
 
-msgid "Configure interval minutes from now"
-msgstr "Stilltu bilmínútur héðan í frá"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Stilla þjónustu Tilvísun Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG vinnslu lokið (engar samsvörun)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-vinnslu lokið fyrir {} rásir"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Uppfærslubil (mínútur):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport viðbót fannst ekki: {}"
@@ -333,6 +331,9 @@ msgstr "Búa til .m3u skrár og vista í tæki %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Búa til .m3u skrár fyrir ÖLL %d lönd?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Mikilvægar athugasemdir:"
@@ -428,6 +429,9 @@ msgstr "Nú %s"
 msgid "Only one specific country"
 msgstr "Aðeins eitt ákveðið land"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Staða Vavoo kransa á aðallistanum"
 
@@ -520,8 +524,9 @@ msgstr "Vistað í: %s"
 msgid "Schedule type:"
 msgstr "Dagskrá gerð:"
 
-msgid "Scheduled List:"
-msgstr "Áætlunarlisti:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Dagskrá gerð:"
 
 msgid "Search"
 msgstr "Leita"
@@ -583,7 +588,8 @@ msgstr "Þetta mun fjarlægja:"
 msgid "This will:"
 msgstr "Þetta mun:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Tími til að hefja uppfærslu:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "Hástafir"
 #, fuzzy
 msgid "Update Available"
 msgstr "Engir hlutir í boði"
-
-msgid "Update interval (minutes):"
-msgstr "Uppfærslubil (mínútur):"
 
 #, fuzzy
 msgid "Update now?"
@@ -678,6 +681,15 @@ msgstr "✗ Umboð án nettengingar"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Endurræsa mistókst"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Virk sjálfvirk uppfærsla á vöndum"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Stilltu bilmínútur héðan í frá"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Áætlunarlisti:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Kveiktu sjálfkrafa á EPG uppfærslu eftir stofnun uppruna"

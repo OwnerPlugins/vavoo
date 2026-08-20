@@ -93,9 +93,6 @@ msgstr "- {} oppføringer oppdatert"
 msgid "? Proxy Unknown"
 msgstr "? Ukjent proxy"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktiv automatisk bukettoppdatering"
-
 msgid "All countries (%d)"
 msgstr "Alle land (%d)"
 
@@ -190,9 +187,6 @@ msgstr "Konfigurer hovedbakgrunnsbilde."
 msgid "Configure at a fixed time"
 msgstr "Konfigurer på et fast tidspunkt"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfigurer intervallminutter fra nå"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfigurer tjenestereferanse Iptv-Gstreamer-Exteplayer3"
 
@@ -253,6 +247,10 @@ msgstr "EPG-behandling fullført (ingen treff)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-behandling fullført for {} kanaler"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Oppdateringsintervall (minutter):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport-plugin ikke funnet: {}"
@@ -334,6 +332,9 @@ msgstr "Generere .m3u-filer og lagre på enheten %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generere .m3u-filer for ALLE %d land?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Viktige merknader:"
@@ -429,6 +430,9 @@ msgstr "Nå %s"
 msgid "Only one specific country"
 msgstr "Bare ett spesifikt land"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Plassering av Vavoo-buketter i hovedlisten"
 
@@ -521,8 +525,9 @@ msgstr "Lagret i: %s"
 msgid "Schedule type:"
 msgstr "Tidsplantype:"
 
-msgid "Scheduled List:"
-msgstr "Planlagt liste:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Tidsplantype:"
 
 msgid "Search"
 msgstr "Søk"
@@ -584,7 +589,8 @@ msgstr "Dette vil fjerne:"
 msgid "This will:"
 msgstr "Dette vil:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "På tide å starte oppdateringen:"
 
 msgid "Top"
@@ -599,9 +605,6 @@ msgstr "STORE BOKSTAVER"
 #, fuzzy
 msgid "Update Available"
 msgstr "Ingen varer tilgjengelig"
-
-msgid "Update interval (minutes):"
-msgstr "Oppdateringsintervall (minutter):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proxy frakoblet"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Omstart mislyktes"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktiv automatisk bukettoppdatering"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfigurer intervallminutter fra nå"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Planlagt liste:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Utløs EPG-oppdatering automatisk etter kildeoppretting"

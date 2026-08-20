@@ -92,9 +92,6 @@ msgstr "- {} entradas actualizadas"
 msgid "? Proxy Unknown"
 msgstr "? Proxy descoñecido"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Actualización automática activa do ramo"
-
 msgid "All countries (%d)"
 msgstr "Todos os países (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Configurar a imaxe de fondo principal."
 msgid "Configure at a fixed time"
 msgstr "Configurar nunha hora fixa"
 
-msgid "Configure interval minutes from now"
-msgstr "Configure os minutos de intervalo a partir de agora"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Configurar o servizo Referencia Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Procesamento EPG completo (sen coincidencias)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Procesamento EPG completado para {} canles"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Intervalo de actualización (minutos):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Non se atopou o complemento de EPGImport: {}"
@@ -333,6 +331,9 @@ msgstr "Queres xerar ficheiros .m3u e gardalos no dispositivo %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Queres xerar ficheiros .m3u para TODOS os %d países?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Notas importantes:"
@@ -428,6 +429,9 @@ msgstr "Agora %s"
 msgid "Only one specific country"
 msgstr "Só un país específico"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posición dos ramos Vavoo na lista principal"
 
@@ -520,8 +524,9 @@ msgstr "Gardado en: %s"
 msgid "Schedule type:"
 msgstr "Tipo de horario:"
 
-msgid "Scheduled List:"
-msgstr "Lista programada:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Tipo de horario:"
 
 msgid "Search"
 msgstr "Busca"
@@ -583,7 +588,8 @@ msgstr "Isto eliminará:"
 msgid "This will:"
 msgstr "Isto fará:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Hora de comezar a actualización:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "MAIÚSCULAS"
 #, fuzzy
 msgid "Update Available"
 msgstr "Non hai elementos dispoñibles"
-
-msgid "Update interval (minutes):"
-msgstr "Intervalo de actualización (minutos):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proxy fóra de liña"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Fallou o reinicio"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Actualización automática activa do ramo"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Configure os minutos de intervalo a partir de agora"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Lista programada:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Activar automaticamente a actualización de EPG despois da creación da fonte"

@@ -92,9 +92,6 @@ msgstr "- {} entradas mesas a jorn"
 msgid "? Proxy Unknown"
 msgstr "? Proxy desconegut"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Mesa a jorn automatica activa del ramèl"
-
 msgid "All countries (%d)"
 msgstr "Totes los païses (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Configurar l'imatge de fons principal."
 msgid "Configure at a fixed time"
 msgstr "Configurar a un moment fixe"
 
-msgid "Configure interval minutes from now"
-msgstr "Configurar las minutas d'interval a partir d'ara"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Configurar lo servici Referéncia Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Tractament EPG completat (pas de correspondéncia)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Lo tractament EPG completat pels canals {}"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Interval de mesa a jorn (minutas):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "L'ensamblador EPGImport pas trobat : {}"
@@ -333,6 +331,9 @@ msgstr "Generar de fichièrs .m3u e enregistrar sul periferic %s ?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Generar de fichièrs .m3u per TOTES los %d païses ?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Nòtas importantas:"
@@ -428,6 +429,9 @@ msgstr "Ara %s"
 msgid "Only one specific country"
 msgstr "Sonque un país especific"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posicion de ramos de Vavoo en la lista principal"
 
@@ -520,8 +524,9 @@ msgstr "Enregistrat dins : %s"
 msgid "Schedule type:"
 msgstr "Tipe d'oraris:"
 
-msgid "Scheduled List:"
-msgstr "Lista programada:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Tipe d'oraris:"
 
 msgid "Search"
 msgstr "Cercar"
@@ -583,7 +588,8 @@ msgstr "Aquò suprimirà :"
 msgid "This will:"
 msgstr "Aquò farà:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Temps de començar la mesa a jorn :"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "MAJUSCULAS"
 #, fuzzy
 msgid "Update Available"
 msgstr "Cap d'article disponible"
-
-msgid "Update interval (minutes):"
-msgstr "Interval de mesa a jorn (minutas):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proxy fòra linha"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Reaviada a fracassat"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Mesa a jorn automatica activa del ramèl"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Configurar las minutas d'interval a partir d'ara"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Lista programada:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Accionar automaticament la mesa a jorn EPG après la creacion de la font"

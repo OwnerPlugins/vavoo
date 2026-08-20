@@ -92,9 +92,6 @@ msgstr "- {} ta yozuv yangilandi"
 msgid "? Proxy Unknown"
 msgstr "? Proksi noma'lum"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Faol avtomatik guldasta yangilanishi"
-
 msgid "All countries (%d)"
 msgstr "Barcha mamlakatlar (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Asosiy fon rasmini sozlash."
 msgid "Configure at a fixed time"
 msgstr "Belgilangan vaqtda sozlang"
 
-msgid "Configure interval minutes from now"
-msgstr "Intervalli daqiqalarni hozirdan sozlang"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Iptv-Gstreamer-Exteplayer3 ma'lumotnoma xizmatini sozlang"
 
@@ -252,6 +246,10 @@ msgstr "EPG ishlovi tugallandi (mos kelmaydi)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} ta kanal uchun EPG ishlovi tugallandi"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Yangilash oralig'i (daqiqa):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport plagini topilmadi: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u fayllarini yaratib, %s qurilmasiga saqlansinmi?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "HAMMA %d ta mamlakat uchun .m3u fayllar yaratilsinmi?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Muhim eslatmalar:"
@@ -428,6 +429,9 @@ msgstr "Endi %s"
 msgid "Only one specific country"
 msgstr "Faqat bitta aniq mamlakat"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo guldastalarining asosiy ro'yxatdagi o'rni"
 
@@ -520,8 +524,9 @@ msgstr "Saqlangan: %s"
 msgid "Schedule type:"
 msgstr "Jadval turi:"
 
-msgid "Scheduled List:"
-msgstr "Rejalashtirilgan roʻyxat:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Jadval turi:"
 
 msgid "Search"
 msgstr "Qidiruv"
@@ -583,7 +588,8 @@ msgstr "Bu olib tashlaydi:"
 msgid "This will:"
 msgstr "Bu:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Yangilashni boshlash vaqti:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "YTH"
 #, fuzzy
 msgid "Update Available"
 msgstr "Hech narsa mavjud emas"
-
-msgid "Update interval (minutes):"
-msgstr "Yangilash oralig'i (daqiqa):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proksi oflayn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Qayta ishga tushirilmadi"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Faol avtomatik guldasta yangilanishi"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Intervalli daqiqalarni hozirdan sozlang"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Rejalashtirilgan roʻyxat:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Manba yaratilgandan keyin avtomatik ravishda EPG yangilanishini ishga tushiring"

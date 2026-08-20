@@ -81,9 +81,6 @@ msgstr ""
 msgid "? Proxy Unknown"
 msgstr ""
 
-msgid "Active Automatic Bouquet Update"
-msgstr ""
-
 msgid "All countries (%d)"
 msgstr ""
 
@@ -177,9 +174,6 @@ msgstr ""
 msgid "Configure at a fixed time"
 msgstr ""
 
-msgid "Configure interval minutes from now"
-msgstr ""
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr ""
 
@@ -238,6 +232,9 @@ msgid "EPG processing completed (no matches)"
 msgstr ""
 
 msgid "EPG processing completed for {} channels"
+msgstr ""
+
+msgid "EPG/Bouquet update interval (minutes):"
 msgstr ""
 
 msgid "EPGImport plugin not found: {}"
@@ -319,6 +316,9 @@ msgid "Generate .m3u files and save to device %s?"
 msgstr ""
 
 msgid "Generate .m3u files for ALL %d countries?"
+msgstr ""
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr ""
 
 msgid "Important Notes:"
@@ -411,6 +411,9 @@ msgstr ""
 msgid "Only one specific country"
 msgstr ""
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr ""
 
@@ -501,7 +504,7 @@ msgstr ""
 msgid "Schedule type:"
 msgstr ""
 
-msgid "Scheduled List:"
+msgid "Scheduled EPG/Bouquet Update:"
 msgstr ""
 
 msgid "Search"
@@ -564,7 +567,7 @@ msgstr ""
 msgid "This will:"
 msgstr ""
 
-msgid "Time to start update:"
+msgid "Time to start EPG/bouquet update:"
 msgstr ""
 
 msgid "Top"
@@ -577,9 +580,6 @@ msgid "UPPERCASE"
 msgstr ""
 
 msgid "Update Available"
-msgstr ""
-
-msgid "Update interval (minutes):"
 msgstr ""
 
 msgid "Update now?"

@@ -92,9 +92,6 @@ msgstr "- {} ýazgylar täzelendi"
 msgid "? Proxy Unknown"
 msgstr "? Proksi näbelli"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Işjeň awtomatiki buket täzelenmesi"
-
 msgid "All countries (%d)"
 msgstr "Countrieshli ýurtlar (% d)"
 
@@ -189,9 +186,6 @@ msgstr "Esasy fon suratyny sazlaň."
 msgid "Configure at a fixed time"
 msgstr "Belli bir wagtda sazlaň"
 
-msgid "Configure interval minutes from now"
-msgstr "Mundan beýläk aralyk minutlaryny sazlaň"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Hyzmat sazlamasy Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG gaýtadan işlemek tamamlandy (gabat gelenok)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG gaýtadan işlemek {} kanallar üçin tamamlandy"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Aralyk aralygy (minutlar):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport plugin tapylmady: {}"
@@ -333,6 +331,9 @@ msgstr ".M3u faýllaryny dörediň we% s enjamyna ýazdyryň?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ALhli% d ýurtlar üçin .m3u faýl dörediň?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Möhüm bellikler:"
@@ -428,6 +429,9 @@ msgstr "Indi% s"
 msgid "Only one specific country"
 msgstr "Diňe belli bir ýurt"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "“Vavoo” buketleriniň esasy sanawdaky orny"
 
@@ -520,8 +524,9 @@ msgstr "Saklanan:% s"
 msgid "Schedule type:"
 msgstr "Iş meýilnamasynyň görnüşi:"
 
-msgid "Scheduled List:"
-msgstr "Meýilleşdirilen sanaw:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Iş meýilnamasynyň görnüşi:"
 
 msgid "Search"
 msgstr "Gözlemek"
@@ -583,7 +588,8 @@ msgstr "Bu aýyrar:"
 msgid "This will:"
 msgstr "Bu:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Täzelenmäge başlamagyň wagty:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ÜPJÜNÇILIK"
 #, fuzzy
 msgid "Update Available"
 msgstr "Hiç zat ýok"
-
-msgid "Update interval (minutes):"
-msgstr "Aralyk aralygy (minutlar):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proksi awtonom"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Başlamak şowsuz"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Işjeň awtomatiki buket täzelenmesi"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Mundan beýläk aralyk minutlaryny sazlaň"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Meýilleşdirilen sanaw:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Çeşme döredilenden soň EPG täzelenmesini awtomatiki usulda işlediň"

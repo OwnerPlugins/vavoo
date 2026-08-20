@@ -92,9 +92,6 @@ msgstr "- {} ఎంట్రీలు నవీకరించబడ్డాయ
 msgid "? Proxy Unknown"
 msgstr "? ప్రాక్సీ తెలియదు"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "యాక్టివ్ ఆటోమేటిక్ బొకే అప్‌డేట్"
-
 msgid "All countries (%d)"
 msgstr "అన్ని దేశాలు (%d)"
 
@@ -189,9 +186,6 @@ msgstr "ప్రధాన నేపథ్య చిత్రాన్ని క
 msgid "Configure at a fixed time"
 msgstr "నిర్ణీత సమయంలో కాన్ఫిగర్ చేయండి"
 
-msgid "Configure interval minutes from now"
-msgstr "ఇప్పటి నుండి విరామం నిమిషాలను కాన్ఫిగర్ చేయండి"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "సర్వీస్ రిఫరెన్స్ Iptv-Gstreamer-Exteplayer3ని కాన్ఫిగర్ చేయండి"
 
@@ -252,6 +246,10 @@ msgstr "EPG ప్రాసెసింగ్ పూర్తయింది (�
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} ఛానెల్‌ల కోసం EPG ప్రాసెసింగ్ పూర్తయింది"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "నవీకరణ విరామం (నిమిషాలు):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport ప్లగిన్ కనుగొనబడలేదు: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u ఫైల్‌లను రూపొందించి, పరి�
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "అన్ని %d దేశాల కోసం .m3u ఫైల్‌లను రూపొందించాలా?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "ముఖ్యమైన గమనికలు:"
@@ -428,6 +429,9 @@ msgstr "ఇప్పుడు %s"
 msgid "Only one specific country"
 msgstr "ఒకే ఒక నిర్దిష్ట దేశం"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ప్రధాన జాబితాలో Vavoo బొకేట్స్ స్థానం"
 
@@ -520,8 +524,9 @@ msgstr "దీనిలో సేవ్ చేయబడింది: %s"
 msgid "Schedule type:"
 msgstr "షెడ్యూల్ రకం:"
 
-msgid "Scheduled List:"
-msgstr "షెడ్యూల్ చేయబడిన జాబితా:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "షెడ్యూల్ రకం:"
 
 msgid "Search"
 msgstr "శోధించండి"
@@ -583,7 +588,8 @@ msgstr "ఇది తీసివేస్తుంది:"
 msgid "This will:"
 msgstr "ఇది చేస్తుంది:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "నవీకరణ ప్రారంభించడానికి సమయం:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "పెద్ద అక్షరం"
 #, fuzzy
 msgid "Update Available"
 msgstr "ఏ వస్తువులు అందుబాటులో లేవు"
-
-msgid "Update interval (minutes):"
-msgstr "నవీకరణ విరామం (నిమిషాలు):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ ప్రాక్సీ ఆఫ్‌లైన్"
 
 msgid "✗ Restart Failed"
 msgstr "✗ పునఃప్రారంభం విఫలమైంది"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "యాక్టివ్ ఆటోమేటిక్ బొకే అప్‌డేట్"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ఇప్పటి నుండి విరామం నిమిషాలను కాన్ఫిగర్ చేయండి"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "షెడ్యూల్ చేయబడిన జాబితా:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "మూలాధారాన్ని సృష్టించిన తర్వాత స్వయంచాలకంగా EPG నవీకరణను ట్రిగ్గర్ చేయండి"

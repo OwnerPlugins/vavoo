@@ -92,9 +92,6 @@ msgstr "- {} сабтҳо нав карда шуданд"
 msgid "? Proxy Unknown"
 msgstr "? Прокси номаълум"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Навсозии худкори гулдастаи фаъол"
-
 msgid "All countries (%d)"
 msgstr "Ҳама кишварҳо (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Тасвири пасзаминаи асосиро танзим куне
 msgid "Configure at a fixed time"
 msgstr "Дар вақти муқарраршуда танзим кунед"
 
-msgid "Configure interval minutes from now"
-msgstr "Аз ҳоло дақиқаҳои фосиларо танзим кунед"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Танзими хидмати Reference Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Коркарди EPG анҷом ёфт (нест мувофиқат)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Коркарди EPG барои {} канал анҷом ёфт"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Фосилаи навсозӣ (дақиқа):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Васлкунаки EPGImport ёфт нашуд: {}"
@@ -333,6 +331,9 @@ msgstr "Файлҳои .m3u тавлид кунед ва дар дастгоҳи
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Барои ҲАМАИ %d кишвар файлҳои .m3u тавлид кунед?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Эзоҳҳои муҳим:"
@@ -428,6 +429,9 @@ msgstr "Ҳоло %s"
 msgid "Only one specific country"
 msgstr "Танҳо як кишвари мушаххас"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Мавқеи гулдастаҳои Vavoo дар рӯйхати асосӣ"
 
@@ -520,8 +524,9 @@ msgstr "Дар: %s захира шудааст"
 msgid "Schedule type:"
 msgstr "Навъи ҷадвал:"
 
-msgid "Scheduled List:"
-msgstr "Рӯйхати нақшавӣ:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Навъи ҷадвал:"
 
 msgid "Search"
 msgstr "Ҷустуҷӯ"
@@ -583,7 +588,8 @@ msgstr "Ин хориҷ мекунад:"
 msgid "This will:"
 msgstr "Ин хоҳад кард:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Вақти оғози навсозӣ:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ХАРФИ КАЛОН"
 #, fuzzy
 msgid "Update Available"
 msgstr "Ягон ашё дастрас нест"
-
-msgid "Update interval (minutes):"
-msgstr "Фосилаи навсозӣ (дақиқа):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Бозоғозӣ ноком шуд"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Навсозии худкори гулдастаи фаъол"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Аз ҳоло дақиқаҳои фосиларо танзим кунед"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Рӯйхати нақшавӣ:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Пас аз эҷоди манбаъ ба таври худкор навсозии EPG-ро оғоз кунед"

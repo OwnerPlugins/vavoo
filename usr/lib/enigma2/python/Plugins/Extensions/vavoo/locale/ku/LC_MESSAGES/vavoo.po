@@ -92,9 +92,6 @@ msgstr "- {} navnîş hatin nûve kirin"
 msgid "? Proxy Unknown"
 msgstr ""
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Nûvekirina Bûkê Otomatîk a Çalak"
-
 msgid "All countries (%d)"
 msgstr "Hemû welat (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Wêneya Paşerojê ya Sereke saz bike."
 msgid "Configure at a fixed time"
 msgstr "Di demek diyarkirî de mîheng bike"
 
-msgid "Configure interval minutes from now"
-msgstr "Ji niha ve hûrguliyên navberê mîheng bikin"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Servîsa karûbarê mîheng bikin Çavkanî Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Pêvajoya EPG qediya (bê maç)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Pêvajoya EPG ji bo {} kanalan qediya"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Navbera nûvekirinê (deqe):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Pêveka EPGImport nehat dîtin: {}"
@@ -333,6 +331,9 @@ msgstr "Pelên .m3u biafirînin û li cîhaza %s tomar bikin?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Ji bo HEMÛ %d welatan pelên .m3u biafirînin?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Têbînîyên Girîng:"
@@ -428,6 +429,9 @@ msgstr "Niha %s"
 msgid "Only one specific country"
 msgstr "Tenê welatek taybetî"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Cihê bûkên Vavoo di navnîşa sereke de"
 
@@ -520,8 +524,9 @@ msgstr "Li: %s hat tomarkirin"
 msgid "Schedule type:"
 msgstr "Cureya bernameyê:"
 
-msgid "Scheduled List:"
-msgstr "Lîsteya plankirî:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Cureya bernameyê:"
 
 msgid "Search"
 msgstr "Gerr"
@@ -583,7 +588,8 @@ msgstr "Ev ê jê bibe:"
 msgid "This will:"
 msgstr "Ev dê:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Dema destpêkirina nûvekirinê:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr ""
 #, fuzzy
 msgid "Update Available"
 msgstr "Tiştek tune"
-
-msgid "Update interval (minutes):"
-msgstr "Navbera nûvekirinê (deqe):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Ji nû ve destpêkirin têk çû"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Nûvekirina Bûkê Otomatîk a Çalak"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Ji niha ve hûrguliyên navberê mîheng bikin"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Lîsteya plankirî:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Piştî afirandina çavkaniyê, nûvekirina EPG-ê bixweber bike"

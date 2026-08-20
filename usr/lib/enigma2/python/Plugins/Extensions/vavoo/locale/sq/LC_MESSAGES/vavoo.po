@@ -92,9 +92,6 @@ msgstr "- {} hyrje u përditësuan"
 msgid "? Proxy Unknown"
 msgstr "? Përfaqësuesi i panjohur"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Përditësimi automatik i buqetës"
-
 msgid "All countries (%d)"
 msgstr "Të gjitha vendet (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Konfiguro imazhin kryesor të sfondit."
 msgid "Configure at a fixed time"
 msgstr "Konfiguro në një kohë të caktuar"
 
-msgid "Configure interval minutes from now"
-msgstr "Konfiguro minutat e intervalit nga tani"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfiguro referencën e shërbimit Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Përpunimi i EPG-së përfundoi (nuk ka përputhje)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Përpunimi EPG përfundoi për {} kanale"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Intervali i përditësimit (minuta):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Shtojca EPGImport nuk u gjet: {}"
@@ -333,6 +331,9 @@ msgstr "Të gjenerohen skedarë .m3u dhe të ruhen në pajisjen %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Të gjenerohen skedarë .m3u për të GJITHA %d vendet?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Shënime të rëndësishme:"
@@ -428,6 +429,9 @@ msgstr "Tani %s"
 msgid "Only one specific country"
 msgstr "Vetëm një vend specifik"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozicioni i buqetave Vavoo në listën kryesore"
 
@@ -520,8 +524,9 @@ msgstr "Ruajtur në: %s"
 msgid "Schedule type:"
 msgstr "Lloji i orarit:"
 
-msgid "Scheduled List:"
-msgstr "Lista e planifikuar:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Lloji i orarit:"
 
 msgid "Search"
 msgstr "Kërko"
@@ -583,7 +588,8 @@ msgstr "Kjo do të heqë:"
 msgid "This will:"
 msgstr "Kjo do të:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Koha për të filluar përditësimin:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "SHQIPËRI"
 #, fuzzy
 msgid "Update Available"
 msgstr "Nuk ka artikuj të disponueshëm"
-
-msgid "Update interval (minutes):"
-msgstr "Intervali i përditësimit (minuta):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr ""
 
 msgid "✗ Restart Failed"
 msgstr "✗ Rinisja dështoi"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Përditësimi automatik i buqetës"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Konfiguro minutat e intervalit nga tani"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Lista e planifikuar:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Aktivizoni automatikisht përditësimin EPG pas krijimit të burimit"

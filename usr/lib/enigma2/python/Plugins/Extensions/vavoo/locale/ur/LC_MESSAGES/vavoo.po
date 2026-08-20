@@ -92,9 +92,6 @@ msgstr "- {} اندراجات کو اپ ڈیٹ کر دیا گیا۔"
 msgid "? Proxy Unknown"
 msgstr "? پراکسی نامعلوم"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "فعال خودکار بکی اپ ڈیٹ"
-
 msgid "All countries (%d)"
 msgstr "تمام ممالک (%d)"
 
@@ -189,9 +186,6 @@ msgstr "مرکزی پس منظر کی تصویر کو ترتیب دیں۔"
 msgid "Configure at a fixed time"
 msgstr "ایک مقررہ وقت پر ترتیب دیں۔"
 
-msgid "Configure interval minutes from now"
-msgstr "اب سے وقفہ منٹ ترتیب دیں۔"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "سروس کا حوالہ Iptv-Gstreamer-Exteplayer3 ترتیب دیں۔"
 
@@ -252,6 +246,10 @@ msgstr "EPG پروسیسنگ مکمل (کوئی میچ نہیں)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} چینلز کے لیے EPG پروسیسنگ مکمل ہو گئی۔"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "اپ ڈیٹ کا وقفہ (منٹ):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport پلگ ان نہیں ملا: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u فائلیں بنائیں اور ڈیوائس %s میں محفوظ 
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "تمام %d ممالک کے لیے .m3u فائلیں بنائیں؟"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "اہم نوٹس:"
@@ -428,6 +429,9 @@ msgstr "اب %s"
 msgid "Only one specific country"
 msgstr "صرف ایک مخصوص ملک"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "اہم فہرست میں واوو کے گلدستے کی پوزیشن"
 
@@ -520,8 +524,9 @@ msgstr "اس میں محفوظ کیا گیا: %s"
 msgid "Schedule type:"
 msgstr "شیڈول کی قسم:"
 
-msgid "Scheduled List:"
-msgstr "طے شدہ فہرست:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "شیڈول کی قسم:"
 
 msgid "Search"
 msgstr "تلاش کریں۔"
@@ -583,7 +588,8 @@ msgstr "یہ ہٹا دے گا:"
 msgid "This will:"
 msgstr "یہ کرے گا:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "اپ ڈیٹ شروع کرنے کا وقت:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "اوپری کیس"
 #, fuzzy
 msgid "Update Available"
 msgstr "کوئی آئٹمز دستیاب نہیں ہیں۔"
-
-msgid "Update interval (minutes):"
-msgstr "اپ ڈیٹ کا وقفہ (منٹ):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ پراکسی آف لائن"
 
 msgid "✗ Restart Failed"
 msgstr "✗ دوبارہ شروع کرنا ناکام ہو گیا۔"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "فعال خودکار بکی اپ ڈیٹ"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "اب سے وقفہ منٹ ترتیب دیں۔"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "طے شدہ فہرست:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ماخذ کی تخلیق کے بعد خودکار طور پر EPG اپ ڈیٹ کو متحرک کریں۔"

@@ -92,9 +92,6 @@ msgstr "- {} cofnod wedi'u diweddaru"
 msgid "? Proxy Unknown"
 msgstr "? Dirprwy Anhysbys"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Diweddariad Bouquet Awtomatig Actif"
-
 msgid "All countries (%d)"
 msgstr "Pob gwlad (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Ffurfweddu Prif Ddelwedd Gefndir."
 msgid "Configure at a fixed time"
 msgstr "Ffurfweddu ar amser penodol"
 
-msgid "Configure interval minutes from now"
-msgstr "Ffurfweddu munudau egwyl o nawr"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Ffurfweddu gwasanaeth Cyfeirnod Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "Prosesu EPG wedi'i chwblhau (dim cyfatebiaeth)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "Cwblhawyd prosesu EPG ar gyfer {} sianel"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Cyfnod diweddaru (munudau):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "Heb ganfod ategyn EPGImport: {}"
@@ -333,6 +331,9 @@ msgstr "Cynhyrchu ffeiliau .m3u a chadw i ddyfais %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Cynhyrchu ffeiliau .m3u ar gyfer POB gwlad %d?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Nodiadau Pwysig:"
@@ -428,6 +429,9 @@ msgstr "Nawr %s"
 msgid "Only one specific country"
 msgstr "Dim ond un wlad benodol"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Safle tuswau Vavoo yn y brif restr"
 
@@ -520,8 +524,9 @@ msgstr "Cadwyd yn: %s"
 msgid "Schedule type:"
 msgstr "Math o amserlen:"
 
-msgid "Scheduled List:"
-msgstr "Rhestr wedi'i Amserlennu:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Math o amserlen:"
 
 msgid "Search"
 msgstr "Chwiliwch"
@@ -583,7 +588,8 @@ msgstr "Bydd hyn yn dileu:"
 msgid "This will:"
 msgstr "Bydd hyn yn:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Amser i ddechrau diweddaru:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "UCHAF"
 #, fuzzy
 msgid "Update Available"
 msgstr "Dim eitemau ar gael"
-
-msgid "Update interval (minutes):"
-msgstr "Cyfnod diweddaru (munudau):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Dirprwy All-lein"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Methwyd ailgychwyn"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Diweddariad Bouquet Awtomatig Actif"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Ffurfweddu munudau egwyl o nawr"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Rhestr wedi'i Amserlennu:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Sbardun diweddariad EPG yn awtomatig ar ôl creu ffynhonnell"

@@ -92,9 +92,6 @@ msgstr "- {} ನಮೂದುಗಳನ್ನು ನವೀಕರಿಸಲಾಗಿ
 msgid "? Proxy Unknown"
 msgstr "? ಪ್ರಾಕ್ಸಿ ಅಜ್ಞಾತ"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "ಸಕ್ರಿಯ ಸ್ವಯಂಚಾಲಿತ ಪುಷ್ಪಗುಚ್ಛ ನವೀಕರಣ"
-
 msgid "All countries (%d)"
 msgstr "ಎಲ್ಲಾ ದೇಶಗಳು (%d)"
 
@@ -189,9 +186,6 @@ msgstr "ಮುಖ್ಯ ಹಿನ್ನೆಲೆ ಚಿತ್ರವನ್ನು 
 msgid "Configure at a fixed time"
 msgstr "ನಿಗದಿತ ಸಮಯದಲ್ಲಿ ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
 
-msgid "Configure interval minutes from now"
-msgstr "ಈಗಿನಿಂದ ಮಧ್ಯಂತರ ನಿಮಿಷಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "ಸೇವೆಯ ಉಲ್ಲೇಖವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG ಪ್ರಕ್ರಿಯೆ ಪೂರ್ಣಗೊಂಡಿದೆ (�
 
 msgid "EPG processing completed for {} channels"
 msgstr "{} ಚಾನಲ್‌ಗಳಿಗೆ EPG ಪ್ರಕ್ರಿಯೆ ಪೂರ್ಣಗೊಂಡಿದೆ"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "ನವೀಕರಣ ಮಧ್ಯಂತರ (ನಿಮಿಷಗಳು):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport ಪ್ಲಗಿನ್ ಕಂಡುಬಂದಿಲ್ಲ: {}"
@@ -333,6 +331,9 @@ msgstr ".m3u ಫೈಲ್‌ಗಳನ್ನು ರಚಿಸಿ ಮತ್ತು �
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "ಎಲ್ಲಾ %d ದೇಶಗಳಿಗೆ .m3u ಫೈಲ್‌ಗಳನ್ನು ರಚಿಸುವುದೇ?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "ಪ್ರಮುಖ ಟಿಪ್ಪಣಿಗಳು:"
@@ -428,6 +429,9 @@ msgstr "ಈಗ %s"
 msgid "Only one specific country"
 msgstr "ಒಂದೇ ಒಂದು ನಿರ್ದಿಷ್ಟ ದೇಶ"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ಮುಖ್ಯ ಪಟ್ಟಿಯಲ್ಲಿ ವಾವೂ ಹೂಗುಚ್ಛಗಳ ಸ್ಥಾನ"
 
@@ -520,8 +524,9 @@ msgstr "ಇದರಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ: %s"
 msgid "Schedule type:"
 msgstr "ವೇಳಾಪಟ್ಟಿ ಪ್ರಕಾರ:"
 
-msgid "Scheduled List:"
-msgstr "ನಿಗದಿತ ಪಟ್ಟಿ:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "ವೇಳಾಪಟ್ಟಿ ಪ್ರಕಾರ:"
 
 msgid "Search"
 msgstr "ಹುಡುಕು"
@@ -583,7 +588,8 @@ msgstr "ಇದು ತೆಗೆದುಹಾಕುತ್ತದೆ:"
 msgid "This will:"
 msgstr "ಇದು:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "ನವೀಕರಣವನ್ನು ಪ್ರಾರಂಭಿಸುವ ಸಮಯ:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "ದೊಡ್ಡ ಅಕ್ಷರ"
 #, fuzzy
 msgid "Update Available"
 msgstr "ಯಾವುದೇ ಐಟಂಗಳು ಲಭ್ಯವಿಲ್ಲ"
-
-msgid "Update interval (minutes):"
-msgstr "ನವೀಕರಣ ಮಧ್ಯಂತರ (ನಿಮಿಷಗಳು):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ ಪ್ರಾಕ್ಸಿ ಆಫ್‌ಲೈನ್"
 
 msgid "✗ Restart Failed"
 msgstr "✗ ಮರುಪ್ರಾರಂಭ ವಿಫಲವಾಗಿದೆ"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "ಸಕ್ರಿಯ ಸ್ವಯಂಚಾಲಿತ ಪುಷ್ಪಗುಚ್ಛ ನವೀಕರಣ"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "ಈಗಿನಿಂದ ಮಧ್ಯಂತರ ನಿಮಿಷಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "ನಿಗದಿತ ಪಟ್ಟಿ:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "ಮೂಲ ರಚನೆಯ ನಂತರ ಸ್ವಯಂಚಾಲಿತವಾಗಿ EPG ನವೀಕರಣವನ್ನು ಟ್ರಿಗರ್ ಮಾಡಿ"

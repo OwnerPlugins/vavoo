@@ -92,9 +92,6 @@ msgstr "- {} inskrywings opgedateer"
 msgid "? Proxy Unknown"
 msgstr "? Volmag Onbekend"
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Aktiewe outomatiese boeketopdatering"
-
 msgid "All countries (%d)"
 msgstr "Alle lande (%d)"
 
@@ -189,9 +186,6 @@ msgstr "Stel hoofagtergrondbeeld op."
 msgid "Configure at a fixed time"
 msgstr "Konfigureer op 'n vaste tyd"
 
-msgid "Configure interval minutes from now"
-msgstr "Stel interval minute van nou af"
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Stel diensverwysing op Iptv-Gstreamer-Exteplayer3"
 
@@ -252,6 +246,10 @@ msgstr "EPG-verwerking voltooi (geen passings nie)"
 
 msgid "EPG processing completed for {} channels"
 msgstr "EPG-verwerking voltooi vir {} kanale"
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Opdateringsinterval (minute):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport-inprop nie gevind nie: {}"
@@ -333,6 +331,9 @@ msgstr "Genereer .m3u-lêers en stoor op toestel %s?"
 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Genereer .m3u-lêers vir ALLE %d lande?"
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
+msgstr ""
 
 msgid "Important Notes:"
 msgstr "Belangrike notas:"
@@ -428,6 +429,9 @@ msgstr "Nou %s"
 msgid "Only one specific country"
 msgstr "Slegs een spesifieke land"
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisie van Vavoo-ruikers in die hooflys"
 
@@ -520,8 +524,9 @@ msgstr "Gestoor in: %s"
 msgid "Schedule type:"
 msgstr "Skedule tipe:"
 
-msgid "Scheduled List:"
-msgstr "Geskeduleerde lys:"
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Skedule tipe:"
 
 msgid "Search"
 msgstr "Soek"
@@ -583,7 +588,8 @@ msgstr "Dit sal verwyder:"
 msgid "This will:"
 msgstr "Dit sal:"
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Tyd om opdatering te begin:"
 
 msgid "Top"
@@ -598,9 +604,6 @@ msgstr "HOOFLETTERS"
 #, fuzzy
 msgid "Update Available"
 msgstr "Geen items beskikbaar nie"
-
-msgid "Update interval (minutes):"
-msgstr "Opdateringsinterval (minute):"
 
 #, fuzzy
 msgid "Update now?"
@@ -679,6 +682,15 @@ msgstr "✗ Proxy vanlyn"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Herbegin het misluk"
+
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Aktiewe outomatiese boeketopdatering"
+
+#~ msgid "Configure interval minutes from now"
+#~ msgstr "Stel interval minute van nou af"
+
+#~ msgid "Scheduled List:"
+#~ msgstr "Geskeduleerde lys:"
 
 #~ msgid "Automatically trigger EPG update after source creation"
 #~ msgstr "Aktiveer EPG-opdatering outomaties na bronskepping"

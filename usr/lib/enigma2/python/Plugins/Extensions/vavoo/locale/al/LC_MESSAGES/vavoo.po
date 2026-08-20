@@ -102,9 +102,6 @@ msgstr ""
 msgid "? Proxy Unknown"
 msgstr ""
 
-msgid "Active Automatic Bouquet Update"
-msgstr "Përditësimi automatik i buqetës"
-
 msgid "All countries (%d)"
 msgstr ""
 
@@ -198,9 +195,6 @@ msgstr ""
 msgid "Configure at a fixed time"
 msgstr "Konfiguro në një kohë të caktuar"
 
-msgid "Configure interval minutes from now"
-msgstr ""
-
 msgid "Configure service Reference Iptv-Gstreamer-Exteplayer3"
 msgstr "Konfiguro referencën e shërbimit Iptv-Gstreamer-Exteplayer3"
 
@@ -260,6 +254,10 @@ msgstr ""
 
 msgid "EPG processing completed for {} channels"
 msgstr ""
+
+#, fuzzy
+msgid "EPG/Bouquet update interval (minutes):"
+msgstr "Intervali i përditësimit (minuta):"
 
 msgid "EPGImport plugin not found: {}"
 msgstr ""
@@ -340,6 +338,9 @@ msgid "Generate .m3u files and save to device %s?"
 msgstr ""
 
 msgid "Generate .m3u files for ALL %d countries?"
+msgstr ""
+
+msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr ""
 
 msgid "Important Notes:"
@@ -432,6 +433,9 @@ msgstr ""
 msgid "Only one specific country"
 msgstr ""
 
+msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
+msgstr ""
+
 msgid "Position of Vavoo bouquets in the main list"
 msgstr ""
 
@@ -522,8 +526,9 @@ msgstr ""
 msgid "Schedule type:"
 msgstr ""
 
-msgid "Scheduled List:"
-msgstr ""
+#, fuzzy
+msgid "Scheduled EPG/Bouquet Update:"
+msgstr "Lloi i orarit"
 
 msgid "Search"
 msgstr "Kërko"
@@ -585,7 +590,8 @@ msgstr ""
 msgid "This will:"
 msgstr ""
 
-msgid "Time to start update:"
+#, fuzzy
+msgid "Time to start EPG/bouquet update:"
 msgstr "Koha për të filluar përditësimin:"
 
 msgid "Top"
@@ -600,9 +606,6 @@ msgstr ""
 #, fuzzy
 msgid "Update Available"
 msgstr "Freskimi u abortua"
-
-msgid "Update interval (minutes):"
-msgstr "Intervali i përditësimit (minuta):"
 
 #, fuzzy
 msgid "Update now?"
@@ -681,6 +684,9 @@ msgstr ""
 msgid "✗ Restart Failed"
 msgstr ""
 
+#~ msgid "Active Automatic Bouquet Update"
+#~ msgstr "Përditësimi automatik i buqetës"
+
 #, fuzzy
 #~ msgid "At an interval of hours or at a fixed time"
 #~ msgstr "Në një interval orësh ose në një kohë të caktuar"
@@ -699,10 +705,6 @@ msgstr ""
 
 #~ msgid "Congrats! You already have the latest version..."
 #~ msgstr "Urime! Ju tashmë keni versionin më të fundit..."
-
-#, fuzzy
-#~ msgid "Scheduled List Update:"
-#~ msgstr "Lloi i orarit"
 
 #~ msgid "Select Fonts"
 #~ msgstr "Vendose llion e shkrimit"
