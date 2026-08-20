@@ -2099,6 +2099,8 @@ class MainVavoo(Screen):
         actions = {
             'prevBouquet': self.chDown,
             'nextBouquet': self.chUp,
+            'up': self.moveUp,
+            'down': self.moveDown,
             'ok': self.ok,
             'mainMenu': self.goConfig,
             'menu': self.goConfig,
@@ -2119,7 +2121,8 @@ class MainVavoo(Screen):
             'ButtonSetupActions',
             'InfobarEPGActions',
             'EPGSelectActions',
-            'ColorActions'
+            'ColorActions',
+            'DirectionActions'
         ]
         self['actions'] = ActionMap(actions_list, actions, -1)
 
@@ -3119,6 +3122,20 @@ class MainVavoo(Screen):
         except Exception as e:
             print("Error in chDown:", e)
 
+    def moveUp(self):
+        """Move selection up, wrapping from the first entry to the last."""
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx - 1) % len(self.cat_list))
+
+    def moveDown(self):
+        """Move selection down, wrapping from the last entry to the first."""
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx + 1) % len(self.cat_list))
+
     def _update_ui(self):
         """Update the UI with current list"""
         try:
@@ -3255,11 +3272,14 @@ class vavoo(Screen):
                 'ButtonSetupActions',
                 'InfobarEPGActions',
                 'EPGSelectActions',
-                'ColorActions'
+                'ColorActions',
+                'DirectionActions'
             ],
             {
                 "prevBouquet": self.chDown,
                 "nextBouquet": self.chUp,
+                "up": self.moveUp,
+                "down": self.moveDown,
                 "ok": self.ok,
                 "green": self.message1,
                 "yellow": self.search_vavoo,
@@ -3655,6 +3675,20 @@ class vavoo(Screen):
                 print("vavoo chDown: " + str(self['name'].getText()))
         except Exception as e:
             print("Error in vavoo chDown:", e)
+
+    def moveUp(self):
+        """Move selection up, wrapping from the first entry to the last."""
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx - 1) % len(self.cat_list))
+
+    def moveDown(self):
+        """Move selection down, wrapping from the last entry to the first."""
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx + 1) % len(self.cat_list))
 
     def _update_selection_name(self):
         """Update the name label with current selection"""
