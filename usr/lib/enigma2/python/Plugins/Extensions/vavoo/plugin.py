@@ -841,9 +841,10 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self.list.append(
             getConfigListEntry(
-                _("Scheduled List:"),
+                _("Scheduled EPG/Bouquet Update:"),
                 cfg.autobouquetupdate,
-                _("Active Automatic Bouquet Update")))
+                _("Periodically re-match EPG and refresh bouquets for your "
+                  "favorited countries in the background.")))
         if cfg.autobouquetupdate.value is True:
             try:
                 self.list.append(
@@ -869,16 +870,17 @@ class vavoo_config(Screen, ConfigListScreen):
                 try:
                     self.list.append(
                         getConfigListEntry(
-                            2 * indent + _("Update interval (minutes):"),
+                            2 * indent + _("EPG/Bouquet update interval (minutes):"),
                             cfg.updateinterval,
-                            _("Configure interval minutes from now")))
+                            _("How often to re-match EPG and refresh "
+                              "bouquets, counting from now.")))
                 except Exception as e:
                     print("Error building 'Update interval' config entry:", e)
             if cfg.timetype.value == "fixed time":
                 try:
                     self.list.append(
                         getConfigListEntry(
-                            2 * indent + _("Time to start update:"),
+                            2 * indent + _("Time to start EPG/bouquet update:"),
                             cfg.fixedtime,
                             _("Configure at a fixed time")))
                 except Exception as e:
