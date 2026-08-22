@@ -5224,6 +5224,15 @@ class AutoStartTimer(object):
         except BaseException:
             self.timer.timeout.connect(self.on_timer)
 
+        # The actual intended fire time, persisted across on_timer()
+        # calls instead of recomputed fresh each time - see update()/
+        # on_timer() for why: get_wake_time() for "interval" mode
+        # always returns now + interval*60 relative to whenever it's
+        # called, so calling it fresh at check-time can never look
+        # "due" the way it needs to for on_timer() to detect that the
+        # real target has actually been reached.
+        self.next_wake_time = None
+
         # Check if there are bouquets to update
         favorite_channel = join(PLUGIN_PATH, 'Favorite.txt')
 
@@ -5236,18 +5245,26 @@ class AutoStartTimer(object):
         self.update()
 
     def on_timer(self):
-        """Timer callback - triggered when timer expires"""
+        """Timer callback - triggered when timer expires.
+
+        update()'s eTimer schedule is capped at 3600s even when the
+        real target is further out (a safety re-check, e.g. across
+        suspend/resume or a clock change) - so this can fire well
+        before the actual configured interval/fixed-time target. Must
+        check elapsed wall-clock time against the real persisted
+        target (self.next_wake_time), not just treat "the timer fired"
+        as "it's time" - the previous version did exactly that for
+        "interval" mode (never checked at all), which was why it ran
+        every ~60 minutes regardless of the configured interval.
+        """
         print("[AutoStartTimer] Timer triggered")
         self.timer.stop()
 
         now = int(time.time())
-        wake = now
+        wake = self.next_wake_time if self.next_wake_time is not None else now
         constant = 0
 
-        if cfg.timetype.value == "fixed time":
-            wake = self.get_wake_time()
-
-        if abs(wake - now) < 60:
+        if wake - now < 60:
             try:
                 self.startMain()
                 constant = 60
@@ -5290,8 +5307,27 @@ class AutoStartTimer(object):
             return -1
 
     def update(self, constant=0):
+        """Schedule the next timer wake-up.
+
+        Only computes a fresh target via get_wake_time() when none is
+        persisted yet (first run, or scheduling was disabled) -
+        otherwise reuses self.next_wake_time so a capped, early
+        re-check (see on_timer()) doesn't lose track of the real
+        target and reschedule based on a brand new one every time it
+        wakes up. When on_timer() just ran because the persisted
+        target was actually reached (constant=60), the `wake < nowt +
+        constant` branch below is what advances next_wake_time to the
+        following cycle - not a separate reset.
+        """
         self.timer.stop()
-        wake = self.get_wake_time()
+        # Not just "is None": get_wake_time() returns -1 while
+        # scheduling is disabled (autobouquetupdate off) - must keep
+        # recomputing in that case too, or re-enabling it later would
+        # get stuck reusing a stale -1 forever instead of picking up
+        # a real target.
+        if not self.next_wake_time or self.next_wake_time <= 0:
+            self.next_wake_time = self.get_wake_time()
+        wake = self.next_wake_time
         nowt = time.time()
         if wake > 0:
             if wake < nowt + constant:
@@ -5300,6 +5336,7 @@ class AutoStartTimer(object):
                     wake += interval * 60
                 elif cfg.timetype.value == "fixed time":
                     wake += 86400
+                self.next_wake_time = wake
             next_time = wake - int(nowt)
             if next_time > 3600:
                 next_time = 3600
