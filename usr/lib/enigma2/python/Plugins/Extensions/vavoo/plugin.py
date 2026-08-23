@@ -809,36 +809,11 @@ class vavoo_config(Screen, ConfigListScreen):
                     cfg.similarity_threshold,
                     _("Minimum similarity for matching channels (higher = stricter).")))
 
-        self.list.append(
-            getConfigListEntry(
-                _("Movie Services Reference"),
-                cfg.services,
-                _("Configure service Reference Iptv-Gstreamer-Exteplayer3")))
-
-        self.list.append(
-            getConfigListEntry(
-                _("Bouquet Position in List"),
-                cfg.list_position,
-                _("Position of Vavoo bouquets in the main list"))
-        )
-
-        help_line1 = _("Refresh stream every X minutes (1-15)")
-        help_line2 = _("Recommended: 5-8 minutes")
-        help_line3 = _("Lower = less interruption but more refreshes")
-        help_text = help_line1 + "\n" + help_line2 + "\n" + help_line3
-        self.list.append(
-            getConfigListEntry(
-                _("Refresh stream (minutes):"),
-                cfg.timerupdate,
-                help_text
-            )
-        )
-        self.list.append(
-            getConfigListEntry(
-                _("Select Background"),
-                cfg.back,
-                _("Configure Main Background Image.")))
-
+        # Grouped with "Enable Vavoo EPG" above rather than left down by
+        # the other bouquet-related entries below: this schedule drives
+        # EPG refresh timing too, not just bouquet regeneration -
+        # AutoStartTimer._update_bouquets() does Rytec matching, EPG
+        # feed downloads, and bouquet file I/O as one combined cycle.
         self.list.append(
             getConfigListEntry(
                 _("Scheduled EPG/Bouquet Update:"),
@@ -888,6 +863,36 @@ class vavoo_config(Screen, ConfigListScreen):
                 except Exception as e:
                     print(
                         "Error building 'Time to start update' config entry:", e)
+
+        self.list.append(
+            getConfigListEntry(
+                _("Movie Services Reference"),
+                cfg.services,
+                _("Configure service Reference Iptv-Gstreamer-Exteplayer3")))
+
+        self.list.append(
+            getConfigListEntry(
+                _("Bouquet Position in List"),
+                cfg.list_position,
+                _("Position of Vavoo bouquets in the main list"))
+        )
+
+        help_line1 = _("Refresh stream every X minutes (1-15)")
+        help_line2 = _("Recommended: 5-8 minutes")
+        help_line3 = _("Lower = less interruption but more refreshes")
+        help_text = help_line1 + "\n" + help_line2 + "\n" + help_line3
+        self.list.append(
+            getConfigListEntry(
+                _("Refresh stream (minutes):"),
+                cfg.timerupdate,
+                help_text
+            )
+        )
+        self.list.append(
+            getConfigListEntry(
+                _("Select Background"),
+                cfg.back,
+                _("Configure Main Background Image.")))
 
         self.list.append(
             getConfigListEntry(
