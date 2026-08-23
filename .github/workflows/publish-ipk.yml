@@ -1,0 +1,17 @@
+name: Publish ipk to upload repo
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'CONTROL/control'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: OwnerPlugins/upload/.github/workflows/build-and-publish-ipk.yml@main
+    with:
+      source_repo: ${{ github.repository }}
+      source_ref: ${{ github.sha }}
+    secrets:
+      UPLOAD_REPO_TOKEN: ${{ secrets.UPLOAD_REPO_TOKEN }}
