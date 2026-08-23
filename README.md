@@ -149,7 +149,7 @@ In the Config Menu:
 - A master source file (`vavoo.sources.xml`) is created for EPGImport
 - The player fetches EPG via the proxy redirect to GitHub raw files
 - **Intelligent Channel Matching** (in priority order):
-  - Local per-box cache, then a downloaded Rytec-based temp cache
+  - Local per-box cache
   - **Curated EPG channel database** (`epg-channel-db/vavoo_channels_<cc>.json`,
     fetched and cached in-memory for 24h): a pre-solved
     channel-name → EPG-feed-id mapping, generated offline per country

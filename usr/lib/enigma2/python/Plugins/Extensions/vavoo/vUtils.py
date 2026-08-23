@@ -1788,10 +1788,9 @@ _ALIAS_MAP_HOME_COUNTRY = "it"
 class VavooEPGMatcher(object):
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
-        # Guards the lazy-init blocks below (_configured_sats,
-        # _checked_temp_cache) against a TOCTOU race if find_match() is
-        # ever called concurrently on this same matcher instance from
-        # two threads.
+        # Guards the lazy-init block below (_configured_sats) against a
+        # TOCTOU race if find_match() is ever called concurrently on
+        # this same matcher instance from two threads.
         self._lazy_init_lock = threading.Lock()
         # Guards self.cache/self.normalized_index/self.new_matches -
         # see find_match()'s docstring. RLock: _find_match_internal()
@@ -2412,52 +2411,7 @@ class VavooEPGMatcher(object):
                 # Invalid ID, proceed with live matching
                 print("[Match] Local cache has invalid ID, will try to re-match.")
 
-        # 2. Online cache
-        if not hasattr(self, '_checked_temp_cache'):
-            with self._lazy_init_lock:
-                if not hasattr(self, '_checked_temp_cache'):
-                    self._checked_temp_cache = False
-                    self._temp_cache = None
-
-        if not self._checked_temp_cache:
-            with self._lazy_init_lock:
-                # Re-check inside the lock - another thread may have
-                # already done this download/load while we were waiting.
-                if not self._checked_temp_cache:
-                    print("[Match] Checking temp cache once...")
-                    self._temp_cache = load_temp_cache()
-                    if not self._temp_cache:
-                        print("[Match] Temp cache not found, downloading once...")
-                        if download_epg_cache_if_needed():
-                            self._temp_cache = load_temp_cache()
-                    self._checked_temp_cache = True
-
-        if self._temp_cache and search_key in self._temp_cache:
-            cached = self._temp_cache[search_key]
-            # Unlike the local cache above, this comes from a pre-built
-            # file downloaded from GitHub - validate the ID before
-            # trusting it, same as the local cache path does, instead of
-            # blindly returning whatever is there.
-            if self.is_valid_rytec_id(cached.get('id')):
-                print("[Match] Temp cache HIT: {}".format(search_key))
-                new_entry = cached.copy()
-                new_entry['name'] = channel_name   # original name
-                self.cache[search_key] = new_entry
-                self._index_cache_key(search_key)
-                # Deferred to save_cache() (called once per batch by callers,
-                # e.g. after a whole bouquet export) instead of writing the
-                # full cache file here - this branch fires per matched
-                # channel, and a full rewrite per channel turns a bulk export
-                # into many redundant whole-file writes as the cache grows.
-                self.new_matches[search_key] = new_entry
-                self._cleanup_stale_unmatched(
-                    channel_name, country_code, servicetype)
-                return cached.get('id'), cached.get('sref')
-            else:
-                print(
-                    "[Match] Temp cache has invalid ID for {}, ignoring".format(search_key))
-
-        # 2.5 Community-curated channel database (see
+        # 2. Community-curated channel database (see
         # generate_epg_channel_db.py): a pre-solved name -> this
         # country's own EPG feed id mapping, built and reviewed offline
         # instead of guessed live by fuzzy-matching against Rytec.
@@ -2617,19 +2571,6 @@ def _prune_cache_if_needed(cache, max_entries=MAX_CACHE_ENTRIES):
     return cache
 
 
-def load_temp_cache():
-    """Load EPG cache from /tmp/vavoo_epg_cache.json"""
-    temp_file = "/tmp/vavoo_epg_cache.json"
-    try:
-        if exists(temp_file):
-            with open(temp_file, 'r') as f:
-                return load(f)
-    except Exception as e:
-        print("[Cache] Error loading {}: {}".format(temp_file, e))
-
-    return None
-
-
 def load_cache():
     try:
         with open(CACHE_FILE, 'r') as f:
@@ -2764,33 +2705,6 @@ def cleanup_cache_matched_flag():
             dump(cache, f, indent=2)
         rename(temp_file, CACHE_FILE)
         print("[Cache] Cleaned matched flags for invalid IDs.")
-
-
-def download_epg_cache_if_needed():
-    """Download vavoo_epg_cache.json to /tmp/ if not exists"""
-    temp_file = "/tmp/vavoo_epg_cache.json"
-
-    # If already exists, don't download
-    if exists(temp_file):
-        return True
-
-    try:
-        import requests
-        url = "{}/vavoo_epg_cache.json".format(HOST_MAIN)
-        print("[Cache] Downloading to /tmp...")
-
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            download_tmp = temp_file + ".tmp"
-            with open(download_tmp, 'wb') as f:
-                f.write(response.content)
-            rename(download_tmp, temp_file)
-            print("[Cache] Downloaded to: {}".format(temp_file))
-            return True
-    except Exception as e:
-        print("[Cache] Download error: {}".format(e))
-
-    return False
 
 
 _curated_channel_db_cache = {}

@@ -98,9 +98,8 @@ from Enigma2's `NimManager` and boosts matches from those (1.5x) and from
 Italian satellites/13°E HotBird/5°W Eutelsat (1.3x) as a fallback for
 Italian channels. Priority order: Satellite > Terrestrial > Cable > IPTV.
 `find_match()`'s full priority chain: country-gated `channel_alias.ALIAS_MAP`
-→ local per-box cache → downloaded Rytec-based temp cache → **curated
-channel database** (below) → live Rytec fuzzy matching → live own-feed
-fallback → unmatched. `VavooEPGMatcher` is a per-process singleton
+→ local per-box cache → **curated channel database** (below) → live
+Rytec fuzzy matching → live own-feed fallback → unmatched. `VavooEPGMatcher` is a per-process singleton
 (`get_epg_matcher()`) called concurrently from real usage (a bouquet
 export's background thread vs. a per-channel EPG-overlay daemon thread
 spawned by watching TV) — its `cache`/`normalized_index`/`new_matches`
