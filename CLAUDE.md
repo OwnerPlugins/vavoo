@@ -233,9 +233,11 @@ There's no `requirements.txt`, `pyproject.toml`, or lint config file
 
 **Practical implication for version bumps:** if you change
 `__version__` in `__init__.py`, that alone triggers a tag + GitHub Release
-on merge to `main`. Also update the version badge in `README.md` and
-`Version:` in `CONTROL/control` to keep them in sync (they are not
-auto-synced).
+on merge to `main`. Also update the version badge in `README.md`,
+`Version:` in `CONTROL/control`, `version=` in `installer.sh`, and
+`PV`/`PKGV`/`VER` in `enigma2-plugin-extensions-vavoo.bb` to keep them
+in sync (they are not auto-synced) — the `.bb` recipe in particular
+stayed at a placeholder `1.0` for a long time before this was noticed.
 
 ## Packaging / distribution paths
 
