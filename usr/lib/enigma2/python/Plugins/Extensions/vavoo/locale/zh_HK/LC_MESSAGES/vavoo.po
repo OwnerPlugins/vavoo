@@ -441,7 +441,7 @@ msgid "Only one specific country"
 msgstr "仅限一个特定国家"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "定期重新搭配 EPG 並在後台刷新您喜愛的國家/地區的花束。"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo 节目列表在主列表中的位置"

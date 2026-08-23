@@ -334,7 +334,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Voleu generar fitxers .m3u per a TOTS els %d països?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Amb quina freqüència cal tornar a coincidir amb l'EPG i actualitzar els rams, comptant a partir d'ara."
 
 msgid "Important Notes:"
 msgstr "Notes importants:"
@@ -431,7 +431,7 @@ msgid "Only one specific country"
 msgstr "Només un país concret"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Torna a coincidir periòdicament amb l'EPG i actualitza els rams dels teus països preferits en segon pla."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posició dels rams de Vavoo a la llista principal"

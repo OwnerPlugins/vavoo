@@ -333,7 +333,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Të gjenerohen skedarë .m3u për të GJITHA %d vendet?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Sa shpesh të ripërputhen EPG dhe të rifreskohen buqetat, duke numëruar tani."
 
 msgid "Important Notes:"
 msgstr "Shënime të rëndësishme:"
@@ -430,7 +430,7 @@ msgid "Only one specific country"
 msgstr "Vetëm një vend specifik"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Ripërputhni periodikisht EPG dhe rifreskoni buqetat për vendet tuaja të preferuara në sfond."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozicioni i buqetave Vavoo në listën kryesore"

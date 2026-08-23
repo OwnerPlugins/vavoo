@@ -349,7 +349,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Vygenerovat soubory .m3u pro VŠECHNY %d země?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Jak často znovu spárovat EPG a obnovit kytice, počítáno od nynějška."
 
 msgid "Important Notes:"
 msgstr "Důležité poznámky:"
@@ -447,7 +447,7 @@ msgid "Only one specific country"
 msgstr "Pouze jedna konkrétní země"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Pravidelně upravujte EPG a obnovujte kytice pro své oblíbené země na pozadí."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Pozice kytic Vavoo v hlavním seznamu"

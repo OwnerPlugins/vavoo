@@ -345,7 +345,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr ".m3u fájlok generálása MINDEN %d ország számára?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Mostantól számítva milyen gyakran kell újra egyeztetni az EPG-t és frissíteni a csokrokat."
 
 msgid "Important Notes:"
 msgstr "Fontos megjegyzések:"
@@ -442,7 +442,7 @@ msgid "Only one specific country"
 msgstr "Csak egy konkrét ország"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Rendszeresen párosítsa újra az EPG-t, és frissítse a kedvenc országaihoz tartozó csokrokat a háttérben."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "A Vavoo csokrok helye a fő listában"

@@ -333,7 +333,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Búa til .m3u skrár fyrir ÖLL %d lönd?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Hversu oft á að jafna EPG aftur og hressa upp á kransa, talið frá núna."
 
 msgid "Important Notes:"
 msgstr "Mikilvægar athugasemdir:"
@@ -430,7 +430,7 @@ msgid "Only one specific country"
 msgstr "Aðeins eitt ákveðið land"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Passaðu EPG reglulega saman og endurnærðu kransa fyrir uppáhaldslöndin þín í bakgrunni."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Staða Vavoo kransa á aðallistanum"
