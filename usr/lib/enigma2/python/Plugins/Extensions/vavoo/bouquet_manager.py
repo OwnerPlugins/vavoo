@@ -83,6 +83,45 @@ if urllib3 is not None:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def _sanitize_name_for_path(name):
+    """Strip path-separator and traversal sequences from a country/
+    category name before it's embedded in a bouquet filename.
+
+    name comes from Vavoo's remote, mirror-switchable catalog (the
+    'group' field) - only lowercasing/space-replacement was applied to
+    it before, so a rogue/compromised mirror returning '/' or '..'
+    sequences could steer the resulting os.path.join() outside
+    ENIGMA_PATH. Only used for the filename - the original name is
+    still used for display (#NAME line) and catalog lookups."""
+    name = name.replace('/', '_').replace('\\', '_')
+    while '..' in name:
+        name = name.replace('..', '_')
+    return name
+
+
+def _ensure_trailing_newline(lines):
+    """Ensure the last element of a readlines()-style list ends with a
+    newline, so concatenating it with another such list can't merge the
+    last line of one onto the first line of the other. readlines()
+    doesn't add a trailing newline to a final line that doesn't already
+    have one - if bouquets.tv/.radio (edited by any installed plugin,
+    not just this one) happened to end that way, writelines()-ing this
+    list followed by another would silently corrupt that boundary
+    line."""
+    if lines and not lines[-1].endswith('\n'):
+        lines = lines[:-1] + [lines[-1] + '\n']
+    return lines
+
+
+def _strip_control_chars(text):
+    """Strip characters with ord() <= 31 (e.g. an embedded newline) from
+    network-sourced text before it's written as a raw bouquet line -
+    matches the control-char stripping sanitizeFilename() already does
+    for filenames, but without ASCII-folding so unicode separators
+    (e.g. the '➾' used in category display names) survive."""
+    return ''.join(c for c in text if ord(c) > 31)
+
+
 def get_local_ip():
     """Get the local IP address (2s timeout to avoid blocking on restricted networks)."""
     try:
@@ -142,10 +181,10 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
 
         # Configurable position
         if list_position == "top":
-            new_lines = vavoo_lines + non_vavoo_lines
+            new_lines = _ensure_trailing_newline(vavoo_lines) + non_vavoo_lines
             position_info = "top"
         else:
-            new_lines = non_vavoo_lines + vavoo_lines
+            new_lines = _ensure_trailing_newline(non_vavoo_lines) + vavoo_lines
             position_info = "bottom"
 
         # Write file atomically (temp file + rename) - this is
@@ -490,8 +529,12 @@ def export_bouquet_async(
                 # Failed to create bouquet
                 def do_callback():
                     try:
-                        if parent_screen and hasattr(
-                                parent_screen, "session") and parent_screen.session:
+                        # Screen.close() doesn't clear self.session, so
+                        # that check could never actually detect a closed
+                        # screen - parent_screen._closed (set by vavoo's
+                        # own close() override) is the real signal.
+                        if parent_screen and not getattr(
+                                parent_screen, "_closed", False):
                             callback(False, 0, "No channels found")
                         else:
                             print(
@@ -520,8 +563,8 @@ def export_bouquet_async(
             # Notify that bouquet is ready (first callback)
             def do_first_callback():
                 try:
-                    if parent_screen and hasattr(
-                            parent_screen, "session") and parent_screen.session:
+                    if parent_screen and not getattr(
+                            parent_screen, "_closed", False):
                         callback(True, ch_count, "Bouquet created")
                     else:
                         print(
@@ -550,8 +593,8 @@ def export_bouquet_async(
 
             def do_callback():
                 try:
-                    if parent_screen and hasattr(
-                            parent_screen, "session") and parent_screen.session:
+                    if parent_screen and not getattr(
+                            parent_screen, "_closed", False):
                         callback(False, 0, str(exc))
                     else:
                         print(
@@ -637,48 +680,61 @@ def process_epg_matching_background(
         unmatched = []
 
         for ch in channels_list:
-            debug("original_name in ch: {}".format(repr(ch['original_name'])))
+            try:
+                debug(
+                    "original_name in ch: {}".format(
+                        repr(ch['original_name'])))
 
-            rytec_id, dvb_ref = matcher.find_match(
-                ch['original_name'], country_code, servicetype,
-                channel_id=ch['channel_id'])
-            if dvb_ref:
-                if dvb_ref.endswith(':'):
-                    dvb_ref = dvb_ref[:-1]
-                # EPGImport's channelFilter() only fast-accepts a channel
-                # ref if it contains an embedded URL ("%3a//" in the
-                # string) - a bare DVB-tuple ref falls through to a
-                # fake-recording probe instead, which fails (silently, no
-                # exception) for a reference with no stream URL at all.
-                # Without this, write_epg_mapping_file() below wrote only
-                # the bare tuple and EPGImport dropped almost every
-                # channel during its own channels.xml parse pass, logging
-                # "[XMLTVConverter] Unknown channel: ..." for each one
-                # regardless of how good the id match was.
-                full_service_ref = "{}:{}".format(
-                    dvb_ref, ch['url'].replace(':', '%3a'))
-                matched.append({
-                    'name': ch['original_name'],
-                    'channel_id': ch['channel_id'],
-                    'dvb_ref': dvb_ref,
-                    'full_service_ref': full_service_ref,
-                    'rytec_id': rytec_id,
-                    'original_url': ch['url']
-                })
-            else:
-                # Unmatched: keep the original sref from the fallback bouquet
-                # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync.
-                # dict.get()'s default arg is evaluated eagerly regardless
-                # of whether the key is present - `or` short-circuits so
-                # unique_fallback_sref() only actually runs on the rare
-                # miss, not on every unmatched channel.
-                unmatched.append({
-                    'name': ch['original_name'],
-                    'channel_id': ch['channel_id'],
-                    'original_url': ch['url'],
-                    'original_sref': ch.get('fallback_sref') or
-                    unique_fallback_sref(servicetype, ch['channel_id'])
-                })
+                rytec_id, dvb_ref = matcher.find_match(
+                    ch['original_name'], country_code, servicetype,
+                    channel_id=ch['channel_id'])
+                if dvb_ref:
+                    if dvb_ref.endswith(':'):
+                        dvb_ref = dvb_ref[:-1]
+                    # EPGImport's channelFilter() only fast-accepts a channel
+                    # ref if it contains an embedded URL ("%3a//" in the
+                    # string) - a bare DVB-tuple ref falls through to a
+                    # fake-recording probe instead, which fails (silently, no
+                    # exception) for a reference with no stream URL at all.
+                    # Without this, write_epg_mapping_file() below wrote only
+                    # the bare tuple and EPGImport dropped almost every
+                    # channel during its own channels.xml parse pass, logging
+                    # "[XMLTVConverter] Unknown channel: ..." for each one
+                    # regardless of how good the id match was.
+                    full_service_ref = "{}:{}".format(
+                        dvb_ref, ch['url'].replace(':', '%3a'))
+                    matched.append({
+                        'name': ch['original_name'],
+                        'channel_id': ch['channel_id'],
+                        'dvb_ref': dvb_ref,
+                        'full_service_ref': full_service_ref,
+                        'rytec_id': rytec_id,
+                        'original_url': ch['url']
+                    })
+                else:
+                    # Unmatched: keep the original sref from the fallback bouquet
+                    # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync.
+                    # dict.get()'s default arg is evaluated eagerly regardless
+                    # of whether the key is present - `or` short-circuits so
+                    # unique_fallback_sref() only actually runs on the rare
+                    # miss, not on every unmatched channel.
+                    unmatched.append({
+                        'name': ch['original_name'],
+                        'channel_id': ch['channel_id'],
+                        'original_url': ch['url'],
+                        'original_sref': ch.get('fallback_sref') or
+                        unique_fallback_sref(servicetype, ch['channel_id'])
+                    })
+            except Exception as e:
+                # One bad channel must not abort matching for the whole
+                # country - mirrors create_bouquet_file()'s per-channel
+                # try/except (used by the scheduled auto-update path);
+                # this loop (the interactive/UI export path) previously
+                # had no isolation here at all.
+                print(
+                    "[EPGBackground] Error matching channel %s: %s" %
+                    (ch.get('original_name', '?'), str(e)))
+                continue
             select.select([], [], [], 0.001)
 
         # Save callback and matched count AFTER the loop
@@ -859,10 +915,11 @@ def create_fallback_bouquet_sync(
         country_code = get_country_code_from_bouquet_name(name) or ""
 
         # 5. Prepare bouquet filename (same logic as create_bouquet_file)
+        name_for_path = _sanitize_name_for_path(name)
         separators = ["➾", "⟾", "->", "→"]
-        is_category = any(sep in name for sep in separators)
+        is_category = any(sep in name_for_path for sep in separators)
         if export_type == "flat" or not is_category:
-            safe_name = name.lower().replace(
+            safe_name = name_for_path.lower().replace(
                 ' ',
                 '_').replace(
                 '➾',
@@ -878,13 +935,13 @@ def create_fallback_bouquet_sync(
             country_part = ""
             category_part = ""
             for sep in separators:
-                if sep in name:
-                    parts = name.split(sep)
+                if sep in name_for_path:
+                    parts = name_for_path.split(sep)
                     country_part = parts[0].strip()
                     category_part = parts[1].strip()
                     break
             if not country_part or not category_part:
-                safe_name = name.lower().replace(
+                safe_name = name_for_path.lower().replace(
                     ' ',
                     '_').replace(
                     '➾',
@@ -905,9 +962,10 @@ def create_fallback_bouquet_sync(
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
 
         # 6. Build bouquet lines with fallback
-        lines = ["#NAME %s" % name]
+        lines = ["#NAME %s" % _strip_control_chars(name)]
         channel_count = 0
         channels_list = []
+        seen_channel_ids = set()
 
         for channel in channels:
             try:
@@ -920,6 +978,12 @@ def create_fallback_bouquet_sync(
                 channel_id = channel.get('id', '')
                 if not channel_name or not channel_url or not channel_id:
                     continue
+                if channel_id in seen_channel_ids:
+                    debug(
+                        "[FallbackBouquet] Skipping duplicate channel_id "
+                        "%s (%s)" % (channel_id, channel_name))
+                    continue
+                seen_channel_ids.add(channel_id)
 
                 # Clean name
                 clean_name = decodeHtml(channel_name)
@@ -1014,12 +1078,13 @@ def create_bouquet_file(
         print("[Bouquet] Creating bouquet: %s (%s)" % (name, export_type))
 
         # Determine if it is a country or category
+        name_for_path = _sanitize_name_for_path(name)
         separators = ["➾", "⟾", "->", "→"]
-        is_category = any(sep in name for sep in separators)
+        is_category = any(sep in name_for_path for sep in separators)
 
         # Prepare file name
         if export_type == "flat" or not is_category:
-            safe_name = name.lower().replace(
+            safe_name = name_for_path.lower().replace(
                 ' ',
                 '_').replace(
                 '➾',
@@ -1035,13 +1100,13 @@ def create_bouquet_file(
             country_part = ""
             category_part = ""
             for sep in separators:
-                if sep in name:
-                    parts = name.split(sep)
+                if sep in name_for_path:
+                    parts = name_for_path.split(sep)
                     country_part = parts[0].strip()
                     category_part = parts[1].strip()
                     break
             if not country_part or not category_part:
-                safe_name = name.lower().replace(
+                safe_name = name_for_path.lower().replace(
                     ' ',
                     '_').replace(
                     '➾',
@@ -1068,8 +1133,9 @@ def create_bouquet_file(
         # 'rytec_id': rytec_id}
         matched = []
         unmatched = []    # each item: {'name': name, 'channel_id': id}
-        tv_lines = ["#NAME %s" % name]
+        tv_lines = ["#NAME %s" % _strip_control_chars(name)]
         channel_count = 0
+        seen_channel_ids = set()
         for channel in channels:
             try:
                 if not isinstance(channel, dict):
@@ -1079,6 +1145,12 @@ def create_bouquet_file(
                 channel_id = channel.get('id', '')
                 if not channel_name or not channel_url or not channel_id:
                     continue
+                if channel_id in seen_channel_ids:
+                    debug(
+                        "[Bouquet] Skipping duplicate channel_id %s (%s)" %
+                        (channel_id, channel_name))
+                    continue
+                seen_channel_ids.add(channel_id)
 
                 # Clean name for description and matching
                 clean_name = decodeHtml(channel_name)
@@ -1280,9 +1352,11 @@ def reorganize_all_bouquets_position(list_position="bottom"):
 
             # Apply the configured position
             if list_position == "top":
-                new_lines = vavoo_lines + non_vavoo_lines
+                new_lines = _ensure_trailing_newline(
+                    vavoo_lines) + non_vavoo_lines
             else:
-                new_lines = non_vavoo_lines + vavoo_lines
+                new_lines = _ensure_trailing_newline(
+                    non_vavoo_lines) + vavoo_lines
 
             # Atomic write (temp file + rename) - same reasoning as
             # _add_to_main_bouquet()/deep_clean_bouquet_files().
