@@ -414,7 +414,7 @@ def _start_update_check():
         _update_check_done = True
 
     _update_thread = threading.Thread(target=_worker)
-    _update_thread.setDaemon(True)
+    _update_thread.daemon = True
     _update_thread.start()
 
 
@@ -712,6 +712,13 @@ class vavoo_config(Screen, ConfigListScreen):
         self.old_back = cfg.back.value
         self.old_list_position = cfg.list_position.value
 
+        # So background M3U-fetch threads (_fetch_countries_async/
+        # _fetch_channels_async) can notice this screen was left and
+        # stop trying to pop dialogs on top of whatever the user has
+        # since navigated to.
+        self._closed = False
+        self.onClose.append(self._mark_closed)
+
         self.list = []
         self.onChangedEntry = []
         self["version"] = Label()
@@ -738,6 +745,9 @@ class vavoo_config(Screen, ConfigListScreen):
         self.createSetup()
         self.showhide()
         self.onLayoutFinish.append(self.layoutFinished)
+
+    def _mark_closed(self):
+        self._closed = True
 
     def update_status(self):
         if cfg.autobouquetupdate.value:
@@ -927,6 +937,12 @@ class vavoo_config(Screen, ConfigListScreen):
             self.check_and_start_proxy_async(
                 self.show_m3u_ip_selection,
                 self._m3u_proxy_unavailable)
+        else:
+            # Every other exit path in this wizard resets the pseudo-
+            # checkbox back to "No" - declining the very first
+            # confirmation was the one path that didn't.
+            cfg.genm3u.setValue(0)
+            cfg.genm3u.save()
 
     def _m3u_proxy_unavailable(self):
         self.session.open(
@@ -1159,13 +1175,20 @@ class vavoo_config(Screen, ConfigListScreen):
         cfg.genm3u.save()
 
     def generate_all_m3u_files(self, confirm, countries):
-        """Generate .m3u files for all countries"""
+        """Generate .m3u files for all countries - the actual work runs
+        on a background thread. This is invoked directly as a MessageBox
+        confirmation callback, which Enigma2 runs synchronously on the
+        GUI thread; looping get_channels_for_country() (a blocking
+        getUrl(timeout=15) call) once per country here would freeze the
+        whole box for up to countries*15 seconds, exactly what every
+        other channel-fetch path in this wizard already avoids via
+        _fetch_countries_async()/_fetch_channels_async()."""
         if not confirm:
             cfg.genm3u.setValue(0)
             cfg.genm3u.save()
             return
 
-        try:
+        def task():
             total_channels = 0
             generated = 0
             failed = 0
@@ -1195,11 +1218,29 @@ class vavoo_config(Screen, ConfigListScreen):
                     failed += 1
                     print("[M3U Export] Error %s: %s" % (country, str(e)))
 
+            reactor.callFromThread(
+                self._on_all_m3u_files_done,
+                generated, failed, total_channels, len(countries))
+
+        t = threading.Thread(target=task)
+        t.daemon = True
+        t.start()
+
+    def _on_all_m3u_files_done(
+            self, generated, failed, total_channels, total_countries):
+        """Runs back on the GUI thread once generate_all_m3u_files()'s
+        background loop finishes."""
+        if getattr(self, "_closed", False):
+            cfg.genm3u.setValue(0)
+            cfg.genm3u.save()
+            return
+
+        try:
             # Show detailed result
             msg = _("M3U generation completed!")
             msg += "\n"
             msg += _("Countries: %(generated)d/%(total)d") % {
-                'generated': generated, 'total': len(countries)}
+                'generated': generated, 'total': total_countries}
             msg += "\n"
             msg += _("Failed: %(failed)d") % {'failed': failed}
             msg += "\n"
@@ -1277,21 +1318,11 @@ class vavoo_config(Screen, ConfigListScreen):
                 return 0
 
             # Write file
-            try:
-                with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
-                    f.write(m3u_content)
-                print(
-                    "[M3U] File created: %s (%d channels)" %
-                    (m3u_path, channel_count))
-            except Exception as e:
-                print("[M3U] Error writing file: %s" % str(e))
-                # Keep the same explicit utf-8 encoding as the primary
-                # write attempt above - a bare open() here would use the
-                # platform default encoding, which raises
-                # UnicodeEncodeError on Python 2 for the non-ASCII
-                # channel names decodeHtml() commonly produces.
-                with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
-                    f.write(m3u_content)
+            with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
+                f.write(m3u_content)
+            print(
+                "[M3U] File created: %s (%d channels)" %
+                (m3u_path, channel_count))
 
             return channel_count
 
@@ -1328,19 +1359,27 @@ class vavoo_config(Screen, ConfigListScreen):
         already running on Enigma2's single GUI thread, so calling it
         directly would freeze the whole box for that long."""
         def task():
+            if self._closed:
+                return
             countries = self.get_countries_from_proxy()
+            if self._closed:
+                return
             reactor.callFromThread(on_done, countries)
         t = threading.Thread(target=task)
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
 
     def _fetch_channels_async(self, country_name, on_done):
         """Same as _fetch_countries_async(), for get_channels_for_country()."""
         def task():
+            if self._closed:
+                return
             channels = self.get_channels_for_country(country_name)
+            if self._closed:
+                return
             reactor.callFromThread(on_done, channels)
         t = threading.Thread(target=task)
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
 
     def check_and_start_proxy_async(
@@ -1833,6 +1872,10 @@ class startVavoo(Screen):
         global first
         # stop any running timers safely
         try:
+            self.timer.stop()
+        except Exception:
+            pass
+        try:
             self._anim_timer.stop()
         except Exception:
             pass
@@ -2018,6 +2061,11 @@ class MainVavoo(Screen):
         self.session = session
         global _session
         _session = session
+
+        # So a background flag-download thread still in flight when the
+        # user exits (closex()) can notice and skip re-arming timers /
+        # touching UI on a screen that's no longer executing.
+        self._closed = False
 
         Screen.__init__(self, session)
         init_notification_system(session)
@@ -2246,6 +2294,7 @@ class MainVavoo(Screen):
 
     def closex(self):
         debug("Exit from plugin. Cleaning up plugin timers...")
+        self._closed = True
         if is_stats_enabled():
             stop_heartbeat()
             print("[Stats] Heartbeat fermato")
@@ -2338,12 +2387,15 @@ class MainVavoo(Screen):
                     # The single-shot refresh above only covers the first
                     # 8 countries - without this, flags for every country
                     # after that silently never appear until something
-                    # else happens to rebuild the list.
-                    if downloaded_rest > 0:
+                    # else happens to rebuild the list. Skip entirely if
+                    # the user has since exited via closex() - otherwise
+                    # this re-arms a timer on a screen that's no longer
+                    # executing.
+                    if downloaded_rest > 0 and not self._closed:
                         reactor.callFromThread(
                             self.flag_refresh_timer.start, 1000, True)
                 thread = threading.Thread(target=download_rest)
-                thread.setDaemon(True)
+                thread.daemon = True
                 thread.start()
 
         except Exception as e:
@@ -2597,23 +2649,21 @@ class MainVavoo(Screen):
     def _restart_proxy(self):
         """Restart the proxy asynchronously."""
         try:
-            # 1. Try to shut down existing proxy (non‑blocking request)
-            try:
-                if requests is not None:
-                    requests.get(PROXY_SHUTDOWN_URL, timeout=2)
-                else:
-                    req = UrlRequest(
-                        PROXY_SHUTDOWN_URL, headers={
-                            'User-Agent': vUtils.RequestAgent()})
-                    urlopen(req, timeout=2)
-            except Exception as e:
-                debug("Graceful proxy shutdown request failed, "
-                      "falling back to pkill: {}".format(e))
+            # Try graceful HTTP shutdown, falling back to an in-process
+            # stop of the running VavooProxy instance -
+            # vavoo_proxy.shutdown_proxy() already implements exactly
+            # this two-step fallback. Previously this method duplicated
+            # the HTTP-shutdown step and then fell back to
+            # "pkill -f 'python.*vavoo_proxy'", which can never match
+            # anything real (the proxy only ever runs as an in-process
+            # daemon thread of Enigma2 itself, never as its own
+            # subprocess) - so a failed HTTP call silently left the old
+            # proxy thread/server running untouched, and this whole
+            # "restart" reported success without anything having
+            # actually restarted.
+            shutdown_proxy()
 
-            # 2. Kill any remaining python processes
-            os_system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
-
-            # 3. Wait 2 seconds without blocking, then do the restart
+            # Wait 2 seconds without blocking, then do the restart
             reactor.callLater(2, self._do_restart_proxy)
         except Exception as e:
             print("[Restart] Error: {0}".format(e))
@@ -3202,6 +3252,12 @@ class vavoo(Screen):
         global _session
         _session = session
 
+        # So a bouquet-export background thread still running when the
+        # user exits this screen (Screen.close() doesn't clear
+        # self.session, so that alone can't be used to detect this) can
+        # notice and skip touching this screen's UI/state afterward.
+        self._closed = False
+
         Screen.__init__(self, session)
         init_notification_system(session)
         self._load_skin()
@@ -3636,7 +3692,11 @@ class vavoo(Screen):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
-                self._update_export_button_label()
+                # Notifying is fine even if the user has since left this
+                # screen (quick_notify() is session-global), but touching
+                # this screen's own widgets after close() is not.
+                if not self._closed:
+                    self._update_export_button_label()
                 # Register with Favorite.txt so "Scheduled List" auto-update
                 # (AutoStartTimer) picks this bouquet up going forward -
                 # that feature only ever re-updates bouquets already listed
@@ -3666,6 +3726,10 @@ class vavoo(Screen):
                     quick_notify(message, 3)
 
         except Exception as e:
+            # Intentionally swallowed so a UI-touching failure here (e.g.
+            # _update_export_button_label() on a screen the user has
+            # since left) can't crash the export callback - but that
+            # means it's log-only, with no user-visible indication.
             print("[Bouquet] Error in _on_export_complete: %s" % e)
 
     def search_vavoo(self):
@@ -3745,6 +3809,7 @@ class vavoo(Screen):
             self['name'].setText(_("Error"))
 
     def close(self, *args, **kwargs):
+        self._closed = True
         try:
             self.timer.stop()
             try:
@@ -3934,7 +3999,7 @@ class VavooSearch(Screen):
                     name = item.split('###')[0].lower()
                     if text in name:
                         self.filteredList.append(item)
-                except BaseException:
+                except Exception:
                     continue
 
             if self.filteredList:
@@ -3979,7 +4044,7 @@ class VavooSearch(Screen):
                     '%0a', '').replace(
                     '%0A', '').strip("\r\n")
                 display_list.append(show_list(name, url))
-            except BaseException:
+            except Exception:
                 continue
         self["channel_list"].l.setList(display_list)
 
@@ -4199,7 +4264,7 @@ class TvInfoBarShowHide():
                 reactor.callFromThread(_apply_epg_text)
 
             _epg_fetch_thread = threading.Thread(target=_fetch_epg_async)
-            _epg_fetch_thread.setDaemon(True)
+            _epg_fetch_thread.daemon = True
             _epg_fetch_thread.start()
 
         except Exception as e:
@@ -4295,6 +4360,8 @@ class TvInfoBarShowHide():
         debug("startHideTimer END")
 
     def doTimerHide(self):
+        if self._closed:
+            return
         debug("doTimerHide START, state={}".format(self.__state))
         self.hideTimer.stop()
         if self.__state == self.STATE_SHOWN:
@@ -4525,6 +4592,8 @@ class Playstream2(
             return
 
         def _openForEpgText(epg_text):
+            if self._closed:
+                return
             try:
                 # get_current_epg() returns several distinct "EPG ..."
                 # error strings ("EPG not available (no country code)",
@@ -4566,15 +4635,22 @@ class Playstream2(
                 print('[Playstream2] Error opening IMDb/TMDB: %s' % e)
 
         def _fetchEpgThenOpen():
+            # Mirrors _fetch_epg_async()'s _closed check above - the
+            # user may have already left this channel by the time this
+            # slow fetch finishes.
+            if self._closed:
+                return
             try:
                 epg_text = self.get_current_epg()
             except Exception as e:
                 print('[Playstream2] Error fetching EPG for IMDb: %s' % e)
                 epg_text = ""
+            if self._closed:
+                return
             reactor.callFromThread(_openForEpgText, epg_text)
 
         epg_thread = threading.Thread(target=_fetchEpgThenOpen)
-        epg_thread.setDaemon(True)
+        epg_thread.daemon = True
         epg_thread.start()
 
     def nextitem(self):
@@ -5174,6 +5250,20 @@ class Playstream2(
             return
         print("[Playstream2] Closing player...")
         self._closed = True
+
+        # Stop this screen's own timers - previously only stopped by whichever
+        # timer's own callback happened to run first; a screen closed before
+        # that could leave one re-arming itself against a torn-down instance.
+        for timer_name in ("proxy_update_timer", "hideTimer",
+                            "delayed_start_timer", "retry_start_timer"):
+            timer = getattr(self, timer_name, None)
+            if timer is not None:
+                try:
+                    timer.stop()
+                except Exception as e:
+                    print("[Playstream2] Error stopping {}: {}".format(
+                        timer_name, e))
+
         self.stopStream()
         try:
             for screen in self.session.dialog_stack:
@@ -5205,10 +5295,11 @@ class Playstream2(
         self.close()
 
     def leavePlayer(self):
-        """Alternative close method"""
-        self._closed = True
-        self.stopStream()
-        self.close()
+        """Alternative close method (STOP button) - runs the exact same
+        cleanup as cancel() instead of skipping it (previously set
+        _closed early, which made cancel()'s own dedupe guard skip its
+        entire cleanup body when it ran via onClose)."""
+        self.cancel()
 
 
 class AutoStartTimer(object):
