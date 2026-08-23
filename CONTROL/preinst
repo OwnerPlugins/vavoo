@@ -15,17 +15,16 @@ print_header() {
 }
 
 print_footer() {
+    # preinst runs BEFORE the package's files are unpacked - postinst is
+    # the script that runs after installation and prints the real
+    # completion message. This used to claim "Installation Completed
+    # Successfully" here too, which was misleading (and factually wrong,
+    # since no plugin files exist on disk yet at this point).
     echo "############################################################"
     echo "#                                                          #"
-    echo "#  Installation Completed Successfully!                    #"
+    echo "#  Pre-installation checks completed                       #"
     echo "#                                                          #"
-    echo "#  Important: Restart Enigma2 to activate the plugin       #"
-    echo "#                                                          #"
-    echo "#  Access:                                                 #"
-    echo "#  - Main Menu -> Plugins -> Vavoo Stream Live             #"
-    echo "#  - Or via dedicated button in extensions                 #"
-    echo "#                                                          #"
-    echo "#  Thank you for choosing Vavoo Stream Live!               #"
+    echo "#  Proceeding with package installation...                 #"
     echo "#                                                          #"
     echo "############################################################"
 }

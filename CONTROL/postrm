@@ -55,10 +55,25 @@ echo "Cleaning up M3U cache files..."
 find /tmp -name "*.m3u" -exec rm -f {} \; > /dev/null 2>&1
 echo "✓ Temporary M3U files removed"
 
-# Remove bouquet files
+# Remove bouquet files - matched by the exact naming convention
+# bouquet_manager.py uses ("userbouquet.vavoo_<name>.tv"/".radio"),
+# rather than any file whose name merely contains "vavoo" anywhere
+# under /etc/enigma2, which could delete an unrelated user file that
+# happens to match (e.g. a manual backup named "myvavoo_notes.txt").
 echo "Removing Vavoo bouquet files..."
-find /etc/enigma2 -name "*vavoo*" -exec rm -f {} \; > /dev/null 2>&1
+find /etc/enigma2 -maxdepth 1 -name "userbouquet.vavoo_*.tv" -exec rm -f {} \; > /dev/null 2>&1
+find /etc/enigma2 -maxdepth 1 -name "userbouquet.vavoo_*.radio" -exec rm -f {} \; > /dev/null 2>&1
 echo "✓ Bouquet files removed"
+
+# Remove Vavoo's own cache/state files by exact name. Deliberately NOT
+# epgimport.conf - that's EPGImport's own shared config used by every
+# installed EPGImport source, not something exclusive to Vavoo.
+echo "Removing Vavoo cache files..."
+for f in vavoo_epg_cache.json vavoo_epg_unmatched_cache.json \
+         vavoo_sref_map.json channel_alias.json; do
+    rm -f "/etc/enigma2/$f" > /dev/null 2>&1
+done
+echo "✓ Cache files removed"
 
 # Reload bouquets if enigma2 is running
 if [ -e "/usr/bin/enigma2" ]; then

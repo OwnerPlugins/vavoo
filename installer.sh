@@ -33,15 +33,22 @@ cleanup() {
 }
 
 detect_os() {
-    if [ -f /var/lib/dpkg/status ]; then
+    # /etc/debian_version is checked before /var/lib/dpkg/status - a
+    # genuine Debian host has both, but so do some Enigma2 images
+    # (DreamOS) that use dpkg-based tooling without being real Debian;
+    # checking the more specific marker first is what actually tells
+    # them apart. Every case branch below still treats "DreamOs"|
+    # "Debian" identically, so this only fixes the printed debug line,
+    # not any install-path behavior.
+    if [ -f /etc/debian_version ]; then
+        OSTYPE="Debian"
+        STATUS="/var/lib/dpkg/status"
+    elif [ -f /var/lib/dpkg/status ]; then
         OSTYPE="DreamOs"
         STATUS="/var/lib/dpkg/status"
     elif [ -f /etc/opkg/opkg.conf ] || [ -f /var/lib/opkg/status ]; then
         OSTYPE="OE"
         STATUS="/var/lib/opkg/status"
-    elif [ -f /etc/debian_version ]; then
-        OSTYPE="Debian"
-        STATUS="/var/lib/dpkg/status"
     else
         OSTYPE="Unknown"
         STATUS=""
@@ -149,12 +156,20 @@ echo "Downloading vavoo..."
 DOWNLOAD_URL='https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz'
 DOWNLOAD_OK=1
 if command -v curl >/dev/null 2>&1; then
-    curl -fL --insecure -o "$FILEPATH" "$DOWNLOAD_URL"
+    # Real TLS certificate verification - this script runs as root and
+    # the downloaded tarball is copied into place and effectively
+    # executed, so skipping cert validation would be a real MITM
+    # exposure. The original "wget fails on some images" bug (BusyBox
+    # wget's limited HTTPS/TLS+SNI negotiation) was a protocol issue,
+    # not a certificate-validation one - curl running first with
+    # verification on already resolves that without needing to weaken
+    # verification here.
+    curl -fL -o "$FILEPATH" "$DOWNLOAD_URL"
     DOWNLOAD_OK=$?
 fi
 if [ "$DOWNLOAD_OK" -ne 0 ]; then
     echo "Falling back to wget for the download..."
-    wget --no-check-certificate "$DOWNLOAD_URL" -O "$FILEPATH"
+    wget "$DOWNLOAD_URL" -O "$FILEPATH"
     DOWNLOAD_OK=$?
 fi
 if [ "$DOWNLOAD_OK" -ne 0 ]; then
@@ -172,16 +187,29 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Installing plugin files..."
+
+# Remove any previous installation first (mirrors CONTROL/preinst's
+# approach for the ipkg path) - without this, a file removed/renamed in
+# a newer release could survive indefinitely across an upgrade done via
+# this installer, causing stale .py/.pyc/skin XML mismatches.
+if [ -d "$PLUGINPATH" ]; then
+    echo "Removing previous installation at $PLUGINPATH..."
+    rm -rf "$PLUGINPATH"
+fi
 mkdir -p "$PLUGINPATH"
 
+COPY_OK=1
 if [ -d "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo" ]; then
-    cp -r "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/" 2>/dev/null
+    cp -r "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/"
+    COPY_OK=$?
     echo "Copied from standard plugin directory"
 elif [ -d "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo" ]; then
-    cp -r "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/" 2>/dev/null
+    cp -r "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/"
+    COPY_OK=$?
     echo "Copied from lib64 plugin directory"
 elif [ -d "$TMPPATH/vavoo-main/usr" ]; then
-    cp -r "$TMPPATH/vavoo-main/usr"/* /usr/ 2>/dev/null
+    cp -r "$TMPPATH/vavoo-main/usr"/* /usr/
+    COPY_OK=$?
     echo "Copied entire usr structure"
 else
     echo "Could not find plugin files in extracted archive"
@@ -191,15 +219,21 @@ else
     exit 1
 fi
 
+if [ "$COPY_OK" -ne 0 ]; then
+    echo "Failed to copy plugin files (cp exited with $COPY_OK)!"
+    cleanup
+    exit 1
+fi
+
 sync
 
 echo "Verifying installation..."
-if [ -d "$PLUGINPATH" ] && [ -n "$(ls -A "$PLUGINPATH" 2>/dev/null)" ]; then
-    echo "Plugin directory found and not empty: $PLUGINPATH"
+if [ -f "$PLUGINPATH/plugin.py" ] && [ -f "$PLUGINPATH/plugin.png" ]; then
+    echo "Plugin files verified: $PLUGINPATH"
     echo "Contents:"
     ls -la "$PLUGINPATH/" | head -10
 else
-    echo "Plugin installation failed or directory is empty!"
+    echo "Plugin installation failed - expected files not found in $PLUGINPATH!"
     cleanup
     exit 1
 fi
