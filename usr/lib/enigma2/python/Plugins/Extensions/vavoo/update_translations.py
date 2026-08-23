@@ -9,7 +9,7 @@ Integrates Google Translate auto-translation for missing strings
 Last Updated: 2026-05-27
 ##############################################################################
 """
-from os import makedirs, walk, remove, listdir, environ
+from os import makedirs, walk, remove, listdir, environ, replace as os_replace
 from os.path import dirname, abspath, basename, join, exists, isdir
 import re
 import subprocess
@@ -197,8 +197,16 @@ def save_cache_to_disk():
         cache_dir = dirname(CACHE_FILE)
         if not exists(cache_dir):
             makedirs(cache_dir, exist_ok=True)
-        with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+        # Write to a temp file and rename over the real one (atomic on
+        # the same filesystem) - a direct open(..., 'w') could be left
+        # truncated by an interrupted run (e.g. a cancelled CI job),
+        # which load_cache_from_disk()'s except-branch would then treat
+        # as corrupt and silently reset to {}, losing every previously
+        # cached translation.
+        temp_path = CACHE_FILE + ".tmp"
+        with open(temp_path, 'w', encoding='utf-8') as f:
             json.dump(_translation_cache, f, ensure_ascii=False, indent=2)
+        os_replace(temp_path, CACHE_FILE)
         _log("Cache saved ({} entries)".format(len(_translation_cache)))
         _cache_dirty = False
     except Exception as e:

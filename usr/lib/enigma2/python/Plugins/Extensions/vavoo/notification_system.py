@@ -109,14 +109,20 @@ class HybridNotificationManager(object):
 
     def initialize(self, session):
         """Initialize manager with session"""
-        self.session = session
-        if not self.notification_window and session:
-            try:
-                self.notification_window = session.instantiateDialog(
-                    SimpleNotifyWidget)
-                print("Notification window created")
-            except Exception as e:
-                print("Error creating window: {}".format(e))
+        # session/notification_window mutation guarded by the same lock
+        # used everywhere else in this class - previously unguarded,
+        # while showMessage() reads these same two attributes under the
+        # lock, so "lock held around every mutation" wasn't actually
+        # true.
+        with self._lock:
+            self.session = session
+            if not self.notification_window and session:
+                try:
+                    self.notification_window = session.instantiateDialog(
+                        SimpleNotifyWidget)
+                    print("Notification window created")
+                except Exception as e:
+                    print("Error creating window: {}".format(e))
 
         # Process any pending messages
         if self.pending_messages:

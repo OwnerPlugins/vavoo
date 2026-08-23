@@ -188,6 +188,16 @@ class AnonymousStats(object):
         if not getattr(self, '_heartbeat_active', False):
             debug("Heartbeat not active, skipping send")
             return
+        # Defense-in-depth: the only other enforcement point is an
+        # external stop_heartbeat() call (from plugin.py, wrapped in a
+        # broad try/except that would silently swallow any error and
+        # leave the heartbeat running) - unlike record_startup()'s
+        # _send(), this didn't re-check the opt-out flag itself, so a
+        # disable file created any way other than the exact config-save
+        # code path kept heartbeats firing every 5 minutes regardless.
+        if self._is_disabled():
+            debug("Stats disabled by user, skipping heartbeat")
+            return
 
         payload = {
             "event": "heartbeat",

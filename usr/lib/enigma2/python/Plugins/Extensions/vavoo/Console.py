@@ -243,14 +243,32 @@ class Console(Screen):
         else:
             self.show()
 
-    def dataAvail(self, str):
+    def dataAvail(self, data_bytes):
         if PY3:
-            data = str.decode()
+            # A bad/non-UTF8 chunk, or a multi-byte UTF-8 sequence split
+            # across two dataAvail() calls (a classic streaming-decode
+            # issue), previously raised UnicodeDecodeError straight out
+            # of this Enigma2 signal callback, silently losing that
+            # chunk of console output instead of just that one chunk's
+            # text.
+            try:
+                data = data_bytes.decode()
+            except UnicodeDecodeError:
+                data = data_bytes.decode('utf-8', errors='replace')
         else:
-            data = str
+            data = data_bytes
         print("Data received: {}".format(data))
         self._appendText(data)
 
     def restartenigma(self):
+        # Kill the in-flight subprocess first, same cleanup
+        # cancelCallback() does - this button is reachable at any time
+        # (unconditionally bound), including mid-execution of the
+        # plugin's own self-update installer script, and previously
+        # restarted the GUI without stopping that process first.
+        try:
+            self.container.kill()
+        except Exception as e:
+            print("[Console] Error killing container on restart: {}".format(e))
         from Screens.Standby import TryQuitMainloop
         self.session.open(TryQuitMainloop, 3)

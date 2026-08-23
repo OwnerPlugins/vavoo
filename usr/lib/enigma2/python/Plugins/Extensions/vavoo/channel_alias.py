@@ -50,7 +50,13 @@ RENAME_RULES = [
     ("27 TWENTYSEVEN", "TWENTYSEVEN"),
     ("CINE 34 MEDIASET", "CINE34"),
     ("MEDIASET 20", "20 MEDIASET"),
-    ("MEDIASET 1", "20 MEDIASET"),
+    # "MEDIASET 1" removed - it previously mapped here too, but
+    # "Mediaset 1" (Canale 5's old branding) and "Mediaset 20" are
+    # historically different channels; this looked like a copy-paste of
+    # the rule above with only the source pattern changed. A raw
+    # channel literally named "MEDIASET 1" now falls through to the
+    # normal matching chain (Rytec/curated DB) instead of being
+    # silently reassigned to the wrong channel.
     ("MOTORTREND", "MOTOR TREND"),
     ("CANALE 5", "CANALE5"),
     ("MOTORTREND", "MOTOR TREND"),
