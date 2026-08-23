@@ -344,7 +344,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "为所有 %d 个国家生成 .m3u 文件？"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "從現在開始計算重新匹配 EPG 和刷新花束的頻率。"
 
 msgid "Important Notes:"
 msgstr "重要说明:"
