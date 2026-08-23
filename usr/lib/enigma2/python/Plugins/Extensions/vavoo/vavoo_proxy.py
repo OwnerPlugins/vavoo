@@ -649,10 +649,15 @@ class VavooProxy(object):
         self.initialized = False
         self.last_heartbeat = time.time()
         self.local_ip = None
-        self.refresh_timer = None
         # ordered for deterministic LRU eviction (Py2+3)
         self.resolve_cache = OrderedDict()
         self.resolve_cache_lock = threading.Lock()
+        # In-flight resolve markers (channel_url -> threading.Event),
+        # guarded by resolve_cache_lock - lets a second concurrent
+        # cache-miss request for the SAME channel wait for the first
+        # request's network resolve instead of also hitting the network
+        # itself ("thundering herd" on popular channels).
+        self._resolve_inflight = {}
         # stream URLs valid for ~5min; was 30s (too aggressive)
         self.resolve_cache_ttl = 300
         self.server = None
@@ -878,7 +883,18 @@ class VavooProxy(object):
             except Exception as e:
                 print(" Error updating addonSig: " + str(e))
                 if self.addon_sig_data["sig"]:
-                    print(" Using old token")
+                    # Serving the stale token is still the right
+                    # fallback (no token is worse), but make this
+                    # visible in the log - there's no retry/backoff for
+                    # this specific failure until the next regularly
+                    # scheduled token_monitor_loop tick or the next
+                    # force=True caller, so a token past Vavoo's
+                    # 10-minute anonymous-block window could otherwise
+                    # keep silently failing resolves in the meantime.
+                    print(
+                        "[AddonSig] WARNING: refresh failed, serving "
+                        "possibly-stale token (age {}s)".format(
+                            int(time.time() - self.addon_sig_data["ts"])))
                     return self.addon_sig_data["sig"]
                 return None
 
@@ -1183,14 +1199,64 @@ class VavooProxy(object):
             if cached and (now - cached["ts"] < self.resolve_cache_ttl):
                 return cached["url"]
 
+        # Dedup concurrent resolves of the same channel_url on a cache
+        # miss/expiry - two requests for the same popular channel (e.g.
+        # a UI "browse" request and the player's actual playback request
+        # for it) arriving together would otherwise both hit the
+        # network. The first requester ("leader") does the real work;
+        # concurrent requesters for the SAME url wait on its Event and
+        # then read the cache entry it fills in, instead of resolving it
+        # themselves. Requests for DIFFERENT channel urls are
+        # unaffected - this only serializes per-url, never globally.
+        is_leader = False
+        with self.resolve_cache_lock:
+            event = self._resolve_inflight.get(channel_url)
+            if event is None:
+                event = threading.Event()
+                self._resolve_inflight[channel_url] = event
+                is_leader = True
+
+        if not is_leader:
+            event.wait(30)  # bounded - never wait forever on a stuck leader
+            with self.resolve_cache_lock:
+                cached = self.resolve_cache.get(channel_url)
+            if cached and (
+                    time.time() - cached["ts"] < self.resolve_cache_ttl):
+                return cached["url"]
+            # Leader's resolve failed or timed out - fall through and
+            # try ourselves rather than giving up.
+
+        try:
+            return self._do_resolve_with_retry(channel_url, max_retries)
+        finally:
+            if is_leader:
+                with self.resolve_cache_lock:
+                    self._resolve_inflight.pop(channel_url, None)
+                event.set()
+
+    def _do_resolve_with_retry(self, channel_url, max_retries):
+        """The actual network resolve + retry loop - see
+        resolve_with_retry() for the in-flight dedup wrapping this."""
         for attempt in range(max_retries):
             try:
                 if attempt > 0:
-                    self.refresh_addon_sig_if_needed(force=True)
+                    # Not force=True: that unconditionally bypassed the
+                    # "already fresh" short-circuit above, so a burst of
+                    # concurrently failing streams (e.g. right after
+                    # _switch_to_next_base()) each forced their own full
+                    # network round-trip to PING_URL/PING_URL2 in a row
+                    # instead of reusing whatever another thread had just
+                    # refreshed a moment earlier - exactly the kind of
+                    # extra ping traffic the token system exists to
+                    # avoid.
+                    self.refresh_addon_sig_if_needed()
+
+                with self.addon_sig_lock:
+                    current_sig = self.addon_sig_data["sig"]
 
                 resolve_headers = {
                     "content-type": "application/json; charset=utf-8",
-                    "mediahubmx-signature": self.addon_sig_data["sig"],
+                    "mediahubmx-signature": current_sig,
                     "user-agent": "MediaHubMX/2",
                     "accept": "*/*",
                     "Accept-Language": self.current_language,
@@ -1300,11 +1366,6 @@ class VavooProxy(object):
         except Exception:
             pass
         try:
-            if self.refresh_timer:
-                self.refresh_timer.cancel()
-        except Exception:
-            pass
-        try:
             self.session.close()
         except Exception:
             pass
@@ -1360,14 +1421,24 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             parsed_path = urlparse(self.path)
             query_params = parse_qs(parsed_path.query)
 
+            # Bind the module-global proxy once for this whole request.
+            # start_proxy() reassigns `proxy` on every restart
+            # (proxy = VavooProxy()) with no synchronization - reading
+            # the global repeatedly further down let a restart landing
+            # mid-request split a single request across two different
+            # VavooProxy instances (e.g. a channel lookup against the
+            # old instance but the resolve/stream-counting against a
+            # brand-new, uninitialized one).
+            p = proxy
+
             if parsed_path.path == '/vavoo':
                 channel_id = query_params.get('channel', [None])[0]
                 if not channel_id:
                     self.send_error(400, "Missing channel parameter")
                     return
 
-                channel = proxy.channels_by_id.get(channel_id) if hasattr(
-                    proxy, 'channels_by_id') else None
+                channel = p.channels_by_id.get(channel_id) if hasattr(
+                    p, 'channels_by_id') else None
 
                 if not channel:
                     self.send_error(404, "Channel not found")
@@ -1381,7 +1452,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     # retry fails the same way.
                     force_refresh = query_params.get(
                         'force', ['0'])[0] == '1'
-                    stream_url = proxy.resolve_with_retry(
+                    stream_url = p.resolve_with_retry(
                         channel.get("url"), force_refresh=force_refresh)
                     if not stream_url:
                         self.send_error(404, "Stream not resolved")
@@ -1419,16 +1490,25 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(404, "Channel not found in map")
                     return
 
-                # Now get the channel object from proxy.channels_by_id
-                channel = proxy.channels_by_id.get(channel_id) if hasattr(
-                    proxy, 'channels_by_id') else None
+                # Now get the channel object from p.channels_by_id
+                channel = p.channels_by_id.get(channel_id) if hasattr(
+                    p, 'channels_by_id') else None
                 if not channel:
                     self.send_error(404, "Channel not found")
                     return
 
                 try:
-                    # 1. Get stream URL
-                    stream_url = proxy.resolve_with_retry(channel["url"])
+                    # 1. Get stream URL. Same force=1 cache-busting
+                    # /vavoo already has - without it, a resolve_cache
+                    # entry that turns out to be broken (upstream 404/451
+                    # on the resolved URL) stays cached and stuck for
+                    # every /stream client hitting this channel for up
+                    # to resolve_cache_ttl (5 minutes), with no way to
+                    # invalidate it early.
+                    force_refresh = query_params.get(
+                        'force', ['0'])[0] == '1'
+                    stream_url = p.resolve_with_retry(
+                        channel["url"], force_refresh=force_refresh)
                     if not stream_url:
                         self.send_error(404, "Stream not resolved")
                         return
@@ -1443,7 +1523,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     try:
                         # 2. Connect to upstream with streaming (timeout
                         # aumentato)
-                        upstream = proxy.session.get(
+                        upstream = p.session.get(
                             stream_url, stream=True, timeout=(
                                 10, 90))  # (connect, read) 10s/90s
                         upstream.raise_for_status()
@@ -1470,7 +1550,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
                         # 4. Forward data with timeout monitoring (chunk
                         # size increased)
-                        proxy.stream_started()
+                        p.stream_started()
                         counted_stream = True
                         last_data_time = time.time()
                         try:
@@ -1498,7 +1578,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             except Exception:
                                 pass
                         if counted_stream:
-                            proxy.stream_ended()
+                            p.stream_ended()
                         print(
                             "[Proxy Stream] Finished for channel: " +
                             channel_id)
@@ -1610,7 +1690,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     now = time.time()
                     token_age = now - proxy.addon_sig_data["ts"]
                     token_valid = proxy.addon_sig_data["sig"] is not None
-                    needs_refresh = token_age > 300  # 8 minutes
+                    needs_refresh = token_age > 300  # 5 minutes
 
                     # Calculate token expiration
                     ttl = max(0, TOKEN_ADDON_SIG - int(token_age))
@@ -1786,22 +1866,30 @@ def shutdown_proxy():
     except Exception as e:
         print(" Shutdown via HTTP failed: {}".format(e))
 
-    # Fallback: kill process
+    # Fallback: the proxy only ever runs as an in-process daemon thread
+    # of Enigma2 itself (run_proxy_in_background() -> threading.Thread),
+    # never as its own subprocess - "pkill -f 'python.*vavoo_proxy'" can
+    # never match anything real and was silently a no-op. Stop the
+    # in-process instance directly instead.
     try:
-        import subprocess
-        subprocess.call(["pkill", "-f", "python.*vavoo_proxy"])
-        print(" Killed by pkill")
+        if proxy.server:
+            proxy.server.shutdown()
+            proxy.server.server_close()
+    except Exception as e:
+        print(" Error closing proxy server: {}".format(e))
+    try:
+        proxy.stop()
+        print(" Stopped proxy instance directly (in-process)")
         STOP_EVENT.clear()
         return True
     except Exception as e:
-        print(" Failed to kill process: {}".format(e))
+        print(" Failed to stop proxy instance: {}".format(e))
     return False
 
 
 def start_proxy():
     """Start the proxy server with restart on failure"""
     global proxy
-    import subprocess
     # IMPORTANT: allow restart only if the current process is not running
     # (the PID file may be stale if the process has died)
     if is_proxy_running():
@@ -1815,12 +1903,19 @@ def start_proxy():
                 print("[PROXY] Proxy is running but not responsive, will restart")
         except Exception:
             print("[PROXY] Proxy running but not responding, restarting...")
-            # Kill the unresponsive process
+            # The proxy only ever runs as an in-process daemon thread of
+            # Enigma2 itself - there is no separate process for pkill to
+            # match, so that call was silently a no-op and this "restart"
+            # never actually stopped anything. Stop the in-process
+            # instance directly instead.
             try:
-                subprocess.call(["pkill", "-f", "python.*vavoo_proxy"])
+                if proxy.server:
+                    proxy.server.shutdown()
+                    proxy.server.server_close()
+                proxy.stop()
                 select.select([], [], [], 2)
             except Exception as e:
-                debug("pkill of unresponsive proxy failed: {}".format(e))
+                debug("Stopping unresponsive proxy failed: {}".format(e))
 
     # Write the PID file for this instance
     write_pid_file()
@@ -1844,6 +1939,15 @@ def start_proxy():
                 restart_count += 1
                 if restart_count < max_restarts:
                     select.select([], [], [], 3)
+                    # Stop the failed instance's token_monitor_loop
+                    # thread before dropping the reference to it -
+                    # otherwise it keeps polling Vavoo's ping endpoint
+                    # forever, orphaned, undermining the anti-throttling
+                    # point of the token-refresh design.
+                    try:
+                        proxy.stop()
+                    except Exception:
+                        pass
                     proxy = VavooProxy()  # Recreate proxy
                     continue
                 else:
@@ -1882,7 +1986,13 @@ def start_proxy():
                         proxy.stop()
                     except Exception:
                         pass
-                    break
+                    # A clean, intentional /shutdown-triggered exit is
+                    # not a failure to start - returning here (instead
+                    # of falling through to the "cannot start after N
+                    # attempts" branch below) avoids logging a
+                    # misleading failure for what was actually a
+                    # successful graceful shutdown.
+                    return True
             except KeyboardInterrupt:
                 print("\n[!] Proxy stopped by user")
                 break
@@ -1897,13 +2007,19 @@ def start_proxy():
                         try:
                             proxy.server.shutdown()
                             proxy.server.server_close()
-                            try:
-                                proxy.stop()
-                            except Exception:
-                                pass
                         except BaseException as e:
                             debug("Old proxy server cleanup before "
                                   "restart failed: {}".format(e))
+                    # Always stop the old instance's background thread,
+                    # even if proxy.server was never assigned (exception
+                    # before that point) - previously only reached inside
+                    # the "if proxy.server:" branch above, so a failure
+                    # earlier than that skipped it entirely and leaked
+                    # the old token_monitor_loop thread.
+                    try:
+                        proxy.stop()
+                    except Exception:
+                        pass
                     proxy = VavooProxy()  # Recreate proxy
                     continue
 
@@ -1921,6 +2037,12 @@ def start_proxy():
                         proxy.server.server_close()
                     except BaseException:
                         pass
+                # Same reasoning as the server-error branch above - must
+                # run regardless of whether proxy.server was ever set.
+                try:
+                    proxy.stop()
+                except Exception:
+                    pass
                 proxy = VavooProxy()  # Recreate proxy
                 continue
 
