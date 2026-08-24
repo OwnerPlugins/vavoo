@@ -12,8 +12,16 @@
     "best_score": 0.696
   },
   {
+    "name": "CLAN .b",
+    "best_score": 0.667
+  },
+  {
     "name": "MEZZO .c",
     "best_score": 0.667
+  },
+  {
+    "name": "BLOOMBERG TV EUROPE .c",
+    "best_score": 0.643
   },
   {
     "name": "CANAL SUR ANDALUCIA .c",
@@ -41,6 +49,10 @@
   },
   {
     "name": "FOX LIFE .c",
+    "best_score": 0.545
+  },
+  {
+    "name": "FOX LIFE HD .b",
     "best_score": 0.545
   },
   {
@@ -90,10 +102,6 @@
   {
     "name": "TV3 CATALUNYA .c",
     "best_score": 0.375
-  },
-  {
-    "name": "101 TV .c",
-    "best_score": 0.0
   },
   {
     "name": "13 REALITIES .c",
@@ -165,6 +173,18 @@
   },
   {
     "name": "ARTEQUATRE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BABY TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BARCA TV .b",
     "best_score": 0.0
   },
   {
@@ -284,6 +304,10 @@
     "best_score": 0.0
   },
   {
+    "name": "COMEDIA ESPANOLA .c",
+    "best_score": 0.0
+  },
+  {
     "name": "COSMOPOLITAN TV .c",
     "best_score": 0.0
   },
@@ -312,6 +336,10 @@
     "best_score": 0.0
   },
   {
+    "name": "DISNEY JUNIOR .b",
+    "best_score": 0.0
+  },
+  {
     "name": "DW ESPAÑOL .c",
     "best_score": 0.0
   },
@@ -333,6 +361,10 @@
   },
   {
     "name": "ESPN 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ESPN 3 .c",
     "best_score": 0.0
   },
   {
@@ -392,6 +424,10 @@
     "best_score": 0.0
   },
   {
+    "name": "LA LIGA TV HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "LA SEXTA .c",
     "best_score": 0.0
   },
@@ -401,10 +437,6 @@
   },
   {
     "name": "LANCELOT TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "LIGA CAMPEONES HD .b",
     "best_score": 0.0
   },
   {
@@ -449,10 +481,6 @@
   },
   {
     "name": "M.GOLF HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "M.LIGA DE CAMPEONES HD .b",
     "best_score": 0.0
   },
   {
@@ -532,14 +560,6 @@
     "best_score": 0.0
   },
   {
-    "name": "MTV ESPANA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "NAT GEO .c",
-    "best_score": 0.0
-  },
-  {
     "name": "NAT GEO WILD HD .b",
     "best_score": 0.0
   },
@@ -564,15 +584,15 @@
     "best_score": 0.0
   },
   {
-    "name": "ONDA 15 TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ONDA CADIZ .c",
     "best_score": 0.0
   },
   {
     "name": "PARAMOUNT CHANNEL .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PEQUERADIO .c",
     "best_score": 0.0
   },
   {

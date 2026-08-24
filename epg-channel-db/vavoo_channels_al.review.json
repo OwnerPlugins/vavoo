@@ -56,14 +56,6 @@
     "best_score": 0.545
   },
   {
-    "name": "RTV 21 POPULLORE .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "RTV 21 POPULLORE .c",
-    "best_score": 0.545
-  },
-  {
     "name": "RTV 21 POPULLORE .s",
     "best_score": 0.545
   },
@@ -428,6 +420,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BIG BROTHER 1 .b",
+    "best_score": 0.0
+  },
+  {
     "name": "BIG BROTHER 1 .c",
     "best_score": 0.0
   },
@@ -700,10 +696,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DUCK TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "EHSAAN TV (720P) .b",
     "best_score": 0.0
   },
@@ -761,6 +753,10 @@
   },
   {
     "name": "EXPLORER HISTORI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER HISTORI .s",
     "best_score": 0.0
   },
   {
@@ -916,6 +912,10 @@
     "best_score": 0.0
   },
   {
+    "name": "FILM JUNIOR .c",
+    "best_score": 0.0
+  },
+  {
     "name": "FILM MAX .c",
     "best_score": 0.0
   },
@@ -948,15 +948,19 @@
     "best_score": 0.0
   },
   {
+    "name": "FILMA24 AZIATIK .c",
+    "best_score": 0.0
+  },
+  {
     "name": "FILMA24 BIOGRAFI .c",
     "best_score": 0.0
   },
   {
-    "name": "FILMA24 DRAME .c",
+    "name": "FILMA24 DOKUMENTAR .c",
     "best_score": 0.0
   },
   {
-    "name": "FILMA24 FAMILY .c",
+    "name": "FILMA24 DRAME .c",
     "best_score": 0.0
   },
   {
@@ -1380,15 +1384,15 @@
     "best_score": 0.0
   },
   {
-    "name": "KS KIDS .b",
-    "best_score": 0.0
-  },
-  {
     "name": "KS PREMIERE 1 .c",
     "best_score": 0.0
   },
   {
     "name": "KS PREMIERE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS PREMIERE 3 .c",
     "best_score": 0.0
   },
   {
@@ -1708,10 +1712,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PODUJEVA TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "POLLOGU .c",
     "best_score": 0.0
   },
@@ -1721,10 +1721,6 @@
   },
   {
     "name": "PREMIER SPORTS 2 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "PREMIERE 5 .c",
     "best_score": 0.0
   },
   {
@@ -2257,10 +2253,6 @@
   },
   {
     "name": "TRAVEL CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRING 3 .s",
     "best_score": 0.0
   },
   {

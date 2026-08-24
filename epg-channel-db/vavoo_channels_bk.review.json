@@ -44,10 +44,6 @@
     "best_score": 0.615
   },
   {
-    "name": "TV 5 .s",
-    "best_score": 0.6
-  },
-  {
     "name": "HISTORY CHANNEL .s",
     "best_score": 0.583
   },
@@ -160,15 +156,7 @@
     "best_score": 0.0
   },
   {
-    "name": "CBS REALITY .c",
-    "best_score": 0.0
-  },
-  {
     "name": "CC EXTRA .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 1 .s",
     "best_score": 0.0
   },
   {
@@ -245,6 +233,10 @@
   },
   {
     "name": "DISCOVERY ID .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY SCIENCE .c",
     "best_score": 0.0
   },
   {
@@ -348,10 +340,6 @@
     "best_score": 0.0
   },
   {
-    "name": "FOX MOVIES .c",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX MOVIES .s",
     "best_score": 0.0
   },
@@ -388,10 +376,6 @@
     "best_score": 0.0
   },
   {
-    "name": "IDJ TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "INVESTIGATION DISCOVERY .c",
     "best_score": 0.0
   },
@@ -405,10 +389,6 @@
   },
   {
     "name": "KCN 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "LOONEY TUNES .s",
     "best_score": 0.0
   },
   {
@@ -460,10 +440,6 @@
     "best_score": 0.0
   },
   {
-    "name": "N1 SRB .s",
-    "best_score": 0.0
-  },
-  {
     "name": "NATIONAL GEO WILD HD .b",
     "best_score": 0.0
   },
@@ -485,14 +461,6 @@
   },
   {
     "name": "NETIP CINEMA 4 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "NETIP DOMACI FILMOVI 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "NETIP DOMACI FILMOVI 2 .c",
     "best_score": 0.0
   },
   {
@@ -525,10 +493,6 @@
   },
   {
     "name": "PODRINJE TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "RTS ZIVOT .s",
     "best_score": 0.0
   },
   {
@@ -636,19 +600,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SUPER STAR TV HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "SUPER TV .c",
     "best_score": 0.0
   },
   {
     "name": "TATABRADA TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TK TUZLA .s",
     "best_score": 0.0
   },
   {

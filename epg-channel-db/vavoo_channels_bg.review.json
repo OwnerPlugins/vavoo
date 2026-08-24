@@ -1,5 +1,9 @@
 [
   {
+    "name": "BLOOMBERG .s",
+    "best_score": 0.6
+  },
+  {
     "name": "COMEDY PLUS .s",
     "best_score": 0.6
   },
@@ -8,15 +12,11 @@
     "best_score": 0.583
   },
   {
-    "name": "TLC .c",
-    "best_score": 0.429
-  },
-  {
-    "name": "TLC .s",
-    "best_score": 0.429
-  },
-  {
     "name": "7/8 TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALFA TV .c",
     "best_score": 0.0
   },
   {
@@ -64,7 +64,7 @@
     "best_score": 0.0
   },
   {
-    "name": "BNT 1 .c",
+    "name": "BNT 2 .c",
     "best_score": 0.0
   },
   {
@@ -81,10 +81,6 @@
   },
   {
     "name": "BOX TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BOX TV .s",
     "best_score": 0.0
   },
   {
@@ -109,10 +105,6 @@
   },
   {
     "name": "DESTINATIONS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE .s",
     "best_score": 0.0
   },
   {
@@ -264,10 +256,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ON AIR .c",
-    "best_score": 0.0
-  },
-  {
     "name": "RETRO MUSIC .s",
     "best_score": 0.0
   },
@@ -296,22 +284,6 @@
     "best_score": 0.0
   },
   {
-    "name": "STAR LIFE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STINGRAY ICONCERTS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "THIS IS BULGARIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TIANKOV ORIENT FOLK .c",
-    "best_score": 0.0
-  },
-  {
     "name": "TV 1000 .s",
     "best_score": 0.0
   },
@@ -329,10 +301,6 @@
   },
   {
     "name": "VIASAT KINO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VTK .c",
     "best_score": 0.0
   },
   {

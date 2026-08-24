@@ -16,6 +16,10 @@
     "best_score": 0.632
   },
   {
+    "name": "CINEMAX POLAND 1 FHD .b",
+    "best_score": 0.609
+  },
+  {
     "name": "CINEMAX POLAND 2 FHD .b",
     "best_score": 0.609
   },
@@ -29,10 +33,6 @@
   },
   {
     "name": "CINEMAX POLAND 5 FHD .b",
-    "best_score": 0.609
-  },
-  {
-    "name": "CINEMAX POLAND 6 FHD .b",
     "best_score": 0.609
   },
   {
@@ -78,6 +78,14 @@
   {
     "name": "TVP 3 POZNAN .c",
     "best_score": 0.588
+  },
+  {
+    "name": "CINEMAX POLAND 10 FHD .b",
+    "best_score": 0.583
+  },
+  {
+    "name": "CINEMAX POLAND 11 FHD .b",
+    "best_score": 0.583
   },
   {
     "name": "CINEMAX POLAND 12 FHD .b",

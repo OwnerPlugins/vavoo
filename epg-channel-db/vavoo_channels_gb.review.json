@@ -48,6 +48,10 @@
     "best_score": 0.0
   },
   {
+    "name": "ABP NEWS .s",
+    "best_score": 0.0
+  },
+  {
     "name": "AFC WIMBLEDON .s",
     "best_score": 0.0
   },
@@ -80,15 +84,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ASTRO PL2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ASTRO PREMIER LEAGUE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ASTRO PREMIER LEAGUE 2 .s",
     "best_score": 0.0
   },
   {
@@ -160,15 +156,15 @@
     "best_score": 0.0
   },
   {
+    "name": "BEIN SPORTS 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BEIN SPORTS 1 PL .s",
     "best_score": 0.0
   },
   {
     "name": "BEIN SPORTS 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "BEIN SPORTS ENGLISH 2 .s",
     "best_score": 0.0
   },
   {
@@ -288,15 +284,7 @@
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "CBS DRAMA .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CBS DRAMA .s",
     "best_score": 0.0
   },
   {
@@ -457,10 +445,6 @@
   },
   {
     "name": "DESI RADIO .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISNEY CHANNEL .b",
     "best_score": 0.0
   },
   {
@@ -632,15 +616,15 @@
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "EUROSPORT 1 .s",
     "best_score": 0.0
   },
   {
     "name": "EUROSPORT 1 (BACKUP) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "EUROSPORT 1 HD .b",
     "best_score": 0.0
   },
   {
@@ -768,10 +752,6 @@
     "best_score": 0.0
   },
   {
-    "name": "HIGHLANDER .s",
-    "best_score": 0.0
-  },
-  {
     "name": "HILLSONG .b",
     "best_score": 0.0
   },
@@ -789,6 +769,10 @@
   },
   {
     "name": "HORROR CH+1 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "HORROR CHANNEL .b",
     "best_score": 0.0
   },
   {
@@ -832,11 +816,11 @@
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 2 .s",
+    "name": "HUB PREMIER 3 .s",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 3 .s",
+    "name": "HUB PREMIER 4 .s",
     "best_score": 0.0
   },
   {
@@ -881,10 +865,6 @@
   },
   {
     "name": "ITV WALES .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ITVBE .b",
     "best_score": 0.0
   },
   {
@@ -1052,15 +1032,7 @@
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 1 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "NOW SPORTS 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "NOW SPORTS 3 .s",
     "best_score": 0.0
   },
   {
@@ -1072,23 +1044,11 @@
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 6 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "NOW SPORTS 7 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ORIGINALS MOVIES .s",
     "best_score": 0.0
   },
   {
     "name": "PARAMOUNT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "PARAMOUNT .s",
     "best_score": 0.0
   },
   {
@@ -1164,10 +1124,6 @@
     "best_score": 0.0
   },
   {
-    "name": "RT HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "RTE 1 .s",
     "best_score": 0.0
   },
@@ -1197,46 +1153,6 @@
   },
   {
     "name": "SALFORD CITY F.C. .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SAMUEL L JACKSON .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SEAN CONERY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SEINFELD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SEVERANCE ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SHADOW AND BONES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SHE RA AND THE PRINCESS OF POWER .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SHOWCASE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SHOWCASE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY 2 .s",
     "best_score": 0.0
   },
   {
@@ -1464,15 +1380,31 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS GOLF .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SKY SPORTS GOLF HD .b",
     "best_score": 0.0
   },
   {
     "name": "SKY SPORTS GOLF HD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORTS MAIN EVENT .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORTS MAIN EVENT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORTS MAIN EVENT (BACKUP) .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORTS MAIN EVENT HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORTS MAIN EVENT HD .s",
     "best_score": 0.0
   },
   {
@@ -1552,15 +1484,23 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS ULTRA 1 4K (EVENT ONLY) .s",
+    "name": "SKY SPORTS TENNIS (BACKUP) .s",
     "best_score": 0.0
   },
   {
-    "name": "SKY STORE PREMIERE 10 ᴴᴰ .s",
+    "name": "SKY STORE PREMIERE 1 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
     "name": "SKY STORE PREMIERE 11 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 12 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 13 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1576,7 +1516,15 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY STORE PREMIERE 19 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY STORE PREMIERE 2 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 20 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1588,11 +1536,31 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY STORE PREMIERE 23 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 24 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 25 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY STORE PREMIERE 26 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
+    "name": "SKY STORE PREMIERE 27 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY STORE PREMIERE 28 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 29 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1601,6 +1569,18 @@
   },
   {
     "name": "SKY STORE PREMIERE 30 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 4 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 5 ᴴᴰ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY STORE PREMIERE 7 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1824,6 +1804,10 @@
     "best_score": 0.0
   },
   {
+    "name": "VIAPLAY EVENT 2 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "VIAPLAY EVENT 3 .s",
     "best_score": 0.0
   },
@@ -1889,6 +1873,10 @@
   },
   {
     "name": "WAREHOUSE ꜱᴇƦꞮᴇ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "WATCH HD .s",
     "best_score": 0.0
   },
   {

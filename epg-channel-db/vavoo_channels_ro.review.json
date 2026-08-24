@@ -32,10 +32,6 @@
     "best_score": 0.0
   },
   {
-    "name": "2020 FILM .s",
-    "best_score": 0.0
-  },
-  {
     "name": "2021 FILM .s",
     "best_score": 0.0
   },
@@ -97,6 +93,10 @@
   },
   {
     "name": "BOLLYWOOD TV HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .b",
     "best_score": 0.0
   },
   {
@@ -189,10 +189,6 @@
   },
   {
     "name": "DISCOVERY SCIENCE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE HD .b",
     "best_score": 0.0
   },
   {
@@ -444,10 +440,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
     "name": "PARAMOUNT CHANNEL RO .b",
     "best_score": 0.0
   },
@@ -492,15 +484,11 @@
     "best_score": 0.0
   },
   {
-    "name": "ROMANIA ARE ROAST .s",
+    "name": "PRO X HD .b",
     "best_score": 0.0
   },
   {
     "name": "ROMANIA TV .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ROMANIA TV .s",
     "best_score": 0.0
   },
   {
@@ -632,11 +620,11 @@
     "best_score": 0.0
   },
   {
-    "name": "TVR TARGU MURES .s",
+    "name": "TV SE .s",
     "best_score": 0.0
   },
   {
-    "name": "TVR TIMISOARA .s",
+    "name": "TVR TARGU MURES .s",
     "best_score": 0.0
   },
   {

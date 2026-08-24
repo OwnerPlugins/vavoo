@@ -1,5 +1,9 @@
 [
   {
+    "name": ".BLACK .b",
+    "best_score": 0.0
+  },
+  {
     "name": ".RED HD .b",
     "best_score": 0.0
   },
@@ -60,6 +64,10 @@
     "best_score": 0.0
   },
   {
+    "name": "AMEDIA 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "AMEDIA HIT .b",
     "best_score": 0.0
   },
@@ -88,7 +96,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ANIMAL PLANET HD .b",
+    "name": "ANIMAL PLANET .s",
     "best_score": 0.0
   },
   {
@@ -184,6 +192,10 @@
     "best_score": 0.0
   },
   {
+    "name": "CTC LOVE .s",
+    "best_score": 0.0
+  },
+  {
     "name": "DA VINCI .b",
     "best_score": 0.0
   },
@@ -265,10 +277,6 @@
   },
   {
     "name": "EUROKINO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EURONEWS .b",
     "best_score": 0.0
   },
   {
@@ -676,15 +684,7 @@
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEOGRAPHIC HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "NICK JR. .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "NICKELODEON .s",
     "best_score": 0.0
   },
   {
@@ -708,11 +708,11 @@
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .s",
+    "name": "PARAMOUNT COMEDY .b",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT COMEDY .b",
+    "name": "PEH TB .s",
     "best_score": 0.0
   },
   {
@@ -801,6 +801,10 @@
   },
   {
     "name": "RU.TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RUSSIA 1 .s",
     "best_score": 0.0
   },
   {
@@ -977,10 +981,6 @@
   },
   {
     "name": "TV 1000 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV 1000 ACTION .s",
     "best_score": 0.0
   },
   {
@@ -1357,14 +1357,6 @@
   },
   {
     "name": "МИР СЕРИАЛА .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МОСКВА 24 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "МОСФИЛЬМ. ЗОЛОТАЯ КОЛЛЕКЦИЯ .b",
     "best_score": 0.0
   },
   {
