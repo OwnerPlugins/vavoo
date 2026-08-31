@@ -1,70 +1,14 @@
 [
   {
-    "name": "SKY SPORT MOTO GP .c",
-    "best_score": 0.692
-  },
-  {
-    "name": "SKY SPORT SERIE A .c",
-    "best_score": 0.692
-  },
-  {
-    "name": "LA 7 D .c",
-    "best_score": 0.667
-  },
-  {
-    "name": "SKY SPORT FOOTBALL [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.667
-  },
-  {
-    "name": "CACCIA .c",
-    "best_score": 0.6
-  },
-  {
-    "name": "RMC 101 .c",
-    "best_score": 0.6
-  },
-  {
-    "name": "SUPER TENNIS .c",
-    "best_score": 0.588
-  },
-  {
-    "name": "SUPER TENNIS .s",
-    "best_score": 0.588
-  },
-  {
-    "name": "CINE 34 MEDIASET .s",
-    "best_score": 0.545
-  },
-  {
-    "name": "FOX .s",
-    "best_score": 0.545
-  },
-  {
-    "name": "BLOOMBERG TV EMEA LIVE EVENT .s",
-    "best_score": 0.486
-  },
-  {
-    "name": "SUPER TV BRESCIA .c",
-    "best_score": 0.476
-  },
-  {
-    "name": "SUPER TV BRESCIA .s",
-    "best_score": 0.476
-  },
-  {
-    "name": "SUPER TV ARISTANIS .c",
-    "best_score": 0.435
-  },
-  {
-    "name": "20 MEDIASET .c",
-    "best_score": 0.308
-  },
-  {
     "name": "111 TV .c",
     "best_score": 0.0
   },
   {
     "name": "12 TV PARMA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "20 MEDIASET .c",
     "best_score": 0.0
   },
   {
@@ -188,11 +132,19 @@
     "best_score": 0.0
   },
   {
+    "name": "BLOOMBERG TV EMEA LIVE EVENT .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BYOBLU .c",
     "best_score": 0.0
   },
   {
     "name": "BYOBLU .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CACCIA .c",
     "best_score": 0.0
   },
   {
@@ -257,6 +209,10 @@
   },
   {
     "name": "CG ENTERTAINMENT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINE 34 MEDIASET .s",
     "best_score": 0.0
   },
   {
@@ -392,6 +348,10 @@
     "best_score": 0.0
   },
   {
+    "name": "FOX .s",
+    "best_score": 0.0
+  },
+  {
     "name": "GIOVANNI PAOLO .s",
     "best_score": 0.0
   },
@@ -457,6 +417,10 @@
   },
   {
     "name": "KISS KISS NAPOLI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "LA 7 D .c",
     "best_score": 0.0
   },
   {
@@ -796,6 +760,10 @@
     "best_score": 0.0
   },
   {
+    "name": "RMC 101 .c",
+    "best_score": 0.0
+  },
+  {
     "name": "RSI LA 1 .c",
     "best_score": 0.0
   },
@@ -964,6 +932,18 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY SPORT FOOTBALL [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORT MOTO GP .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY SPORT SERIE A .c",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY SUPER TENNIS .s",
     "best_score": 0.0
   },
@@ -1009,6 +989,26 @@
   },
   {
     "name": "STEREO 5 TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER TENNIS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER TENNIS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER TV ARISTANIS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER TV BRESCIA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SUPER TV BRESCIA .s",
     "best_score": 0.0
   },
   {
