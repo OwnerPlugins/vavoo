@@ -16,6 +16,10 @@
     "best_score": 0.632
   },
   {
+    "name": "RTV 21 JUNIOR .c",
+    "best_score": 0.632
+  },
+  {
     "name": "RTV 21 JUNIOR .s",
     "best_score": 0.632
   },
@@ -56,6 +60,14 @@
     "best_score": 0.545
   },
   {
+    "name": "RTV 21 POPULLORE .b",
+    "best_score": 0.545
+  },
+  {
+    "name": "RTV 21 POPULLORE .c",
+    "best_score": 0.545
+  },
+  {
     "name": "RTV 21 POPULLORE .s",
     "best_score": 0.545
   },
@@ -65,10 +77,6 @@
   },
   {
     "name": "RTSH FEMIJE .c",
-    "best_score": 0.533
-  },
-  {
-    "name": "RTSH FEMIJE .s",
     "best_score": 0.533
   },
   {
@@ -152,15 +160,7 @@
     "best_score": 0.0
   },
   {
-    "name": "8OVA DRAME .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ABC .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ABC NEWS .b",
     "best_score": 0.0
   },
   {
@@ -288,10 +288,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ART KINO 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ART KINO 2 HD .b",
     "best_score": 0.0
   },
@@ -313,10 +309,6 @@
   },
   {
     "name": "ART SPORT 2 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ART SPORT 2 .s",
     "best_score": 0.0
   },
   {
@@ -444,7 +436,7 @@
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG .s",
+    "name": "CIFTELI TV .c",
     "best_score": 0.0
   },
   {
@@ -668,10 +660,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DISCOVERY SCIENCE .c",
     "best_score": 0.0
   },
@@ -693,6 +681,10 @@
   },
   {
     "name": "DUBLUAR NE SHQIP 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DUCK TV .c",
     "best_score": 0.0
   },
   {
@@ -753,10 +745,6 @@
   },
   {
     "name": "EXPLORER HISTORI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "EXPLORER HISTORI .s",
     "best_score": 0.0
   },
   {
@@ -872,10 +860,6 @@
     "best_score": 0.0
   },
   {
-    "name": "FILM BOX PLUS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "FILM DY FHD .s",
     "best_score": 0.0
   },
@@ -964,6 +948,10 @@
     "best_score": 0.0
   },
   {
+    "name": "FILMA24 FAMILY .c",
+    "best_score": 0.0
+  },
+  {
     "name": "FILMA24 FANTAZI .c",
     "best_score": 0.0
   },
@@ -1048,10 +1036,6 @@
     "best_score": 0.0
   },
   {
-    "name": "FOX CRIME .c",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX CRIME .s",
     "best_score": 0.0
   },
@@ -1069,10 +1053,6 @@
   },
   {
     "name": "FOX MOVIES .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "FOX MOVIES .s",
     "best_score": 0.0
   },
   {
@@ -1316,10 +1296,6 @@
     "best_score": 0.0
   },
   {
-    "name": "K SPORT 3 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "K SPORT 4 .s",
     "best_score": 0.0
   },
@@ -1381,6 +1357,10 @@
   },
   {
     "name": "KS ISLAM FILM .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS KIDS .b",
     "best_score": 0.0
   },
   {
@@ -1592,10 +1572,6 @@
     "best_score": 0.0
   },
   {
-    "name": "MTV KOSOVA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "MUSIC HITS .c",
     "best_score": 0.0
   },
@@ -1712,6 +1688,10 @@
     "best_score": 0.0
   },
   {
+    "name": "PODUJEVA TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "POLLOGU .c",
     "best_score": 0.0
   },
@@ -1721,6 +1701,10 @@
   },
   {
     "name": "PREMIER SPORTS 2 [LIVE DURING EVENTS ONLY] .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PREMIERE 5 .c",
     "best_score": 0.0
   },
   {
@@ -1736,10 +1720,6 @@
     "best_score": 0.0
   },
   {
-    "name": "RASHEED (408P) [NOT 24/7] .b",
-    "best_score": 0.0
-  },
-  {
     "name": "RAYYAN (FHD) .b",
     "best_score": 0.0
   },
@@ -1749,6 +1729,10 @@
   },
   {
     "name": "REPORT TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "REPORT TV HD .s",
     "best_score": 0.0
   },
   {
@@ -1884,10 +1868,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY DRAMA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SKY KOMEDI .b",
     "best_score": 0.0
   },
@@ -1949,10 +1929,6 @@
   },
   {
     "name": "SUPER SPORT 1 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORT 1 .s",
     "best_score": 0.0
   },
   {
@@ -2048,10 +2024,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TALEEA .b",
-    "best_score": 0.0
-  },
-  {
     "name": "TDC .s",
     "best_score": 0.0
   },
@@ -2105,10 +2077,6 @@
   },
   {
     "name": "TELE ONE 6 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE ONE AKSION .c",
     "best_score": 0.0
   },
   {
@@ -2256,6 +2224,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TRING 3 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "TRING INTERNACIONAL .b",
     "best_score": 0.0
   },
@@ -2265,10 +2237,6 @@
   },
   {
     "name": "TRING MAX .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRING SMILE .s",
     "best_score": 0.0
   },
   {
@@ -2320,6 +2288,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TURBO CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
     "name": "TURBO CHANNEL .s",
     "best_score": 0.0
   },
@@ -2356,15 +2328,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TV KOPLIKU .c",
-    "best_score": 0.0
-  },
-  {
     "name": "TV OPOJA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV PRIZRENI .c",
     "best_score": 0.0
   },
   {
@@ -2385,6 +2349,10 @@
   },
   {
     "name": "TV VUSHTRIA MUZIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV2 GOSTIVAR .c",
     "best_score": 0.0
   },
   {

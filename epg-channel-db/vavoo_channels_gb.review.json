@@ -12,16 +12,24 @@
     "best_score": 0.692
   },
   {
-    "name": "DISCOVERY SCIENCE .b",
-    "best_score": 0.692
-  },
-  {
     "name": "DISCOVERY SCIENCE .s",
     "best_score": 0.692
   },
   {
     "name": "NAT GEO PEOPLE .b",
     "best_score": 0.667
+  },
+  {
+    "name": "MTV HITS .s",
+    "best_score": 0.545
+  },
+  {
+    "name": "B4U PLUS .s",
+    "best_score": 0.5
+  },
+  {
+    "name": "MTV MUSIC .s",
+    "best_score": 0.5
   },
   {
     "name": "MTV ROCKS .s",
@@ -36,19 +44,7 @@
     "best_score": 0.167
   },
   {
-    "name": "2 BROKE GIRLS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "4 MUSIC .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "4MUSIC .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ABP NEWS .s",
     "best_score": 0.0
   },
   {
@@ -64,6 +60,10 @@
     "best_score": 0.0
   },
   {
+    "name": "AMC .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ASTRO BADMINTON .s",
     "best_score": 0.0
   },
@@ -76,6 +76,10 @@
     "best_score": 0.0
   },
   {
+    "name": "ASTRO FOOTBALL .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ASTRO GRANDSTAND .s",
     "best_score": 0.0
   },
@@ -84,7 +88,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ASTRO PREMIER LEAGUE .s",
+    "name": "ASTRO PL2 .s",
     "best_score": 0.0
   },
   {
@@ -93,10 +97,6 @@
   },
   {
     "name": "BABY TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "BABY TV UK .b",
     "best_score": 0.0
   },
   {
@@ -156,19 +156,11 @@
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 1 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BEIN SPORTS 1 PL .s",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "BEIN SPORTS LA LIGA .b",
+    "name": "BEIN SPORTS 2 .s",
     "best_score": 0.0
   },
   {
@@ -284,6 +276,14 @@
     "best_score": 0.0
   },
   {
+    "name": "CARTOON NETWORK HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CBS ACTION .s",
+    "best_score": 0.0
+  },
+  {
     "name": "CBS DRAMA .b",
     "best_score": 0.0
   },
@@ -297,10 +297,6 @@
   },
   {
     "name": "CELEBRATION TV .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CHAMPS BIRMINGHAM CITY .s",
     "best_score": 0.0
   },
   {
@@ -428,14 +424,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DAVE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DAVE (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DAVE JA VU .b",
     "best_score": 0.0
   },
@@ -445,6 +433,14 @@
   },
   {
     "name": "DESI RADIO .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISNEY CHANNEL .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISNEY CHANNEL .s",
     "best_score": 0.0
   },
   {
@@ -616,23 +612,15 @@
     "best_score": 0.0
   },
   {
+    "name": "EUROSPORT 1 .b",
+    "best_score": 0.0
+  },
+  {
     "name": "EUROSPORT 1 .s",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EUROSPORT 1 HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "EUROSPORT 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "EUROSPORT 2 .s",
     "best_score": 0.0
   },
   {
@@ -752,6 +740,10 @@
     "best_score": 0.0
   },
   {
+    "name": "HIGHLANDER .s",
+    "best_score": 0.0
+  },
+  {
     "name": "HILLSONG .b",
     "best_score": 0.0
   },
@@ -773,10 +765,6 @@
   },
   {
     "name": "HORROR CHANNEL .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "HORROR CHANNEL .s",
     "best_score": 0.0
   },
   {
@@ -816,11 +804,19 @@
     "best_score": 0.0
   },
   {
+    "name": "HUB PREMIER 2 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "HUB PREMIER 3 .s",
     "best_score": 0.0
   },
   {
     "name": "HUB PREMIER 4 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "HUB PREMIER 5 .s",
     "best_score": 0.0
   },
   {
@@ -844,19 +840,11 @@
     "best_score": 0.0
   },
   {
-    "name": "HUB SPORTS 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "HUB SPORTS 3 .s",
     "best_score": 0.0
   },
   {
     "name": "HUDDERSFIELD TOWN A.F.C. .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "INVESTIGATION DISCOVERY .s",
     "best_score": 0.0
   },
   {
@@ -868,7 +856,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ITVBE .s",
+    "name": "ITVBE .b",
     "best_score": 0.0
   },
   {
@@ -1032,7 +1020,15 @@
     "best_score": 0.0
   },
   {
+    "name": "NOW SPORTS 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "NOW SPORTS 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOW SPORTS 3 .s",
     "best_score": 0.0
   },
   {
@@ -1041,6 +1037,14 @@
   },
   {
     "name": "NOW SPORTS 5 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOW SPORTS 6 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOW SPORTS 7 .s",
     "best_score": 0.0
   },
   {
@@ -1061,10 +1065,6 @@
   },
   {
     "name": "PICK .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "PICK .s",
     "best_score": 0.0
   },
   {
@@ -1124,11 +1124,7 @@
     "best_score": 0.0
   },
   {
-    "name": "RTE 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "RTE 2 .s",
+    "name": "RT HD .b",
     "best_score": 0.0
   },
   {
@@ -1137,10 +1133,6 @@
   },
   {
     "name": "RTE NEWS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "RTE ONE .s",
     "best_score": 0.0
   },
   {
@@ -1153,6 +1145,46 @@
   },
   {
     "name": "SALFORD CITY F.C. .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SAMUEL L JACKSON .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SEAN CONERY .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SEINFELD .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SEVERANCE ꜱᴇƦꞮᴇ .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHADOW AND BONES .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHE RA AND THE PRINCESS OF POWER .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHOWCASE .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SHOWCASE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SKY 2 .s",
     "best_score": 0.0
   },
   {
@@ -1172,7 +1204,7 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA ANIMATION HD .s",
+    "name": "SKY CINEMA ANIMATION .s",
     "best_score": 0.0
   },
   {
@@ -1188,19 +1220,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA DRAMA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SKY CINEMA FAMILY .b",
     "best_score": 0.0
   },
   {
     "name": "SKY CINEMA FAMILY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA FAMILY (BACKUP) .s",
     "best_score": 0.0
   },
   {
@@ -1216,10 +1240,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIERE HD .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SKY CINEMA SCI-FI .s",
     "best_score": 0.0
   },
@@ -1232,7 +1252,7 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA THRILLER HD .s",
+    "name": "SKY MAX .s",
     "best_score": 0.0
   },
   {
@@ -1241,10 +1261,6 @@
   },
   {
     "name": "SKY SHOWCASE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SHOWCASE .s",
     "best_score": 0.0
   },
   {
@@ -1372,11 +1388,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 HD .s",
+    "name": "SKY SPORTS GOLF .b",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS GOLF .b",
+    "name": "SKY SPORTS GOLF .s",
     "best_score": 0.0
   },
   {
@@ -1389,14 +1405,6 @@
   },
   {
     "name": "SKY SPORTS MAIN EVENT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT (BACKUP) .s",
     "best_score": 0.0
   },
   {
@@ -1448,6 +1456,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY SPORTS NEWS HQ HD .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY SPORTS PREMIER LEAGUE .b",
     "best_score": 0.0
   },
@@ -1472,15 +1484,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS RACING (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SKY SPORTS RACING HD .b",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS RACING HD .s",
+    "name": "SKY SPORTS TENNIS .s",
     "best_score": 0.0
   },
   {
@@ -1488,27 +1496,15 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY STORE PREMIERE 1 ᴴᴰ .s",
+    "name": "SKY SPORTS TENNIS FHD .s",
     "best_score": 0.0
   },
   {
-    "name": "SKY STORE PREMIERE 11 ᴴᴰ .s",
+    "name": "SKY SPORTS ULTRA 2 4K (EVENT ONLY) .s",
     "best_score": 0.0
   },
   {
-    "name": "SKY STORE PREMIERE 12 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 13 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 15 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 17 ᴴᴰ .s",
+    "name": "SKY STORE PREMIERE 14 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1516,75 +1512,7 @@
     "best_score": 0.0
   },
   {
-    "name": "SKY STORE PREMIERE 19 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 2 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 20 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 21 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 22 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 23 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 24 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 25 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 26 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 27 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 28 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 29 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 3 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 30 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 4 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 5 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 7 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 9 ᴴᴰ .s",
+    "name": "SKY STORE PREMIERE 8 ᴴᴰ .s",
     "best_score": 0.0
   },
   {
@@ -1632,10 +1560,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SPFL 09 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SPFL 10 (MATCH TIME) .s",
     "best_score": 0.0
   },
@@ -1664,15 +1588,15 @@
     "best_score": 0.0
   },
   {
+    "name": "SUPER SPORT CRICKET .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SUPERMAN AND ALOIS .s",
     "best_score": 0.0
   },
   {
     "name": "SUPERRIX MOVIES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSPORT 1 .s",
     "best_score": 0.0
   },
   {
@@ -1836,14 +1760,6 @@
     "best_score": 0.0
   },
   {
-    "name": "VIAPLAY SPORTS 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY SPORTS 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "VICELAND .s",
     "best_score": 0.0
   },
@@ -1861,10 +1777,6 @@
   },
   {
     "name": "WAREHOUSE ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WATCH HD .s",
     "best_score": 0.0
   },
   {

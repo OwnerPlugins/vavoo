@@ -12,12 +12,20 @@
     "best_score": 0.615
   },
   {
+    "name": "VIAPLAY TV GIDS VANDAAG .c",
+    "best_score": 0.606
+  },
+  {
     "name": "HISTORY CHANNEL .s",
     "best_score": 0.583
   },
   {
     "name": "L1 .c",
     "best_score": 0.571
+  },
+  {
+    "name": "VIAPLAY INFO GUIDE .c",
+    "best_score": 0.56
   },
   {
     "name": "L1 TV LIMBURG .s",
@@ -34,6 +42,10 @@
   {
     "name": "RTL ZWEE .c",
     "best_score": 0.545
+  },
+  {
+    "name": "VIAPLAY F1 OLAV MOL .c",
+    "best_score": 0.538
   },
   {
     "name": "XITE GOSPEL .c",
@@ -180,10 +192,6 @@
     "best_score": 0.0
   },
   {
-    "name": "FOX SPORTS 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX SPORTS 3 .s",
     "best_score": 0.0
   },
@@ -225,6 +233,10 @@
   },
   {
     "name": "INWONDER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "JIMJAM .c",
     "best_score": 0.0
   },
   {
@@ -517,10 +529,6 @@
   },
   {
     "name": "ZIGGO SPORT TENNIS (ZIGGO SPORT 4) .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ZIGGO SPORT VOETBAL .s",
     "best_score": 0.0
   },
   {

@@ -12,10 +12,6 @@
     "best_score": 0.667
   },
   {
-    "name": "POLSAT ROMANS .b",
-    "best_score": 0.632
-  },
-  {
     "name": "CINEMAX POLAND 1 FHD .b",
     "best_score": 0.609
   },
@@ -33,6 +29,10 @@
   },
   {
     "name": "CINEMAX POLAND 5 FHD .b",
+    "best_score": 0.609
+  },
+  {
+    "name": "CINEMAX POLAND 6 FHD .b",
     "best_score": 0.609
   },
   {
@@ -57,10 +57,6 @@
   },
   {
     "name": "POLSAT JIM JAM .b",
-    "best_score": 0.6
-  },
-  {
-    "name": "POLSAT REALITY .c",
     "best_score": 0.6
   },
   {
@@ -109,10 +105,6 @@
   },
   {
     "name": "CINEMAX POLAND 17 FHD .b",
-    "best_score": 0.583
-  },
-  {
-    "name": "CINEMAX POLAND 18 FHD .b",
     "best_score": 0.583
   },
   {
@@ -208,10 +200,6 @@
     "best_score": 0.0
   },
   {
-    "name": "AL MADINA .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ATM ROZRYWKA TV .b",
     "best_score": 0.0
   },
@@ -273,10 +261,6 @@
   },
   {
     "name": "EUROSPORT 3 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "EUROSPORT 4 .c",
     "best_score": 0.0
   },
   {

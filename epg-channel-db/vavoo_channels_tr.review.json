@@ -12,10 +12,6 @@
     "best_score": 0.696
   },
   {
-    "name": "FILMBOX COMEDY .s",
-    "best_score": 0.667
-  },
-  {
     "name": "KANAL 7 AVRUPA .c",
     "best_score": 0.667
   },
@@ -28,6 +24,10 @@
     "best_score": 0.667
   },
   {
+    "name": "NAT GEO .c",
+    "best_score": 0.667
+  },
+  {
     "name": "NAT GEO .s",
     "best_score": 0.667
   },
@@ -36,16 +36,20 @@
     "best_score": 0.667
   },
   {
-    "name": "TLC TV .b",
-    "best_score": 0.667
-  },
-  {
     "name": "TRT 1 HEVC .b",
     "best_score": 0.667
   },
   {
+    "name": "DA VINCI .c",
+    "best_score": 0.64
+  },
+  {
     "name": "FILMBOX AKSIYON .s",
     "best_score": 0.636
+  },
+  {
+    "name": "TEVE 2 HEVC .b",
+    "best_score": 0.625
   },
   {
     "name": "DMAX HEVC .b",
@@ -76,10 +80,6 @@
     "best_score": 0.583
   },
   {
-    "name": "24 .s",
-    "best_score": 0.571
-  },
-  {
     "name": "A2 TV SD .b",
     "best_score": 0.571
   },
@@ -102,10 +102,6 @@
   {
     "name": "S-SPORT+1 MAC SAATI .b",
     "best_score": 0.522
-  },
-  {
-    "name": "FILMBOX KADIR INANIR .s",
-    "best_score": 0.519
   },
   {
     "name": "A2 RAW .b",
@@ -137,6 +133,10 @@
   },
   {
     "name": "ATV EUROPA .b",
+    "best_score": 0.462
+  },
+  {
+    "name": "TV 5 .c",
     "best_score": 0.462
   },
   {
@@ -200,10 +200,6 @@
     "best_score": 0.0
   },
   {
-    "name": "4K TR: AK T TV HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "4K TR: ATV HD .b",
     "best_score": 0.0
   },
@@ -264,6 +260,10 @@
     "best_score": 0.0
   },
   {
+    "name": "4K TR: ENGLISH CLUB TV .b",
+    "best_score": 0.0
+  },
+  {
     "name": "4K TR: EPIC DRAMA .b",
     "best_score": 0.0
   },
@@ -273,6 +273,10 @@
   },
   {
     "name": "4K TR: EUROSPORT 2 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "4K TR: EXXEN TV .b",
     "best_score": 0.0
   },
   {
@@ -333,6 +337,10 @@
   },
   {
     "name": "4K TR: NATIONAL GEOGRAPHIC HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "4K TR: NATIONAL GEOGRAPHIC WILD HD .b",
     "best_score": 0.0
   },
   {
@@ -416,6 +424,10 @@
     "best_score": 0.0
   },
   {
+    "name": "4K TR: S SPORT .b",
+    "best_score": 0.0
+  },
+  {
     "name": "4K TR: S SPORT 2 .b",
     "best_score": 0.0
   },
@@ -444,6 +456,10 @@
     "best_score": 0.0
   },
   {
+    "name": "4K TR: TEVE2 HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "4K TR: TGRT HABER HD .b",
     "best_score": 0.0
   },
@@ -453,6 +469,10 @@
   },
   {
     "name": "4K TR: TRT 1 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "4K TR: TRT 2 HD .b",
     "best_score": 0.0
   },
   {
@@ -580,10 +600,6 @@
     "best_score": 0.0
   },
   {
-    "name": "AKIT TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "AKLILI TV .s",
     "best_score": 0.0
   },
@@ -601,6 +617,10 @@
   },
   {
     "name": "AKUSTIK .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "AL ZAHRA TV .c",
     "best_score": 0.0
   },
   {
@@ -716,10 +736,6 @@
     "best_score": 0.0
   },
   {
-    "name": "AV TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BABA RADYO ARABESK .b",
     "best_score": 0.0
   },
@@ -772,10 +788,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BEIN BOX OFFICE 1 (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BEIN BOX OFFICE 2 .c",
     "best_score": 0.0
   },
@@ -784,15 +796,15 @@
     "best_score": 0.0
   },
   {
-    "name": "BEIN BOX OFFICE 3 .c",
-    "best_score": 0.0
-  },
-  {
     "name": "BEIN BOX OFFICE 3 .s",
     "best_score": 0.0
   },
   {
     "name": "BEIN GURME .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BEIN GURME .s",
     "best_score": 0.0
   },
   {
@@ -816,6 +828,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BEIN MOVIES ACTION 2 .c",
+    "best_score": 0.0
+  },
+  {
     "name": "BEIN MOVIES ACTION 2 .s",
     "best_score": 0.0
   },
@@ -824,11 +840,23 @@
     "best_score": 0.0
   },
   {
+    "name": "BEIN MOVIES FAMILY .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BEIN MOVIES PREMIERE .c",
     "best_score": 0.0
   },
   {
     "name": "BEIN MOVIES PREMIERE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "BEIN MOVIES PREMIERE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BEIN MOVIES PREMIERE 2 .s",
     "best_score": 0.0
   },
   {
@@ -841,10 +869,6 @@
   },
   {
     "name": "BEIN MOVIES TURK .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BEIN MOVIES TURK .s",
     "best_score": 0.0
   },
   {
@@ -861,10 +885,6 @@
   },
   {
     "name": "BEIN SERIES 4 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BEIN SERIES COMEDY .s",
     "best_score": 0.0
   },
   {
@@ -933,6 +953,10 @@
   },
   {
     "name": "BENGU TURK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BENGUTURK .s",
     "best_score": 0.0
   },
   {
@@ -1012,27 +1036,11 @@
     "best_score": 0.0
   },
   {
-    "name": "BEST YESILCAM .b",
-    "best_score": 0.0
-  },
-  {
     "name": "BEYAZ HD+ SD .b",
     "best_score": 0.0
   },
   {
     "name": "BILGILENDIRME .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "BIR TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BLOOMBERGHT RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "BONUS MASAL DIYARI .b",
     "best_score": 0.0
   },
   {
@@ -1176,10 +1184,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DEHA TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DENIZ POSTASI TV .c",
     "best_score": 0.0
   },
@@ -1193,10 +1197,6 @@
   },
   {
     "name": "DIGI MAX .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DIGI MAX 2 .s",
     "best_score": 0.0
   },
   {
@@ -1221,10 +1221,6 @@
   },
   {
     "name": "DINAMIK IMBD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DINAMIK KOMEDI .b",
     "best_score": 0.0
   },
   {
@@ -1332,14 +1328,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DREAM ANIMASYON .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DREAM BEIN OFFICE 1 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "DREAM BEIN OFFICE 10 .b",
     "best_score": 0.0
   },
@@ -1352,15 +1340,7 @@
     "best_score": 0.0
   },
   {
-    "name": "DREAM BEIN OFFICE 4 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "DREAM BEIN OFFICE 5 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DREAM BEIN OFFICE 6 .b",
     "best_score": 0.0
   },
   {
@@ -1380,14 +1360,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DREAM BOX-SET .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DREAM DRAM .b",
-    "best_score": 0.0
-  },
-  {
     "name": "DREAM KEMAL SUNAL .b",
     "best_score": 0.0
   },
@@ -1396,19 +1368,7 @@
     "best_score": 0.0
   },
   {
-    "name": "DREAM KORKU .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DREAM LOCA 1 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "DREAM LOCA 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DREAM LOCA 3 .b",
     "best_score": 0.0
   },
   {
@@ -1421,10 +1381,6 @@
   },
   {
     "name": "DREAM TURK .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DREAM TURK .c",
     "best_score": 0.0
   },
   {
@@ -1500,6 +1456,10 @@
     "best_score": 0.0
   },
   {
+    "name": "EKOL TV .b",
+    "best_score": 0.0
+  },
+  {
     "name": "EKOL TV .c",
     "best_score": 0.0
   },
@@ -1536,10 +1496,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ENO AKSIYON 1 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ENO VIZYON 10 .s",
     "best_score": 0.0
   },
@@ -1564,11 +1520,19 @@
     "best_score": 0.0
   },
   {
+    "name": "ENO VIZYON 3 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ENO VIZYON 5 .s",
     "best_score": 0.0
   },
   {
     "name": "ENO VIZYON 6 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ENO VIZYON 7 .s",
     "best_score": 0.0
   },
   {
@@ -1613,6 +1577,10 @@
   },
   {
     "name": "ESK EH R KANAL 26 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ETV KAYSERI .c",
     "best_score": 0.0
   },
   {
@@ -1668,11 +1636,11 @@
     "best_score": 0.0
   },
   {
-    "name": "EXXEN SPORTS 5 .s",
+    "name": "EXXEN SPORTS 6 .s",
     "best_score": 0.0
   },
   {
-    "name": "EXXEN SPORTS 6 .s",
+    "name": "EXXEN SPORTS 7 .s",
     "best_score": 0.0
   },
   {
@@ -1745,6 +1713,14 @@
   },
   {
     "name": "FB TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "FB TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FB TV .s",
     "best_score": 0.0
   },
   {
@@ -1924,6 +1900,10 @@
     "best_score": 0.0
   },
   {
+    "name": "HABER TURK .s",
+    "best_score": 0.0
+  },
+  {
     "name": "HABER TURK HD .b",
     "best_score": 0.0
   },
@@ -1945,6 +1925,10 @@
   },
   {
     "name": "HALK TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "HALK TV .s",
     "best_score": 0.0
   },
   {
@@ -2068,15 +2052,19 @@
     "best_score": 0.0
   },
   {
-    "name": "IZMIR TV 35 .b",
-    "best_score": 0.0
-  },
-  {
     "name": "JURASSIC WORLD .b",
     "best_score": 0.0
   },
   {
+    "name": "KADIRGA .s",
+    "best_score": 0.0
+  },
+  {
     "name": "KADIRGA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KAHRAMANMARA AKSU TV .b",
     "best_score": 0.0
   },
   {
@@ -2085,6 +2073,10 @@
   },
   {
     "name": "KANAL 15 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANAL 15 .s",
     "best_score": 0.0
   },
   {
@@ -2097,6 +2089,10 @@
   },
   {
     "name": "KANAL 24 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KANAL 26 .c",
     "best_score": 0.0
   },
   {
@@ -2200,6 +2196,10 @@
     "best_score": 0.0
   },
   {
+    "name": "KAY TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "KAYSERI KAY TV .b",
     "best_score": 0.0
   },
@@ -2264,7 +2264,15 @@
     "best_score": 0.0
   },
   {
+    "name": "KÖY TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "KOY TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KOZA TV .c",
     "best_score": 0.0
   },
   {
@@ -2272,7 +2280,15 @@
     "best_score": 0.0
   },
   {
+    "name": "KRAL FM ARABESK .b",
+    "best_score": 0.0
+  },
+  {
     "name": "KRAL POP .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "KRAL POP HD+ .b",
     "best_score": 0.0
   },
   {
@@ -2280,7 +2296,15 @@
     "best_score": 0.0
   },
   {
+    "name": "KRAL SAKIR .s",
+    "best_score": 0.0
+  },
+  {
     "name": "KRAL SAKIR TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "KRAL TV .c",
     "best_score": 0.0
   },
   {
@@ -2456,10 +2480,6 @@
     "best_score": 0.0
   },
   {
-    "name": "MAX PREMIER .c",
-    "best_score": 0.0
-  },
-  {
     "name": "MAX STAR WARS .c",
     "best_score": 0.0
   },
@@ -2504,6 +2524,10 @@
     "best_score": 0.0
   },
   {
+    "name": "MED MUZIK .c",
+    "best_score": 0.0
+  },
+  {
     "name": "MEDYA HABER .c",
     "best_score": 0.0
   },
@@ -2532,6 +2556,14 @@
     "best_score": 0.0
   },
   {
+    "name": "MESAJ TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MGC .b",
+    "best_score": 0.0
+  },
+  {
     "name": "MGC TV .b",
     "best_score": 0.0
   },
@@ -2552,7 +2584,23 @@
     "best_score": 0.0
   },
   {
+    "name": "MINIKA COCUK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MINIKA COCUK .s",
+    "best_score": 0.0
+  },
+  {
     "name": "MINIKA GO .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "MINIKA GO .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "MONTAG & FREITAG BULLI .b",
     "best_score": 0.0
   },
   {
@@ -2561,10 +2609,6 @@
   },
   {
     "name": "MOVIE SMART CLASSIC .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "MOVIE SMART PLATIN 2 .s",
     "best_score": 0.0
   },
   {
@@ -2577,10 +2621,6 @@
   },
   {
     "name": "MOVIE SMART TURK .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "MOVIEMAX TURK .s",
     "best_score": 0.0
   },
   {
@@ -2732,6 +2772,70 @@
     "best_score": 0.0
   },
   {
+    "name": "NUMBER 1 DANCE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NUMBER 1 TURK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NUMBER ONE FM YABANCI M ZIK BURDA .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "OLAY TURK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON 4 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON 4 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON 4 TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ON 6 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ORDU BUYUKSEHIR BELEDIYESI (OBB) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "OSCAR COLLERDE .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "OUTDOOR .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PAK PIRPIR TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PAL STATION YABANCI M ZIK .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PAMUKKALE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PATRON BEBEK HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "PAW PETROL .b",
+    "best_score": 0.0
+  },
+  {
     "name": "PEPE TV .b",
     "best_score": 0.0
   },
@@ -2760,6 +2864,10 @@
     "best_score": 0.0
   },
   {
+    "name": "PISI .s",
+    "best_score": 0.0
+  },
+  {
     "name": "PISI TV .b",
     "best_score": 0.0
   },
@@ -2785,6 +2893,10 @@
   },
   {
     "name": "POWER LOVE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "POWER T RK T RK E POP .b",
     "best_score": 0.0
   },
   {
@@ -2836,6 +2948,10 @@
     "best_score": 0.0
   },
   {
+    "name": "PROTURK LOCA 1 .c",
+    "best_score": 0.0
+  },
+  {
     "name": "PROTURK LOCA 2 .c",
     "best_score": 0.0
   },
@@ -2880,11 +2996,19 @@
     "best_score": 0.0
   },
   {
+    "name": "REDBOX ARABESK TV .b",
+    "best_score": 0.0
+  },
+  {
     "name": "REDBOX TURKCE POP .b",
     "best_score": 0.0
   },
   {
     "name": "REDBULL TV .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "REHBER .s",
     "best_score": 0.0
   },
   {
@@ -2912,6 +3036,10 @@
     "best_score": 0.0
   },
   {
+    "name": "S PER FM T RK E POP .b",
+    "best_score": 0.0
+  },
+  {
     "name": "S SPORT .c",
     "best_score": 0.0
   },
@@ -2928,7 +3056,15 @@
     "best_score": 0.0
   },
   {
+    "name": "S SPORT+3 MAC SAATI .b",
+    "best_score": 0.0
+  },
+  {
     "name": "S SPORT+4 MAC SAATI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "S SPORT+5 MAC SAATI .b",
     "best_score": 0.0
   },
   {
@@ -2952,6 +3088,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SALON 11 HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "SALON 12 HD .b",
     "best_score": 0.0
   },
@@ -2964,6 +3104,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SALON 15 HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "SALON 16 HD .b",
     "best_score": 0.0
   },
@@ -2972,11 +3116,19 @@
     "best_score": 0.0
   },
   {
+    "name": "SALON 18 HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "SALON 19 HD .b",
     "best_score": 0.0
   },
   {
     "name": "SALON 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SALON 2 .s",
     "best_score": 0.0
   },
   {
@@ -3005,6 +3157,10 @@
   },
   {
     "name": "SALON 6 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SALON 7 HD .b",
     "best_score": 0.0
   },
   {
@@ -3040,10 +3196,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SCIENCE & VICE .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SEF ROKKA TV .b",
     "best_score": 0.0
   },
@@ -3060,6 +3212,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SEMERKAND RAW .b",
+    "best_score": 0.0
+  },
+  {
     "name": "SEMERKAND TV .c",
     "best_score": 0.0
   },
@@ -3073,6 +3229,10 @@
   },
   {
     "name": "SEVIMLI DOSTLAR .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "SEVIMLI DOSTLAR .s",
     "best_score": 0.0
   },
   {
@@ -3148,15 +3308,19 @@
     "best_score": 0.0
   },
   {
+    "name": "SINEMA YERLI 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SINEMAX COMEDI .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SINEMAX DRAMA .s",
     "best_score": 0.0
   },
   {
     "name": "SINEMAX FAMILY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SINEMAX KOMEDI .s",
     "best_score": 0.0
   },
   {
@@ -3168,7 +3332,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SINEVIZYON 15 .s",
+    "name": "SINEVIZYON 5 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SINEVIZYON TURK 1 .s",
     "best_score": 0.0
   },
   {
@@ -3176,11 +3344,19 @@
     "best_score": 0.0
   },
   {
+    "name": "SINEVIZYON TURK 5 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SINEVIZYON TURK 6 .s",
     "best_score": 0.0
   },
   {
-    "name": "SINEVIZYON TURK 8 .s",
+    "name": "SINEVIZYON TURK 7 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "SINEVIZYON TURK 9 .s",
     "best_score": 0.0
   },
   {
@@ -3196,11 +3372,19 @@
     "best_score": 0.0
   },
   {
+    "name": "SIVAS .b",
+    "best_score": 0.0
+  },
+  {
     "name": "SIVAS VIZYON 58 TV .b",
     "best_score": 0.0
   },
   {
     "name": "SL NILOYA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SLOW KARADENIZ .b",
     "best_score": 0.0
   },
   {
@@ -3237,6 +3421,10 @@
   },
   {
     "name": "SPOR SMART .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPOR SMART 1 .s",
     "best_score": 0.0
   },
   {
@@ -3284,11 +3472,23 @@
     "best_score": 0.0
   },
   {
+    "name": "SÜNGER BOB .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SURELER VE T RKCE MEALI .b",
+    "best_score": 0.0
+  },
+  {
     "name": "SZC .c",
     "best_score": 0.0
   },
   {
     "name": "T RK E POP .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "T.A.Y TV .b",
     "best_score": 0.0
   },
   {
@@ -3301,6 +3501,10 @@
   },
   {
     "name": "TABII SPOR 1 4K .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TABII SPOR 1 720P .b",
     "best_score": 0.0
   },
   {
@@ -3328,11 +3532,27 @@
     "best_score": 0.0
   },
   {
+    "name": "TABII SPOR 3 UHD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "TABII SPOR 4 .c",
     "best_score": 0.0
   },
   {
+    "name": "TABII SPOR 4 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TABII SPOR 4 UHD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "TABII SPOR 5 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TABII SPOR 5 HD .b",
     "best_score": 0.0
   },
   {
@@ -3345,6 +3565,10 @@
   },
   {
     "name": "TABII SPOR 6 HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TABII SPOR 6 UHD .b",
     "best_score": 0.0
   },
   {
@@ -3388,6 +3612,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TEK RUMEL TV .b",
+    "best_score": 0.0
+  },
+  {
     "name": "TELE 1 .b",
     "best_score": 0.0
   },
@@ -3405,6 +3633,10 @@
   },
   {
     "name": "TELEGRAM GRUP LINKI .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEMPO .s",
     "best_score": 0.0
   },
   {
@@ -3436,6 +3668,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TIVI TÜRK .c",
+    "best_score": 0.0
+  },
+  {
     "name": "TIVIBU SPOR .c",
     "best_score": 0.0
   },
@@ -3452,11 +3688,23 @@
     "best_score": 0.0
   },
   {
+    "name": "TIVIBU SPOR 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIVIBU SPOR 2 HD .s",
+    "best_score": 0.0
+  },
+  {
     "name": "TIVIBU SPOR 3 .c",
     "best_score": 0.0
   },
   {
     "name": "TIVIBU SPOR 3 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TIVIBU SPOR 3 HD .s",
     "best_score": 0.0
   },
   {
@@ -3524,11 +3772,15 @@
     "best_score": 0.0
   },
   {
+    "name": "TRANSFORMERS .b",
+    "best_score": 0.0
+  },
+  {
     "name": "TROL AVCILARI .b",
     "best_score": 0.0
   },
   {
-    "name": "TRT 2 .s",
+    "name": "TRT 2 UHD .b",
     "best_score": 0.0
   },
   {
@@ -3569,6 +3821,14 @@
   },
   {
     "name": "TRT KURDI RAW .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRT MUZIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRT MUZIK .s",
     "best_score": 0.0
   },
   {
@@ -3628,10 +3888,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TV 100 HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "TV 100 HEVC .b",
     "best_score": 0.0
   },
@@ -3644,11 +3900,23 @@
     "best_score": 0.0
   },
   {
+    "name": "TV 4 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "TV 41 .c",
     "best_score": 0.0
   },
   {
+    "name": "TV 41 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "TV 42 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV 52 .b",
     "best_score": 0.0
   },
   {
@@ -3677,6 +3945,10 @@
   },
   {
     "name": "TV DEN .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV EM .s",
     "best_score": 0.0
   },
   {
@@ -3788,11 +4060,19 @@
     "best_score": 0.0
   },
   {
+    "name": "VIZYON 58 .b",
+    "best_score": 0.0
+  },
+  {
     "name": "VIZYON 58 .c",
     "best_score": 0.0
   },
   {
     "name": "VIZYON 58 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "VIZYON 58 TV SIVAS .s",
     "best_score": 0.0
   },
   {
@@ -3844,10 +4124,6 @@
     "best_score": 0.0
   },
   {
-    "name": "YESILCAM 3 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "YILDIZ KIZ .b",
     "best_score": 0.0
   },
@@ -3861,6 +4137,10 @@
   },
   {
     "name": "YOL TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "YOL TV .s",
     "best_score": 0.0
   },
   {

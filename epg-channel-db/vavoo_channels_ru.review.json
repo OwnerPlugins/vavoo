@@ -1,9 +1,5 @@
 [
   {
-    "name": ".BLACK .b",
-    "best_score": 0.0
-  },
-  {
     "name": ".RED HD .b",
     "best_score": 0.0
   },
@@ -76,10 +72,6 @@
     "best_score": 0.0
   },
   {
-    "name": "AMEDIA PREMIUM .s",
-    "best_score": 0.0
-  },
-  {
     "name": "AMEDIA PREMIUM HD .b",
     "best_score": 0.0
   },
@@ -97,6 +89,10 @@
   },
   {
     "name": "ANIMAL PLANET .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ANIMAL PLANET HD .b",
     "best_score": 0.0
   },
   {
@@ -136,6 +132,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BOOMERANG .b",
+    "best_score": 0.0
+  },
+  {
     "name": "BOXE TB .s",
     "best_score": 0.0
   },
@@ -172,14 +172,6 @@
     "best_score": 0.0
   },
   {
-    "name": "CHE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINEMA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CLASSIC MUSIC HD .b",
     "best_score": 0.0
   },
@@ -189,10 +181,6 @@
   },
   {
     "name": "CTC .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CTC LOVE .s",
     "best_score": 0.0
   },
   {
@@ -280,6 +268,10 @@
     "best_score": 0.0
   },
   {
+    "name": "EURONEWS .b",
+    "best_score": 0.0
+  },
+  {
     "name": "EURONEWS .s",
     "best_score": 0.0
   },
@@ -341,10 +333,6 @@
   },
   {
     "name": "FOOD NETWORK .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "FOTBALL .s",
     "best_score": 0.0
   },
   {
@@ -429,10 +417,6 @@
   },
   {
     "name": "KHL PRIME .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "KHL TV .s",
     "best_score": 0.0
   },
   {
@@ -548,6 +532,10 @@
     "best_score": 0.0
   },
   {
+    "name": "MATCH FUTBOL 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "MATCH FUTBOL 2 .s",
     "best_score": 0.0
   },
@@ -601,14 +589,6 @@
   },
   {
     "name": "MEZZO LIVE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "MILLET .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "MIR .s",
     "best_score": 0.0
   },
   {
@@ -684,7 +664,15 @@
     "best_score": 0.0
   },
   {
+    "name": "NATIONAL GEOGRAPHIC HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "NICK JR. .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "NICKELODEON .s",
     "best_score": 0.0
   },
   {
@@ -708,6 +696,10 @@
     "best_score": 0.0
   },
   {
+    "name": "PARAMOUNT CHANNEL .s",
+    "best_score": 0.0
+  },
+  {
     "name": "PARAMOUNT COMEDY .b",
     "best_score": 0.0
   },
@@ -721,10 +713,6 @@
   },
   {
     "name": "PERVIY KANAL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "PETPO .s",
     "best_score": 0.0
   },
   {
@@ -804,10 +792,6 @@
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA 1 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "RUSSIA 24 .s",
     "best_score": 0.0
   },
@@ -828,7 +812,7 @@
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA RTR .s",
+    "name": "RUSSIA ROMAN .s",
     "best_score": 0.0
   },
   {
@@ -944,10 +928,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TNT MUSIC .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TOCHIKA ORTIVA .s",
     "best_score": 0.0
   },
@@ -984,6 +964,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TV 1000 ACTION .s",
+    "best_score": 0.0
+  },
+  {
     "name": "TV 1000 ACTION HD .b",
     "best_score": 0.0
   },
@@ -1013,10 +997,6 @@
   },
   {
     "name": "TV CENTER .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV XXI .s",
     "best_score": 0.0
   },
   {
@@ -1101,10 +1081,6 @@
   },
   {
     "name": "ZEE TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ZVEZDA .s",
     "best_score": 0.0
   },
   {
@@ -1357,6 +1333,14 @@
   },
   {
     "name": "МИР СЕРИАЛА .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "МОСКВА 24 .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "МОСФИЛЬМ. ЗОЛОТАЯ КОЛЛЕКЦИЯ .b",
     "best_score": 0.0
   },
   {

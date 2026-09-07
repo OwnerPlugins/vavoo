@@ -12,10 +12,6 @@
     "best_score": 0.696
   },
   {
-    "name": "CLAN .b",
-    "best_score": 0.667
-  },
-  {
     "name": "MEZZO .c",
     "best_score": 0.667
   },
@@ -49,10 +45,6 @@
   },
   {
     "name": "FOX LIFE .c",
-    "best_score": 0.545
-  },
-  {
-    "name": "FOX LIFE HD .b",
     "best_score": 0.545
   },
   {
@@ -102,6 +94,10 @@
   {
     "name": "TV3 CATALUNYA .c",
     "best_score": 0.375
+  },
+  {
+    "name": "101 TV .c",
+    "best_score": 0.0
   },
   {
     "name": "13 REALITIES .c",
@@ -164,23 +160,11 @@
     "best_score": 0.0
   },
   {
-    "name": "ARAGON .b",
-    "best_score": 0.0
-  },
-  {
     "name": "ARAGON TV INTERNACIONAL .c",
     "best_score": 0.0
   },
   {
     "name": "ARTEQUATRE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BABY TV .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "BABY TV .c",
     "best_score": 0.0
   },
   {
@@ -225,10 +209,6 @@
   },
   {
     "name": "CADENA ELITE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "CANAL 10 EMPORDA .c",
     "best_score": 0.0
   },
   {
@@ -296,10 +276,6 @@
     "best_score": 0.0
   },
   {
-    "name": "CLASSICA .b",
-    "best_score": 0.0
-  },
-  {
     "name": "CNN EN ESPANOL .c",
     "best_score": 0.0
   },
@@ -364,10 +340,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ESPN 3 .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ESPN DEPORTES .c",
     "best_score": 0.0
   },
@@ -385,10 +357,6 @@
   },
   {
     "name": "GOIENA EUS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "GOL TV HD .b",
     "best_score": 0.0
   },
   {
@@ -428,23 +396,15 @@
     "best_score": 0.0
   },
   {
-    "name": "LA SEXTA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "LA SEXTA HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "LANCELOT TV .c",
     "best_score": 0.0
   },
   {
-    "name": "LIGA TV .b",
+    "name": "LIGA CAMPEONES HD .b",
     "best_score": 0.0
   },
   {
-    "name": "LIGA TV BAR 3 HD .b",
+    "name": "LIGA TV .b",
     "best_score": 0.0
   },
   {
@@ -457,10 +417,6 @@
   },
   {
     "name": "LOGOS TV KIDS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "LOGOS TV SALUD .c",
     "best_score": 0.0
   },
   {
@@ -481,6 +437,10 @@
   },
   {
     "name": "M.GOLF HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "M.LIGA DE CAMPEONES HD .b",
     "best_score": 0.0
   },
   {
@@ -556,11 +516,11 @@
     "best_score": 0.0
   },
   {
-    "name": "MTV ESPANA .b",
+    "name": "MTV ESPANA .c",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD HD .b",
+    "name": "NAT GEO .c",
     "best_score": 0.0
   },
   {
@@ -584,15 +544,15 @@
     "best_score": 0.0
   },
   {
+    "name": "ONDA 15 TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "ONDA CADIZ .c",
     "best_score": 0.0
   },
   {
     "name": "PARAMOUNT CHANNEL .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "PEQUERADIO .c",
     "best_score": 0.0
   },
   {
@@ -709,10 +669,6 @@
   },
   {
     "name": "TELE MADRID .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE SAFOR .c",
     "best_score": 0.0
   },
   {
