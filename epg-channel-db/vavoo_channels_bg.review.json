@@ -36,14 +36,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BABY TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BABY TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BALKANIKA MUSIC TV .c",
     "best_score": 0.0
   },
@@ -56,10 +48,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BNT 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BNT 3 .c",
     "best_score": 0.0
   },
@@ -68,23 +56,7 @@
     "best_score": 0.0
   },
   {
-    "name": "BOX TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BULGARIA 24 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BULGARIA 24 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CINEMA PLUS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CITY TV .c",
     "best_score": 0.0
   },
   {
@@ -100,23 +72,11 @@
     "best_score": 0.0
   },
   {
-    "name": "DESTINATIONS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DISCOVERY WORLD .c",
     "best_score": 0.0
   },
   {
     "name": "DIZI CHANNEL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DOCUBOX .c",
     "best_score": 0.0
   },
   {
@@ -133,10 +93,6 @@
   },
   {
     "name": "EVROKOM .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "EVROKOM .s",
     "best_score": 0.0
   },
   {
@@ -157,6 +113,10 @@
   },
   {
     "name": "FILM PLUS .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM PLUS .s",
     "best_score": 0.0
   },
   {
@@ -181,14 +141,6 @@
   },
   {
     "name": "HOPE CHANNEL BULGARIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ICONCERTS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "JIM JAM .s",
     "best_score": 0.0
   },
   {
@@ -224,10 +176,6 @@
     "best_score": 0.0
   },
   {
-    "name": "MTV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "NOVA NEWS .c",
     "best_score": 0.0
   },
@@ -241,6 +189,10 @@
   },
   {
     "name": "NOVA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOVA TV .s",
     "best_score": 0.0
   },
   {
@@ -284,15 +236,11 @@
     "best_score": 0.0
   },
   {
-    "name": "STINGRAY ICONCERTS .c",
-    "best_score": 0.0
-  },
-  {
     "name": "THIS IS BULGARIA .c",
     "best_score": 0.0
   },
   {
-    "name": "TIANKOV FOLK .s",
+    "name": "TIANKOV FOLK .c",
     "best_score": 0.0
   },
   {
@@ -304,14 +252,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TV EVROPA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV EVROPA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "V2BEAT TV .c",
     "best_score": 0.0
   },
@@ -320,15 +260,15 @@
     "best_score": 0.0
   },
   {
+    "name": "WILD TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "WNESS TV .c",
     "best_score": 0.0
   },
   {
     "name": "WORLD FASHION CHANNEL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WORLD FIGHT CHANNEL .s",
     "best_score": 0.0
   }
 ]

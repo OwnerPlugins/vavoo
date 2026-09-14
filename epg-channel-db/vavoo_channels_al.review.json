@@ -48,10 +48,6 @@
     "best_score": 0.571
   },
   {
-    "name": "RTSH SPORT .s",
-    "best_score": 0.571
-  },
-  {
     "name": "RTSH SPORT (BACKUP) .s",
     "best_score": 0.571
   },
@@ -160,7 +156,15 @@
     "best_score": 0.0
   },
   {
+    "name": "8OVA DRAME .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ABC .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ABC NEWS .b",
     "best_score": 0.0
   },
   {
@@ -169,14 +173,6 @@
   },
   {
     "name": "ABC STORY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "AHWAZ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ALAM (360P) [NOT 24/7] .b",
     "best_score": 0.0
   },
   {
@@ -288,6 +284,10 @@
     "best_score": 0.0
   },
   {
+    "name": "ART KINO 2 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ART KINO 2 HD .b",
     "best_score": 0.0
   },
@@ -309,6 +309,10 @@
   },
   {
     "name": "ART SPORT 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ART SPORT 2 .s",
     "best_score": 0.0
   },
   {
@@ -433,6 +437,10 @@
   },
   {
     "name": "BOOMERANG .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .s",
     "best_score": 0.0
   },
   {
@@ -636,10 +644,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DIELLI .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DIGI GOLD .c",
     "best_score": 0.0
   },
@@ -657,6 +661,10 @@
   },
   {
     "name": "DISCOVERY CHANNEL .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY CHANNEL .s",
     "best_score": 0.0
   },
   {
@@ -700,15 +708,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ERA TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ERA TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EURO AL .s",
     "best_score": 0.0
   },
   {
@@ -745,6 +745,10 @@
   },
   {
     "name": "EXPLORER HISTORI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER HISTORI .s",
     "best_score": 0.0
   },
   {
@@ -857,6 +861,10 @@
   },
   {
     "name": "FILM BOX ARTHOUSE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILM BOX PLUS .s",
     "best_score": 0.0
   },
   {
@@ -1028,23 +1036,11 @@
     "best_score": 0.0
   },
   {
-    "name": "FOLKLORIT .s",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX .c",
     "best_score": 0.0
   },
   {
-    "name": "FOX CRIME .s",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX LIFE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "FOX LIFE .c",
     "best_score": 0.0
   },
   {
@@ -1053,6 +1049,10 @@
   },
   {
     "name": "FOX MOVIES .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX MOVIES .s",
     "best_score": 0.0
   },
   {
@@ -1296,11 +1296,7 @@
     "best_score": 0.0
   },
   {
-    "name": "K SPORT 4 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "KANAL D DRAMA .c",
+    "name": "K SPORT 3 .s",
     "best_score": 0.0
   },
   {
@@ -1572,6 +1568,10 @@
     "best_score": 0.0
   },
   {
+    "name": "MTV KOSOVA .s",
+    "best_score": 0.0
+  },
+  {
     "name": "MUSIC HITS .c",
     "best_score": 0.0
   },
@@ -1684,27 +1684,11 @@
     "best_score": 0.0
   },
   {
-    "name": "PENDIMI .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "PODUJEVA TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "POLLOGU .c",
     "best_score": 0.0
   },
   {
     "name": "PORTOKALLI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "PREMIER SPORTS 2 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "PREMIERE 5 .c",
     "best_score": 0.0
   },
   {
@@ -1717,6 +1701,10 @@
   },
   {
     "name": "QURAN TV MAKKAH .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "RASHEED (408P) [NOT 24/7] .b",
     "best_score": 0.0
   },
   {
@@ -1761,10 +1749,6 @@
   },
   {
     "name": "RTV ALDI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "RTV ARBERIA 4 .s",
     "best_score": 0.0
   },
   {
@@ -1848,10 +1832,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SHOTA TV 4K UHD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "SHQIPTV ISLAM .b",
     "best_score": 0.0
   },
@@ -1861,14 +1841,6 @@
   },
   {
     "name": "SKY ACTION .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY AKSION .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY KOMEDI .b",
     "best_score": 0.0
   },
   {
@@ -1932,6 +1904,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SUPER SPORT 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SUPER SPORT 1 (BACKUP) .b",
     "best_score": 0.0
   },
@@ -1988,31 +1964,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SUPER SPORT 6 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORT NEWS HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORTS 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORTS NEWS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SUPERSPORT NEWS .c",
     "best_score": 0.0
   },
   {
     "name": "SYRI NEWS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SYRI VISION .b",
     "best_score": 0.0
   },
   {
@@ -2080,6 +2036,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TELE ONE AKSION .c",
+    "best_score": 0.0
+  },
+  {
     "name": "TELE ONE CRIME .c",
     "best_score": 0.0
   },
@@ -2133,6 +2093,10 @@
   },
   {
     "name": "TËVË DOKU 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TEVE DRAME .c",
     "best_score": 0.0
   },
   {
@@ -2224,7 +2188,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TRING 3 .s",
+    "name": "TRING 3 PLUS .s",
     "best_score": 0.0
   },
   {
@@ -2237,6 +2201,10 @@
   },
   {
     "name": "TRING MAX .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TRING SMILE .s",
     "best_score": 0.0
   },
   {
@@ -2269,10 +2237,6 @@
   },
   {
     "name": "TRING SPORT 3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRING SPORT 3 .s",
     "best_score": 0.0
   },
   {

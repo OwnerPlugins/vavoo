@@ -84,10 +84,6 @@
     "best_score": 0.0
   },
   {
-    "name": "7 YOU & ME .c",
-    "best_score": 0.0
-  },
-  {
     "name": "70-80.IT .c",
     "best_score": 0.0
   },
@@ -117,6 +113,10 @@
   },
   {
     "name": "ALMA TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ALMA TV .s",
     "best_score": 0.0
   },
   {
@@ -156,6 +156,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BABY TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "BBC SERIES .c",
     "best_score": 0.0
   },
@@ -188,10 +192,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BYOBLU .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CAFE 24 .c",
     "best_score": 0.0
   },
@@ -204,7 +204,15 @@
     "best_score": 0.0
   },
   {
+    "name": "CAMERA DEPUTATI .s",
+    "best_score": 0.0
+  },
+  {
     "name": "CANALE 122 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CANALE 2 .c",
     "best_score": 0.0
   },
   {
@@ -216,6 +224,10 @@
     "best_score": 0.0
   },
   {
+    "name": "CANALE 21 EXTRA .s",
+    "best_score": 0.0
+  },
+  {
     "name": "CANALE 21 LAZIO .s",
     "best_score": 0.0
   },
@@ -224,7 +236,19 @@
     "best_score": 0.0
   },
   {
+    "name": "CANALE 7 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "CANALE 8 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CANALE 8 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CANALE 88 MADEINBO .s",
     "best_score": 0.0
   },
   {
@@ -276,7 +300,11 @@
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY SCIENCE .s",
+    "name": "DISCOVERY NOVE .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY NOVE (BACKUP) .s",
     "best_score": 0.0
   },
   {
@@ -297,10 +325,6 @@
   },
   {
     "name": "ENTELLA TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EQU TV .c",
     "best_score": 0.0
   },
   {
@@ -396,10 +420,6 @@
     "best_score": 0.0
   },
   {
-    "name": "IMAS TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ITALIA 3 .s",
     "best_score": 0.0
   },
@@ -408,7 +428,11 @@
     "best_score": 0.0
   },
   {
-    "name": "ITALIAN FISHING TV .s",
+    "name": "IUNIOR TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "IUNIOR TV .s",
     "best_score": 0.0
   },
   {
@@ -448,15 +472,15 @@
     "best_score": 0.0
   },
   {
+    "name": "LAC NEWS 24 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "LAZIO TV 13 .c",
     "best_score": 0.0
   },
   {
     "name": "LE CRONACHE TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "LIRA TV .c",
     "best_score": 0.0
   },
   {
@@ -477,10 +501,6 @@
   },
   {
     "name": "MARIA+VISION .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "MAVTV EUROPE .s",
     "best_score": 0.0
   },
   {
@@ -512,11 +532,15 @@
     "best_score": 0.0
   },
   {
+    "name": "NAT GEO .s",
+    "best_score": 0.0
+  },
+  {
     "name": "NAT GEO WILD .s",
     "best_score": 0.0
   },
   {
-    "name": "NET TV .s",
+    "name": "NAUTICAL .s",
     "best_score": 0.0
   },
   {
@@ -616,6 +640,10 @@
     "best_score": 0.0
   },
   {
+    "name": "RADIO BIRIKINA TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "RADIO CAPITAL .s",
     "best_score": 0.0
   },
@@ -624,7 +652,15 @@
     "best_score": 0.0
   },
   {
+    "name": "RADIO IBIZA TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "RADIO IGLESIAS SARDEGNA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RADIO MONTE CARLO .s",
     "best_score": 0.0
   },
   {
@@ -684,10 +720,6 @@
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV TOP MOVIES ITALY .c",
-    "best_score": 0.0
-  },
-  {
     "name": "RDS SOCIAL .s",
     "best_score": 0.0
   },
@@ -724,6 +756,10 @@
     "best_score": 0.0
   },
   {
+    "name": "RETE TV ITALIA .s",
+    "best_score": 0.0
+  },
+  {
     "name": "RETE VENETA .c",
     "best_score": 0.0
   },
@@ -741,6 +777,10 @@
   },
   {
     "name": "RSI LA 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RSI LA 1 .s",
     "best_score": 0.0
   },
   {
@@ -868,6 +908,10 @@
     "best_score": 0.0
   },
   {
+    "name": "SKY PRIMAFILA 6 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "SKY PRIMAFILA 7 .c",
     "best_score": 0.0
   },
@@ -905,6 +949,10 @@
   },
   {
     "name": "SKYSHOWTIME 1 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT ITALIA .s",
     "best_score": 0.0
   },
   {
@@ -984,7 +1032,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TELE PAVIA .c",
+    "name": "TELE PAVIA (BACKUP) .s",
     "best_score": 0.0
   },
   {
@@ -993,10 +1041,6 @@
   },
   {
     "name": "TELE TUBBIES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE TUSCIASABINA 2000 .c",
     "best_score": 0.0
   },
   {
@@ -1089,30 +1133,6 @@
   },
   {
     "name": "TELESPAZIO TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELETRICOLORE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELETUTTO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TG COM 24 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOP CALCIO 24 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRG MEDIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRSPORT .c",
     "best_score": 0.0
   },
   {

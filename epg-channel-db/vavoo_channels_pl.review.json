@@ -12,6 +12,10 @@
     "best_score": 0.667
   },
   {
+    "name": "POLSAT ROMANS .b",
+    "best_score": 0.632
+  },
+  {
     "name": "CINEMAX POLAND 1 FHD .b",
     "best_score": 0.609
   },
@@ -60,6 +64,10 @@
     "best_score": 0.6
   },
   {
+    "name": "POLSAT REALITY .c",
+    "best_score": 0.6
+  },
+  {
     "name": "TVP 3 GDANSK .c",
     "best_score": 0.588
   },
@@ -74,10 +82,6 @@
   {
     "name": "TVP 3 POZNAN .c",
     "best_score": 0.588
-  },
-  {
-    "name": "CINEMAX POLAND 10 FHD .b",
-    "best_score": 0.583
   },
   {
     "name": "CINEMAX POLAND 11 FHD .b",
@@ -105,6 +109,10 @@
   },
   {
     "name": "CINEMAX POLAND 17 FHD .b",
+    "best_score": 0.583
+  },
+  {
+    "name": "CINEMAX POLAND 18 FHD .b",
     "best_score": 0.583
   },
   {
@@ -264,6 +272,10 @@
     "best_score": 0.0
   },
   {
+    "name": "EUROSPORT 4 .c",
+    "best_score": 0.0
+  },
+  {
     "name": "EXTREME SPORTS .b",
     "best_score": 0.0
   },
@@ -405,10 +417,6 @@
   },
   {
     "name": "SPORTOWA TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STARS TV .c",
     "best_score": 0.0
   },
   {

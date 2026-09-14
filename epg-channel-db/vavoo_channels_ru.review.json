@@ -1,18 +1,10 @@
 [
   {
-    "name": ".RED HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": ".SCI‑FI .b",
     "best_score": 0.0
   },
   {
     "name": "24 TECHNO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "2X2 TV .s",
     "best_score": 0.0
   },
   {
@@ -72,6 +64,10 @@
     "best_score": 0.0
   },
   {
+    "name": "AMEDIA PREMIUM .s",
+    "best_score": 0.0
+  },
+  {
     "name": "AMEDIA PREMIUM HD .b",
     "best_score": 0.0
   },
@@ -105,10 +101,6 @@
   },
   {
     "name": "BBC WORLD NEWS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "BELARUS .s",
     "best_score": 0.0
   },
   {
@@ -216,10 +208,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY SCIENCE .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DOM KINO .s",
     "best_score": 0.0
   },
@@ -288,10 +276,6 @@
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "EUROSPORT 2 [LIVE DURING EVENTS ONLY] .s",
     "best_score": 0.0
   },
@@ -333,6 +317,10 @@
   },
   {
     "name": "FOOD NETWORK .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOTBALL .s",
     "best_score": 0.0
   },
   {
@@ -420,6 +408,10 @@
     "best_score": 0.0
   },
   {
+    "name": "KHL TV .s",
+    "best_score": 0.0
+  },
+  {
     "name": "KINO CINEMA .s",
     "best_score": 0.0
   },
@@ -457,10 +449,6 @@
   },
   {
     "name": "KINO ROKAS 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "KINO TV .s",
     "best_score": 0.0
   },
   {
@@ -552,10 +540,6 @@
     "best_score": 0.0
   },
   {
-    "name": "MATCH PLANET .s",
-    "best_score": 0.0
-  },
-  {
     "name": "MATCH PREMIERE .s",
     "best_score": 0.0
   },
@@ -589,6 +573,10 @@
   },
   {
     "name": "MEZZO LIVE HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "MIR .s",
     "best_score": 0.0
   },
   {
@@ -713,6 +701,10 @@
   },
   {
     "name": "PERVIY KANAL .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PETPO .s",
     "best_score": 0.0
   },
   {
@@ -964,10 +956,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 ACTION .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TV 1000 ACTION HD .b",
     "best_score": 0.0
   },
@@ -997,6 +985,10 @@
   },
   {
     "name": "TV CENTER .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV XXI .s",
     "best_score": 0.0
   },
   {
@@ -1084,6 +1076,10 @@
     "best_score": 0.0
   },
   {
+    "name": "ZVEZDA .s",
+    "best_score": 0.0
+  },
+  {
     "name": "АВТО 24 .b",
     "best_score": 0.0
   },
@@ -1117,10 +1113,6 @@
   },
   {
     "name": "ВАШ УСПЕХ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ВОЛГОГРАД 24 .s",
     "best_score": 0.0
   },
   {

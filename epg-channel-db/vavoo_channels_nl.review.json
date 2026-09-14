@@ -52,10 +52,6 @@
     "best_score": 0.533
   },
   {
-    "name": "100% .c",
-    "best_score": 0.5
-  },
-  {
     "name": "MTV 24 MUSIC .s",
     "best_score": 0.4
   },
@@ -189,6 +185,10 @@
   },
   {
     "name": "FOX SPORTS 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "FOX SPORTS 2 .s",
     "best_score": 0.0
   },
   {
@@ -332,14 +332,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PEBBLE TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "PEBBLE TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "QMUSIC .c",
     "best_score": 0.0
   },
@@ -429,10 +421,6 @@
   },
   {
     "name": "SLAM .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SLAM! TV .s",
     "best_score": 0.0
   },
   {
@@ -529,6 +517,10 @@
   },
   {
     "name": "ZIGGO SPORT TENNIS (ZIGGO SPORT 4) .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZIGGO SPORT VOETBAL .s",
     "best_score": 0.0
   },
   {

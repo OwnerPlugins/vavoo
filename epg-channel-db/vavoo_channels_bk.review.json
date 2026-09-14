@@ -16,6 +16,10 @@
     "best_score": 0.667
   },
   {
+    "name": "RTCG SAT .s",
+    "best_score": 0.667
+  },
+  {
     "name": "RTV TK TUZLA .c",
     "best_score": 0.667
   },
@@ -44,10 +48,6 @@
     "best_score": 0.6
   },
   {
-    "name": "HISTORY CHANNEL .s",
-    "best_score": 0.583
-  },
-  {
     "name": "N1 .c",
     "best_score": 0.571
   },
@@ -57,6 +57,14 @@
   },
   {
     "name": "FOX .b",
+    "best_score": 0.545
+  },
+  {
+    "name": "FOX .c",
+    "best_score": 0.545
+  },
+  {
+    "name": "FOX .s",
     "best_score": 0.545
   },
   {
@@ -77,10 +85,6 @@
   },
   {
     "name": "OTV VALENTINO .c",
-    "best_score": 0.375
-  },
-  {
-    "name": "OTV VALENTINO .s",
     "best_score": 0.375
   },
   {
@@ -124,15 +128,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ARENA BOX .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ARENA SPORT PREMIUM 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ARENA SPORT PREMIUM 2 .s",
     "best_score": 0.0
   },
   {
@@ -144,19 +140,11 @@
     "best_score": 0.0
   },
   {
-    "name": "CBS REALITY .c",
+    "name": "CC EXTRA .b",
     "best_score": 0.0
   },
   {
-    "name": "CINE+ SELECT 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 10 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 4 .s",
+    "name": "CINE+ SELECT 2 .s",
     "best_score": 0.0
   },
   {
@@ -168,11 +156,19 @@
     "best_score": 0.0
   },
   {
+    "name": "CINE+ SELECT 7 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "CINE+ SELECT 9 .s",
     "best_score": 0.0
   },
   {
     "name": "CINESTAR ACTION .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "CINESTAR ACTION TV .s",
     "best_score": 0.0
   },
   {
@@ -356,10 +352,6 @@
     "best_score": 0.0
   },
   {
-    "name": "IDJ KIDS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "IDJ TV .s",
     "best_score": 0.0
   },
@@ -397,10 +389,6 @@
   },
   {
     "name": "MAXCRO SELECT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "MAXCRO SELECT 3 .s",
     "best_score": 0.0
   },
   {
@@ -464,10 +452,6 @@
     "best_score": 0.0
   },
   {
-    "name": "NETIP DOMACI FILMOVI 2 .c",
-    "best_score": 0.0
-  },
-  {
     "name": "NETIP NETFLIX .c",
     "best_score": 0.0
   },
@@ -489,6 +473,10 @@
   },
   {
     "name": "PEPA PRAŠCIC .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PLANETA TV .s",
     "best_score": 0.0
   },
   {
@@ -528,10 +516,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SMART TELEVIZIJA .c",
-    "best_score": 0.0
-  },
-  {
     "name": "SOBRANISKI KANAL .s",
     "best_score": 0.0
   },
@@ -561,6 +545,10 @@
   },
   {
     "name": "SPORT KLUB 3 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KLUB 3 .s",
     "best_score": 0.0
   },
   {
@@ -600,10 +588,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SUPER STAR TV HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "SUPER TV .c",
     "best_score": 0.0
   },
@@ -620,15 +604,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TNT KIDS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TOM AND JERRY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOM AND JERRY .s",
     "best_score": 0.0
   },
   {
@@ -640,7 +616,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TV GLAS DRINE .c",
+    "name": "TV BANOVINA .c",
     "best_score": 0.0
   },
   {
@@ -661,10 +637,6 @@
   },
   {
     "name": "TV NOVI PAZAR .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV SEHARA .s",
     "best_score": 0.0
   },
   {
@@ -701,6 +673,18 @@
   },
   {
     "name": "VIASAT KINO PREMIERE .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "X-TOXIC .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZADRUGA 1 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZADRUGA 2 .s",
     "best_score": 0.0
   },
   {
