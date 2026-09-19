@@ -4,10 +4,6 @@
     "best_score": 0.6
   },
   {
-    "name": "HISTORY CHANNEL .s",
-    "best_score": 0.583
-  },
-  {
     "name": "TLC .c",
     "best_score": 0.429
   },
@@ -40,19 +36,7 @@
     "best_score": 0.0
   },
   {
-    "name": "BABY TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BABY TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BALKANIKA MUSIC TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BBC EARTH .s",
     "best_score": 0.0
   },
   {
@@ -64,35 +48,11 @@
     "best_score": 0.0
   },
   {
-    "name": "BNT 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BNT 2 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BNT 3 .c",
     "best_score": 0.0
   },
   {
     "name": "BNT 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "BOX TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BOX TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "BULGARIA 24 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "BULGARIA 24 .s",
     "best_score": 0.0
   },
   {
@@ -108,11 +68,7 @@
     "best_score": 0.0
   },
   {
-    "name": "DESTINATIONS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE .s",
+    "name": "CRIME+ INVESTIGATION .c",
     "best_score": 0.0
   },
   {
@@ -124,10 +80,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DOCUBOX .c",
-    "best_score": 0.0
-  },
-  {
     "name": "DSTV .c",
     "best_score": 0.0
   },
@@ -136,23 +88,11 @@
     "best_score": 0.0
   },
   {
-    "name": "DUCK TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DUCK TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "EURONEWS .c",
     "best_score": 0.0
   },
   {
     "name": "EVROKOM .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "EVROKOM .s",
     "best_score": 0.0
   },
   {
@@ -204,14 +144,6 @@
     "best_score": 0.0
   },
   {
-    "name": "ICONCERTS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "JIM JAM .s",
-    "best_score": 0.0
-  },
-  {
     "name": "KANAL 0 .c",
     "best_score": 0.0
   },
@@ -244,15 +176,15 @@
     "best_score": 0.0
   },
   {
-    "name": "MTV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "NOVA NEWS .c",
     "best_score": 0.0
   },
   {
     "name": "NOVA NEWS .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "NOVA SPORT .c",
     "best_score": 0.0
   },
   {
@@ -265,6 +197,10 @@
   },
   {
     "name": "ON AIR .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PLOVDIVSKA PRAVOSLAVNA TV .c",
     "best_score": 0.0
   },
   {
@@ -300,11 +236,11 @@
     "best_score": 0.0
   },
   {
-    "name": "STINGRAY ICONCERTS .c",
+    "name": "THIS IS BULGARIA .c",
     "best_score": 0.0
   },
   {
-    "name": "THIS IS BULGARIA .c",
+    "name": "TIANKOV FOLK .c",
     "best_score": 0.0
   },
   {
@@ -316,14 +252,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TV EVROPA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV EVROPA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "V2BEAT TV .c",
     "best_score": 0.0
   },
@@ -332,7 +260,7 @@
     "best_score": 0.0
   },
   {
-    "name": "VTK .c",
+    "name": "WILD TV .s",
     "best_score": 0.0
   },
   {
@@ -341,10 +269,6 @@
   },
   {
     "name": "WORLD FASHION CHANNEL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WORLD FIGHT CHANNEL .s",
     "best_score": 0.0
   }
 ]

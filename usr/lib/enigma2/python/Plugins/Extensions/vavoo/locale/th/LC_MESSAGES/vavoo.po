@@ -333,7 +333,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "สร้างไฟล์ .m3u สำหรับ %d ประเทศทั้งหมดหรือไม่"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "บ่อยแค่ไหนที่จะจับคู่ EPG และรีเฟรชช่อดอกไม้นับแต่นี้เป็นต้นไป"
 
 msgid "Important Notes:"
 msgstr "หมายเหตุสำคัญ:"
@@ -430,7 +430,7 @@ msgid "Only one specific country"
 msgstr "เฉพาะประเทศเดียวเท่านั้น"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "จับคู่ EPG อีกครั้งและรีเฟรชช่อดอกไม้สำหรับประเทศที่คุณชื่นชอบในเบื้องหลัง"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ตำแหน่งของช่อดอกไม้วาวูในรายการหลัก"

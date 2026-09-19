@@ -1,5 +1,9 @@
 [
   {
+    "name": "FRANCE 24 (EN) .s",
+    "best_score": 0.692
+  },
+  {
     "name": "SKY SPORT MOTO GP .c",
     "best_score": 0.692
   },
@@ -80,10 +84,6 @@
     "best_score": 0.0
   },
   {
-    "name": "7 YOU & ME .c",
-    "best_score": 0.0
-  },
-  {
     "name": "70-80.IT .c",
     "best_score": 0.0
   },
@@ -133,6 +133,10 @@
   },
   {
     "name": "ANTENNA 2 .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "ARANCIA TV .c",
     "best_score": 0.0
   },
   {
@@ -188,10 +192,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BYOBLU .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CAFE 24 .c",
     "best_score": 0.0
   },
@@ -201,6 +201,10 @@
   },
   {
     "name": "CAMERA DEI DEPUTATI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "CAMERA DEPUTATI .s",
     "best_score": 0.0
   },
   {
@@ -276,6 +280,10 @@
     "best_score": 0.0
   },
   {
+    "name": "DISCOVERY DMAX .s",
+    "best_score": 0.0
+  },
+  {
     "name": "DISCOVERY FOCUS .s",
     "best_score": 0.0
   },
@@ -300,10 +308,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY SCIENCE .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DISNEY+ FILM .c",
     "best_score": 0.0
   },
@@ -321,10 +325,6 @@
   },
   {
     "name": "ENTELLA TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EQU TV .c",
     "best_score": 0.0
   },
   {
@@ -361,6 +361,10 @@
   },
   {
     "name": "EURO TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EURO TV .s",
     "best_score": 0.0
   },
   {
@@ -416,19 +420,11 @@
     "best_score": 0.0
   },
   {
-    "name": "IMAS TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ITALIA 3 .s",
     "best_score": 0.0
   },
   {
     "name": "ITALIAN FISHING TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ITALIAN FISHING TV .s",
     "best_score": 0.0
   },
   {
@@ -485,10 +481,6 @@
   },
   {
     "name": "LE CRONACHE TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "LIRA TV .c",
     "best_score": 0.0
   },
   {
@@ -552,10 +544,6 @@
     "best_score": 0.0
   },
   {
-    "name": "NET TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "OL3 RADIO .c",
     "best_score": 0.0
   },
@@ -585,6 +573,10 @@
   },
   {
     "name": "PADRE PIO TV .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "PADRE PIO TV .s",
     "best_score": 0.0
   },
   {
@@ -664,6 +656,10 @@
     "best_score": 0.0
   },
   {
+    "name": "RADIO IGLESIAS SARDEGNA .s",
+    "best_score": 0.0
+  },
+  {
     "name": "RADIO MONTE CARLO .s",
     "best_score": 0.0
   },
@@ -681,6 +677,22 @@
   },
   {
     "name": "RAI SCUOLA .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RAKUTEN ACTION MOVIES .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RAKUTEN COMEDY MOVIES .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "RAKUTEN TV ACTION MOVIES ITALY .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "RAKUTEN TV ASIAN CINEMA ITALY .c",
     "best_score": 0.0
   },
   {
@@ -705,10 +717,6 @@
   },
   {
     "name": "RAKUTEN TV SCI-FI ITALY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "RAKUTEN TV TOP MOVIES ITALY .c",
     "best_score": 0.0
   },
   {
@@ -1024,14 +1032,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TELE PAVIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE PAVIA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TELE PAVIA (BACKUP) .s",
     "best_score": 0.0
   },
@@ -1041,10 +1041,6 @@
   },
   {
     "name": "TELE TUBBIES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE TUSCIASABINA 2000 .c",
     "best_score": 0.0
   },
   {
@@ -1140,30 +1136,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TELETRICOLORE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELETUTTO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TG COM 24 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOP CALCIO 24 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRG MEDIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRSPORT .c",
-    "best_score": 0.0
-  },
-  {
     "name": "TV 2000 .c",
     "best_score": 0.0
   },
@@ -1233,6 +1205,10 @@
   },
   {
     "name": "VIDEO NOVARA .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "VIDEOLINA .c",
     "best_score": 0.0
   },
   {

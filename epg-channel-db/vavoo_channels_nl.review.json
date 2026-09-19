@@ -12,12 +12,20 @@
     "best_score": 0.615
   },
   {
+    "name": "VIAPLAY TV GIDS VANDAAG .c",
+    "best_score": 0.606
+  },
+  {
     "name": "HISTORY CHANNEL .s",
     "best_score": 0.583
   },
   {
     "name": "L1 .c",
     "best_score": 0.571
+  },
+  {
+    "name": "VIAPLAY INFO GUIDE .c",
+    "best_score": 0.56
   },
   {
     "name": "L1 TV LIMBURG .s",
@@ -36,12 +44,12 @@
     "best_score": 0.545
   },
   {
-    "name": "XITE GOSPEL .c",
-    "best_score": 0.533
+    "name": "VIAPLAY F1 OLAV MOL .c",
+    "best_score": 0.538
   },
   {
-    "name": "100% .c",
-    "best_score": 0.5
+    "name": "XITE GOSPEL .c",
+    "best_score": 0.533
   },
   {
     "name": "MTV 24 MUSIC .s",
@@ -152,6 +160,10 @@
     "best_score": 0.0
   },
   {
+    "name": "DUCK TV .c",
+    "best_score": 0.0
+  },
+  {
     "name": "DUCK TV .s",
     "best_score": 0.0
   },
@@ -221,6 +233,10 @@
   },
   {
     "name": "INWONDER .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "JIMJAM .c",
     "best_score": 0.0
   },
   {
@@ -316,14 +332,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PEBBLE TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "PEBBLE TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "QMUSIC .c",
     "best_score": 0.0
   },
@@ -413,10 +421,6 @@
   },
   {
     "name": "SLAM .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SLAM! TV .s",
     "best_score": 0.0
   },
   {

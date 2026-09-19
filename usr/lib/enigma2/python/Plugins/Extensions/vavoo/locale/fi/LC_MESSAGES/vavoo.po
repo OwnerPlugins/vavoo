@@ -333,7 +333,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Luodaanko .m3u-tiedostot KAIKILLE %d maalle?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Kuinka usein EPG:t on tarkistettava ja kukkakimppuja päivitettävä tästä hetkestä lähtien."
 
 msgid "Important Notes:"
 msgstr "Tärkeitä huomautuksia:"
@@ -430,7 +430,7 @@ msgid "Only one specific country"
 msgstr "Vain yksi tietty maa"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Yhdistä ajoittain uudelleen EPG ja päivitä kimppuja suosikkimaasi taustalla."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo-nippujen sijainti päähakemistossa"

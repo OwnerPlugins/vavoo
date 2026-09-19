@@ -334,7 +334,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Tạo tệp .m3u cho TẤT CẢ các quốc gia %d?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Tần suất kết hợp lại EPG và làm mới bó hoa, tính từ bây giờ."
 
 msgid "Important Notes:"
 msgstr "Lưu ý quan trọng:"
@@ -431,7 +431,7 @@ msgid "Only one specific country"
 msgstr "Chỉ có một quốc gia cụ thể"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Định kỳ kết hợp lại EPG và làm mới các bó hoa cho các quốc gia bạn yêu thích ở chế độ nền."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vị trí của bó hoa Vavoo trong danh sách chính"

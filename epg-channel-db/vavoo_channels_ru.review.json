@@ -1,18 +1,10 @@
 [
   {
-    "name": ".RED HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": ".SCI‑FI .b",
     "best_score": 0.0
   },
   {
     "name": "24 TECHNO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "2X2 TV .s",
     "best_score": 0.0
   },
   {
@@ -60,6 +52,10 @@
     "best_score": 0.0
   },
   {
+    "name": "AMEDIA 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "AMEDIA HIT .b",
     "best_score": 0.0
   },
@@ -88,6 +84,10 @@
     "best_score": 0.0
   },
   {
+    "name": "ANIMAL PLANET .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ANIMAL PLANET HD .b",
     "best_score": 0.0
   },
@@ -101,10 +101,6 @@
   },
   {
     "name": "BBC WORLD NEWS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "BELARUS .s",
     "best_score": 0.0
   },
   {
@@ -125,6 +121,10 @@
   },
   {
     "name": "BOLLYWOOD HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .b",
     "best_score": 0.0
   },
   {
@@ -161,14 +161,6 @@
   },
   {
     "name": "CGTN‑РУССКИЙ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CHE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINEMA .s",
     "best_score": 0.0
   },
   {
@@ -213,10 +205,6 @@
   },
   {
     "name": "DISCOVERY SCIENCE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE .s",
     "best_score": 0.0
   },
   {
@@ -285,10 +273,6 @@
   },
   {
     "name": "EUROSPORT 1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "EUROSPORT 2 .s",
     "best_score": 0.0
   },
   {
@@ -468,10 +452,6 @@
     "best_score": 0.0
   },
   {
-    "name": "KINO TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "KINOKOMEDIA .s",
     "best_score": 0.0
   },
@@ -540,6 +520,10 @@
     "best_score": 0.0
   },
   {
+    "name": "MATCH FUTBOL 1 .s",
+    "best_score": 0.0
+  },
+  {
     "name": "MATCH FUTBOL 2 .s",
     "best_score": 0.0
   },
@@ -553,10 +537,6 @@
   },
   {
     "name": "MATCH OUR SPORTS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "MATCH PLANET .s",
     "best_score": 0.0
   },
   {
@@ -593,10 +573,6 @@
   },
   {
     "name": "MEZZO LIVE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "MILLET .s",
     "best_score": 0.0
   },
   {
@@ -716,6 +692,10 @@
     "best_score": 0.0
   },
   {
+    "name": "PEH TB .s",
+    "best_score": 0.0
+  },
+  {
     "name": "PERVIY .s",
     "best_score": 0.0
   },
@@ -824,7 +804,7 @@
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA RTR .s",
+    "name": "RUSSIA ROMAN .s",
     "best_score": 0.0
   },
   {
@@ -940,10 +920,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TNT MUSIC .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TOCHIKA ORTIVA .s",
     "best_score": 0.0
   },
@@ -977,10 +953,6 @@
   },
   {
     "name": "TV 1000 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV 1000 ACTION .s",
     "best_score": 0.0
   },
   {
@@ -1141,10 +1113,6 @@
   },
   {
     "name": "ВАШ УСПЕХ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ВОЛГОГРАД 24 .s",
     "best_score": 0.0
   },
   {

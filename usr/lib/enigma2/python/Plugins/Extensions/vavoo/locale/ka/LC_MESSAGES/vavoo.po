@@ -333,7 +333,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "გსურთ .m3u ფაილების გენერირება ყველა %d ქვეყნისთვის?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "რამდენად ხშირად ხელახლა ემთხვევა EPG და განაახლეთ თაიგულები, ითვლის ამიერიდან."
 
 msgid "Important Notes:"
 msgstr "მნიშვნელოვანი შენიშვნები:"
@@ -430,7 +430,7 @@ msgid "Only one specific country"
 msgstr "მხოლოდ ერთი კონკრეტული ქვეყანა"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "პერიოდულად ხელახლა შეადარეთ EPG და განაახლეთ თაიგულები თქვენი რჩეული ქვეყნებისთვის ფონზე."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo-ს თაიგულების პოზიცია ძირითად სიაში"

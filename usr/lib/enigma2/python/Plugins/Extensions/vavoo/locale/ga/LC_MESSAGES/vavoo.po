@@ -334,7 +334,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Gin comhaid .m3u do GACH tír %d?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Cé chomh minic is féidir EPG a athmheaitseáil agus bouquets a athnuachan, ag comhaireamh as seo amach."
 
 msgid "Important Notes:"
 msgstr "Nótaí Tábhachtacha:"
@@ -431,7 +431,7 @@ msgid "Only one specific country"
 msgstr "Tír ar leith amháin"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "Déan EPG a athmheaitseáil go tréimhsiúil agus athnuaigh bouquets do na tíortha is fearr leat sa chúlra."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Seasamh bouquets Vavoo ar an liosta is mó"

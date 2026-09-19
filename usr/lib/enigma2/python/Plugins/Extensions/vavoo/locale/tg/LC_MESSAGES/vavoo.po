@@ -333,7 +333,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Барои ҲАМАИ %d кишвар файлҳои .m3u тавлид кунед?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "Чӣ тавр зуд-зуд такроран мувофиқ кардани EPG ва тароват кардани гулдастаҳо аз ҳоло ҳисоб карда мешавад."
 
 msgid "Important Notes:"
 msgstr "Эзоҳҳои муҳим:"
@@ -430,7 +430,7 @@ msgid "Only one specific country"
 msgstr "Танҳо як кишвари мушаххас"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "EPG-ро давра ба давра такрор кунед ва гулдастаҳо барои кишварҳои дӯстдоштаи худро дар замина нав кунед."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Мавқеи гулдастаҳои Vavoo дар рӯйхати асосӣ"

@@ -16,6 +16,10 @@
     "best_score": 0.632
   },
   {
+    "name": "RTV 21 JUNIOR .c",
+    "best_score": 0.632
+  },
+  {
     "name": "RTV 21 JUNIOR .s",
     "best_score": 0.632
   },
@@ -44,10 +48,6 @@
     "best_score": 0.571
   },
   {
-    "name": "RTSH SPORT .s",
-    "best_score": 0.571
-  },
-  {
     "name": "RTSH SPORT (BACKUP) .s",
     "best_score": 0.571
   },
@@ -73,10 +73,6 @@
   },
   {
     "name": "RTSH FEMIJE .c",
-    "best_score": 0.533
-  },
-  {
-    "name": "RTSH FEMIJE .s",
     "best_score": 0.533
   },
   {
@@ -177,14 +173,6 @@
   },
   {
     "name": "ABC STORY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "AHWAZ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ALAM (360P) [NOT 24/7] .b",
     "best_score": 0.0
   },
   {
@@ -428,6 +416,10 @@
     "best_score": 0.0
   },
   {
+    "name": "BIG BROTHER 1 .b",
+    "best_score": 0.0
+  },
+  {
     "name": "BIG BROTHER 1 .c",
     "best_score": 0.0
   },
@@ -449,6 +441,10 @@
   },
   {
     "name": "BOOMERANG .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "CIFTELI TV .c",
     "best_score": 0.0
   },
   {
@@ -648,10 +644,6 @@
     "best_score": 0.0
   },
   {
-    "name": "DIELLI .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DIGI GOLD .c",
     "best_score": 0.0
   },
@@ -716,15 +708,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ERA TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "ERA TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "EURO AL .s",
     "best_score": 0.0
   },
   {
@@ -761,6 +745,10 @@
   },
   {
     "name": "EXPLORER HISTORI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "EXPLORER HISTORI .s",
     "best_score": 0.0
   },
   {
@@ -916,6 +904,10 @@
     "best_score": 0.0
   },
   {
+    "name": "FILM JUNIOR .c",
+    "best_score": 0.0
+  },
+  {
     "name": "FILM MAX .c",
     "best_score": 0.0
   },
@@ -948,7 +940,15 @@
     "best_score": 0.0
   },
   {
+    "name": "FILMA24 AZIATIK .c",
+    "best_score": 0.0
+  },
+  {
     "name": "FILMA24 BIOGRAFI .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "FILMA24 DOKUMENTAR .c",
     "best_score": 0.0
   },
   {
@@ -1036,27 +1036,11 @@
     "best_score": 0.0
   },
   {
-    "name": "FOLKLORIT .s",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX .c",
     "best_score": 0.0
   },
   {
-    "name": "FOX CRIME .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "FOX CRIME .s",
-    "best_score": 0.0
-  },
-  {
     "name": "FOX LIFE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "FOX LIFE .c",
     "best_score": 0.0
   },
   {
@@ -1316,14 +1300,6 @@
     "best_score": 0.0
   },
   {
-    "name": "K SPORT 4 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "KANAL D DRAMA .c",
-    "best_score": 0.0
-  },
-  {
     "name": "KANAL D DRAMA .s",
     "best_score": 0.0
   },
@@ -1389,6 +1365,10 @@
   },
   {
     "name": "KS PREMIERE 2 .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "KS PREMIERE 3 .c",
     "best_score": 0.0
   },
   {
@@ -1704,27 +1684,11 @@
     "best_score": 0.0
   },
   {
-    "name": "PENDIMI .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "PODUJEVA TV .c",
-    "best_score": 0.0
-  },
-  {
     "name": "POLLOGU .c",
     "best_score": 0.0
   },
   {
     "name": "PORTOKALLI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "PREMIER SPORTS 2 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "PREMIERE 5 .c",
     "best_score": 0.0
   },
   {
@@ -1756,6 +1720,10 @@
     "best_score": 0.0
   },
   {
+    "name": "REPORT TV HD .s",
+    "best_score": 0.0
+  },
+  {
     "name": "ROMA TV .c",
     "best_score": 0.0
   },
@@ -1781,10 +1749,6 @@
   },
   {
     "name": "RTV ALDI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "RTV ARBERIA 4 .s",
     "best_score": 0.0
   },
   {
@@ -1868,10 +1832,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SHOTA TV 4K UHD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "SHQIPTV ISLAM .b",
     "best_score": 0.0
   },
@@ -1881,18 +1841,6 @@
   },
   {
     "name": "SKY ACTION .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY AKSION .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY DRAMA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY KOMEDI .b",
     "best_score": 0.0
   },
   {
@@ -2016,22 +1964,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SUPER SPORT 6 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORT NEWS HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORTS 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORTS NEWS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "SUPERSPORT NEWS .c",
     "best_score": 0.0
   },
@@ -2040,19 +1972,11 @@
     "best_score": 0.0
   },
   {
-    "name": "SYRI VISION .b",
-    "best_score": 0.0
-  },
-  {
     "name": "SYRI VISION .s",
     "best_score": 0.0
   },
   {
     "name": "SYRI VIZION .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TALEEA .b",
     "best_score": 0.0
   },
   {
@@ -2172,6 +2096,10 @@
     "best_score": 0.0
   },
   {
+    "name": "TEVE DRAME .c",
+    "best_score": 0.0
+  },
+  {
     "name": "TEVE FANTASY .c",
     "best_score": 0.0
   },
@@ -2260,7 +2188,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TRING 3 .s",
+    "name": "TRING 3 PLUS .s",
     "best_score": 0.0
   },
   {
@@ -2312,10 +2240,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TRING SPORT 3 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TRING SPORT NEWS .s",
     "best_score": 0.0
   },
@@ -2325,6 +2249,10 @@
   },
   {
     "name": "TROPOJA TV .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "TURBO CHANNEL .c",
     "best_score": 0.0
   },
   {
@@ -2364,15 +2292,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TV KOPLIKU .c",
-    "best_score": 0.0
-  },
-  {
     "name": "TV OPOJA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV PRIZRENI .c",
     "best_score": 0.0
   },
   {
@@ -2393,6 +2313,10 @@
   },
   {
     "name": "TV VUSHTRIA MUZIK .c",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV2 GOSTIVAR .c",
     "best_score": 0.0
   },
   {

@@ -48,19 +48,11 @@
     "best_score": 0.6
   },
   {
-    "name": "HISTORY CHANNEL .s",
-    "best_score": 0.583
-  },
-  {
     "name": "N1 .c",
     "best_score": 0.571
   },
   {
     "name": "PINK BRAVO .b",
-    "best_score": 0.571
-  },
-  {
-    "name": "PRVA TV CG .c",
     "best_score": 0.571
   },
   {
@@ -93,10 +85,6 @@
   },
   {
     "name": "OTV VALENTINO .c",
-    "best_score": 0.375
-  },
-  {
-    "name": "OTV VALENTINO .s",
     "best_score": 0.375
   },
   {
@@ -140,15 +128,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ARENA BOX .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ARENA SPORT PREMIUM 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ARENA SPORT PREMIUM 2 .s",
     "best_score": 0.0
   },
   {
@@ -160,27 +140,11 @@
     "best_score": 0.0
   },
   {
-    "name": "CBS REALITY .c",
-    "best_score": 0.0
-  },
-  {
     "name": "CC EXTRA .b",
     "best_score": 0.0
   },
   {
-    "name": "CINE+ SELECT 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 10 .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CINE+ SELECT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 4 .s",
     "best_score": 0.0
   },
   {
@@ -245,6 +209,10 @@
   },
   {
     "name": "DISCOVERY ID .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISCOVERY SCIENCE .c",
     "best_score": 0.0
   },
   {
@@ -384,10 +352,6 @@
     "best_score": 0.0
   },
   {
-    "name": "IDJ KIDS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "IDJ TV .s",
     "best_score": 0.0
   },
@@ -425,10 +389,6 @@
   },
   {
     "name": "MAXCRO SELECT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "MAXCRO SELECT 3 .s",
     "best_score": 0.0
   },
   {
@@ -489,10 +449,6 @@
   },
   {
     "name": "NETIP DOMACI FILMOVI 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "NETIP DOMACI FILMOVI 2 .c",
     "best_score": 0.0
   },
   {
@@ -557,10 +513,6 @@
   },
   {
     "name": "SEHARA TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SMART TELEVIZIJA .c",
     "best_score": 0.0
   },
   {
@@ -636,10 +588,6 @@
     "best_score": 0.0
   },
   {
-    "name": "SUPER STAR TV HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "SUPER TV .c",
     "best_score": 0.0
   },
@@ -656,15 +604,7 @@
     "best_score": 0.0
   },
   {
-    "name": "TNT KIDS .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TOM AND JERRY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOM AND JERRY .s",
     "best_score": 0.0
   },
   {
@@ -677,10 +617,6 @@
   },
   {
     "name": "TV BANOVINA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV GLAS DRINE .c",
     "best_score": 0.0
   },
   {
@@ -701,10 +637,6 @@
   },
   {
     "name": "TV NOVI PAZAR .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV SEHARA .s",
     "best_score": 0.0
   },
   {

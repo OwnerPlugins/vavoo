@@ -334,7 +334,7 @@ msgid "Generate .m3u files for ALL %d countries?"
 msgstr "모든 %d개 국가에 대한 .m3u 파일을 생성하시겠습니까?"
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
-msgstr ""
+msgstr "지금부터 계산하여 EPG를 다시 일치시키고 부케를 새로 고치는 빈도입니다."
 
 msgid "Important Notes:"
 msgstr "중요 사항:"
@@ -431,7 +431,7 @@ msgid "Only one specific country"
 msgstr "특정 국가 하나만"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
-msgstr ""
+msgstr "주기적으로 EPG를 다시 일치시키고 백그라운드에서 좋아하는 국가에 대한 꽃다발을 새로 고칩니다."
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "메인 목록에서 Vavoo 부케의 위치"

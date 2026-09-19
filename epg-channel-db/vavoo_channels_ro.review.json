@@ -1,9 +1,5 @@
 [
   {
-    "name": "HISTORY CHANNEL .b",
-    "best_score": 0.583
-  },
-  {
     "name": "DIGI 4K TV .s",
     "best_score": 0.571
   },
@@ -84,10 +80,6 @@
     "best_score": 0.0
   },
   {
-    "name": "BOLLYWOOD CLASSIC .s",
-    "best_score": 0.0
-  },
-  {
     "name": "BOLLYWOOD TV .b",
     "best_score": 0.0
   },
@@ -97,6 +89,10 @@
   },
   {
     "name": "BOLLYWOOD TV HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "BOOMERANG .b",
     "best_score": 0.0
   },
   {
@@ -124,27 +120,11 @@
     "best_score": 0.0
   },
   {
-    "name": "CINEMA ACTIUNE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINEMA AVENTURA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CINEMA COMEDIE .s",
     "best_score": 0.0
   },
   {
-    "name": "CINEMA CRIME .s",
-    "best_score": 0.0
-  },
-  {
     "name": "CINEMA DRAMA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINEMA FICTION .s",
     "best_score": 0.0
   },
   {
@@ -156,10 +136,6 @@
     "best_score": 0.0
   },
   {
-    "name": "COMEDY EST .s",
-    "best_score": 0.0
-  },
-  {
     "name": "COMEDY PLAY .s",
     "best_score": 0.0
   },
@@ -168,19 +144,7 @@
     "best_score": 0.0
   },
   {
-    "name": "CROMTEL TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "DAVINCI LEARNING .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DAVINCI LEARNING .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY HD SHOWCASE .b",
     "best_score": 0.0
   },
   {
@@ -193,6 +157,10 @@
   },
   {
     "name": "DISCOVERY SCIENCE HD .b",
+    "best_score": 0.0
+  },
+  {
+    "name": "DISNEY JR .s",
     "best_score": 0.0
   },
   {
@@ -221,38 +189,6 @@
   },
   {
     "name": "FINE & LIVING .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "FISHING & HUNTING .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HDNET COMEDY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HDNET PREMIERE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HDNET SURVIVOR KANALD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HDNETRO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HELLO TASTE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HIT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "HIT CHANNEL .s",
     "best_score": 0.0
   },
   {
@@ -388,10 +324,6 @@
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD HD .b",
-    "best_score": 0.0
-  },
-  {
     "name": "NATIONAL CLUJ .s",
     "best_score": 0.0
   },
@@ -448,10 +380,6 @@
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL RO .b",
-    "best_score": 0.0
-  },
-  {
     "name": "PLOIESTI TV .s",
     "best_score": 0.0
   },
@@ -476,11 +404,15 @@
     "best_score": 0.0
   },
   {
-    "name": "PRO 2 .s",
+    "name": "PRO 2 HD .b",
     "best_score": 0.0
   },
   {
     "name": "PRO FIT .s",
+    "best_score": 0.0
+  },
+  {
+    "name": "PRO GOLD .b",
     "best_score": 0.0
   },
   {
@@ -492,6 +424,10 @@
     "best_score": 0.0
   },
   {
+    "name": "PRO X HD .b",
+    "best_score": 0.0
+  },
+  {
     "name": "ROMANIA ARE ROAST .s",
     "best_score": 0.0
   },
@@ -500,23 +436,7 @@
     "best_score": 0.0
   },
   {
-    "name": "ROMANIA TV .s",
-    "best_score": 0.0
-  },
-  {
     "name": "ROTV VALENCIA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SAPTAMANII 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SAPTAMANII 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SAPTAMANII 3 .s",
     "best_score": 0.0
   },
   {
@@ -620,10 +540,6 @@
     "best_score": 0.0
   },
   {
-    "name": "TRUE CINEMA .s",
-    "best_score": 0.0
-  },
-  {
     "name": "TV 1000 .b",
     "best_score": 0.0
   },
@@ -633,10 +549,6 @@
   },
   {
     "name": "TVR TARGU MURES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVR TIMISOARA .s",
     "best_score": 0.0
   },
   {
