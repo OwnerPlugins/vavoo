@@ -1587,20 +1587,24 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(500, "Streaming error")
 
             elif parsed_path.path == '/channels':
+                # Bound once, same reasoning as /vavoo and /stream -
+                # start_proxy() can reassign the module-global `proxy`
+                # mid-request on a restart.
+                p = proxy
                 country = query_params.get('country', [None])[0]
                 if not country:
                     self.send_error(400, "Missing country parameter")
                     return
 
                 matching_channels = []
-                if hasattr(proxy, 'all_filtered_items'):
-                    for channel in proxy.all_filtered_items:
+                if hasattr(p, 'all_filtered_items'):
+                    for channel in p.all_filtered_items:
                         channel_country = channel.get("country", "")
                         if channel_country.lower() == country.lower():
                             matching_channels.append(channel)
 
                 response_channels = []
-                local_ip = proxy.get_local_ip()
+                local_ip = p.get_local_ip()
 
                 for channel in matching_channels:
                     channel_id = channel.get("id", "")
@@ -1623,20 +1627,22 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
             elif parsed_path.path == '/catalog':
-                if hasattr(proxy, 'all_filtered_items'):
+                p = proxy
+                if hasattr(p, 'all_filtered_items'):
                     if not self.safe_send_response(200):
                         return
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
-                    if not self.safe_write(dumps(proxy.all_filtered_items)):
+                    if not self.safe_write(dumps(p.all_filtered_items)):
                         return
                 else:
                     self.send_error(404, "No catalog loaded")
 
             elif parsed_path.path == '/countries':
+                p = proxy
                 countries = set()
-                if hasattr(proxy, 'all_filtered_items'):
-                    for channel in proxy.all_filtered_items:
+                if hasattr(p, 'all_filtered_items'):
+                    for channel in p.all_filtered_items:
                         country = channel.get("country", "")
                         if country and country != "default":
                             countries.add(country)
@@ -1650,15 +1656,22 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
             elif parsed_path.path == '/status':
+                p = proxy
+                # Locked read - the writer (refresh_addon_sig_if_needed())
+                # updates "sig" and "ts" as two separate statements under
+                # this same lock, so an unlocked read here could observe
+                # a freshly-updated sig paired with the old ts.
+                with p.addon_sig_lock:
+                    addon_sig = dict(p.addon_sig_data)
                 status = {
-                    "initialized": proxy.initialized,
+                    "initialized": p.initialized,
                     "channels_count": len(
-                        proxy.all_filtered_items),
-                    "addon_sig_valid": proxy.addon_sig_data["sig"] is not None,
+                        p.all_filtered_items),
+                    "addon_sig_valid": addon_sig["sig"] is not None,
                     "addon_sig_age": int(
                         time.time() -
-                        proxy.addon_sig_data["ts"]),
-                    "local_ip": proxy.get_local_ip(),
+                        addon_sig["ts"]),
+                    "local_ip": p.get_local_ip(),
                     "port": PORT}
                 if not self.safe_send_response(200):
                     return
@@ -1686,19 +1699,23 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
             elif parsed_path.path == '/health':
                 """Health check endpoint with detailed status"""
+                p = proxy
                 try:
                     now = time.time()
-                    token_age = now - proxy.addon_sig_data["ts"]
-                    token_valid = proxy.addon_sig_data["sig"] is not None
+                    # Locked read, same reasoning as /status.
+                    with p.addon_sig_lock:
+                        addon_sig = dict(p.addon_sig_data)
+                    token_age = now - addon_sig["ts"]
+                    token_valid = addon_sig["sig"] is not None
                     needs_refresh = token_age > 300  # 5 minutes
 
                     # Calculate token expiration
                     ttl = max(0, TOKEN_ADDON_SIG - int(token_age))
 
                     # Check if proxy is initialized
-                    initialized = proxy.initialized
+                    initialized = p.initialized
                     channels_count = len(
-                        proxy.all_filtered_items) if initialized else 0
+                        p.all_filtered_items) if initialized else 0
 
                     # Proxy status
                     proxy_status = {
@@ -1713,10 +1730,10 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             "expires_in": str(ttl) + "s"
                         },
                         "system": {
-                            "uptime": int(now - proxy.start_time if hasattr(proxy, 'start_time') else 0),
-                            "heartbeat": int(now - proxy.last_heartbeat),
+                            "uptime": int(now - p.start_time if hasattr(p, 'start_time') else 0),
+                            "heartbeat": int(now - p.last_heartbeat),
                             "port": PORT,
-                            "local_ip": proxy.get_local_ip()
+                            "local_ip": p.get_local_ip()
                         },
                         "timestamp": now,
                         "message": "Proxy is running normally" if initialized else "Proxy not initialized"
@@ -1913,6 +1930,15 @@ def start_proxy():
                     proxy.server.shutdown()
                     proxy.server.server_close()
                 proxy.stop()
+                # Every other restart branch in this function recreates
+                # the instance after stop() - this one didn't, so the
+                # server would come back up fine on the very next
+                # attempt below, but permanently running with a dead
+                # token_monitor_loop (stop() already ended it), leaving
+                # the addonSig refreshed only reactively, on the next
+                # failed resolve, instead of proactively in the
+                # background.
+                proxy = VavooProxy()
                 select.select([], [], [], 2)
             except Exception as e:
                 debug("Stopping unresponsive proxy failed: {}".format(e))
