@@ -2258,9 +2258,44 @@ class VavooEPGMatcher(object):
         print("[Match] No match found for '{}'".format(channel_name))
         return None, "4097:0:0:0:0:0:0:0:0:0:"
 
+    def _try_promote_to_curated(
+            self, channel_name, country_code, servicetype, channel_id,
+            cached, allow_curated_promotion):
+        """Called from a local-cache-hit branch in _find_match_locked().
+        A cache entry written before the curated channel database
+        existed for this country (or before this specific channel was
+        added to it) is stuck on whatever it originally matched
+        (usually live Rytec fuzzy-matching) forever, since step 1's
+        cache hit returns early and step 2's curated-DB check is never
+        reached again. When allow_curated_promotion is set (bouquet
+        export only, never the live overlay lookup), give a non-curated
+        cache entry one more chance to upgrade to the curated result -
+        _load_curated_channel_db() is already 24h TTL-cached in-process,
+        so this is one extra dict lookup, not a new network call.
+        Returns a (id, sref, source) tuple to return immediately on a
+        promotion, or None to fall through to the normal cache-hit
+        return."""
+        if (not allow_curated_promotion or not country_code or
+                cached.get('source') == 'curated'):
+            return None
+        curated_db = _load_curated_channel_db(country_code)
+        if not curated_db:
+            return None
+        curated_key = self._clean_name_for_similarity(channel_name)
+        curated_id = curated_db.get(curated_key)
+        if not curated_id or not channel_id:
+            return None
+        print(
+            "[Match] Promoting cached match to curated DB: {} -> {}".format(
+                channel_name, curated_id))
+        self._cleanup_stale_unmatched(channel_name, country_code, servicetype)
+        return (
+            curated_id, unique_fallback_sref(servicetype, channel_id),
+            'curated')
+
     def find_match(
             self, channel_name, country_code=None, servicetype="4097",
-            channel_id=None):
+            channel_id=None, allow_curated_promotion=False):
         """Public entry point - serializes the whole lookup (including
         every self.cache/self.normalized_index/self.new_matches read
         and write below) behind self._cache_lock. This matcher is a
@@ -2277,16 +2312,29 @@ class VavooEPGMatcher(object):
         matching for a whole country's remaining channels, or silently
         drop a concurrent thread's cache write. An RLock (not a plain
         Lock) since _find_match_internal() below can itself re-enter
-        lazy-init code paths on this same instance/thread."""
+        lazy-init code paths on this same instance/thread.
+
+        allow_curated_promotion: when True, a local-cache hit that
+        wasn't originally sourced from the curated channel database
+        gets one extra check against it, and is upgraded to the
+        curated result if it now has an entry for this channel - see
+        _find_match_locked()'s cache-hit branches. Only bouquet-export
+        callers pass True; the live "Now Playing" overlay lookup
+        leaves this at the default so a channel's EPG binding can only
+        change as a result of an export the user explicitly triggered.
+
+        Returns a (rytec_id, sref, source) 3-tuple; source is one of
+        "alias", "curated", "live" or None (no match)."""
         with self._cache_lock:
             return self._find_match_locked(
-                channel_name, country_code, servicetype, channel_id)
+                channel_name, country_code, servicetype, channel_id,
+                allow_curated_promotion)
 
     def _find_match_locked(
             self, channel_name, country_code=None, servicetype="4097",
-            channel_id=None):
+            channel_id=None, allow_curated_promotion=False):
         if not channel_name:
-            return None, None
+            return None, None, None
 
         # 0. Apply alias normalization (if available)
         if alias_available:
@@ -2354,8 +2402,8 @@ class VavooEPGMatcher(object):
                             # to key it off.
                             if channel_id:
                                 return alias_id, unique_fallback_sref(
-                                    servicetype, channel_id)
-                            return alias_id, alias_sref
+                                    servicetype, channel_id), 'alias'
+                            return alias_id, alias_sref, 'alias'
 
         # Normalize the original name for key generation
         search_key = self._normalize_key(channel_name, country_code or "")
@@ -2380,11 +2428,18 @@ class VavooEPGMatcher(object):
                     if channel_clean == rytec_clean and (
                             not current_rytec_sref or
                             cached_sref == current_rytec_sref):
+                        promoted = self._try_promote_to_curated(
+                            channel_name, country_code, servicetype,
+                            channel_id, cached, allow_curated_promotion)
+                        if promoted:
+                            return promoted
                         print(
                             "[Match] Local cache HIT (valid ID & name match): {}".format(cached_key))
                         self._cleanup_stale_unmatched(
                             channel_name, country_code, servicetype)
-                        return cached.get('id'), cached.get('sref')
+                        return (
+                            cached.get('id'), cached.get('sref'),
+                            cached.get('source') or 'live')
                     elif channel_clean != rytec_clean:
                         print(
                             "[Match] Cache ID '{}' name mismatch (channel='{}', rytec='{}'), will re-match".format(
@@ -2402,11 +2457,18 @@ class VavooEPGMatcher(object):
                                 id_val, channel_name, cached_sref, current_rytec_sref))
                 else:
                     # We don't have the Rytec name, accept the cache
+                    promoted = self._try_promote_to_curated(
+                        channel_name, country_code, servicetype,
+                        channel_id, cached, allow_curated_promotion)
+                    if promoted:
+                        return promoted
                     print(
                         "[Match] Local cache HIT (valid ID, no Rytec name): {}".format(cached_key))
                     self._cleanup_stale_unmatched(
                         channel_name, country_code, servicetype)
-                    return cached.get('id'), cached.get('sref')
+                    return (
+                        cached.get('id'), cached.get('sref'),
+                        cached.get('source') or 'live')
             else:
                 # Invalid ID, proceed with live matching
                 print("[Match] Local cache has invalid ID, will try to re-match.")
@@ -2429,13 +2491,13 @@ class VavooEPGMatcher(object):
                     self._cleanup_stale_unmatched(
                         channel_name, country_code, servicetype)
                     return curated_id, unique_fallback_sref(
-                        servicetype, channel_id)
+                        servicetype, channel_id), 'curated'
 
         # 3. Live matching
         print("[Match] Doing local matching for: {}".format(channel_name))
         if search_key in self.new_matches:
             m = self.new_matches[search_key]
-            return m['id'], m['sref']
+            return m['id'], m['sref'], m.get('source', 'live')
 
         result_id, result_sref = self._find_match_internal(
             channel_name, country_code, channel_id=channel_id,
@@ -2487,14 +2549,15 @@ class VavooEPGMatcher(object):
             self.new_matches[search_key] = {
                 'id': result_id,
                 'sref': final_sref,
-                'name': channel_name
+                'name': channel_name,
+                'source': 'live'
             }
             save_unmatched(
                 channel_name,
                 country_code,
                 servicetype,
                 matched=True)
-            return result_id, final_sref
+            return result_id, final_sref, 'live'
         else:
             # If no live match, but there is an existing entry with a valid
             # sref, use it (with matched=False)
@@ -2518,7 +2581,9 @@ class VavooEPGMatcher(object):
                         # previously-matched channel stops live-matching),
                         # so an eager write is an acceptable tradeoff.
                         save_cache(self.cache)
-                    return existing_entry.get('id'), existing_sref
+                    return (
+                        existing_entry.get('id'), existing_sref,
+                        existing_entry.get('source') or 'live')
                 elif existing_entry.get('matched') is not False:
                     # Stale entry with an invalid id AND no usable sref -
                     # a leftover from before this channel ever properly
@@ -2537,7 +2602,7 @@ class VavooEPGMatcher(object):
                 country_code,
                 servicetype,
                 matched=False)
-            return None, None
+            return None, None, None
 
 
 # ==================== EPG CACHE FUNCTIONS ====================
@@ -2708,6 +2773,7 @@ def cleanup_cache_matched_flag():
 
 
 _curated_channel_db_cache = {}
+_curated_channel_db_lock = threading.Lock()
 _CURATED_CHANNEL_DB_TTL = 86400
 
 
@@ -2727,33 +2793,41 @@ def _load_curated_channel_db(country_code):
     if not country_code:
         return {}
 
-    cached = _curated_channel_db_cache.get(country_code)
-    if cached and (time() - cached[0] < _CURATED_CHANNEL_DB_TTL):
-        return cached[1]
+    with _curated_channel_db_lock:
+        cached = _curated_channel_db_cache.get(country_code)
+        if cached and (time() - cached[0] < _CURATED_CHANNEL_DB_TTL):
+            return cached[1]
 
-    db = {}
-    try:
-        url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
-            HOST_MAIN, country_code.lower())
-        data = getUrl(url, timeout=15, retries=1)
-        if data:
-            parsed = loads(ensure_str(data))
-            if isinstance(parsed, dict):
-                db = parsed
-    except Exception as e:
-        debug(
-            "Could not fetch curated channel db for {}: {}".format(
-                country_code, e))
+        # Held across the fetch itself (not just the cache read/write) -
+        # this is a per-country cache and the lock is process-wide, so
+        # two threads racing the SAME cold country previously could both
+        # fire the network fetch; the tradeoff is two DIFFERENT
+        # countries' cold-cache fetches now also serialize against each
+        # other, which is fine given this only runs once per country
+        # per export, not per channel.
+        db = {}
+        try:
+            url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
+                HOST_MAIN, country_code.lower())
+            data = getUrl(url, timeout=15, retries=1)
+            if data:
+                parsed = loads(ensure_str(data))
+                if isinstance(parsed, dict):
+                    db = parsed
+        except Exception as e:
+            debug(
+                "Could not fetch curated channel db for {}: {}".format(
+                    country_code, e))
 
-    if db:
-        # Only cache successful, non-empty results. An empty result
-        # (missing file, transient error) isn't cached at all, so the
-        # next export retries instead of being stuck on a stale miss
-        # for up to _CURATED_CHANNEL_DB_TTL - unlike
-        # _get_epg_feed_index(), this is called once per country per
-        # export, not per channel, so the retry cost is negligible.
-        _curated_channel_db_cache[country_code] = (time(), db)
-    return db
+        if db:
+            # Only cache successful, non-empty results. An empty result
+            # (missing file, transient error) isn't cached at all, so the
+            # next export retries instead of being stuck on a stale miss
+            # for up to _CURATED_CHANNEL_DB_TTL - unlike
+            # _get_epg_feed_index(), this is called once per country per
+            # export, not per channel, so the retry cost is negligible.
+            _curated_channel_db_cache[country_code] = (time(), db)
+        return db
 
 
 def update_complete_cache(
@@ -2800,6 +2874,13 @@ def update_complete_cache(
                 'name': m['name'],
                 'country': country_code,
                 'matched': True,
+                # Carried over from find_match()'s return value so a
+                # future cache hit knows whether this entry already
+                # came from the curated DB (see
+                # _try_promote_to_curated()) without re-deriving it -
+                # defaults to 'live' for callers that don't pass it
+                # through (pre-existing entries/older code paths).
+                'source': m.get('source', 'live'),
                 'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
             }
             print("[Cache] Added matched: %s -> %s" % (key, m['rytec_id']))
