@@ -35,7 +35,7 @@ _BRACKETS_RE = re.compile(r'\[.*\]')
 _PARENS_RE = re.compile(r'\(.*\)')
 _VAVOO_SUFFIX_RE = re.compile(r'\s+\.[A-Z0-9]{1,3}$')
 _QUALITY_TAG_RE = re.compile(
-    r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$')
+    r'\s+(HD|FHD|SD|4K|ITA|BACKUP|TIMVISION|PLUS)$')
 _TRAILING_PLUS_RE = re.compile(r'\s+\+$')
 # Any word character in any script (Unicode-aware in both Py2 - via the
 # explicit UNICODE flag - and Py3, where it's the default for str
