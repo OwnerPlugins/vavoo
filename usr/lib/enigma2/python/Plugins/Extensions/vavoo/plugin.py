@@ -96,7 +96,8 @@ from .vavoo_stats import (
     record_anonymous_startup, is_stats_enabled, start_heartbeat,
     stop_heartbeat, STATS_DISABLE_FILE
 )
-from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
+from . import vavoo_proxy
+from .vavoo_proxy import run_proxy_in_background, shutdown_proxy
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
@@ -305,7 +306,7 @@ def _is_vavoo_already_open(session):
 
 # set plugin
 global HALIGN, BackPath, FNTPath
-global search_ok, screen_width
+global screen_width
 global proxy_instance, proxy_thread
 
 title_plug = 'Vavoo'
@@ -325,7 +326,6 @@ auto_start_timer = None
 now = None
 proxy_instance = None
 proxy_thread = None
-search_ok = False
 tmlast = None
 
 # Per-country parsed EPG document + channel->programme index, shared
@@ -1599,12 +1599,29 @@ class vavoo_config(Screen, ConfigListScreen):
 
             self.close()
 
-    def _check_proxy_started(self):
-        """Callback to verify proxy has started (non‑blocking)."""
+    def _check_proxy_started(self, attempts=0):
+        """Callback to verify proxy has started (non‑blocking).
+
+        Capped by cfg.proxy_startup_timeout instead of retrying every 2s
+        forever - previously, if the proxy never came up (missing
+        binary, crash-loop, blocked network), this rescheduled itself
+        indefinitely for the life of the Enigma2 process, keeping this
+        (by then already-closed, since save() closes the screen right
+        after scheduling this) vavoo_config instance alive forever."""
+        try:
+            timeout_secs = int(cfg.proxy_startup_timeout.value)
+        except (TypeError, ValueError):
+            timeout_secs = 30
+        max_attempts = max(1, timeout_secs // 2)
         if cfg.proxy_enabled.value and not is_proxy_running():
+            if attempts >= max_attempts:
+                print(
+                    "[Config] Proxy still not ready after {}s, giving up".format(
+                        timeout_secs))
+                return
             print("[Config] Proxy not yet ready, will check later")
-            # Optionally schedule another check after 2 seconds
-            reactor.callLater(2, self._check_proxy_started)
+            reactor.callLater(
+                2, lambda: self._check_proxy_started(attempts + 1))
         else:
             print("[Config] Proxy is ready")
 
@@ -2160,8 +2177,6 @@ class MainVavoo(Screen):
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
         self.menulist = []
-        global search_ok
-        search_ok = False
         self['menulist'] = m2list([])
         self['red'] = Label(_('Exit'))
         self['green'] = Label(_('Remove') + ' Fav')
@@ -2625,6 +2640,8 @@ class MainVavoo(Screen):
         return success
 
     def _wait_for_proxy(self, attempts=0):
+        if self._closed:
+            return
         # ConfigSelectionNumber.value has been confirmed (via a user log)
         # to come back as a str rather than an int on at least some
         # images/Python versions - "str" * 2 doesn't raise, it silently
@@ -2987,9 +3004,10 @@ class MainVavoo(Screen):
             # source list nextImport() just closes the import right
             # away - "0 events imported" with no error, since nothing
             # was actually queued to import in the first place.
-            cfg = EPGConfig.loadUserSettings()
+            epg_user_cfg = EPGConfig.loadUserSettings()
             sources = list(
-                EPGConfig.enumSources(CONFIG_PATH, filter=cfg["sources"]))
+                EPGConfig.enumSources(
+                    CONFIG_PATH, filter=epg_user_cfg["sources"]))
             if not sources:
                 self.session.open(
                     MessageBox,
@@ -3035,6 +3053,14 @@ class MainVavoo(Screen):
     def deleteBouquets(self, result):
         """Delete all Vavoo bouquets"""
         if result:
+            # Same lock message2()'s export uses - deleting every bouquet
+            # while an export's background thread is still writing one of
+            # them can corrupt it.
+            if not export_lock.acquire(False):
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(
+                        _("An export for another country is already in progress. Please wait."), 4)
+                return
             try:
                 removed_count = remove_bouquets_by_name()
 
@@ -3066,6 +3092,8 @@ class MainVavoo(Screen):
 
             except Exception as e:
                 print("Error in deleteBouquets: " + str(e))
+            finally:
+                export_lock.release()
 
     def goConfig(self):
         self.session.openWithCallback(self._on_config_closed, vavoo_config)
@@ -3338,8 +3366,6 @@ class vavoo(Screen):
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
         self.menulist = []
-        global search_ok
-        search_ok = False
         self['menulist'] = m2list([])
         self['red'] = Label(_('Back'))
         self['green'] = Label(_('Export') + ' Fav')
@@ -3621,6 +3647,14 @@ class vavoo(Screen):
         if not answer:
             print("Remove favorite cancelled by user")
             return
+        # Same lock message2()'s export uses - removing a bouquet while
+        # its own (or another country's) export background thread is
+        # still writing the same files/Favorite.txt can corrupt them.
+        if not export_lock.acquire(False):
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(
+                    _("An export for another country is already in progress. Please wait."), 4)
+            return
         try:
             removed = remove_bouquets_by_name(self.name)
             if removed > 0:
@@ -3638,6 +3672,8 @@ class vavoo(Screen):
             print("[vavoo] Error removing favorite: {}".format(e))
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Remove failed: {}").format(str(e)), 4)
+        finally:
+            export_lock.release()
         self._update_export_button_label()
 
     def message2(self, name, url, response):
@@ -3835,8 +3871,10 @@ class vavoo(Screen):
         return Screen.close(self, *args, **kwargs)
 
     def backhome(self):
-        if search_ok:
-            self.cat()
+        # search_ok (previously gating an alternate self.cat() branch
+        # here) was always False and never set True anywhere in this
+        # file - VavooSearch now uses a direct openWithCallback/
+        # return-value pattern instead. Removed as dead code.
         self.close()
 
 
@@ -4575,6 +4613,10 @@ class Playstream2(
             print("[Playstream2] Error stopping timers: {}".format(e))
 
         self.eof_recovery_timer = eTimer()
+        # Handle for restartAfterEOF()'s second-stage reactor.callLater -
+        # see _do_restart_after_eof()/cancel() for why this needs to be
+        # cancellable too, not just eof_recovery_timer itself.
+        self._eof_restart_call = None
         self.onFirstExecBegin.append(lambda: self.startStream())
         self.onClose.append(self.cancel)
 
@@ -4845,7 +4887,18 @@ class Playstream2(
         """Callback to restart stream after EOF (non‑blocking)."""
         print("[Playstream2] Restarting stream after EOF")
         self.stopStream(restore_original=False)
-        reactor.callLater(0.5, lambda: self.startStream(force=True))
+        # Stored so cancel() can cancel it - previously this handle was
+        # discarded, so a STOP/BACK press during this 0.5s window closed
+        # the screen but couldn't stop the pending restart, which then
+        # fired startStream() on a torn-down screen, silently hijacking
+        # whatever the user navigated back to.
+        self._eof_restart_call = reactor.callLater(
+            0.5, self._do_restart_after_eof)
+
+    def _do_restart_after_eof(self):
+        if self._closed:
+            return
+        self.startStream(force=True)
 
     def get_current_epg(self):
         """
@@ -4897,7 +4950,7 @@ class Playstream2(
 
             # Find Rytec ID - this is the expensive part
             match_start = time.time()
-            rytec_id, _unused = matcher.find_match(
+            rytec_id, _unused, _unused_source = matcher.find_match(
                 clean_name, country_code=self.country_code,
                 channel_id=channel_id)
             match_time = time.time() - match_start
@@ -5166,7 +5219,12 @@ class Playstream2(
             self.sref = sref
 
             try:
-                proxy.stream_started()
+                # Read through the module, not a plain `from .vavoo_proxy
+                # import proxy` value binding - vavoo_proxy.start_proxy()
+                # reassigns its own module-level `proxy` on every restart,
+                # which a one-time value import would never see, silently
+                # accounting this stream against a dead, orphaned instance.
+                vavoo_proxy.proxy.stream_started()
                 print("[Playstream2] Notified proxy: stream started")
             except Exception as e:
                 print("[Playstream2] Failed to notify proxy: {}".format(e))
@@ -5225,7 +5283,7 @@ class Playstream2(
             print("[Playstream2] Stream stopped")
 
             try:
-                proxy.stream_ended()
+                vavoo_proxy.proxy.stream_ended()
                 print("[Playstream2] Notified proxy: stream ended")
             except Exception as e:
                 print("[Playstream2] Failed to notify proxy: {}".format(e))
@@ -5255,7 +5313,8 @@ class Playstream2(
         # timer's own callback happened to run first; a screen closed before
         # that could leave one re-arming itself against a torn-down instance.
         for timer_name in ("proxy_update_timer", "hideTimer",
-                            "delayed_start_timer", "retry_start_timer"):
+                            "delayed_start_timer", "retry_start_timer",
+                            "eof_recovery_timer"):
             timer = getattr(self, timer_name, None)
             if timer is not None:
                 try:
@@ -5263,6 +5322,17 @@ class Playstream2(
                 except Exception as e:
                     print("[Playstream2] Error stopping {}: {}".format(
                         timer_name, e))
+
+        # restartAfterEOF()'s second-stage reactor.callLater isn't an
+        # eTimer, so it needs its own cancellation - previously left
+        # running, so a STOP press during its 0.5s window still fired
+        # startStream() on this now-closed screen.
+        if self._eof_restart_call is not None:
+            try:
+                if self._eof_restart_call.active():
+                    self._eof_restart_call.cancel()
+            except Exception as e:
+                print("[Playstream2] Error cancelling EOF restart: {}".format(e))
 
         self.stopStream()
         try:
