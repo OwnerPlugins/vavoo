@@ -166,7 +166,12 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
         vavoo_lines = []
 
         for line in lines:
-            if 'vavoo' in line.lower():
+            # Precise ".vavoo_" match (same as deep_clean_bouquet_files()/
+            # _remove_bouquet_lines_from_main_files()), not a bare
+            # "vavoo" substring - the loose check could sweep up an
+            # unrelated bouquet whose name merely contains "vavoo"
+            # (e.g. a user's own "userbouquet.myvavoofavs.tv").
+            if '.vavoo_' in line:
                 # Skip if it's the specific bouquet we're updating
                 if bouquet_name not in line:
                     vavoo_lines.append(line)
@@ -301,7 +306,21 @@ def remove_bouquets_by_name(name=None):
                         '_').replace(
                         '→',
                         '_')
-                    if name_safe not in fname:
+                    # Exact match for the flat bouquet
+                    # ("userbouquet.vavoo_<name>.tv"/".radio") or a
+                    # category sub-bouquet of it
+                    # ("userbouquet.vavoo_<name>_<category>.tv") -
+                    # previously a bare "name_safe in fname" substring
+                    # check, which also matched a DIFFERENT country
+                    # sharing the substring (e.g. removing "Italy" also
+                    # deleted "userbouquet.vavoo_italy_sport.tv" as
+                    # intended, but would equally have matched an
+                    # unrelated "userbouquet.vavoo_bigitaly.tv" had one
+                    # existed).
+                    if not (fname.startswith(
+                            "userbouquet.vavoo_%s." % name_safe) or
+                            fname.startswith(
+                                "userbouquet.vavoo_%s_" % name_safe)):
                         continue
 
                 bouquet_path = join(ENIGMA_PATH, fname)
@@ -378,7 +397,11 @@ def is_bouquet_exported(name):
         for fname in listdir(ENIGMA_PATH):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
-                if name_safe in fname:
+                # Same exact/category-prefix match as
+                # remove_bouquets_by_name() - see its comment for why a
+                # bare substring check is wrong.
+                if (fname.startswith("userbouquet.vavoo_%s." % name_safe) or
+                        fname.startswith("userbouquet.vavoo_%s_" % name_safe)):
                     return True
         return False
     except Exception as e:
@@ -685,9 +708,10 @@ def process_epg_matching_background(
                     "original_name in ch: {}".format(
                         repr(ch['original_name'])))
 
-                rytec_id, dvb_ref = matcher.find_match(
+                rytec_id, dvb_ref, match_source = matcher.find_match(
                     ch['original_name'], country_code, servicetype,
-                    channel_id=ch['channel_id'])
+                    channel_id=ch['channel_id'],
+                    allow_curated_promotion=True)
                 if dvb_ref:
                     if dvb_ref.endswith(':'):
                         dvb_ref = dvb_ref[:-1]
@@ -709,7 +733,8 @@ def process_epg_matching_background(
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
                         'rytec_id': rytec_id,
-                        'original_url': ch['url']
+                        'original_url': ch['url'],
+                        'source': match_source
                     })
                 else:
                     # Unmatched: keep the original sref from the fallback bouquet
@@ -1071,7 +1096,7 @@ def create_bouquet_file(
     """
     Create bouquet file, performing matching once.
     Returns (channel_count, bouquet_filename, matched_channels, unmatched_channels)
-    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'rytec_id'
+    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'rytec_id', 'source'
     and unmatched_channels is a list of dicts with 'name', 'channel_id'.
     """
     try:
@@ -1161,9 +1186,9 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                rytec_id, dvb_ref = matcher.find_match(
+                rytec_id, dvb_ref, match_source = matcher.find_match(
                     channel_name, country_code, servicetype,
-                    channel_id=channel_id)
+                    channel_id=channel_id, allow_curated_promotion=True)
 
                 if dvb_ref:
                     if dvb_ref.endswith(':'):
@@ -1176,7 +1201,8 @@ def create_bouquet_file(
                         'channel_id': channel_id,
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
-                        'rytec_id': rytec_id
+                        'rytec_id': rytec_id,
+                        'source': match_source
                     })
                 else:
                     # Fallback: sid:tsid derived from channel_id so
@@ -1248,6 +1274,15 @@ def create_bouquet_file(
 def _update_favorite_file(name, url, export_type):
     """Update Favorite.txt - URL is always empty (proxy only)"""
 
+    # name comes from Vavoo's remote catalog (country/category text) -
+    # unlike bouquet filenames (_sanitize_name_for_path()) or #NAME
+    # lines (_strip_control_chars(), used elsewhere), this pipe-
+    # delimited field had no escaping: an embedded '|' misaligns every
+    # field on read-back (here and in remove_favorite_entry()), and an
+    # embedded newline would inject an extra pseudo-entry into the flat
+    # file.
+    name = _strip_control_chars(name).replace('|', '')
+
     favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
     print("[Bouquet] Updating Favorite.txt: " +
           name + " (type: " + export_type + ")")
@@ -1302,6 +1337,10 @@ def remove_favorite_entry(name):
     "Remove Fav" from leaving a stale entry that a later scheduled
     auto-update run would just re-create.
     """
+    # Match _update_favorite_file()'s sanitization so a name containing
+    # '|'/newline still finds and removes the entry it actually wrote.
+    name = _strip_control_chars(name).replace('|', '')
+
     favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
     if not isfile(favorite_path):
         return
@@ -1345,7 +1384,8 @@ def reorganize_all_bouquets_position(list_position="bottom"):
             vavoo_lines = []
 
             for line in lines:
-                if 'vavoo' in line.lower():
+                # Precise match, same reasoning as _add_to_main_bouquet().
+                if '.vavoo_' in line:
                     vavoo_lines.append(line)
                 else:
                     non_vavoo_lines.append(line)
