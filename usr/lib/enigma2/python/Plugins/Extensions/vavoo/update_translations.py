@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 ##############################################################################
@@ -171,11 +171,7 @@ def _cache_translation(text, target_lang, translated):
     cache_key = _get_cache_key(text, target_lang)
     _translation_cache[cache_key] = translated
     _cache_dirty = True
-    # Don't save_cache_to_disk() here - this runs once per new string
-    # translated, so with the ~90-locale cache already at 1.5MB it made
-    # every run of this script O(n^2) in the number of new strings.
-    # main() saves once at the end of the run instead; save_cache_to_disk()
-    # itself is a no-op unless _cache_dirty is set, so nothing is lost.
+    save_cache_to_disk()
     return translated
 
 
@@ -648,17 +644,25 @@ def fix_po_file(po_file):
     return True
 
 
-STANDARD_LANGUAGES = [
-    'af', 'am', 'ar', 'az', 'be', 'bg', 'bn', 'bs', 'ca', 'cs', 'cy', 'da',
-    'de', 'el', 'en', 'en_GB', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'fy',
-    'ga', 'gd', 'gl', 'gu', 'he', 'hi', 'hr', 'hu', 'hy', 'id', 'is', 'it',
-    'ja', 'ka', 'kk', 'km', 'kn', 'ko', 'ku', 'ky', 'lt', 'lv', 'mk', 'ml',
-    'mn', 'mr', 'ms', 'mt', 'my', 'nb', 'ne', 'nl', 'no', 'oc', 'or', 'pa',
-    'pl', 'ps', 'pt', 'pt_BR', 'pt_PT', 'ro', 'ru', 'si', 'sk', 'sl', 'sq',
-    'sq_AL', 'sr', 'sr_Latn', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'tk', 'tl',
-    'tr', 'tt', 'ug', 'uk', 'ur', 'uz', 'vi', 'yi', 'zh', 'zh_CN', 'zh_HK',
-    'zh_SG', 'zh_TW'
+# ============================================================
+# LANGUAGE WHITELIST CONFIGURATION
+# ============================================================
+# Lingue di default: le più conosciute al mondo.
+# Puoi sovrascrivere questa lista con la variabile d'ambiente KEEP_LANGS
+# (lista separata da virgole), es. KEEP_LANGS="en,it,fr,de,es,pt"
+DEFAULT_KEEP_LANGS = [
+    'en', 'it', 'fr', 'de', 'es', 'pt', 'ru', 'zh', 'ja', 'ar',
+    'hi', 'bn', 'id', 'tr', 'ko', 'vi', 'pl', 'uk', 'fa', 'th'
 ]
+
+_env_langs = environ.get('KEEP_LANGS', '').strip()
+if _env_langs:
+    STANDARD_LANGUAGES = [l.strip() for l in _env_langs.split(',') if l.strip()]
+    print("KEEP_LANGS from environment: {}".format(', '.join(STANDARD_LANGUAGES)))
+else:
+    STANDARD_LANGUAGES = list(DEFAULT_KEEP_LANGS)
+    print("KEEP_LANGS not set, using default list: {}".format(
+        ', '.join(STANDARD_LANGUAGES)))
 
 
 def create_template_po_file(po_file, lang_code):
@@ -705,6 +709,8 @@ def update_po_files():
     if not exists(POT_FILE):
         print("ERROR: .pot file not found")
         return
+
+    # Lingue presenti sul disco (con .po già esistente)
     existing_languages = []
     if exists(LOCALE_DIR):
         for item in listdir(LOCALE_DIR):
@@ -716,12 +722,23 @@ def update_po_files():
                     "{}.po".format(PLUGIN_NAME))
                 if exists(po_file):
                     existing_languages.append(item)
-    all_languages = list(set(existing_languages + STANDARD_LANGUAGES))
+
+    # ============================================================
+    # FILTRO: processa SOLO le lingue in whitelist (STANDARD_LANGUAGES).
+    # Le altre lingue presenti sul disco vengono ignorate e NON modificate.
+    # ============================================================
+    all_languages = sorted(set(existing_languages) & set(STANDARD_LANGUAGES))
+    # Aggiungi le lingue in whitelist che non esistono ancora (verranno create)
+    for lang in STANDARD_LANGUAGES:
+        if lang not in all_languages:
+            all_languages.append(lang)
     all_languages.sort()
+
     print(
         "Processing {} languages: {}".format(
             len(all_languages),
             ', '.join(all_languages)))
+
     for lang_code in all_languages:
         lc_messages_dir = ensure_directory_structure(lang_code)
         if not lc_messages_dir:
@@ -794,6 +811,12 @@ def compile_mo_files():
         print("No locale directory found")
         return
     for lang_code in listdir(LOCALE_DIR):
+        # ============================================================
+        # FILTRO: compila solo le lingue in whitelist.
+        # Le altre cartelle vengono saltate.
+        # ============================================================
+        if lang_code not in STANDARD_LANGUAGES:
+            continue
         lc_messages_dir = join(LOCALE_DIR, lang_code, "LC_MESSAGES")
         po_file = join(lc_messages_dir, "{}.po".format(PLUGIN_NAME))
         mo_file = join(lc_messages_dir, "{}.mo".format(PLUGIN_NAME))
