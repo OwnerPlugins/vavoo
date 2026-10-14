@@ -657,8 +657,11 @@ DEFAULT_KEEP_LANGS = [
 
 _env_langs = environ.get('KEEP_LANGS', '').strip()
 if _env_langs:
-    STANDARD_LANGUAGES = [l.strip() for l in _env_langs.split(',') if l.strip()]
-    print("KEEP_LANGS from environment: {}".format(', '.join(STANDARD_LANGUAGES)))
+    STANDARD_LANGUAGES = [l.strip()
+                          for l in _env_langs.split(',') if l.strip()]
+    print(
+        "KEEP_LANGS from environment: {}".format(
+            ', '.join(STANDARD_LANGUAGES)))
 else:
     STANDARD_LANGUAGES = list(DEFAULT_KEEP_LANGS)
     print("KEEP_LANGS not set, using default list: {}".format(
