@@ -102,7 +102,8 @@ from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
     PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, PROXY_SHUTDOWN_URL,
-    FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
+    FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF,
+    LOG_FILE
 )
 from . import PY2, PY3, vUtils
 from .bouquet_manager import (
@@ -519,6 +520,8 @@ cfg = config.plugins.vavoo
 cfg.proxy_enabled = ConfigEnableDisable(default=True)
 cfg.autobouquetupdate = ConfigEnableDisable(default=False)
 cfg.genm3u = NoSave(ConfigYesNo(default=False))
+cfg.show_log = NoSave(ConfigYesNo(default=False))
+cfg.view_favourites = NoSave(ConfigYesNo(default=False))
 cfg.server = ConfigSelection(default=PRIMARY_BASE_URL, choices=myser)
 cfg.services = ConfigSelection(default='4097', choices=modemovie)
 cfg.epg_enabled = ConfigEnableDisable(default=False)
@@ -557,6 +560,9 @@ cfg.list_position = ConfigSelection(
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
 )
 cfg.search_text = ConfigSearchText(default="")
+cfg.playlist_key = ConfigText(default="")
+cfg.parental_pin = ConfigText(default="")
+cfg.parental_countries = ConfigText(default="")
 cfg.proxy_startup_timeout = ConfigSelectionNumber(
     default=120, min=15, max=300, stepwidth=5)
 
@@ -770,6 +776,13 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Generate .m3u files and save to device %s.") %
                 downloadfree))
 
+        self.list.append(getConfigListEntry(
+            _("Playlist Access Key (optional)"),
+            cfg.playlist_key,
+            _("If set, the live playlist at /playlist.m3u requires "
+              "?key=<this value> - leave empty for no key. "
+              "URL: http://%s:%d/playlist.m3u") % (PROXY_HOST, PORT)))
+
         self.list.append(
             getConfigListEntry(
                 _("Proxy Enabled"),
@@ -913,6 +926,26 @@ class vavoo_config(Screen, ConfigListScreen):
             "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
         self.list.append(getConfigListEntry(_("Debug logging"), cfg.debug_logging, _(
             "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting.")))
+        self.list.append(getConfigListEntry(
+            _("Show Log (Ok to view)"),
+            cfg.show_log,
+            _("View the last 200 lines of %s.") % LOG_FILE))
+        self.list.append(getConfigListEntry(
+            _("View Favourites (Ok to open)"),
+            cfg.view_favourites,
+            _("Browse and play your starred channels. Star/unstar a "
+              "channel with the INFO key while browsing.")))
+        self.list.append(getConfigListEntry(
+            _("Parental Control PIN"),
+            cfg.parental_pin,
+            _("Set a PIN to lock the countries below. Leave empty to "
+              "disable parental control entirely.")))
+        if cfg.parental_pin.value.strip():
+            self.list.append(getConfigListEntry(
+                _("Locked Countries"),
+                cfg.parental_countries,
+                _("Comma-separated country names (e.g. \"Italy, Spain\") "
+                  "that require the PIN above to open.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -928,6 +961,20 @@ class vavoo_config(Screen, ConfigListScreen):
                 MessageBox.TYPE_YESNO,
                 timeout=10,
                 default=True)
+        elif sel and sel == cfg.show_log:
+            # Pseudo-button, same "Ok for Exec" pattern as cfg.genm3u
+            # above - reset it immediately, then act.
+            cfg.show_log.setValue(0)
+            cfg.show_log.save()
+            self.session.open(
+                Console,
+                title=_("Vavoo Log"),
+                cmdlist=["tail -n 200 %s" % LOG_FILE],
+                closeOnSuccess=False)
+        elif sel and sel == cfg.view_favourites:
+            cfg.view_favourites.setValue(0)
+            cfg.view_favourites.save()
+            self.session.open(VavooFavourites)
 
     def generate_m3u(self, result):
         if result:
@@ -2890,35 +2937,76 @@ class MainVavoo(Screen):
             name = current_item[0][0]  # Country name (e.g., "Italy")
             print("[MainVavoo] Selected: " + str(name))
 
-            # Pass ONLY the country name to the vavoo class
-            # The vavoo class will handle the proxy internally
-            try:
-                if not cfg.proxy_enabled.value:
-                    self.session.open(
-                        MessageBox,
-                        _("Proxy is disabled. Please Set Proxy On first. -- Menu Config --"),
-                        MessageBox.TYPE_WARNING,
-                        timeout=5)
-                    return
+            if self._is_country_locked(name):
+                self.session.openWithCallback(
+                    lambda result: self._on_parental_pin_result(result, name),
+                    VirtualKeyBoard,
+                    title=_("Enter parental control PIN"))
+                return
 
-                if not is_proxy_running():
-                    self.session.open(
-                        MessageBox,
-                        _("Proxy is not running. Please start the proxy first.") +
-                        "\n" +
-                        _("You can start it from the menu or by pressing the TEXT button."),
-                        MessageBox.TYPE_WARNING,
-                        timeout=5)
-                    return
-
-                # Pass ONLY the country name to the vavoo class
-                self.session.open(vavoo, name, None)
-            except Exception as e:
-                print("Error opening vavoo screen: " + str(e))
-                trace_error()
+            self._open_country(name)
 
         except Exception as e:
             print("Error in ok method: " + str(e))
+            trace_error()
+
+    def _is_country_locked(self, name):
+        """True if `name` is in the parental-control locked-country
+        list and a PIN is actually configured (an empty PIN means the
+        feature is off, same as every other opt-in cfg string in this
+        plugin)."""
+        pin = cfg.parental_pin.value.strip()
+        if not pin:
+            return False
+        locked = [
+            c.strip().lower()
+            for c in cfg.parental_countries.value.split(',') if c.strip()
+        ]
+        return name.strip().lower() in locked
+
+    def _on_parental_pin_result(self, result, name):
+        # VirtualKeyBoard's callback returns exactly what the user
+        # typed (or None on cancel) - the same return value this
+        # plugin's search field already relies on
+        # (VavooSearch.onKeyboardClosed()) - so this comparison's
+        # semantics are fully under this plugin's own control, not
+        # dependent on a parental-control-specific dialog's callback
+        # convention that could differ across Enigma2 images.
+        if result is not None and result == cfg.parental_pin.value:
+            self._open_country(name)
+        else:
+            self.session.open(
+                MessageBox,
+                _("Incorrect PIN"),
+                MessageBox.TYPE_ERROR,
+                timeout=3)
+
+    def _open_country(self, name):
+        # Pass ONLY the country name to the vavoo class
+        # The vavoo class will handle the proxy internally
+        try:
+            if not cfg.proxy_enabled.value:
+                self.session.open(
+                    MessageBox,
+                    _("Proxy is disabled. Please Set Proxy On first. -- Menu Config --"),
+                    MessageBox.TYPE_WARNING,
+                    timeout=5)
+                return
+
+            if not is_proxy_running():
+                self.session.open(
+                    MessageBox,
+                    _("Proxy is not running. Please start the proxy first.") +
+                    "\n" +
+                    _("You can start it from the menu or by pressing the TEXT button."),
+                    MessageBox.TYPE_WARNING,
+                    timeout=5)
+                return
+
+            # Pass ONLY the country name to the vavoo class
+            self.session.open(vavoo, name, None)
+        except Exception as e:
+            print("Error opening vavoo screen: " + str(e))
             trace_error()
 
     def manual_epg_update(self):
@@ -3399,7 +3487,7 @@ class vavoo(Screen):
                 "blue": self.reload_bouquets_with_popup,
                 "cancel": self.backhome,
                 "menu": self.goConfig,
-                # "info": self.info,
+                "info": self.toggle_favourite,
                 "red": self.backhome
             },
             -1
@@ -3605,6 +3693,33 @@ class vavoo(Screen):
                 MessageBox.TYPE_ERROR,
                 timeout=3
             )
+
+    def toggle_favourite(self):
+        """Star/unstar the highlighted channel - same selection lookup
+        ok() uses, bound to the 'info' key (free in this screen: no
+        info() method exists here, unlike MainVavoo's unrelated one)."""
+        try:
+            i = self['menulist'].getSelectedIndex()
+            selection = self['menulist'].l.getCurrentSelection()
+            if selection is None:
+                return
+            item = self.cat_list[i][0]
+            name = item[0]
+            url = item[1]
+        except Exception as e:
+            print('[vavoo] toggle_favourite selection error:', e)
+            return
+
+        now_favourite = vUtils.toggle_favourite(name, url)
+        if now_favourite is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Could not update favourites"), 3)
+            return
+        if NOTIFICATION_AVAILABLE:
+            if now_favourite:
+                quick_notify(_("Added to favourites: {}").format(name), 3)
+            else:
+                quick_notify(_("Removed from favourites: {}").format(name), 3)
 
     def _update_export_button_label(self):
         """Green button reads 'Remove Fav' if this bouquet is already
@@ -3876,6 +3991,114 @@ class vavoo(Screen):
         # file - VavooSearch now uses a direct openWithCallback/
         # return-value pattern instead. Removed as dead code.
         self.close()
+
+
+class VavooFavourites(Screen):
+    """Browse and play starred channels (see vUtils.toggle_favourite()/
+    load_favourites()). Deliberately minimal compared to the `vavoo`
+    class: no country/proxy fetching, no auto-update timer - just a
+    static list built once from the favourites file. Reuses
+    defaultListScreen.xml (the same skin `vavoo`/`MainVavoo` already
+    load) so there's no new skin XML to keep in sync across
+    resolutions."""
+
+    def __init__(self, session):
+        self.session = session
+        Screen.__init__(self, session)
+        skin = join(skin_path, 'defaultListScreen.xml')
+        if isfile('/var/lib/dpkg/status'):
+            skin = skin.replace('.xml', '_cvs.xml')
+        with codecs.open(skin, "r", encoding="utf-8") as f:
+            self.skin = apply_selected_background(f.read())
+
+        init_notification_system(session)
+        self._closed = False
+        self.onClose.append(self._mark_closed)
+
+        self.cat_list = []
+        self['menulist'] = m2list([])
+        self['name'] = Label(_('Favourites'))
+        self['version'] = Label(to_string("V." + __version__))
+        self['proxy_status'] = Label('')
+        self['red'] = Label(_('Back'))
+        self['green'] = Label(_('Remove'))
+        self['yellow'] = Label()
+        self['blue'] = Label()
+
+        self['actions'] = ActionMap(
+            ['OkCancelActions', 'ColorActions', 'DirectionActions'],
+            {
+                "up": self.moveUp,
+                "down": self.moveDown,
+                "ok": self.ok,
+                "green": self.remove_selected,
+                "cancel": self.close,
+                "red": self.close,
+            },
+            -1
+        )
+        self.onLayoutFinish.append(self._build_list)
+
+    def _mark_closed(self):
+        self._closed = True
+
+    def _build_list(self):
+        favourites = vUtils.load_favourites()
+        self.cat_list = [
+            show_list(entry['name'], entry['url'], is_channel=True)
+            for entry in sorted(
+                favourites.values(), key=lambda e: e.get('name', ''))
+        ]
+        if self.cat_list:
+            self['menulist'].l.setList(self.cat_list)
+        else:
+            self['name'].setText(_('No favourites yet'))
+
+    def moveUp(self):
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx - 1) % len(self.cat_list))
+
+    def moveDown(self):
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx + 1) % len(self.cat_list))
+
+    def _current_selection(self):
+        """Returns (index, item, name, url) for the highlighted row, or
+        (None, None, None, None) if nothing is selected."""
+        if not self.cat_list:
+            return None, None, None, None
+        i = self['menulist'].getSelectedIndex()
+        selection = self['menulist'].l.getCurrentSelection()
+        if selection is None:
+            return None, None, None, None
+        item = self.cat_list[i][0]
+        return i, item, item[0], item[1]
+
+    def ok(self):
+        try:
+            i, item, name, url = self._current_selection()
+            if name is None:
+                return
+            self.session.open(
+                Playstream2,
+                name, url, i, item, self.cat_list
+            )
+        except Exception as e:
+            print('[VavooFavourites] Error opening channel:', e)
+            trace_error()
+
+    def remove_selected(self):
+        _i, _item, name, url = self._current_selection()
+        if name is None:
+            return
+        vUtils.toggle_favourite(name, url)
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Removed from favourites: {}").format(name), 3)
+        self._build_list()
 
 
 # --- Live search screen ---
