@@ -65,6 +65,10 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Text Key Functions** – Manual proxy refresh using TEXT button
 - **Cache Format Fix** – Yellow button to clean up and fix cache format
 - **HTTP 451 Handling** – Automatic fallback to mirror sites when primary is blocked
+- **Favourites** – Star/unstar any channel with the INFO key while browsing; "View Favourites" in Config to browse and play them
+- **Live Playlist Server** – `/playlist.m3u` always reflects the current catalog, no manual regeneration needed; optional access key
+- **In-UI Log Viewer** – "Show Log" in Config tails the last 200 lines of `vavoo.log`
+- **Parental Control** – Optional PIN lock on chosen countries
 
 ## 🔔 Notification System
 The plugin includes a sophisticated notification system that provides real-time feedback:
@@ -117,7 +121,15 @@ In the Config Menu:
 - ✅ **Select Background**: Choose custom background images
 - ✅ **Link in Main Menu**: Show plugin in main Enigma2 menu
 - ✅ **Send Anonymous Statistics**: Opt in/out of anonymous startup/heartbeat pings (default: ON)
+- ✅ **Playlist Access Key**: Optional key required on `/playlist.m3u` requests (empty = no key needed)
+- ✅ **Show Log (Ok to view)**: Tail the last 200 lines of `vavoo.log` on-box
+- ✅ **View Favourites (Ok to open)**: Browse and play starred channels
+- ✅ **Parental Control PIN** / **Locked Countries**: Require a PIN before opening chosen countries' channel lists
 - Proxy and updates are managed automatically
+
+### Favourites
+- Press **INFO** on any channel while browsing to star/unstar it
+- Config Menu → **"View Favourites"** to browse and play your starred channels (GREEN removes the highlighted one)
 
 ## 🎯 Benefits
 - ✅ **No 10-minute blocks** – Proxy handles authentication tokens
@@ -180,6 +192,7 @@ The proxy provides these endpoints:
 - `/channels?country=CountryName` – Get channels by country
 - `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect)
 - `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
+- `/playlist.m3u?country=CountryName&key=AccessKey` – Live, always-current M3U playlist for external players (VLC/Kodi/TiviMate); `country` and `key` are both optional (key only required if "Playlist Access Key" is set in Config)
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
 - `/refresh_token` – Force token refresh
@@ -349,4 +362,4 @@ https://creativecommons.org/licenses/by-nc-sa/4.0
 **For modifications and redistribution, please maintain this credit header.**
 
 ---
-*Last Modified: 2026-07-26*
+*Last Modified: 2026-11-02*
