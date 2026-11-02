@@ -41,13 +41,20 @@ from . import (
 from .vUtils import (
     _starting_lock,
     debug,
+    decodeHtml,
     get_external_ip,
     is_proxy_running,
     log_exception,
     make_print,
+    remove_parentheses,
     trace_error,
     # RequestAgent
 )
+
+# Same convention vUtils.py already uses to read this plugin's own
+# config (config.plugins.vavoo.*) without importing from plugin.py
+# itself, which would be circular (plugin.py imports this module).
+from Components.config import config as e2_config
 
 _starting = False
 
@@ -1624,6 +1631,51 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 if not self.safe_write(dumps(response_channels)):
+                    return
+
+            elif parsed_path.path == '/playlist.m3u':
+                # Live-serving twin of plugin.py's "Generate .m3u
+                # files" wizard (generate_single_m3u()) - same header/
+                # entry format, but built fresh from the in-memory
+                # catalog on every request instead of a one-shot file
+                # a user has to remember to regenerate.
+                p = proxy
+                playlist_key = ""
+                try:
+                    playlist_key = e2_config.plugins.vavoo.playlist_key.value
+                except Exception:
+                    playlist_key = ""
+                if playlist_key:
+                    supplied_key = query_params.get('key', [None])[0]
+                    if supplied_key != playlist_key:
+                        self.send_error(401, "Invalid or missing playlist key")
+                        return
+
+                country = query_params.get('country', [None])[0]
+                local_ip = p.get_local_ip()
+
+                m3u_lines = ["#EXTM3U"]
+                if hasattr(p, 'all_filtered_items'):
+                    for channel in p.all_filtered_items:
+                        if country and channel.get(
+                                "country", "").lower() != country.lower():
+                            continue
+                        channel_id = channel.get("id", "")
+                        if not channel_id:
+                            continue
+                        channel_name = decodeHtml(channel.get("name", "Unknown"))
+                        channel_name = remove_parentheses(channel_name)
+                        channel_url = "http://%s:%d/vavoo?channel=%s" % (
+                            local_ip, PORT, channel_id)
+                        m3u_lines.append("#EXTINF:-1,%s" % channel_name)
+                        m3u_lines.append(channel_url)
+                m3u_text = "\n".join(m3u_lines) + "\n"
+
+                if not self.safe_send_response(200):
+                    return
+                self.send_header('Content-Type', 'audio/x-mpegurl; charset=utf-8')
+                self.end_headers()
+                if not self.safe_write(m3u_text.encode('utf-8')):
                     return
 
             elif parsed_path.path == '/catalog':
