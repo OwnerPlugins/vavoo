@@ -267,6 +267,11 @@ def make_print(area, level="INFO"):
 
 PLUGIN_PATH = PLUGIN_ROOT
 
+# Plugin-local bookkeeping, same category/directory as Favorite.txt
+# (bouquet_manager.py) - not receiver-wide EPG state, so it follows the
+# PLUGIN_PATH convention rather than ENIGMA_PATH's.
+FAVOURITES_FILE = join(PLUGIN_PATH, 'vavoo_favourites.json')
+
 
 if PY3:
     from urllib.request import urlopen, Request
@@ -2675,6 +2680,57 @@ def save_cache(cache):
     except Exception as e:
         print("[Cache] Error saving cache: {}".format(e))
         return False
+
+
+def _favourite_key(name, url):
+    return "{}###{}".format(name, url)
+
+
+def load_favourites():
+    """Return the persisted favourites dict ({key: {name, url,
+    timestamp}}), or {} on any error/missing file - never raises,
+    matching every other cache reader in this module."""
+    try:
+        if not isfile(FAVOURITES_FILE):
+            return {}
+        with open(FAVOURITES_FILE, 'r') as f:
+            data = load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception as e:
+        print("[Favourites] Error loading {}: {}".format(FAVOURITES_FILE, e))
+        return {}
+
+
+def is_favourite(name, url):
+    return _favourite_key(name, url) in load_favourites()
+
+
+def toggle_favourite(name, url):
+    """Add the (name, url) channel if it isn't already a favourite,
+    remove it if it is. Returns the new state (True = now a favourite)
+    on success, or None on error - same atomic temp-file-then-rename
+    write as save_cache()/_update_favorite_file()."""
+    try:
+        favourites = load_favourites()
+        key = _favourite_key(name, url)
+        now_favourite = key not in favourites
+        if now_favourite:
+            favourites[key] = {
+                'name': name,
+                'url': url,
+                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
+            }
+        else:
+            del favourites[key]
+
+        temp_file = FAVOURITES_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
+            dump(favourites, f, indent=2, sort_keys=True)
+        rename(temp_file, FAVOURITES_FILE)
+        return now_favourite
+    except Exception as e:
+        print("[Favourites] Error saving {}: {}".format(FAVOURITES_FILE, e))
+        return None
 
 
 def clean_cache_and_unmatched():
