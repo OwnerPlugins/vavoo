@@ -1163,6 +1163,16 @@ def unique_fallback_sref(servicetype, channel_id):
     return "%s:0:1:%x:%x:0:0:0:0:0:" % (servicetype, sid, tsid)
 
 
+def strip_control_chars(text):
+    """Strip characters with ord() <= 31 (e.g. an embedded newline) from
+    network-sourced text before it's written as a raw playlist/bouquet
+    line - same logic as bouquet_manager.py's own private
+    _strip_control_chars(), kept here too (not imported from there) so
+    vavoo_proxy.py can use it without creating a circular import
+    (bouquet_manager.py already imports from vavoo_proxy.py)."""
+    return ''.join(c for c in ensure_str(text, errors='ignore') if ord(c) > 31)
+
+
 def sanitizeFilename(filename):
     """Sanitize filename for safe filesystem use"""
     filename = ensure_str(filename, errors='ignore')
@@ -2265,7 +2275,7 @@ class VavooEPGMatcher(object):
 
     def _try_promote_to_curated(
             self, channel_name, country_code, servicetype, channel_id,
-            cached, allow_curated_promotion):
+            cached, allow_curated_promotion, curated_db):
         """Called from a local-cache-hit branch in _find_match_locked().
         A cache entry written before the curated channel database
         existed for this country (or before this specific channel was
@@ -2274,16 +2284,16 @@ class VavooEPGMatcher(object):
         cache hit returns early and step 2's curated-DB check is never
         reached again. When allow_curated_promotion is set (bouquet
         export only, never the live overlay lookup), give a non-curated
-        cache entry one more chance to upgrade to the curated result -
-        _load_curated_channel_db() is already 24h TTL-cached in-process,
-        so this is one extra dict lookup, not a new network call.
+        cache entry one more chance to upgrade to the curated result.
+        curated_db is pre-fetched by find_match() before the cache
+        lock is taken (see its docstring) - this is just a dict lookup
+        against it, never a network call of its own.
         Returns a (id, sref, source) tuple to return immediately on a
         promotion, or None to fall through to the normal cache-hit
         return."""
         if (not allow_curated_promotion or not country_code or
                 cached.get('source') == 'curated'):
             return None
-        curated_db = _load_curated_channel_db(country_code)
         if not curated_db:
             return None
         curated_key = self._clean_name_for_similarity(channel_name)
@@ -2329,15 +2339,26 @@ class VavooEPGMatcher(object):
         change as a result of an export the user explicitly triggered.
 
         Returns a (rytec_id, sref, source) 3-tuple; source is one of
-        "alias", "curated", "live" or None (no match)."""
+        "alias", "curated", "live" or None (no match).
+
+        Deliberately fetches the curated DB *before* acquiring
+        self._cache_lock: _load_curated_channel_db() has its own
+        independent lock/24h cache and never touches self.cache/
+        self.normalized_index, but a cold per-country cache can block
+        on a ~15s network fetch - doing that while holding the lock
+        the concurrent EPG-overlay thread also needs for its own,
+        unrelated find_match() calls would stall it for the same
+        ~15s for no reason."""
+        curated_db = _load_curated_channel_db(country_code) if country_code else None
         with self._cache_lock:
             return self._find_match_locked(
                 channel_name, country_code, servicetype, channel_id,
-                allow_curated_promotion)
+                allow_curated_promotion, curated_db)
 
     def _find_match_locked(
             self, channel_name, country_code=None, servicetype="4097",
-            channel_id=None, allow_curated_promotion=False):
+            channel_id=None, allow_curated_promotion=False,
+            curated_db=None):
         if not channel_name:
             return None, None, None
 
@@ -2435,7 +2456,8 @@ class VavooEPGMatcher(object):
                             cached_sref == current_rytec_sref):
                         promoted = self._try_promote_to_curated(
                             channel_name, country_code, servicetype,
-                            channel_id, cached, allow_curated_promotion)
+                            channel_id, cached, allow_curated_promotion,
+                            curated_db)
                         if promoted:
                             return promoted
                         print(
@@ -2464,7 +2486,8 @@ class VavooEPGMatcher(object):
                     # We don't have the Rytec name, accept the cache
                     promoted = self._try_promote_to_curated(
                         channel_name, country_code, servicetype,
-                        channel_id, cached, allow_curated_promotion)
+                        channel_id, cached, allow_curated_promotion,
+                        curated_db)
                     if promoted:
                         return promoted
                     print(
@@ -2485,7 +2508,9 @@ class VavooEPGMatcher(object):
         # Country-scoped by construction (one file per country), so no
         # collision risk from unrelated countries sharing a name.
         if country_code:
-            curated_db = _load_curated_channel_db(country_code)
+            # curated_db is the one find_match() pre-fetched before
+            # taking self._cache_lock (see its docstring) - not
+            # re-fetched here.
             if curated_db:
                 curated_key = self._clean_name_for_similarity(channel_name)
                 curated_id = curated_db.get(curated_key)
@@ -2705,11 +2730,18 @@ def is_favourite(name, url):
     return _favourite_key(name, url) in load_favourites()
 
 
-def toggle_favourite(name, url):
+def toggle_favourite(name, url, country_name=None, country_code=None):
     """Add the (name, url) channel if it isn't already a favourite,
     remove it if it is. Returns the new state (True = now a favourite)
     on success, or None on error - same atomic temp-file-then-rename
-    write as save_cache()/_update_favorite_file()."""
+    write as save_cache()/_update_favorite_file().
+
+    country_name/country_code are stored alongside the channel so a
+    favourite played back later can still be checked against
+    parental-control's locked-country list (which matches on the
+    display name, e.g. "Italy") and still carry a country_code through
+    to Playstream2 for EPG matching - neither is available again once
+    the user has left the channel-browsing screen that knew them."""
     try:
         favourites = load_favourites()
         key = _favourite_key(name, url)
@@ -2718,6 +2750,8 @@ def toggle_favourite(name, url):
             favourites[key] = {
                 'name': name,
                 'url': url,
+                'country_name': country_name,
+                'country_code': country_code,
                 'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
             }
         else:

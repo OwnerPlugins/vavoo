@@ -138,6 +138,7 @@ from .vUtils import (
     returnIMDB,
     remove_parentheses,
     ReloadBouquets,
+    strip_control_chars,
     trace_error
 )
 from .Console import Console
@@ -970,11 +971,29 @@ class vavoo_config(Screen, ConfigListScreen):
                 Console,
                 title=_("Vavoo Log"),
                 cmdlist=["tail -n 200 %s" % LOG_FILE],
-                closeOnSuccess=False)
+                closeOnSuccess=False,
+                allow_restart=False)
         elif sel and sel == cfg.view_favourites:
             cfg.view_favourites.setValue(0)
             cfg.view_favourites.save()
             self.session.open(VavooFavourites)
+        elif sel and sel in (
+                cfg.playlist_key, cfg.parental_pin, cfg.parental_countries):
+            # Plain ConfigText entries have nothing else wired to the
+            # "ok" key in this screen (gnm3u() is its sole handler) -
+            # without this, pressing OK on these did nothing and the
+            # field could never actually be set.
+            self.session.openWithCallback(
+                lambda result: self._on_text_entry_result(sel, result),
+                VirtualKeyBoard,
+                title=self.getCurrentEntry(),
+                text=sel.value)
+
+    def _on_text_entry_result(self, config_element, result):
+        if result is not None:
+            config_element.setValue(result)
+            config_element.save()
+            self.createSetup()
 
     def generate_m3u(self, result):
         if result:
@@ -1350,6 +1369,12 @@ class vavoo_config(Screen, ConfigListScreen):
                         # Clean channel name
                         channel_name = decodeHtml(channel_name)
                         channel_name = remove_parentheses(channel_name)
+                        # Catalog-sourced, already treated as
+                        # attacker-influenceable elsewhere (bouquet
+                        # #NAME/Favorite.txt lines) - an embedded
+                        # newline would inject extra lines into the
+                        # generated .m3u file.
+                        channel_name = strip_control_chars(channel_name)
 
                         # Write M3U entry
                         m3u_content += "#EXTINF:-1,%s\n" % channel_name
@@ -2118,6 +2143,53 @@ def _shared_confirm_reload_bouquets(screen, result):
             print("[MessageBox] Error:", e)
     else:
         debug("User cancelled reload")
+
+
+def _is_country_locked(country_name):
+    """True if `country_name` is in the parental-control locked-country
+    list and a PIN is actually configured (an empty PIN means the
+    feature is off, same as every other opt-in cfg string in this
+    plugin). Module-level so both MainVavoo (opening a country's
+    channel list) and VavooFavourites (playing a favourite channel
+    that remembers which country it came from) can gate on it, instead
+    of only the former - a favourite from a locked country used to
+    play with no PIN prompt at all."""
+    pin = cfg.parental_pin.value.strip()
+    if not pin or not country_name:
+        return False
+    locked = [
+        c.strip().lower()
+        for c in cfg.parental_countries.value.split(',') if c.strip()
+    ]
+    return country_name.strip().lower() in locked
+
+
+def _require_parental_pin(session, screen, country_name, on_success):
+    """If country_name is locked, prompt for the PIN and call
+    on_success() only on a correct match; otherwise call on_success()
+    immediately. `screen` is the calling Screen instance, checked for
+    `_closed` before acting on the PIN result, since the prompt is an
+    async callback that can outlive a screen the user has since left."""
+    if not _is_country_locked(country_name):
+        on_success()
+        return
+
+    def _on_result(result):
+        if getattr(screen, '_closed', False):
+            return
+        if result is not None and result == cfg.parental_pin.value:
+            on_success()
+        else:
+            session.open(
+                MessageBox,
+                _("Incorrect PIN"),
+                MessageBox.TYPE_ERROR,
+                timeout=3)
+
+    session.openWithCallback(
+        _on_result,
+        VirtualKeyBoard,
+        title=_("Enter parental control PIN"))
 
 
 class MainVavoo(Screen):
@@ -2937,49 +3009,13 @@ class MainVavoo(Screen):
             name = current_item[0][0]  # Country name (e.g., "Italy")
             print("[MainVavoo] Selected: " + str(name))
 
-            if self._is_country_locked(name):
-                self.session.openWithCallback(
-                    lambda result: self._on_parental_pin_result(result, name),
-                    VirtualKeyBoard,
-                    title=_("Enter parental control PIN"))
-                return
-
-            self._open_country(name)
+            _require_parental_pin(
+                self.session, self, name,
+                lambda: self._open_country(name))
 
         except Exception as e:
             print("Error in ok method: " + str(e))
             trace_error()
-
-    def _is_country_locked(self, name):
-        """True if `name` is in the parental-control locked-country
-        list and a PIN is actually configured (an empty PIN means the
-        feature is off, same as every other opt-in cfg string in this
-        plugin)."""
-        pin = cfg.parental_pin.value.strip()
-        if not pin:
-            return False
-        locked = [
-            c.strip().lower()
-            for c in cfg.parental_countries.value.split(',') if c.strip()
-        ]
-        return name.strip().lower() in locked
-
-    def _on_parental_pin_result(self, result, name):
-        # VirtualKeyBoard's callback returns exactly what the user
-        # typed (or None on cancel) - the same return value this
-        # plugin's search field already relies on
-        # (VavooSearch.onKeyboardClosed()) - so this comparison's
-        # semantics are fully under this plugin's own control, not
-        # dependent on a parental-control-specific dialog's callback
-        # convention that could differ across Enigma2 images.
-        if result is not None and result == cfg.parental_pin.value:
-            self._open_country(name)
-        else:
-            self.session.open(
-                MessageBox,
-                _("Incorrect PIN"),
-                MessageBox.TYPE_ERROR,
-                timeout=3)
 
     def _open_country(self, name):
         # Pass ONLY the country name to the vavoo class
@@ -3710,7 +3746,10 @@ class vavoo(Screen):
             print('[vavoo] toggle_favourite selection error:', e)
             return
 
-        now_favourite = vUtils.toggle_favourite(name, url)
+        now_favourite = vUtils.toggle_favourite(
+            name, url,
+            country_name=self.country_name,
+            country_code=get_country_code(self.country_name))
         if now_favourite is None:
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Could not update favourites"), 3)
@@ -4044,14 +4083,21 @@ class VavooFavourites(Screen):
 
     def _build_list(self):
         favourites = vUtils.load_favourites()
+        # Kept as a parallel list (same order/indices as cat_list) so
+        # ok()/remove_selected() can look up each row's country_name/
+        # country_code - show_list()'s (name, url) tuple has no room
+        # for them, and they're needed for the parental-control check
+        # and for EPG matching in Playstream2.
+        self.favourite_entries = sorted(
+            favourites.values(), key=lambda e: e.get('name', ''))
         self.cat_list = [
             show_list(entry['name'], entry['url'], is_channel=True)
-            for entry in sorted(
-                favourites.values(), key=lambda e: e.get('name', ''))
+            for entry in self.favourite_entries
         ]
         if self.cat_list:
             self['menulist'].l.setList(self.cat_list)
         else:
+            self['menulist'].l.setList([])
             self['name'].setText(_('No favourites yet'))
 
     def moveUp(self):
@@ -4083,10 +4129,21 @@ class VavooFavourites(Screen):
             i, item, name, url = self._current_selection()
             if name is None:
                 return
-            self.session.open(
-                Playstream2,
-                name, url, i, item, self.cat_list
-            )
+            entry = self.favourite_entries[i]
+            country_name = entry.get('country_name')
+            country_code = entry.get('country_code')
+
+            def _play():
+                self.session.open(
+                    Playstream2,
+                    name, url, i, item, self.cat_list,
+                    country_code=country_code
+                )
+            # A favourite from a locked country used to play with no
+            # PIN prompt at all, since this screen never checked
+            # parental control - see MainVavoo.ok()'s own use of the
+            # same helper for the channel-browsing path.
+            _require_parental_pin(self.session, self, country_name, _play)
         except Exception as e:
             print('[VavooFavourites] Error opening channel:', e)
             trace_error()
@@ -4095,7 +4152,11 @@ class VavooFavourites(Screen):
         _i, _item, name, url = self._current_selection()
         if name is None:
             return
-        vUtils.toggle_favourite(name, url)
+        now_favourite = vUtils.toggle_favourite(name, url)
+        if now_favourite is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Could not update favourites"), 3)
+            return
         if NOTIFICATION_AVAILABLE:
             quick_notify(_("Removed from favourites: {}").format(name), 3)
         self._build_list()
