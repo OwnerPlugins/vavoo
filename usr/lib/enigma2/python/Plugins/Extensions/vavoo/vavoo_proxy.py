@@ -47,6 +47,7 @@ from .vUtils import (
     log_exception,
     make_print,
     remove_parentheses,
+    strip_control_chars,
     trace_error,
     # RequestAgent
 )
@@ -1594,10 +1595,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(500, "Streaming error")
 
             elif parsed_path.path == '/channels':
-                # Bound once, same reasoning as /vavoo and /stream -
-                # start_proxy() can reassign the module-global `proxy`
-                # mid-request on a restart.
-                p = proxy
+                # p is already bound once at the top of do_GET()
                 country = query_params.get('country', [None])[0]
                 if not country:
                     self.send_error(400, "Missing country parameter")
@@ -1638,12 +1636,18 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 # files" wizard (generate_single_m3u()) - same header/
                 # entry format, but built fresh from the in-memory
                 # catalog on every request instead of a one-shot file
-                # a user has to remember to regenerate.
-                p = proxy
+                # a user has to remember to regenerate. p is already
+                # bound once at the top of do_GET().
                 playlist_key = ""
                 try:
                     playlist_key = e2_config.plugins.vavoo.playlist_key.value
-                except Exception:
+                except Exception as e:
+                    # Fails open (no key required) rather than closed -
+                    # acceptable since config.plugins.vavoo is always
+                    # set by plugin.py long before this thread can ever
+                    # start, but log it so a configured key silently
+                    # not applying wouldn't go unnoticed.
+                    print("[Proxy] Could not read playlist_key config: {}".format(e))
                     playlist_key = ""
                 if playlist_key:
                     supplied_key = query_params.get('key', [None])[0]
@@ -1665,6 +1669,14 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             continue
                         channel_name = decodeHtml(channel.get("name", "Unknown"))
                         channel_name = remove_parentheses(channel_name)
+                        # Catalog data is remote/mirror-switchable and
+                        # already treated as attacker-influenceable
+                        # elsewhere in this codebase (see
+                        # bouquet_manager.py's own control-char
+                        # stripping for #NAME/Favorite.txt lines) - an
+                        # embedded newline here would inject extra
+                        # lines into the generated playlist.
+                        channel_name = strip_control_chars(channel_name)
                         channel_url = "http://%s:%d/vavoo?channel=%s" % (
                             local_ip, PORT, channel_id)
                         m3u_lines.append("#EXTINF:-1,%s" % channel_name)
@@ -1679,7 +1691,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
             elif parsed_path.path == '/catalog':
-                p = proxy
+                # p is already bound once at the top of do_GET()
                 if hasattr(p, 'all_filtered_items'):
                     if not self.safe_send_response(200):
                         return
@@ -1691,7 +1703,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(404, "No catalog loaded")
 
             elif parsed_path.path == '/countries':
-                p = proxy
+                # p is already bound once at the top of do_GET()
                 countries = set()
                 if hasattr(p, 'all_filtered_items'):
                     for channel in p.all_filtered_items:
@@ -1708,7 +1720,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
             elif parsed_path.path == '/status':
-                p = proxy
+                # p is already bound once at the top of do_GET()
                 # Locked read - the writer (refresh_addon_sig_if_needed())
                 # updates "sig" and "ts" as two separate statements under
                 # this same lock, so an unlocked read here could observe
@@ -1751,7 +1763,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
             elif parsed_path.path == '/health':
                 """Health check endpoint with detailed status"""
-                p = proxy
+                # p is already bound once at the top of do_GET()
                 try:
                     now = time.time()
                     # Locked read, same reasoning as /status.
@@ -2183,8 +2195,29 @@ def run_proxy_in_background(startup_timeout=30):
             with open(PID_FILE) as f:
                 pid = int(f.read().strip())
             os.kill(pid, 0)          # verify process exists
-            os.kill(pid, 9)          # kill if it exists but is not listening
-            select.select([], [], [], 0.2)
+            # On a long-uptime embedded box, a small PID space means
+            # this exact number could since have been recycled to an
+            # unrelated process by the OS - killing by PID alone with
+            # no identity check would SIGKILL whatever that is now.
+            # write_pid_file() stores this same Enigma2 process's own
+            # pid (the proxy runs as an in-process thread, not a
+            # separate subprocess - see CLAUDE.md), so a genuine match
+            # should still look like the Enigma2 binary itself; if it
+            # doesn't, skip the kill rather than guess.
+            is_enigma2 = False
+            try:
+                with open("/proc/%d/cmdline" % pid, 'rb') as f:
+                    cmdline = f.read().decode('utf-8', 'ignore').lower()
+                is_enigma2 = 'enigma2' in cmdline
+            except Exception:
+                pass
+            if is_enigma2:
+                os.kill(pid, 9)      # kill if it exists but is not listening
+                select.select([], [], [], 0.2)
+            else:
+                print(
+                    "[Proxy] Stale PID %d no longer looks like enigma2, "
+                    "not killing" % pid)
         except Exception:
             pass
         try:
