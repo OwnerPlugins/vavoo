@@ -139,7 +139,12 @@ def get_local_ip():
 
 
 def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
-    """Add bouquet reference to the main bouquet file"""
+    """Add bouquet reference to the main bouquet file.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    this function has no locking of its own, and read-modify-write via
+    rename() on this shared file means a concurrent unlocked caller
+    would silently lose the other's update."""
     main_bouquet_path = join(ENIGMA_PATH, "bouquets." + bouquet_type.lower())
 
     if not bouquet_name.startswith("userbouquet."):
@@ -214,7 +219,10 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
 
 
 def deep_clean_bouquet_files():
-    """Remove Vavoo references from main bouquet files"""
+    """Remove Vavoo references from main bouquet files.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet()."""
     try:
         for bfile in ['bouquets.tv', 'bouquets.radio']:
             bouquet_path = join(ENIGMA_PATH, bfile)
@@ -253,6 +261,9 @@ def _remove_bouquet_lines_from_main_files(removed_filenames):
     any other Vavoo bouquet is updated (confirmed via a user-submitted
     log: exporting France then Portugal left bouquets.tv with only
     Portugal's line, even though France's bouquet file was created fine).
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet().
     """
     if not removed_filenames:
         return
@@ -1272,7 +1283,10 @@ def create_bouquet_file(
 
 
 def _update_favorite_file(name, url, export_type):
-    """Update Favorite.txt - URL is always empty (proxy only)"""
+    """Update Favorite.txt - URL is always empty (proxy only).
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet()."""
 
     # name comes from Vavoo's remote catalog (country/category text) -
     # unlike bouquet filenames (_sanitize_name_for_path()) or #NAME
@@ -1336,6 +1350,9 @@ def remove_favorite_entry(name):
     Counterpart to _update_favorite_file() - keeps a per-country/category
     "Remove Fav" from leaving a stale entry that a later scheduled
     auto-update run would just re-create.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet().
     """
     # Match _update_favorite_file()'s sanitization so a name containing
     # '|'/newline still finds and removes the entry it actually wrote.
@@ -1369,7 +1386,10 @@ def remove_favorite_entry(name):
 
 
 def reorganize_all_bouquets_position(list_position="bottom"):
-    """Reorganize all Vavoo bouquets to the configured position"""
+    """Reorganize all Vavoo bouquets to the configured position.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet()."""
     try:
         for bouquet_type in ['tv', 'radio']:
             main_bouquet_path = join(ENIGMA_PATH, "bouquets." + bouquet_type)
