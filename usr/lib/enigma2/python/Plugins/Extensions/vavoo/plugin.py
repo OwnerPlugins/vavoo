@@ -545,7 +545,6 @@ cfg.epg_enabled = ConfigEnableDisable(default=False)
 cfg.epg_auto_update = ConfigEnableDisable(default=False)
 cfg.similarity_threshold = ConfigSelectionNumber(
     default=75, min=50, max=100, stepwidth=5)
-cfg.timerupdate = ConfigSelectionNumber(default=5, min=1, max=60, stepwidth=1)
 cfg.timetype = ConfigSelection(
     default="interval", choices=[
         ("interval", _("interval")), ("fixed time", _("fixed time"))])
@@ -808,27 +807,11 @@ class vavoo_config(Screen, ConfigListScreen):
             )
         )
 
-        self.list.append(
-            getConfigListEntry(
-                _("Default View"),
-                cfg.default_view,
-                _("Default view when opening the plugin")))
-
         self.list.append(getConfigListEntry(
             _("Proxy startup timeout (seconds)"),
             cfg.proxy_startup_timeout,
             _("Increase if proxy takes long due to VPN or slow connection.")))
 
-        help_text = _("Server for player.") + "\n" + \
-            _("Now %s") % cfg.server.value
-
-        self.list.append(
-            getConfigListEntry(
-                _("Server for Player Used"),
-                cfg.server,
-                help_text
-            )
-        )
         self.list.append(getConfigListEntry(
             _("Enable Vavoo EPG"),
             cfg.epg_enabled,
@@ -917,17 +900,6 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Position of Vavoo bouquets in the main list"))
         )
 
-        help_line1 = _("Refresh stream every X minutes (1-15)")
-        help_line2 = _("Recommended: 5-8 minutes")
-        help_line3 = _("Lower = less interruption but more refreshes")
-        help_text = help_line1 + "\n" + help_line2 + "\n" + help_line3
-        self.list.append(
-            getConfigListEntry(
-                _("Refresh stream (minutes):"),
-                cfg.timerupdate,
-                help_text
-            )
-        )
         self.list.append(
             getConfigListEntry(
                 _("Select Background"),
