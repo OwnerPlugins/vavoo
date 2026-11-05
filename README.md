@@ -152,6 +152,11 @@ In the Config Menu:
   if geil.to's whole catalog can't be loaded. Check which one is
   active via `catalog_source` in `/status`/`/health`. Same default/
   fallback order the companion Android app uses.
+- **Channel logos (picons)**: Vavoo's catalog still names a dead logo
+  host (`logo.huhu.to`); geil.to gives the same pictures as a relative
+  path. Both are normalized to the host that actually serves them
+  (`vavoo.to/live2/logo/<n>.png`) before reaching `/channels` or any
+  export, regardless of which catalog is active.
 - Manages authentication with Vavoo servers (only needed when running
   on the Vavoo fallback)
 - Automatically renews tokens every 8-9 minutes (TOKEN_ADDON_SIG = 600 seconds)
@@ -176,6 +181,11 @@ In the Config Menu:
     by matching Vavoo's own live channel list against that country's
     own `epg_<cc>.xml` feed directly - built specifically for
     countries Rytec covers poorly (e.g. Spain, Poland, Turkey)
+  - **geil.to's own guide id** (its catalog's "tvg" field, present when
+    the catalog source is geil.to): checked directly against that
+    country's own EPG feed - an exact id match, skipping fuzzy name
+    matching entirely for that channel. No equivalent on the Vavoo
+    catalog fallback, which has no such id to offer.
   - Live Rytec fuzzy matching, then a live feed-direct fallback
   - Every matched channel gets a synthetic, per-channel-unique service
     reference (not a shared Rytec tuple) so unrelated channels across

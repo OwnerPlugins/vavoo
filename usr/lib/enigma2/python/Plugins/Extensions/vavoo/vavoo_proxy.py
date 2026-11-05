@@ -24,6 +24,7 @@ except ImportError:
     urllib3 = None
 import atexit
 import os
+import re
 from collections import OrderedDict
 from json import loads, load, dumps
 
@@ -546,6 +547,28 @@ def decode_response(resp):
         return resp.json()
     except ValueError:
         return loads(resp.content.decode('utf-8', 'ignore'))
+
+
+# Vavoo's catalog still names logo.huhu.to for channel pictures, which
+# no longer answers (https refused, http an empty image) - the same
+# pictures are actually served by vavoo.to under /live2/logo/<n>.png,
+# the same relative path geil.to gives directly for its own channels.
+# Ported from the companion Android app's ChannelLogos.fix() - applied
+# uniformly to every channel regardless of which catalog loaded it, so
+# picons work the same way on both the geil.to default and the Vavoo
+# fallback.
+_HUHU_LOGO_RE = re.compile(r'^https?://logo\.huhu\.to/logo\?c=(\d+)\.png$')
+
+
+def fix_logo_url(url):
+    if not url:
+        return url
+    m = _HUHU_LOGO_RE.match(url)
+    if m:
+        return "https://vavoo.to/live2/logo/%s.png" % m.group(1)
+    if url.startswith("/live2/logo/"):
+        return "https://vavoo.to" + url
+    return url
 
 
 def _rewrite_addon_sig_ip(sig, client_ip):
@@ -1105,9 +1128,19 @@ class VavooProxy(object):
                             "id": channel_id,
                             "name": item.get("name", ""),
                             "url": url_field,
-                            "logo": (item.get("images") or {}).get(
-                                "logo", ""),
-                            "group": group
+                            "logo": fix_logo_url(
+                                (item.get("images") or {}).get(
+                                    "logo", "")),
+                            "group": group,
+                            # geil.to's own guide id for this channel,
+                            # when it has one - checked directly
+                            # against the country's own EPG feed index
+                            # as a new highest-priority exact match in
+                            # VavooEPGMatcher.find_match(), before the
+                            # existing alias/cache/curated-DB/Rytec
+                            # fuzzy-matching chain.
+                            "epg_id": (item.get("ids") or {}).get(
+                                "tvg", "")
                         })
 
                     cursor = data.get("nextCursor")
@@ -1312,8 +1345,15 @@ class VavooProxy(object):
                             "id": item["ids"]["id"],
                             "name": item["name"],
                             "url": item["url"],
-                            "logo": item.get("logo", ""),
-                            "group": group
+                            "logo": fix_logo_url(item.get("logo", "")),
+                            "group": group,
+                            # Vavoo's own catalog has no separate guide
+                            # id field the way geil.to's does - this
+                            # key is always empty here, so
+                            # find_match()'s new epg_guide_id check is
+                            # a no-op on this path (falls straight
+                            # through to the existing matching chain).
+                            "epg_id": ""
                         }
 
                         all_channels.append(channel_data)
@@ -1839,7 +1879,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             "name": channel.get("name", ""),
                             "url": proxy_url,
                             "logo": channel.get("logo", ""),
-                            "country": channel.get("country", country)
+                            "country": channel.get("country", country),
+                            "epg_id": channel.get("epg_id", "")
                         })
 
                 if not self.safe_send_response(200):

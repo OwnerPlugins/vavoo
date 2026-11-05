@@ -2310,7 +2310,8 @@ class VavooEPGMatcher(object):
 
     def find_match(
             self, channel_name, country_code=None, servicetype="4097",
-            channel_id=None, allow_curated_promotion=False):
+            channel_id=None, allow_curated_promotion=False,
+            epg_guide_id=None):
         """Public entry point - serializes the whole lookup (including
         every self.cache/self.normalized_index/self.new_matches read
         and write below) behind self._cache_lock. This matcher is a
@@ -2338,6 +2339,13 @@ class VavooEPGMatcher(object):
         leaves this at the default so a channel's EPG binding can only
         change as a result of an export the user explicitly triggered.
 
+        epg_guide_id: the source catalog's own guide id for this
+        channel, if it has one (geil.to's "tvg" field - Vavoo's own
+        catalog has none, so this is always None on that path). When
+        set, checked directly against this country's own EPG feed
+        index before falling through to the existing curated-DB/live
+        Rytec fuzzy-matching chain - see the "2.5" step below.
+
         Returns a (rytec_id, sref, source) 3-tuple; source is one of
         "alias", "curated", "live" or None (no match).
 
@@ -2353,12 +2361,12 @@ class VavooEPGMatcher(object):
         with self._cache_lock:
             return self._find_match_locked(
                 channel_name, country_code, servicetype, channel_id,
-                allow_curated_promotion, curated_db)
+                allow_curated_promotion, curated_db, epg_guide_id)
 
     def _find_match_locked(
             self, channel_name, country_code=None, servicetype="4097",
             channel_id=None, allow_curated_promotion=False,
-            curated_db=None):
+            curated_db=None, epg_guide_id=None):
         if not channel_name:
             return None, None, None
 
@@ -2522,6 +2530,27 @@ class VavooEPGMatcher(object):
                         channel_name, country_code, servicetype)
                     return curated_id, unique_fallback_sref(
                         servicetype, channel_id), 'curated'
+
+        # 2.5. The source catalog's own guide id (geil.to's "tvg" field,
+        # threaded through as epg_guide_id - Vavoo's own catalog has no
+        # equivalent, so this is always a no-op on that path). A more
+        # direct variant of the name-based "own feed" fallback inside
+        # _find_match_internal() below - same per-country EPG feed
+        # index, just checked by the id the source already gave us
+        # instead of guessed from a fuzzy name match. Deliberately
+        # placed after the curated DB (human-reviewed) rather than
+        # before it - an automatically-supplied id shouldn't override a
+        # curator's own mapping for the same channel.
+        if epg_guide_id and country_code and channel_id:
+            feed_ids, _name_index = _get_epg_feed_index(country_code)
+            if feed_ids and epg_guide_id in feed_ids:
+                print(
+                    "[Match] GUIDE ID HIT (source catalog): {} -> {}".format(
+                        channel_name, epg_guide_id))
+                self._cleanup_stale_unmatched(
+                    channel_name, country_code, servicetype)
+                return epg_guide_id, unique_fallback_sref(
+                    servicetype, channel_id), 'live'
 
         # 3. Live matching
         print("[Match] Doing local matching for: {}".format(channel_name))

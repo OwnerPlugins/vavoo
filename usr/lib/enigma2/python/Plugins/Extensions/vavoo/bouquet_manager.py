@@ -722,7 +722,8 @@ def process_epg_matching_background(
                 rytec_id, dvb_ref, match_source = matcher.find_match(
                     ch['original_name'], country_code, servicetype,
                     channel_id=ch['channel_id'],
-                    allow_curated_promotion=True)
+                    allow_curated_promotion=True,
+                    epg_guide_id=ch.get('epg_id'))
                 if dvb_ref:
                     if dvb_ref.endswith(':'):
                         dvb_ref = dvb_ref[:-1]
@@ -1046,6 +1047,7 @@ def create_fallback_bouquet_sync(
                     'channel_id': channel_id,
                     'url': channel_url,
                     'original_name': channel_name,
+                    'epg_id': channel.get('epg_id', ''),
                     'fallback_sref': "%s%s" % (fallback_dvb_ref, encoded_url)
                 })
 
@@ -1199,7 +1201,8 @@ def create_bouquet_file(
                 # Perform matching once
                 rytec_id, dvb_ref, match_source = matcher.find_match(
                     channel_name, country_code, servicetype,
-                    channel_id=channel_id, allow_curated_promotion=True)
+                    channel_id=channel_id, allow_curated_promotion=True,
+                    epg_guide_id=channel.get('epg_id'))
 
                 if dvb_ref:
                     if dvb_ref.endswith(':'):
