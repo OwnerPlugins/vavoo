@@ -1114,6 +1114,16 @@ class VavooProxy(object):
                         url_field = item.get("url")
                         if not channel_id or not url_field:
                             continue
+                        # /vavoo?channel=<id> always looks this id up
+                        # as a string (it comes straight out of a URL
+                        # query parameter) - if geil.to's JSON ever
+                        # sends a numeric id, storing it unconverted
+                        # here would key channels_by_id by an int,
+                        # making every lookup from that endpoint miss
+                        # even though the channel lists/browses fine
+                        # (the /channels response just stringifies it
+                        # into a URL, never round-trips it back).
+                        channel_id = str(channel_id)
                         group = self._parse_geil_group(item)
                         base_country = group
                         for sep in separators:
