@@ -33,6 +33,8 @@ from . import (
     PROXY_STATUS_URL,
     PROXY_SHUTDOWN_URL,
     BASE_SITES,
+    GEIL_SITES,
+    GEIL_LIVE_PATH,
     HOST_GIT,
     SREF_MAP_FILE,
     __version__
@@ -68,9 +70,9 @@ print = make_print("PROXY")
 
 
 try:
-    from urllib.parse import unquote, urlparse, parse_qs
+    from urllib.parse import unquote, quote, urlparse, parse_qs
 except ImportError:
-    from urllib import unquote
+    from urllib import unquote, quote
     from urlparse import urlparse, parse_qs
 
 # Python 2/3 compatibility for exception names used in handlers
@@ -680,6 +682,17 @@ class VavooProxy(object):
         self.base_site_index = 0
         self._update_endpoints()
 
+        # geil.to (and its mirrors): same kind of IPTV catalog, no
+        # addonSig/token step - tried first in initialize_proxy(),
+        # with base_sites above as the fallback catalog source. Which
+        # one actually ended up loading the current catalog is tracked
+        # in catalog_source ("geil"/"vavoo") so resolve_with_retry()
+        # knows which API to resolve a channel's stream through,
+        # without needing to sniff each channel's url.
+        self.geil_sites = list(GEIL_SITES)
+        self.geil_site_index = 0
+        self.catalog_source = "vavoo"
+
         # Start lightweight token monitor only
         self.start_token_monitor()
         print(" Initialized at " + time.ctime())
@@ -714,6 +727,23 @@ class VavooProxy(object):
         new = self.base_sites[self.base_site_index]
         print(
             " Switching base site: {0} -> {1} {2}".format(old, new, reason))
+
+    def geil_base(self):
+        """Current geil.to mirror (changes on _switch_to_next_geil())."""
+        return self.geil_sites[self.geil_site_index]
+
+    def _switch_to_next_geil(self, reason=""):
+        """Switch to the next geil.to mirror - same idea as
+        _switch_to_next_base(), separate list/index since geil.to's
+        mirrors and Vavoo's are two unrelated services."""
+        if not self.geil_sites:
+            return
+        old = self.geil_sites[self.geil_site_index]
+        self.geil_site_index = (self.geil_site_index +
+                                1) % len(self.geil_sites)
+        new = self.geil_sites[self.geil_site_index]
+        print(
+            " Switching geil mirror: {0} -> {1} {2}".format(old, new, reason))
 
     def _robust_request(self, method, url, **kwargs):
         """Simplified and safer version"""
@@ -907,20 +937,32 @@ class VavooProxy(object):
                 return None
 
     def initialize_proxy(self):
-        """Initialize the proxy by loading the catalog with fallback"""
+        """Initialize the proxy by loading the catalog: geil.to first
+        (no addonSig/token step needed at all), Vavoo's sites
+        (vavoo.to/kool.to) as the fallback catalog source when
+        geil.to's whole catalog can't be loaded - same default/
+        fallback order the companion Android app uses."""
         try:
             print(" Initializing...")
 
-            # First, obtain a valid token
-            sig = self.refresh_addon_sig_if_needed()
-            if not sig:
-                print(
-                    " Warning: Could not get a valid token, but continuing anyway")
-                # We may continue with an old token or no token at all
+            print(" Attempting to load catalog from geil.to (no token needed)...")
+            all_channels = self.load_geil_catalog()
+            if all_channels:
+                self.catalog_source = "geil"
+            else:
+                print(" geil.to catalog unavailable, falling back to Vavoo")
+                self.catalog_source = "vavoo"
 
-            # Load the catalog
-            print(" Attempting to load catalog...")
-            all_channels = self.load_catalog(sig)
+                # First, obtain a valid token
+                sig = self.refresh_addon_sig_if_needed()
+                if not sig:
+                    print(
+                        " Warning: Could not get a valid token, but continuing anyway")
+                    # We may continue with an old token or no token at all
+
+                # Load the catalog
+                print(" Attempting to load catalog...")
+                all_channels = self.load_catalog(sig)
 
             if not all_channels or len(all_channels) == 0:
                 print(" Warning: Catalog is empty or failed to load")
@@ -969,6 +1011,132 @@ class VavooProxy(object):
             self.countries_list = []
             self.initialized = True
             return True  # Always return True; the proxy can work even without a catalog
+
+    def _parse_geil_group(self, item):
+        """geil.to's group comes as a tags array (first tag), not a
+        bare 'group' string field like Vavoo's - everything after
+        that (country/separator parsing) is identical."""
+        tags = item.get("tags")
+        if isinstance(tags, list) and tags:
+            return tags[0] or ""
+        return ""
+
+    def load_geil_catalog(self):
+        """Load the full IPTV catalog from geil.to (or a mirror) -
+        same kind of catalog as Vavoo's, paginated by an opaque
+        cursor, but with no addonSig/token step at all. Returns a
+        list of channel dicts in the exact same shape load_catalog()
+        produces ({country, id, name, url, logo, group}) so every
+        downstream consumer (the /channels endpoint, bouquet_manager.py,
+        M3U export...) needs no changes to work with either source.
+        Returns None on total failure (every mirror tried, nothing
+        usable) so initialize_proxy() knows to fall back to Vavoo."""
+        headers = {
+            "user-agent": "MediaHubMX/2",
+            "accept": "application/json",
+        }
+        separators = ["➾", "⟾", "->", "→", "»", "›"]
+        max_pages = 200
+        max_retries = 3
+
+        for _mirror_attempt in range(len(self.geil_sites)):
+            base = self.geil_base().rstrip('/')
+            all_channels = []
+            cursor = None
+            page = 1
+            last_exception = None
+            try:
+                while page <= max_pages:
+                    url = base + GEIL_LIVE_PATH + "/catalog/live/channels.json"
+                    if cursor:
+                        url += "?cursor=" + quote(cursor, safe='')
+
+                    data = None
+                    # Same "give up fast on an empty page, retry harder
+                    # once there's already something" asymmetry the
+                    # Android app uses - a dead mirror on page 1 should
+                    # move on to the next mirror quickly, but losing a
+                    # later page after the mirror proved itself working
+                    # is worth a couple of retries rather than throwing
+                    # away everything already downloaded.
+                    attempts = 1 if not all_channels else max_retries
+                    for attempt in range(attempts):
+                        try:
+                            r = self.session.get(
+                                url, headers=headers, timeout=30)
+                            r.raise_for_status()
+                            data = r.json()
+                            break
+                        except Exception as e:
+                            last_exception = e
+                            print(
+                                "[Geil] {0} page {1} attempt {2}/{3} "
+                                "failed: {4}".format(
+                                    base, page, attempt + 1, attempts, e))
+                            if attempt < attempts - 1:
+                                select.select([], [], [], 2 ** attempt)
+
+                    if data is None:
+                        if not all_channels:
+                            raise last_exception or IOError(
+                                "no channel list from " + base)
+                        break
+
+                    items = data.get("items") or []
+                    if not items:
+                        break
+
+                    for item in items:
+                        channel_id = item.get("id")
+                        url_field = item.get("url")
+                        if not channel_id or not url_field:
+                            continue
+                        group = self._parse_geil_group(item)
+                        base_country = group
+                        for sep in separators:
+                            if sep in base_country:
+                                base_country = base_country.split(sep)[
+                                    0].strip()
+                                break
+                        if not base_country:
+                            base_country = "default"
+                        all_channels.append({
+                            "country": base_country,
+                            "id": channel_id,
+                            "name": item.get("name", ""),
+                            "url": url_field,
+                            "logo": (item.get("images") or {}).get(
+                                "logo", ""),
+                            "group": group
+                        })
+
+                    cursor = data.get("nextCursor")
+                    if not cursor:
+                        break
+                    page += 1
+                    if page % 10 == 0:
+                        select.select([], [], [], 0.1)
+
+                # Same sanity floor the Android app uses - a handful of
+                # channels means a broken/placeholder response, not a
+                # real catalog; fall through to the next mirror instead
+                # of accepting it.
+                if len(all_channels) < 100:
+                    raise IOError(
+                        "only {0} channels from {1}".format(
+                            len(all_channels), base))
+
+                print(
+                    "[Geil] Catalog loaded from {0}: {1} channels "
+                    "({2} pages)".format(base, len(all_channels), page))
+                return all_channels
+
+            except Exception as e:
+                print("[Geil] {0} failed: {1}".format(base, e))
+                self._switch_to_next_geil("({0})".format(e))
+
+        print("[Geil] All mirrors failed, no catalog")
+        return None
 
     def load_catalog(self, sig):
         """Load the complete catalog with improved error handling including JSON decode errors."""
@@ -1242,9 +1410,59 @@ class VavooProxy(object):
                     self._resolve_inflight.pop(channel_url, None)
                 event.set()
 
+    def _resolve_geil_channel(self, channel_url, max_retries):
+        """Resolve a geil.to channel's stream address - GET
+        {base}/live/resolve?url=<its play address>, no token at all.
+        Tries the current geil mirror first, then the others, same
+        shape as the Vavoo resolve path but a different API entirely
+        (never falls back to Vavoo's API for this same channel_url -
+        it's a geil.to catalog id/url, which Vavoo's API has no
+        knowledge of)."""
+        headers = {
+            "user-agent": "MediaHubMX/2",
+            "accept": "application/json",
+        }
+        sites = [self.geil_base()] + [
+            s for s in self.geil_sites if s != self.geil_base()]
+        last_exception = None
+        for site in sites[:max(1, max_retries)]:
+            url = site.rstrip('/') + GEIL_LIVE_PATH + "/resolve?url=" + \
+                quote(channel_url, safe='')
+            try:
+                r = self.session.get(url, headers=headers, timeout=15)
+                r.raise_for_status()
+                result = decode_response(r)
+                stream_url = None
+                if isinstance(result, dict):
+                    stream_url = result.get("url") or result.get(
+                        "streamUrl")
+                if stream_url:
+                    with self.resolve_cache_lock:
+                        self.resolve_cache.pop(channel_url, None)
+                        self.resolve_cache[channel_url] = {
+                            "url": stream_url, "ts": time.time()}
+                        if len(self.resolve_cache) > 1000:
+                            keys = list(self.resolve_cache.keys())[:-500]
+                            for key in keys:
+                                self.resolve_cache.pop(key, None)
+                    return stream_url
+                print("[Geil] {0} answered with no stream url".format(site))
+            except Exception as e:
+                last_exception = e
+                print("[Geil] Resolve via {0} failed: {1}".format(site, e))
+                if site == self.geil_base():
+                    self._switch_to_next_geil("({0} on resolve)".format(e))
+        if last_exception:
+            print(
+                "[Geil] Failed to resolve channel after trying all "
+                "mirrors: {0}".format(last_exception))
+        return None
+
     def _do_resolve_with_retry(self, channel_url, max_retries):
         """The actual network resolve + retry loop - see
         resolve_with_retry() for the in-flight dedup wrapping this."""
+        if self.catalog_source == "geil":
+            return self._resolve_geil_channel(channel_url, max_retries)
         for attempt in range(max_retries):
             try:
                 if attempt > 0:
@@ -1731,6 +1949,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     "initialized": p.initialized,
                     "channels_count": len(
                         p.all_filtered_items),
+                    "catalog_source": p.catalog_source,
                     "addon_sig_valid": addon_sig["sig"] is not None,
                     "addon_sig_age": int(
                         time.time() -
@@ -1781,11 +2000,17 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     channels_count = len(
                         p.all_filtered_items) if initialized else 0
 
-                    # Proxy status
+                    # When geil.to is the active catalog source, no
+                    # token is ever fetched (it needs none) - requiring
+                    # token_valid here too would always report
+                    # "unhealthy" even though everything is working.
+                    token_required = p.catalog_source != "geil"
                     proxy_status = {
-                        "status": "healthy" if initialized and token_valid else "unhealthy",
+                        "status": "healthy" if initialized and (
+                            token_valid or not token_required) else "unhealthy",
                         "initialized": initialized,
                         "channels_count": channels_count,
+                        "catalog_source": p.catalog_source,
                         "token": {
                             "valid": token_valid,
                             "age": int(token_age),

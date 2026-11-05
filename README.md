@@ -146,13 +146,21 @@ In the Config Menu:
 ## 🛠 Technical Features
 
 ### Local Proxy (127.0.0.1:4323)
-- Manages authentication with Vavoo servers
+- **Catalog source**: tries geil.to (and its mirrors) first - the same
+  kind of IPTV catalog, but with no authentication/token step needed
+  at all. Falls back to Vavoo's servers (vavoo.to, then kool.to) only
+  if geil.to's whole catalog can't be loaded. Check which one is
+  active via `catalog_source` in `/status`/`/health`. Same default/
+  fallback order the companion Android app uses.
+- Manages authentication with Vavoo servers (only needed when running
+  on the Vavoo fallback)
 - Automatically renews tokens every 8-9 minutes (TOKEN_ADDON_SIG = 600 seconds)
 - Provides stable URLs for bouquets
 - Completely eliminates 10-minute streaming blocks
 - Self-monitoring with automatic restart on failure
 - Connection pool management to prevent timeouts
-- **Mirror Support**: Automatic fallback between vavoo.to and kool.to when HTTP 451 is detected
+- **Mirror Support**: Automatic fallback between geil.to's own mirrors,
+  and separately between vavoo.to and kool.to when HTTP 451 is detected
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
 
@@ -188,7 +196,7 @@ In the Config Menu:
 
 ## 📋 API Endpoints
 The proxy provides these endpoints:
-- `/status` – Check proxy status
+- `/status` – Check proxy status (includes `catalog_source`: "geil" or "vavoo")
 - `/channels?country=CountryName` – Get channels by country
 - `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect)
 - `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
@@ -197,7 +205,7 @@ The proxy provides these endpoints:
 - `/countries` – List all countries
 - `/refresh_token` – Force token refresh
 - `/epg/<country>.xml` – Redirect to GitHub EPG file
-- `/health` – Detailed health check with token age
+- `/health` – Detailed health check with token age (token is only required/reported when `catalog_source` is "vavoo" - geil.to needs none)
 - `/shutdown` – Gracefully stop proxy
 
 ## 🗂 File Management
@@ -295,7 +303,8 @@ curl -s http://127.0.0.1:4323/health
 | M3U export fails | Verify port 4323 is accessible |
 | "No programme found" | Clear EPG cache and re-export bouquet; check country EPG file exists |
 | EPG not updating | Verify EPG is enabled in config and GitHub files are accessible |
-| HTTP 451 errors | Proxy automatically switches to mirror sites (kool.to) |
+| HTTP 451 errors | Proxy automatically switches to mirror sites (geil.to's mirrors, or kool.to on the Vavoo fallback) |
+| Streams not resolving at all | Check `catalog_source` in `/status` - if stuck on "vavoo" with no token, geil.to may be unreachable from your network |
 | Duplicate cache entries | Press YELLOW button in main menu to fix cache format |
 
 ### Notification Issues

@@ -39,6 +39,13 @@ LOG_FILE = "/tmp/vavoo.log"
 PRIMARY_BASE_URL = "https://vavoo.to"
 FALLBACK_BASE_URL = "https://kool.to"
 BASE_SITES = [PRIMARY_BASE_URL, FALLBACK_BASE_URL]
+# geil.to (and its mirrors - the same service) serves the same kind of
+# IPTV catalog with no addonSig/token step at all - tried first since
+# it needs no token, with BASE_SITES above as the fallback catalog
+# source when it's unreachable. Same approach the companion Android
+# app (pQu4k3r/vavoo_android) already ships.
+GEIL_SITES = ["https://geil.to", "https://geil.app", "https://geil.win"]
+GEIL_LIVE_PATH = "/live"
 PY2 = version_info[0] == 2
 PY3 = version_info[0] == 3
 
