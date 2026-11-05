@@ -1971,8 +1971,14 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         # embedded newline here would inject extra
                         # lines into the generated playlist.
                         channel_name = strip_control_chars(channel_name)
+                        # channel_id is catalog data too (same threat
+                        # model as channel_name above) and is embedded
+                        # directly into this line's URL, not just its
+                        # text - quote() closes both the newline-
+                        # injection gap and a stray "&"/"#"/space
+                        # corrupting the query string itself.
                         channel_url = "http://%s:%d/vavoo?channel=%s" % (
-                            local_ip, PORT, channel_id)
+                            local_ip, PORT, quote(str(channel_id), safe=''))
                         m3u_lines.append("#EXTINF:-1,%s" % channel_name)
                         m3u_lines.append(channel_url)
                 m3u_text = "\n".join(m3u_lines) + "\n"

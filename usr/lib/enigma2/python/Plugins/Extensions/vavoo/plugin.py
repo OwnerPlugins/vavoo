@@ -1345,10 +1345,17 @@ class vavoo_config(Screen, ConfigListScreen):
                             # Rebuild the proxy URL with the chosen host
                             # instead of the LAN IP the proxy always
                             # embeds in its /channels response.
+                            # channel_id is catalog data too (same
+                            # threat model as channel_name below) and
+                            # is embedded directly into this line's
+                            # URL, not just its text - url_quote()
+                            # closes both the newline-injection gap and
+                            # a stray "&"/"#"/space corrupting the URL
+                            # itself.
                             channel_url = "http://{}:{}/vavoo?channel={}".format(
-                                host, PORT, channel_id)
+                                host, PORT, url_quote(strip_control_chars(str(channel_id))))
                         else:
-                            channel_url = channel.get('url', '')
+                            channel_url = strip_control_chars(channel.get('url', ''))
 
                         # Clean channel name
                         channel_name = decodeHtml(channel_name)
