@@ -188,6 +188,8 @@ Example Response:
 {
     "initialized": true,
     "channels_count": 1250,
+    "catalog_source": "geil",
+    "token_required": false,
     "addon_sig_valid": true,
     "addon_sig_age": 42,
     "local_ip": "192.168.1.10",
@@ -589,11 +591,16 @@ _GEIL_SOURCE_TAGS = {"1": "b", "6": "c", "7": "s"}
 def fix_geil_name(name):
     if not name:
         return name
-    m = _GEIL_SOURCE_RE.search(name)
+    # _GEIL_SOURCE_RE anchors on $ (end of string) - match against a
+    # right-stripped copy so a trailing space (a plausible artifact of
+    # scraped/externally-sourced catalog text) doesn't silently defeat
+    # the whole suffix-stripping step.
+    stripped = name.rstrip()
+    m = _GEIL_SOURCE_RE.search(stripped)
     if not m:
         return name
     tag = _GEIL_SOURCE_TAGS.get(m.group(1), m.group(1))
-    return name[:m.start()].rstrip() + " ." + tag
+    return stripped[:m.start()].rstrip() + " ." + tag
 
 
 def _rewrite_addon_sig_ip(sig, client_ip):
@@ -1135,48 +1142,64 @@ class VavooProxy(object):
                         break
 
                     for item in items:
-                        channel_id = item.get("id")
-                        url_field = item.get("url")
-                        if not channel_id or not url_field:
+                        try:
+                            channel_id = item.get("id")
+                            url_field = item.get("url")
+                            if not channel_id or not url_field:
+                                continue
+                            # /vavoo?channel=<id> always looks this id up
+                            # as a string (it comes straight out of a URL
+                            # query parameter) - if geil.to's JSON ever
+                            # sends a numeric id, storing it unconverted
+                            # here would key channels_by_id by an int,
+                            # making every lookup from that endpoint miss
+                            # even though the channel lists/browses fine
+                            # (the /channels response just stringifies it
+                            # into a URL, never round-trips it back).
+                            channel_id = str(channel_id)
+                            group = self._parse_geil_group(item)
+                            base_country = group
+                            for sep in separators:
+                                if sep in base_country:
+                                    base_country = base_country.split(sep)[
+                                        0].strip()
+                                    break
+                            if not base_country:
+                                base_country = "default"
+                            # "images"/"ids" are only falsy-defaulted to
+                            # {} - a present-but-non-dict value (a
+                            # malformed/placeholder record a live
+                            # third-party catalog can plausibly send)
+                            # would raise AttributeError on .get() below
+                            # and, uncaught, would abort this whole
+                            # page/mirror instead of just this one item.
+                            images = item.get("images")
+                            ids = item.get("ids")
+                            if not isinstance(images, dict):
+                                images = {}
+                            if not isinstance(ids, dict):
+                                ids = {}
+                            all_channels.append({
+                                "country": base_country,
+                                "id": channel_id,
+                                "name": fix_geil_name(item.get("name", "")),
+                                "url": url_field,
+                                "logo": fix_logo_url(
+                                    images.get("logo", "")),
+                                "group": group,
+                                # geil.to's own guide id for this channel,
+                                # when it has one - checked directly
+                                # against the country's own EPG feed index
+                                # as a new highest-priority exact match in
+                                # VavooEPGMatcher.find_match(), before the
+                                # existing alias/cache/curated-DB/Rytec
+                                # fuzzy-matching chain.
+                                "epg_id": ids.get("tvg", "")
+                            })
+                        except Exception as e:
+                            print(
+                                "[Geil] Skipping malformed catalog item: {0}".format(e))
                             continue
-                        # /vavoo?channel=<id> always looks this id up
-                        # as a string (it comes straight out of a URL
-                        # query parameter) - if geil.to's JSON ever
-                        # sends a numeric id, storing it unconverted
-                        # here would key channels_by_id by an int,
-                        # making every lookup from that endpoint miss
-                        # even though the channel lists/browses fine
-                        # (the /channels response just stringifies it
-                        # into a URL, never round-trips it back).
-                        channel_id = str(channel_id)
-                        group = self._parse_geil_group(item)
-                        base_country = group
-                        for sep in separators:
-                            if sep in base_country:
-                                base_country = base_country.split(sep)[
-                                    0].strip()
-                                break
-                        if not base_country:
-                            base_country = "default"
-                        all_channels.append({
-                            "country": base_country,
-                            "id": channel_id,
-                            "name": fix_geil_name(item.get("name", "")),
-                            "url": url_field,
-                            "logo": fix_logo_url(
-                                (item.get("images") or {}).get(
-                                    "logo", "")),
-                            "group": group,
-                            # geil.to's own guide id for this channel,
-                            # when it has one - checked directly
-                            # against the country's own EPG feed index
-                            # as a new highest-priority exact match in
-                            # VavooEPGMatcher.find_match(), before the
-                            # existing alias/cache/curated-DB/Rytec
-                            # fuzzy-matching chain.
-                            "epg_id": (item.get("ids") or {}).get(
-                                "tvg", "")
-                        })
 
                     cursor = data.get("nextCursor")
                     if not cursor:
@@ -1497,8 +1520,14 @@ class VavooProxy(object):
             "user-agent": "MediaHubMX/2",
             "accept": "application/json",
         }
-        sites = [self.geil_base()] + [
-            s for s in self.geil_sites if s != self.geil_base()]
+        # Read geil_base() once into a local - a concurrent
+        # _switch_to_next_geil() call (from another in-flight resolve)
+        # between two separate reads here could make this list comp
+        # exclude the mirror it actually put first, silently dropping
+        # a different mirror from this attempt's candidates instead.
+        current_base = self.geil_base()
+        sites = [current_base] + [
+            s for s in self.geil_sites if s != current_base]
         last_exception = None
         for site in sites[:max(1, max_retries)]:
             url = site.rstrip('/') + GEIL_LIVE_PATH + "/resolve?url=" + \
@@ -2032,6 +2061,13 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     "channels_count": len(
                         p.all_filtered_items),
                     "catalog_source": p.catalog_source,
+                    # geil.to needs no token at all, so addon_sig_valid
+                    # is permanently false and addon_sig_age a huge
+                    # nonsense number on that source - this flag tells
+                    # a consumer not to treat either as a problem, same
+                    # disambiguation /health's "status" field already
+                    # makes internally.
+                    "token_required": p.catalog_source != "geil",
                     "addon_sig_valid": addon_sig["sig"] is not None,
                     "addon_sig_age": int(
                         time.time() -
@@ -2094,10 +2130,20 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         "channels_count": channels_count,
                         "catalog_source": p.catalog_source,
                         "token": {
-                            "valid": token_valid,
+                            # Only the top-level "status" field above
+                            # accounted for token_required before - on
+                            # geil.to, where no token is ever fetched,
+                            # "valid"/"needs_refresh" otherwise read as
+                            # a permanent false/true contradicting a
+                            # "healthy" overall status, which would
+                            # false-positive-alert any monitoring that
+                            # watches this sub-object directly instead
+                            # of the top-level field.
+                            "required": token_required,
+                            "valid": token_valid if token_required else True,
                             "age": int(token_age),
                             "ttl": ttl,
-                            "needs_refresh": needs_refresh,
+                            "needs_refresh": needs_refresh if token_required else False,
                             "expires_in": str(ttl) + "s"
                         },
                         "system": {
@@ -2514,8 +2560,18 @@ def run_proxy_in_background(startup_timeout=30):
             is_enigma2 = False
             try:
                 with open("/proc/%d/cmdline" % pid, 'rb') as f:
-                    cmdline = f.read().decode('utf-8', 'ignore').lower()
-                is_enigma2 = 'enigma2' in cmdline
+                    raw_cmdline = f.read()
+                # A substring check over the whole cmdline is nearly
+                # meaningless on this platform: almost every plugin
+                # helper/cron/maintenance script is invoked via a path
+                # under /usr/lib/enigma2/python/... or similar, so
+                # 'enigma2' in cmdline would match that unrelated
+                # process too if PID reuse ever handed it this exact
+                # number. Check only argv[0]'s basename against the
+                # actual binary name instead.
+                argv0 = raw_cmdline.split(b'\x00', 1)[0].decode(
+                    'utf-8', 'ignore')
+                is_enigma2 = os.path.basename(argv0).lower() == 'enigma2'
             except Exception:
                 pass
             if is_enigma2:
