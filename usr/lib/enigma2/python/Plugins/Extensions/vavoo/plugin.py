@@ -4214,7 +4214,7 @@ class VavooLogViewer(Screen):
         self['text'] = Label('')
         self['key_red'] = Label(_('Close'))
         self['actions'] = ActionMap(
-            ['OkCancelActions', 'DirectionActions'],
+            ['OkCancelActions', 'ColorActions', 'DirectionActions'],
             {
                 "ok": self.close,
                 "cancel": self.close,
