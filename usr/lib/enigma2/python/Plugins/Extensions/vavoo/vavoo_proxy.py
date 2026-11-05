@@ -571,6 +571,31 @@ def fix_logo_url(url):
     return url
 
 
+# geil.to numbers a channel's alternate sources with a trailing
+# "(N)" (e.g. "RAI 1 (1)"); Vavoo's own catalog tags the same idea
+# with a per-source letter suffix instead (e.g. "RAI 1 .b" - see
+# channel_alias.py/epg_name_utils.py's _VAVOO_SUFFIX_RE, which strips
+# exactly this ".X" pattern during EPG name matching). Left
+# unconverted, a geil channel's "(1)" survives into every display
+# and into EPG matching, where it's not recognized as a source
+# suffix at all. Ported from the companion Android app's
+# CatalogParser.geilName() - same source-number -> Vavoo-letter
+# mapping, so the same channel keeps the same base name (and so
+# favourites/EPG matches) regardless of which catalog it came from.
+_GEIL_SOURCE_RE = re.compile(r'\s*\((\d{1,2})\)$')
+_GEIL_SOURCE_TAGS = {"1": "b", "6": "c", "7": "s"}
+
+
+def fix_geil_name(name):
+    if not name:
+        return name
+    m = _GEIL_SOURCE_RE.search(name)
+    if not m:
+        return name
+    tag = _GEIL_SOURCE_TAGS.get(m.group(1), m.group(1))
+    return name[:m.start()].rstrip() + " ." + tag
+
+
 def _rewrite_addon_sig_ip(sig, client_ip):
     """Rewrite the client IP embedded inside a base64-encoded addonSig.
 
@@ -1136,7 +1161,7 @@ class VavooProxy(object):
                         all_channels.append({
                             "country": base_country,
                             "id": channel_id,
-                            "name": item.get("name", ""),
+                            "name": fix_geil_name(item.get("name", "")),
                             "url": url_field,
                             "logo": fix_logo_url(
                                 (item.get("images") or {}).get(
