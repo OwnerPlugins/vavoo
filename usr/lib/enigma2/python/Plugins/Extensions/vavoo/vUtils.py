@@ -2081,7 +2081,7 @@ class VavooEPGMatcher(object):
 
     def _find_match_internal(
             self, channel_name, country_code, channel_id=None,
-            servicetype="4097"):
+            servicetype="4097", feed_index=None):
         """
         Search for a match in ALL Rytec channels, then apply boost based on user configuration.
         """
@@ -2256,8 +2256,14 @@ class VavooEPGMatcher(object):
         # programme-guide metadata, not satellite broadcast data), so a
         # synthesized, collision-free sref is generated the same way an
         # otherwise-unmatched channel already gets one.
+        #
+        # feed_index is pre-fetched by find_match() before self._cache_lock
+        # is taken (same reasoning as curated_db - _get_epg_feed_index()
+        # can block on a cold, multi-MB network fetch, which must never
+        # happen while holding the lock the concurrent EPG-overlay thread
+        # also needs for its own find_match() calls).
         if channel_id and country_code:
-            feed_ids, name_index = _get_epg_feed_index(country_code)
+            _feed_ids, name_index = feed_index if feed_index else (None, None)
             if name_index:
                 feed_match_id = _find_feed_id_by_name(
                     channel_name, self, name_index)
@@ -2349,24 +2355,27 @@ class VavooEPGMatcher(object):
         Returns a (rytec_id, sref, source) 3-tuple; source is one of
         "alias", "curated", "live" or None (no match).
 
-        Deliberately fetches the curated DB *before* acquiring
-        self._cache_lock: _load_curated_channel_db() has its own
-        independent lock/24h cache and never touches self.cache/
-        self.normalized_index, but a cold per-country cache can block
-        on a ~15s network fetch - doing that while holding the lock
-        the concurrent EPG-overlay thread also needs for its own,
-        unrelated find_match() calls would stall it for the same
-        ~15s for no reason."""
+        Deliberately fetches the curated DB, and this country's own EPG
+        feed index, *before* acquiring self._cache_lock: both
+        _load_curated_channel_db() and _get_epg_feed_index() have their
+        own independent caches and never touch self.cache/
+        self.normalized_index, but either can block on a cold,
+        multi-second-to-multi-MB network fetch - doing that while
+        holding the lock the concurrent EPG-overlay thread also needs
+        for its own, unrelated find_match() calls would stall it for
+        that whole duration for no reason."""
         curated_db = _load_curated_channel_db(country_code) if country_code else None
+        feed_index = _get_epg_feed_index(country_code) if country_code else None
         with self._cache_lock:
             return self._find_match_locked(
                 channel_name, country_code, servicetype, channel_id,
-                allow_curated_promotion, curated_db, epg_guide_id)
+                allow_curated_promotion, curated_db, epg_guide_id,
+                feed_index)
 
     def _find_match_locked(
             self, channel_name, country_code=None, servicetype="4097",
             channel_id=None, allow_curated_promotion=False,
-            curated_db=None, epg_guide_id=None):
+            curated_db=None, epg_guide_id=None, feed_index=None):
         if not channel_name:
             return None, None, None
 
@@ -2536,13 +2545,15 @@ class VavooEPGMatcher(object):
         # equivalent, so this is always a no-op on that path). A more
         # direct variant of the name-based "own feed" fallback inside
         # _find_match_internal() below - same per-country EPG feed
-        # index, just checked by the id the source already gave us
-        # instead of guessed from a fuzzy name match. Deliberately
-        # placed after the curated DB (human-reviewed) rather than
-        # before it - an automatically-supplied id shouldn't override a
-        # curator's own mapping for the same channel.
+        # index (feed_index, pre-fetched by find_match() before
+        # self._cache_lock was taken - see its docstring), just checked
+        # by the id the source already gave us instead of guessed from
+        # a fuzzy name match. Deliberately placed after the curated DB
+        # (human-reviewed) rather than before it - an automatically-
+        # supplied id shouldn't override a curator's own mapping for
+        # the same channel.
         if epg_guide_id and country_code and channel_id:
-            feed_ids, _name_index = _get_epg_feed_index(country_code)
+            feed_ids, _name_index = feed_index if feed_index else (None, None)
             if feed_ids and epg_guide_id in feed_ids:
                 print(
                     "[Match] GUIDE ID HIT (source catalog): {} -> {}".format(
@@ -2560,7 +2571,7 @@ class VavooEPGMatcher(object):
 
         result_id, result_sref = self._find_match_internal(
             channel_name, country_code, channel_id=channel_id,
-            servicetype=servicetype)
+            servicetype=servicetype, feed_index=feed_index)
 
         # Is there already an entry in the cache (even with invalid ID)?
         # Resolve via normalized_index first: the raw key an entry is
