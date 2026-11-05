@@ -516,13 +516,29 @@ class ConfigSearchText(ConfigText):
         ConfigText.__init__(self, default=default)
 
 
+class ConfigAction(ConfigSelection):
+    """A config-list entry with no value column at all - a single,
+    fixed empty-string choice, so left/right can't cycle it and the
+    row renders with a blank value instead of a Yes/No toggle that
+    looks like a real setting but never actually gates anything
+    (gnm3u()'s dispatch below only checks which row is highlighted,
+    never the ConfigYesNo value itself - so "No"/"Yes" was pure,
+    misleading decoration). Built on ConfigSelection (already used
+    elsewhere in this file) with one choice, matching core Enigma2's
+    own ConfigNothing idiom, rather than importing that class sight
+    unseen."""
+
+    def __init__(self):
+        ConfigSelection.__init__(self, choices=[""])
+
+
 config.plugins.vavoo = ConfigSubsection()
 cfg = config.plugins.vavoo
 cfg.proxy_enabled = ConfigEnableDisable(default=True)
 cfg.autobouquetupdate = ConfigEnableDisable(default=False)
 cfg.genm3u = NoSave(ConfigYesNo(default=False))
-cfg.show_log = NoSave(ConfigYesNo(default=False))
-cfg.view_favourites = NoSave(ConfigYesNo(default=False))
+cfg.show_log = NoSave(ConfigAction())
+cfg.view_favourites = NoSave(ConfigAction())
 cfg.server = ConfigSelection(default=PRIMARY_BASE_URL, choices=myser)
 cfg.services = ConfigSelection(default='4097', choices=modemovie)
 cfg.epg_enabled = ConfigEnableDisable(default=False)
@@ -963,19 +979,15 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=10,
                 default=True)
         elif sel and sel == cfg.show_log:
-            # Pseudo-button, same "Ok for Exec" pattern as cfg.genm3u
-            # above - reset it immediately, then act.
-            cfg.show_log.setValue(0)
-            cfg.show_log.save()
+            # ConfigAction has nothing to reset (see its own
+            # docstring) - no setValue()/.save() needed, unlike
+            # cfg.genm3u's ConfigYesNo above.
             self.session.open(
-                Console,
+                VavooLogViewer,
                 title=_("Vavoo Log"),
-                cmdlist=["tail -n 200 %s" % LOG_FILE],
-                closeOnSuccess=False,
-                allow_restart=False)
+                file_path=LOG_FILE,
+                tail_lines=200)
         elif sel and sel == cfg.view_favourites:
-            cfg.view_favourites.setValue(0)
-            cfg.view_favourites.save()
             self.session.open(VavooFavourites)
         elif sel and sel in (
                 cfg.playlist_key, cfg.parental_pin, cfg.parental_countries):
@@ -4171,6 +4183,99 @@ class VavooFavourites(Screen):
         if NOTIFICATION_AVAILABLE:
             quick_notify(_("Removed from favourites: {}").format(name), 3)
         self._build_list()
+
+
+class VavooLogViewer(Screen):
+    """Dedicated log-tail viewer with real up/down/page scrolling -
+    Console.py (used for this previously) has none at all: its text
+    widget is a plain Label that always shows just the last ~13 lines
+    of whatever's been printed, by design (built for live
+    install-script output, where only the latest line matters - fine
+    there, useless for browsing a static multi-hundred-line log file
+    where most of it is further back than that).
+
+    Reuses Console's own skin (the exact same inline XML, picked for
+    the current resolution once at Console's class-definition time -
+    no new skin file to keep in sync across hd/fhd/wqhd) but not
+    Console's class or ActionMap: this reads the file directly in
+    Python (no eConsoleAppContainer/shell command needed for a plain
+    file read) and binds OkCancelActions - the convention every other
+    screen in this file actually uses - instead of Console's
+    WizardActions/"exit", which nothing else here relies on."""
+
+    VISIBLE_LINES = Console.VISIBLE_LINES
+
+    def __init__(self, session, title, file_path, tail_lines=200):
+        Screen.__init__(self, session)
+        # Same skin, minus the two things that don't apply to a
+        # read-only log view: the static "Command execution..."
+        # header and the green "Restart GUI" caption (no green key
+        # bound here at all - same reasoning as Console.py's own
+        # allow_restart=False path).
+        self.skin = Console.skin.replace(
+            'Command execution...', title
+        ).replace('text="Restart GUI"', 'text=""')
+        self._closed = False
+        self.onClose.append(self._mark_closed)
+
+        try:
+            with codecs.open(
+                    file_path, 'r', encoding='utf-8',
+                    errors='replace') as f:
+                self.lines = [
+                    line.rstrip('\n') for line in f.readlines()[-tail_lines:]]
+        except Exception as e:
+            self.lines = ["Could not read {}: {}".format(file_path, e)]
+
+        # Start scrolled to the most recent lines (what "tail" means),
+        # same as the command this replaced - up/page-up reach
+        # earlier ones.
+        self.offset = max(0, len(self.lines) - self.VISIBLE_LINES)
+
+        self['text'] = Label('')
+        self['key_red'] = Label(_('Close'))
+        self['actions'] = ActionMap(
+            ['OkCancelActions', 'DirectionActions'],
+            {
+                "ok": self.close,
+                "cancel": self.close,
+                "red": self.close,
+                "up": self.moveUp,
+                "down": self.moveDown,
+                "left": self.pageUp,
+                "right": self.pageDown,
+            },
+            -1
+        )
+        self.onLayoutFinish.append(self._render)
+
+    def _mark_closed(self):
+        self._closed = True
+
+    def _max_offset(self):
+        return max(0, len(self.lines) - self.VISIBLE_LINES)
+
+    def _render(self):
+        window = self.lines[self.offset:self.offset + self.VISIBLE_LINES]
+        self['text'].setText('\n'.join(window))
+
+    def moveUp(self):
+        if self.offset > 0:
+            self.offset -= 1
+            self._render()
+
+    def moveDown(self):
+        if self.offset < self._max_offset():
+            self.offset += 1
+            self._render()
+
+    def pageUp(self):
+        self.offset = max(0, self.offset - self.VISIBLE_LINES)
+        self._render()
+
+    def pageDown(self):
+        self.offset = min(self._max_offset(), self.offset + self.VISIBLE_LINES)
+        self._render()
 
 
 # --- Live search screen ---
