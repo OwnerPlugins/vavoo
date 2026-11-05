@@ -55,6 +55,14 @@ from .vUtils import (
     # RequestAgent
 )
 
+# Zero-Enigma2-dependency name-normalization shared with EPG matching
+# (see vUtils.py/epg_name_utils.py's own docstring) - reused here as
+# the channel-grouping key: "same channel, different source/quality
+# variant" is exactly the equivalence clean_name_for_similarity()
+# already establishes for Rytec matching, so there is no need for a
+# second, separately-maintained normalization rule.
+from .epg_name_utils import clean_name_for_similarity
+
 # Same convention vUtils.py already uses to read this plugin's own
 # config (config.plugins.vavoo.*) without importing from plugin.py
 # itself, which would be circular (plugin.py imports this module).
@@ -603,6 +611,45 @@ def fix_geil_name(name):
     return stripped[:m.start()].rstrip() + " ." + tag
 
 
+# Channel grouping (like the companion Android app's "group sources"
+# option): several catalog entries are really the same channel from
+# different sources, distinguished only by a trailing Vavoo-style
+# ".b"/".c"/".s" suffix (geil.to's own "(N)" suffix is already
+# normalized to match this by fix_geil_name() above). /channels folds
+# every source sharing the same clean_name_for_similarity() key into
+# one row, addressed by a synthetic "grp:<country>:<key>" id instead
+# of a single catalog id - see resolve_group_with_retry() for how
+# /vavoo resolves that into an actual source's stream.
+GROUP_ID_PREFIX = "grp:"
+_SOURCE_DISPLAY_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
+
+
+def _strip_source_suffix(name):
+    """Trailing source-variant suffix stripped for DISPLAY - unlike
+    clean_name_for_similarity() (the grouping KEY), this keeps
+    everything else about the name as-is (case, spacing, quality
+    tags), since it's what a channel list row/EPG actually shows."""
+    if not name:
+        return name
+    return _SOURCE_DISPLAY_SUFFIX_RE.sub('', name).strip()
+
+
+def make_group_id(country, key):
+    return GROUP_ID_PREFIX + (country or "").lower() + ":" + key
+
+
+def parse_group_id(group_id):
+    """("italy", "rai 1") from "grp:italy:rai 1", or (None, None) if
+    group_id isn't one of ours."""
+    if not group_id or not group_id.startswith(GROUP_ID_PREFIX):
+        return None, None
+    rest = group_id[len(GROUP_ID_PREFIX):]
+    if ":" not in rest:
+        return None, None
+    country, key = rest.split(":", 1)
+    return country, key
+
+
 def _rewrite_addon_sig_ip(sig, client_ip):
     """Rewrite the client IP embedded inside a base64-encoded addonSig.
 
@@ -747,6 +794,14 @@ class VavooProxy(object):
         self.geil_sites = list(GEIL_SITES)
         self.geil_site_index = 0
         self.catalog_source = "vavoo"
+
+        # Last member actually resolved for a given channel group (see
+        # resolve_group_with_retry()) - lets a force=1 EOF-retry resolve
+        # of the SAME group skip straight past the source that just
+        # failed instead of handing the player that identical dead
+        # source again.
+        self.group_last_member = {}
+        self.group_lock = threading.Lock()
 
         # Start lightweight token monitor only
         self.start_token_monitor()
@@ -1508,6 +1563,55 @@ class VavooProxy(object):
                     self._resolve_inflight.pop(channel_url, None)
                 event.set()
 
+    def _group_members(self, country, key):
+        """Every catalog entry that is a source of the channel group
+        (country, key) - recomputed on demand from all_filtered_items
+        rather than a cached index, since this only runs once per
+        tune-in/retry (not a hot path) and so can never go stale
+        across a catalog reload. Mirrors /channels' own grouping step
+        (see its handler)."""
+        country = (country or "").lower()
+        out = []
+        for ch in self.all_filtered_items:
+            if ch.get("country", "").lower() != country:
+                continue
+            if clean_name_for_similarity(ch.get("name", "")) == key:
+                out.append(ch)
+        return out
+
+    def resolve_group_with_retry(self, group_id, force_refresh=False):
+        """Resolve a grouped channel (a "grp:<country>:<key>" id - see
+        /channels and make_group_id()/parse_group_id()): try its
+        members in catalog order, same as a single-source resolve,
+        except a force=1 retry (the player's existing EOF-retry loop -
+        see plugin.py's Playstream2) skips whichever member this same
+        group last resolved to, so a dead source is routed around
+        instead of being handed back to the player again. Only tried
+        again itself as a last resort, if every other member also
+        fails."""
+        country, key = parse_group_id(group_id)
+        if not key:
+            return None
+        members = self._group_members(country, key)
+        if not members:
+            return None
+        exclude_id = None
+        if force_refresh:
+            with self.group_lock:
+                exclude_id = self.group_last_member.get(group_id)
+        # Stable sort: every other member first, the excluded one last.
+        ordered = sorted(members, key=lambda m: m.get("id") == exclude_id)
+        for member in ordered:
+            member_id = member.get("id")
+            member_force = force_refresh if member_id == exclude_id else False
+            stream_url = self.resolve_with_retry(
+                member.get("url"), force_refresh=member_force)
+            if stream_url:
+                with self.group_lock:
+                    self.group_last_member[group_id] = member_id
+                return stream_url
+        return None
+
     def _resolve_geil_channel(self, channel_url, max_retries):
         """Resolve a geil.to channel's stream address - GET
         {base}/live/resolve?url=<its play address>, no token at all.
@@ -1767,23 +1871,31 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(400, "Missing channel parameter")
                     return
 
-                channel = p.channels_by_id.get(channel_id) if hasattr(
-                    p, 'channels_by_id') else None
-
-                if not channel:
-                    self.send_error(404, "Channel not found")
-                    return
+                # force=1 (sent by the player's EOF-retry path) bypasses
+                # the resolve cache, since retrying against the same
+                # cached URL that just failed would otherwise guarantee
+                # every retry fails the same way.
+                force_refresh = query_params.get(
+                    'force', ['0'])[0] == '1'
 
                 try:
-                    # 1. Resolve the Vavoo stream URL. force=1 (sent by
-                    # the player's EOF-retry path) bypasses the resolve
-                    # cache, since retrying against the same cached URL
-                    # that just failed would otherwise guarantee every
-                    # retry fails the same way.
-                    force_refresh = query_params.get(
-                        'force', ['0'])[0] == '1'
-                    stream_url = p.resolve_with_retry(
-                        channel.get("url"), force_refresh=force_refresh)
+                    if channel_id.startswith(GROUP_ID_PREFIX):
+                        # A grouped channel (see /channels' own grouping
+                        # step) - no single catalog entry to look up;
+                        # try its sources in order instead, routing
+                        # around whichever one a force=1 retry says just
+                        # failed (see resolve_group_with_retry()).
+                        stream_url = p.resolve_group_with_retry(
+                            channel_id, force_refresh=force_refresh)
+                    else:
+                        channel = p.channels_by_id.get(channel_id) if hasattr(
+                            p, 'channels_by_id') else None
+                        if not channel:
+                            self.send_error(404, "Channel not found")
+                            return
+                        stream_url = p.resolve_with_retry(
+                            channel.get("url"), force_refresh=force_refresh)
+
                     if not stream_url:
                         self.send_error(404, "Stream not resolved")
                         return
@@ -1933,9 +2045,65 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 response_channels = []
                 local_ip = p.get_local_ip()
 
+                # Group sources of the same channel (Vavoo's own
+                # ".b"/".c"/".s" convention, which geil.to's "(N)"
+                # suffix is already normalized to by fix_geil_name())
+                # into a single row, like the companion Android app's
+                # "group sources" option - reuses clean_name_for_
+                # similarity() (EPG matching's own name-normalization)
+                # as the grouping key, since "same channel, different
+                # source" is exactly the equivalence that function
+                # already establishes. A name that normalizes to ""
+                # (nothing recognizable left) is never grouped with
+                # anything else - shown standalone, same as today.
+                key_members = {}
                 for channel in matching_channels:
-                    channel_id = channel.get("id", "")
-                    if channel_id:
+                    key = clean_name_for_similarity(channel.get("name", ""))
+                    if key:
+                        key_members.setdefault(key, []).append(channel)
+
+                emitted_keys = set()
+                for channel in matching_channels:
+                    key = clean_name_for_similarity(channel.get("name", ""))
+                    members = key_members.get(key) if key else None
+
+                    if members and len(members) > 1:
+                        # Several sources of one channel - one row for
+                        # all of them, emitted the first time any of
+                        # its sources is reached (so the row lands
+                        # where the first source would have, instead
+                        # of reordering the list), skipped every other
+                        # time. Resolved through resolve_group_with_
+                        # retry() via its synthetic group id, which
+                        # tries each source in turn and routes around
+                        # whichever one a player's EOF-retry (force=1)
+                        # says just failed.
+                        if key in emitted_keys:
+                            continue
+                        emitted_keys.add(key)
+                        group_id = make_group_id(country, key)
+                        display_names = [
+                            _strip_source_suffix(m.get("name", "")) or
+                            m.get("name", "") for m in members]
+                        display_name = min(display_names, key=len)
+                        logo = next(
+                            (m.get("logo") for m in members if m.get("logo")), "")
+                        epg_id = next(
+                            (m.get("epg_id") for m in members if m.get("epg_id")), "")
+                        proxy_url = "http://%s:%d/vavoo?channel=%s" % (
+                            local_ip, PORT, quote(group_id, safe=''))
+                        response_channels.append({
+                            "id": group_id,
+                            "name": display_name,
+                            "url": proxy_url,
+                            "logo": logo,
+                            "country": country,
+                            "epg_id": epg_id
+                        })
+                    else:
+                        channel_id = channel.get("id", "")
+                        if not channel_id:
+                            continue
                         proxy_url = "http://%s:%d/vavoo?channel=%s" % (
                             local_ip, PORT, channel_id)
                         response_channels.append({

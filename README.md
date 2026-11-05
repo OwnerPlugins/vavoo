@@ -166,6 +166,19 @@ In the Config Menu:
 - Connection pool management to prevent timeouts
 - **Mirror Support**: Automatic fallback between geil.to's own mirrors,
   and separately between vavoo.to and kool.to when HTTP 451 is detected
+- **Grouped sources**: several catalog entries for the same channel
+  (Vavoo's own `.b`/`.c`/`.s`-style suffix, geil.to's `(N)` already
+  normalized to match it) are shown as a single row in `/channels`
+  (and so in the plugin's channel list, search, favourites, and
+  exported bouquets - all of which read `/channels`), named without
+  the suffix. A player resolving that row - and a repeated resolve
+  after a playback failure (the same `force=1` retry the EOF-recovery
+  loop already sends) - transparently tries the group's other sources
+  before giving up, same idea as the companion Android app's "group
+  sources" option. Like Mirror Support above, this only re-routes a
+  *resolve* failure (no stream link obtainable at all, or a source
+  that just died during playback via the plugin's own player) - it
+  can't recover a source that resolved fine but is slow/buffering.
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
 
@@ -207,8 +220,13 @@ In the Config Menu:
 ## 📋 API Endpoints
 The proxy provides these endpoints:
 - `/status` – Check proxy status (includes `catalog_source`: "geil" or "vavoo")
-- `/channels?country=CountryName` – Get channels by country
-- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect)
+- `/channels?country=CountryName` – Get channels by country (sources of
+  the same channel grouped into one row - see Grouped sources above;
+  its `id` is then a synthetic `grp:<country>:<key>` handle rather
+  than a single catalog id)
+- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect); a
+  `grp:...` id resolves through the group's sources in turn instead of
+  a single catalog entry
 - `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/playlist.m3u?country=CountryName&key=AccessKey` – Live, always-current M3U playlist for external players (VLC/Kodi/TiviMate); `country` and `key` are both optional (key only required if "Playlist Access Key" is set in Config)
 - `/catalog` – Full channel catalog
