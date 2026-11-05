@@ -2076,19 +2076,30 @@ def _shared_update_proxy_status_display(screen):
                 if response:
                     status_data = loads(ensure_str(response))
 
-                    if status_data.get(
-                            "initialized", False) and status_data.get(
-                            "addon_sig_valid", False):
-                        token_age = status_data.get("addon_sig_age", 0)
-
-                        if token_age < 300:
-                            status_text = "✓ Proxy OK"
-                        elif token_age < 540:
-                            ttl = 600 - token_age
-                            status_text = "✓ Proxy (" + \
-                                str(int(ttl)) + "s)"
+                    # geil.to (the default catalog source - see
+                    # vavoo_proxy.py's catalog_source) needs no
+                    # addonSig token at all, so addon_sig_valid is
+                    # always False while running on it - requiring it
+                    # unconditionally here showed "Proxy Error" on an
+                    # otherwise perfectly healthy geil.to proxy.
+                    token_required = status_data.get(
+                        "catalog_source", "vavoo") != "geil"
+                    if status_data.get("initialized", False) and (
+                            not token_required or status_data.get(
+                                "addon_sig_valid", False)):
+                        if not token_required:
+                            status_text = "✓ Proxy OK (geil.to)"
                         else:
-                            status_text = "Proxy (expiring)"
+                            token_age = status_data.get("addon_sig_age", 0)
+
+                            if token_age < 300:
+                                status_text = "✓ Proxy OK"
+                            elif token_age < 540:
+                                ttl = 600 - token_age
+                                status_text = "✓ Proxy (" + \
+                                    str(int(ttl)) + "s)"
+                            else:
+                                status_text = "Proxy (expiring)"
                     else:
                         status_text = "✗ Proxy Error"
                 else:
