@@ -59,7 +59,6 @@ RENAME_RULES = [
     # silently reassigned to the wrong channel.
     ("MOTORTREND", "MOTOR TREND"),
     ("CANALE 5", "CANALE5"),
-    ("MOTORTREND", "MOTOR TREND"),
     ("LA 7 D", "LA7D"),
     ("RAI SPORT", "RAI SPORT"),  # keep as is, but we can add logo later
     # History channels

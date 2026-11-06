@@ -134,20 +134,25 @@ class HybridNotificationManager(object):
             self.notification_window.hide()
 
     def _processPendingMessages(self):
-        """Process pending messages after initialization"""
+        """Process pending messages after initialization, one at a
+        time with a delay between each. Showing them all back-to-back
+        in a plain loop was pointless - each _showMessage() call
+        immediately overwrites the widget text and restarts the hide
+        timer, so only the very last queued message was ever actually
+        seen; every earlier one was replaced before a viewer could
+        read it. Pop one, show it, and (if more remain) reschedule
+        this same callback after that message's own duration so the
+        next one gets its full, visible turn."""
         if not self.notification_window:
             return
-        # Snapshot-and-clear atomically under the lock, then show the
-        # messages outside it - otherwise a showMessage() call from
-        # another thread landing between the loop finishing and the
-        # list reset below could get silently dropped.
         with self._lock:
             if not self.pending_messages:
                 return
-            messages = self.pending_messages
-            self.pending_messages = []
-        for msg, duration in messages:
-            self._showMessage(msg, duration)
+            msg, duration = self.pending_messages.pop(0)
+            remaining = bool(self.pending_messages)
+        self._showMessage(msg, duration)
+        if remaining:
+            self.pending_timer.start(duration, True)
 
     def _showMessage(self, message, duration):
         """Internal method to show message"""

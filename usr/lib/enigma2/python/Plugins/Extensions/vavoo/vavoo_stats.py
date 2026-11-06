@@ -42,30 +42,29 @@ def _http_post(url, payload):
         from urllib2 import (
             Request, HTTPRedirectHandler, build_opener)
 
-    data = json.dumps(payload).encode('utf-8')
-    headers = {'Content-Type': 'application/json'}
-    req = Request(url, data=data, headers=headers)
-
-    # Google Apps Script /exec URLs answer every request, including
-    # POSTs, with a 302 to a one-time googleusercontent.com execution
-    # URL. urllib's default HTTPRedirectHandler follows that redirect
-    # by converting the POST into a bodyless GET (matches legacy
-    # browser behavior) - silently dropping the JSON payload before it
-    # ever reaches the script. Preserve method+body across redirects
-    # instead of letting that happen.
-    class PreservePostRedirectHandler(HTTPRedirectHandler):
-        def redirect_request(self, req, fp, code, msg, headers, newurl):
-            if code in (301, 302, 303) and req.get_method() == 'POST':
-                new_req = Request(
-                    newurl, data=req.data, headers=req.headers)
-                new_req.get_method = lambda: 'POST'
-                return new_req
-            return HTTPRedirectHandler.redirect_request(
-                self, req, fp, code, msg, headers, newurl)
-
-    opener = build_opener(PreservePostRedirectHandler)
-
     try:
+        data = json.dumps(payload).encode('utf-8')
+        headers = {'Content-Type': 'application/json'}
+        req = Request(url, data=data, headers=headers)
+
+        # Google Apps Script /exec URLs answer every request, including
+        # POSTs, with a 302 to a one-time googleusercontent.com execution
+        # URL. urllib's default HTTPRedirectHandler follows that redirect
+        # by converting the POST into a bodyless GET (matches legacy
+        # browser behavior) - silently dropping the JSON payload before
+        # it ever reaches the script. Preserve method+body across
+        # redirects instead of letting that happen.
+        class PreservePostRedirectHandler(HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                if code in (301, 302, 303) and req.get_method() == 'POST':
+                    new_req = Request(
+                        newurl, data=req.data, headers=req.headers)
+                    new_req.get_method = lambda: 'POST'
+                    return new_req
+                return HTTPRedirectHandler.redirect_request(
+                    self, req, fp, code, msg, headers, newurl)
+
+        opener = build_opener(PreservePostRedirectHandler)
         response = opener.open(req, timeout=_HTTP_TIMEOUT)
         return response.read()
     except Exception as e:
@@ -76,7 +75,6 @@ def _http_post(url, payload):
 class AnonymousStats(object):
     def __init__(self):
         self._session_id = None
-        self._send_timer = None
 
     def _get_or_create_session_id(self):
         """Return (session_id, already_sent) for this boot.
