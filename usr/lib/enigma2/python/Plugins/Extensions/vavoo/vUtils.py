@@ -3,6 +3,7 @@
 from __future__ import absolute_import, print_function
 import base64
 import glob
+import hashlib
 import io
 try:
     import six
@@ -53,6 +54,7 @@ from . import (
     PROXY_BASE_URL,
     PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
+    PICON_CACHE_DIR,
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
@@ -1386,6 +1388,109 @@ def download_flag_online(
     except Exception as e:
         print("Flag download error: %s" % e)
         return False, "Flag download error: %s" % e
+
+
+# ============================================================================
+# PICON DOWNLOAD FUNCTIONS
+# ============================================================================
+def _picon_cache_filename(logo_url):
+    """Stable, filesystem-safe cache filename for a channel's logo URL.
+
+    An md5 hash of the whole URL, not any part of its own path - the
+    URL comes straight from a third-party catalog (geil.to/Vavoo) this
+    plugin doesn't control, so no part of it should double as a
+    filename untouched. Two channels that happen to share the exact
+    same logo URL naturally share one cache entry instead of each
+    re-downloading it.
+    """
+    return hashlib.md5(logo_url.encode('utf-8')).hexdigest() + '.png'
+
+
+def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
+    """Local path a picon for this logo URL would be cached at,
+    whether or not it has actually been downloaded yet - the one
+    place this filename is computed, shared by download_picon_online()
+    (which writes it) and show_list() (which only ever reads it, never
+    downloading synchronously itself), so the two can't drift apart.
+    """
+    if not logo_url:
+        return None
+    return join(cache_dir, _picon_cache_filename(logo_url))
+
+
+def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
+    """Download and cache a channel picon from its catalog-provided
+    logo URL (geil.to's own picons, or Vavoo's - see vavoo_proxy.py's
+    fix_logo_url()). Mirrors download_flag_online()'s mechanics
+    (timeout, cache-dir creation, PNG-header validation before
+    writing) for the same reasons - including graceful failure: if
+    the URL doesn't actually serve a valid PNG, this just reports
+    failure and the caller keeps showing its default icon, same as
+    before this existed.
+
+    Returns: (success, cache_path_or_error_message)
+    """
+    if not logo_url:
+        return False, "No logo URL"
+
+    try:
+        if not exists(cache_dir):
+            try:
+                makedirs(cache_dir)
+            except Exception as e:
+                debug("Could not create picon cache dir {}: {}".format(
+                    cache_dir, e))
+
+        cache_file = get_picon_cache_path(logo_url, cache_dir)
+
+        # Fresh cache (<7 days, same window as flags - channel logos
+        # change about as rarely as country flags do).
+        if exists(cache_file):
+            try:
+                if (time() - getmtime(cache_file) < 604800
+                        and getsize(cache_file) > 100):
+                    return True, cache_file
+            except Exception as e:
+                debug("Picon cache freshness check failed for {}: {}".format(
+                    cache_file, e))
+
+        req = Request(logo_url, headers={'User-Agent': 'Vavoo-Stream/1.0'})
+        try:
+            if PY3:
+                response = urlopen(req, timeout=5, context=ssl_context)
+            else:
+                response = urlopen(req, timeout=5)
+        except Exception as e:
+            return False, "Network error: %s" % e
+
+        if response.getcode() != 200:
+            return False, "Download failed (HTTP %d)" % response.getcode()
+        picon_data = response.read()
+        try:
+            response.close()
+        except Exception:
+            pass
+
+        if len(picon_data) < 100:
+            return False, "Picon file too small (%d bytes)" % len(
+                picon_data)
+
+        # Validate the PNG header in memory before writing anything -
+        # fix_logo_url() only ever points this at a *.png path, but
+        # that's a hint from the catalog, not a guarantee.
+        if picon_data[:8] != b'\x89PNG\r\n\x1a\n':
+            return False, "Not a valid PNG"
+
+        try:
+            with open(cache_file, 'wb') as f:
+                f.write(picon_data)
+            return True, cache_file
+        except Exception as e:
+            return False, "Save error: %s" % e
+
+    except Exception as e:
+        print("Picon download error: %s" % e)
+        return False, "Picon download error: %s" % e
 
 
 def get_country_code_from_bouquet_name(name):

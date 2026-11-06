@@ -97,13 +97,13 @@ from .vavoo_stats import (
     stop_heartbeat, STATS_DISABLE_FILE
 )
 from . import vavoo_proxy
-from .vavoo_proxy import run_proxy_in_background, shutdown_proxy
+from .vavoo_proxy import run_proxy_in_background, shutdown_proxy, fix_logo_url
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
     PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, PROXY_SHUTDOWN_URL,
-    FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF,
-    LOG_FILE
+    FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL,
+    EPGIMPORT_CONF, LOG_FILE
 )
 from . import PY2, PY3, vUtils
 from .bouquet_manager import (
@@ -127,10 +127,12 @@ from .vUtils import (
     check_remote_installer_version,
     decodeHtml,
     download_flag_online,
+    download_picon_online,
     ensure_str,
     fix_cache_format,
     getUrl,
     get_country_code,
+    get_picon_cache_path,
     initialize_cache_with_local_flags,
     is_proxy_ready,
     is_proxy_running,
@@ -633,7 +635,7 @@ class m2list(MenuList):
         return entry
 
 
-def show_list(name, link, is_category=False, is_channel=False):
+def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     """Build a MultiContent entry with icon and text."""
 
     safe_name = to_string(name)
@@ -644,6 +646,25 @@ def show_list(name, link, is_category=False, is_channel=False):
     # Default icon
     default_icon = join(PLUGIN_PATH, 'skin/pics/vavoo_ico.png')
     icon_path = default_icon
+
+    if is_channel and logo_url:
+        # Same convention as the flag icon below: only ever read the
+        # cache here, never download synchronously inside this
+        # function (called once per row while building a possibly
+        # large list) - a channel's picon shows up once
+        # _preload_channel_picons() has actually fetched it and
+        # rebuilt the list, same lag the flag icons already have for
+        # countries.
+        try:
+            cache_file = get_picon_cache_path(logo_url)
+            if cache_file and file_exists(cache_file):
+                if getsize(cache_file) > 100:
+                    icon_path = cache_file
+                else:
+                    unlink(cache_file)
+        except Exception as e:
+            debug("Picon cache check failed for {}: {}".format(
+                logo_url, e))
 
     if not is_channel and not is_category:
         country_name = safe_name.split('➾')[0].split(
@@ -3453,6 +3474,19 @@ class vavoo(Screen):
         self.option_value = option_value
         self._update_export_button_label()
 
+        # (name, url, logo_url) per currently-listed channel, parallel
+        # to cat_list - lets _refresh_channel_list_with_picons()
+        # rebuild the list once more picons have been cached, without
+        # re-fetching the channel data over the network.
+        self._channel_entries = []
+        self.picon_refresh_timer = eTimer()
+        try:
+            self.picon_refresh_timer.callback.append(
+                self._refresh_channel_list_with_picons)
+        except Exception:
+            self.picon_refresh_timer.timeout.connect(
+                self._refresh_channel_list_with_picons)
+
         # Do NOT try to initialize proxy here - it should already be running
         # Just verify it's ready
         self._verify_proxy_ready()
@@ -3681,6 +3715,7 @@ class vavoo(Screen):
 
             data = loads(content)
             self.cat_list = []
+            self._channel_entries = []
 
             for entry in data:
                 country = url_unquote(entry.get("country", "")).strip("\r\n")
@@ -3689,8 +3724,17 @@ class vavoo(Screen):
                     url = entry.get("url", "")
 
                     if name and url:
+                        # This fetch bypasses our own proxy (it hits
+                        # vavoo.to/kool.to's /channels directly), so
+                        # any logo URL here is still in its raw,
+                        # un-fixed form (see vavoo_proxy.py's own
+                        # fix_logo_url() docstring) - fix it up the
+                        # same way before caching/displaying it.
+                        logo = fix_logo_url(entry.get("logo", ""))
+                        self._channel_entries.append((name, url, logo))
                         self.cat_list.append(
-                            show_list(name, url, is_channel=True)
+                            show_list(
+                                name, url, is_channel=True, logo_url=logo)
                         )
 
             if not self.cat_list:
@@ -3704,6 +3748,7 @@ class vavoo(Screen):
                 for item in self.cat_list
             ]
             self.update_menu()
+            self._preload_channel_picons()
             print(
                 "[Fallback] Loaded " +
                 str(len(self.cat_list)) +
@@ -3719,6 +3764,7 @@ class vavoo(Screen):
     def _build_channel_list(self, channels_data):
         """Build channel list from proxy data"""
         self.cat_list = []
+        self._channel_entries = []
 
         if not isinstance(channels_data, list):
             print("[vavoo] Invalid channels data type: " +
@@ -3729,9 +3775,17 @@ class vavoo(Screen):
             if isinstance(channel, dict):
                 channel_name = channel.get("name", "Unknown")
                 channel_url = channel.get("url", "")
+                # Already fixed up (geil.to/Vavoo) by our own proxy's
+                # /channels endpoint - no need to run it through
+                # fix_logo_url() again here.
+                logo = channel.get("logo", "")
 
+                self._channel_entries.append(
+                    (channel_name, channel_url, logo))
                 self.cat_list.append(
-                    show_list(channel_name, channel_url, is_channel=True)
+                    show_list(
+                        channel_name, channel_url, is_channel=True,
+                        logo_url=logo)
                 )
 
         if not self.cat_list:
@@ -3742,7 +3796,93 @@ class vavoo(Screen):
             item[0][0] + "###" + item[0][1] for item in self.cat_list
         ]
         self.update_menu()
+        self._preload_channel_picons()
         debug("List built with " + str(len(self.cat_list)) + " items.")
+
+    def _preload_channel_picons(self):
+        """Download picons for this country's channel list in the
+        background (see show_list()'s logo_url handling), then
+        refresh the list once they land.
+
+        Entirely on a background thread, including the first batch -
+        this runs right after _build_channel_list()/
+        _on_fallback_content() on the GUI/reactor thread itself, so a
+        synchronous network call here would block the UI exactly the
+        way this session's getUrl()-on-the-GUI-thread fixes were
+        about avoiding. Downloads a first batch and refreshes the
+        list so the visible screenful gets its picons quickly, then
+        keeps going through the rest with one final refresh.
+        """
+        entries = [
+            entry for entry in self._channel_entries if entry[2]
+        ]
+        if not entries:
+            return
+
+        first_batch_size = 20
+
+        def _download_batch(batch):
+            count = 0
+            for name, url, logo in batch:
+                if self._closed:
+                    break
+                try:
+                    success, _unused = download_picon_online(logo)
+                    if success:
+                        count += 1
+                except Exception as e:
+                    debug("Picon download failed for {}: {}".format(
+                        name, e))
+            return count
+
+        def _worker():
+            first = _download_batch(entries[:first_batch_size])
+            if first > 0 and not self._closed:
+                reactor.callFromThread(
+                    self.picon_refresh_timer.start, 500, True)
+            if len(entries) > first_batch_size and not self._closed:
+                rest = _download_batch(entries[first_batch_size:])
+                if rest > 0 and not self._closed:
+                    reactor.callFromThread(
+                        self.picon_refresh_timer.start, 500, True)
+
+        t = threading.Thread(target=_worker)
+        t.daemon = True
+        t.start()
+
+    def _refresh_channel_list_with_picons(self):
+        """Rebuild the channel list from the already-fetched channel
+        data (no new network fetch) so rows whose picon finished
+        downloading since the list was first built pick it up."""
+        self.picon_refresh_timer.stop()
+        if self._closed or not self._channel_entries:
+            return
+        try:
+            # setList() below replaces the whole list - preserve
+            # wherever the user had scrolled to instead of silently
+            # snapping back to the top under them.
+            try:
+                selected_index = self['menulist'].getSelectedIndex()
+            except Exception:
+                selected_index = None
+
+            self.cat_list = [
+                show_list(name, url, is_channel=True, logo_url=logo)
+                for name, url, logo in self._channel_entries
+            ]
+            self.itemlist = [
+                item[0][0] + "###" + item[0][1] for item in self.cat_list
+            ]
+            self.update_menu()
+
+            if selected_index is not None and self.cat_list:
+                try:
+                    self['menulist'].moveToIndex(
+                        min(selected_index, len(self.cat_list) - 1))
+                except Exception:
+                    pass
+        except Exception as e:
+            print("[vavoo] Error refreshing picon list: %s" % str(e))
 
     def _handle_cat_error(self, e):
         """Handle cat() method errors"""
@@ -4104,6 +4244,11 @@ class vavoo(Screen):
                 self.proxy_status_timer.stop()
         except Exception as e:
             print("Error stopping proxy_status_timer: " + str(e))
+        try:
+            if hasattr(self, 'picon_refresh_timer'):
+                self.picon_refresh_timer.stop()
+        except Exception as e:
+            print("Error stopping picon_refresh_timer: " + str(e))
         return Screen.close(self, *args, **kwargs)
 
     def backhome(self):
