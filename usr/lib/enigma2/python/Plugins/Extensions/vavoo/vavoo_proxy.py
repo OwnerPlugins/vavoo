@@ -55,13 +55,6 @@ from .vUtils import (
     # RequestAgent
 )
 
-# Zero-Enigma2-dependency name-normalization shared with EPG matching
-# (see vUtils.py/epg_name_utils.py's own docstring) - reused here as
-# the channel-grouping key: "same channel, different source/quality
-# variant" is exactly the equivalence clean_name_for_similarity()
-# already establishes for Rytec matching, so there is no need for a
-# second, separately-maintained normalization rule.
-from .epg_name_utils import clean_name_for_similarity
 
 # Same convention vUtils.py already uses to read this plugin's own
 # config (config.plugins.vavoo.*) without importing from plugin.py
@@ -615,20 +608,65 @@ def fix_geil_name(name):
 # option): several catalog entries are really the same channel from
 # different sources, distinguished only by a trailing Vavoo-style
 # ".b"/".c"/".s" suffix (geil.to's own "(N)" suffix is already
-# normalized to match this by fix_geil_name() above). /channels folds
-# every source sharing the same clean_name_for_similarity() key into
-# one row, addressed by a synthetic "grp:<country>:<key>" id instead
-# of a single catalog id - see resolve_group_with_retry() for how
-# /vavoo resolves that into an actual source's stream.
+# normalized to match this by fix_geil_name() above), or a genuine
+# quality/backup variant of the exact same feed. /channels folds every
+# source sharing the same _group_key() into one row, addressed by a
+# synthetic "grp:<country>:<key>" id instead of a single catalog id -
+# see resolve_group_with_retry() for how /vavoo resolves that into an
+# actual source's stream.
+#
+# Deliberately NOT epg_name_utils.clean_name_for_similarity() - that
+# function is tuned for *fuzzy EPG matching* (tolerant of noise by
+# design) and strips "ITA"/"PLUS"/"TIMVISION" as if they were pure
+# quality tags. For EPG matching that tolerance is fine; for grouping
+# it is not - those words mark a genuinely different channel/feed
+# (a language dub, a separately-branded sibling, a different IPTV
+# rebrand), not just another source of the same one. Reusing it here
+# caused real catalog pairs like "Comedy Central" + "Comedy Central
+# Plus" or "Discovery Channel" + "Discovery Channel ITA" to collapse
+# into a single row, silently stranding whichever channel didn't win
+# resolve_group_with_retry()'s first-success pick. This stricter key
+# only strips what the Vavoo/geil.to source-suffix convention itself
+# adds (the suffix, [..]/(..) annotations) plus genuine quality/backup
+# variants (HD/FHD/UHD/SD/4K/HEVC/H265/BACKUP, looped so "X HD BACKUP"
+# still fully collapses to "X") - nothing that could itself be part of
+# a real channel's name.
 GROUP_ID_PREFIX = "grp:"
 _SOURCE_DISPLAY_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
+_GROUP_BRACKETS_RE = re.compile(r'\[[^\]]*\]')
+_GROUP_PARENS_RE = re.compile(r'\([^)]*\)')
+_GROUP_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
+_GROUP_QUALITY_RE = re.compile(
+    r'\s+(HD|FHD|UHD|SD|4K|HEVC|H265|BACKUP)$', re.IGNORECASE)
+_GROUP_NON_WORD_RE = re.compile(r'[^\w ]', re.UNICODE)
+_GROUP_MULTI_SPACE_RE = re.compile(r'\s+')
+
+
+def _group_key(name):
+    """Grouping key: same key = sources of the same channel. Empty
+    when nothing recognizable is left (never grouped with another
+    empty-key channel - see /channels' own handling of that case)."""
+    if not name:
+        return ""
+    n = _GROUP_MULTI_SPACE_RE.sub(' ', name).strip().upper()
+    n = _GROUP_BRACKETS_RE.sub(' ', n)
+    n = _GROUP_PARENS_RE.sub(' ', n).strip()
+    n = _GROUP_SUFFIX_RE.sub('', n).strip()
+    while True:
+        stripped = _GROUP_QUALITY_RE.sub('', n).strip()
+        if stripped == n:
+            break
+        n = stripped
+    n = n.replace('+', ' PLUS ')
+    n = _GROUP_NON_WORD_RE.sub('', n)
+    return _GROUP_MULTI_SPACE_RE.sub(' ', n).strip().lower()
 
 
 def _strip_source_suffix(name):
     """Trailing source-variant suffix stripped for DISPLAY - unlike
-    clean_name_for_similarity() (the grouping KEY), this keeps
-    everything else about the name as-is (case, spacing, quality
-    tags), since it's what a channel list row/EPG actually shows."""
+    _group_key(), this keeps everything else about the name as-is
+    (case, spacing, quality tags), since it's what a channel list
+    row/EPG actually shows."""
     if not name:
         return name
     return _SOURCE_DISPLAY_SUFFIX_RE.sub('', name).strip()
@@ -1575,7 +1613,7 @@ class VavooProxy(object):
         for ch in self.all_filtered_items:
             if ch.get("country", "").lower() != country:
                 continue
-            if clean_name_for_similarity(ch.get("name", "")) == key:
+            if _group_key(ch.get("name", "")) == key:
                 out.append(ch)
         return out
 
@@ -2049,22 +2087,21 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 # ".b"/".c"/".s" convention, which geil.to's "(N)"
                 # suffix is already normalized to by fix_geil_name())
                 # into a single row, like the companion Android app's
-                # "group sources" option - reuses clean_name_for_
-                # similarity() (EPG matching's own name-normalization)
-                # as the grouping key, since "same channel, different
-                # source" is exactly the equivalence that function
-                # already establishes. A name that normalizes to ""
-                # (nothing recognizable left) is never grouped with
-                # anything else - shown standalone, same as today.
+                # "group sources" option - see _group_key()'s own
+                # docstring for why that, and not EPG matching's more
+                # tolerant clean_name_for_similarity(), is used here. A
+                # name that normalizes to "" (nothing recognizable
+                # left) is never grouped with anything else - shown
+                # standalone, same as today.
                 key_members = {}
                 for channel in matching_channels:
-                    key = clean_name_for_similarity(channel.get("name", ""))
+                    key = _group_key(channel.get("name", ""))
                     if key:
                         key_members.setdefault(key, []).append(channel)
 
                 emitted_keys = set()
                 for channel in matching_channels:
-                    key = clean_name_for_similarity(channel.get("name", ""))
+                    key = _group_key(channel.get("name", ""))
                     members = key_members.get(key) if key else None
 
                     if members and len(members) > 1:
