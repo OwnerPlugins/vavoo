@@ -517,19 +517,23 @@ class ConfigSearchText(ConfigText):
 
 
 class ConfigAction(ConfigSelection):
-    """A config-list entry with no value column at all - a single,
-    fixed empty-string choice, so left/right can't cycle it and the
-    row renders with a blank value instead of a Yes/No toggle that
-    looks like a real setting but never actually gates anything
-    (gnm3u()'s dispatch below only checks which row is highlighted,
-    never the ConfigYesNo value itself - so "No"/"Yes" was pure,
-    misleading decoration). Built on ConfigSelection (already used
-    elsewhere in this file) with one choice, matching core Enigma2's
-    own ConfigNothing idiom, rather than importing that class sight
-    unseen."""
+    """A config-list entry with a single, fixed choice, so left/right
+    can't cycle it - used purely as a "press OK to trigger an action"
+    row (gnm3u()'s dispatch below only checks which row is
+    highlighted, never this value) instead of a Yes/No toggle that
+    looks like a real setting but never actually gates anything.
+
+    The choice's description is a plain, non-empty "OK" rather than an
+    empty string - an earlier version used choices=[""] specifically
+    to show a blank value column, but an empty-text list cell can fail
+    to fully repaint over whatever the previous row (or a prior state
+    of this one) had drawn there, visibly leaving old text showing
+    through on real hardware. A short, fixed, always-the-same-length
+    label repaints cleanly and still doesn't look like an actual
+    setting."""
 
     def __init__(self):
-        ConfigSelection.__init__(self, choices=[""])
+        ConfigSelection.__init__(self, choices=[("ok", _("OK"))])
 
 
 config.plugins.vavoo = ConfigSubsection()
