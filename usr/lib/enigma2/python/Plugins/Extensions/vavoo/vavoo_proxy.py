@@ -2143,9 +2143,19 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             continue
                         proxy_url = "http://%s:%d/vavoo?channel=%s" % (
                             local_ip, PORT, channel_id)
+                        raw_name = channel.get("name", "")
                         response_channels.append({
                             "id": channel_id,
-                            "name": channel.get("name", ""),
+                            # Strip the same source-variant suffix the
+                            # grouped branch above already strips -
+                            # this channel just happens to have no
+                            # sibling source present in this country's
+                            # catalog right now (common - not every
+                            # channel actually has multiple sources
+                            # even though Vavoo/geil still tags it with
+                            # a letter), which is no reason to show the
+                            # raw ".b"/".c"/".s" suffix forever.
+                            "name": _strip_source_suffix(raw_name) or raw_name,
                             "url": proxy_url,
                             "logo": channel.get("logo", ""),
                             "country": channel.get("country", country),
