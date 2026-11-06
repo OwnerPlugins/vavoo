@@ -156,7 +156,10 @@ In the Config Menu:
   host (`logo.huhu.to`); geil.to gives the same pictures as a relative
   path. Both are normalized to the host that actually serves them
   (`vavoo.to/live2/logo/<n>.png`) before reaching `/channels` or any
-  export, regardless of which catalog is active.
+  export, regardless of which catalog is active. The plugin's own
+  channel list downloads and caches these per-channel (`/tmp/vavoo_picons`,
+  same on-box cache-dir convention as the country flag icons), showing
+  the real picon instead of the generic channel icon once it lands.
 - Manages authentication with Vavoo servers (only needed when running
   on the Vavoo fallback)
 - Automatically renews tokens every 8-9 minutes (TOKEN_ADDON_SIG = 600 seconds)
