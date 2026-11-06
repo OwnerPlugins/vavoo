@@ -1351,9 +1351,17 @@ class vavoo_config(Screen, ConfigListScreen):
                             # URL, not just its text - url_quote()
                             # closes both the newline-injection gap and
                             # a stray "&"/"#"/space corrupting the URL
-                            # itself.
+                            # itself. ensure_str(), not a plain str() -
+                            # a grouped channel's id can carry a
+                            # non-ASCII base name (clean_name_for_
+                            # similarity() only strips punctuation, not
+                            # non-ASCII letters), and plain str() on a
+                            # Python 2 unicode value raises
+                            # UnicodeEncodeError for any of those,
+                            # silently dropping the channel (caught by
+                            # this loop's own try/except below).
                             channel_url = "http://{}:{}/vavoo?channel={}".format(
-                                host, PORT, url_quote(strip_control_chars(str(channel_id))))
+                                host, PORT, url_quote(strip_control_chars(ensure_str(channel_id))))
                         else:
                             channel_url = strip_control_chars(channel.get('url', ''))
 
