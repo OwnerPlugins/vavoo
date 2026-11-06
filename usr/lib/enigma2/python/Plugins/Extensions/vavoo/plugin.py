@@ -9,7 +9,7 @@ import threading
 from difflib import SequenceMatcher
 from os import listdir, unlink, remove, system as os_system
 from os.path import exists as file_exists, join, isfile, getsize
-from re import compile, DOTALL, search
+from re import search
 from json import loads
 from sys import version_info
 from enigma import eDVBDB
@@ -307,9 +307,8 @@ def _is_vavoo_already_open(session):
 
 
 # set plugin
-global HALIGN, BackPath, FNTPath
+global HALIGN, BackPath
 global screen_width
-global proxy_instance, proxy_thread
 
 title_plug = 'Vavoo'
 desc_plugin = ('..:: Vavoo by Lululla & Qu4k3 v.%s ::..' % __version__)
@@ -317,7 +316,6 @@ PLUGIN_PATH = PLUGIN_ROOT
 PLUGLOGO = join(PLUGIN_PATH, 'plugin.png')
 ENIGMA_PATH = get_enigma2_path()
 CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
-regexs = '<a[^>]*href="([^"]+)"[^>]*><img[^>]*src="([^"]+)"[^>]*>'
 
 _session = None
 # Guards autostart() itself against re-scheduling delayed_boot_tasks() on
@@ -325,10 +323,6 @@ _session = None
 # uses to detect whether the user has actually opened a plugin screen.
 _autostart_scheduled = False
 auto_start_timer = None
-now = None
-proxy_instance = None
-proxy_thread = None
-tmlast = None
 
 # Per-country parsed EPG document + channel->programme index, shared
 # across Playstream2 instances (module-level, not per-instance) so
@@ -2074,8 +2068,17 @@ def _shared_update_proxy_status_display(screen):
             return
         if is_proxy_running():
             try:
+                # retries=1: this runs synchronously on the GUI/reactor
+                # thread from a repeating 10s eTimer (MainVavoo and
+                # vavoo both have one) - getUrl()'s default retries=3
+                # with backoff could block the ENTIRE UI for up to
+                # ~18s on a slow/unresponsive proxy, out of every 10s
+                # window. is_proxy_ready() right next to this call's
+                # own callers already caps itself at a single attempt
+                # for exactly this reason - this call just hadn't
+                # matched it.
                 response = getUrl(
-                    PROXY_STATUS_URL, timeout=5)
+                    PROXY_STATUS_URL, timeout=5, retries=1)
                 if response:
                     status_data = loads(ensure_str(response))
 
@@ -2238,9 +2241,6 @@ class MainVavoo(Screen):
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
         self.url = vUtils.b64decoder(stripurl)
         self.currentList = 'menulist'
-        self.loading_ok = False
-        self.count = 0
-        self.loading = 0
         self.current_view = "categories"
         self.flag_refresh_timer = eTimer()
         try:
@@ -2312,7 +2312,13 @@ class MainVavoo(Screen):
         self.menulist = []
         self['menulist'] = m2list([])
         self['red'] = Label(_('Exit'))
-        self['green'] = Label(_('Remove') + ' Fav')
+        # Bound to msgdeleteBouquets, which deletes every Vavoo bouquet
+        # (country + category + container, see its own confirmation
+        # text) - not a single favourite. The `vavoo` screen's own
+        # green button is correctly labeled "Remove Fav" for its
+        # genuinely per-item action; reusing that exact caption here
+        # primed a user familiar with one screen to misread the other.
+        self['green'] = Label(_('Remove ALL'))
         self['yellow'] = Label()
         if cfg.epg_enabled.value:
             self['yellow'].setText(_("Fix Cache"))
@@ -2848,9 +2854,36 @@ class MainVavoo(Screen):
             self._country_retry_timer.start(500, True)
             return
 
+        # getUrl() below can block for tens of seconds (default
+        # retries=3 with backoff) on a slow/unresponsive proxy -
+        # fetch it off the GUI/reactor thread (same pattern
+        # _fetch_countries_async() already proves out for the M3U
+        # wizard) so a flaky proxy can't freeze the whole box while
+        # the main menu is loading, same as every other screen opening
+        # for the first time.
+        def _task():
+            if self._closed:
+                return
+            exc = None
+            response = None
+            try:
+                response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
+            except Exception as e:
+                exc = e
+            if self._closed:
+                return
+            reactor.callFromThread(self._on_countries_response, response, exc)
+
+        t = threading.Thread(target=_task)
+        t.daemon = True
+        t.start()
+
+    def _on_countries_response(self, response, exc):
+        if self._closed:
+            return
         try:
-            # Fetch countries from the proxy
-            response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
+            if exc is not None:
+                raise exc
             if response:
                 countries = loads(ensure_str(response))
                 print(
@@ -2900,25 +2933,6 @@ class MainVavoo(Screen):
         except Exception as e:
             print("[MainVavoo] Fallback error: %s" % str(e))
             self["name"].setText(to_string("Error loading data"))
-
-    def _parse_select_options(self, html_content):
-        """Parses options from the HTML select menu"""
-        options = []
-
-        # Regex to find the select menu and its options
-        select_pattern = r'<select[^>]*>(.*?)</select>'
-        option_pattern = r'<option[^>]*value="([^"]*)"[^>]*>([^<]*)</option>'
-
-        select_match = compile(select_pattern, DOTALL).search(html_content)
-        if select_match:
-            select_content = select_match.group(1)
-            option_matches = compile(
-                option_pattern, DOTALL).findall(select_content)
-            for value, text in option_matches:
-                if value and text and text != "All countries":
-                    options.append((text.strip(), value))
-
-        return options
 
     def _get_content(self):
         """Get catalog content with 451-aware fallback to kool.to"""
@@ -3439,18 +3453,6 @@ class vavoo(Screen):
         self.option_value = option_value
         self._update_export_button_label()
 
-        self.current_view = "countries"  # default
-        try:
-            for screen in self.session.dialog_stack:
-                if hasattr(screen, 'current_view'):
-                    self.current_view = screen.current_view
-                    print(
-                        "DEBUG: Got current_view from main screen: " +
-                        self.current_view)
-                    break
-        except Exception as e:
-            print("DEBUG: Error getting current_view: " + str(e))
-
         # Do NOT try to initialize proxy here - it should already be running
         # Just verify it's ready
         self._verify_proxy_ready()
@@ -3553,58 +3555,125 @@ class vavoo(Screen):
         self.timer.start(500, True)
 
     def cat(self):
-        """Load channels for the selected country with proxy verification and fallback"""
+        """Load channels for the selected country with proxy verification
+        and fallback.
+
+        Both the proxy fetch below and the vavoo.to fallback fetch
+        (_fetch_fallback_content()) are blocking getUrl() calls that can
+        each take several seconds - this runs from a GUI-thread eTimer
+        every time a country is opened, so doing them inline used to
+        freeze the whole box for however long the network calls took.
+        Run the whole sequence in one background thread (same pattern
+        _fetch_countries_async() already proves out for the M3U
+        wizard) and marshal only the actual list-building back to the
+        reactor thread.
+        """
         debug("vavoo.cat() called for country: " + str(self.country_name))
         if not cfg.proxy_enabled.value:
             print("[vavoo] Proxy disabled, using fallback directly")
             self._fallback_to_original_method()
             return
-        try:
-            # 1. TRY THE PROXY FIRST
+
+        def _task():
+            if self._closed:
+                return
             try:
-                country_encoded = url_quote(self.country_name)
-                proxy_url = PROXY_BASE_URL + \
-                    "/channels?country={}".format(country_encoded)
-                debug("Fetching from proxy: " + proxy_url)
+                # 1. TRY THE PROXY FIRST
+                try:
+                    country_encoded = url_quote(self.country_name)
+                    proxy_url = PROXY_BASE_URL + \
+                        "/channels?country={}".format(country_encoded)
+                    debug("Fetching from proxy: " + proxy_url)
 
-                content = ensure_str(getUrl(proxy_url, timeout=10))
+                    content = ensure_str(getUrl(proxy_url, timeout=10))
 
-                if content and content.strip() and content != "null":
-                    channels_data = loads(content)
-                    self._build_channel_list(channels_data)
+                    if content and content.strip() and content != "null":
+                        channels_data = loads(content)
+                        if not self._closed:
+                            reactor.callFromThread(
+                                self._build_channel_list, channels_data)
+                        return
+                    else:
+                        debug(
+                            "[cat] Proxy returned empty response, trying fallback...")
+                except Exception as proxy_error:
+                    debug("[cat] Proxy error: " + str(proxy_error))
+
+                # 2. FALLBACK: use the original method
+                if self._closed:
                     return
-                else:
-                    debug(
-                        "[cat] Proxy returned empty response, trying fallback...")
-            except Exception as proxy_error:
-                debug("[cat] Proxy error: " + str(proxy_error))
+                fallback_content = None
+                fallback_error = None
+                try:
+                    fallback_content = self._fetch_fallback_content()
+                except Exception as e:
+                    fallback_error = e
+                if not self._closed:
+                    reactor.callFromThread(
+                        self._on_fallback_content,
+                        fallback_content, fallback_error)
 
-            # 2. FALLBACK: use the original method
-            self._fallback_to_original_method()
+            except Exception as e:
+                print("[ERROR] CRITICAL in cat(): " + str(e))
+                trace_error()
+                if not self._closed:
+                    reactor.callFromThread(self._handle_cat_error, e)
 
-        except Exception as e:
-            print("[ERROR] CRITICAL in cat(): " + str(e))
-            trace_error()
-            self._handle_cat_error(e)
+        t = threading.Thread(target=_task)
+        t.daemon = True
+        t.start()
 
     def _fallback_to_original_method(self):
-        """Fallback to the original method without using the proxy"""
+        """Fallback to the original method without using the proxy -
+        runs the network fetch in a background thread (see cat()'s own
+        reasoning above) and marshals the result back to build the
+        list on the reactor thread."""
+        def _task():
+            if self._closed:
+                return
+            content = None
+            error = None
+            try:
+                content = self._fetch_fallback_content()
+            except Exception as e:
+                error = e
+            if not self._closed:
+                reactor.callFromThread(
+                    self._on_fallback_content, content, error)
+
+        t = threading.Thread(target=_task)
+        t.daemon = True
+        t.start()
+
+    def _fetch_fallback_content(self):
+        """Pure network fetch for the fallback path (vavoo.to, with a
+        451-aware mirror retry) - no UI touches, safe to call from a
+        background thread."""
+        print("[Fallback] Using original data source...")
+
+        # Retrieve data directly from vavoo.to
+        url = vUtils.b64decoder(stripurl)
+        content = ensure_str(getUrl(url, timeout=10))
+
+        # 451-aware mirror fallback
+        if (not content) or (content == HTTP_451_SENTINEL):
+            fb = url.replace(PRIMARY_BASE_URL, FALLBACK_BASE_URL)
+            print(
+                "[Fallback] Primary source blocked/empty, trying mirror: %s" %
+                fb)
+            content = ensure_str(getUrl(fb, timeout=10))
+            if content == HTTP_451_SENTINEL:
+                content = ""
+        return content
+
+    def _on_fallback_content(self, content, error):
+        """Build the channel list from the fallback fetch's result -
+        runs on the GUI/reactor thread."""
+        if self._closed:
+            return
         try:
-            print("[Fallback] Using original data source...")
-
-            # Retrieve data directly from vavoo.to
-            url = vUtils.b64decoder(stripurl)
-            content = ensure_str(getUrl(url, timeout=10))
-
-            # 451-aware mirror fallback
-            if (not content) or (content == HTTP_451_SENTINEL):
-                fb = url.replace(PRIMARY_BASE_URL, FALLBACK_BASE_URL)
-                print(
-                    "[Fallback] Primary source blocked/empty, trying mirror: %s" %
-                    fb)
-                content = ensure_str(getUrl(fb, timeout=10))
-                if content == HTTP_451_SENTINEL:
-                    content = ""
+            if error is not None:
+                raise error
 
             if not content:
                 self['name'].setText(to_string("Error: No data received"))
@@ -3937,7 +4006,6 @@ class vavoo(Screen):
             print("[Bouquet] Error in _on_export_complete: %s" % e)
 
     def search_vavoo(self):
-        self.saved_itemlist = self.itemlist
         self.session.openWithCallback(
             self.onSearchResult, VavooSearch, self, self.itemlist)
 
@@ -4147,11 +4215,21 @@ class VavooFavourites(Screen):
             country_name = entry.get('country_name')
             country_code = entry.get('country_code')
 
+            # Parallel to self.cat_list - favourites can mix channels
+            # from several countries (unlike every other Playstream2
+            # caller's single-country list), so channel-surfing
+            # (nextitem()/previousitem()) needs a country_code per
+            # entry to keep EPG lookups matched to the right country
+            # instead of staying stuck on this first channel's one.
+            country_codes = [
+                e.get('country_code') for e in self.favourite_entries]
+
             def _play():
                 self.session.open(
                     Playstream2,
                     name, url, i, item, self.cat_list,
-                    country_code=country_code
+                    country_code=country_code,
+                    country_codes=country_codes
                 )
             # A favourite from a locked country used to play with no
             # PIN prompt at all, since this screen never checked
@@ -4472,7 +4550,14 @@ class VavooSearch(Screen):
                 url = item.split('###')[1].replace(
                     '%0a', '').replace(
                     '%0A', '').strip("\r\n")
-                display_list.append(show_list(name, url))
+                # Without is_channel=True, show_list() takes its
+                # "this is a country name" branch for every search
+                # result - running get_country_code()'s full linear
+                # scan + substring match (and a disk stat) against
+                # the whole country table for each row, on every
+                # single keystroke, and occasionally resolving a
+                # channel name to a bogus flag icon by accident.
+                display_list.append(show_list(name, url, is_channel=True))
             except Exception:
                 continue
         self["channel_list"].l.setList(display_list)
@@ -4674,6 +4759,15 @@ class TvInfoBarShowHide():
                 # don't touch it any further.
                 if self._closed:
                     return
+                # Snapshot which channel this fetch is actually for -
+                # nextitem()/previousitem() can switch channels while
+                # this fetch is still in flight (a surfed-past
+                # channel's slow cache-miss fetch can finish AFTER a
+                # later, faster one started after it), so without
+                # this, the overlay could show stale programme info
+                # for whichever fetch happens to finish last instead
+                # of the channel actually playing.
+                fetch_url = self.url
                 try:
                     epg_text = self.get_current_epg()
                 except Exception as e:
@@ -4684,7 +4778,8 @@ class TvInfoBarShowHide():
 
                 def _apply_epg_text():
                     try:
-                        if not self._closed and self["helpOverlay"].visible:
+                        if (not self._closed and self["helpOverlay"].visible
+                                and self.url == fetch_url):
                             self["epgOverlay"].setText(epg_text)
                             debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
@@ -4922,7 +5017,8 @@ class Playstream2(
             index,
             item,
             cat_list,
-            country_code=None):
+            country_code=None,
+            country_codes=None):
         Screen.__init__(self, session)
         self.session = session
         init_notification_system(session)
@@ -4941,6 +5037,15 @@ class Playstream2(
         self.itemscount = len(cat_list)
         self.list = cat_list
         self.country_code = country_code
+        # Parallel to cat_list, one country_code per entry - only
+        # VavooFavourites passes this (its list can mix channels from
+        # several countries, unlike every other caller's single-
+        # country list). nextitem()/previousitem() use it to keep
+        # self.country_code correct as the user channel-surfs, so EPG
+        # lookups (get_current_epg()) stay matched to the right
+        # country instead of staying stuck on whichever country the
+        # very first channel happened to belong to.
+        self.country_codes = country_codes
         self.name = name
         self.url = url.replace('%0a', '').replace('%0A', '')
         self.state = self.STATE_PLAYING
@@ -5024,8 +5129,13 @@ class Playstream2(
                 quick_notify(_("No programme info available"), 3)
             return
 
-        def _openForEpgText(epg_text):
-            if self._closed:
+        def _openForEpgText(epg_text, fetch_url):
+            if self._closed or self.url != fetch_url:
+                # Either torn down, or the user has already changed
+                # channel since INFO was pressed - this fetch's result
+                # belongs to a channel that isn't playing any more,
+                # opening IMDb/TMDB for it would search the wrong
+                # programme.
                 return
             try:
                 # get_current_epg() returns several distinct "EPG ..."
@@ -5073,6 +5183,7 @@ class Playstream2(
             # slow fetch finishes.
             if self._closed:
                 return
+            fetch_url = self.url
             try:
                 epg_text = self.get_current_epg()
             except Exception as e:
@@ -5080,11 +5191,15 @@ class Playstream2(
                 epg_text = ""
             if self._closed:
                 return
-            reactor.callFromThread(_openForEpgText, epg_text)
+            reactor.callFromThread(_openForEpgText, epg_text, fetch_url)
 
         epg_thread = threading.Thread(target=_fetchEpgThenOpen)
         epg_thread.daemon = True
         epg_thread.start()
+
+    def _update_country_code_for_index(self, i):
+        if self.country_codes is not None and 0 <= i < len(self.country_codes):
+            self.country_code = self.country_codes[i]
 
     def nextitem(self):
         """Switch to next channel"""
@@ -5097,6 +5212,7 @@ class Playstream2(
         item = self.list[i][0]
         self.name = item[0]
         self.url = item[1]
+        self._update_country_code_for_index(i)
         self.startStream()
 
     def previousitem(self):
@@ -5110,6 +5226,7 @@ class Playstream2(
         item = self.list[i][0]
         self.name = item[0]
         self.url = item[1]
+        self._update_country_code_for_index(i)
         self.startStream()
 
     def doEofInternal(self, playing):
@@ -5131,7 +5248,6 @@ class Playstream2(
         """Event: End of file reached (see doEofInternal for why this
         duplicates that hook)."""
         print('[Playstream2] __evEOF')
-        self.end = True
         self._handleEofEvent("__evEOF")
 
     def _handleEofEvent(self, source):
