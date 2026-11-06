@@ -13,7 +13,6 @@ except ImportError:
     # message here beats a bare traceback on images missing the package.
     print("[PROXY] FATAL: 'requests' package not found - install python3-requests")
     raise
-# import uuid
 import time
 import threading
 import socket
@@ -52,7 +51,6 @@ from .vUtils import (
     remove_parentheses,
     strip_control_chars,
     trace_error,
-    # RequestAgent
 )
 
 
@@ -478,12 +476,6 @@ BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
 # Primary + mirror. Some regions get HTTP 451 from the primary.
 
-# HEADERS = {
-# "accept": "*/*",
-# # "user-agent": RequestAgent(),
-# "user-agent": "Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36",
-# "Accept-Encoding": "gzip, deflate",
-# }
 # NOTE: do NOT set "Connection": "close" here - self.session.headers is
 # applied to every request through this session (catalog pages, resolve
 # calls, and the /stream handler's upstream GET), so it would force a
@@ -636,14 +628,38 @@ GROUP_ID_PREFIX = "grp:"
 # source (fresh) on a force=1 EOF-retry before trying a different
 # group member - see that method's own docstring.
 GROUP_SAME_SOURCE_RETRIES = 1
-_SOURCE_DISPLAY_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
+# Same pattern used both to compute the grouping KEY (_group_key(),
+# via this name) and to strip the suffix for DISPLAY
+# (_strip_source_suffix()) - one constant, not two, so a future tweak
+# to "what counts as a source suffix" can't apply to one and silently
+# not the other.
+_GROUP_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
+_SOURCE_DISPLAY_SUFFIX_RE = _GROUP_SUFFIX_RE
 _GROUP_BRACKETS_RE = re.compile(r'\[[^\]]*\]')
 _GROUP_PARENS_RE = re.compile(r'\([^)]*\)')
-_GROUP_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
 _GROUP_QUALITY_RE = re.compile(
     r'\s+(HD|FHD|UHD|SD|4K|HEVC|H265|BACKUP)$', re.IGNORECASE)
 _GROUP_NON_WORD_RE = re.compile(r'[^\w ]', re.UNICODE)
 _GROUP_MULTI_SPACE_RE = re.compile(r'\s+')
+# geil.to's and Vavoo's own catalogs both separate a channel's full
+# "group" label into country/category with one of these - shared by
+# load_catalog() and load_geil_catalog() (see _base_country_from_group()).
+_GROUP_SEPARATORS = ("➾", "⟾", "->", "→", "»", "›")
+
+
+def _base_country_from_group(group):
+    """The country portion of a catalog item's "group" label (e.g.
+    "Italy ➾ Sport" -> "Italy"), or "default" if nothing recognizable
+    is there. Shared by load_catalog() and load_geil_catalog() - was
+    two separately-maintained copies of the same split/strip logic
+    (one of which rebuilt the separators tuple on every single catalog
+    item instead of once)."""
+    base_country = group
+    for sep in _GROUP_SEPARATORS:
+        if sep in base_country:
+            base_country = base_country.split(sep)[0].strip()
+            break
+    return base_country or "default"
 
 
 def _group_key(name):
@@ -794,8 +810,19 @@ class VavooProxy(object):
         self.addon_sig_data = {"sig": None, "ts": 0}
         self.addon_sig_lock = threading.Lock()
         self.all_filtered_items = []
+        # Keyed by country.lower() (catalog casing varies) - was built
+        # but never actually read by anything; now used by /channels
+        # and /playlist.m3u (see do_GET()) to answer a "channels in
+        # this one country" query in O(channels-in-that-country)
+        # instead of scanning the entire multi-country catalog.
         self.channels_by_country = {}
         self.channels_by_id = {}
+        # (country.lower(), _group_key(name)) -> its member channels -
+        # built once alongside the above, read by _group_members().
+        # Safe to fully precompute: initialize_proxy() (which builds
+        # all of these) only ever runs once at startup, never again
+        # for the life of the process.
+        self._group_members_cache = {}
         self.countries_list = []
         self.current_language = "en"
         self.current_region = "US"
@@ -1120,6 +1147,7 @@ class VavooProxy(object):
                 self.all_filtered_items = []
                 self.channels_by_id = {}
                 self.channels_by_country = {}
+                self._group_members_cache = {}
                 self.countries_list = []
                 self.initialized = True
                 print(" Initialized with empty catalog")
@@ -1128,6 +1156,7 @@ class VavooProxy(object):
             self.all_filtered_items = all_channels
             self.channels_by_id = {}
             self.channels_by_country = {}
+            self._group_members_cache = {}
             countries = set()
             for channel in all_channels:
                 channel_id = channel.get("id")
@@ -1135,8 +1164,13 @@ class VavooProxy(object):
                     self.channels_by_id[channel_id] = channel
                 country = channel.get("country")
                 if country:
+                    country_lower = country.lower()
                     self.channels_by_country.setdefault(
-                        country, []).append(channel)
+                        country_lower, []).append(channel)
+                    group_key = _group_key(channel.get("name", ""))
+                    if group_key:
+                        self._group_members_cache.setdefault(
+                            (country_lower, group_key), []).append(channel)
                 if country and country != "default":
                     countries.add(country)
             self.countries_list = sorted(list(countries))
@@ -1158,6 +1192,7 @@ class VavooProxy(object):
             self.all_filtered_items = []
             self.channels_by_id = {}
             self.channels_by_country = {}
+            self._group_members_cache = {}
             self.countries_list = []
             self.initialized = True
             return True  # Always return True; the proxy can work even without a catalog
@@ -1185,7 +1220,6 @@ class VavooProxy(object):
             "user-agent": "MediaHubMX/2",
             "accept": "application/json",
         }
-        separators = ["➾", "⟾", "->", "→", "»", "›"]
         max_pages = 200
         max_retries = 3
 
@@ -1253,14 +1287,7 @@ class VavooProxy(object):
                             # into a URL, never round-trips it back).
                             channel_id = str(channel_id)
                             group = self._parse_geil_group(item)
-                            base_country = group
-                            for sep in separators:
-                                if sep in base_country:
-                                    base_country = base_country.split(sep)[
-                                        0].strip()
-                                    break
-                            if not base_country:
-                                base_country = "default"
+                            base_country = _base_country_from_group(group)
                             # "images"/"ids" are only falsy-defaulted to
                             # {} - a present-but-non-dict value (a
                             # malformed/placeholder record a live
@@ -1480,18 +1507,7 @@ class VavooProxy(object):
                     if item.get("type") == "iptv":
 
                         group = item.get("group", "")
-                        base_country = group
-
-                        separators = ["➾", "⟾", "->", "→", "»", "›"]
-
-                        for sep in separators:
-                            if sep in base_country:
-                                base_country = base_country.split(sep)[
-                                    0].strip()
-                                break
-
-                        if not base_country:
-                            base_country = "default"
+                        base_country = _base_country_from_group(group)
 
                         channel_data = {
                             "country": base_country,
@@ -1605,19 +1621,15 @@ class VavooProxy(object):
 
     def _group_members(self, country, key):
         """Every catalog entry that is a source of the channel group
-        (country, key) - recomputed on demand from all_filtered_items
-        rather than a cached index, since this only runs once per
-        tune-in/retry (not a hot path) and so can never go stale
-        across a catalog reload. Mirrors /channels' own grouping step
-        (see its handler)."""
-        country = (country or "").lower()
-        out = []
-        for ch in self.all_filtered_items:
-            if ch.get("country", "").lower() != country:
-                continue
-            if _group_key(ch.get("name", "")) == key:
-                out.append(ch)
-        return out
+        (country, key) - a direct lookup into _group_members_cache,
+        precomputed once in initialize_proxy() (which only ever runs
+        once per process, so this can never go stale). Used to be a
+        full linear scan of all_filtered_items with a _group_key()
+        regex call per entry, on every single tune-in/EOF-retry of a
+        grouped channel - needlessly expensive for data that never
+        changes after startup."""
+        return self._group_members_cache.get(
+            ((country or "").lower(), key), [])
 
     def resolve_group_with_retry(self, group_id, force_refresh=False):
         """Resolve a grouped channel (a "grp:<country>:<key>" id - see
@@ -1678,6 +1690,30 @@ class VavooProxy(object):
                 return stream_url
         return None
 
+    def _cache_resolved_url(self, channel_url, stream_url):
+        """Store a freshly-resolved stream URL in resolve_cache and
+        evict the oldest entries past 1000 - shared by both the Vavoo
+        and geil.to resolve paths, which used to each carry their own
+        identical copy of this exact block."""
+        with self.resolve_cache_lock:
+            # Pop before inserting (rather than OrderedDict.move_to_end(),
+            # which doesn't exist on Python 2.7's collections.OrderedDict)
+            # - re-resolving an already-cached URL updates its value, and a
+            # plain re-assignment doesn't move an existing key's position,
+            # so without this, eviction below would go by original
+            # insertion order rather than last use, and could drop a
+            # channel that's actively being refreshed while keeping one
+            # nobody has touched in a while.
+            self.resolve_cache.pop(channel_url, None)
+            self.resolve_cache[channel_url] = {
+                "url": stream_url, "ts": time.time()}
+            # Evict oldest 500 entries (OrderedDict preserves insertion
+            # order in Py2+3)
+            if len(self.resolve_cache) > 1000:
+                keys = list(self.resolve_cache.keys())[:-500]
+                for key in keys:
+                    self.resolve_cache.pop(key, None)
+
     def _resolve_geil_channel(self, channel_url, max_retries):
         """Resolve a geil.to channel's stream address - GET
         {base}/live/resolve?url=<its play address>, no token at all.
@@ -1711,14 +1747,7 @@ class VavooProxy(object):
                     stream_url = result.get("url") or result.get(
                         "streamUrl")
                 if stream_url:
-                    with self.resolve_cache_lock:
-                        self.resolve_cache.pop(channel_url, None)
-                        self.resolve_cache[channel_url] = {
-                            "url": stream_url, "ts": time.time()}
-                        if len(self.resolve_cache) > 1000:
-                            keys = list(self.resolve_cache.keys())[:-500]
-                            for key in keys:
-                                self.resolve_cache.pop(key, None)
+                    self._cache_resolved_url(channel_url, stream_url)
                     return stream_url
                 print("[Geil] {0} answered with no stream url".format(site))
             except Exception as e:
@@ -1799,29 +1828,7 @@ class VavooProxy(object):
                     stream_url = result.get("url") or result.get("streamUrl")
 
                 if stream_url:
-                    # Pop before inserting (rather than
-                    # OrderedDict.move_to_end(), which doesn't exist on
-                    # Python 2.7's collections.OrderedDict - it raised
-                    # AttributeError there, caught by the except below,
-                    # meaning every resolve attempt appeared to fail on
-                    # Python 2 even though the stream URL was already
-                    # fetched) - re-resolving an already-cached URL
-                    # updates its value, and a plain re-assignment
-                    # doesn't move an existing key's position, so without
-                    # this, eviction below would go by original insertion
-                    # order rather than last use, and could drop a
-                    # channel that's actively being refreshed while
-                    # keeping one nobody has touched in a while.
-                    with self.resolve_cache_lock:
-                        self.resolve_cache.pop(channel_url, None)
-                        self.resolve_cache[channel_url] = {
-                            "url": stream_url, "ts": time.time()}
-                        # Evict oldest 500 entries (OrderedDict preserves
-                        # insertion order in Py2+3)
-                        if len(self.resolve_cache) > 1000:
-                            keys = list(self.resolve_cache.keys())[:-500]
-                            for key in keys:
-                                self.resolve_cache.pop(key, None)
+                    self._cache_resolved_url(channel_url, stream_url)
                     print(" Successfully resolved channel URL")
                     return stream_url
                 print(" Resolve response missing URL")
@@ -2101,12 +2108,13 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(400, "Missing country parameter")
                     return
 
-                matching_channels = []
-                if hasattr(p, 'all_filtered_items'):
-                    for channel in p.all_filtered_items:
-                        channel_country = channel.get("country", "")
-                        if channel_country.lower() == country.lower():
-                            matching_channels.append(channel)
+                # O(channels-in-this-country) via the precomputed
+                # per-country index, instead of scanning the entire
+                # (every-country) catalog on every single /channels
+                # call.
+                matching_channels = p.channels_by_country.get(
+                    country.lower(), []) if hasattr(
+                    p, 'channels_by_country') else []
 
                 response_channels = []
                 local_ip = p.get_local_ip()
@@ -2121,15 +2129,23 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 # name that normalizes to "" (nothing recognizable
                 # left) is never grouped with anything else - shown
                 # standalone, same as today.
+                #
+                # _group_key() computed once per channel here (not
+                # twice, once per pass) and carried forward as
+                # channel_keys - halves the regex cost of this
+                # endpoint, which bouquet export calls once per
+                # country *and* once per category on every run.
+                channel_keys = [
+                    (channel, _group_key(channel.get("name", "")))
+                    for channel in matching_channels]
+
                 key_members = {}
-                for channel in matching_channels:
-                    key = _group_key(channel.get("name", ""))
+                for channel, key in channel_keys:
                     if key:
                         key_members.setdefault(key, []).append(channel)
 
                 emitted_keys = set()
-                for channel in matching_channels:
-                    key = _group_key(channel.get("name", ""))
+                for channel, key in channel_keys:
                     members = key_members.get(key) if key else None
 
                     if members and len(members) > 1:
@@ -2162,7 +2178,13 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             "name": display_name,
                             "url": proxy_url,
                             "logo": logo,
-                            "country": country,
+                            # The catalog's own casing (e.g. "Italy"),
+                            # same as the standalone branch below -
+                            # not the raw query string (e.g. "italy"),
+                            # which made this field's casing differ
+                            # between a grouped and a standalone row
+                            # in the same response.
+                            "country": members[0].get("country", country),
                             "epg_id": epg_id
                         })
                     else:
@@ -2225,11 +2247,17 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 local_ip = p.get_local_ip()
 
                 m3u_lines = ["#EXTM3U"]
-                if hasattr(p, 'all_filtered_items'):
-                    for channel in p.all_filtered_items:
-                        if country and channel.get(
-                                "country", "").lower() != country.lower():
-                            continue
+                # A country was given: look it up directly via the
+                # per-country index instead of scanning every country
+                # in the whole catalog to find the ones that match.
+                if country:
+                    playlist_channels = p.channels_by_country.get(
+                        country.lower(), []) if hasattr(
+                        p, 'channels_by_country') else []
+                else:
+                    playlist_channels = getattr(p, 'all_filtered_items', [])
+                if playlist_channels:
+                    for channel in playlist_channels:
                         channel_id = channel.get("id", "")
                         if not channel_id:
                             continue
@@ -2275,15 +2303,11 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(404, "No catalog loaded")
 
             elif parsed_path.path == '/countries':
-                # p is already bound once at the top of do_GET()
-                countries = set()
-                if hasattr(p, 'all_filtered_items'):
-                    for channel in p.all_filtered_items:
-                        country = channel.get("country", "")
-                        if country and country != "default":
-                            countries.add(country)
-
-                countries_list = sorted(list(countries))
+                # p is already bound once at the top of do_GET() -
+                # initialize_proxy() already computed this exact
+                # sorted list once at catalog-load time; no need to
+                # rescan the whole catalog and re-sort on every call.
+                countries_list = getattr(p, 'countries_list', [])
                 if not self.safe_send_response(200):
                     return
                 self.send_header('Content-Type', 'application/json')
