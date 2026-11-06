@@ -58,7 +58,8 @@ from . import (
     UNMATCHED_FILE,
     HOST_MAIN,
     ALIAS_FILE,
-    INSTALLER_URL
+    INSTALLER_URL,
+    export_lock,
 )
 from .epg_name_utils import (
     clean_name_for_similarity,
@@ -698,56 +699,6 @@ def convert_to_unicode(data):
         return data
     else:
         return data
-
-
-def get_cache(key):
-    file_path = join(PLUGIN_PATH, key + '.json')
-    if not (exists(file_path) and getsize(file_path) > 0):
-        return None
-    try:
-        data = _read_json_file(file_path)
-        if isinstance(data, str):
-            data = {"value": data}
-            _write_json_file(file_path, data)
-
-        if not isinstance(data, dict):
-            print(
-                "Unexpected data format in {}: Expected a dict, got {}".format(
-                    file_path, type(data)))
-            remove(file_path)
-            return None
-
-        if _is_cache_valid(data):
-            return data.get('value')
-
-    except ValueError as e:
-        print("Error decoding JSON from", file_path, ":", e)
-        trace_error()
-    except Exception as e:
-        print("Unexpected error reading cache file {}:".format(file_path), e)
-        remove(file_path)
-        trace_error()
-
-    return None
-
-
-def _read_json_file(file_path):
-    with io.open(file_path, 'r', encoding='utf-8') as f:
-        return load(f)
-
-
-def _write_json_file(file_path, data):
-    temp_path = file_path + ".tmp"
-    with io.open(temp_path, 'w', encoding='utf-8') as f:
-        dump(data, f, indent=4, ensure_ascii=False)
-    rename(temp_path, file_path)
-
-
-def _is_cache_valid(data):
-    return (
-        data.get('sigValidUntil', 0) > int(time())
-        and data.get('ip', "") == get_external_ip()
-    )
 
 
 # ============================================================================
@@ -1783,6 +1734,36 @@ def get_satellite_priority(orbpos, configured_sats):
     return 0.5
 
 
+# Known satellite namespaces, masked to their top 16 bits (see
+# _get_signal_priority()'s own comment on the 0xFFFF0000 mask/encoding
+# convention) - a frozenset, not a list rebuilt on every call: this is
+# checked once per candidate inside _find_match_internal()'s hot loop
+# (run once per channel against what can be thousands of Rytec
+# entries), and a set membership test is also O(1) instead of this
+# list's O(19) linear scan.
+_SATELLITE_NAMESPACES = frozenset((
+    0x820000,   # 13.0°E HotBird (Italy)
+    0xC00000,   # 19.2°E Astra
+    0xEB0000,   # 23.5°E Astra 3
+    0x11A0000,  # 28.2°E Astra 2
+    0xA00000,   # 16.0°E Eutelsat 16A
+    0x5A0000,   # 9.0°E Eutelsat 9B
+    0x460000,   # 7.0°E Eutelsat 7E
+    0xDDE0000,  # 5.0°W Eutelsat 5WA (Italy)
+    0xCE40000,  # 30.0°W Hispasat
+    0x1A40000,  # 42.0°E Türksat
+    0x300000,   # 4.8°E Astra 4A / Sirius
+    0x13B0000,  # 31.5°E Astra 5B
+    0x14A0000,  # 33.0°E Eutelsat 33E
+    0xFF0000,   # 25.5°E Es'hail / Arabsat
+    0x1C20000,  # 45.0°E AzerSpace
+    0x1860000,  # 39.0°E Hellas Sat
+    0x1680000,  # 36.0°E Eutelsat 36B
+    0x1040000,  # 26.0°E Badr
+    0x130000,   # 1.9°E BulgariaSat
+))
+
+
 # get_country_code() returns real ISO 3166-1 codes (needed for flag
 # downloads, e.g. "gb" for United Kingdom), but the Rytec database groups
 # channels by its own historical suffix convention, which doesn't always
@@ -1926,15 +1907,27 @@ class VavooEPGMatcher(object):
                     match) > 2 and match[2] else None
 
                 if comment:
-                    channel_name = comment
+                    # Rytec's comment text is HTML-escaped XML content
+                    # (e.g. "AT&amp;T Sports") - left un-decoded, the
+                    # "&" that clean_name_for_similarity() would
+                    # otherwise just strip survives as the literal
+                    # letters "amp" glued into the name instead,
+                    # garbling every Rytec channel whose real name
+                    # contains an escaped "&".
+                    channel_name = decodeHtml(comment)
                 else:
-                    channel_name = original_id.replace(
-                        '.it',
-                        '').replace(
-                        '.de',
-                        '').replace(
-                        '.fr',
-                        '')
+                    # original_id's own country suffix (e.g. ".uk",
+                    # ".es") is stripped generically here - the
+                    # previous version only handled .it/.de/.fr, so
+                    # every OTHER country's comment-less entries (e.g.
+                    # "BBCOne.uk") kept their suffix glued onto the
+                    # name with no separating space, which
+                    # clean_name_for_similarity() can't segment back
+                    # out - producing a garbled key ("bbconeuk") that
+                    # can never similarity-match a real channel name.
+                    channel_name = original_id
+                    if '.' in channel_name:
+                        channel_name = channel_name.rsplit('.', 1)[0]
                     channel_name = channel_name.replace(
                         '-', ' ').replace('_', ' ')
 
@@ -2026,44 +2019,23 @@ class VavooEPGMatcher(object):
             namespace_str = parts[6] if parts[6] else '0'
             namespace = int(namespace_str, 16)
 
-            # Known satellite namespaces. Enigma2 encodes orbital position
-            # as (tenths_of_a_degree << 16) for east, or
+            # Known satellite namespaces (_SATELLITE_NAMESPACES, module
+            # level - see its own comment). Enigma2 encodes orbital
+            # position as (tenths_of_a_degree << 16) for east, or
             # ((3600 - tenths_of_a_degree) << 16) for west - verified
             # against the terrestrial/cable checks below, which use the
             # same top-16-bits convention (0xFFFF0000).
-            satellite_namespaces = [
-                0x820000,   # 13.0°E HotBird (Italy)
-                0xC00000,   # 19.2°E Astra
-                0xEB0000,   # 23.5°E Astra 3
-                0x11A0000,  # 28.2°E Astra 2
-                0xA00000,   # 16.0°E Eutelsat 16A
-                0x5A0000,   # 9.0°E Eutelsat 9B
-                0x460000,   # 7.0°E Eutelsat 7E
-                0xDDE0000,  # 5.0°W Eutelsat 5WA (Italy)
-                0xCE40000,  # 30.0°W Hispasat
-                0x1A40000,  # 42.0°E Türksat
-                0x300000,   # 4.8°E Astra 4A / Sirius
-                0x13B0000,  # 31.5°E Astra 5B
-                0x14A0000,  # 33.0°E Eutelsat 33E
-                0xFF0000,   # 25.5°E Es'hail / Arabsat
-                0x1C20000,  # 45.0°E AzerSpace
-                0x1860000,  # 39.0°E Hellas Sat
-                0x1680000,  # 36.0°E Eutelsat 36B
-                0x1040000,  # 26.0°E Badr
-                0x130000,   # 1.9°E BulgariaSat
-            ]
-
-            # Check for satellite match. Mask must be 0xFFFF0000 (top 16
-            # bits, matching how the value above was built) - the
-            # previous 0xFFF00000 zeroed out part of the orbital-position
-            # field itself, so it could only ever match a namespace by
-            # coincidence, not because it was actually that satellite.
-            for sat_ns in satellite_namespaces:
-                if namespace & 0xFFFF0000 == sat_ns:
-                    # Italian satellite bonus is applied by the caller
-                    # via priority + a boost multiplier, not by this
-                    # priority level - satellite is always priority 1.
-                    return 1
+            #
+            # Mask must be 0xFFFF0000 (top 16 bits, matching how those
+            # values were built) - the previous 0xFFF00000 zeroed out
+            # part of the orbital-position field itself, so it could
+            # only ever match a namespace by coincidence, not because
+            # it was actually that satellite.
+            if namespace & 0xFFFF0000 in _SATELLITE_NAMESPACES:
+                # Italian satellite bonus is applied by the caller via
+                # priority + a boost multiplier, not by this priority
+                # level - satellite is always priority 1.
+                return 1
 
             # Terrestrial DVB-T
             if namespace & 0xFFFF0000 == 0xEEEE0000:
@@ -2366,16 +2338,40 @@ class VavooEPGMatcher(object):
         that whole duration for no reason."""
         curated_db = _load_curated_channel_db(country_code) if country_code else None
         feed_index = _get_epg_feed_index(country_code) if country_code else None
+        # A plain local list, not an instance attribute - _find_match_
+        # locked() appends to it (under self._cache_lock, so that part
+        # is already safe) when a cache downgrade needs persisting;
+        # checked below, after releasing self._cache_lock, with no
+        # cross-thread ambiguity since it's never shared beyond this
+        # one call's stack.
+        pending_save = []
         with self._cache_lock:
-            return self._find_match_locked(
+            result = self._find_match_locked(
                 channel_name, country_code, servicetype, channel_id,
                 allow_curated_promotion, curated_db, epg_guide_id,
-                feed_index)
+                feed_index, pending_save)
+        if pending_save:
+            # save_cache() writes the same CACHE_FILE a bouquet
+            # export's update_complete_cache() does - share
+            # export_lock (the same convention plugin.py's cache-
+            # format-fix call already follows) so the two writers
+            # can't interleave and corrupt/drop each other's write.
+            # Deliberately done here, AFTER self._cache_lock was
+            # already released above: taking export_lock while still
+            # holding _cache_lock would invert the lock order
+            # update_complete_cache() itself relies on (its caller
+            # holds export_lock first, then it takes _cache_lock
+            # internally) - acquiring them in the opposite order here
+            # could deadlock against a concurrent export.
+            with export_lock:
+                save_cache(self.cache)
+        return result
 
     def _find_match_locked(
             self, channel_name, country_code=None, servicetype="4097",
             channel_id=None, allow_curated_promotion=False,
-            curated_db=None, epg_guide_id=None, feed_index=None):
+            curated_db=None, epg_guide_id=None, feed_index=None,
+            pending_save=None):
         if not channel_name:
             return None, None, None
 
@@ -2458,12 +2454,9 @@ class VavooEPGMatcher(object):
             id_val = cached.get('id')
             if self.is_valid_rytec_id(id_val):
                 # Check if the channel name matches the Rytec name associated with that ID
-                # rytec_clean = self.rytec_names.get(id_val, '')
                 channel_clean = self._clean_name_for_similarity(channel_name)
                 rytec_clean = self.rytec_names.get(id_val, '')
                 if rytec_clean:
-                    channel_clean = self._clean_name_for_similarity(
-                        channel_name)
                     current_rytec_sref = self._normalize_rytec_sref(
                         self.rytec_by_id.get(id_val))
                     cached_sref = ensure_sref_trailing_colon(
@@ -2649,8 +2642,12 @@ class VavooEPGMatcher(object):
                         # that path always writes matched=True, which would
                         # be wrong here. This branch is rare (only when a
                         # previously-matched channel stops live-matching),
-                        # so an eager write is an acceptable tradeoff.
-                        save_cache(self.cache)
+                        # so an eager write is an acceptable tradeoff - the
+                        # actual save_cache() call happens in find_match(),
+                        # after self._cache_lock is released (see its own
+                        # comment on pending_save for why).
+                        if pending_save is not None:
+                            pending_save.append(True)
                     return (
                         existing_entry.get('id'), existing_sref,
                         existing_entry.get('source') or 'live')
@@ -2665,7 +2662,8 @@ class VavooEPGMatcher(object):
                     existing_entry['matched'] = False
                     self.cache[existing_key] = existing_entry
                     self._index_cache_key(existing_key)
-                    save_cache(self.cache)
+                    if pending_save is not None:
+                        pending_save.append(True)
             # Otherwise, no match and no valid sref
             save_unmatched(
                 channel_name,
@@ -2805,101 +2803,6 @@ def toggle_favourite(name, url, country_name=None, country_code=None):
     except Exception as e:
         print("[Favourites] Error saving {}: {}".format(FAVOURITES_FILE, e))
         return None
-
-
-def clean_cache_and_unmatched():
-    """
-    Move to the unmatched cache all entries from the main cache
-    that have invalid IDs or that do not match the channel name.
-    Also fixes the formatting of sref.
-    """
-    # Load main cache
-    if not exists(CACHE_FILE):
-        return
-    with open(CACHE_FILE, 'r') as f:
-        main_cache = load(f)
-
-    # Load existing unmatched cache
-    unmatched = {}
-    if exists(UNMATCHED_FILE):
-        with open(UNMATCHED_FILE, 'r') as f:
-            unmatched = load(f)
-
-    # Get matcher to access Rytec names
-    matcher = get_epg_matcher()
-
-    new_main = {}
-    moved = 0
-
-    for key, value in main_cache.items():
-        # Fix sref
-        sref = value.get('sref', '')
-        if sref and not sref.endswith(':'):
-            value['sref'] = sref + ':'
-
-        id_val = value.get('id')
-        if not matcher.is_valid_rytec_id(id_val):
-            # Move to unmatched
-            unmatched[key] = value
-            moved += 1
-            continue
-
-        # Check if the ID matches the channel name
-        # Extract name from Rytec comment if possible, otherwise use the ID
-        rytec_name = matcher.rytec_names.get(id_val, '')
-        if not rytec_name:
-            # Try to derive from ID: remove country suffix and replace dots
-            # with spaces
-            rytec_name = id_val.split('.')[0].replace('.', ' ')
-        # rsplit on the last '_' (not split()[0] on the first) to match
-        # how these "name_country" keys are actually built elsewhere
-        # (_index_cache_key(), save_cache()) - a name containing a
-        # literal underscore would otherwise get truncated here.
-        clean_rytec_name = matcher._clean_name_for_similarity(rytec_name)
-        clean_channel_name = matcher._clean_name_for_similarity(
-            key.rsplit('_', 1)[0])
-
-        if clean_rytec_name != clean_channel_name:
-            # Move to unmatched to be re-matched
-            unmatched[key] = value
-            moved += 1
-        else:
-            new_main[key] = value
-
-    # Save caches
-    cache_temp = CACHE_FILE + ".tmp"
-    with open(cache_temp, 'w') as f:
-        dump(new_main, f, indent=2)
-    rename(cache_temp, CACHE_FILE)
-    unmatched_temp = UNMATCHED_FILE + ".tmp"
-    with open(unmatched_temp, 'w') as f:
-        dump(unmatched, f, indent=2)
-    rename(unmatched_temp, UNMATCHED_FILE)
-    with matcher._cache_lock:
-        matcher.cache = new_main
-        matcher._build_normalized_index()
-    print("[Cache] Cleanup completed: moved {} entries to unmatched".format(moved))
-    return moved
-
-
-def cleanup_cache_matched_flag():
-    """Fix the matched flag for entries with invalid id."""
-    if not exists(CACHE_FILE):
-        return
-    with open(CACHE_FILE, 'r') as f:
-        cache = load(f)
-    changed = False
-    for key, value in cache.items():
-        if not VavooEPGMatcher.is_valid_rytec_id(value.get('id')):
-            if value.get('matched', False):
-                value['matched'] = False
-                changed = True
-    if changed:
-        temp_file = CACHE_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(cache, f, indent=2)
-        rename(temp_file, CACHE_FILE)
-        print("[Cache] Cleaned matched flags for invalid IDs.")
 
 
 _curated_channel_db_cache = {}
@@ -3325,6 +3228,13 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
+    # name_index is already keyed by this exact cleaned name
+    # (_get_epg_feed_index() builds it that way) - an exact hit means
+    # the fuzzy loop below (a full scan, scored with SequenceMatcher)
+    # isn't needed at all.
+    exact = name_index.get(clean)
+    if exact:
+        return exact[0]
     source_tokens = _tokenize_for_compat(clean)
     best_score = 0.0
     best_id = None
