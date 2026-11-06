@@ -632,6 +632,10 @@ def fix_geil_name(name):
 # still fully collapses to "X") - nothing that could itself be part of
 # a real channel's name.
 GROUP_ID_PREFIX = "grp:"
+# How many times resolve_group_with_retry() re-resolves the SAME
+# source (fresh) on a force=1 EOF-retry before trying a different
+# group member - see that method's own docstring.
+GROUP_SAME_SOURCE_RETRIES = 1
 _SOURCE_DISPLAY_SUFFIX_RE = re.compile(r'\s+\.[A-Za-z0-9]{1,3}$')
 _GROUP_BRACKETS_RE = re.compile(r'\[[^\]]*\]')
 _GROUP_PARENS_RE = re.compile(r'\([^)]*\)')
@@ -833,11 +837,9 @@ class VavooProxy(object):
         self.geil_site_index = 0
         self.catalog_source = "vavoo"
 
-        # Last member actually resolved for a given channel group (see
-        # resolve_group_with_retry()) - lets a force=1 EOF-retry resolve
-        # of the SAME group skip straight past the source that just
-        # failed instead of handing the player that identical dead
-        # source again.
+        # group_id -> (last member id resolved, consecutive same-
+        # source force=1 retries so far) - see
+        # resolve_group_with_retry().
         self.group_last_member = {}
         self.group_lock = threading.Lock()
 
@@ -1620,23 +1622,49 @@ class VavooProxy(object):
     def resolve_group_with_retry(self, group_id, force_refresh=False):
         """Resolve a grouped channel (a "grp:<country>:<key>" id - see
         /channels and make_group_id()/parse_group_id()): try its
-        members in catalog order, same as a single-source resolve,
-        except a force=1 retry (the player's existing EOF-retry loop -
-        see plugin.py's Playstream2) skips whichever member this same
-        group last resolved to, so a dead source is routed around
-        instead of being handed back to the player again. Only tried
-        again itself as a last resort, if every other member also
-        fails."""
+        members in catalog order, same as a single-source resolve.
+
+        A force=1 retry (the player's existing EOF-retry loop - see
+        plugin.py's Playstream2) first re-resolves the SAME source
+        this group last played, fresh, up to GROUP_SAME_SOURCE_RETRIES
+        times - mirroring the companion Android app's own policy of
+        giving the source that was just working a few retries of its
+        own before ever touching a different one. The original version
+        of this method excluded the last-played source on the very
+        first EOF-retry - indistinguishable, from the player's side,
+        between "this source is dead" and "a one-off blip" - and could
+        turn a one-off hiccup into a lost stream by bouncing straight
+        to an untested, possibly worse source. Only once that budget
+        is exhausted does it exclude the source and try the others,
+        trying it again itself only as a last resort if every other
+        member also fails."""
         country, key = parse_group_id(group_id)
         if not key:
             return None
         members = self._group_members(country, key)
         if not members:
             return None
+
         exclude_id = None
         if force_refresh:
             with self.group_lock:
-                exclude_id = self.group_last_member.get(group_id)
+                last_member_id, retry_count = self.group_last_member.get(
+                    group_id, (None, 0))
+            members_by_id = {m.get("id"): m for m in members}
+            last_member = members_by_id.get(last_member_id)
+            if last_member is not None and retry_count < GROUP_SAME_SOURCE_RETRIES:
+                stream_url = self.resolve_with_retry(
+                    last_member.get("url"), force_refresh=True)
+                if stream_url:
+                    with self.group_lock:
+                        self.group_last_member[group_id] = (
+                            last_member_id, retry_count + 1)
+                    return stream_url
+                # Failed its own retry budget too (not just a stale
+                # cache entry) - fall through to trying a different
+                # member below.
+            exclude_id = last_member_id
+
         # Stable sort: every other member first, the excluded one last.
         ordered = sorted(members, key=lambda m: m.get("id") == exclude_id)
         for member in ordered:
@@ -1646,7 +1674,7 @@ class VavooProxy(object):
                 member.get("url"), force_refresh=member_force)
             if stream_url:
                 with self.group_lock:
-                    self.group_last_member[group_id] = member_id
+                    self.group_last_member[group_id] = (member_id, 0)
                 return stream_url
         return None
 
