@@ -70,7 +70,9 @@ from enigma import (
     RT_VALIGN_CENTER,
     eListboxPythonMultiContent,
     ePicLoad,
+    ePoint,
     eServiceReference,
+    eSize,
     eTimer,
     gFont,
     getDesktop,
@@ -451,6 +453,16 @@ else:
     OVERLAY_Y_EPG = 55
     BackPath = join(BackfPath, 'images')
     skin_path = join(BackfPath, 'hd')
+
+# Box for the current channel's picon on the top overlay bar, left of
+# its text (same icon-then-text layout show_list() already uses for
+# the channel list) - height matches the bar's own height
+# (OVERLAY_HEIGHT_TOP), width keeps the 3:2 aspect ratio used
+# everywhere else in this plugin for icon boxes. helpOverlay's own
+# position/size (TvInfoBarShowHide.__init__) are shifted to start
+# right after this box, so the two never overlap.
+OVERLAY_PICON_W = int(OVERLAY_HEIGHT_TOP * 1.5)
+OVERLAY_PICON_H = OVERLAY_HEIGHT_TOP
 
 print('folder back: ', BackPath)
 
@@ -3967,23 +3979,39 @@ class vavoo(Screen):
                 print("No selection available")
                 return
 
+            # Parallel to cat_list (see _channel_entries' own
+            # declaration comment) - lets Playstream2 show this
+            # channel's picon on its playback overlay without a
+            # second network fetch, the same way country_codes lets
+            # it keep EPG lookups matched to the right country.
+            logo_urls = [entry[2] for entry in self._channel_entries]
+            logo_url = (
+                self._channel_entries[i][2]
+                if 0 <= i < len(self._channel_entries) else None)
+
             self.play_that_shit(
                 url,
                 name,
                 self.currentindex,
                 item,
-                self.cat_list)
+                self.cat_list,
+                logo_url,
+                logo_urls)
         except Exception as e:
             print('error as:', e)
             trace_error()
 
-    def play_that_shit(self, url, name, index, item, cat_list):
+    def play_that_shit(
+            self, url, name, index, item, cat_list,
+            logo_url=None, logo_urls=None):
         try:
             country_code = get_country_code(self.country_name)
             self.session.open(
                 Playstream2,
                 name, url, index, item, cat_list,
-                country_code=country_code
+                country_code=country_code,
+                logo_url=logo_url,
+                logo_urls=logo_urls
             )
         except Exception as e:
             print("Error in play_that_shit: {}".format(e))
@@ -4826,11 +4854,31 @@ class TvInfoBarShowHide():
         self.__locked = 0
         debug("TvInfoBarShowHide.__init__ state={}")
 
-        # Top overlay: controls + proxy status
+        # Current channel's picon, left of the help overlay's text
+        # (see OVERLAY_PICON_W/H's own comment) - populated read-only
+        # from the on-disk picon cache by show_help_overlay(), same
+        # "only ever read the cache, never download here" rule
+        # show_list() follows for the channel list. Only
+        # vavoo.ok()/play_that_shit() passes a logo_url into
+        # Playstream2 today, so this stays empty/hidden for
+        # Favourites/Search playback.
+        self.channelPicon = Pixmap()
+        self.channelPicon.skinAttributes = [
+            ("position", "0,0"),
+            ("size", "{},{}".format(OVERLAY_PICON_W, OVERLAY_PICON_H)),
+            ("zPosition", "99"),
+        ]
+        self["channelPicon"] = self.channelPicon
+        self["channelPicon"].hide()
+
+        # Top overlay: controls + proxy status. Shifted to start right
+        # after the picon box above instead of spanning the full
+        # width from x=0, so the two never overlap.
         self.helpOverlay = Label("")
         self.helpOverlay.skinAttributes = [
-            ("position", "0,0"),
-            ("size", "{},{}".format(OVERLAY_WIDTH, OVERLAY_HEIGHT_TOP)),
+            ("position", "{},0".format(OVERLAY_PICON_W)),
+            ("size", "{},{}".format(
+                OVERLAY_WIDTH - OVERLAY_PICON_W, OVERLAY_HEIGHT_TOP)),
             ("font", "Regular;{}".format(FONT_SIZE_TOP)),
             ("halign", "center"),
             ("valign", "center"),
@@ -4895,6 +4943,63 @@ class TvInfoBarShowHide():
         """Method to be overridden by child class (Playstream2)."""
         return "EPG not available"
 
+    def _update_overlay_picon(self):
+        """Show the current channel's picon on the help overlay, if
+        one is already cached - read-only, same rule show_list()
+        follows for the channel list: never download synchronously
+        here. Relies on the channel-list screen's own background
+        preload (_preload_channel_picons()) having already fetched it
+        while the user was browsing; if it hasn't yet, this channel's
+        overlay just shows no picon for this viewing - no retry/
+        refresh is attempted here.
+
+        Reuses the exact fit-to-box math already used for the channel
+        list (get_png_dimensions() + centering), just sized to this
+        overlay's own OVERLAY_PICON_W/H box instead of show_list()'s
+        icon_size.
+        """
+        try:
+            logo_url = getattr(self, 'current_logo_url', None)
+            if not logo_url:
+                self["channelPicon"].hide()
+                return
+
+            cache_file = get_picon_cache_path(logo_url)
+            if not cache_file or not file_exists(cache_file) \
+                    or getsize(cache_file) <= 100:
+                self["channelPicon"].hide()
+                return
+
+            dims = get_png_dimensions(cache_file)
+            if not dims:
+                self["channelPicon"].hide()
+                return
+
+            img_w, img_h = dims
+            scale = min(
+                OVERLAY_PICON_W / float(img_w),
+                OVERLAY_PICON_H / float(img_h))
+            fit_w = max(1, int(img_w * scale))
+            fit_h = max(1, int(img_h * scale))
+
+            png_data = loadPNG(cache_file)
+            if not png_data:
+                self["channelPicon"].hide()
+                return
+
+            self["channelPicon"].instance.resize(eSize(fit_w, fit_h))
+            self["channelPicon"].instance.move(ePoint(
+                (OVERLAY_PICON_W - fit_w) // 2,
+                (OVERLAY_PICON_H - fit_h) // 2))
+            self["channelPicon"].instance.setPixmap(png_data)
+            self["channelPicon"].show()
+        except Exception as e:
+            debug("Overlay picon update failed: {}".format(e))
+            try:
+                self["channelPicon"].hide()
+            except Exception:
+                pass
+
     def show_help_overlay(self):
         """Show custom overlays and start the auto‑hide timer."""
         debug("show_help_overlay START")
@@ -4933,6 +5038,8 @@ class TvInfoBarShowHide():
             self["epgOverlay"].setText(_("Loading EPG..."))
             self["epgOverlay"].show()
             debug("show_help_overlay epgOverlay shown")
+
+            self._update_overlay_picon()
 
             # Start timer to update proxy status every 30s
             if not self.proxy_update_timer.isActive():
@@ -5027,6 +5134,7 @@ class TvInfoBarShowHide():
         if self["helpOverlay"].visible:
             self["helpOverlay"].hide()
             self["epgOverlay"].hide()
+            self["channelPicon"].hide()
             debug("hide_help_overlay overlays hidden")
         debug("hide_help_overlay END")
 
@@ -5205,7 +5313,9 @@ class Playstream2(
             item,
             cat_list,
             country_code=None,
-            country_codes=None):
+            country_codes=None,
+            logo_url=None,
+            logo_urls=None):
         Screen.__init__(self, session)
         self.session = session
         init_notification_system(session)
@@ -5233,6 +5343,13 @@ class Playstream2(
         # country instead of staying stuck on whichever country the
         # very first channel happened to belong to.
         self.country_codes = country_codes
+        self.current_logo_url = logo_url
+        # Parallel to cat_list, like country_codes above - only
+        # vavoo.ok()/play_that_shit() passes this today (the main
+        # channel-list playback path). Favourites/Search leave it
+        # None, so self.current_logo_url simply stays None for those
+        # and the overlay picon area just stays empty for them.
+        self.logo_urls = logo_urls
         self.name = name
         self.url = url.replace('%0a', '').replace('%0A', '')
         self.state = self.STATE_PLAYING
@@ -5388,6 +5505,10 @@ class Playstream2(
         if self.country_codes is not None and 0 <= i < len(self.country_codes):
             self.country_code = self.country_codes[i]
 
+    def _update_logo_url_for_index(self, i):
+        if self.logo_urls is not None and 0 <= i < len(self.logo_urls):
+            self.current_logo_url = self.logo_urls[i]
+
     def nextitem(self):
         """Switch to next channel"""
         self.stopStream(restore_original=False)
@@ -5400,6 +5521,7 @@ class Playstream2(
         self.name = item[0]
         self.url = item[1]
         self._update_country_code_for_index(i)
+        self._update_logo_url_for_index(i)
         self.startStream()
 
     def previousitem(self):
@@ -5414,6 +5536,7 @@ class Playstream2(
         self.name = item[0]
         self.url = item[1]
         self._update_country_code_for_index(i)
+        self._update_logo_url_for_index(i)
         self.startStream()
 
     def doEofInternal(self, playing):
