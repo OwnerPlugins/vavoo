@@ -698,19 +698,31 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
                 debug("Flag icon resolution failed for {}: {}".format(
                     country_name, e))
 
+    # icon_size used to be a flat (60, 40) at every resolution tier,
+    # regardless of each tier's own item_height (m2list.__init__) -
+    # 80% of the row height on the fhd/hd tiers, 66.7% on wqhd, and
+    # visually dominant enough that channel/flag icons looked like the
+    # main content instead of a small marker next to the name. Scaled
+    # down to ~60% of each tier's own item_height instead (uniform
+    # across tiers this time), keeping the same 3:2 aspect ratio the
+    # bundled flag PNGs (skin/cowntry/*.png, all exactly 60x40) are
+    # already hand-cropped to, so they keep scaling down with zero new
+    # distortion - and vertically centered in the row
+    # ((item_height - icon_height) // 2) rather than the old fixed
+    # y-offsets, which were tuned for the old, taller box.
     if screen_width >= 2560:
-        icon_size = (60, 40)
-        icon_pos = (10, 10)
+        icon_size = (54, 36)
+        icon_pos = (10, 12)
         text_size = (750, 60)
         text_pos = (icon_size[0] + 20, 0)
     elif screen_width >= 1920:
-        icon_size = (60, 40)
-        icon_pos = (10, 5)
+        icon_size = (45, 30)
+        icon_pos = (10, 10)
         text_size = (540, 50)
         text_pos = (icon_size[0] + 20, 0)
     else:
-        icon_size = (60, 40)
-        icon_pos = (10, 5)
+        icon_size = (45, 30)
+        icon_pos = (10, 10)
         text_size = (380, 50)
         text_pos = (icon_size[0] + 20, 0)
 
