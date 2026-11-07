@@ -103,7 +103,7 @@ from . import (
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
     PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, PROXY_SHUTDOWN_URL,
     FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL,
-    EPGIMPORT_CONF, LOG_FILE
+    EPGIMPORT_CONF, LOG_FILE, GROUP_NAME_SEPARATORS
 )
 from . import PY2, PY3, vUtils
 from .bouquet_manager import (
@@ -529,12 +529,6 @@ def to_string(text):
 
 
 # config section
-# --- Live search input field integrated in plugin config ---
-class ConfigSearchText(ConfigText):
-    def __init__(self, default=""):
-        ConfigText.__init__(self, default=default)
-
-
 class ConfigAction(ConfigSelection):
     """A config-list entry with a single, fixed choice, so left/right
     can't cycle it - used purely as a "press OK to trigger an action"
@@ -611,7 +605,6 @@ cfg.list_position = ConfigSelection(
     default="bottom",
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
 )
-cfg.search_text = ConfigSearchText(default="")
 cfg.playlist_key = ConfigText(default="")
 cfg.parental_pin = ConfigText(default="")
 cfg.parental_countries = ConfigText(default="")
@@ -1727,6 +1720,13 @@ class vavoo_config(Screen, ConfigListScreen):
             for x in self["config"].list:
                 x[1].save()
 
+            # Tracks whether this save() has already (re)started the
+            # proxy, so the "Manage EPG source" block further down
+            # doesn't fire a redundant second restart - see its own
+            # comment for why that was a real race, not just
+            # theoretical.
+            restart_handled = False
+
             proxy_enabled_changed = self.old_proxy_enabled != cfg.proxy_enabled.value
             if proxy_enabled_changed:
                 if cfg.proxy_enabled.value:
@@ -1734,6 +1734,7 @@ class vavoo_config(Screen, ConfigListScreen):
                         startup_timeout=cfg.proxy_startup_timeout.value)
                     # Schedule a non‑blocking status check after 1 second
                     reactor.callLater(1, self._check_proxy_started)
+                    restart_handled = True
                 else:
                     shutdown_proxy()
                 self.old_proxy_enabled = cfg.proxy_enabled.value
@@ -1750,6 +1751,7 @@ class vavoo_config(Screen, ConfigListScreen):
                     run_proxy_in_background(
                         startup_timeout=cfg.proxy_startup_timeout.value)
                     reactor.callLater(1, self._check_proxy_started)
+                    restart_handled = True
 
             # Sync the anonymous-stats opt-out file with this toggle -
             # is_stats_enabled() (vavoo_stats.py) checks for this file's
@@ -1770,8 +1772,21 @@ class vavoo_config(Screen, ConfigListScreen):
             except Exception as e:
                 print("[Config] Error syncing stats opt-out: " + str(e))
 
-            # Manage EPG source
-            if cfg.epg_enabled.value and not is_proxy_running():
+            # Manage EPG source - skipped if a restart already happened
+            # above in this same save() (proxy_enabled turning on, or
+            # catalog_source changing). Without restart_handled, this
+            # check used to re-read is_proxy_running() immediately
+            # after one of those restarts - which reads False while
+            # that restart's own initialize_proxy() is still mid
+            # catalog-reload, well before it rebinds the port - and
+            # fired a second, redundant run_proxy_in_background()
+            # call. Depending on timing that either raced a second
+            # concurrent catalog-reload thread against the first, or
+            # hit run_proxy_in_background()'s own "another instance is
+            # already booting" wait - which blocks the calling thread
+            # (this GUI/reactor-thread save() call) for several
+            # seconds.
+            if cfg.epg_enabled.value and not is_proxy_running() and not restart_handled:
                 run_proxy_in_background(
                     startup_timeout=cfg.proxy_startup_timeout.value)
                 # No sleep here – the proxy will become ready asynchronously
@@ -3061,24 +3076,49 @@ class MainVavoo(Screen):
             self["name"].setText(to_string("Error loading data"))
 
     def _load_countries_from_original_source(self):
-        """Fallback: load countries from the original source (may fail if blocked)."""
+        """Fallback: load countries from the original source (may fail
+        if blocked). _get_content() below can block for a long time
+        (same reasoning as cat()'s own _task() above) - run it off the
+        GUI/reactor thread, the same way the proxy path already is, so
+        a slow/blocked original source can't freeze the box either.
+        """
+        def _task():
+            if self._closed:
+                return
+            countries = None
+            exc = None
+            try:
+                content = self._get_content()
+                if PY3:
+                    content = vUtils.ensure_str(content)
+                if not content:
+                    raise ValueError("No data received")
+                data = self._parse_json(content)
+                if data is None:
+                    raise ValueError("Invalid data format")
+                self.all_data = data
+                countries = set()
+                for entry in self.all_data:
+                    country = url_unquote(entry["country"]).strip("\r\n")
+                    if "➾" not in country and country.lower() != "default" and len(country) > 1:
+                        countries.add(country)
+            except Exception as e:
+                exc = e
+            if self._closed:
+                return
+            reactor.callFromThread(
+                self._on_fallback_countries_response, countries, exc)
+
+        t = threading.Thread(target=_task)
+        t.daemon = True
+        t.start()
+
+    def _on_fallback_countries_response(self, countries, exc):
+        if self._closed:
+            return
         try:
-            content = self._get_content()
-            if PY3:
-                content = vUtils.ensure_str(content)
-            if not content:
-                self["name"].setText(to_string("Error: No data received"))
-                return
-            data = self._parse_json(content)
-            if data is None:
-                self["name"].setText(to_string("Error: Invalid data format"))
-                return
-            self.all_data = data
-            countries = set()
-            for entry in self.all_data:
-                country = url_unquote(entry["country"]).strip("\r\n")
-                if "➾" not in country and country.lower() != "default" and len(country) > 1:
-                    countries.add(country)
+            if exc is not None:
+                raise exc
             for country in sorted(countries):
                 self.cat_list.append(show_list(country, country))
             self._update_ui()
@@ -3895,6 +3935,16 @@ class vavoo(Screen):
 
     def _build_channel_list(self, channels_data):
         """Build channel list from proxy data"""
+        # cat()'s background _task() already checks self._closed before
+        # scheduling this via reactor.callFromThread, but that only
+        # queues the call - the user can still press Back/Cancel (which
+        # sets self._closed and tears the screen down) in the gap
+        # before the reactor actually runs it. Every sibling path that
+        # can land here the same way (_on_fallback_content(),
+        # MainVavoo._on_countries_response()) already re-checks this as
+        # its first line - this one was missing it.
+        if self._closed:
+            return
         self.cat_list = []
         self._channel_entries = []
 
@@ -4213,7 +4263,7 @@ class vavoo(Screen):
             return
 
         self._export_type = "hierarchical" if any(
-            sep in name for sep in ["➾", "⟾", "->", "→"]) else "flat"
+            sep in name for sep in GROUP_NAME_SEPARATORS) else "flat"
 
         try:
             export_bouquet_async(
