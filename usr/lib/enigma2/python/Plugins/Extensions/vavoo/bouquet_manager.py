@@ -44,6 +44,7 @@ from . import (
     PLUGIN_ROOT,
     PROXY_HOST,
     ENIGMA_PATH,
+    GROUP_NAME_SEPARATORS,
 )
 
 """
@@ -357,23 +358,64 @@ def remove_bouquets_by_name(name=None):
         epg_dir = "/etc/epgimport"
 
         if name is not None:
-            # Specific removal for a country
+            # Specific removal for a country, or for one category
+            # sub-bouquet of it
             country_code = get_country_code_from_bouquet_name(name)
             if country_code:
-                epg_file = join(
-                    epg_dir, "vavoo_{}.channels.xml".format(
-                        country_code.lower()))
-                if file_exists(epg_file):
-                    try:
-                        remove(epg_file)
-                        print(
-                            "✓ Removed EPG file: vavoo_{}.channels.xml".format(country_code))
-                    except Exception as e:
-                        print("Error removing EPG file: {}".format(e))
+                # vavoo_<country>.channels.xml is SHARED by every
+                # category sub-bouquet of a country (see vUtils.py's
+                # per-country EPG filename). If `name` is itself a
+                # category bouquet (e.g. "Italy -> Sport") and a
+                # sibling category bouquet for the same country (e.g.
+                # "Italy -> News") survives the removal above, deleting
+                # the shared EPG file here would silently break that
+                # sibling's EPG - only delete it when no such sibling
+                # remains on disk.
+                country_prefix = _bouquet_country_prefix(
+                    _sanitize_name_for_path(name))
+                sibling_exists = False
+                if country_prefix:
+                    # Same two-pattern "does a bouquet for this country
+                    # exist" check as is_bouquet_exported()/the removal
+                    # loop above - a category sibling
+                    # ("userbouquet.vavoo_italy_news.tv") AND a flat,
+                    # whole-country bouquet ("userbouquet.vavoo_italy.tv")
+                    # both reference the very same shared EPG file, so
+                    # either one surviving means it's still needed.
+                    flat_name = "userbouquet.vavoo_%s." % country_prefix
+                    category_prefix = "userbouquet.vavoo_%s_" % country_prefix
+                    for fname in listdir(ENIGMA_PATH):
+                        if ('.vavoo_' in fname and
+                                (fname.endswith('.tv') or fname.endswith('.radio')) and
+                                (fname.startswith(flat_name) or
+                                 fname.startswith(category_prefix))):
+                            sibling_exists = True
+                            break
+
+                if not sibling_exists:
+                    epg_file = join(
+                        epg_dir, "vavoo_{}.channels.xml".format(
+                            country_code.lower()))
+                    if file_exists(epg_file):
+                        try:
+                            remove(epg_file)
+                            print(
+                                "✓ Removed EPG file: vavoo_{}.channels.xml".format(country_code))
+                        except Exception as e:
+                            print("Error removing EPG file: {}".format(e))
         else:
-            # Removing all bouquets: delete all vavoo_*.channels.xml files
+            # Removing all bouquets: delete all vavoo_*.channels.xml
+            # files, plus the no-country-code fallback filename
+            # write_epg_mapping_file() falls back to
+            # ("vavoo.channels.xml", no underscore) when a bouquet's
+            # country can't be determined - the "vavoo_*" glob alone
+            # doesn't match that one, which left it behind forever.
             pattern = join(epg_dir, "vavoo_*.channels.xml")
-            for epg_file in glob.glob(pattern):
+            epg_files = glob.glob(pattern)
+            fallback_epg_file = join(epg_dir, "vavoo.channels.xml")
+            if file_exists(fallback_epg_file):
+                epg_files.append(fallback_epg_file)
+            for epg_file in epg_files:
                 try:
                     remove(epg_file)
                     print("✓ Removed EPG file: {}".format(basename(epg_file)))
@@ -913,6 +955,66 @@ def process_epg_matching_background(
         reactor.callFromThread(_do_error_callback)
 
 
+def _build_bouquet_filename(name_for_path, export_type):
+    """Compute this bouquet's on-disk filename from its (already
+    path-sanitized, see _sanitize_name_for_path()) display name and
+    export mode - shared by create_fallback_bouquet_sync() and
+    create_bouquet_file(), which used to each carry their own
+    identical copy of this logic. That duplicated copy only recognized
+    4 of GROUP_NAME_SEPARATORS' 6 known country/category separators -
+    "»"/"›" survived verbatim into the generated filename instead of
+    being stripped/replaced like the other four.
+    """
+    is_category = any(
+        sep in name_for_path for sep in GROUP_NAME_SEPARATORS)
+
+    if export_type == "flat" or not is_category:
+        safe_name = name_for_path.lower().replace(' ', '_')
+        for sep in GROUP_NAME_SEPARATORS:
+            safe_name = safe_name.replace(sep, '')
+        return "userbouquet.vavoo_%s.tv" % safe_name
+
+    country_part = ""
+    category_part = ""
+    for sep in GROUP_NAME_SEPARATORS:
+        if sep in name_for_path:
+            parts = name_for_path.split(sep)
+            country_part = parts[0].strip()
+            category_part = parts[1].strip()
+            break
+
+    if not country_part or not category_part:
+        safe_name = name_for_path.lower().replace(' ', '_')
+        for sep in GROUP_NAME_SEPARATORS:
+            safe_name = safe_name.replace(sep, '_')
+        return "userbouquet.vavoo_%s.tv" % safe_name
+
+    country_safe = country_part.lower().replace(' ', '_')
+    category_safe = category_part.lower().replace(' ', '_')
+    return "userbouquet.vavoo_%s_%s.tv" % (country_safe, category_safe)
+
+
+def _bouquet_country_prefix(name_for_path):
+    """The sanitized country-name prefix _build_bouquet_filename() would
+    use for a category sub-bouquet's filename (e.g. "italy" out of
+    "Italy -> Sport"), or None if name_for_path isn't a "country <sep>
+    category" name at all.
+
+    Used by remove_bouquets_by_name() to tell whether a sibling category
+    bouquet for the same country still exists on disk before deleting
+    that country's shared EPG channels.xml file.
+    """
+    for sep in GROUP_NAME_SEPARATORS:
+        if sep in name_for_path:
+            parts = name_for_path.split(sep)
+            country_part = parts[0].strip()
+            category_part = parts[1].strip()
+            if country_part and category_part:
+                return country_part.lower().replace(' ', '_')
+            break
+    return None
+
+
 def create_fallback_bouquet_sync(
         servicetype,
         name,
@@ -953,48 +1055,7 @@ def create_fallback_bouquet_sync(
 
         # 5. Prepare bouquet filename (same logic as create_bouquet_file)
         name_for_path = _sanitize_name_for_path(name)
-        separators = ["➾", "⟾", "->", "→"]
-        is_category = any(sep in name_for_path for sep in separators)
-        if export_type == "flat" or not is_category:
-            safe_name = name_for_path.lower().replace(
-                ' ',
-                '_').replace(
-                '➾',
-                '').replace(
-                '⟾',
-                '').replace(
-                '->',
-                '').replace(
-                    '→',
-                '')
-            bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-        else:
-            country_part = ""
-            category_part = ""
-            for sep in separators:
-                if sep in name_for_path:
-                    parts = name_for_path.split(sep)
-                    country_part = parts[0].strip()
-                    category_part = parts[1].strip()
-                    break
-            if not country_part or not category_part:
-                safe_name = name_for_path.lower().replace(
-                    ' ',
-                    '_').replace(
-                    '➾',
-                    '_').replace(
-                    '⟾',
-                    '_').replace(
-                    '->',
-                    '_').replace(
-                    '→',
-                    '_')
-                bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-            else:
-                country_safe = country_part.lower().replace(' ', '_')
-                category_safe = category_part.lower().replace(' ', '_')
-                bouquet_filename = "userbouquet.vavoo_%s_%s.tv" % (
-                    country_safe, category_safe)
+        bouquet_filename = _build_bouquet_filename(name_for_path, export_type)
 
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
 
@@ -1115,52 +1176,9 @@ def create_bouquet_file(
     try:
         print("[Bouquet] Creating bouquet: %s (%s)" % (name, export_type))
 
-        # Determine if it is a country or category
+        # Determine if it is a country or category, and build the filename
         name_for_path = _sanitize_name_for_path(name)
-        separators = ["➾", "⟾", "->", "→"]
-        is_category = any(sep in name_for_path for sep in separators)
-
-        # Prepare file name
-        if export_type == "flat" or not is_category:
-            safe_name = name_for_path.lower().replace(
-                ' ',
-                '_').replace(
-                '➾',
-                '').replace(
-                '⟾',
-                '').replace(
-                '->',
-                '').replace(
-                    '→',
-                '')
-            bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-        else:
-            country_part = ""
-            category_part = ""
-            for sep in separators:
-                if sep in name_for_path:
-                    parts = name_for_path.split(sep)
-                    country_part = parts[0].strip()
-                    category_part = parts[1].strip()
-                    break
-            if not country_part or not category_part:
-                safe_name = name_for_path.lower().replace(
-                    ' ',
-                    '_').replace(
-                    '➾',
-                    '_').replace(
-                    '⟾',
-                    '_').replace(
-                    '->',
-                    '_').replace(
-                    '→',
-                    '_')
-                bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-            else:
-                country_safe = country_part.lower().replace(' ', '_')
-                category_safe = category_part.lower().replace(' ', '_')
-                bouquet_filename = "userbouquet.vavoo_%s_%s.tv" % (
-                    country_safe, category_safe)
+        bouquet_filename = _build_bouquet_filename(name_for_path, export_type)
 
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
 
