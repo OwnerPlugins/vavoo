@@ -47,6 +47,15 @@ BASE_SITES = [PRIMARY_BASE_URL, FALLBACK_BASE_URL]
 # app (pQu4k3r/vavoo_android) already ships.
 GEIL_SITES = ["https://geil.to", "https://geil.app", "https://geil.win"]
 GEIL_LIVE_PATH = "/live"
+# Separators geil.to's and Vavoo's own catalogs both use to join a
+# channel's country and category into one "group"/bouquet-name string
+# (e.g. "Italy ➾ Sport"). One shared constant here, imported by every
+# module that needs to split a group/bouquet name back into its
+# country part, instead of several independently-maintained literal
+# copies - those had already drifted out of sync with each other (two
+# different 4-item subsets of this same 6-item list, in different
+# files, missing "»"/"›").
+GROUP_NAME_SEPARATORS = ("➾", "⟾", "->", "→", "»", "›")
 PY2 = version_info[0] == 2
 PY3 = version_info[0] == 3
 
