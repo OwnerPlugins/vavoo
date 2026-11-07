@@ -563,6 +563,19 @@ cfg.genm3u = NoSave(ConfigYesNo(default=False))
 cfg.show_log = NoSave(ConfigAction())
 cfg.view_favourites = NoSave(ConfigAction())
 cfg.server = ConfigSelection(default=PRIMARY_BASE_URL, choices=myser)
+# Which catalog/stream source vavoo_proxy.py's initialize_proxy()
+# tries - "auto" keeps its default geil.to-first/Vavoo-fallback
+# order; "geil"/"vavoo" pin it to exactly one source, with no
+# fallback to the other if it fails (an explicit choice is respected
+# as-is). Read directly by vavoo_proxy.py via its own e2_config
+# import, not this cfg reference (that would be a circular import).
+cfg.catalog_source = ConfigSelection(
+    default="auto",
+    choices=[
+        ("auto", _("Auto (geil.to, fallback Vavoo)")),
+        ("geil", _("geil.to only")),
+        ("vavoo", _("Vavoo/kool.to only")),
+    ])
 cfg.services = ConfigSelection(default='4097', choices=modemovie)
 cfg.epg_enabled = ConfigEnableDisable(default=False)
 cfg.epg_auto_update = ConfigEnableDisable(default=False)
@@ -844,6 +857,7 @@ class vavoo_config(Screen, ConfigListScreen):
         self.old_proxy_enabled = cfg.proxy_enabled.value
         self.old_back = cfg.back.value
         self.old_list_position = cfg.list_position.value
+        self.old_catalog_source = cfg.catalog_source.value
 
         # So background M3U-fetch threads (_fetch_countries_async/
         # _fetch_channels_async) can notice this screen was left and
@@ -915,6 +929,18 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Proxy Enabled"),
                 cfg.proxy_enabled,
                 _("Enable or disable proxy.")
+            )
+        )
+
+        self.list.append(
+            getConfigListEntry(
+                _("Catalog/Stream Source"),
+                cfg.catalog_source,
+                _("Which service to load channels and streams from. "
+                  "Auto tries geil.to first and falls back to Vavoo "
+                  "if it's unavailable; the other two options pin it "
+                  "to exactly that one source. Takes effect on save "
+                  "(restarts the proxy if it's running).")
             )
         )
 
@@ -1701,7 +1727,8 @@ class vavoo_config(Screen, ConfigListScreen):
             for x in self["config"].list:
                 x[1].save()
 
-            if self.old_proxy_enabled != cfg.proxy_enabled.value:
+            proxy_enabled_changed = self.old_proxy_enabled != cfg.proxy_enabled.value
+            if proxy_enabled_changed:
                 if cfg.proxy_enabled.value:
                     run_proxy_in_background(
                         startup_timeout=cfg.proxy_startup_timeout.value)
@@ -1710,6 +1737,19 @@ class vavoo_config(Screen, ConfigListScreen):
                 else:
                     shutdown_proxy()
                 self.old_proxy_enabled = cfg.proxy_enabled.value
+
+            if self.old_catalog_source != cfg.catalog_source.value:
+                self.old_catalog_source = cfg.catalog_source.value
+                # initialize_proxy() only reads catalog_source once, at
+                # startup - restart the proxy so the new choice actually
+                # takes effect, unless proxy_enabled itself just changed
+                # in this same save (the block above already started it
+                # fresh, or there's nothing running to restart).
+                if cfg.proxy_enabled.value and not proxy_enabled_changed:
+                    shutdown_proxy()
+                    run_proxy_in_background(
+                        startup_timeout=cfg.proxy_startup_timeout.value)
+                    reactor.callLater(1, self._check_proxy_started)
 
             # Sync the anonymous-stats opt-out file with this toggle -
             # is_stats_enabled() (vavoo_stats.py) checks for this file's

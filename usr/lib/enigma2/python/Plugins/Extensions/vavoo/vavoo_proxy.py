@@ -1118,28 +1118,58 @@ class VavooProxy(object):
         (no addonSig/token step needed at all), Vavoo's sites
         (vavoo.to/kool.to) as the fallback catalog source when
         geil.to's whole catalog can't be loaded - same default/
-        fallback order the companion Android app uses."""
+        fallback order the companion Android app uses.
+
+        This default/fallback order is itself overridable via
+        config.plugins.vavoo.catalog_source ("auto" by default, or
+        pinned to "geil"/"vavoo") - same config-read convention
+        playlist_key already uses elsewhere in this module (see its
+        own e2_config import comment). A pinned choice is respected
+        as-is, with no fallback to the other source if it fails - an
+        explicit preference shouldn't be silently overridden the same
+        way "auto"'s best-effort fallback is.
+        """
         try:
             print(" Initializing...")
 
-            print(" Attempting to load catalog from geil.to (no token needed)...")
-            all_channels = self.load_geil_catalog()
-            if all_channels:
-                self.catalog_source = "geil"
-            else:
-                print(" geil.to catalog unavailable, falling back to Vavoo")
-                self.catalog_source = "vavoo"
+            source_preference = "auto"
+            try:
+                source_preference = e2_config.plugins.vavoo.catalog_source.value
+            except Exception as e:
+                print(" Could not read catalog_source config: {}".format(e))
 
-                # First, obtain a valid token
+            if source_preference == "vavoo":
+                print(" Catalog source pinned to Vavoo - skipping geil.to")
+                self.catalog_source = "vavoo"
                 sig = self.refresh_addon_sig_if_needed()
                 if not sig:
                     print(
                         " Warning: Could not get a valid token, but continuing anyway")
-                    # We may continue with an old token or no token at all
-
-                # Load the catalog
                 print(" Attempting to load catalog...")
                 all_channels = self.load_catalog(sig)
+            else:
+                print(" Attempting to load catalog from geil.to (no token needed)...")
+                all_channels = self.load_geil_catalog()
+                if all_channels:
+                    self.catalog_source = "geil"
+                elif source_preference == "geil":
+                    print(
+                        " Catalog source pinned to geil.to - not falling back to Vavoo")
+                    self.catalog_source = "geil"
+                else:
+                    print(" geil.to catalog unavailable, falling back to Vavoo")
+                    self.catalog_source = "vavoo"
+
+                    # First, obtain a valid token
+                    sig = self.refresh_addon_sig_if_needed()
+                    if not sig:
+                        print(
+                            " Warning: Could not get a valid token, but continuing anyway")
+                        # We may continue with an old token or no token at all
+
+                    # Load the catalog
+                    print(" Attempting to load catalog...")
+                    all_channels = self.load_catalog(sig)
 
             if not all_channels or len(all_channels) == 0:
                 print(" Warning: Catalog is empty or failed to load")
