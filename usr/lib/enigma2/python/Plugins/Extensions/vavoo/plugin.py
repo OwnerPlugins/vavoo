@@ -133,6 +133,7 @@ from .vUtils import (
     getUrl,
     get_country_code,
     get_picon_cache_path,
+    get_png_dimensions,
     initialize_cache_with_local_flags,
     is_proxy_ready,
     is_proxy_running,
@@ -647,6 +648,7 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     default_icon = join(PLUGIN_PATH, 'skin/pics/vavoo_ico.png')
     icon_path = default_icon
 
+    using_channel_picon = False
     if is_channel and logo_url:
         # Same convention as the flag icon below: only ever read the
         # cache here, never download synchronously inside this
@@ -660,6 +662,7 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
             if cache_file and file_exists(cache_file):
                 if getsize(cache_file) > 100:
                     icon_path = cache_file
+                    using_channel_picon = True
                 else:
                     unlink(cache_file)
         except Exception as e:
@@ -714,16 +717,43 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     # Load PNG
     try:
         png_data = loadPNG(icon_path)
+        png_source = icon_path
     except Exception:
         try:
             png_data = loadPNG(default_icon)
+            png_source = default_icon
         except Exception:
             png_data = None
+            png_source = None
+
+    # Channel picons are cached verbatim at whatever native size the
+    # third-party catalog serves them (unlike the bundled/downloaded
+    # flags, which are already pre-sized to exactly fit icon_size) -
+    # stretching one of those into the fixed box non-uniformly
+    # distorts it. Shrink it to fit within the box instead, preserving
+    # its own aspect ratio and centering it, rather than stretching.
+    # Only applies when the picon is actually the image that decoded
+    # (png_source == icon_path) - if loadPNG() itself fell back to
+    # default_icon (e.g. a corrupt body despite a valid-looking
+    # header), the fit below would be sized for the wrong image.
+    pixmap_pos, pixmap_size = icon_pos, icon_size
+    if using_channel_picon and png_source == icon_path:
+        dims = get_png_dimensions(icon_path)
+        if dims:
+            img_w, img_h = dims
+            box_w, box_h = icon_size
+            scale = min(box_w / float(img_w), box_h / float(img_h))
+            fit_w = max(1, int(img_w * scale))
+            fit_h = max(1, int(img_h * scale))
+            pixmap_size = (fit_w, fit_h)
+            pixmap_pos = (
+                icon_pos[0] + (box_w - fit_w) // 2,
+                icon_pos[1] + (box_h - fit_h) // 2)
 
     if png_data:
         res.append(MultiContentEntryPixmapAlphaTest(
-            pos=icon_pos,
-            size=icon_size,
+            pos=pixmap_pos,
+            size=pixmap_size,
             png=png_data
         ))
 
