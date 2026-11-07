@@ -35,6 +35,7 @@ from . import (
     BASE_SITES,
     GEIL_SITES,
     GEIL_LIVE_PATH,
+    GROUP_NAME_SEPARATORS,
     HOST_GIT,
     SREF_MAP_FILE,
     __version__
@@ -492,9 +493,17 @@ HEADERS = {
 # Ceiling on how long a "booting" marker is trusted. A crash, power loss,
 # or plugin/box restart during boot can leave this file behind forever;
 # without a staleness check every later start would think a boot is
-# permanently in progress. Kept well above a normal catalog load (usually
-# well under a minute) so it never interferes with a real, slow boot.
-MAX_BOOT_AGE = 180
+# permanently in progress. A normal catalog load is usually well under a
+# minute, but this needs to stay above the worst case, not the normal
+# case: load_catalog()'s retry loop alone can spend up to ~90s x 3
+# attempts on a single stalled page before giving up on it and moving on,
+# and a failed initialize_proxy() is retried up to 3 times
+# (start_proxy()'s max_restarts) before the boot gives up entirely. 180s
+# was tight enough that a real (not crashed) boot stuck retrying a couple
+# of slow/451-blocked pages could cross it - making a second,
+# concurrently-starting instance see the marker as stale and start
+# booting too, racing the still-legitimately-running first one.
+MAX_BOOT_AGE = 300
 
 
 def is_proxy_booting():
@@ -644,7 +653,12 @@ _GROUP_MULTI_SPACE_RE = re.compile(r'\s+')
 # geil.to's and Vavoo's own catalogs both separate a channel's full
 # "group" label into country/category with one of these - shared by
 # load_catalog() and load_geil_catalog() (see _base_country_from_group()).
-_GROUP_SEPARATORS = ("➾", "⟾", "->", "→", "»", "›")
+# GROUP_NAME_SEPARATORS (__init__.py) is the one shared copy of this
+# list, imported everywhere a country/category or bouquet name needs
+# splitting the same way, instead of each module keeping its own
+# literal (which had already drifted out of sync - see its own
+# comment).
+_GROUP_SEPARATORS = GROUP_NAME_SEPARATORS
 
 
 def _base_country_from_group(group):
@@ -1440,8 +1454,14 @@ class VavooProxy(object):
                             verify=False
                         )
 
-                        # HTTP 451 -> immediately try next mirror
+                        # HTTP 451 -> immediately try next mirror. self.session
+                        # defaults to stream=True (for the actual video-stream
+                        # proxying path), so this response's body was never
+                        # downloaded - closing it here returns the connection
+                        # to the pool instead of leaving it dangling while we
+                        # discard the Response object and retry/switch mirrors.
                         if r_catalog.status_code == 451:
+                            r_catalog.close()
                             self._switch_to_next_base("(HTTP 451 on catalog)")
                             if attempt < max_retries - 1:
                                 continue
@@ -1458,6 +1478,7 @@ class VavooProxy(object):
                                 break
 
                         if r_catalog.status_code == 502:
+                            r_catalog.close()
                             print(
                                 "502 Bad Gateway on page {0}, attempt {1}".format(
                                     page, attempt + 1))
@@ -1535,28 +1556,41 @@ class VavooProxy(object):
 
                 for item in items:
                     if item.get("type") == "iptv":
+                        # Mirrors load_geil_catalog()'s per-item
+                        # try/except - "id"/"name"/"url" are accessed
+                        # with bracket notation (KeyError on a
+                        # malformed item), and without this, one bad
+                        # item used to raise out to the outer
+                        # try/except and abort the whole catalog load
+                        # (falling back to only whatever earlier pages
+                        # had already collected) instead of just
+                        # skipping that one item.
+                        try:
+                            group = item.get("group", "")
+                            base_country = _base_country_from_group(group)
 
-                        group = item.get("group", "")
-                        base_country = _base_country_from_group(group)
+                            channel_data = {
+                                "country": base_country,
+                                "id": item["ids"]["id"],
+                                "name": item["name"],
+                                "url": item["url"],
+                                "logo": fix_logo_url(item.get("logo", "")),
+                                "group": group,
+                                # Vavoo's own catalog has no separate guide
+                                # id field the way geil.to's does - this
+                                # key is always empty here, so
+                                # find_match()'s new epg_guide_id check is
+                                # a no-op on this path (falls straight
+                                # through to the existing matching chain).
+                                "epg_id": ""
+                            }
 
-                        channel_data = {
-                            "country": base_country,
-                            "id": item["ids"]["id"],
-                            "name": item["name"],
-                            "url": item["url"],
-                            "logo": fix_logo_url(item.get("logo", "")),
-                            "group": group,
-                            # Vavoo's own catalog has no separate guide
-                            # id field the way geil.to's does - this
-                            # key is always empty here, so
-                            # find_match()'s new epg_guide_id check is
-                            # a no-op on this path (falls straight
-                            # through to the existing matching chain).
-                            "epg_id": ""
-                        }
-
-                        all_channels.append(channel_data)
-                        items_processed += 1
+                            all_channels.append(channel_data)
+                            items_processed += 1
+                        except Exception as e:
+                            print(
+                                "Skipping malformed catalog item: {0}".format(e))
+                            continue
 
                 print(
                     "Page {0}: processed {1} items, total {2} channels".format(
@@ -1840,12 +1874,18 @@ class VavooProxy(object):
                     timeout=30
                 )
 
+                # self.session defaults to stream=True (for the video-stream
+                # proxying path) - close() returns the connection to the
+                # pool instead of leaking it when we discard this response
+                # and retry/switch mirrors without ever reading its body.
                 if r_resolve.status_code == 451:
+                    r_resolve.close()
                     self._switch_to_next_base("(HTTP 451 on resolve)")
                     if attempt < max_retries - 1:
                         continue
 
                 if r_resolve.status_code == 502 and attempt < max_retries - 1:
+                    r_resolve.close()
                     select.select([], [], [], 0.25)
                     continue
 
@@ -2221,8 +2261,13 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         channel_id = channel.get("id", "")
                         if not channel_id:
                             continue
+                        # Quoted the same way the grouped branch above
+                        # (group_id) and /playlist.m3u (channel_id) already
+                        # are - this was the one place a raw catalog id
+                        # with a "&"/"#"/space in it could still corrupt
+                        # the query string.
                         proxy_url = "http://%s:%d/vavoo?channel=%s" % (
-                            local_ip, PORT, channel_id)
+                            local_ip, PORT, quote(str(channel_id), safe=''))
                         raw_name = channel.get("name", "")
                         response_channels.append({
                             "id": channel_id,
@@ -2481,7 +2526,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         return
 
             elif parsed_path.path == '/refresh_token':
-                sig = proxy.refresh_addon_sig_if_needed(force=True)
+                # Use the request-bound `p`, not the bare `proxy` global -
+                # see the comment on `p = proxy` above.
+                sig = p.refresh_addon_sig_if_needed(force=True)
                 response = {
                     "status": "success" if sig else "error",
                     "message": "Token refreshed" if sig else "Failed to refresh token"}
@@ -2506,15 +2553,24 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
                 def shutdown_server():
                     select.select([], [], [], 0.2)
-                    if proxy.server:
+                    # self.server is always the exact ThreadedHTTPServer
+                    # that dispatched this very request - unlike `proxy`/
+                    # `p`, there's no possible race with a concurrent
+                    # restart rebinding the global to a different
+                    # VavooProxy instance.
+                    if self.server:
                         try:
-                            proxy.server.shutdown()
+                            self.server.shutdown()
                         except Exception:
                             pass
                         try:
-                            proxy.server.server_close()
+                            self.server.server_close()
                         except Exception:
                             pass
+                    # Deliberately the live global here, not `p`: if a
+                    # restart raced in during the 0.2s above, we want to
+                    # stop whichever VavooProxy instance is actually live
+                    # now, not a possibly-already-superseded one.
                     try:
                         proxy.stop()
                     except Exception:
