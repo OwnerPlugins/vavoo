@@ -712,28 +712,34 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     # regardless of each tier's own item_height (m2list.__init__) -
     # 80% of the row height on the fhd/hd tiers, 66.7% on wqhd, and
     # visually dominant enough that channel/flag icons looked like the
-    # main content instead of a small marker next to the name. A first
-    # pass scaled this down to 60% of item_height; still too big, so
-    # scaled further to ~40% instead (uniform across tiers), keeping
-    # the same 3:2 aspect ratio the bundled flag PNGs
-    # (skin/cowntry/*.png, all exactly 60x40) are already hand-cropped
-    # to, so they keep scaling down with zero new distortion - and
-    # vertically centered in the row ((item_height - icon_height) //
-    # 2) rather than the old fixed y-offsets, which were tuned for the
-    # old, taller box.
+    # main content instead of a small marker next to the name. A
+    # follow-up pass pushed this down further to ~40% of item_height,
+    # which went too far the other way: at that size even the plain
+    # default icon (not just a detailed channel logo) rendered as an
+    # indistinct blob, confirmed from an on-screen photo - a real
+    # channel logo (unlike the bundled flags, simple bold national
+    # flag art that stays legible even very small) needs more pixels
+    # than that to read as anything at all. Settled at ~60% of
+    # item_height instead - the one size in this box's history that
+    # hasn't actually been shown broken - keeping the same 3:2 aspect
+    # ratio the bundled flag PNGs (skin/cowntry/*.png, all exactly
+    # 60x40) are already hand-cropped to, so they keep scaling
+    # uniformly with zero distortion, and vertically centered in the
+    # row ((item_height - icon_height) // 2) rather than the old
+    # fixed y-offsets, which were tuned for the original, taller box.
     if screen_width >= 2560:
-        icon_size = (36, 24)
-        icon_pos = (10, 18)
+        icon_size = (54, 36)
+        icon_pos = (10, 12)
         text_size = (750, 60)
         text_pos = (icon_size[0] + 20, 0)
     elif screen_width >= 1920:
-        icon_size = (30, 20)
-        icon_pos = (10, 15)
+        icon_size = (45, 30)
+        icon_pos = (10, 10)
         text_size = (540, 50)
         text_pos = (icon_size[0] + 20, 0)
     else:
-        icon_size = (30, 20)
-        icon_pos = (10, 15)
+        icon_size = (45, 30)
+        icon_pos = (10, 10)
         text_size = (380, 50)
         text_pos = (icon_size[0] + 20, 0)
 
