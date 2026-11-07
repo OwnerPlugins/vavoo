@@ -458,16 +458,21 @@ else:
 # plugin defines, so the placeholder itself can't be removed - this
 # widget just draws on top of it at a higher zPosition). Width keeps
 # the 3:2 aspect ratio used everywhere else in this plugin for icon
-# boxes. Position is a best-effort estimate (proportional to the
-# real screen height so it scales across resolutions) since the exact
-# placement/size of that stock icon isn't known ahead of time and
-# varies by skin - nudge SCREEN_HEIGHT's fraction below if it isn't
-# aligned on real hardware.
-OVERLAY_PICON_W = int(OVERLAY_HEIGHT_TOP * 1.5)
-OVERLAY_PICON_H = OVERLAY_HEIGHT_TOP
+# boxes, sized up from a plain OVERLAY_HEIGHT_TOP-based box (too
+# small next to the stock icon) to stand out as the main icon there.
+OVERLAY_PICON_H = int(OVERLAY_HEIGHT_TOP * 1.8)
+OVERLAY_PICON_W = int(OVERLAY_PICON_H * 1.5)
 SCREEN_HEIGHT = screen_real.height()
 OVERLAY_PICON_X = 10
-OVERLAY_PICON_Y = int(SCREEN_HEIGHT * 0.78)
+# Position is a best-effort estimate (proportional to the real screen
+# height so it scales across resolutions), calibrated from an
+# on-screen photo: the first attempt (plain SCREEN_HEIGHT * 0.78, no
+# extra offset) rendered about one icon-height too high - visibly
+# stacked above the stock placeholder icon instead of over it -
+# shifted down by that same amount (OVERLAY_HEIGHT_TOP, the old,
+# smaller icon's own height) to compensate. Still an estimate, not a
+# measurement - nudge it further if it's still not aligned.
+OVERLAY_PICON_Y = int(SCREEN_HEIGHT * 0.78) + OVERLAY_HEIGHT_TOP
 
 print('folder back: ', BackPath)
 
