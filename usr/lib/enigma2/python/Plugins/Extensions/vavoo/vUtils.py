@@ -5,7 +5,6 @@ import base64
 import glob
 import hashlib
 import io
-import struct
 try:
     import six
 except ImportError:
@@ -1417,32 +1416,6 @@ def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
     if not logo_url:
         return None
     return join(cache_dir, _picon_cache_filename(logo_url))
-
-
-def get_png_dimensions(path):
-    """Width/height (px) of a PNG file, read from its IHDR chunk - or
-    None if it can't be read or doesn't look like a PNG.
-
-    Only the fixed-position IHDR header (8-byte signature + 4-byte
-    chunk length + 4-byte "IHDR" + 4-byte width + 4-byte height, all
-    big-endian) is parsed - no need to decode any actual pixel data.
-    Used to scale a downloaded channel picon to its own correct aspect
-    ratio instead of stretching it - lets show_list() answer "how big
-    is this image" without pulling in PIL/Pillow, which isn't (and
-    shouldn't become) a dependency of this plugin.
-    """
-    try:
-        with open(path, 'rb') as f:
-            header = f.read(24)
-    except Exception as e:
-        debug("Could not read {} for PNG dimensions: {}".format(path, e))
-        return None
-    if len(header) < 24 or header[:8] != b'\x89PNG\r\n\x1a\n':
-        return None
-    width, height = struct.unpack('>II', header[16:24])
-    if width <= 0 or height <= 0:
-        return None
-    return width, height
 
 
 def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):

@@ -133,7 +133,6 @@ from .vUtils import (
     getUrl,
     get_country_code,
     get_picon_cache_path,
-    get_png_dimensions,
     initialize_cache_with_local_flags,
     is_proxy_ready,
     is_proxy_running,
@@ -743,46 +742,67 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
         text_size = (380, 50)
         text_pos = (icon_size[0] + 20, 0)
 
-    # Load PNG
-    try:
-        png_data = loadPNG(icon_path)
-        png_source = icon_path
-    except Exception:
+    # Load the icon pixmap, already sized correctly for icon_size.
+    #
+    # Channel picons are cached at whatever native resolution the
+    # third-party catalog serves them - unlike the default icon and
+    # the bundled flags (both pre-sized to match icon_size exactly),
+    # MultiContentEntryPixmapAlphaTest does NOT scale a mismatched
+    # source to fit its size= box - it blits the image at its own
+    # native resolution, clipped to that box. A same-size-or-larger
+    # picon therefore only ever showed a small corner fragment of
+    # itself (confirmed from an on-screen photo: mostly blank, with a
+    # sliver of the real logo in one corner) - the earlier fix here
+    # that computed a smaller pos/size never actually fixed anything,
+    # since nothing was scaling the pixel data to match it either way.
+    # ePicLoad actually resamples the source to the target size
+    # (letterboxed, aspect-preserving - see setPara()'s own comment
+    # below) before handing back a pixmap that's already the right
+    # size - the same mechanism this file's own splash screen
+    # (startVavoo.decodeImage()) and the playback overlay
+    # (_update_overlay_picon()) already use for exactly this reason.
+    png_data = None
+    if using_channel_picon:
         try:
-            png_data = loadPNG(default_icon)
-            png_source = default_icon
-        except Exception:
+            picload = ePicLoad()
+            av_scale = AVSwitch().getFramebufferScale()
+            # Same setPara()/startDecode() shape as
+            # startVavoo.decodeImage()/_update_overlay_picon() -
+            # resize_mode=1 scales to fit while preserving aspect
+            # ratio, padded with the given transparent background,
+            # rather than mode=0 (plain stretch).
+            picload.setPara([
+                icon_size[0], icon_size[1],
+                av_scale[0], av_scale[1], 0, 1, '#00000000'])
+            if isfile("/var/lib/dpkg/status"):
+                picload.startDecode(icon_path, False)
+            else:
+                picload.startDecode(icon_path, 0, 0, False)
+            png_data = picload.getData()
+        except Exception as e:
+            debug("Picon decode failed for {}: {}".format(icon_path, e))
             png_data = None
-            png_source = None
 
-    # Channel picons are cached verbatim at whatever native size the
-    # third-party catalog serves them (unlike the bundled/downloaded
-    # flags, which are already pre-sized to exactly fit icon_size) -
-    # stretching one of those into the fixed box non-uniformly
-    # distorts it. Shrink it to fit within the box instead, preserving
-    # its own aspect ratio and centering it, rather than stretching.
-    # Only applies when the picon is actually the image that decoded
-    # (png_source == icon_path) - if loadPNG() itself fell back to
-    # default_icon (e.g. a corrupt body despite a valid-looking
-    # header), the fit below would be sized for the wrong image.
-    pixmap_pos, pixmap_size = icon_pos, icon_size
-    if using_channel_picon and png_source == icon_path:
-        dims = get_png_dimensions(icon_path)
-        if dims:
-            img_w, img_h = dims
-            box_w, box_h = icon_size
-            scale = min(box_w / float(img_w), box_h / float(img_h))
-            fit_w = max(1, int(img_w * scale))
-            fit_h = max(1, int(img_h * scale))
-            pixmap_size = (fit_w, fit_h)
-            pixmap_pos = (
-                icon_pos[0] + (box_w - fit_w) // 2,
-                icon_pos[1] + (box_h - fit_h) // 2)
+    if not png_data:
+        # Either not a channel picon (default icon / country flag,
+        # both already pre-sized to exactly icon_size - no scaling
+        # needed) or the decode above failed - either way, fall back
+        # to a plain, un-scaled load of whichever asset is safe to
+        # load natively at this size (never the oversized picon file
+        # itself, which would reintroduce the clipping problem above).
+        fallback_path = default_icon if using_channel_picon else icon_path
+        try:
+            png_data = loadPNG(fallback_path)
+        except Exception:
+            try:
+                png_data = loadPNG(default_icon)
+            except Exception:
+                png_data = None
 
     if png_data:
         res.append(MultiContentEntryPixmapAlphaTest(
-            pos=pixmap_pos,
-            size=pixmap_size,
+            pos=icon_pos,
+            size=icon_size,
             png=png_data
         ))
 
