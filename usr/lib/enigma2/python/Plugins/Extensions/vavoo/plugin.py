@@ -451,15 +451,23 @@ else:
     BackPath = join(BackfPath, 'images')
     skin_path = join(BackfPath, 'hd')
 
-# Box for the current channel's picon on the top overlay bar, left of
-# its text (same icon-then-text layout show_list() already uses for
-# the channel list) - height matches the bar's own height
-# (OVERLAY_HEIGHT_TOP), width keeps the 3:2 aspect ratio used
-# everywhere else in this plugin for icon boxes. helpOverlay's own
-# position/size (TvInfoBarShowHide.__init__) are shifted to start
-# right after this box, so the two never overlap.
+# Box for the current channel's picon, bottom-left of the screen -
+# over the stock MoviePlayer skin's own "cover" placeholder icon in
+# that corner (self.skinName = 'MoviePlayer' reuses the box's own
+# built-in skin section for that seek-bar/title strip, not one this
+# plugin defines, so the placeholder itself can't be removed - this
+# widget just draws on top of it at a higher zPosition). Width keeps
+# the 3:2 aspect ratio used everywhere else in this plugin for icon
+# boxes. Position is a best-effort estimate (proportional to the
+# real screen height so it scales across resolutions) since the exact
+# placement/size of that stock icon isn't known ahead of time and
+# varies by skin - nudge SCREEN_HEIGHT's fraction below if it isn't
+# aligned on real hardware.
 OVERLAY_PICON_W = int(OVERLAY_HEIGHT_TOP * 1.5)
 OVERLAY_PICON_H = OVERLAY_HEIGHT_TOP
+SCREEN_HEIGHT = screen_real.height()
+OVERLAY_PICON_X = 10
+OVERLAY_PICON_Y = int(SCREEN_HEIGHT * 0.78)
 
 print('folder back: ', BackPath)
 
@@ -4879,31 +4887,31 @@ class TvInfoBarShowHide():
         self.__locked = 0
         debug("TvInfoBarShowHide.__init__ state={}")
 
-        # Current channel's picon, left of the help overlay's text
-        # (see OVERLAY_PICON_W/H's own comment) - populated read-only
+        # Current channel's picon, bottom-left of the screen (see
+        # OVERLAY_PICON_W/H/X/Y's own comment) - populated read-only
         # from the on-disk picon cache by show_help_overlay(), same
         # "only ever read the cache, never download here" rule
         # show_list() follows for the channel list. Only
         # vavoo.ok()/play_that_shit() passes a logo_url into
         # Playstream2 today, so this stays empty/hidden for
-        # Favourites/Search playback.
+        # Favourites/Search playback. zPosition=99 draws it above the
+        # stock MoviePlayer skin's own placeholder icon in that
+        # corner.
         self.channelPicon = Pixmap()
         self.channelPicon.skinAttributes = [
-            ("position", "0,0"),
+            ("position", "{},{}".format(OVERLAY_PICON_X, OVERLAY_PICON_Y)),
             ("size", "{},{}".format(OVERLAY_PICON_W, OVERLAY_PICON_H)),
             ("zPosition", "99"),
         ]
         self["channelPicon"] = self.channelPicon
         self["channelPicon"].hide()
 
-        # Top overlay: controls + proxy status. Shifted to start right
-        # after the picon box above instead of spanning the full
-        # width from x=0, so the two never overlap.
+        # Top overlay: controls + proxy status - full width, the
+        # picon above no longer shares this bar.
         self.helpOverlay = Label("")
         self.helpOverlay.skinAttributes = [
-            ("position", "{},0".format(OVERLAY_PICON_W)),
-            ("size", "{},{}".format(
-                OVERLAY_WIDTH - OVERLAY_PICON_W, OVERLAY_HEIGHT_TOP)),
+            ("position", "0,0"),
+            ("size", "{},{}".format(OVERLAY_WIDTH, OVERLAY_HEIGHT_TOP)),
             ("font", "Regular;{}".format(FONT_SIZE_TOP)),
             ("halign", "center"),
             ("valign", "center"),
