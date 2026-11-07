@@ -70,9 +70,7 @@ from enigma import (
     RT_VALIGN_CENTER,
     eListboxPythonMultiContent,
     ePicLoad,
-    ePoint,
     eServiceReference,
-    eSize,
     eTimer,
     gFont,
     getDesktop,
@@ -714,27 +712,28 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     # regardless of each tier's own item_height (m2list.__init__) -
     # 80% of the row height on the fhd/hd tiers, 66.7% on wqhd, and
     # visually dominant enough that channel/flag icons looked like the
-    # main content instead of a small marker next to the name. Scaled
-    # down to ~60% of each tier's own item_height instead (uniform
-    # across tiers this time), keeping the same 3:2 aspect ratio the
-    # bundled flag PNGs (skin/cowntry/*.png, all exactly 60x40) are
-    # already hand-cropped to, so they keep scaling down with zero new
-    # distortion - and vertically centered in the row
-    # ((item_height - icon_height) // 2) rather than the old fixed
-    # y-offsets, which were tuned for the old, taller box.
+    # main content instead of a small marker next to the name. A first
+    # pass scaled this down to 60% of item_height; still too big, so
+    # scaled further to ~40% instead (uniform across tiers), keeping
+    # the same 3:2 aspect ratio the bundled flag PNGs
+    # (skin/cowntry/*.png, all exactly 60x40) are already hand-cropped
+    # to, so they keep scaling down with zero new distortion - and
+    # vertically centered in the row ((item_height - icon_height) //
+    # 2) rather than the old fixed y-offsets, which were tuned for the
+    # old, taller box.
     if screen_width >= 2560:
-        icon_size = (54, 36)
-        icon_pos = (10, 12)
+        icon_size = (36, 24)
+        icon_pos = (10, 18)
         text_size = (750, 60)
         text_pos = (icon_size[0] + 20, 0)
     elif screen_width >= 1920:
-        icon_size = (45, 30)
-        icon_pos = (10, 10)
+        icon_size = (30, 20)
+        icon_pos = (10, 15)
         text_size = (540, 50)
         text_pos = (icon_size[0] + 20, 0)
     else:
-        icon_size = (45, 30)
-        icon_pos = (10, 10)
+        icon_size = (30, 20)
+        icon_pos = (10, 15)
         text_size = (380, 50)
         text_pos = (icon_size[0] + 20, 0)
 
@@ -4953,10 +4952,18 @@ class TvInfoBarShowHide():
         overlay just shows no picon for this viewing - no retry/
         refresh is attempted here.
 
-        Reuses the exact fit-to-box math already used for the channel
-        list (get_png_dimensions() + centering), just sized to this
-        overlay's own OVERLAY_PICON_W/H box instead of show_list()'s
-        icon_size.
+        Uses ePicLoad to decode AND scale/letterbox the picon to this
+        widget's own size in one step - the same mechanism
+        startVavoo.decodeImage() already uses for the splash image in
+        this exact file. loadPNG() (used by show_list() for the
+        channel list) decodes a PNG at its own native pixel size with
+        no scaling at all; that's fine there because
+        MultiContentEntryPixmapAlphaTest's own size= argument scales
+        list-cell content into its box, but a standalone Pixmap
+        widget's setPixmap() has no such behavior - it just paints
+        the pixmap's native pixels, so a picon larger than the box
+        was only ever showing its clipped top-left corner, and a
+        smaller one sat un-scaled instead of filling it.
         """
         try:
             logo_url = getattr(self, 'current_logo_url', None)
@@ -4970,29 +4977,35 @@ class TvInfoBarShowHide():
                 self["channelPicon"].hide()
                 return
 
-            dims = get_png_dimensions(cache_file)
-            if not dims:
+            size = self["channelPicon"].instance.size()
+            picload = ePicLoad()
+            scale = AVSwitch().getFramebufferScale()
+            # Same setPara()/startDecode() shape as
+            # startVavoo.decodeImage() - width, height, the display's
+            # own aspect-correction factors, and resize_mode=1 (scale
+            # to fit, preserving the image's own aspect ratio, padded
+            # with the given transparent background) rather than
+            # mode=0 (plain stretch).
+            picload.setPara([
+                size.width(), size.height(),
+                scale[0], scale[1], 0, 1, '#00000000'])
+            if isfile("/var/lib/dpkg/status"):
+                picload.startDecode(cache_file, False)
+            else:
+                picload.startDecode(cache_file, 0, 0, False)
+            ptr = picload.getData()
+            if ptr is None:
                 self["channelPicon"].hide()
                 return
 
-            img_w, img_h = dims
-            scale = min(
-                OVERLAY_PICON_W / float(img_w),
-                OVERLAY_PICON_H / float(img_h))
-            fit_w = max(1, int(img_w * scale))
-            fit_h = max(1, int(img_h * scale))
-
-            png_data = loadPNG(cache_file)
-            if not png_data:
-                self["channelPicon"].hide()
-                return
-
-            self["channelPicon"].instance.resize(eSize(fit_w, fit_h))
-            self["channelPicon"].instance.move(ePoint(
-                (OVERLAY_PICON_W - fit_w) // 2,
-                (OVERLAY_PICON_H - fit_h) // 2))
-            self["channelPicon"].instance.setPixmap(png_data)
+            self["channelPicon"].instance.setPixmap(ptr)
             self["channelPicon"].show()
+            # Keep the ePicLoad instance alive for as long as its
+            # decoded pixmap is on screen - same reason
+            # startVavoo.decodeImage() keeps self.picload around
+            # rather than letting it go out of scope right after this
+            # call returns.
+            self._channel_picload = picload
         except Exception as e:
             debug("Overlay picon update failed: {}".format(e))
             try:
