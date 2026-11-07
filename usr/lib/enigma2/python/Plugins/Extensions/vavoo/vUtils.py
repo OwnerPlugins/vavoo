@@ -55,6 +55,7 @@ from . import (
     PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
     PICON_CACHE_DIR,
+    GROUP_NAME_SEPARATORS,
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
@@ -1495,9 +1496,8 @@ def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
 
 def get_country_code_from_bouquet_name(name):
     """Extract country code from a bouquet display name (e.g., 'Italy', 'Italy ➾ Sports')."""
-    separators = ["➾", "⟾", "->", "→"]
     base_name = name
-    for sep in separators:
+    for sep in GROUP_NAME_SEPARATORS:
         if sep in name:
             base_name = name.split(sep)[0].strip()
             break
@@ -1541,8 +1541,7 @@ def get_country_code(country_name):
     if any(char in country_name for char in '0123456789.'):
         return ""
 
-    separators = ["➾", "⟾", "->", "→", "»", "›"]
-    for sep in separators:
+    for sep in GROUP_NAME_SEPARATORS:
         if sep in country_name:
             country_name = country_name.split(sep)[0].strip()
             break
@@ -1746,12 +1745,28 @@ def get_orbital_position(service_ref):
     Extract orbital position from service reference namespace.
     Returns orbital position in tenths of a degree (e.g., 130 = 13.0°E, -50 = 5.0°W)
     """
+    # sref format: type:flags:servicetype:sid:tsid:onid:namespace:... -
+    # namespace (what actually encodes orbital position) is field 6,
+    # not field 3 (that's the sid) - see _get_signal_priority()'s own
+    # identical parsing a bit further down this file, which already
+    # gets this right and warns about this exact mix-up in its own
+    # comment. Getting this wrong here meant namespace was actually
+    # the sid, which is always < 0x10000 - so "is it an exact multiple
+    # of 0x10000" was false for every nonzero sid, and the masked
+    # fallback (parts[3]'s value & 0xFFFF0000) was always 0, so this
+    # function always returned 0 regardless of the real satellite.
+    # Downstream in _find_match_internal(), orbpos being always 0
+    # silently disabled the user-configured-satellite (1.5x) and
+    # Italy-specific 13°E/5°W (1.3x) EPG-match boosts documented in
+    # CLAUDE.md as this feature's whole point - every satellite match
+    # fell through to the generic "other satellite" 1.2x boost
+    # instead, with ties broken arbitrarily by score banding.
     parts = service_ref.split(':')
-    if len(parts) < 4:
+    if len(parts) < 7:
         return 0
 
     try:
-        namespace_str = parts[3] if parts[3] else '0'
+        namespace_str = parts[6] if parts[6] else '0'
         namespace = int(namespace_str, 16)
 
         # Case 1: Default - Position * 65536
