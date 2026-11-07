@@ -117,6 +117,7 @@ In the Config Menu:
 - ✅ If ON: Choose interval (5-3600 min) or fixed time
 - ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport
 - ✅ **Proxy Enabled**: Enable/disable the local proxy (default: ON)
+- ✅ **Catalog/Stream Source**: Auto (geil.to, falls back to Vavoo/kool.to - default), or pin it to exactly one source
 - ✅ **List Position**: Place Vavoo bouquets at top or bottom of channel list
 - ✅ **Select Background**: Choose custom background images
 - ✅ **Link in Main Menu**: Show plugin in main Enigma2 menu
