@@ -2839,47 +2839,28 @@ def run_proxy_in_background(startup_timeout=30):
         print("[Proxy] Already running and listening, skipping start")
         return True
 
-    # Stale PID file? Clean it up
+    # Stale PID file? Just remove it - there is never a separate
+    # process to clean up here.
+    #
+    # The proxy always runs as an in-process thread of Enigma2 itself,
+    # never a separate subprocess (see CLAUDE.md), so write_pid_file()
+    # always stores THIS SAME Enigma2 process's own pid. A PID file
+    # existing while the proxy isn't listening just means an earlier
+    # proxy thread in this same still-running Enigma2 process died or
+    # was shut down - nothing external to kill.
+    #
+    # A previous version of this block tried to os.kill(pid, 9) after
+    # an argv0 == 'enigma2' sanity check, reasoning that "a genuine
+    # match should still look like the Enigma2 binary itself" before
+    # killing it - but that check can never actually distinguish
+    # anything here: the stored PID is *always* Enigma2's own (per
+    # the architecture above), so the check always passed, and the
+    # kill always sent SIGKILL to the live Enigma2 process calling
+    # this very function - turning the single most common recovery
+    # path (the watchdog restarting a crashed proxy thread, a
+    # catalog_source config change, a manual proxy restart) into a
+    # full box crash every time it actually ran.
     if os.path.exists(PID_FILE) and not is_proxy_port_listening():
-        try:
-            with open(PID_FILE) as f:
-                pid = int(f.read().strip())
-            os.kill(pid, 0)          # verify process exists
-            # On a long-uptime embedded box, a small PID space means
-            # this exact number could since have been recycled to an
-            # unrelated process by the OS - killing by PID alone with
-            # no identity check would SIGKILL whatever that is now.
-            # write_pid_file() stores this same Enigma2 process's own
-            # pid (the proxy runs as an in-process thread, not a
-            # separate subprocess - see CLAUDE.md), so a genuine match
-            # should still look like the Enigma2 binary itself; if it
-            # doesn't, skip the kill rather than guess.
-            is_enigma2 = False
-            try:
-                with open("/proc/%d/cmdline" % pid, 'rb') as f:
-                    raw_cmdline = f.read()
-                # A substring check over the whole cmdline is nearly
-                # meaningless on this platform: almost every plugin
-                # helper/cron/maintenance script is invoked via a path
-                # under /usr/lib/enigma2/python/... or similar, so
-                # 'enigma2' in cmdline would match that unrelated
-                # process too if PID reuse ever handed it this exact
-                # number. Check only argv[0]'s basename against the
-                # actual binary name instead.
-                argv0 = raw_cmdline.split(b'\x00', 1)[0].decode(
-                    'utf-8', 'ignore')
-                is_enigma2 = os.path.basename(argv0).lower() == 'enigma2'
-            except Exception:
-                pass
-            if is_enigma2:
-                os.kill(pid, 9)      # kill if it exists but is not listening
-                select.select([], [], [], 0.2)
-            else:
-                print(
-                    "[Proxy] Stale PID %d no longer looks like enigma2, "
-                    "not killing" % pid)
-        except Exception:
-            pass
         try:
             os.unlink(PID_FILE)
         except Exception:
