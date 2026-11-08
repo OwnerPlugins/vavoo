@@ -620,6 +620,16 @@ cfg.proxy_startup_timeout = ConfigSelectionNumber(
 PROXY_MONITOR_INTERVAL_MS = 10000
 PROXY_WATCHDOG_INTERVAL_MS = 60000
 
+# Playstream2's proactive-refresh timer (see
+# Playstream2._do_proactive_refresh()'s own docstring): how long a
+# resolved Vavoo stream URL is given before swapping it for a fresh
+# one, ahead of the point it's believed to actually expire upstream.
+# Deliberately a comfortable margin under vavoo_proxy.py's own
+# resolve_cache_ttl (300s) - that value was itself chosen to match how
+# long a resolved URL stays usable, so refreshing meaningfully before
+# it, not after, is the whole point.
+PROACTIVE_REFRESH_INTERVAL_MS = 270000
+
 
 def normalize_language_code(language):
     """Normalize Enigma2 language identifiers to a comparable short code."""
@@ -5559,6 +5569,16 @@ class Playstream2(
         # see _do_restart_after_eof()/cancel() for why this needs to be
         # cancellable too, not just eof_recovery_timer itself.
         self._eof_restart_call = None
+
+        # See _do_proactive_refresh()'s own docstring.
+        self.proactive_refresh_timer = eTimer()
+        try:
+            self.proactive_refresh_timer.callback.append(
+                self._do_proactive_refresh)
+        except BaseException:
+            self.proactive_refresh_timer.timeout.connect(
+                self._do_proactive_refresh)
+
         self.onFirstExecBegin.append(lambda: self.startStream())
         self.onClose.append(self.cancel)
 
@@ -5725,8 +5745,8 @@ class Playstream2(
 
         self.last_eof_time = current_time
 
-        # The retry backoff below already waits 4-8s (2 + eof_count*2,
-        # capped at eof_count==3) before the next restart attempt, plus
+        # The retry backoff below waits 0-4s ((eof_count-1) * 2, capped
+        # at eof_count==3) before the next restart attempt, plus
         # whatever the resolve+reconnect itself takes (typically a
         # couple more seconds) - a 10s "frequent" window was shorter
         # than that combined delay could easily run, so a stream that
@@ -5752,9 +5772,20 @@ class Playstream2(
         else:
             self.eof_count = 1
 
-        # Restart based on EOF frequency
+        # Restart based on EOF frequency. Vavoo's own resolved stream
+        # URLs appear to stay valid for only a few minutes (see
+        # resolve_cache_ttl in vavoo_proxy.py, and
+        # _arm_proactive_refresh()'s own docstring) - that expiry is
+        # the single most common reason this fires at all, and it
+        # always resolves on the very first retry (a fresh URL,
+        # fetched via force_refresh=True). Delaying that first retry
+        # on general backoff principle only made the routine,
+        # expected case slower for no benefit - the escalating delay
+        # now only kicks in for a 2nd/3rd retry, i.e. when the fresh
+        # URL ALSO failed fast and something beyond ordinary expiry is
+        # actually wrong.
         if self.eof_count <= 3:  # Allow up to 3 quick retries
-            delay = 2 + (self.eof_count * 2)  # 2, 4, 6 seconds
+            delay = (self.eof_count - 1) * 2  # 0, 2, 4 seconds
             print(
                 "[Playstream2] Restarting stream in " +
                 str(delay) +
@@ -6192,12 +6223,54 @@ class Playstream2(
             self.session.nav.stopService()
             self.session.nav.playService(self.sref)
             print("[Playstream2] Proxy stream started successfully")
+            self._arm_proactive_refresh()
 
         except Exception as e:
             print("[Playstream2] playProxyStream error: " + str(e))
             # self.playOldSystem()
             # Fallback to old system
             trace_error()
+
+    def _arm_proactive_refresh(self):
+        """(Re)start the proactive-refresh timer - called every time a
+        proxy stream actually (re)starts, whether from a fresh channel
+        selection, an EOF-triggered retry, or a previous proactive
+        refresh itself, so it always counts from the most recent URL,
+        never the original one. stopStream()/cancel() always stop this
+        timer first (see their own code), so there's never more than
+        one live countdown per screen."""
+        try:
+            self.proactive_refresh_timer.start(
+                PROACTIVE_REFRESH_INTERVAL_MS, True)
+        except Exception as e:
+            print(
+                "[Playstream2] Error arming proactive refresh timer: {}".format(e))
+
+    def _do_proactive_refresh(self):
+        """Vavoo's own resolved stream URLs appear to stay valid for
+        only a few minutes - once one expires, the upstream CDN drops
+        the connection, gstreamer eventually notices and fires evEOF,
+        and _handleEofEvent() recovers by re-resolving. That reactive
+        recovery works, but it's slow: it only starts fetching a fresh
+        URL after the player has already noticed the dead connection,
+        which itself can take several seconds of stalling/buffering.
+
+        Refreshing proactively, a comfortable margin before that
+        believed expiry (see PROACTIVE_REFRESH_INTERVAL_MS), swaps to
+        a fresh URL while the current one is still alive - the only
+        visible gap is the service stop/restart itself, not stall-
+        detection *and* a resolve on top of it. This is the same
+        restart playProxyStream()'s force_refresh path already uses
+        for EOF recovery, just triggered proactively instead of
+        reactively - the companion Android app doesn't show this
+        periodic interruption at all, and this is this plugin's
+        equivalent of whatever it's already doing.
+        """
+        if self._closed or not self.execing:
+            return
+        print("[Playstream2] Proactive stream refresh (pre-empting URL expiry)")
+        self.stopStream(restore_original=False)
+        self.startStream(force=True)
 
     def playOldSystem(self):
         """Fallback to old playback system"""
@@ -6249,6 +6322,8 @@ class Playstream2(
         # Stop recovery timer
         if hasattr(self, 'eof_recovery_timer'):
             self.eof_recovery_timer.stop()
+        if hasattr(self, 'proactive_refresh_timer'):
+            self.proactive_refresh_timer.stop()
 
         # Stop current service
         try:
@@ -6273,7 +6348,7 @@ class Playstream2(
         # that could leave one re-arming itself against a torn-down instance.
         for timer_name in ("proxy_update_timer", "hideTimer",
                             "delayed_start_timer", "retry_start_timer",
-                            "eof_recovery_timer"):
+                            "eof_recovery_timer", "proactive_refresh_timer"):
             timer = getattr(self, timer_name, None)
             if timer is not None:
                 try:
