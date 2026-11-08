@@ -710,6 +710,23 @@ def make_group_id(country, key):
     return GROUP_ID_PREFIX + (country or "").lower() + ":" + key
 
 
+def _source_label(member, index):
+    """Human-readable label for one member of a grouped channel, for
+    /group_sources' listing (and plugin.py's chooseStreamSource()) -
+    the raw per-source suffix (Vavoo/geil.to's ".b"/".c"/".s"
+    convention _strip_source_suffix() already recognizes) when there
+    is one, else a plain 1-based position so every member still gets
+    a usable, distinct label even for a catalog that doesn't tag its
+    sources this way."""
+    raw_name = member.get("name", "") or ""
+    match = _SOURCE_DISPLAY_SUFFIX_RE.search(raw_name)
+    if match:
+        suffix = match.group(0).strip().lstrip('.').upper()
+        if suffix:
+            return "Source {}".format(suffix)
+    return "Source {}".format(index + 1)
+
+
 def parse_group_id(group_id):
     """("italy", "rai 1") from "grp:italy:rai 1", or (None, None) if
     group_id isn't one of ours."""
@@ -1695,7 +1712,8 @@ class VavooProxy(object):
         return self._group_members_cache.get(
             ((country or "").lower(), key), [])
 
-    def resolve_group_with_retry(self, group_id, force_refresh=False):
+    def resolve_group_with_retry(self, group_id, force_refresh=False,
+                                  keep_source=False, requested_source=None):
         """Resolve a grouped channel (a "grp:<country>:<key>" id - see
         /channels and make_group_id()/parse_group_id()): try its
         members in catalog order, same as a single-source resolve.
@@ -1713,20 +1731,65 @@ class VavooProxy(object):
         to an untested, possibly worse source. Only once that budget
         is exhausted does it exclude the source and try the others,
         trying it again itself only as a last resort if every other
-        member also fails."""
+        member also fails.
+
+        requested_source: an explicit user pick (plugin.py's
+        chooseStreamSource(), via /group_sources) - resolved directly
+        and remembered as this group's current source, same
+        bookkeeping a normal successful auto-selection below already
+        does, so later refreshes keep preferring it.
+
+        keep_source: a proactive, non-failure refresh (see plugin.py's
+        Playstream2._do_proactive_refresh()) - always re-resolves the
+        exact same source this group is already using, never falling
+        back to a different one. Without this, a routine refresh
+        looked identical to a force=1 EOF retry below, which spends
+        its "retry the same source" budget on success too - a healthy
+        grouped channel got bounced to a different source every
+        couple of proactive refreshes for no reason at all.
+
+        Both of these fall through to the unchanged force_refresh/
+        catalog-order logic below if the member they ask for turns out
+        to be down right now, rather than leaving the caller with
+        nothing."""
         country, key = parse_group_id(group_id)
         if not key:
             return None
         members = self._group_members(country, key)
         if not members:
             return None
+        members_by_id = {m.get("id"): m for m in members}
+
+        if requested_source:
+            requested_member = members_by_id.get(requested_source)
+            if requested_member is not None:
+                stream_url = self.resolve_with_retry(
+                    requested_member.get("url"), force_refresh=force_refresh)
+                if stream_url:
+                    with self.group_lock:
+                        self.group_last_member[group_id] = (
+                            requested_source, 0)
+                    return stream_url
+
+        if keep_source:
+            with self.group_lock:
+                last_member_id, _ = self.group_last_member.get(
+                    group_id, (None, 0))
+            last_member = members_by_id.get(last_member_id)
+            if last_member is not None:
+                stream_url = self.resolve_with_retry(
+                    last_member.get("url"), force_refresh=True)
+                if stream_url:
+                    with self.group_lock:
+                        self.group_last_member[group_id] = (
+                            last_member_id, 0)
+                    return stream_url
 
         exclude_id = None
         if force_refresh:
             with self.group_lock:
                 last_member_id, retry_count = self.group_last_member.get(
                     group_id, (None, 0))
-            members_by_id = {m.get("id"): m for m in members}
             last_member = members_by_id.get(last_member_id)
             if last_member is not None and retry_count < GROUP_SAME_SOURCE_RETRIES:
                 stream_url = self.resolve_with_retry(
@@ -2020,6 +2083,19 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 # every retry fails the same way.
                 force_refresh = query_params.get(
                     'force', ['0'])[0] == '1'
+                # keep=1 (plugin.py's Playstream2._do_proactive_refresh())
+                # - a proactive, non-failure refresh of a grouped
+                # channel's CURRENT source, never auto-switching to a
+                # different one - see resolve_group_with_retry()'s own
+                # docstring for why this needs to be distinct from a
+                # plain force=1 EOF retry.
+                keep_source = query_params.get(
+                    'keep', ['0'])[0] == '1'
+                # source=<id> (plugin.py's chooseStreamSource(), via
+                # /group_sources) - explicitly picks one member of a
+                # grouped channel instead of leaving the choice to
+                # auto-selection.
+                requested_source = query_params.get('source', [None])[0]
 
                 try:
                     if channel_id.startswith(GROUP_ID_PREFIX):
@@ -2029,7 +2105,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         # around whichever one a force=1 retry says just
                         # failed (see resolve_group_with_retry()).
                         stream_url = p.resolve_group_with_retry(
-                            channel_id, force_refresh=force_refresh)
+                            channel_id, force_refresh=force_refresh,
+                            keep_source=keep_source,
+                            requested_source=requested_source)
                     else:
                         channel = p.channels_by_id.get(channel_id) if hasattr(
                             p, 'channels_by_id') else None
@@ -2293,6 +2371,42 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 if not self.safe_write(dumps(response_channels)):
                     return
+
+            elif parsed_path.path == '/group_sources':
+                # Lists a grouped channel's individual sources (Vavoo/
+                # geil.to's ".b"/".c"/".s" convention - see /channels'
+                # own grouping step and _group_key()) so plugin.py's
+                # Playstream2.chooseStreamSource() can let the user
+                # pick one explicitly instead of leaving it to
+                # auto-selection/failure-recovery.
+                group_id = query_params.get('group', [None])[0]
+                if not group_id or not group_id.startswith(GROUP_ID_PREFIX):
+                    self.send_error(400, "Missing or invalid group parameter")
+                    return
+
+                try:
+                    country, key = parse_group_id(group_id)
+                    members = p._group_members(
+                        country, key) if key else []
+                    with p.group_lock:
+                        current, _ = p.group_last_member.get(
+                            group_id, (None, 0))
+                    result = {
+                        "members": [
+                            {"id": m.get("id"), "label": _source_label(m, i)}
+                            for i, m in enumerate(members)
+                        ],
+                        "current": current,
+                    }
+                    if not self.safe_send_response(200):
+                        return
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    if not self.safe_write(dumps(result)):
+                        return
+                except Exception as e:
+                    print("[Proxy] /group_sources error: " + str(e))
+                    self.send_error(500, "Internal proxy error")
 
             elif parsed_path.path == '/playlist.m3u':
                 # Live-serving twin of plugin.py's "Generate .m3u
