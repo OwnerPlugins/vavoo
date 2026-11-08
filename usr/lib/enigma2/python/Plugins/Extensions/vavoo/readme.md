@@ -170,7 +170,8 @@ In the Config Menu:
 The proxy provides these endpoints:
 - `/status` – Check proxy status
 - `/channels?country=CountryName` – Get channels by country
-- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect)
+- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect). Optional: `&force=1` bypasses the resolve cache, `&keep=1` proactively refreshes a grouped channel's current source without switching away from it, `&source=SourceID` picks one specific source of a grouped (multi-source) channel
+- `/group_sources?group=GroupID` – List a grouped channel's individual sources (Vavoo/geil.to's `.b`/`.c`/`.s` convention) for the in-player YELLOW "Choose Stream Source" menu
 - `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries

@@ -97,7 +97,9 @@ from .vavoo_stats import (
     stop_heartbeat, STATS_DISABLE_FILE
 )
 from . import vavoo_proxy
-from .vavoo_proxy import run_proxy_in_background, shutdown_proxy, fix_logo_url
+from .vavoo_proxy import (
+    run_proxy_in_background, shutdown_proxy, fix_logo_url, GROUP_ID_PREFIX
+)
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
@@ -5179,7 +5181,8 @@ class TvInfoBarShowHide():
             else:
                 proxy_details = _("✗ Proxy Offline")
 
-            controls = _("CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit")
+            controls = _(
+                "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit")
             credit = "by Lululla & Qu4k3"
             help_text = "{} | {} | {}".format(controls, proxy_details, credit)
             self["helpOverlay"].setText(help_text)
@@ -5502,6 +5505,11 @@ class Playstream2(
         # None, so self.current_logo_url simply stays None for those
         # and the overlay picon area just stays empty for them.
         self.logo_urls = logo_urls
+        # Set by chooseStreamSource()'s callback, consumed (and
+        # cleared back to None) by the very next playProxyStream()
+        # call - see that method's own comment for why this only
+        # needs to be sent once, not on every later restart.
+        self.pinned_source_id = None
         self.name = name
         self.url = url.replace('%0a', '').replace('%0A', '')
         self.state = self.STATE_PLAYING
@@ -5528,7 +5536,8 @@ class Playstream2(
                 'InfobarShowHideActions',
                 'InfobarActions',
                 'DirectionActions',
-                'InfobarSeekActions'
+                'InfobarSeekActions',
+                'ColorActions'
             ],
             {
                 "stop": self.leavePlayer,
@@ -5540,6 +5549,11 @@ class Playstream2(
                 "back": self.cancel,
                 'epg': self.showIMDB,
                 "info": self.showIMDB,
+                # YELLOW: pick which physical source (Vavoo/geil.to's
+                # ".b"/".c"/".s" convention) plays a channel that has
+                # more than one - see chooseStreamSource()'s own
+                # docstring.
+                "yellow": self.chooseStreamSource,
             },
             -1
         )
@@ -5701,6 +5715,21 @@ class Playstream2(
         self._update_logo_url_for_index(i)
         self.startStream()
 
+    def isSeekable(self):
+        """Live TV is never seekable - InfoBarSeek (a base class of
+        this screen, for its EOF/evUpdatedInfo plumbing, not because
+        this content is actually seekable) binds LEFT/RIGHT to
+        seekBack()/seekFwd() by default and only guards them with
+        this exact check. Without overriding it, pressing LEFT/RIGHT
+        during live playback tried to seek a stream with no real
+        duration/seek support - the backend stalls audio attempting
+        it, and needs a second press (itself swallowed by the same
+        broken seek attempt, which is what actually clears the
+        stall) to recover. Returning False here makes InfoBarSeek's
+        own seek methods no-ops instead, exactly as intended for a
+        continuous live stream."""
+        return False
+
     def doEofInternal(self, playing):
         """Handle end of file (stream ended).
 
@@ -5817,7 +5846,7 @@ class Playstream2(
         print("Playback started successfully")
         self.state = self.STATE_PLAYING
 
-    def startStream(self, force=False):
+    def startStream(self, force=False, proactive=False):
         """Start the stream - proxy handles authentication"""
         if self.stream_running and not force:
             return
@@ -5849,7 +5878,7 @@ class Playstream2(
         # Check if it's ANY proxy URL (localhost or network IP)
         if ":{}/vavoo".format(PORT) in self.url or ":{}/resolve".format(PORT) in self.url:
             print("[Playstream2] Proxy URL detected")
-            self.playProxyStream(force_refresh=force)
+            self.playProxyStream(force_refresh=force, proactive=proactive)
         else:
             print("[Playstream2] Non-proxy URL, using old system")
             self.playOldSystem()
@@ -6146,13 +6175,23 @@ class Playstream2(
             trace_error()
             return "EPG error"
 
-    def playProxyStream(self, force_refresh=False):
+    def playProxyStream(self, force_refresh=False, proactive=False):
         """Play via proxy - token management is handled by proxy.
 
-        force_refresh=True (an EOF-triggered retry, see restartAfterEOF)
-        tells the proxy to bypass its resolve cache - reusing the same
-        cached URL that just failed for up to resolve_cache_ttl would
-        otherwise make every quick retry fail the exact same way.
+        force_refresh=True (an EOF-triggered retry, see restartAfterEOF,
+        or a proactive refresh, see _do_proactive_refresh) tells the
+        proxy to bypass its resolve cache - reusing the same cached
+        URL that just failed (or is about to expire) for up to
+        resolve_cache_ttl would otherwise make every quick retry fail
+        the exact same way.
+
+        proactive=True additionally tells the proxy this refresh isn't
+        a failure at all (see &keep=1 below and
+        resolve_group_with_retry()'s own docstring) - without it, a
+        grouped (multi-source) channel's routine proactive refresh
+        looks identical to a real EOF to the proxy's own retry-budget
+        bookkeeping, and gets bounced to a different source every
+        couple of refreshes for no actual reason.
         """
         try:
             # Extract channel ID from URL
@@ -6182,6 +6221,16 @@ class Playstream2(
                 "/vavoo?channel=" + str(channel_id)
             if force_refresh:
                 proxy_url += "&force=1"
+            if proactive:
+                proxy_url += "&keep=1"
+            # One-shot: chooseStreamSource()'s callback sets this right
+            # before calling startStream(); once sent, the proxy
+            # remembers the pick itself (resolve_group_with_retry()'s
+            # group_last_member bookkeeping), so later restarts don't
+            # need to keep resending it.
+            if self.pinned_source_id:
+                proxy_url += "&source=" + url_quote(str(self.pinned_source_id))
+                self.pinned_source_id = None
             print("[Playstream2] Clean proxy URL: " + proxy_url)
 
             # Add User-Agent as fragment
@@ -6231,6 +6280,109 @@ class Playstream2(
             # Fallback to old system
             trace_error()
 
+    def _current_group_channel_id(self):
+        """The "grp:<country>:<key>" id (see vavoo_proxy.py's
+        make_group_id()) this screen is currently playing, or None if
+        it isn't a grouped (multi-source) channel at all - same
+        extraction playProxyStream() already does from self.url,
+        except decoded: unlike that method (which only ever passes
+        channel_id straight through into another /vavoo request, so
+        it doesn't matter whether it's percent-encoded), this needs
+        the real string to compare against GROUP_ID_PREFIX, since
+        self.url carries it URL-quoted (/channels' own response
+        already quotes it - "grp%3Aitaly%3A..." not "grp:italy:...")."""
+        if "vavoo?channel=" not in self.url:
+            return None
+        channel_id = self.url.split("vavoo?channel=")[1]
+        if '?' in channel_id:
+            channel_id = channel_id.split('?')[0]
+        if not channel_id:
+            return None
+        decoded = url_unquote(channel_id)
+        if decoded.startswith(GROUP_ID_PREFIX):
+            return decoded
+        return None
+
+    def chooseStreamSource(self):
+        """YELLOW: let the user manually pick which physical source
+        (Vavoo/geil.to's ".b"/".c"/".s" convention - see
+        vavoo_proxy.py's _group_key()/_strip_source_suffix()) plays a
+        channel that has more than one, instead of leaving the choice
+        to automatic selection/failure-recovery - the companion
+        Android app offers the same choice in its own player menu.
+        Only meaningful for a grouped channel; a single-source one has
+        nothing to choose between.
+        """
+        group_id = self._current_group_channel_id()
+        if not group_id:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Only one source available for this channel"), 3)
+            return
+
+        proxy_host = "{}:{}".format(PROXY_HOST, PORT)
+        if "://" in self.url:
+            match = search(r'://([^/]+)', self.url)
+            if match:
+                proxy_host = match.group(1)
+        sources_url = "http://{}/group_sources?group={}".format(
+            proxy_host, url_quote(group_id))
+
+        # getUrl() is a blocking network call - fetch it off the GUI/
+        # reactor thread, same reasoning (and the same marshal-back-
+        # via-reactor.callFromThread pattern) as every other proxy
+        # request in this screen/plugin.
+        def _fetch():
+            if self._closed:
+                return
+            data = None
+            try:
+                response = getUrl(sources_url, timeout=10)
+                if response:
+                    data = loads(ensure_str(response))
+            except Exception as e:
+                print(
+                    "[Playstream2] Error fetching stream sources: {}".format(e))
+            if self._closed:
+                return
+            reactor.callFromThread(self._onStreamSourcesFetched, data)
+
+        fetch_thread = threading.Thread(target=_fetch)
+        fetch_thread.daemon = True
+        fetch_thread.start()
+
+    def _onStreamSourcesFetched(self, data):
+        if self._closed:
+            return
+        members = (data or {}).get("members") or []
+        if len(members) < 2:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Only one source available for this channel"), 3)
+            return
+
+        current = (data or {}).get("current")
+        choices = []
+        for member in members:
+            label = member.get("label", "")
+            if member.get("id") == current:
+                label = label + " " + _("(current)")
+            choices.append((label, member.get("id")))
+
+        from Screens.ChoiceBox import ChoiceBox
+        self.session.openWithCallback(
+            self._onStreamSourceChosen,
+            ChoiceBox,
+            title=_("Choose Stream Source"),
+            list=choices
+        )
+
+    def _onStreamSourceChosen(self, choice):
+        if self._closed or not choice or not choice[1]:
+            return
+        print("[Playstream2] Source chosen: " + str(choice[1]))
+        self.pinned_source_id = choice[1]
+        self.stopStream(restore_original=False)
+        self.startStream(force=True)
+
     def _arm_proactive_refresh(self):
         """(Re)start the proactive-refresh timer - called every time a
         proxy stream actually (re)starts, whether from a fresh channel
@@ -6270,7 +6422,7 @@ class Playstream2(
             return
         print("[Playstream2] Proactive stream refresh (pre-empting URL expiry)")
         self.stopStream(restore_original=False)
-        self.startStream(force=True)
+        self.startStream(force=True, proactive=True)
 
     def playOldSystem(self):
         """Fallback to old playback system"""
