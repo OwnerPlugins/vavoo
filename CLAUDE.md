@@ -77,9 +77,29 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
 - Obtains/renews the Vavoo auth signature/token (`TOKEN_ADDON_SIG`, renewed
   every ~8-9 min) so bouquets never hit Vavoo's 10-minute anonymous block.
 - Resolves `/vavoo?channel=<id>` to a real stream URL via 302 redirect.
+  **Enigma2's players re-request this URL on every HLS playlist refresh
+  (~every 10 s while a channel is watched)**, because the redirect is
+  temporary - so the answer must stay the same address for the whole
+  viewing. The resolve cache is therefore an *idle* timeout
+  (`RESOLVE_IDLE_TTL`, refreshed on every hit), not an age, and
+  `/vavoo` takes no parameters besides `channel`: anything put in that
+  URL would be re-applied every refresh. One-off events go through
+  in-process calls on `vavoo_proxy.proxy` instead -
+  `report_stream_failure(channel_id)` (the player's EOF handler),
+  `set_group_source()` / `get_group_sources()` (the player's YELLOW
+  source menu; the pick is persisted in
+  `/etc/enigma2/vavoo_source_prefs.json`).
+- Channels with several sources are grouped into one row
+  (`grp:<country>:<key>` ids); the proxy stays on one source per group
+  and only moves on after repeated failure reports.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
-  `/refresh_token`, `/epg/<country>.xml` (redirects to GitHub-hosted EPG),
-  and `/shutdown`.
+  `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (redirects to
+  GitHub-hosted EPG), and `/shutdown`.
+- There is no "proxy disabled" mode: every channel list and stream goes
+  through it. `run_proxy_in_background()` never blocks (callers poll
+  `is_proxy_ready()`); `restart_proxy_in_background()` is the only
+  correct way to restart it, and a stopped `VavooProxy` instance is
+  never reused (`start_proxy()` creates a fresh one).
 - Falls back from `vavoo.to` to `kool.to` on HTTP 451.
 - Bouquets and M3U exports embed proxy URLs
   (`http://127.0.0.1:4323/vavoo?channel=...`), not raw Vavoo URLs — this is

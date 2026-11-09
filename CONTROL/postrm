@@ -70,7 +70,7 @@ echo "✓ Bouquet files removed"
 # installed EPGImport source, not something exclusive to Vavoo.
 echo "Removing Vavoo cache files..."
 for f in vavoo_epg_cache.json vavoo_epg_unmatched_cache.json \
-         vavoo_sref_map.json channel_alias.json; do
+         vavoo_sref_map.json vavoo_source_prefs.json channel_alias.json; do
     rm -f "/etc/enigma2/$f" > /dev/null 2>&1
 done
 echo "✓ Cache files removed"

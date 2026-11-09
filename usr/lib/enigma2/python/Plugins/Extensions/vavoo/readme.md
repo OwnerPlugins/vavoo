@@ -114,13 +114,13 @@ The plugin includes a sophisticated notification system that provides real-time 
 In the Config Menu:
 - ✅ **Scheduled Bouquet Update**: ON/OFF (only required setting)
 - ✅ If ON: Choose interval (5-3600 min) or fixed time
-- ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport
-- ✅ **Proxy Enabled**: Enable/disable the local proxy (default: ON)
+- ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport and enable them there after each export
+- ✅ **Catalog/Stream Source**: Auto (Geil, falls back to Vavoo/Kool - default), or pin it to exactly one source
 - ✅ **List Position**: Place Vavoo bouquets at top or bottom of channel list
 - ✅ **Select Background**: Choose custom background images
 - ✅ **Link in Main Menu**: Show plugin in main Enigma2 menu
 - ✅ **Send Anonymous Statistics**: Opt in/out of anonymous startup/heartbeat pings (default: ON)
-- Proxy and updates are managed automatically
+- The local proxy is always on (nothing works without it) and is managed automatically
 
 ## 🎯 Benefits
 - ✅ **No 10-minute blocks** – Proxy handles authentication tokens
@@ -143,7 +143,8 @@ In the Config Menu:
 - Completely eliminates 10-minute streaming blocks
 - Self-monitoring with automatic restart on failure
 - Connection pool management to prevent timeouts
-- **Mirror Support**: Automatic fallback between vavoo.to and kool.to when HTTP 451 is detected
+- **Mirror Support**: Automatic fallback between Vavoo and Kool when HTTP 451 is detected
+- **One stream address per viewing**: players come back to the proxy on every playlist refresh (about every 10 seconds), so the proxy keeps answering with the same resolved address while it keeps being asked, and forgets it 45 seconds after the last request
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
 
@@ -170,8 +171,8 @@ In the Config Menu:
 The proxy provides these endpoints:
 - `/status` – Check proxy status
 - `/channels?country=CountryName` – Get channels by country
-- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect). Optional: `&force=1` bypasses the resolve cache, `&keep=1` proactively refreshes a grouped channel's current source without switching away from it, `&source=SourceID` picks one specific source of a grouped (multi-source) channel
-- `/group_sources?group=GroupID` – List a grouped channel's individual sources (Vavoo/geil.to's `.b`/`.c`/`.s` convention) for the in-player YELLOW "Choose Stream Source" menu
+- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect). The answer stays the same address while it keeps being requested; a multi-source channel (`grp:...` id) stays on one source. Takes no other parameters
+- `/group_sources?group=GroupID` – List a grouped channel's individual sources (Vavoo/Geil's `.b`/`.c`/`.s` convention) and which one is in use (read-only; the in-player YELLOW "Choose Stream Source" menu shows the same list)
 - `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
@@ -190,7 +191,7 @@ The proxy provides these endpoints:
 - Supports both flat bouquets and hierarchical categories
 
 ### M3U Export
-- Path: Config Menu → "Generate .m3u files"
+- Path: Config Menu → "Generate .m3u files" (press OK)
 - Downloads playlist from proxy and saves as `vavoo_[country]_playlist.m3u`
 - Supports single country or all countries export
 
@@ -236,6 +237,8 @@ The proxy provides these endpoints:
 
 - **SREF Map**: `/etc/enigma2/vavoo_sref_map.json` – Maps service references to channel IDs for the proxy
 
+- **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen with YELLOW in the player, per multi-source channel. Delete it to go back to automatic selection everywhere
+
 ## 🚨 Troubleshooting
 
 ### Quick Diagnostics
@@ -268,7 +271,8 @@ curl -s http://127.0.0.1:4323/health
 | M3U export fails | Verify port 4323 is accessible |
 | "No programme found" | Clear EPG cache and re-export bouquet; check country EPG file exists |
 | EPG not updating | Verify EPG is enabled in config and GitHub files are accessible |
-| HTTP 451 errors | Proxy automatically switches to mirror sites (kool.to) |
+| HTTP 451 errors | Proxy automatically switches to mirror sites (Kool) |
+| A channel keeps stopping or buffering | Press YELLOW in the player and pick another source |
 | Duplicate cache entries | Press YELLOW button in main menu to fix cache format |
 
 ### Notification Issues

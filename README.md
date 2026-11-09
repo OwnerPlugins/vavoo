@@ -115,9 +115,11 @@ The plugin includes a sophisticated notification system that provides real-time 
 In the Config Menu:
 - ✅ **Scheduled Bouquet Update**: ON/OFF (only required setting)
 - ✅ If ON: Choose interval (5-3600 min) or fixed time
-- ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport
-- ✅ **Proxy Enabled**: Enable/disable the local proxy (default: ON)
-- ✅ **Catalog/Stream Source**: Auto (geil.to, falls back to Vavoo/kool.to - default), or pin it to exactly one source
+- ✅ **Enable Vavoo EPG**: Generate EPG sources for EPGImport and enable them there after each export
+- ✅ **Catalog/Stream Source**: Auto (Geil, falls back to Vavoo/Kool - default), or pin it to exactly one source
+- ✅ **Proxy startup timeout**: How long the splash screen waits for the proxy (raise it on a slow connection/VPN)
+- ✅ **Movie Services Reference**: Which Enigma2 player plays the streams (4097/5001/5002/8193)
+- ✅ **Generate .m3u files (Ok for Exec)**: Export playlists to a file
 - ✅ **List Position**: Place Vavoo bouquets at top or bottom of channel list
 - ✅ **Select Background**: Choose custom background images
 - ✅ **Link in Main Menu**: Show plugin in main Enigma2 menu
@@ -126,7 +128,7 @@ In the Config Menu:
 - ✅ **Show Log (Ok to view)**: Tail the last 200 lines of `vavoo.log` on-box
 - ✅ **View Favourites (Ok to open)**: Browse and play starred channels
 - ✅ **Parental Control PIN** / **Locked Countries**: Require a PIN before opening chosen countries' channel lists
-- Proxy and updates are managed automatically
+- The local proxy is always on (nothing works without it) and is managed automatically
 
 ### Favourites
 - Press **INFO** on any channel while browsing to star/unstar it
@@ -147,14 +149,22 @@ In the Config Menu:
 ## 🛠 Technical Features
 
 ### Local Proxy (127.0.0.1:4323)
-- **Catalog source**: tries geil.to (and its mirrors) first - the same
+- **Catalog source**: tries Geil (and its mirrors) first - the same
   kind of IPTV catalog, but with no authentication/token step needed
-  at all. Falls back to Vavoo's servers (vavoo.to, then kool.to) only
-  if geil.to's whole catalog can't be loaded. Check which one is
+  at all. Falls back to Vavoo's servers (Vavoo, then Kool) only
+  if Geil's whole catalog can't be loaded. Check which one is
   active via `catalog_source` in `/status`/`/health`. Same default/
   fallback order the companion Android app uses.
+- **One stream address per viewing**: Enigma2's players come back to
+  the proxy on every playlist refresh (about every 10 seconds while a
+  channel is watched), so the proxy keeps answering with the same
+  resolved address for as long as it keeps being asked, and forgets it
+  45 seconds after the last request. A new address is only resolved
+  when nobody is watching any more or when the plugin's player reports
+  that the stream ended. (Earlier versions re-resolved every watched
+  stream after 5 minutes, which interrupted playback.)
 - **Channel logos (picons)**: Vavoo's catalog still names a dead logo
-  host (`logo.huhu.to`); geil.to gives the same pictures as a relative
+  host (`logo.huhu.to`); Geil gives the same pictures as a relative
   path. Both are normalized to the host that actually serves them
   (`vavoo.to/live2/logo/<n>.png`) before reaching `/channels` or any
   export, regardless of which catalog is active. The plugin's own
@@ -168,21 +178,22 @@ In the Config Menu:
 - Completely eliminates 10-minute streaming blocks
 - Self-monitoring with automatic restart on failure
 - Connection pool management to prevent timeouts
-- **Mirror Support**: Automatic fallback between geil.to's own mirrors,
-  and separately between vavoo.to and kool.to when HTTP 451 is detected
+- **Mirror Support**: Automatic fallback between Geil's own mirrors,
+  and separately between Vavoo and Kool when HTTP 451 is detected
 - **Grouped sources**: several catalog entries for the same channel
-  (Vavoo's own `.b`/`.c`/`.s`-style suffix, geil.to's `(N)` already
+  (Vavoo's own `.b`/`.c`/`.s`-style suffix, Geil's `(N)` already
   normalized to match it) are shown as a single row in `/channels`
   (and so in the plugin's channel list, search, favourites, and
   exported bouquets - all of which read `/channels`), named without
-  the suffix. A player resolving that row - and a repeated resolve
-  after a playback failure (the same `force=1` retry the EOF-recovery
-  loop already sends) - transparently tries the group's other sources
-  before giving up, same idea as the companion Android app's "group
-  sources" option. Like Mirror Support above, this only re-routes a
-  *resolve* failure (no stream link obtainable at all, or a source
-  that just died during playback via the plugin's own player) - it
-  can't recover a source that resolved fine but is slow/buffering.
+  the suffix, same idea as the companion Android app's "group
+  sources" option. The proxy picks one source and stays on it. When
+  the plugin's player reports that the stream ended, the same source
+  is retried once with a fresh address; a second failure within a
+  minute moves on to the next source. In the player, **YELLOW** opens
+  a "Choose Stream Source" menu to pick one yourself - the pick is
+  remembered (`/etc/enigma2/vavoo_source_prefs.json`) and also applies
+  to that channel in exported bouquets. This can't recover a source
+  that resolved fine but is slow/buffering - pick another one for that.
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
 
@@ -198,8 +209,8 @@ In the Config Menu:
     by matching Vavoo's own live channel list against that country's
     own `epg_<cc>.xml` feed directly - built specifically for
     countries Rytec covers poorly (e.g. Spain, Poland, Turkey)
-  - **geil.to's own guide id** (its catalog's "tvg" field, present when
-    the catalog source is geil.to): checked directly against that
+  - **Geil's own guide id** (its catalog's "tvg" field, present when
+    the catalog source is Geil): checked directly against that
     country's own EPG feed - an exact id match, skipping fuzzy name
     matching entirely for that channel. No equivalent on the Vavoo
     catalog fallback, which has no such id to offer.
@@ -228,16 +239,19 @@ The proxy provides these endpoints:
   the same channel grouped into one row - see Grouped sources above;
   its `id` is then a synthetic `grp:<country>:<key>` handle rather
   than a single catalog id)
-- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect); a
-  `grp:...` id resolves through the group's sources in turn instead of
-  a single catalog entry
+- `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect). The
+  answer stays the same address while it keeps being requested (see
+  "One stream address per viewing" above); a `grp:...` id resolves to
+  one of the group's sources and stays on it. Takes no other parameters
+- `/group_sources?group=GroupID` – List a grouped channel's individual
+  sources and which one is in use (read-only)
 - `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/playlist.m3u?country=CountryName&key=AccessKey` – Live, always-current M3U playlist for external players (VLC/Kodi/TiviMate); `country` and `key` are both optional (key only required if "Playlist Access Key" is set in Config)
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
 - `/refresh_token` – Force token refresh
 - `/epg/<country>.xml` – Redirect to GitHub EPG file
-- `/health` – Detailed health check with token age (token is only required/reported when `catalog_source` is "vavoo" - geil.to needs none)
+- `/health` – Detailed health check with token age (token is only required/reported when `catalog_source` is "vavoo" - Geil needs none)
 - `/shutdown` – Gracefully stop proxy
 
 ## 🗂 File Management
@@ -250,7 +264,7 @@ The proxy provides these endpoints:
 - Supports both flat bouquets and hierarchical categories
 
 ### M3U Export
-- Path: Config Menu → "Generate .m3u files"
+- Path: Config Menu → "Generate .m3u files" (press OK)
 - Downloads playlist from proxy and saves as `vavoo_[country]_playlist.m3u`
 - Supports single country or all countries export
 
@@ -301,6 +315,8 @@ The proxy provides these endpoints:
 
 - **SREF Map**: `/etc/enigma2/vavoo_sref_map.json` – Maps service references to channel IDs for the proxy
 
+- **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen with YELLOW in the player, per multi-source channel (`{"grp:<country>:<name>": "<source id>"}`). Delete it to go back to automatic selection everywhere
+
 - **Curated Channel DB Cache** (in-memory only, not a file on disk): each country's downloaded `epg-channel-db/vavoo_channels_<cc>.json` is kept in memory for 24h per process so repeated exports/lookups don't re-download it every time - cleared on plugin/proxy restart
 
 ## 🚨 Troubleshooting
@@ -335,8 +351,9 @@ curl -s http://127.0.0.1:4323/health
 | M3U export fails | Verify port 4323 is accessible |
 | "No programme found" | Clear EPG cache and re-export bouquet; check country EPG file exists |
 | EPG not updating | Verify EPG is enabled in config and GitHub files are accessible |
-| HTTP 451 errors | Proxy automatically switches to mirror sites (geil.to's mirrors, or kool.to on the Vavoo fallback) |
-| Streams not resolving at all | Check `catalog_source` in `/status` - if stuck on "vavoo" with no token, geil.to may be unreachable from your network |
+| HTTP 451 errors | Proxy automatically switches to mirror sites (Geil's mirrors, or Kool on the Vavoo fallback) |
+| Streams not resolving at all | Check `catalog_source` in `/status` - if stuck on "vavoo" with no token, Geil may be unreachable from your network |
+| A channel keeps stopping or buffering | Press YELLOW in the player and pick another source |
 | Duplicate cache entries | Press YELLOW button in main menu to fix cache format |
 
 ### Notification Issues
