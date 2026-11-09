@@ -24,19 +24,18 @@ except ImportError:
 import atexit
 import os
 import re
-from collections import OrderedDict
 from json import loads, load, dumps
 
 from . import (
     PORT,
     PROXY_HOST,
     PROXY_STATUS_URL,
-    PROXY_SHUTDOWN_URL,
     BASE_SITES,
     GEIL_SITES,
     GEIL_LIVE_PATH,
     GROUP_NAME_SEPARATORS,
     HOST_GIT,
+    SOURCE_PREFS_FILE,
     SREF_MAP_FILE,
     __version__
 )
@@ -60,7 +59,6 @@ from .vUtils import (
 # itself, which would be circular (plugin.py imports this module).
 from Components.config import config as e2_config
 
-_starting = False
 
 try:
     unicode
@@ -120,6 +118,13 @@ if urllib3 is not None:
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True
     allow_reuse_address = True
+    # listen() backlog. Must be a class attribute: the socket starts
+    # listening inside __init__, so assigning it on the instance
+    # afterwards (as start_proxy() used to) changed nothing and left
+    # the default of 5 - connections arriving in a burst beyond that
+    # are silently dropped by the kernel and only retried by the
+    # client seconds later.
+    request_queue_size = 64
 
 
 """
@@ -328,11 +333,39 @@ Optimized for:
 Behavior:
     Client receives direct upstream stream URL.
 
+    Players come back here on every playlist refresh (about every
+    10 seconds while a channel is watched), so the answer stays the
+    same address for as long as it keeps being asked for, and is
+    forgotten 45 seconds after the last request. A channel with
+    several sources ("grp:<country>:<name>" ids) stays on one source
+    the same way. Takes no other parameters.
+
 Example:
     wget -S -O /dev/null "http://127.0.0.1:4323/vavoo?channel=abc123"
 
 Expected Response:
     HTTP/1.1 302 Found
+
+
+====================================================================
+6b. /group_sources?group=GroupID - Sources Of One Channel
+====================================================================
+
+URL:
+    http://127.0.0.1:4323/group_sources?group=grp%3Aitaly%3Arai%201
+
+Description:
+    Lists the individual sources of a multi-source channel and which
+    one is in use. Read-only.
+
+Example Response:
+{
+    "members": [
+        {"id": "abc123", "label": "Source B"},
+        {"id": "def456", "label": "Source S"}
+    ],
+    "current": "abc123"
+}
 
 
 ====================================================================
@@ -532,8 +565,11 @@ def write_booting_file():
 
 
 def remove_booting_file():
-    if os.path.exists(BOOTING_FILE):
+    try:
         os.unlink(BOOTING_FILE)
+    except OSError:
+        # Already gone - nothing to do.
+        pass
 
 
 def decode_response(resp):
@@ -633,10 +669,23 @@ def fix_geil_name(name):
 # still fully collapses to "X") - nothing that could itself be part of
 # a real channel's name.
 GROUP_ID_PREFIX = "grp:"
-# How many times resolve_group_with_retry() re-resolves the SAME
-# source (fresh) on a force=1 EOF-retry before trying a different
-# group member - see that method's own docstring.
+# How many times a grouped channel's CURRENT source is retried (with a
+# fresh address) after the player reports a failure, before
+# report_stream_failure() gives up on it and moves to a different
+# source - see that method's own docstring.
 GROUP_SAME_SOURCE_RETRIES = 1
+# Failure reports for the same grouped channel closer together than
+# this (seconds) count as one incident and add up towards
+# GROUP_SAME_SOURCE_RETRIES; a report after a longer healthy stretch
+# starts counting from 1 again.
+GROUP_FAILURE_WINDOW = 60
+# A source report_stream_failure() just gave up on is tried last for
+# this long (seconds), then goes back to its normal place.
+GROUP_AVOID_SECONDS = 300
+# How long a resolved stream address is kept after the LAST request
+# for it (seconds) - an idle timeout, not an age. See
+# VavooProxy.resolve_with_retry()'s own docstring for why.
+RESOLVE_IDLE_TTL = 45
 # Same pattern used both to compute the grouping KEY (_group_key(),
 # via this name) and to strip the suffix for DISPLAY
 # (_strip_source_suffix()) - one constant, not two, so a future tweak
@@ -737,6 +786,21 @@ def parse_group_id(group_id):
         return None, None
     country, key = rest.split(":", 1)
     return country, key
+
+
+def _load_source_prefs():
+    """The user's saved per-channel source picks from
+    SOURCE_PREFS_FILE ({group id: member id}), or {} if there are none
+    yet or the file can't be read - a missing/broken file only means
+    "no picks", never an error."""
+    try:
+        with open(SOURCE_PREFS_FILE, 'r') as f:
+            data = load(f)
+    except (IOError, OSError, ValueError):
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    return dict((k, v) for k, v in data.items() if k and v)
 
 
 def _rewrite_addon_sig_ip(sig, client_ip):
@@ -861,8 +925,9 @@ class VavooProxy(object):
         self.initialized = False
         self.last_heartbeat = time.time()
         self.local_ip = None
-        # ordered for deterministic LRU eviction (Py2+3)
-        self.resolve_cache = OrderedDict()
+        # channel_url -> {"url": resolved stream address, "ts": when
+        # it was last asked for} - see resolve_with_retry().
+        self.resolve_cache = {}
         self.resolve_cache_lock = threading.Lock()
         # In-flight resolve markers (channel_url -> threading.Event),
         # guarded by resolve_cache_lock - lets a second concurrent
@@ -870,8 +935,7 @@ class VavooProxy(object):
         # request's network resolve instead of also hitting the network
         # itself ("thundering herd" on popular channels).
         self._resolve_inflight = {}
-        # stream URLs valid for ~5min; was 30s (too aggressive)
-        self.resolve_cache_ttl = 300
+        self.resolve_cache_ttl = RESOLVE_IDLE_TTL
         self.server = None
         self.start_time = time.time()
 
@@ -895,11 +959,19 @@ class VavooProxy(object):
         self.geil_site_index = 0
         self.catalog_source = "vavoo"
 
-        # group_id -> (last member id resolved, consecutive same-
-        # source force=1 retries so far) - see
-        # resolve_group_with_retry().
-        self.group_last_member = {}
+        # Per grouped (multi-source) channel, guarded by group_lock:
+        # group_id -> {"member": id of the source it is playing from,
+        # "failures"/"failed_at": the current run of failure reports,
+        # "avoid": {member id: when it was given up on}} - see
+        # resolve_group_with_retry() and report_stream_failure().
+        self._group_state = {}
         self.group_lock = threading.Lock()
+        # group_id -> the source the user picked for it (YELLOW in the
+        # player), kept on disk so it survives a restart - see
+        # set_group_source(). Also guarded by group_lock; the file
+        # itself by _group_pins_file_lock.
+        self._group_pins = _load_source_prefs()
+        self._group_pins_file_lock = threading.Lock()
 
         # Start lightweight token monitor only
         self.start_token_monitor()
@@ -1170,7 +1242,7 @@ class VavooProxy(object):
                 print(" Could not read catalog_source config: {}".format(e))
 
             if source_preference == "vavoo":
-                print(" Catalog source pinned to Vavoo - skipping geil.to")
+                print(" Catalog source pinned to Vavoo - skipping Geil")
                 self.catalog_source = "vavoo"
                 sig = self.refresh_addon_sig_if_needed()
                 if not sig:
@@ -1179,16 +1251,16 @@ class VavooProxy(object):
                 print(" Attempting to load catalog...")
                 all_channels = self.load_catalog(sig)
             else:
-                print(" Attempting to load catalog from geil.to (no token needed)...")
+                print(" Attempting to load catalog from Geil (no token needed)...")
                 all_channels = self.load_geil_catalog()
                 if all_channels:
                     self.catalog_source = "geil"
                 elif source_preference == "geil":
                     print(
-                        " Catalog source pinned to geil.to - not falling back to Vavoo")
+                        " Catalog source pinned to Geil - not falling back to Vavoo")
                     self.catalog_source = "geil"
                 else:
-                    print(" geil.to catalog unavailable, falling back to Vavoo")
+                    print(" Geil catalog unavailable, falling back to Vavoo")
                     self.catalog_source = "vavoo"
 
                     # First, obtain a valid token
@@ -1646,24 +1718,36 @@ class VavooProxy(object):
             channel_url,
             max_retries=2,
             force_refresh=False):
-        """Resolve URLs with short-lived caching and fast retries.
+        """Resolve a channel's stream address, kept for as long as it
+        keeps being asked for.
+
+        Enigma2's players do not ask /vavoo once per viewing: /vavoo
+        answers with a 302, so they come back here on every HLS
+        playlist refresh, roughly every 10 seconds, for the whole time
+        a channel is watched. Whatever this returns therefore has to
+        stay the SAME address for the whole viewing - handing the
+        player a different one in mid-play is what made streams stop.
+        So the cache lifetime is an idle timeout (resolve_cache_ttl
+        seconds since the LAST request - see _get_cached_url()), not
+        an age: a stream being watched never expires, and one nobody
+        is watching any more is forgotten almost at once. This used to
+        be a fixed 300 seconds from the moment of resolving, which
+        re-resolved every watched stream in mid-play every 5 minutes.
+
+        A stream that actually failed is dropped explicitly instead -
+        see invalidate_resolved() and report_stream_failure().
 
         force_refresh=True skips the cache read (still updates it with
-        the fresh result below) - used when the caller already knows
-        the cached URL is bad, e.g. a player EOF-retry, where reusing
-        the same cached URL for up to resolve_cache_ttl would otherwise
-        guarantee every retry fails the exact same way.
+        the fresh result below).
         """
         if not channel_url:
             print(" No channel URL provided")
             return None
 
-        now = time.time()
         if not force_refresh:
-            with self.resolve_cache_lock:
-                cached = self.resolve_cache.get(channel_url)
-            if cached and (now - cached["ts"] < self.resolve_cache_ttl):
-                return cached["url"]
+            cached_url = self._get_cached_url(channel_url)
+            if cached_url:
+                return cached_url
 
         # Dedup concurrent resolves of the same channel_url on a cache
         # miss/expiry - two requests for the same popular channel (e.g.
@@ -1684,11 +1768,9 @@ class VavooProxy(object):
 
         if not is_leader:
             event.wait(30)  # bounded - never wait forever on a stuck leader
-            with self.resolve_cache_lock:
-                cached = self.resolve_cache.get(channel_url)
-            if cached and (
-                    time.time() - cached["ts"] < self.resolve_cache_ttl):
-                return cached["url"]
+            cached_url = self._get_cached_url(channel_url)
+            if cached_url:
+                return cached_url
             # Leader's resolve failed or timed out - fall through and
             # try ourselves rather than giving up.
 
@@ -1699,6 +1781,26 @@ class VavooProxy(object):
                 with self.resolve_cache_lock:
                     self._resolve_inflight.pop(channel_url, None)
                 event.set()
+
+    def _get_cached_url(self, channel_url):
+        """The cached stream address for channel_url if it was asked
+        for within the last resolve_cache_ttl seconds, else None.
+        Finding it also marks it as just used - that is the whole
+        mechanism that keeps a watched stream on one address (see
+        resolve_with_retry()'s own docstring)."""
+        now = time.time()
+        with self.resolve_cache_lock:
+            cached = self.resolve_cache.get(channel_url)
+            if cached and (now - cached["ts"] < self.resolve_cache_ttl):
+                cached["ts"] = now
+                return cached["url"]
+        return None
+
+    def invalidate_resolved(self, channel_url):
+        """Forget channel_url's cached stream address, so the next
+        request for it resolves a fresh one."""
+        with self.resolve_cache_lock:
+            self.resolve_cache.pop(channel_url, None)
 
     def _group_members(self, country, key):
         """Every catalog entry that is a source of the channel group
@@ -1712,133 +1814,222 @@ class VavooProxy(object):
         return self._group_members_cache.get(
             ((country or "").lower(), key), [])
 
-    def resolve_group_with_retry(self, group_id, force_refresh=False,
-                                  keep_source=False, requested_source=None):
+    def _ordered_group_members(self, group_id, members):
+        """members in the order resolve_group_with_retry() should try
+        them: the source this group is already playing from first
+        (never swap a working source for another), then the one the
+        user picked, then catalog order - with any source
+        report_stream_failure() gave up on in the last
+        GROUP_AVOID_SECONDS at the very end, oldest failure first, so
+        a run of failures rotates through every source instead of
+        bouncing between the first two."""
+        now = time.time()
+        with self.group_lock:
+            state = self._group_state.get(group_id) or {}
+            current = state.get("member")
+            avoid = dict(state.get("avoid") or {})
+            pin = self._group_pins.get(group_id)
+
+        def sort_key(item):
+            index, member = item
+            member_id = member.get("id")
+            failed_at = avoid.get(member_id, 0)
+            recently_failed = bool(failed_at) and (
+                now - failed_at) < GROUP_AVOID_SECONDS
+            if member_id == current:
+                rank = 0
+            elif recently_failed:
+                rank = 3
+            elif member_id == pin:
+                rank = 1
+            else:
+                rank = 2
+            return (rank, failed_at if recently_failed else 0, index)
+
+        return [member for _index, member in sorted(
+            enumerate(members), key=sort_key)]
+
+    def resolve_group_with_retry(self, group_id):
         """Resolve a grouped channel (a "grp:<country>:<key>" id - see
-        /channels and make_group_id()/parse_group_id()): try its
-        members in catalog order, same as a single-source resolve.
+        /channels and make_group_id()/parse_group_id()) to the stream
+        address of one of its sources.
 
-        A force=1 retry (the player's existing EOF-retry loop - see
-        plugin.py's Playstream2) first re-resolves the SAME source
-        this group last played, fresh, up to GROUP_SAME_SOURCE_RETRIES
-        times - mirroring the companion Android app's own policy of
-        giving the source that was just working a few retries of its
-        own before ever touching a different one. The original version
-        of this method excluded the last-played source on the very
-        first EOF-retry - indistinguishable, from the player's side,
-        between "this source is dead" and "a one-off blip" - and could
-        turn a one-off hiccup into a lost stream by bouncing straight
-        to an untested, possibly worse source. Only once that budget
-        is exhausted does it exclude the source and try the others,
-        trying it again itself only as a last resort if every other
-        member also fails.
+        Called on every /vavoo request for the group, i.e. on every
+        playlist refresh of a stream that is being watched (see
+        resolve_with_retry()'s own docstring) - so it must keep
+        answering with the SAME source. It remembers which source the
+        group is playing from and always tries that one first; as long
+        as that source's address is still cached this is one dict
+        lookup and no network at all. A different source is only ever
+        chosen when there is no current one yet (first tune-in), when
+        the user picks one (set_group_source()), or when the player
+        reported the current one as failed often enough
+        (report_stream_failure()).
 
-        requested_source: an explicit user pick (plugin.py's
-        chooseStreamSource(), via /group_sources) - resolved directly
-        and remembered as this group's current source, same
-        bookkeeping a normal successful auto-selection below already
-        does, so later refreshes keep preferring it.
-
-        keep_source: a proactive, non-failure refresh (see plugin.py's
-        Playstream2._do_proactive_refresh()) - always re-resolves the
-        exact same source this group is already using, never falling
-        back to a different one. Without this, a routine refresh
-        looked identical to a force=1 EOF retry below, which spends
-        its "retry the same source" budget on success too - a healthy
-        grouped channel got bounced to a different source every
-        couple of proactive refreshes for no reason at all.
-
-        Both of these fall through to the unchanged force_refresh/
-        catalog-order logic below if the member they ask for turns out
-        to be down right now, rather than leaving the caller with
-        nothing."""
+        Earlier versions took the "this is a retry"/"keep the
+        source"/"use this source" decisions as force=1/keep=1/source=
+        query parameters on /vavoo itself. Since the player repeats
+        the whole address on every refresh, those one-off instructions
+        were repeated every ~10 seconds for the rest of the viewing -
+        re-resolving constantly and hopping between sources in
+        mid-play."""
         country, key = parse_group_id(group_id)
         if not key:
             return None
         members = self._group_members(country, key)
         if not members:
             return None
-        members_by_id = {m.get("id"): m for m in members}
 
-        if requested_source:
-            requested_member = members_by_id.get(requested_source)
-            if requested_member is not None:
-                stream_url = self.resolve_with_retry(
-                    requested_member.get("url"), force_refresh=force_refresh)
-                if stream_url:
-                    with self.group_lock:
-                        self.group_last_member[group_id] = (
-                            requested_source, 0)
-                    return stream_url
-
-        if keep_source:
-            with self.group_lock:
-                last_member_id, _ = self.group_last_member.get(
-                    group_id, (None, 0))
-            last_member = members_by_id.get(last_member_id)
-            if last_member is not None:
-                stream_url = self.resolve_with_retry(
-                    last_member.get("url"), force_refresh=True)
-                if stream_url:
-                    with self.group_lock:
-                        self.group_last_member[group_id] = (
-                            last_member_id, 0)
-                    return stream_url
-
-        exclude_id = None
-        if force_refresh:
-            with self.group_lock:
-                last_member_id, retry_count = self.group_last_member.get(
-                    group_id, (None, 0))
-            last_member = members_by_id.get(last_member_id)
-            if last_member is not None and retry_count < GROUP_SAME_SOURCE_RETRIES:
-                stream_url = self.resolve_with_retry(
-                    last_member.get("url"), force_refresh=True)
-                if stream_url:
-                    with self.group_lock:
-                        self.group_last_member[group_id] = (
-                            last_member_id, retry_count + 1)
-                    return stream_url
-                # Failed its own retry budget too (not just a stale
-                # cache entry) - fall through to trying a different
-                # member below.
-            exclude_id = last_member_id
-
-        # Stable sort: every other member first, the excluded one last.
-        ordered = sorted(members, key=lambda m: m.get("id") == exclude_id)
-        for member in ordered:
+        for member in self._ordered_group_members(group_id, members):
+            stream_url = self.resolve_with_retry(member.get("url"))
+            if not stream_url:
+                continue
             member_id = member.get("id")
-            member_force = force_refresh if member_id == exclude_id else False
-            stream_url = self.resolve_with_retry(
-                member.get("url"), force_refresh=member_force)
-            if stream_url:
-                with self.group_lock:
-                    self.group_last_member[group_id] = (member_id, 0)
-                return stream_url
+            with self.group_lock:
+                state = self._group_state.setdefault(group_id, {})
+                changed = state.get("member") != member_id
+                if changed:
+                    state["member"] = member_id
+                    state["failures"] = 0
+            if changed:
+                print("[Proxy] {0} now playing from source {1}".format(
+                    group_id, member_id))
+            return stream_url
         return None
 
+    def report_stream_failure(self, channel_id):
+        """The player's side of failure handling: plugin.py's
+        Playstream2 calls this (in-process, like stream_started())
+        when the stream it got for channel_id ended or broke, right
+        before it asks /vavoo for it again.
+
+        Drops the cached address, so that next request resolves a
+        fresh one instead of the one that just failed. For a grouped
+        channel it also decides whether to stay on the same source:
+        the first report retries it (a fresh address for the same
+        source fixes an ordinary hiccup, and jumping to an untested
+        source could make things worse), but more than
+        GROUP_SAME_SOURCE_RETRIES reports within GROUP_FAILURE_WINDOW
+        seconds of each other give up on it and let
+        resolve_group_with_retry() move to the next one."""
+        if not channel_id:
+            return
+
+        if not channel_id.startswith(GROUP_ID_PREFIX):
+            channel = self.channels_by_id.get(channel_id)
+            if channel:
+                self.invalidate_resolved(channel.get("url"))
+            return
+
+        country, key = parse_group_id(channel_id)
+        members = self._group_members(country, key) if key else []
+        now = time.time()
+        failed_member_id = None
+        gave_up = False
+        with self.group_lock:
+            state = self._group_state.get(channel_id)
+            if state:
+                failed_member_id = state.get("member")
+            if failed_member_id is not None:
+                if now - state.get("failed_at", 0) <= GROUP_FAILURE_WINDOW:
+                    state["failures"] = state.get("failures", 0) + 1
+                else:
+                    state["failures"] = 1
+                state["failed_at"] = now
+                if state["failures"] > GROUP_SAME_SOURCE_RETRIES:
+                    state.setdefault("avoid", {})[failed_member_id] = now
+                    state["member"] = None
+                    state["failures"] = 0
+                    gave_up = True
+        if failed_member_id is None:
+            # Nothing known to be playing (e.g. the proxy was
+            # restarted since) - the next request resolves from
+            # scratch anyway.
+            return
+
+        for member in members:
+            if member.get("id") == failed_member_id:
+                self.invalidate_resolved(member.get("url"))
+                break
+        if gave_up:
+            print("[Proxy] {0}: source {1} keeps failing, trying another".format(
+                channel_id, failed_member_id))
+        else:
+            print("[Proxy] {0}: source {1} failed, retrying it".format(
+                channel_id, failed_member_id))
+
+    def get_group_sources(self, group_id):
+        """A grouped channel's individual sources and which one is in
+        use: {"members": [{"id", "label"}, ...], "current": id or
+        None} - for the player's source menu (plugin.py's
+        chooseStreamSource()) and the /group_sources endpoint."""
+        country, key = parse_group_id(group_id)
+        members = self._group_members(country, key) if key else []
+        with self.group_lock:
+            state = self._group_state.get(group_id) or {}
+            current = state.get("member") or self._group_pins.get(group_id)
+        member_ids = [m.get("id") for m in members]
+        if current not in member_ids:
+            current = None
+        return {
+            "members": [
+                {"id": m.get("id"), "label": _source_label(m, i)}
+                for i, m in enumerate(members)
+            ],
+            "current": current,
+        }
+
+    def set_group_source(self, group_id, member_id):
+        """The user picked member_id as group_id's source (YELLOW in
+        the player). It becomes the source the group plays from - the
+        player restarts the stream right after calling this, and that
+        request then resolves this source - and is saved to
+        SOURCE_PREFS_FILE so it is still the preferred one after a
+        restart. Returns False (changing nothing) if member_id isn't
+        one of this group's sources."""
+        country, key = parse_group_id(group_id)
+        members = self._group_members(country, key) if key else []
+        if member_id not in [m.get("id") for m in members]:
+            return False
+        with self.group_lock:
+            state = self._group_state.setdefault(group_id, {})
+            state["member"] = member_id
+            state["failures"] = 0
+            state.setdefault("avoid", {}).pop(member_id, None)
+            self._group_pins[group_id] = member_id
+            pins = dict(self._group_pins)
+        self._save_source_prefs(pins)
+        print("[Proxy] {0}: source {1} picked by user".format(
+            group_id, member_id))
+        return True
+
+    def _save_source_prefs(self, pins):
+        """Write the user's source picks to SOURCE_PREFS_FILE - via a
+        temp file and rename, so a power cut mid-write can't leave a
+        half-written file behind. Best effort: a failure here only
+        means the pick isn't remembered across a restart."""
+        temp_path = SOURCE_PREFS_FILE + ".tmp"
+        with self._group_pins_file_lock:
+            try:
+                with open(temp_path, 'w') as f:
+                    f.write(dumps(pins))
+                os.rename(temp_path, SOURCE_PREFS_FILE)
+            except Exception as e:
+                print("[Proxy] Could not save source picks: {}".format(e))
+
     def _cache_resolved_url(self, channel_url, stream_url):
-        """Store a freshly-resolved stream URL in resolve_cache and
-        evict the oldest entries past 1000 - shared by both the Vavoo
-        and geil.to resolve paths, which used to each carry their own
-        identical copy of this exact block."""
+        """Store a freshly-resolved stream URL in resolve_cache -
+        shared by both the Vavoo and geil.to resolve paths."""
+        now = time.time()
         with self.resolve_cache_lock:
-            # Pop before inserting (rather than OrderedDict.move_to_end(),
-            # which doesn't exist on Python 2.7's collections.OrderedDict)
-            # - re-resolving an already-cached URL updates its value, and a
-            # plain re-assignment doesn't move an existing key's position,
-            # so without this, eviction below would go by original
-            # insertion order rather than last use, and could drop a
-            # channel that's actively being refreshed while keeping one
-            # nobody has touched in a while.
-            self.resolve_cache.pop(channel_url, None)
-            self.resolve_cache[channel_url] = {
-                "url": stream_url, "ts": time.time()}
-            # Evict oldest 500 entries (OrderedDict preserves insertion
-            # order in Py2+3)
-            if len(self.resolve_cache) > 1000:
-                keys = list(self.resolve_cache.keys())[:-500]
-                for key in keys:
+            self.resolve_cache[channel_url] = {"url": stream_url, "ts": now}
+            # Entries nobody asked for within resolve_cache_ttl can
+            # never be returned again (see _get_cached_url()) - drop
+            # them once the cache has grown, so it stays bounded
+            # without ever evicting an address that is still in use.
+            if len(self.resolve_cache) > 200:
+                for key in [k for k, v in self.resolve_cache.items()
+                            if now - v["ts"] >= self.resolve_cache_ttl]:
                     self.resolve_cache.pop(key, None)
 
     def _resolve_geil_channel(self, channel_url, max_retries):
@@ -1999,6 +2190,11 @@ class VavooProxy(object):
         # promise this should actually return one.
         return PROXY_HOST
 
+    def is_stopped(self):
+        """True once stop() has been called - this instance's token
+        monitor has ended and it must not be served from again."""
+        return self._stop_event.is_set()
+
     def stop(self):
         """Stop background workers/timers and close session (safe for Py2/3)."""
         try:
@@ -2077,45 +2273,24 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(400, "Missing channel parameter")
                     return
 
-                # force=1 (sent by the player's EOF-retry path) bypasses
-                # the resolve cache, since retrying against the same
-                # cached URL that just failed would otherwise guarantee
-                # every retry fails the same way.
-                force_refresh = query_params.get(
-                    'force', ['0'])[0] == '1'
-                # keep=1 (plugin.py's Playstream2._do_proactive_refresh())
-                # - a proactive, non-failure refresh of a grouped
-                # channel's CURRENT source, never auto-switching to a
-                # different one - see resolve_group_with_retry()'s own
-                # docstring for why this needs to be distinct from a
-                # plain force=1 EOF retry.
-                keep_source = query_params.get(
-                    'keep', ['0'])[0] == '1'
-                # source=<id> (plugin.py's chooseStreamSource(), via
-                # /group_sources) - explicitly picks one member of a
-                # grouped channel instead of leaving the choice to
-                # auto-selection.
-                requested_source = query_params.get('source', [None])[0]
-
+                # No other parameters, on purpose: the player repeats
+                # this whole address on every playlist refresh (see
+                # resolve_with_retry()'s own docstring), so anything
+                # here would be applied again every ~10 seconds for
+                # the rest of the viewing. A failed stream or a source
+                # pick is reported once instead - see
+                # report_stream_failure()/set_group_source().
                 try:
                     if channel_id.startswith(GROUP_ID_PREFIX):
                         # A grouped channel (see /channels' own grouping
-                        # step) - no single catalog entry to look up;
-                        # try its sources in order instead, routing
-                        # around whichever one a force=1 retry says just
-                        # failed (see resolve_group_with_retry()).
-                        stream_url = p.resolve_group_with_retry(
-                            channel_id, force_refresh=force_refresh,
-                            keep_source=keep_source,
-                            requested_source=requested_source)
+                        # step) - no single catalog entry to look up.
+                        stream_url = p.resolve_group_with_retry(channel_id)
                     else:
-                        channel = p.channels_by_id.get(channel_id) if hasattr(
-                            p, 'channels_by_id') else None
+                        channel = p.channels_by_id.get(channel_id)
                         if not channel:
                             self.send_error(404, "Channel not found")
                             return
-                        stream_url = p.resolve_with_retry(
-                            channel.get("url"), force_refresh=force_refresh)
+                        stream_url = p.resolve_with_retry(channel.get("url"))
 
                     if not stream_url:
                         self.send_error(404, "Stream not resolved")
@@ -2125,7 +2300,11 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_response(302)
                     self.send_header('Location', stream_url)
                     self.end_headers()
-                    print("[Proxy] Redirect to: " + stream_url[:100])
+                    # Once per playlist refresh of every watched
+                    # stream - debug-only, or it buries the rest of
+                    # the log. A real (re)resolve is still always
+                    # logged by the resolve path itself.
+                    debug("[Proxy] Redirect to: " + stream_url[:100])
 
                 except Exception as e:
                     print("[Proxy] /vavoo error: " + str(e))
@@ -2161,13 +2340,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
                 try:
-                    # 1. Get stream URL. Same force=1 cache-busting
-                    # /vavoo already has - without it, a resolve_cache
-                    # entry that turns out to be broken (upstream 404/451
-                    # on the resolved URL) stays cached and stuck for
-                    # every /stream client hitting this channel for up
-                    # to resolve_cache_ttl (5 minutes), with no way to
-                    # invalidate it early.
+                    # 1. Get stream URL. force=1 skips the resolve
+                    # cache, for a client that knows the address it
+                    # was just given is broken.
                     force_refresh = query_params.get(
                         'force', ['0'])[0] == '1'
                     stream_url = p.resolve_with_retry(
@@ -2304,9 +2479,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         # of reordering the list), skipped every other
                         # time. Resolved through resolve_group_with_
                         # retry() via its synthetic group id, which
-                        # tries each source in turn and routes around
-                        # whichever one a player's EOF-retry (force=1)
-                        # says just failed.
+                        # picks one source and stays on it until the
+                        # player reports it as failed.
                         if key in emitted_keys:
                             continue
                         emitted_keys.add(key)
@@ -2374,30 +2548,18 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
             elif parsed_path.path == '/group_sources':
                 # Lists a grouped channel's individual sources (Vavoo/
-                # geil.to's ".b"/".c"/".s" convention - see /channels'
-                # own grouping step and _group_key()) so plugin.py's
-                # Playstream2.chooseStreamSource() can let the user
-                # pick one explicitly instead of leaving it to
-                # auto-selection/failure-recovery.
+                # Geil's ".b"/".c"/".s" convention - see /channels'
+                # own grouping step and _group_key()) and which one is
+                # in use. Read-only; the player's own source menu
+                # reads the same thing in-process via
+                # get_group_sources().
                 group_id = query_params.get('group', [None])[0]
                 if not group_id or not group_id.startswith(GROUP_ID_PREFIX):
                     self.send_error(400, "Missing or invalid group parameter")
                     return
 
                 try:
-                    country, key = parse_group_id(group_id)
-                    members = p._group_members(
-                        country, key) if key else []
-                    with p.group_lock:
-                        current, _ = p.group_last_member.get(
-                            group_id, (None, 0))
-                    result = {
-                        "members": [
-                            {"id": m.get("id"), "label": _source_label(m, i)}
-                            for i, m in enumerate(members)
-                        ],
-                        "current": current,
-                    }
+                    result = p.get_group_sources(group_id)
                     if not self.safe_send_response(200):
                         return
                     self.send_header('Content-Type', 'application/json')
@@ -2654,9 +2816,13 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
             elif parsed_path.path == '/shutdown':
-                # Signal global stop to prevent the restart loop from
-                # re-spawning the server
+                # Signal stop to prevent the restart loop from
+                # re-spawning the server: the global flag, and the
+                # one on the instance being served (start_proxy()
+                # checks both - the global one is cleared by the next
+                # start, the instance's never is).
                 STOP_EVENT.set()
+                p._stop_event.set()
 
                 if not self.safe_send_response(200):
                     return
@@ -2752,40 +2918,78 @@ proxy = VavooProxy()
 
 
 def shutdown_proxy():
-    """Shutdown the proxy server if running.
-    Sets STOP_EVENT first so background threads stop even if HTTP call fails.
-    """
-    # Signal all proxy threads to exit regardless of HTTP outcome
-    STOP_EVENT.set()
-    try:
-        response = requests.get(
-            PROXY_SHUTDOWN_URL, timeout=2)
-        if response.status_code == 200:
-            print(" Shutdown request sent successfully")
-            STOP_EVENT.clear()  # reset for next start
-            return True
-    except Exception as e:
-        print(" Shutdown via HTTP failed: {}".format(e))
+    """Stop the in-process proxy: its HTTP server and its background
+    token monitor. Returns once the server has stopped serving and
+    released its port (normally within one serve_forever() poll
+    interval, 0.5s).
 
-    # Fallback: the proxy only ever runs as an in-process daemon thread
-    # of Enigma2 itself (run_proxy_in_background() -> threading.Thread),
-    # never as its own subprocess - "pkill -f 'python.*vavoo_proxy'" can
-    # never match anything real and was silently a no-op. Stop the
-    # in-process instance directly instead.
+    Used to ask the server to stop itself over HTTP (/shutdown) and
+    then clear STOP_EVENT as soon as that request was answered -
+    which is before the server thread had got around to checking it.
+    That thread then saw "no stop requested", treated its own
+    shutdown as a crash and started the proxy straight back up: a
+    "stopped" proxy kept running, and since stop() had already ended
+    its token monitor, it kept running without one. Stopping it
+    directly, and leaving the stop flag on the instance itself (never
+    cleared, since a stopped instance is never reused - see
+    start_proxy()), makes it deterministic.
+    """
+    old = proxy
+    # Before server.shutdown(): start_proxy()'s loop checks this flag
+    # the moment serve_forever() returns.
     try:
-        if proxy.server:
-            proxy.server.shutdown()
-            proxy.server.server_close()
-    except Exception as e:
-        print(" Error closing proxy server: {}".format(e))
-    try:
-        proxy.stop()
-        print(" Stopped proxy instance directly (in-process)")
-        STOP_EVENT.clear()
-        return True
+        old.stop()
     except Exception as e:
         print(" Failed to stop proxy instance: {}".format(e))
-    return False
+    server = old.server
+    if server is not None:
+        try:
+            server.shutdown()
+        except Exception as e:
+            print(" Error stopping proxy server: {}".format(e))
+        try:
+            server.server_close()
+        except Exception as e:
+            print(" Error closing proxy server: {}".format(e))
+    print(" Proxy stopped")
+    return True
+
+
+def restart_proxy_in_background():
+    """Stop the running proxy (if any) and start a fresh one, without
+    blocking the caller - stopping waits for the old server to wind
+    down, and callers are on Enigma2's GUI thread.
+
+    is_proxy_booting() is True from the moment this returns until the
+    new server is up: the old one keeps answering for a moment while
+    it winds down, so "the port answers" alone can't tell a caller
+    whether it is talking to the old proxy or the new one."""
+    with _starting_lock:
+        try:
+            write_booting_file()
+        except Exception as e:
+            print("[Proxy] Could not write booting marker: {}".format(e))
+
+    def _task():
+        try:
+            shutdown_proxy()
+            # The new server can't bind until the old one has let go
+            # of the port.
+            for _attempt in range(50):
+                if not is_proxy_port_listening():
+                    break
+                select.select([], [], [], 0.1)
+            with _starting_lock:
+                if not _spawn_proxy_thread():
+                    remove_booting_file()
+        except Exception as e:
+            print("[Proxy] Restart failed: {}".format(e))
+            trace_error()
+            remove_booting_file()
+
+    restart_thread = threading.Thread(target=_task)
+    restart_thread.daemon = True
+    restart_thread.start()
 
 
 def start_proxy():
@@ -2799,6 +3003,10 @@ def start_proxy():
             resp = requests.get(PROXY_STATUS_URL, timeout=2)
             if resp.status_code == 200:
                 print("[PROXY] Proxy is responsive, not starting another instance")
+                # run_proxy_in_background() set the "booting" marker
+                # before starting this thread - nothing is booting
+                # after all.
+                remove_booting_file()
                 return True
             else:
                 print("[PROXY] Proxy is running but not responsive, will restart")
@@ -2826,6 +3034,13 @@ def start_proxy():
                 select.select([], [], [], 2)
             except Exception as e:
                 debug("Stopping unresponsive proxy failed: {}".format(e))
+
+    # A stopped instance is never reused: stop() ends its token
+    # monitor for good, so starting the server on it again would
+    # leave the addonSig refreshed only after a resolve has already
+    # failed with an expired one.
+    if proxy.is_stopped():
+        proxy = VavooProxy()
 
     # Write the PID file for this instance
     write_pid_file()
@@ -2862,20 +3077,25 @@ def start_proxy():
                     continue
                 else:
                     print("[✗] Max restart attempts reached")
+                    # Gave up - without this the marker stayed behind
+                    # until MAX_BOOT_AGE, and every start attempt in
+                    # that time was skipped as "already booting".
+                    remove_booting_file()
                     return False
 
             server = ThreadedHTTPServer(('0.0.0.0', PORT), VavooHTTPHandler)
             # Boot completed, remove booting file
             remove_booting_file()
 
-            server.timeout = 30
-            server.request_queue_size = 64
+            # The instance this server belongs to - `proxy` itself can
+            # be rebound by a restart while serve_forever() below is
+            # still running.
+            serving_proxy = proxy
             proxy.server = server
             local_ip = proxy.get_local_ip()
 
             print("[✓] Channels: " + str(len(proxy.all_filtered_items)))
             print("[✓] IP: " + str(local_ip) + ":" + str(PORT))
-            print("[✓] Timeout: " + str(server.timeout) + "s")
             print("[✓] Ready")
             print("=" * 50)
 
@@ -2886,14 +3106,14 @@ def start_proxy():
                 server.serve_forever(poll_interval=0.5)
 
                 # If serve_forever returned, decide whether to restart or exit
-                if STOP_EVENT.is_set():
+                if STOP_EVENT.is_set() or serving_proxy.is_stopped():
                     print("[!] Shutdown requested, exiting proxy loop")
                     try:
                         server.server_close()
                     except Exception:
                         pass
                     try:
-                        proxy.stop()
+                        serving_proxy.stop()
                     except Exception:
                         pass
                     # A clean, intentional /shutdown-triggered exit is
@@ -2957,100 +3177,99 @@ def start_proxy():
                 continue
 
     print("[✗] Proxy cannot start after " + str(max_restarts) + " attempts")
+    remove_booting_file()
     return False
 
 
 def is_proxy_port_listening():
     """Check if proxy is actually listening on PORT."""
-    import socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = sock.connect_ex(('127.0.0.1', PORT))
-    sock.close()
-    return result == 0
-
-
-def run_proxy_in_background(startup_timeout=30):
-
-    global _starting
-
-    # Callers pass cfg.proxy_startup_timeout.value straight through, and
-    # ConfigSelectionNumber.value has been confirmed (via a user log) to
-    # come back as a str rather than an int on at least some
-    # images/Python versions - min(str, int) raises TypeError on Python
-    # 3, and even where it doesn't crash outright (Python 2's
-    # cross-type comparison happens to usually favor the int here), it's
-    # relying on undefined/fragile behavior rather than anything
-    # guaranteed. Coerce once at the top so every caller is covered.
     try:
-        startup_timeout = int(startup_timeout)
-    except (TypeError, ValueError):
-        startup_timeout = 30
-
-    # Wait (briefly) for another booting instance. This can run on the
-    # caller's own thread - including the Enigma2 UI/reactor thread in some
-    # call paths - so it is deliberately capped well below startup_timeout
-    # (which may be configured up to 300s) to avoid freezing the UI.
-    # Callers already poll for actual readiness asynchronously afterwards.
-    if is_proxy_booting():
-        wait_seconds = min(startup_timeout, 10)
-        print("[Proxy] Another proxy is booting, waiting up to {} seconds...".format(
-            wait_seconds))
-        max_attempts = int(wait_seconds * 2)
-        for attempt in range(max_attempts):
-            if not is_proxy_booting() and is_proxy_port_listening():
-                print("[Proxy] Proxy boot completed, instance is running")
-                return True
-            select.select([], [], [], 0.5)
-        print("[Proxy] Boot still in progress after short wait, returning (caller will poll readiness)")
-        return True
-
-    # Final check: if already active and listening, exit
-    if is_proxy_running() and is_proxy_port_listening():
-        print("[Proxy] Already running and listening, skipping start")
-        return True
-
-    # Stale PID file? Just remove it - there is never a separate
-    # process to clean up here.
-    #
-    # The proxy always runs as an in-process thread of Enigma2 itself,
-    # never a separate subprocess (see CLAUDE.md), so write_pid_file()
-    # always stores THIS SAME Enigma2 process's own pid. A PID file
-    # existing while the proxy isn't listening just means an earlier
-    # proxy thread in this same still-running Enigma2 process died or
-    # was shut down - nothing external to kill.
-    #
-    # A previous version of this block tried to os.kill(pid, 9) after
-    # an argv0 == 'enigma2' sanity check, reasoning that "a genuine
-    # match should still look like the Enigma2 binary itself" before
-    # killing it - but that check can never actually distinguish
-    # anything here: the stored PID is *always* Enigma2's own (per
-    # the architecture above), so the check always passed, and the
-    # kill always sent SIGKILL to the live Enigma2 process calling
-    # this very function - turning the single most common recovery
-    # path (the watchdog restarting a crashed proxy thread, a
-    # catalog_source config change, a manual proxy restart) into a
-    # full box crash every time it actually ran.
-    if os.path.exists(PID_FILE) and not is_proxy_port_listening():
-        try:
-            os.unlink(PID_FILE)
-        except Exception:
-            pass
-
-    # Acquire lock for atomic startup
-    with _starting_lock:
-        if _starting:
-            print("[Proxy] Already starting, skipping...")
-            return False
-        _starting = True
-
-    try:
-        proxy_thread = threading.Thread(target=start_proxy)
-        proxy_thread.setDaemon(True)
-        proxy_thread.start()
-        return True
+        # Bounded: this runs on the GUI thread in several call paths.
+        # A local connect is normally instant either way (accepted or
+        # refused), but with no timeout at all a full listen backlog
+        # would leave it hanging for the kernel's own connect timeout.
+        sock.settimeout(1)
+        return sock.connect_ex((PROXY_HOST, PORT)) == 0
+    except (socket.error, OSError):
+        return False
     finally:
-        with _starting_lock:
-            _starting = False
+        sock.close()
+
+
+def _proxy_thread_main():
+    """Thread target for run_proxy_in_background() - start_proxy()
+    plus a last-resort cleanup, so an unexpected crash in it can't
+    leave the "booting" marker behind (which would make every start
+    attempt for the next MAX_BOOT_AGE seconds think one is still in
+    progress)."""
+    try:
+        start_proxy()
+    except Exception as e:
+        print("[Proxy] Proxy thread crashed: {}".format(e))
+        trace_error()
+        remove_booting_file()
+
+
+def run_proxy_in_background():
+    """Start the proxy in a background thread, unless it is already
+    running or already starting.
+
+    Always returns at once. Loading the catalog takes anywhere from a
+    few seconds to minutes, and most callers are on Enigma2's GUI
+    thread - they poll is_proxy_ready() for actual readiness. This
+    used to wait up to 10 seconds right here whenever another start
+    was already in progress (e.g. the plugin being opened while the
+    start-at-boot was still loading the catalog), freezing the whole
+    box for that long.
+
+    Returns True when a proxy is running, already starting, or was
+    just started; False only if the thread itself could not be
+    created.
+    """
+    # One caller at a time, and the "booting" marker is written in
+    # here, before the thread exists - not by the thread itself once
+    # it gets going. Two calls in quick succession used to be able to
+    # both get past every check and start two proxy threads racing
+    # each other for the same port.
+    with _starting_lock:
+        if is_proxy_booting():
+            print("[Proxy] Start already in progress")
+            return True
+
+        if is_proxy_port_listening():
+            print("[Proxy] Already running and listening, skipping start")
+            return True
+
+        if not _spawn_proxy_thread():
+            remove_booting_file()
+            return False
+    return True
+
+
+def _spawn_proxy_thread():
+    """Mark a boot as in progress and start the proxy thread. Caller
+    holds _starting_lock and has already made sure nothing is
+    listening on the port."""
+    # A PID file without a listening port is just left over from an
+    # earlier proxy thread of this same Enigma2 process (the proxy
+    # never runs as a separate process, so the PID in it is always
+    # Enigma2's own - there is nothing to kill).
+    remove_pid_file()
+
+    try:
+        write_booting_file()
+    except Exception as e:
+        print("[Proxy] Could not write booting marker: {}".format(e))
+
+    try:
+        proxy_thread = threading.Thread(target=_proxy_thread_main)
+        proxy_thread.daemon = True
+        proxy_thread.start()
+    except Exception as e:
+        print("[Proxy] Could not start proxy thread: {}".format(e))
+        return False
+    return True
 
 
 if __name__ == "__main__":

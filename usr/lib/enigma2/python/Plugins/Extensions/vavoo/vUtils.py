@@ -40,7 +40,7 @@ from shutil import copy2
 from sys import maxsize
 from six import iteritems, unichr
 from six.moves import html_entities, html_parser
-from time import sleep, time, strftime, localtime
+from time import time, strftime, localtime
 from unicodedata import normalize
 
 from . import (
@@ -105,11 +105,6 @@ except Exception:
     print("[VavooEPGMatcher] channel_alias module not found, using default matching")
     pass
 
-
-try:
-    from urllib.parse import quote  # , unquote
-except ImportError:
-    from urllib import quote  # , unquote
 
 try:
     import requests
@@ -487,10 +482,8 @@ def b64decoder(data):
 
 
 def getUrl(url, timeout=30, retries=3, backoff=2):
-    """Fetch URL with exponential backoff retry logic"""
-    # detect 451
-    HTTP_451_SENTINEL = "__HTTP451__"
-
+    """Fetch URL with exponential backoff retry logic. Returns the
+    response body, or "" on failure."""
     headers = {'User-Agent': RequestAgent()}
 
     if not url:
@@ -540,11 +533,16 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
 
         except HTTPError as e:
 
-            # detect 451
             code = getattr(e, 'code', None)
             if code == 451:
+                # "Unavailable for legal reasons" - asking again
+                # won't change the answer. (Used to return a
+                # "__HTTP451__" marker string here, which only the
+                # long-gone vavoo.to/kool.to listing fallback knew to
+                # look for - every other caller would have treated it
+                # as the response body.)
                 print("HTTP 451 for URL: {0}".format(url))
-                return HTTP_451_SENTINEL
+                return ""
 
             if i < retries - 1:
                 wait_time = backoff ** i
@@ -554,8 +552,8 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 select.select([], [], [], wait_time)
                 continue
             print(
-                "Failed after {0} attempts for URL: {1}".format(
-                    retries, url))
+                "Failed after {0} attempt(s) for URL: {1}".format(
+                    i + 1, url))
             print("HTTPError: {0}".format(e))
             return ""
 
@@ -578,9 +576,13 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                         i + 1, wait_time))
                 select.select([], [], [], wait_time)
             else:
+                # i + 1, not `retries`: a timeout or other
+                # non-retryable error gives up on the first attempt,
+                # and the log used to claim "after 3 attempts" for it
+                # anyway.
                 print(
-                    "Failed after {0} attempts for URL: {1}".format(
-                        retries, url))
+                    "Failed after {0} attempt(s) for URL: {1}".format(
+                        i + 1, url))
                 print("Error: {0}".format(e))
                 return ""
 
@@ -595,8 +597,8 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 continue
 
             print(
-                "Failed after {0} attempts for URL: {1}".format(
-                    retries, url))
+                "Failed after {0} attempt(s) for URL: {1}".format(
+                    i + 1, url))
             print("Unexpected error: {0}".format(e))
             try:
                 trace_error()
@@ -708,118 +710,6 @@ def convert_to_unicode(data):
 # FUNCTIONS FOR VAVOO PROXY
 # ============================================================================
 
-def getAuthSignature():
-    """Get authentication - ALWAYS use proxy"""
-    print("Using proxy authentication system")
-    return "PROXY_ACTIVE"
-
-
-def get_new_auth_signature():
-    """
-    New Vavoo authentication system via local proxy
-    Returns a valid token for the proxy
-    """
-    try:
-        print("Using new proxy authentication system...")
-
-        try:
-            req = Request(PROXY_STATUS_URL)
-            response = urlopen(req, timeout=5)
-            if response.getcode() == 200:
-                data = loads(response.read().decode('utf-8'))
-                if data.get("initialized", False):
-                    print("Proxy active and running")
-                    return "PROXY_ACTIVE"
-        except BaseException as e:
-            debug("Proxy status check failed, will try starting it: {}".format(e))
-
-        try:
-            from .vavoo_proxy import run_proxy_in_background
-            print("Starting proxy in background...")
-            run_proxy_in_background()
-            select.select([], [], [], 5)
-            return "PROXY_STARTED"
-        except Exception as e:
-            trace_error()
-            print("Proxy start error: " + str(e))
-
-    except Exception as e:
-        trace_error()
-        print("New auth error: " + str(e))
-
-    print("Falling back to old authentication system")
-    return getAuthSignature()
-
-
-def get_proxy_channels(country_name):
-    """Get channels for a country from proxy - with retry"""
-    country_name = ensure_str(country_name, errors='ignore').strip()
-    max_retries = 3
-
-    for attempt in range(max_retries):
-        try:
-            print("Getting channels for '" + str(country_name) +
-                  "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
-
-            # URL-encode
-            encoded_country = quote(country_name.encode(
-                'utf-8')) if PY2 else quote(country_name)
-
-            # Build URL
-            proxy_url = PROXY_BASE_URL + \
-                "/channels?country={}".format(encoded_country)
-            # Fetch with timeout
-            response = getUrl(proxy_url, timeout=15)
-            print("Request URL: " + proxy_url)
-
-            if not response:
-                print(
-                    "Empty response for '" +
-                    str(country_name) +
-                    "'")
-                continue
-
-            # Parse JSON
-            channels = loads(response)
-
-            if not isinstance(channels, list):
-                print("Invalid response format: " + str(type(channels)))
-                continue
-
-            print("Successfully got " + str(len(channels)) +
-                  " channels for '" + str(country_name) + "'")
-
-            # Process channels
-            processed_channels = []
-            for channel in channels:
-                if isinstance(channel, dict):
-                    channel_id = channel.get('id', '')
-                    if not channel_id:
-                        continue
-
-                    # Build proxy URL
-                    proxy_stream_url = PROXY_BASE_URL + \
-                        "/vavoo?channel={}".format(channel_id)
-                    processed_channels.append({
-                        'id': channel_id,
-                        'name': channel.get('name', 'Unknown'),
-                        'url': proxy_stream_url,
-                        'logo': channel.get('logo', ''),
-                        'country': channel.get('country', country_name)
-                    })
-
-            return processed_channels
-
-        except Exception as e:
-            print("Attempt " + str(attempt + 1) +
-                  " failed for '" + str(country_name) + "': " + str(e))
-            if attempt < max_retries - 1:
-                sleep(2)  # Wait before retry
-
-    print("All attempts failed for '" + str(country_name) + "'")
-    return []
-
-
 def get_proxy_catalog_url():
     """
     Get the proxy catalog URL
@@ -854,9 +744,13 @@ def get_proxy_status():
 def is_proxy_running():
     """Check if the proxy is running"""
     try:
-        import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
+            # Bounded: called from the GUI thread all over the plugin.
+            # A local connect is normally instant either way, but with
+            # no timeout a full listen backlog on the proxy would
+            # leave this hanging for the kernel's own connect timeout.
+            s.settimeout(1)
             return s.connect_ex((PROXY_HOST, PORT)) == 0
         finally:
             s.close()
@@ -887,27 +781,6 @@ def is_proxy_ready(timeout=2):
         return False
     except BaseException:
         return False
-
-
-_original_getAuthSignature = getAuthSignature
-
-
-def getAuthSignature():
-    """
-    Wrapper that uses the proxy first, then falls back to the old system
-    """
-    print("getAuthSignature called...")
-
-    try:
-        if is_proxy_running():
-            print("Proxy active, using new system")
-            return "PROXY_AUTH"
-    except BaseException:
-        trace_error()
-        pass
-
-    print("Falling back to old authentication system")
-    return _original_getAuthSignature()
 
 
 # ===================================
@@ -1710,24 +1583,21 @@ _epg_matcher = None
 _epg_matcher_lock = threading.Lock()
 
 
+# Minimum name similarity (0-1) for a fuzzy EPG match. Was a settings
+# option ("EPG Similarity Threshold"), always left at this default in
+# practice - a tuning number, not something to choose in a menu.
+EPG_SIMILARITY_THRESHOLD = 0.75
+
+
 def get_epg_matcher(similarity_threshold=None):
     global _epg_matcher
-    # Se non viene passato un valore, usa quello dalla configurazione
     if similarity_threshold is None:
-        # ConfigSelectionNumber.value comes back as a str (not int) on
-        # at least some images/Python versions - confirmed via a
-        # user-submitted log where this crashed every single EPG lookup
-        # and every bouquet auto-update with "TypeError: unsupported
-        # operand type(s) for /: 'str' and 'float'". float() handles
-        # both str and numeric value types safely.
-        similarity_threshold = float(
-            config.plugins.vavoo.similarity_threshold.value) / 100.0
+        similarity_threshold = EPG_SIMILARITY_THRESHOLD
     if _epg_matcher is None:
         with _epg_matcher_lock:
             if _epg_matcher is None:
                 _epg_matcher = VavooEPGMatcher(similarity_threshold)
                 return _epg_matcher
-    # Aggiorna la soglia nel matcher esistente (per modifiche dinamiche)
     _epg_matcher.similarity_threshold = similarity_threshold
     return _epg_matcher
 
@@ -3557,17 +3427,15 @@ def ensure_vavoo_epg_sources_enabled():
     EPGImport's own config. Merges into whatever the user already has
     enabled there; never removes anything.
 
-    Only runs when the user has opted in via the "EPG Auto Update"
-    config toggle - otherwise EPGImport's own source list is left
-    exactly as the user configured it, same as the existing manual
-    "Start EPG update now?" flow (which still requires the source to
-    already be enabled). Never raises - this is a best-effort
-    convenience a failure here shouldn't be allowed to break bouquet
-    export over.
+    Only runs with "Enable Vavoo EPG" on - without it EPGImport's own
+    source list is left exactly as the user configured it. (This used
+    to need a second toggle as well, "Auto-update EPG"; it is simply
+    part of enabling the EPG now.) Never raises - this is a
+    best-effort convenience a failure here shouldn't be allowed to
+    break bouquet export over.
     """
     try:
-        if not (config.plugins.vavoo.epg_enabled.value and
-                config.plugins.vavoo.epg_auto_update.value):
+        if not config.plugins.vavoo.epg_enabled.value:
             return
 
         epg_dir = "/etc/epgimport"

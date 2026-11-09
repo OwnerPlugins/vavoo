@@ -83,6 +83,10 @@ ENIGMA_PATH = get_enigma2_path()
 CACHE_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_cache.json")
 UNMATCHED_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_unmatched_cache.json")
 SREF_MAP_FILE = os.path.join(ENIGMA_PATH, "vavoo_sref_map.json")
+# The stream source the user picked (YELLOW in the player) for each
+# multi-source channel: {"grp:<country>:<key>": "<catalog id>"} - see
+# vavoo_proxy.py's VavooProxy.set_group_source().
+SOURCE_PREFS_FILE = os.path.join(ENIGMA_PATH, "vavoo_source_prefs.json")
 EPGIMPORT_CONF = os.path.join(ENIGMA_PATH, "epgimport.conf")
 ALIAS_FILE = os.path.join(ENIGMA_PATH, "channel_alias.json")
 

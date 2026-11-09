@@ -467,7 +467,6 @@ def convert_bouquet(
         name,
         url,
         export_type,
-        server,
         bouquet_position):
     """Compatible (synchronous) version for existing calls."""
     return convert_bouquet_sync(
@@ -475,7 +474,6 @@ def convert_bouquet(
         name,
         url,
         export_type,
-        server,
         bouquet_position)
 
 
@@ -484,7 +482,6 @@ def convert_bouquet_sync(
         name,
         url,
         export_type,
-        server,
         bouquet_position):
     """Creates the bouquet synchronously and returns the number of channels."""
     try:
