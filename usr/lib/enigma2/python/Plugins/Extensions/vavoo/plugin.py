@@ -5903,8 +5903,12 @@ class Playstream2(
             self.restartAfterEOF()
 
     def restartAfterEOF(self):
-        """Callback to restart stream after EOF (non‑blocking)."""
-        print("[Playstream2] Restarting stream after EOF")
+        """Stop and (after a short, cancellable delay) restart the
+        current stream - despite the name, not EOF-specific: also
+        reused by _onStreamSourceChosen() for a manual source pick,
+        which needs the exact same deferred-restart safety this
+        already has."""
+        print("[Playstream2] Restarting stream (non-blocking)")
         self.stopStream(restore_original=False)
         # Stored so cancel() can cancel it - previously this handle was
         # discarded, so a STOP/BACK press during this 0.5s window closed
@@ -6380,8 +6384,23 @@ class Playstream2(
             return
         print("[Playstream2] Source chosen: " + str(choice[1]))
         self.pinned_source_id = choice[1]
-        self.stopStream(restore_original=False)
-        self.startStream(force=True)
+        # restartAfterEOF() stops the current stream and defers the
+        # actual restart by 0.5s rather than doing it synchronously -
+        # not EOF-specific despite the name, and needed here too: this
+        # runs as the ChoiceBox's own close callback, while the screen
+        # stack is still settling back from that dialog closing.
+        # Tearing down and recreating the service right then was
+        # observed to leave self.execing False for several seconds
+        # instead of the usual well under one, stalling
+        # serviceStarted()'s 500ms retry loop
+        # (TvInfoBarShowHide._retry_start()) and the overlay/EPG
+        # refresh that depends on it - the stream looked frozen even
+        # though it likely wasn't. Reusing this also means a STOP/
+        # BACK press in that 0.5s window correctly cancels the
+        # pending restart (see cancel()'s own handling of
+        # self._eof_restart_call), exactly as it already does for a
+        # real EOF.
+        self.restartAfterEOF()
 
     def _arm_proactive_refresh(self):
         """(Re)start the proactive-refresh timer - called every time a
