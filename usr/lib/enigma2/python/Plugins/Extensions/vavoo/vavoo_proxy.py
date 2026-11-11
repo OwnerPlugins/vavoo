@@ -361,8 +361,8 @@ Description:
 Example Response:
 {
     "members": [
-        {"id": "abc123", "label": "Source B"},
-        {"id": "def456", "label": "Source S"}
+        {"id": "abc123", "label": "RAI 1 .b"},
+        {"id": "def456", "label": "RAI 1 HD .s"}
     ],
     "current": "abc123"
 }
@@ -760,20 +760,37 @@ def make_group_id(country, key):
 
 
 def _source_label(member, index):
-    """Human-readable label for one member of a grouped channel, for
-    /group_sources' listing (and plugin.py's chooseStreamSource()) -
-    the raw per-source suffix (Vavoo/geil.to's ".b"/".c"/".s"
-    convention _strip_source_suffix() already recognizes) when there
-    is one, else a plain 1-based position so every member still gets
-    a usable, distinct label even for a catalog that doesn't tag its
-    sources this way."""
-    raw_name = member.get("name", "") or ""
-    match = _SOURCE_DISPLAY_SUFFIX_RE.search(raw_name)
-    if match:
-        suffix = match.group(0).strip().lstrip('.').upper()
-        if suffix:
-            return "Source {}".format(suffix)
+    """Label for one source of a grouped channel in the player's
+    source menu (plugin.py's chooseStreamSource()) and /group_sources:
+    that source's own catalog name, exactly as the channel list showed
+    it before sources were folded into one row (e.g. "RAI 1 .b",
+    "RAI 1 HD .s") - same as the companion Android app's menu. Used to
+    be a made-up "Source B"/"Source S", which hid the one thing that
+    tells sources apart at a glance (HD/FHD and the like). A plain
+    1-based "Source N" only for an entry with no name at all."""
+    name = (member.get("name", "") or "").strip()
+    if name:
+        return name
     return "Source {}".format(index + 1)
+
+
+def _unique_source_labels(members):
+    """_source_label() for every member, in order, made unique: when
+    two sources of a channel carry exactly the same name, the later
+    ones get " (2)", " (3)" so they can still be told apart in the
+    menu."""
+    labels = []
+    seen = {}
+    for index, member in enumerate(members):
+        label = _source_label(member, index)
+        count = seen.get(label, 0) + 1
+        seen[label] = count
+        if count > 1:
+            # "+", not str.format(): on Python 2 the name is unicode,
+            # and "{}".format(u"...") fails on any non-ASCII character.
+            label = label + " (%d)" % count
+        labels.append(label)
+    return labels
 
 
 def parse_group_id(group_id):
@@ -1971,9 +1988,10 @@ class VavooProxy(object):
         member_ids = [m.get("id") for m in members]
         if current not in member_ids:
             current = None
+        labels = _unique_source_labels(members)
         return {
             "members": [
-                {"id": m.get("id"), "label": _source_label(m, i)}
+                {"id": m.get("id"), "label": labels[i]}
                 for i, m in enumerate(members)
             ],
             "current": current,

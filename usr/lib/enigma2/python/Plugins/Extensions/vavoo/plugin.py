@@ -5775,7 +5775,11 @@ class Playstream2(
         current = data.get("current")
         choices = []
         for member in members:
-            label = member.get("label", "")
+            # to_string(): the label is the source's catalog name,
+            # which on Python 2 is unicode - joining that with a
+            # translated (byte string) "(current)" would fail on any
+            # non-ASCII character in either.
+            label = to_string(member.get("label", ""))
             if member.get("id") == current:
                 label = label + " " + _("(current)")
             choices.append((label, member.get("id")))
