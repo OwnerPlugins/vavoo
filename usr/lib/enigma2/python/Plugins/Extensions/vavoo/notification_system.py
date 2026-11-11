@@ -36,17 +36,41 @@ if sys.version_info[0] >= 3:
     unicode = str
 
 
+def _screen_width():
+    """Width of the Enigma2 desktop in pixels (1280 HD, 1920 Full HD,
+    2560 WQHD), or 1920 if it can't be read."""
+    try:
+        from enigma import getDesktop
+        return int(getDesktop(0).size().width())
+    except Exception:
+        return 1920
+
+
+def build_notify_skin(screen_width):
+    """Skin for the notification bar, centred on a screen of the given
+    width. It used to be a fixed 1200px bar at x=360, which is centred
+    only on a 1920 screen: on a 1280 (HD) one it ran 280px off the
+    right edge, cutting off the end of longer messages, and on a 2560
+    one it sat well left of centre."""
+    bar_width = max(200, min(1200, screen_width - 80))
+    return """
+    <screen position="%(x)d,15" size="%(w)d,50" flags="wfNoBorder" backgroundColor="#ff6699">
+        <eLabel position="0,0" size="%(w)d,4" backgroundColor="#ffff00" />
+        <eLabel position="0,46" size="%(w)d,4" backgroundColor="#ffff00" />
+        <eLabel position="0,5" size="%(w)d,40" backgroundColor="#cc3399" />
+        <eLabel position="9,7" size="%(inner)d,34" backgroundColor="#00142030" halign="center" />
+        <widget name="notification_text" position="9,7" size="%(inner)d,34" font="Regular;32" foregroundColor="#00FFFFFF" backgroundColor="#ff6699" halign="center" valign="center" zPosition="4" />
+    </screen>""" % {
+        "x": max(0, (screen_width - bar_width) // 2),
+        "w": bar_width,
+        "inner": bar_width - 20,
+    }
+
+
 class SimpleNotifyWidget(Screen):
     """Simple notification widget for Enigma2 plugins"""
 
-    skin = """
-    <screen position="360,15" size="1200,50" flags="wfNoBorder" backgroundColor="#ff6699">
-        <eLabel position="0,0" size="1200,4" backgroundColor="#ffff00" />
-        <eLabel position="0,46" size="1200,4" backgroundColor="#ffff00" />
-        <eLabel position="0,5" size="1200,40" backgroundColor="#cc3399" />
-        <eLabel position="9,7" size="1180,34" backgroundColor="#00142030" halign="center" />
-        <widget name="notification_text" position="9,7" size="1180,34" font="Regular;32" foregroundColor="#00FFFFFF" backgroundColor="#ff6699" halign="center" valign="center" zPosition="4" />
-    </screen>"""
+    skin = build_notify_skin(_screen_width())
 
     def __init__(self, session):
         Screen.__init__(self, session)
