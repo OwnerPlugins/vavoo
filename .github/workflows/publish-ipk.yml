@@ -7,9 +7,33 @@ on:
       - 'CONTROL/control'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify CONTROL/control version matches __init__.py
+        run: |
+          CONTROL_VER=$(awk -F': ' '/^Version:/{print $2; exit}' CONTROL/control | tr -d '\r')
+          INIT_VER=$(grep -oP '(?<=__version__ = ")[^"]+' usr/lib/enigma2/python/Plugins/Extensions/vavoo/__init__.py)
+          echo "CONTROL/control: $CONTROL_VER"
+          echo "__init__.py:     $INIT_VER"
+          if [ "$CONTROL_VER" != "$INIT_VER" ]; then
+            echo "::error::Version mismatch - CONTROL/control ($CONTROL_VER) != __init__.py ($INIT_VER). build_ipk.sh only reads CONTROL/control, so a mismatch here would silently publish the wrong version."
+            exit 1
+          fi
+
   publish:
+    needs: check-version
     uses: OwnerPlugins/upload/.github/workflows/build-and-publish-ipk.yml@main
+    # Pinned to @main because OwnerPlugins/upload has no tags/releases to
+    # pin to instead (checked via `git ls-remote --tags`) - revisit once
+    # that repo cuts one.
     with:
       source_repo: ${{ github.repository }}
       source_ref: ${{ github.sha }}

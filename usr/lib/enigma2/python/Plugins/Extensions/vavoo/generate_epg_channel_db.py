@@ -236,6 +236,24 @@ def fetch_vavoo_channels(proxy_host, proxy_port, country):
     return result
 
 
+def _id_quality_key(chan_id):
+    """Lower is "cleaner". Used to break ties between duplicate feed
+    entries whose display-name normalizes to the same string - a data
+    quality issue seen in the upstream epg_<cc>.xml feeds themselves.
+    Two distinct patterns observed in France's feed alone (26 such
+    clusters): stray doubled/tripled dots (e.g. "Arte.fr" vs
+    "Arte..fr" vs "Arte...fr", from display-name text differing only
+    by trailing whitespace), and pure case variants (e.g. "CSTAR.fr"
+    vs "CStar.fr"). Doubled dots are penalized first, then shorter ids
+    win, then (for same-length case-only variants, where neither of
+    the first two keys can tell them apart) alphabetical order as a
+    last resort - purely so the result is a fixed, deterministic
+    function of the id strings themselves and can never depend on
+    which duplicate the upstream feed happens to list first in a given
+    fetch."""
+    return (chan_id.count('..'), len(chan_id), chan_id)
+
+
 def fetch_feed_index(country):
     """Fetch and parse this country's epg_<cc>.xml, returning a list of
     (feed_id, clean_display_name, tokens) - same shape of work
@@ -250,7 +268,10 @@ def fetch_feed_index(country):
     print("Fetching {} ...".format(url))
     data = fetch_url(url, timeout=120)
     index = []
-    seen_names = set()
+    # Maps a cleaned display-name to its position in `index`, so a
+    # later duplicate can replace an earlier one instead of only ever
+    # being able to skip it.
+    seen_names = {}
     for event, elem in ET.iterparse(BytesIO(data), events=("start", "end")):
         if event == "end" and elem.tag == "channel":
             chan_id = elem.get("id")
@@ -260,10 +281,30 @@ def fetch_feed_index(country):
                     if not dn_text:
                         continue
                     clean = clean_name_for_similarity(dn_text)
-                    if clean and clean not in seen_names:
-                        seen_names.add(clean)
+                    if not clean:
+                        continue
+                    if clean not in seen_names:
+                        seen_names[clean] = len(index)
                         index.append(
                             (chan_id, clean, tokenize_for_compat(clean)))
+                    else:
+                        # Duplicate: the feed has more than one channel
+                        # entry whose display-name cleans to the exact
+                        # same string. Previously this just kept
+                        # whichever one the parser saw first - since
+                        # the upstream feed's own entry order isn't
+                        # guaranteed stable between fetches, that made
+                        # the matched id flip between runs for no
+                        # reason related to Vavoo's own channel list at
+                        # all. Now keep the id with the fewest/no
+                        # doubled dots instead, so the same choice is
+                        # made every time regardless of fetch order.
+                        pos = seen_names[clean]
+                        existing_id = index[pos][0]
+                        if _id_quality_key(
+                                chan_id) < _id_quality_key(existing_id):
+                            index[pos] = (
+                                chan_id, clean, tokenize_for_compat(clean))
             elem.clear()
         elif event == "start" and elem.tag == "programme":
             break

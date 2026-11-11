@@ -104,7 +104,8 @@ class Console(Screen):
             finishedCallback=None,
             closeOnSuccess=False,
             showStartStopText=True,
-            skin=None):
+            skin=None,
+            allow_restart=True):
         Screen.__init__(self, session)
         self.finishedCallback = finishedCallback
         self.closeOnSuccess = closeOnSuccess
@@ -117,6 +118,14 @@ class Console(Screen):
         # asked for a specific skin variant.
         self.skinName = [skin, 'VavooInstallerConsole'] if skin else [
             'VavooInstallerConsole']
+        if not allow_restart:
+            # The class-level skin's green button is captioned "Restart
+            # GUI" unconditionally - leaving that caption in place while
+            # the ActionMap below no longer binds "green" to anything
+            # would be more confusing than removing the button outright
+            # (plain string removal, not regex: exact, no-op if the
+            # text ever changes rather than silently mismatching).
+            self.skin = type(self).skin.replace('text="Restart GUI"', 'text=""')
         self.errorOcurred = False
         self._text_buffer = ''
         # Plain Label, not ScrollLabel: ScrollLabel's setText() depends on
@@ -125,15 +134,20 @@ class Console(Screen):
         # (see the same issue on the update popup's changelog).
         self['text'] = Label('')
         self['key_red'] = Label(_('Cancel'))
-        self["actions"] = ActionMap(
-            ["WizardActions", 'ColorActions'],
-            {
-                "ok": self.cancel,
-                "red": self.cancel,
-                "green": self.restartenigma,
-                "exit": self.cancel,
-            }, -1
-        )
+        actions = {
+            "ok": self.cancel,
+            "red": self.cancel,
+            "exit": self.cancel,
+        }
+        # allow_restart=False (e.g. a plain log viewer, not an
+        # installer step) leaves GREEN unbound here entirely, rather
+        # than wired to a full Enigma2 GUI restart - a very easy
+        # button to press by accident while just reading output.
+        # Default stays True so every existing/future installer-style
+        # caller keeps today's behavior unchanged.
+        if allow_restart:
+            actions["green"] = self.restartenigma
+        self["actions"] = ActionMap(["WizardActions", 'ColorActions'], actions, -1)
 
         self.newtitle = title == 'Console' and _(
             'Console') or title  # Fixed: Added _ function
@@ -243,14 +257,32 @@ class Console(Screen):
         else:
             self.show()
 
-    def dataAvail(self, str):
+    def dataAvail(self, data_bytes):
         if PY3:
-            data = str.decode()
+            # A bad/non-UTF8 chunk, or a multi-byte UTF-8 sequence split
+            # across two dataAvail() calls (a classic streaming-decode
+            # issue), previously raised UnicodeDecodeError straight out
+            # of this Enigma2 signal callback, silently losing that
+            # chunk of console output instead of just that one chunk's
+            # text.
+            try:
+                data = data_bytes.decode()
+            except UnicodeDecodeError:
+                data = data_bytes.decode('utf-8', errors='replace')
         else:
-            data = str
+            data = data_bytes
         print("Data received: {}".format(data))
         self._appendText(data)
 
     def restartenigma(self):
+        # Kill the in-flight subprocess first, same cleanup
+        # cancelCallback() does - this button is reachable at any time
+        # (unconditionally bound), including mid-execution of the
+        # plugin's own self-update installer script, and previously
+        # restarted the GUI without stopping that process first.
+        try:
+            self.container.kill()
+        except Exception as e:
+            print("[Console] Error killing container on restart: {}".format(e))
         from Screens.Standby import TryQuitMainloop
         self.session.open(TryQuitMainloop, 3)

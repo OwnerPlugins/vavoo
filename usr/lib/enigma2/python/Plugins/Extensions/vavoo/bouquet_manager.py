@@ -44,6 +44,7 @@ from . import (
     PLUGIN_ROOT,
     PROXY_HOST,
     ENIGMA_PATH,
+    GROUP_NAME_SEPARATORS,
 )
 
 """
@@ -83,6 +84,76 @@ if urllib3 is not None:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def _sanitize_name_for_path(name):
+    """Strip path-separator and traversal sequences from a country/
+    category name before it's embedded in a bouquet filename.
+
+    name comes from Vavoo's remote, mirror-switchable catalog (the
+    'group' field) - only lowercasing/space-replacement was applied to
+    it before, so a rogue/compromised mirror returning '/' or '..'
+    sequences could steer the resulting os.path.join() outside
+    ENIGMA_PATH. Only used for the filename - the original name is
+    still used for display (#NAME line) and catalog lookups."""
+    name = name.replace('/', '_').replace('\\', '_')
+    while '..' in name:
+        name = name.replace('..', '_')
+    return name
+
+
+def _ensure_trailing_newline(lines):
+    """Ensure the last element of a readlines()-style list ends with a
+    newline, so concatenating it with another such list can't merge the
+    last line of one onto the first line of the other. readlines()
+    doesn't add a trailing newline to a final line that doesn't already
+    have one - if bouquets.tv/.radio (edited by any installed plugin,
+    not just this one) happened to end that way, writelines()-ing this
+    list followed by another would silently corrupt that boundary
+    line."""
+    if lines and not lines[-1].endswith('\n'):
+        lines = lines[:-1] + [lines[-1] + '\n']
+    return lines
+
+
+def _merge_bouquet_lines(vavoo_lines, other_lines, list_position):
+    """The new content of bouquets.tv/.radio: every Vavoo bouquet line
+    as one block at the top or the bottom of everything else.
+
+    - The file's own "#NAME ..." header line stays the first line -
+      "top" used to put the Vavoo block above it.
+    - Vavoo lines are de-duplicated keeping their order. This used to
+      be list(dict.fromkeys(...)), which only preserves order on
+      Python 3.7+ - on Python 2 it reshuffled the Vavoo bouquets on
+      every export.
+    """
+    seen = set()
+    unique = []
+    for line in vavoo_lines:
+        if not line.endswith('\n'):
+            line += '\n'
+        if line not in seen:
+            seen.add(line)
+            unique.append(line)
+
+    header = []
+    rest = list(other_lines)
+    if rest and rest[0].startswith('#NAME'):
+        header = _ensure_trailing_newline(rest[:1])
+        rest = rest[1:]
+
+    if list_position == "top":
+        return header + unique + rest
+    return header + _ensure_trailing_newline(rest) + unique
+
+
+def _strip_control_chars(text):
+    """Strip characters with ord() <= 31 (e.g. an embedded newline) from
+    network-sourced text before it's written as a raw bouquet line -
+    matches the control-char stripping sanitizeFilename() already does
+    for filenames, but without ASCII-folding so unicode separators
+    (e.g. the '➾' used in category display names) survive."""
+    return ''.join(c for c in text if ord(c) > 31)
+
+
 def get_local_ip():
     """Get the local IP address (2s timeout to avoid blocking on restricted networks)."""
     try:
@@ -100,7 +171,12 @@ def get_local_ip():
 
 
 def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
-    """Add bouquet reference to the main bouquet file"""
+    """Add bouquet reference to the main bouquet file.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    this function has no locking of its own, and read-modify-write via
+    rename() on this shared file means a concurrent unlocked caller
+    would silently lose the other's update."""
     main_bouquet_path = join(ENIGMA_PATH, "bouquets." + bouquet_type.lower())
 
     if not bouquet_name.startswith("userbouquet."):
@@ -127,7 +203,12 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
         vavoo_lines = []
 
         for line in lines:
-            if 'vavoo' in line.lower():
+            # Precise ".vavoo_" match (same as deep_clean_bouquet_files()/
+            # _remove_bouquet_lines_from_main_files()), not a bare
+            # "vavoo" substring - the loose check could sweep up an
+            # unrelated bouquet whose name merely contains "vavoo"
+            # (e.g. a user's own "userbouquet.myvavoofavs.tv").
+            if '.vavoo_' in line:
                 # Skip if it's the specific bouquet we're updating
                 if bouquet_name not in line:
                     vavoo_lines.append(line)
@@ -137,16 +218,10 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
         # Add the current bouquet to Vavoo lines
         vavoo_lines.append(bouquet_line)
 
-        position_info = list_position
-        vavoo_lines = list(dict.fromkeys(vavoo_lines))
-
         # Configurable position
-        if list_position == "top":
-            new_lines = vavoo_lines + non_vavoo_lines
-            position_info = "top"
-        else:
-            new_lines = non_vavoo_lines + vavoo_lines
-            position_info = "bottom"
+        position_info = "top" if list_position == "top" else "bottom"
+        new_lines = _merge_bouquet_lines(
+            vavoo_lines, non_vavoo_lines, list_position)
 
         # Write file atomically (temp file + rename) - this is
         # Enigma2's entire channel/bouquet index, not just Vavoo's own
@@ -170,7 +245,10 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
 
 
 def deep_clean_bouquet_files():
-    """Remove Vavoo references from main bouquet files"""
+    """Remove Vavoo references from main bouquet files.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet()."""
     try:
         for bfile in ['bouquets.tv', 'bouquets.radio']:
             bouquet_path = join(ENIGMA_PATH, bfile)
@@ -209,6 +287,9 @@ def _remove_bouquet_lines_from_main_files(removed_filenames):
     any other Vavoo bouquet is updated (confirmed via a user-submitted
     log: exporting France then Portugal left bouquets.tv with only
     Portugal's line, even though France's bouquet file was created fine).
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet().
     """
     if not removed_filenames:
         return
@@ -262,7 +343,21 @@ def remove_bouquets_by_name(name=None):
                         '_').replace(
                         '→',
                         '_')
-                    if name_safe not in fname:
+                    # Exact match for the flat bouquet
+                    # ("userbouquet.vavoo_<name>.tv"/".radio") or a
+                    # category sub-bouquet of it
+                    # ("userbouquet.vavoo_<name>_<category>.tv") -
+                    # previously a bare "name_safe in fname" substring
+                    # check, which also matched a DIFFERENT country
+                    # sharing the substring (e.g. removing "Italy" also
+                    # deleted "userbouquet.vavoo_italy_sport.tv" as
+                    # intended, but would equally have matched an
+                    # unrelated "userbouquet.vavoo_bigitaly.tv" had one
+                    # existed).
+                    if not (fname.startswith(
+                            "userbouquet.vavoo_%s." % name_safe) or
+                            fname.startswith(
+                                "userbouquet.vavoo_%s_" % name_safe)):
                         continue
 
                 bouquet_path = join(ENIGMA_PATH, fname)
@@ -288,23 +383,64 @@ def remove_bouquets_by_name(name=None):
         epg_dir = "/etc/epgimport"
 
         if name is not None:
-            # Specific removal for a country
+            # Specific removal for a country, or for one category
+            # sub-bouquet of it
             country_code = get_country_code_from_bouquet_name(name)
             if country_code:
-                epg_file = join(
-                    epg_dir, "vavoo_{}.channels.xml".format(
-                        country_code.lower()))
-                if file_exists(epg_file):
-                    try:
-                        remove(epg_file)
-                        print(
-                            "✓ Removed EPG file: vavoo_{}.channels.xml".format(country_code))
-                    except Exception as e:
-                        print("Error removing EPG file: {}".format(e))
+                # vavoo_<country>.channels.xml is SHARED by every
+                # category sub-bouquet of a country (see vUtils.py's
+                # per-country EPG filename). If `name` is itself a
+                # category bouquet (e.g. "Italy -> Sport") and a
+                # sibling category bouquet for the same country (e.g.
+                # "Italy -> News") survives the removal above, deleting
+                # the shared EPG file here would silently break that
+                # sibling's EPG - only delete it when no such sibling
+                # remains on disk.
+                country_prefix = _bouquet_country_prefix(
+                    _sanitize_name_for_path(name))
+                sibling_exists = False
+                if country_prefix:
+                    # Same two-pattern "does a bouquet for this country
+                    # exist" check as is_bouquet_exported()/the removal
+                    # loop above - a category sibling
+                    # ("userbouquet.vavoo_italy_news.tv") AND a flat,
+                    # whole-country bouquet ("userbouquet.vavoo_italy.tv")
+                    # both reference the very same shared EPG file, so
+                    # either one surviving means it's still needed.
+                    flat_name = "userbouquet.vavoo_%s." % country_prefix
+                    category_prefix = "userbouquet.vavoo_%s_" % country_prefix
+                    for fname in listdir(ENIGMA_PATH):
+                        if ('.vavoo_' in fname and
+                                (fname.endswith('.tv') or fname.endswith('.radio')) and
+                                (fname.startswith(flat_name) or
+                                 fname.startswith(category_prefix))):
+                            sibling_exists = True
+                            break
+
+                if not sibling_exists:
+                    epg_file = join(
+                        epg_dir, "vavoo_{}.channels.xml".format(
+                            country_code.lower()))
+                    if file_exists(epg_file):
+                        try:
+                            remove(epg_file)
+                            print(
+                                "✓ Removed EPG file: vavoo_{}.channels.xml".format(country_code))
+                        except Exception as e:
+                            print("Error removing EPG file: {}".format(e))
         else:
-            # Removing all bouquets: delete all vavoo_*.channels.xml files
+            # Removing all bouquets: delete all vavoo_*.channels.xml
+            # files, plus the no-country-code fallback filename
+            # write_epg_mapping_file() falls back to
+            # ("vavoo.channels.xml", no underscore) when a bouquet's
+            # country can't be determined - the "vavoo_*" glob alone
+            # doesn't match that one, which left it behind forever.
             pattern = join(epg_dir, "vavoo_*.channels.xml")
-            for epg_file in glob.glob(pattern):
+            epg_files = glob.glob(pattern)
+            fallback_epg_file = join(epg_dir, "vavoo.channels.xml")
+            if file_exists(fallback_epg_file):
+                epg_files.append(fallback_epg_file)
+            for epg_file in epg_files:
                 try:
                     remove(epg_file)
                     print("✓ Removed EPG file: {}".format(basename(epg_file)))
@@ -339,7 +475,11 @@ def is_bouquet_exported(name):
         for fname in listdir(ENIGMA_PATH):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
-                if name_safe in fname:
+                # Same exact/category-prefix match as
+                # remove_bouquets_by_name() - see its comment for why a
+                # bare substring check is wrong.
+                if (fname.startswith("userbouquet.vavoo_%s." % name_safe) or
+                        fname.startswith("userbouquet.vavoo_%s_" % name_safe)):
                     return True
         return False
     except Exception as e:
@@ -352,7 +492,6 @@ def convert_bouquet(
         name,
         url,
         export_type,
-        server,
         bouquet_position):
     """Compatible (synchronous) version for existing calls."""
     return convert_bouquet_sync(
@@ -360,7 +499,6 @@ def convert_bouquet(
         name,
         url,
         export_type,
-        server,
         bouquet_position)
 
 
@@ -369,7 +507,6 @@ def convert_bouquet_sync(
         name,
         url,
         export_type,
-        server,
         bouquet_position):
     """Creates the bouquet synchronously and returns the number of channels."""
     try:
@@ -490,8 +627,12 @@ def export_bouquet_async(
                 # Failed to create bouquet
                 def do_callback():
                     try:
-                        if parent_screen and hasattr(
-                                parent_screen, "session") and parent_screen.session:
+                        # Screen.close() doesn't clear self.session, so
+                        # that check could never actually detect a closed
+                        # screen - parent_screen._closed (set by vavoo's
+                        # own close() override) is the real signal.
+                        if parent_screen and not getattr(
+                                parent_screen, "_closed", False):
                             callback(False, 0, "No channels found")
                         else:
                             print(
@@ -520,8 +661,8 @@ def export_bouquet_async(
             # Notify that bouquet is ready (first callback)
             def do_first_callback():
                 try:
-                    if parent_screen and hasattr(
-                            parent_screen, "session") and parent_screen.session:
+                    if parent_screen and not getattr(
+                            parent_screen, "_closed", False):
                         callback(True, ch_count, "Bouquet created")
                     else:
                         print(
@@ -550,8 +691,8 @@ def export_bouquet_async(
 
             def do_callback():
                 try:
-                    if parent_screen and hasattr(
-                            parent_screen, "session") and parent_screen.session:
+                    if parent_screen and not getattr(
+                            parent_screen, "_closed", False):
                         callback(False, 0, str(exc))
                     else:
                         print(
@@ -637,48 +778,64 @@ def process_epg_matching_background(
         unmatched = []
 
         for ch in channels_list:
-            debug("original_name in ch: {}".format(repr(ch['original_name'])))
+            try:
+                debug(
+                    "original_name in ch: {}".format(
+                        repr(ch['original_name'])))
 
-            rytec_id, dvb_ref = matcher.find_match(
-                ch['original_name'], country_code, servicetype,
-                channel_id=ch['channel_id'])
-            if dvb_ref:
-                if dvb_ref.endswith(':'):
-                    dvb_ref = dvb_ref[:-1]
-                # EPGImport's channelFilter() only fast-accepts a channel
-                # ref if it contains an embedded URL ("%3a//" in the
-                # string) - a bare DVB-tuple ref falls through to a
-                # fake-recording probe instead, which fails (silently, no
-                # exception) for a reference with no stream URL at all.
-                # Without this, write_epg_mapping_file() below wrote only
-                # the bare tuple and EPGImport dropped almost every
-                # channel during its own channels.xml parse pass, logging
-                # "[XMLTVConverter] Unknown channel: ..." for each one
-                # regardless of how good the id match was.
-                full_service_ref = "{}:{}".format(
-                    dvb_ref, ch['url'].replace(':', '%3a'))
-                matched.append({
-                    'name': ch['original_name'],
-                    'channel_id': ch['channel_id'],
-                    'dvb_ref': dvb_ref,
-                    'full_service_ref': full_service_ref,
-                    'rytec_id': rytec_id,
-                    'original_url': ch['url']
-                })
-            else:
-                # Unmatched: keep the original sref from the fallback bouquet
-                # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync.
-                # dict.get()'s default arg is evaluated eagerly regardless
-                # of whether the key is present - `or` short-circuits so
-                # unique_fallback_sref() only actually runs on the rare
-                # miss, not on every unmatched channel.
-                unmatched.append({
-                    'name': ch['original_name'],
-                    'channel_id': ch['channel_id'],
-                    'original_url': ch['url'],
-                    'original_sref': ch.get('fallback_sref') or
-                    unique_fallback_sref(servicetype, ch['channel_id'])
-                })
+                rytec_id, dvb_ref, match_source = matcher.find_match(
+                    ch['original_name'], country_code, servicetype,
+                    channel_id=ch['channel_id'],
+                    allow_curated_promotion=True,
+                    epg_guide_id=ch.get('epg_id'))
+                if dvb_ref:
+                    if dvb_ref.endswith(':'):
+                        dvb_ref = dvb_ref[:-1]
+                    # EPGImport's channelFilter() only fast-accepts a channel
+                    # ref if it contains an embedded URL ("%3a//" in the
+                    # string) - a bare DVB-tuple ref falls through to a
+                    # fake-recording probe instead, which fails (silently, no
+                    # exception) for a reference with no stream URL at all.
+                    # Without this, write_epg_mapping_file() below wrote only
+                    # the bare tuple and EPGImport dropped almost every
+                    # channel during its own channels.xml parse pass, logging
+                    # "[XMLTVConverter] Unknown channel: ..." for each one
+                    # regardless of how good the id match was.
+                    full_service_ref = "{}:{}".format(
+                        dvb_ref, ch['url'].replace(':', '%3a'))
+                    matched.append({
+                        'name': ch['original_name'],
+                        'channel_id': ch['channel_id'],
+                        'dvb_ref': dvb_ref,
+                        'full_service_ref': full_service_ref,
+                        'rytec_id': rytec_id,
+                        'original_url': ch['url'],
+                        'source': match_source
+                    })
+                else:
+                    # Unmatched: keep the original sref from the fallback bouquet
+                    # 'fallback_sref' was stored in ch by create_fallback_bouquet_sync.
+                    # dict.get()'s default arg is evaluated eagerly regardless
+                    # of whether the key is present - `or` short-circuits so
+                    # unique_fallback_sref() only actually runs on the rare
+                    # miss, not on every unmatched channel.
+                    unmatched.append({
+                        'name': ch['original_name'],
+                        'channel_id': ch['channel_id'],
+                        'original_url': ch['url'],
+                        'original_sref': ch.get('fallback_sref') or
+                        unique_fallback_sref(servicetype, ch['channel_id'])
+                    })
+            except Exception as e:
+                # One bad channel must not abort matching for the whole
+                # country - mirrors create_bouquet_file()'s per-channel
+                # try/except (used by the scheduled auto-update path);
+                # this loop (the interactive/UI export path) previously
+                # had no isolation here at all.
+                print(
+                    "[EPGBackground] Error matching channel %s: %s" %
+                    (ch.get('original_name', '?'), str(e)))
+                continue
             select.select([], [], [], 0.001)
 
         # Save callback and matched count AFTER the loop
@@ -820,6 +977,66 @@ def process_epg_matching_background(
         reactor.callFromThread(_do_error_callback)
 
 
+def _build_bouquet_filename(name_for_path, export_type):
+    """Compute this bouquet's on-disk filename from its (already
+    path-sanitized, see _sanitize_name_for_path()) display name and
+    export mode - shared by create_fallback_bouquet_sync() and
+    create_bouquet_file(), which used to each carry their own
+    identical copy of this logic. That duplicated copy only recognized
+    4 of GROUP_NAME_SEPARATORS' 6 known country/category separators -
+    "»"/"›" survived verbatim into the generated filename instead of
+    being stripped/replaced like the other four.
+    """
+    is_category = any(
+        sep in name_for_path for sep in GROUP_NAME_SEPARATORS)
+
+    if export_type == "flat" or not is_category:
+        safe_name = name_for_path.lower().replace(' ', '_')
+        for sep in GROUP_NAME_SEPARATORS:
+            safe_name = safe_name.replace(sep, '')
+        return "userbouquet.vavoo_%s.tv" % safe_name
+
+    country_part = ""
+    category_part = ""
+    for sep in GROUP_NAME_SEPARATORS:
+        if sep in name_for_path:
+            parts = name_for_path.split(sep)
+            country_part = parts[0].strip()
+            category_part = parts[1].strip()
+            break
+
+    if not country_part or not category_part:
+        safe_name = name_for_path.lower().replace(' ', '_')
+        for sep in GROUP_NAME_SEPARATORS:
+            safe_name = safe_name.replace(sep, '_')
+        return "userbouquet.vavoo_%s.tv" % safe_name
+
+    country_safe = country_part.lower().replace(' ', '_')
+    category_safe = category_part.lower().replace(' ', '_')
+    return "userbouquet.vavoo_%s_%s.tv" % (country_safe, category_safe)
+
+
+def _bouquet_country_prefix(name_for_path):
+    """The sanitized country-name prefix _build_bouquet_filename() would
+    use for a category sub-bouquet's filename (e.g. "italy" out of
+    "Italy -> Sport"), or None if name_for_path isn't a "country <sep>
+    category" name at all.
+
+    Used by remove_bouquets_by_name() to tell whether a sibling category
+    bouquet for the same country still exists on disk before deleting
+    that country's shared EPG channels.xml file.
+    """
+    for sep in GROUP_NAME_SEPARATORS:
+        if sep in name_for_path:
+            parts = name_for_path.split(sep)
+            country_part = parts[0].strip()
+            category_part = parts[1].strip()
+            if country_part and category_part:
+                return country_part.lower().replace(' ', '_')
+            break
+    return None
+
+
 def create_fallback_bouquet_sync(
         servicetype,
         name,
@@ -859,55 +1076,16 @@ def create_fallback_bouquet_sync(
         country_code = get_country_code_from_bouquet_name(name) or ""
 
         # 5. Prepare bouquet filename (same logic as create_bouquet_file)
-        separators = ["➾", "⟾", "->", "→"]
-        is_category = any(sep in name for sep in separators)
-        if export_type == "flat" or not is_category:
-            safe_name = name.lower().replace(
-                ' ',
-                '_').replace(
-                '➾',
-                '').replace(
-                '⟾',
-                '').replace(
-                '->',
-                '').replace(
-                    '→',
-                '')
-            bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-        else:
-            country_part = ""
-            category_part = ""
-            for sep in separators:
-                if sep in name:
-                    parts = name.split(sep)
-                    country_part = parts[0].strip()
-                    category_part = parts[1].strip()
-                    break
-            if not country_part or not category_part:
-                safe_name = name.lower().replace(
-                    ' ',
-                    '_').replace(
-                    '➾',
-                    '_').replace(
-                    '⟾',
-                    '_').replace(
-                    '->',
-                    '_').replace(
-                    '→',
-                    '_')
-                bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-            else:
-                country_safe = country_part.lower().replace(' ', '_')
-                category_safe = category_part.lower().replace(' ', '_')
-                bouquet_filename = "userbouquet.vavoo_%s_%s.tv" % (
-                    country_safe, category_safe)
+        name_for_path = _sanitize_name_for_path(name)
+        bouquet_filename = _build_bouquet_filename(name_for_path, export_type)
 
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
 
         # 6. Build bouquet lines with fallback
-        lines = ["#NAME %s" % name]
+        lines = ["#NAME %s" % _strip_control_chars(name)]
         channel_count = 0
         channels_list = []
+        seen_channel_ids = set()
 
         for channel in channels:
             try:
@@ -920,6 +1098,12 @@ def create_fallback_bouquet_sync(
                 channel_id = channel.get('id', '')
                 if not channel_name or not channel_url or not channel_id:
                     continue
+                if channel_id in seen_channel_ids:
+                    debug(
+                        "[FallbackBouquet] Skipping duplicate channel_id "
+                        "%s (%s)" % (channel_id, channel_name))
+                    continue
+                seen_channel_ids.add(channel_id)
 
                 # Clean name
                 clean_name = decodeHtml(channel_name)
@@ -946,6 +1130,7 @@ def create_fallback_bouquet_sync(
                     'channel_id': channel_id,
                     'url': channel_url,
                     'original_name': channel_name,
+                    'epg_id': channel.get('epg_id', ''),
                     'fallback_sref': "%s%s" % (fallback_dvb_ref, encoded_url)
                 })
 
@@ -1007,57 +1192,15 @@ def create_bouquet_file(
     """
     Create bouquet file, performing matching once.
     Returns (channel_count, bouquet_filename, matched_channels, unmatched_channels)
-    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'rytec_id'
+    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'rytec_id', 'source'
     and unmatched_channels is a list of dicts with 'name', 'channel_id'.
     """
     try:
         print("[Bouquet] Creating bouquet: %s (%s)" % (name, export_type))
 
-        # Determine if it is a country or category
-        separators = ["➾", "⟾", "->", "→"]
-        is_category = any(sep in name for sep in separators)
-
-        # Prepare file name
-        if export_type == "flat" or not is_category:
-            safe_name = name.lower().replace(
-                ' ',
-                '_').replace(
-                '➾',
-                '').replace(
-                '⟾',
-                '').replace(
-                '->',
-                '').replace(
-                    '→',
-                '')
-            bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-        else:
-            country_part = ""
-            category_part = ""
-            for sep in separators:
-                if sep in name:
-                    parts = name.split(sep)
-                    country_part = parts[0].strip()
-                    category_part = parts[1].strip()
-                    break
-            if not country_part or not category_part:
-                safe_name = name.lower().replace(
-                    ' ',
-                    '_').replace(
-                    '➾',
-                    '_').replace(
-                    '⟾',
-                    '_').replace(
-                    '->',
-                    '_').replace(
-                    '→',
-                    '_')
-                bouquet_filename = "userbouquet.vavoo_%s.tv" % safe_name
-            else:
-                country_safe = country_part.lower().replace(' ', '_')
-                category_safe = category_part.lower().replace(' ', '_')
-                bouquet_filename = "userbouquet.vavoo_%s_%s.tv" % (
-                    country_safe, category_safe)
+        # Determine if it is a country or category, and build the filename
+        name_for_path = _sanitize_name_for_path(name)
+        bouquet_filename = _build_bouquet_filename(name_for_path, export_type)
 
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
 
@@ -1068,8 +1211,9 @@ def create_bouquet_file(
         # 'rytec_id': rytec_id}
         matched = []
         unmatched = []    # each item: {'name': name, 'channel_id': id}
-        tv_lines = ["#NAME %s" % name]
+        tv_lines = ["#NAME %s" % _strip_control_chars(name)]
         channel_count = 0
+        seen_channel_ids = set()
         for channel in channels:
             try:
                 if not isinstance(channel, dict):
@@ -1079,6 +1223,12 @@ def create_bouquet_file(
                 channel_id = channel.get('id', '')
                 if not channel_name or not channel_url or not channel_id:
                     continue
+                if channel_id in seen_channel_ids:
+                    debug(
+                        "[Bouquet] Skipping duplicate channel_id %s (%s)" %
+                        (channel_id, channel_name))
+                    continue
+                seen_channel_ids.add(channel_id)
 
                 # Clean name for description and matching
                 clean_name = decodeHtml(channel_name)
@@ -1089,9 +1239,10 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                rytec_id, dvb_ref = matcher.find_match(
+                rytec_id, dvb_ref, match_source = matcher.find_match(
                     channel_name, country_code, servicetype,
-                    channel_id=channel_id)
+                    channel_id=channel_id, allow_curated_promotion=True,
+                    epg_guide_id=channel.get('epg_id'))
 
                 if dvb_ref:
                     if dvb_ref.endswith(':'):
@@ -1104,7 +1255,8 @@ def create_bouquet_file(
                         'channel_id': channel_id,
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
-                        'rytec_id': rytec_id
+                        'rytec_id': rytec_id,
+                        'source': match_source
                     })
                 else:
                     # Fallback: sid:tsid derived from channel_id so
@@ -1174,7 +1326,19 @@ def create_bouquet_file(
 
 
 def _update_favorite_file(name, url, export_type):
-    """Update Favorite.txt - URL is always empty (proxy only)"""
+    """Update Favorite.txt - URL is always empty (proxy only).
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet()."""
+
+    # name comes from Vavoo's remote catalog (country/category text) -
+    # unlike bouquet filenames (_sanitize_name_for_path()) or #NAME
+    # lines (_strip_control_chars(), used elsewhere), this pipe-
+    # delimited field had no escaping: an embedded '|' misaligns every
+    # field on read-back (here and in remove_favorite_entry()), and an
+    # embedded newline would inject an extra pseudo-entry into the flat
+    # file.
+    name = _strip_control_chars(name).replace('|', '')
 
     favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
     print("[Bouquet] Updating Favorite.txt: " +
@@ -1229,7 +1393,14 @@ def remove_favorite_entry(name):
     Counterpart to _update_favorite_file() - keeps a per-country/category
     "Remove Fav" from leaving a stale entry that a later scheduled
     auto-update run would just re-create.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet().
     """
+    # Match _update_favorite_file()'s sanitization so a name containing
+    # '|'/newline still finds and removes the entry it actually wrote.
+    name = _strip_control_chars(name).replace('|', '')
+
     favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
     if not isfile(favorite_path):
         return
@@ -1258,7 +1429,10 @@ def remove_favorite_entry(name):
 
 
 def reorganize_all_bouquets_position(list_position="bottom"):
-    """Reorganize all Vavoo bouquets to the configured position"""
+    """Reorganize all Vavoo bouquets to the configured position.
+
+    Precondition: caller holds plugin.py's module-level export_lock -
+    same shared-file race as _add_to_main_bouquet()."""
     try:
         for bouquet_type in ['tv', 'radio']:
             main_bouquet_path = join(ENIGMA_PATH, "bouquets." + bouquet_type)
@@ -1273,16 +1447,15 @@ def reorganize_all_bouquets_position(list_position="bottom"):
             vavoo_lines = []
 
             for line in lines:
-                if 'vavoo' in line.lower():
+                # Precise match, same reasoning as _add_to_main_bouquet().
+                if '.vavoo_' in line:
                     vavoo_lines.append(line)
                 else:
                     non_vavoo_lines.append(line)
 
             # Apply the configured position
-            if list_position == "top":
-                new_lines = vavoo_lines + non_vavoo_lines
-            else:
-                new_lines = non_vavoo_lines + vavoo_lines
+            new_lines = _merge_bouquet_lines(
+                vavoo_lines, non_vavoo_lines, list_position)
 
             # Atomic write (temp file + rename) - same reasoning as
             # _add_to_main_bouquet()/deep_clean_bouquet_files().

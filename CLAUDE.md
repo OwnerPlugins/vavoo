@@ -77,9 +77,29 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
 - Obtains/renews the Vavoo auth signature/token (`TOKEN_ADDON_SIG`, renewed
   every ~8-9 min) so bouquets never hit Vavoo's 10-minute anonymous block.
 - Resolves `/vavoo?channel=<id>` to a real stream URL via 302 redirect.
+  **Enigma2's players re-request this URL on every HLS playlist refresh
+  (~every 10 s while a channel is watched)**, because the redirect is
+  temporary - so the answer must stay the same address for the whole
+  viewing. The resolve cache is therefore an *idle* timeout
+  (`RESOLVE_IDLE_TTL`, refreshed on every hit), not an age, and
+  `/vavoo` takes no parameters besides `channel`: anything put in that
+  URL would be re-applied every refresh. One-off events go through
+  in-process calls on `vavoo_proxy.proxy` instead -
+  `report_stream_failure(channel_id)` (the player's EOF handler),
+  `set_group_source()` / `get_group_sources()` (the player's YELLOW
+  source menu; the pick is persisted in
+  `/etc/enigma2/vavoo_source_prefs.json`).
+- Channels with several sources are grouped into one row
+  (`grp:<country>:<key>` ids); the proxy stays on one source per group
+  and only moves on after repeated failure reports.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
-  `/refresh_token`, `/epg/<country>.xml` (redirects to GitHub-hosted EPG),
-  and `/shutdown`.
+  `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (redirects to
+  GitHub-hosted EPG), and `/shutdown`.
+- There is no "proxy disabled" mode: every channel list and stream goes
+  through it. `run_proxy_in_background()` never blocks (callers poll
+  `is_proxy_ready()`); `restart_proxy_in_background()` is the only
+  correct way to restart it, and a stopped `VavooProxy` instance is
+  never reused (`start_proxy()` creates a fresh one).
 - Falls back from `vavoo.to` to `kool.to` on HTTP 451.
 - Bouquets and M3U exports embed proxy URLs
   (`http://127.0.0.1:4323/vavoo?channel=...`), not raw Vavoo URLs — this is
@@ -98,9 +118,8 @@ from Enigma2's `NimManager` and boosts matches from those (1.5x) and from
 Italian satellites/13°E HotBird/5°W Eutelsat (1.3x) as a fallback for
 Italian channels. Priority order: Satellite > Terrestrial > Cable > IPTV.
 `find_match()`'s full priority chain: country-gated `channel_alias.ALIAS_MAP`
-→ local per-box cache → downloaded Rytec-based temp cache → **curated
-channel database** (below) → live Rytec fuzzy matching → live own-feed
-fallback → unmatched. `VavooEPGMatcher` is a per-process singleton
+→ local per-box cache → **curated channel database** (below) → live
+Rytec fuzzy matching → live own-feed fallback → unmatched. `VavooEPGMatcher` is a per-process singleton
 (`get_epg_matcher()`) called concurrently from real usage (a bouquet
 export's background thread vs. a per-channel EPG-overlay daemon thread
 spawned by watching TV) — its `cache`/`normalized_index`/`new_matches`
@@ -118,10 +137,12 @@ against that country's own `epg_<cc>.xml` feed, using name-normalization
 helpers shared with the runtime matcher via `epg_name_utils.py`, a
 plain-Python module with no Enigma2 dependency so it can be imported
 both on-box and off-box). `vUtils.py`'s `_load_curated_channel_db()`
-downloads and caches it in-memory for 24h (only on a successful,
-non-empty fetch — a failure/empty result isn't cached, so a transient
-blip doesn't get stuck rejecting real data until the next restart or
-TTL). Every match this path (and Rytec, and the alias table) produces
+downloads and caches it in-memory for 24h. A failed/empty fetch is
+remembered too, but only for 60 seconds: `find_match()` asks for this on
+every channel lookup, so not remembering a failure at all cost one
+GitHub request per channel (or a full timeout each when GitHub is
+unreachable), while a short TTL still lets a transient blip clear by the
+next export. Every match this path (and Rytec, and the alias table) produces
 gets a synthetic, per-channel-unique service reference via
 `unique_fallback_sref()` rather than a shared Rytec tuple, so different
 channels/countries can never collide in Enigma2's `eEPGCache` (which
@@ -233,9 +254,11 @@ There's no `requirements.txt`, `pyproject.toml`, or lint config file
 
 **Practical implication for version bumps:** if you change
 `__version__` in `__init__.py`, that alone triggers a tag + GitHub Release
-on merge to `main`. Also update the version badge in `README.md` and
-`Version:` in `CONTROL/control` to keep them in sync (they are not
-auto-synced).
+on merge to `main`. Also update the version badge in `README.md`,
+`Version:` in `CONTROL/control`, `version=` in `installer.sh`, and
+`PV`/`PKGV`/`VER` in `enigma2-plugin-extensions-vavoo.bb` to keep them
+in sync (they are not auto-synced) — the `.bb` recipe in particular
+stayed at a placeholder `1.0` for a long time before this was noticed.
 
 ## Packaging / distribution paths
 

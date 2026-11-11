@@ -27,7 +27,11 @@ RENAME_RULES = [
     ("SKY TG 24", "SKY TG24"),
     ("SPORT ITALIA", "SPORTITALIA"),
     ("SPORTITALIA PLUS", "SPORTITALIA"),
-    ("SPORTITALIA SOLOCALCIO", "SPORTITALIA"),
+    # "SPORTITALIA SOLOCALCIO" removed - it has its own dedicated
+    # ALIAS_MAP entry ("SportitaliaSoloCalcio.it", a distinct
+    # football-only spinoff channel), which this rule made permanently
+    # unreachable by forcing it to plain SPORTITALIA's EPG before the
+    # alias lookup ever ran.
     ("SUPER", "SUPER!"),
     ("RTL 1025", "RTL 102.5"),
     ("RTL1025", "RTL 102.5"),
@@ -37,8 +41,11 @@ RENAME_RULES = [
     ("MEDIASET IRIS", "IRIS"),
     ("MEDIASET ITALIA 2", "ITALIA 2"),
     ("SKY CINEMA UNO 24", "SKY CINEMA UNO"),
-    ("SKY CRIME", "TOP CRIME"),
-    ("PREMIUM CRIME", "TOP CRIME"),
+    # "SKY CRIME"/"PREMIUM CRIME" -> "TOP CRIME" removed - all three
+    # have their own distinct, dedicated ALIAS_MAP entries
+    # (SkyCrime.it / PremiumCrime.it / TOPcrime.it), so these two
+    # rules made the first two permanently unreachable by forcing them
+    # onto TOP Crime's EPG before the alias lookup ever ran.
     ("SKY SPORT MOTOGP", "SKY SPORT MOTO GP"),
     ("SKY SPORTS F1", "SKY SPORT F1"),
     ("SKY SUPER TENNIS", "SUPER TENNIS"),
@@ -50,10 +57,20 @@ RENAME_RULES = [
     ("27 TWENTYSEVEN", "TWENTYSEVEN"),
     ("CINE 34 MEDIASET", "CINE34"),
     ("MEDIASET 20", "20 MEDIASET"),
-    ("MEDIASET 1", "20 MEDIASET"),
+    # "MEDIASET 1" removed - it previously mapped here too, but
+    # "Mediaset 1" (Canale 5's old branding) and "Mediaset 20" are
+    # historically different channels; this looked like a copy-paste of
+    # the rule above with only the source pattern changed. A raw
+    # channel literally named "MEDIASET 1" now falls through to the
+    # normal matching chain (Rytec/curated DB) instead of being
+    # silently reassigned to the wrong channel.
     ("MOTORTREND", "MOTOR TREND"),
-    ("CANALE 5", "CANALE5"),
-    ("MOTORTREND", "MOTOR TREND"),
+    # "CANALE 5" -> "CANALE5" removed - ALIAS_MAP's own key is
+    # "CANALE 5" (with the space), so this rename only ever produced
+    # "CANALE5", which matches nothing - making the "Canale5.it" entry
+    # permanently unreachable for a raw channel literally named
+    # "CANALE 5". The raw name now passes through unchanged and hits
+    # that entry directly.
     ("LA 7 D", "LA7D"),
     ("RAI SPORT", "RAI SPORT"),  # keep as is, but we can add logo later
     # History channels

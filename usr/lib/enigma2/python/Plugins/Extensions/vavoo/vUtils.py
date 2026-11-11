@@ -3,6 +3,7 @@
 from __future__ import absolute_import, print_function
 import base64
 import glob
+import hashlib
 import io
 try:
     import six
@@ -39,7 +40,7 @@ from shutil import copy2
 from sys import maxsize
 from six import iteritems, unichr
 from six.moves import html_entities, html_parser
-from time import sleep, time, strftime, localtime
+from time import time, strftime, localtime
 from unicodedata import normalize
 
 from . import (
@@ -53,12 +54,15 @@ from . import (
     PROXY_BASE_URL,
     PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
+    PICON_CACHE_DIR,
+    GROUP_NAME_SEPARATORS,
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
     HOST_MAIN,
     ALIAS_FILE,
-    INSTALLER_URL
+    INSTALLER_URL,
+    export_lock,
 )
 from .epg_name_utils import (
     clean_name_for_similarity,
@@ -101,11 +105,6 @@ except Exception:
     print("[VavooEPGMatcher] channel_alias module not found, using default matching")
     pass
 
-
-try:
-    from urllib.parse import quote  # , unquote
-except ImportError:
-    from urllib import quote  # , unquote
 
 try:
     import requests
@@ -266,6 +265,11 @@ def make_print(area, level="INFO"):
 
 
 PLUGIN_PATH = PLUGIN_ROOT
+
+# Plugin-local bookkeeping, same category/directory as Favorite.txt
+# (bouquet_manager.py) - not receiver-wide EPG state, so it follows the
+# PLUGIN_PATH convention rather than ENIGMA_PATH's.
+FAVOURITES_FILE = join(PLUGIN_PATH, 'vavoo_favourites.json')
 
 
 if PY3:
@@ -478,10 +482,8 @@ def b64decoder(data):
 
 
 def getUrl(url, timeout=30, retries=3, backoff=2):
-    """Fetch URL with exponential backoff retry logic"""
-    # detect 451
-    HTTP_451_SENTINEL = "__HTTP451__"
-
+    """Fetch URL with exponential backoff retry logic. Returns the
+    response body, or "" on failure."""
     headers = {'User-Agent': RequestAgent()}
 
     if not url:
@@ -531,11 +533,16 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
 
         except HTTPError as e:
 
-            # detect 451
             code = getattr(e, 'code', None)
             if code == 451:
+                # "Unavailable for legal reasons" - asking again
+                # won't change the answer. (Used to return a
+                # "__HTTP451__" marker string here, which only the
+                # long-gone vavoo.to/kool.to listing fallback knew to
+                # look for - every other caller would have treated it
+                # as the response body.)
                 print("HTTP 451 for URL: {0}".format(url))
-                return HTTP_451_SENTINEL
+                return ""
 
             if i < retries - 1:
                 wait_time = backoff ** i
@@ -545,8 +552,8 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 select.select([], [], [], wait_time)
                 continue
             print(
-                "Failed after {0} attempts for URL: {1}".format(
-                    retries, url))
+                "Failed after {0} attempt(s) for URL: {1}".format(
+                    i + 1, url))
             print("HTTPError: {0}".format(e))
             return ""
 
@@ -569,9 +576,13 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                         i + 1, wait_time))
                 select.select([], [], [], wait_time)
             else:
+                # i + 1, not `retries`: a timeout or other
+                # non-retryable error gives up on the first attempt,
+                # and the log used to claim "after 3 attempts" for it
+                # anyway.
                 print(
-                    "Failed after {0} attempts for URL: {1}".format(
-                        retries, url))
+                    "Failed after {0} attempt(s) for URL: {1}".format(
+                        i + 1, url))
                 print("Error: {0}".format(e))
                 return ""
 
@@ -586,8 +597,8 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
                 continue
 
             print(
-                "Failed after {0} attempts for URL: {1}".format(
-                    retries, url))
+                "Failed after {0} attempt(s) for URL: {1}".format(
+                    i + 1, url))
             print("Unexpected error: {0}".format(e))
             try:
                 trace_error()
@@ -695,171 +706,9 @@ def convert_to_unicode(data):
         return data
 
 
-def get_cache(key):
-    file_path = join(PLUGIN_PATH, key + '.json')
-    if not (exists(file_path) and getsize(file_path) > 0):
-        return None
-    try:
-        data = _read_json_file(file_path)
-        if isinstance(data, str):
-            data = {"value": data}
-            _write_json_file(file_path, data)
-
-        if not isinstance(data, dict):
-            print(
-                "Unexpected data format in {}: Expected a dict, got {}".format(
-                    file_path, type(data)))
-            remove(file_path)
-            return None
-
-        if _is_cache_valid(data):
-            return data.get('value')
-
-    except ValueError as e:
-        print("Error decoding JSON from", file_path, ":", e)
-        trace_error()
-    except Exception as e:
-        print("Unexpected error reading cache file {}:".format(file_path), e)
-        remove(file_path)
-        trace_error()
-
-    return None
-
-
-def _read_json_file(file_path):
-    with io.open(file_path, 'r', encoding='utf-8') as f:
-        return load(f)
-
-
-def _write_json_file(file_path, data):
-    temp_path = file_path + ".tmp"
-    with io.open(temp_path, 'w', encoding='utf-8') as f:
-        dump(data, f, indent=4, ensure_ascii=False)
-    rename(temp_path, file_path)
-
-
-def _is_cache_valid(data):
-    return (
-        data.get('sigValidUntil', 0) > int(time())
-        and data.get('ip', "") == get_external_ip()
-    )
-
-
 # ============================================================================
 # FUNCTIONS FOR VAVOO PROXY
 # ============================================================================
-
-def getAuthSignature():
-    """Get authentication - ALWAYS use proxy"""
-    print("Using proxy authentication system")
-    return "PROXY_ACTIVE"
-
-
-def get_new_auth_signature():
-    """
-    New Vavoo authentication system via local proxy
-    Returns a valid token for the proxy
-    """
-    try:
-        print("Using new proxy authentication system...")
-
-        try:
-            req = Request(PROXY_STATUS_URL)
-            response = urlopen(req, timeout=5)
-            if response.getcode() == 200:
-                data = loads(response.read().decode('utf-8'))
-                if data.get("initialized", False):
-                    print("Proxy active and running")
-                    return "PROXY_ACTIVE"
-        except BaseException as e:
-            debug("Proxy status check failed, will try starting it: {}".format(e))
-
-        try:
-            from .vavoo_proxy import run_proxy_in_background
-            print("Starting proxy in background...")
-            run_proxy_in_background()
-            select.select([], [], [], 5)
-            return "PROXY_STARTED"
-        except Exception as e:
-            trace_error()
-            print("Proxy start error: " + str(e))
-
-    except Exception as e:
-        trace_error()
-        print("New auth error: " + str(e))
-
-    print("Falling back to old authentication system")
-    return getAuthSignature()
-
-
-def get_proxy_channels(country_name):
-    """Get channels for a country from proxy - with retry"""
-    country_name = ensure_str(country_name, errors='ignore').strip()
-    max_retries = 3
-
-    for attempt in range(max_retries):
-        try:
-            print("Getting channels for '" + str(country_name) +
-                  "' (attempt " + str(attempt + 1) + "/" + str(max_retries) + ")")
-
-            # URL-encode
-            encoded_country = quote(country_name.encode(
-                'utf-8')) if PY2 else quote(country_name)
-
-            # Build URL
-            proxy_url = PROXY_BASE_URL + \
-                "/channels?country={}".format(encoded_country)
-            # Fetch with timeout
-            response = getUrl(proxy_url, timeout=15)
-            print("Request URL: " + proxy_url)
-
-            if not response:
-                print(
-                    "Empty response for '" +
-                    str(country_name) +
-                    "'")
-                continue
-
-            # Parse JSON
-            channels = loads(response)
-
-            if not isinstance(channels, list):
-                print("Invalid response format: " + str(type(channels)))
-                continue
-
-            print("Successfully got " + str(len(channels)) +
-                  " channels for '" + str(country_name) + "'")
-
-            # Process channels
-            processed_channels = []
-            for channel in channels:
-                if isinstance(channel, dict):
-                    channel_id = channel.get('id', '')
-                    if not channel_id:
-                        continue
-
-                    # Build proxy URL
-                    proxy_stream_url = PROXY_BASE_URL + \
-                        "/vavoo?channel={}".format(channel_id)
-                    processed_channels.append({
-                        'id': channel_id,
-                        'name': channel.get('name', 'Unknown'),
-                        'url': proxy_stream_url,
-                        'logo': channel.get('logo', ''),
-                        'country': channel.get('country', country_name)
-                    })
-
-            return processed_channels
-
-        except Exception as e:
-            print("Attempt " + str(attempt + 1) +
-                  " failed for '" + str(country_name) + "': " + str(e))
-            if attempt < max_retries - 1:
-                sleep(2)  # Wait before retry
-
-    print("All attempts failed for '" + str(country_name) + "'")
-    return []
-
 
 def get_proxy_catalog_url():
     """
@@ -895,9 +744,13 @@ def get_proxy_status():
 def is_proxy_running():
     """Check if the proxy is running"""
     try:
-        import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
+            # Bounded: called from the GUI thread all over the plugin.
+            # A local connect is normally instant either way, but with
+            # no timeout a full listen backlog on the proxy would
+            # leave this hanging for the kernel's own connect timeout.
+            s.settimeout(1)
             return s.connect_ex((PROXY_HOST, PORT)) == 0
         finally:
             s.close()
@@ -928,27 +781,6 @@ def is_proxy_ready(timeout=2):
         return False
     except BaseException:
         return False
-
-
-_original_getAuthSignature = getAuthSignature
-
-
-def getAuthSignature():
-    """
-    Wrapper that uses the proxy first, then falls back to the old system
-    """
-    print("getAuthSignature called...")
-
-    try:
-        if is_proxy_running():
-            print("Proxy active, using new system")
-            return "PROXY_AUTH"
-    except BaseException:
-        trace_error()
-        pass
-
-    print("Falling back to old authentication system")
-    return _original_getAuthSignature()
 
 
 # ===================================
@@ -1080,8 +912,25 @@ def purge(directory, pattern):
 """
 
 
+def _in_main_thread():
+    """True on Enigma2's main/GUI thread. Not threading.main_thread():
+    that only exists on Python 3.4+, and this has to run on Python 2
+    images too."""
+    return isinstance(threading.current_thread(), threading._MainThread)
+
+
 def ReloadBouquets(delay=500):
-    """Reload bouquets after delay (non‑blocking in main thread)."""
+    """Reload Enigma2's bouquets and service list after `delay` ms.
+
+    The reload itself always runs on the GUI thread and the caller is
+    never blocked. Called from a background thread (every bouquet
+    export does, via bouquet_manager._add_to_main_bouquet()) this used
+    to sleep for the delay and then call eDVBDB right there - Enigma2's
+    service database is not safe to touch off the GUI thread - and on
+    Python 2 it never got that far at all, dying on
+    threading.main_thread() (Python 3 only), so bouquets were never
+    reloaded after an export.
+    """
     from enigma import eDVBDB
 
     def do_reload():
@@ -1093,32 +942,37 @@ def ReloadBouquets(delay=500):
         except Exception as e:
             print("Error during service reload: " + str(e))
 
+    seconds = max(delay, 0) / 1000.0
+    reactor = None
+    try:
+        from twisted.internet import reactor
+    except Exception as e:
+        debug("twisted reactor unavailable: {}".format(e))
+
+    if not _in_main_thread():
+        if reactor is not None and reactor.running:
+            reactor.callFromThread(reactor.callLater, seconds, do_reload)
+        else:
+            # No running reactor to hand it to - never the case inside
+            # Enigma2, where the reactor is the main loop.
+            do_reload()
+        return
+
     if delay <= 0:
         do_reload()
         return
 
-    # If in main thread, use non‑blocking timer
-    if threading.current_thread() is threading.main_thread():
-        try:
-            from twisted.internet import reactor
-            if reactor.running:
-                reactor.callLater(delay / 1000.0, do_reload)
-                return
-        except Exception as e:
-            debug(
-                "reactor.callLater unavailable, falling back to eTimer: {}".format(e))
-        # Fallback: eTimer
-        timer = eTimer()
-        try:
-            timer.callback.append(do_reload)
-        except AttributeError:
-            timer.timeout.connect(do_reload)
-        timer.start(delay, True)
-    else:
-        # Background thread: safe to sleep
-        import time
-        time.sleep(delay / 1000.0)
-        do_reload()
+    if reactor is not None and reactor.running:
+        reactor.callLater(seconds, do_reload)
+        return
+
+    # Fallback: eTimer
+    timer = eTimer()
+    try:
+        timer.callback.append(do_reload)
+    except AttributeError:
+        timer.timeout.connect(do_reload)
+    timer.start(delay, True)
 
 
 def ensure_sref_trailing_colon(sref):
@@ -1156,6 +1010,16 @@ def unique_fallback_sref(servicetype, channel_id):
     sid = (h & 0xffff) or 1
     tsid = ((h >> 16) & 0xffff) or 1
     return "%s:0:1:%x:%x:0:0:0:0:0:" % (servicetype, sid, tsid)
+
+
+def strip_control_chars(text):
+    """Strip characters with ord() <= 31 (e.g. an embedded newline) from
+    network-sourced text before it's written as a raw playlist/bouquet
+    line - same logic as bouquet_manager.py's own private
+    _strip_control_chars(), kept here too (not imported from there) so
+    vavoo_proxy.py can use it without creating a circular import
+    (bouquet_manager.py already imports from vavoo_proxy.py)."""
+    return ''.join(c for c in ensure_str(text, errors='ignore') if ord(c) > 31)
 
 
 def sanitizeFilename(filename):
@@ -1244,6 +1108,25 @@ def getserviceinfo(service_ref):
 # ============================================================================
 # FLAG DOWNLOAD FUNCTIONS
 # ============================================================================
+def _write_file_atomic(path, data):
+    """Write bytes to path via a temp file + rename, so a reader (the
+    channel list loads these images while they are still being
+    downloaded in the background) can never see a half-written file.
+    The temp name carries the thread id: two threads fetching the same
+    image at once must not write into each other's temp file."""
+    temp_path = "%s.%s.tmp" % (path, threading.current_thread().ident)
+    try:
+        with open(temp_path, 'wb') as f:
+            f.write(data)
+        rename(temp_path, path)
+    except Exception:
+        try:
+            unlink(temp_path)
+        except Exception:
+            pass
+        raise
+
+
 def initialize_cache_with_local_flags():
     """Copy all local flags from skin/cowntry/ to cache directory.
 
@@ -1407,8 +1290,7 @@ def download_flag_online(
 
         # 12. Save to cache
         try:
-            with open(cache_file, 'wb') as f:
-                f.write(flag_data)
+            _write_file_atomic(cache_file, flag_data)
             print("Flag %dx%d saved: %s (%d bytes)" %
                   (width, height, cache_file, len(flag_data)))
             return True, cache_file
@@ -1422,11 +1304,112 @@ def download_flag_online(
         return False, "Flag download error: %s" % e
 
 
+# ============================================================================
+# PICON DOWNLOAD FUNCTIONS
+# ============================================================================
+def _picon_cache_filename(logo_url):
+    """Stable, filesystem-safe cache filename for a channel's logo URL.
+
+    An md5 hash of the whole URL, not any part of its own path - the
+    URL comes straight from a third-party catalog (geil.to/Vavoo) this
+    plugin doesn't control, so no part of it should double as a
+    filename untouched. Two channels that happen to share the exact
+    same logo URL naturally share one cache entry instead of each
+    re-downloading it.
+    """
+    return hashlib.md5(logo_url.encode('utf-8')).hexdigest() + '.png'
+
+
+def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
+    """Local path a picon for this logo URL would be cached at,
+    whether or not it has actually been downloaded yet - the one
+    place this filename is computed, shared by download_picon_online()
+    (which writes it) and show_list() (which only ever reads it, never
+    downloading synchronously itself), so the two can't drift apart.
+    """
+    if not logo_url:
+        return None
+    return join(cache_dir, _picon_cache_filename(logo_url))
+
+
+def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
+    """Download and cache a channel picon from its catalog-provided
+    logo URL (geil.to's own picons, or Vavoo's - see vavoo_proxy.py's
+    fix_logo_url()). Mirrors download_flag_online()'s mechanics
+    (timeout, cache-dir creation, PNG-header validation before
+    writing) for the same reasons - including graceful failure: if
+    the URL doesn't actually serve a valid PNG, this just reports
+    failure and the caller keeps showing its default icon, same as
+    before this existed.
+
+    Returns: (success, cache_path_or_error_message)
+    """
+    if not logo_url:
+        return False, "No logo URL"
+
+    try:
+        if not exists(cache_dir):
+            try:
+                makedirs(cache_dir)
+            except Exception as e:
+                debug("Could not create picon cache dir {}: {}".format(
+                    cache_dir, e))
+
+        cache_file = get_picon_cache_path(logo_url, cache_dir)
+
+        # Fresh cache (<7 days, same window as flags - channel logos
+        # change about as rarely as country flags do).
+        if exists(cache_file):
+            try:
+                if (time() - getmtime(cache_file) < 604800
+                        and getsize(cache_file) > 100):
+                    return True, cache_file
+            except Exception as e:
+                debug("Picon cache freshness check failed for {}: {}".format(
+                    cache_file, e))
+
+        req = Request(logo_url, headers={'User-Agent': 'Vavoo-Stream/1.0'})
+        try:
+            if PY3:
+                response = urlopen(req, timeout=5, context=ssl_context)
+            else:
+                response = urlopen(req, timeout=5)
+        except Exception as e:
+            return False, "Network error: %s" % e
+
+        if response.getcode() != 200:
+            return False, "Download failed (HTTP %d)" % response.getcode()
+        picon_data = response.read()
+        try:
+            response.close()
+        except Exception:
+            pass
+
+        if len(picon_data) < 100:
+            return False, "Picon file too small (%d bytes)" % len(
+                picon_data)
+
+        # Validate the PNG header in memory before writing anything -
+        # fix_logo_url() only ever points this at a *.png path, but
+        # that's a hint from the catalog, not a guarantee.
+        if picon_data[:8] != b'\x89PNG\r\n\x1a\n':
+            return False, "Not a valid PNG"
+
+        try:
+            _write_file_atomic(cache_file, picon_data)
+            return True, cache_file
+        except Exception as e:
+            return False, "Save error: %s" % e
+
+    except Exception as e:
+        print("Picon download error: %s" % e)
+        return False, "Picon download error: %s" % e
+
+
 def get_country_code_from_bouquet_name(name):
     """Extract country code from a bouquet display name (e.g., 'Italy', 'Italy ➾ Sports')."""
-    separators = ["➾", "⟾", "->", "→"]
     base_name = name
-    for sep in separators:
+    for sep in GROUP_NAME_SEPARATORS:
         if sep in name:
             base_name = name.split(sep)[0].strip()
             break
@@ -1470,8 +1453,7 @@ def get_country_code(country_name):
     if any(char in country_name for char in '0123456789.'):
         return ""
 
-    separators = ["➾", "⟾", "->", "→", "»", "›"]
-    for sep in separators:
+    for sep in GROUP_NAME_SEPARATORS:
         if sep in country_name:
             country_name = country_name.split(sep)[0].strip()
             break
@@ -1640,24 +1622,21 @@ _epg_matcher = None
 _epg_matcher_lock = threading.Lock()
 
 
+# Minimum name similarity (0-1) for a fuzzy EPG match. Was a settings
+# option ("EPG Similarity Threshold"), always left at this default in
+# practice - a tuning number, not something to choose in a menu.
+EPG_SIMILARITY_THRESHOLD = 0.75
+
+
 def get_epg_matcher(similarity_threshold=None):
     global _epg_matcher
-    # Se non viene passato un valore, usa quello dalla configurazione
     if similarity_threshold is None:
-        # ConfigSelectionNumber.value comes back as a str (not int) on
-        # at least some images/Python versions - confirmed via a
-        # user-submitted log where this crashed every single EPG lookup
-        # and every bouquet auto-update with "TypeError: unsupported
-        # operand type(s) for /: 'str' and 'float'". float() handles
-        # both str and numeric value types safely.
-        similarity_threshold = float(
-            config.plugins.vavoo.similarity_threshold.value) / 100.0
+        similarity_threshold = EPG_SIMILARITY_THRESHOLD
     if _epg_matcher is None:
         with _epg_matcher_lock:
             if _epg_matcher is None:
                 _epg_matcher = VavooEPGMatcher(similarity_threshold)
                 return _epg_matcher
-    # Aggiorna la soglia nel matcher esistente (per modifiche dinamiche)
     _epg_matcher.similarity_threshold = similarity_threshold
     return _epg_matcher
 
@@ -1675,12 +1654,28 @@ def get_orbital_position(service_ref):
     Extract orbital position from service reference namespace.
     Returns orbital position in tenths of a degree (e.g., 130 = 13.0°E, -50 = 5.0°W)
     """
+    # sref format: type:flags:servicetype:sid:tsid:onid:namespace:... -
+    # namespace (what actually encodes orbital position) is field 6,
+    # not field 3 (that's the sid) - see _get_signal_priority()'s own
+    # identical parsing a bit further down this file, which already
+    # gets this right and warns about this exact mix-up in its own
+    # comment. Getting this wrong here meant namespace was actually
+    # the sid, which is always < 0x10000 - so "is it an exact multiple
+    # of 0x10000" was false for every nonzero sid, and the masked
+    # fallback (parts[3]'s value & 0xFFFF0000) was always 0, so this
+    # function always returned 0 regardless of the real satellite.
+    # Downstream in _find_match_internal(), orbpos being always 0
+    # silently disabled the user-configured-satellite (1.5x) and
+    # Italy-specific 13°E/5°W (1.3x) EPG-match boosts documented in
+    # CLAUDE.md as this feature's whole point - every satellite match
+    # fell through to the generic "other satellite" 1.2x boost
+    # instead, with ties broken arbitrarily by score banding.
     parts = service_ref.split(':')
-    if len(parts) < 4:
+    if len(parts) < 7:
         return 0
 
     try:
-        namespace_str = parts[3] if parts[3] else '0'
+        namespace_str = parts[6] if parts[6] else '0'
         namespace = int(namespace_str, 16)
 
         # Case 1: Default - Position * 65536
@@ -1707,10 +1702,26 @@ def get_orbital_position(service_ref):
         return 0
 
 
+def _signed_orbital_position(orbpos):
+    """Enigma2's own form of an orbital position (tenths of a degree,
+    west stored as 3600 - position: 5.0W = 3550) converted to the
+    signed form get_orbital_position() returns (5.0W = -50)."""
+    try:
+        orbpos = int(orbpos)
+    except (TypeError, ValueError):
+        return orbpos
+    return orbpos - 3600 if orbpos >= 1800 else orbpos
+
+
 def get_configured_satellites():
     """
     Get list of satellites configured by user in Enigma2.
-    Returns list of orbital positions in tenths of degree (e.g., [130, 192, 282])
+    Returns orbital positions in tenths of a degree, west negative -
+    the same form get_orbital_position() returns (e.g. [130, 192, -50]),
+    since _find_match_internal() compares the two directly. They used
+    to be returned in Enigma2's own 0-3600 form, so a western satellite
+    (5.0W = 3550 there, -50 from get_orbital_position()) never compared
+    equal and never got the configured-satellite boost.
     """
     try:
         configured_sats = []
@@ -1719,7 +1730,8 @@ def get_configured_satellites():
         if hasattr(nimmanager, 'getConfiguredSats'):
             sats = nimmanager.getConfiguredSats()
             if sats:
-                configured_sats = list(sats)
+                configured_sats = [
+                    _signed_orbital_position(s) for s in sats]
                 print(
                     "[SatConfig] Found {} configured satellites via NimManager".format(
                         len(configured_sats)))
@@ -1749,6 +1761,8 @@ def get_configured_satellites():
                                 print(
                                     "[SatConfig] Found configured sat: {}".format(orbpos))
 
+        configured_sats = [
+            _signed_orbital_position(s) for s in configured_sats]
         print("[SatConfig] Total configured satellites: {}".format(configured_sats))
         return configured_sats
 
@@ -1766,6 +1780,36 @@ def get_satellite_priority(orbpos, configured_sats):
     if orbpos in configured_sats:
         return 1.0
     return 0.5
+
+
+# Known satellite namespaces, masked to their top 16 bits (see
+# _get_signal_priority()'s own comment on the 0xFFFF0000 mask/encoding
+# convention) - a frozenset, not a list rebuilt on every call: this is
+# checked once per candidate inside _find_match_internal()'s hot loop
+# (run once per channel against what can be thousands of Rytec
+# entries), and a set membership test is also O(1) instead of this
+# list's O(19) linear scan.
+_SATELLITE_NAMESPACES = frozenset((
+    0x820000,   # 13.0°E HotBird (Italy)
+    0xC00000,   # 19.2°E Astra
+    0xEB0000,   # 23.5°E Astra 3
+    0x11A0000,  # 28.2°E Astra 2
+    0xA00000,   # 16.0°E Eutelsat 16A
+    0x5A0000,   # 9.0°E Eutelsat 9B
+    0x460000,   # 7.0°E Eutelsat 7E
+    0xDDE0000,  # 5.0°W Eutelsat 5WA (Italy)
+    0xCE40000,  # 30.0°W Hispasat
+    0x1A40000,  # 42.0°E Türksat
+    0x300000,   # 4.8°E Astra 4A / Sirius
+    0x13B0000,  # 31.5°E Astra 5B
+    0x14A0000,  # 33.0°E Eutelsat 33E
+    0xFF0000,   # 25.5°E Es'hail / Arabsat
+    0x1C20000,  # 45.0°E AzerSpace
+    0x1860000,  # 39.0°E Hellas Sat
+    0x1680000,  # 36.0°E Eutelsat 36B
+    0x1040000,  # 26.0°E Badr
+    0x130000,   # 1.9°E BulgariaSat
+))
 
 
 # get_country_code() returns real ISO 3166-1 codes (needed for flag
@@ -1788,10 +1832,9 @@ _ALIAS_MAP_HOME_COUNTRY = "it"
 class VavooEPGMatcher(object):
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
-        # Guards the lazy-init blocks below (_configured_sats,
-        # _checked_temp_cache) against a TOCTOU race if find_match() is
-        # ever called concurrently on this same matcher instance from
-        # two threads.
+        # Guards the lazy-init block below (_configured_sats) against a
+        # TOCTOU race if find_match() is ever called concurrently on
+        # this same matcher instance from two threads.
         self._lazy_init_lock = threading.Lock()
         # Guards self.cache/self.normalized_index/self.new_matches -
         # see find_match()'s docstring. RLock: _find_match_internal()
@@ -1912,15 +1955,27 @@ class VavooEPGMatcher(object):
                     match) > 2 and match[2] else None
 
                 if comment:
-                    channel_name = comment
+                    # Rytec's comment text is HTML-escaped XML content
+                    # (e.g. "AT&amp;T Sports") - left un-decoded, the
+                    # "&" that clean_name_for_similarity() would
+                    # otherwise just strip survives as the literal
+                    # letters "amp" glued into the name instead,
+                    # garbling every Rytec channel whose real name
+                    # contains an escaped "&".
+                    channel_name = decodeHtml(comment)
                 else:
-                    channel_name = original_id.replace(
-                        '.it',
-                        '').replace(
-                        '.de',
-                        '').replace(
-                        '.fr',
-                        '')
+                    # original_id's own country suffix (e.g. ".uk",
+                    # ".es") is stripped generically here - the
+                    # previous version only handled .it/.de/.fr, so
+                    # every OTHER country's comment-less entries (e.g.
+                    # "BBCOne.uk") kept their suffix glued onto the
+                    # name with no separating space, which
+                    # clean_name_for_similarity() can't segment back
+                    # out - producing a garbled key ("bbconeuk") that
+                    # can never similarity-match a real channel name.
+                    channel_name = original_id
+                    if '.' in channel_name:
+                        channel_name = channel_name.rsplit('.', 1)[0]
                     channel_name = channel_name.replace(
                         '-', ' ').replace('_', ' ')
 
@@ -2012,44 +2067,23 @@ class VavooEPGMatcher(object):
             namespace_str = parts[6] if parts[6] else '0'
             namespace = int(namespace_str, 16)
 
-            # Known satellite namespaces. Enigma2 encodes orbital position
-            # as (tenths_of_a_degree << 16) for east, or
+            # Known satellite namespaces (_SATELLITE_NAMESPACES, module
+            # level - see its own comment). Enigma2 encodes orbital
+            # position as (tenths_of_a_degree << 16) for east, or
             # ((3600 - tenths_of_a_degree) << 16) for west - verified
             # against the terrestrial/cable checks below, which use the
             # same top-16-bits convention (0xFFFF0000).
-            satellite_namespaces = [
-                0x820000,   # 13.0°E HotBird (Italy)
-                0xC00000,   # 19.2°E Astra
-                0xEB0000,   # 23.5°E Astra 3
-                0x11A0000,  # 28.2°E Astra 2
-                0xA00000,   # 16.0°E Eutelsat 16A
-                0x5A0000,   # 9.0°E Eutelsat 9B
-                0x460000,   # 7.0°E Eutelsat 7E
-                0xDDE0000,  # 5.0°W Eutelsat 5WA (Italy)
-                0xCE40000,  # 30.0°W Hispasat
-                0x1A40000,  # 42.0°E Türksat
-                0x300000,   # 4.8°E Astra 4A / Sirius
-                0x13B0000,  # 31.5°E Astra 5B
-                0x14A0000,  # 33.0°E Eutelsat 33E
-                0xFF0000,   # 25.5°E Es'hail / Arabsat
-                0x1C20000,  # 45.0°E AzerSpace
-                0x1860000,  # 39.0°E Hellas Sat
-                0x1680000,  # 36.0°E Eutelsat 36B
-                0x1040000,  # 26.0°E Badr
-                0x130000,   # 1.9°E BulgariaSat
-            ]
-
-            # Check for satellite match. Mask must be 0xFFFF0000 (top 16
-            # bits, matching how the value above was built) - the
-            # previous 0xFFF00000 zeroed out part of the orbital-position
-            # field itself, so it could only ever match a namespace by
-            # coincidence, not because it was actually that satellite.
-            for sat_ns in satellite_namespaces:
-                if namespace & 0xFFFF0000 == sat_ns:
-                    # Italian satellite bonus is applied by the caller
-                    # via priority + a boost multiplier, not by this
-                    # priority level - satellite is always priority 1.
-                    return 1
+            #
+            # Mask must be 0xFFFF0000 (top 16 bits, matching how those
+            # values were built) - the previous 0xFFF00000 zeroed out
+            # part of the orbital-position field itself, so it could
+            # only ever match a namespace by coincidence, not because
+            # it was actually that satellite.
+            if namespace & 0xFFFF0000 in _SATELLITE_NAMESPACES:
+                # Italian satellite bonus is applied by the caller via
+                # priority + a boost multiplier, not by this priority
+                # level - satellite is always priority 1.
+                return 1
 
             # Terrestrial DVB-T
             if namespace & 0xFFFF0000 == 0xEEEE0000:
@@ -2067,7 +2101,7 @@ class VavooEPGMatcher(object):
 
     def _find_match_internal(
             self, channel_name, country_code, channel_id=None,
-            servicetype="4097"):
+            servicetype="4097", feed_index=None):
         """
         Search for a match in ALL Rytec channels, then apply boost based on user configuration.
         """
@@ -2242,8 +2276,14 @@ class VavooEPGMatcher(object):
         # programme-guide metadata, not satellite broadcast data), so a
         # synthesized, collision-free sref is generated the same way an
         # otherwise-unmatched channel already gets one.
+        #
+        # feed_index is pre-fetched by find_match() before self._cache_lock
+        # is taken (same reasoning as curated_db - _get_epg_feed_index()
+        # can block on a cold, multi-MB network fetch, which must never
+        # happen while holding the lock the concurrent EPG-overlay thread
+        # also needs for its own find_match() calls).
         if channel_id and country_code:
-            feed_ids, name_index = _get_epg_feed_index(country_code)
+            _feed_ids, name_index = feed_index if feed_index else (None, None)
             if name_index:
                 feed_match_id = _find_feed_id_by_name(
                     channel_name, self, name_index)
@@ -2259,9 +2299,45 @@ class VavooEPGMatcher(object):
         print("[Match] No match found for '{}'".format(channel_name))
         return None, "4097:0:0:0:0:0:0:0:0:0:"
 
+    def _try_promote_to_curated(
+            self, channel_name, country_code, servicetype, channel_id,
+            cached, allow_curated_promotion, curated_db):
+        """Called from a local-cache-hit branch in _find_match_locked().
+        A cache entry written before the curated channel database
+        existed for this country (or before this specific channel was
+        added to it) is stuck on whatever it originally matched
+        (usually live Rytec fuzzy-matching) forever, since step 1's
+        cache hit returns early and step 2's curated-DB check is never
+        reached again. When allow_curated_promotion is set (bouquet
+        export only, never the live overlay lookup), give a non-curated
+        cache entry one more chance to upgrade to the curated result.
+        curated_db is pre-fetched by find_match() before the cache
+        lock is taken (see its docstring) - this is just a dict lookup
+        against it, never a network call of its own.
+        Returns a (id, sref, source) tuple to return immediately on a
+        promotion, or None to fall through to the normal cache-hit
+        return."""
+        if (not allow_curated_promotion or not country_code or
+                cached.get('source') == 'curated'):
+            return None
+        if not curated_db:
+            return None
+        curated_key = self._clean_name_for_similarity(channel_name)
+        curated_id = curated_db.get(curated_key)
+        if not curated_id or not channel_id:
+            return None
+        print(
+            "[Match] Promoting cached match to curated DB: {} -> {}".format(
+                channel_name, curated_id))
+        self._cleanup_stale_unmatched(channel_name, country_code, servicetype)
+        return (
+            curated_id, unique_fallback_sref(servicetype, channel_id),
+            'curated')
+
     def find_match(
             self, channel_name, country_code=None, servicetype="4097",
-            channel_id=None):
+            channel_id=None, allow_curated_promotion=False,
+            epg_guide_id=None):
         """Public entry point - serializes the whole lookup (including
         every self.cache/self.normalized_index/self.new_matches read
         and write below) behind self._cache_lock. This matcher is a
@@ -2278,16 +2354,74 @@ class VavooEPGMatcher(object):
         matching for a whole country's remaining channels, or silently
         drop a concurrent thread's cache write. An RLock (not a plain
         Lock) since _find_match_internal() below can itself re-enter
-        lazy-init code paths on this same instance/thread."""
+        lazy-init code paths on this same instance/thread.
+
+        allow_curated_promotion: when True, a local-cache hit that
+        wasn't originally sourced from the curated channel database
+        gets one extra check against it, and is upgraded to the
+        curated result if it now has an entry for this channel - see
+        _find_match_locked()'s cache-hit branches. Only bouquet-export
+        callers pass True; the live "Now Playing" overlay lookup
+        leaves this at the default so a channel's EPG binding can only
+        change as a result of an export the user explicitly triggered.
+
+        epg_guide_id: the source catalog's own guide id for this
+        channel, if it has one (geil.to's "tvg" field - Vavoo's own
+        catalog has none, so this is always None on that path). When
+        set, checked directly against this country's own EPG feed
+        index before falling through to the existing curated-DB/live
+        Rytec fuzzy-matching chain - see the "2.5" step below.
+
+        Returns a (rytec_id, sref, source) 3-tuple; source is one of
+        "alias", "curated", "live" or None (no match).
+
+        Deliberately fetches the curated DB, and this country's own EPG
+        feed index, *before* acquiring self._cache_lock: both
+        _load_curated_channel_db() and _get_epg_feed_index() have their
+        own independent caches and never touch self.cache/
+        self.normalized_index, but either can block on a cold,
+        multi-second-to-multi-MB network fetch - doing that while
+        holding the lock the concurrent EPG-overlay thread also needs
+        for its own, unrelated find_match() calls would stall it for
+        that whole duration for no reason."""
+        curated_db = _load_curated_channel_db(country_code) if country_code else None
+        feed_index = _get_epg_feed_index(country_code) if country_code else None
+        # A plain local list, not an instance attribute - _find_match_
+        # locked() appends to it (under self._cache_lock, so that part
+        # is already safe) when a cache downgrade needs persisting;
+        # checked below, after releasing self._cache_lock, with no
+        # cross-thread ambiguity since it's never shared beyond this
+        # one call's stack.
+        pending_save = []
         with self._cache_lock:
-            return self._find_match_locked(
-                channel_name, country_code, servicetype, channel_id)
+            result = self._find_match_locked(
+                channel_name, country_code, servicetype, channel_id,
+                allow_curated_promotion, curated_db, epg_guide_id,
+                feed_index, pending_save)
+        if pending_save:
+            # save_cache() writes the same CACHE_FILE a bouquet
+            # export's update_complete_cache() does - share
+            # export_lock (the same convention plugin.py's cache-
+            # format-fix call already follows) so the two writers
+            # can't interleave and corrupt/drop each other's write.
+            # Deliberately done here, AFTER self._cache_lock was
+            # already released above: taking export_lock while still
+            # holding _cache_lock would invert the lock order
+            # update_complete_cache() itself relies on (its caller
+            # holds export_lock first, then it takes _cache_lock
+            # internally) - acquiring them in the opposite order here
+            # could deadlock against a concurrent export.
+            with export_lock:
+                save_cache(self.cache)
+        return result
 
     def _find_match_locked(
             self, channel_name, country_code=None, servicetype="4097",
-            channel_id=None):
+            channel_id=None, allow_curated_promotion=False,
+            curated_db=None, epg_guide_id=None, feed_index=None,
+            pending_save=None):
         if not channel_name:
-            return None, None
+            return None, None, None
 
         # 0. Apply alias normalization (if available)
         if alias_available:
@@ -2355,8 +2489,8 @@ class VavooEPGMatcher(object):
                             # to key it off.
                             if channel_id:
                                 return alias_id, unique_fallback_sref(
-                                    servicetype, channel_id)
-                            return alias_id, alias_sref
+                                    servicetype, channel_id), 'alias'
+                            return alias_id, alias_sref, 'alias'
 
         # Normalize the original name for key generation
         search_key = self._normalize_key(channel_name, country_code or "")
@@ -2368,12 +2502,9 @@ class VavooEPGMatcher(object):
             id_val = cached.get('id')
             if self.is_valid_rytec_id(id_val):
                 # Check if the channel name matches the Rytec name associated with that ID
-                # rytec_clean = self.rytec_names.get(id_val, '')
                 channel_clean = self._clean_name_for_similarity(channel_name)
                 rytec_clean = self.rytec_names.get(id_val, '')
                 if rytec_clean:
-                    channel_clean = self._clean_name_for_similarity(
-                        channel_name)
                     current_rytec_sref = self._normalize_rytec_sref(
                         self.rytec_by_id.get(id_val))
                     cached_sref = ensure_sref_trailing_colon(
@@ -2381,11 +2512,19 @@ class VavooEPGMatcher(object):
                     if channel_clean == rytec_clean and (
                             not current_rytec_sref or
                             cached_sref == current_rytec_sref):
+                        promoted = self._try_promote_to_curated(
+                            channel_name, country_code, servicetype,
+                            channel_id, cached, allow_curated_promotion,
+                            curated_db)
+                        if promoted:
+                            return promoted
                         print(
                             "[Match] Local cache HIT (valid ID & name match): {}".format(cached_key))
                         self._cleanup_stale_unmatched(
                             channel_name, country_code, servicetype)
-                        return cached.get('id'), cached.get('sref')
+                        return (
+                            cached.get('id'), cached.get('sref'),
+                            cached.get('source') or 'live')
                     elif channel_clean != rytec_clean:
                         print(
                             "[Match] Cache ID '{}' name mismatch (channel='{}', rytec='{}'), will re-match".format(
@@ -2403,68 +2542,33 @@ class VavooEPGMatcher(object):
                                 id_val, channel_name, cached_sref, current_rytec_sref))
                 else:
                     # We don't have the Rytec name, accept the cache
+                    promoted = self._try_promote_to_curated(
+                        channel_name, country_code, servicetype,
+                        channel_id, cached, allow_curated_promotion,
+                        curated_db)
+                    if promoted:
+                        return promoted
                     print(
                         "[Match] Local cache HIT (valid ID, no Rytec name): {}".format(cached_key))
                     self._cleanup_stale_unmatched(
                         channel_name, country_code, servicetype)
-                    return cached.get('id'), cached.get('sref')
+                    return (
+                        cached.get('id'), cached.get('sref'),
+                        cached.get('source') or 'live')
             else:
                 # Invalid ID, proceed with live matching
                 print("[Match] Local cache has invalid ID, will try to re-match.")
 
-        # 2. Online cache
-        if not hasattr(self, '_checked_temp_cache'):
-            with self._lazy_init_lock:
-                if not hasattr(self, '_checked_temp_cache'):
-                    self._checked_temp_cache = False
-                    self._temp_cache = None
-
-        if not self._checked_temp_cache:
-            with self._lazy_init_lock:
-                # Re-check inside the lock - another thread may have
-                # already done this download/load while we were waiting.
-                if not self._checked_temp_cache:
-                    print("[Match] Checking temp cache once...")
-                    self._temp_cache = load_temp_cache()
-                    if not self._temp_cache:
-                        print("[Match] Temp cache not found, downloading once...")
-                        if download_epg_cache_if_needed():
-                            self._temp_cache = load_temp_cache()
-                    self._checked_temp_cache = True
-
-        if self._temp_cache and search_key in self._temp_cache:
-            cached = self._temp_cache[search_key]
-            # Unlike the local cache above, this comes from a pre-built
-            # file downloaded from GitHub - validate the ID before
-            # trusting it, same as the local cache path does, instead of
-            # blindly returning whatever is there.
-            if self.is_valid_rytec_id(cached.get('id')):
-                print("[Match] Temp cache HIT: {}".format(search_key))
-                new_entry = cached.copy()
-                new_entry['name'] = channel_name   # original name
-                self.cache[search_key] = new_entry
-                self._index_cache_key(search_key)
-                # Deferred to save_cache() (called once per batch by callers,
-                # e.g. after a whole bouquet export) instead of writing the
-                # full cache file here - this branch fires per matched
-                # channel, and a full rewrite per channel turns a bulk export
-                # into many redundant whole-file writes as the cache grows.
-                self.new_matches[search_key] = new_entry
-                self._cleanup_stale_unmatched(
-                    channel_name, country_code, servicetype)
-                return cached.get('id'), cached.get('sref')
-            else:
-                print(
-                    "[Match] Temp cache has invalid ID for {}, ignoring".format(search_key))
-
-        # 2.5 Community-curated channel database (see
+        # 2. Community-curated channel database (see
         # generate_epg_channel_db.py): a pre-solved name -> this
         # country's own EPG feed id mapping, built and reviewed offline
         # instead of guessed live by fuzzy-matching against Rytec.
         # Country-scoped by construction (one file per country), so no
         # collision risk from unrelated countries sharing a name.
         if country_code:
-            curated_db = _load_curated_channel_db(country_code)
+            # curated_db is the one find_match() pre-fetched before
+            # taking self._cache_lock (see its docstring) - not
+            # re-fetched here.
             if curated_db:
                 curated_key = self._clean_name_for_similarity(channel_name)
                 curated_id = curated_db.get(curated_key)
@@ -2475,17 +2579,40 @@ class VavooEPGMatcher(object):
                     self._cleanup_stale_unmatched(
                         channel_name, country_code, servicetype)
                     return curated_id, unique_fallback_sref(
-                        servicetype, channel_id)
+                        servicetype, channel_id), 'curated'
+
+        # 2.5. The source catalog's own guide id (geil.to's "tvg" field,
+        # threaded through as epg_guide_id - Vavoo's own catalog has no
+        # equivalent, so this is always a no-op on that path). A more
+        # direct variant of the name-based "own feed" fallback inside
+        # _find_match_internal() below - same per-country EPG feed
+        # index (feed_index, pre-fetched by find_match() before
+        # self._cache_lock was taken - see its docstring), just checked
+        # by the id the source already gave us instead of guessed from
+        # a fuzzy name match. Deliberately placed after the curated DB
+        # (human-reviewed) rather than before it - an automatically-
+        # supplied id shouldn't override a curator's own mapping for
+        # the same channel.
+        if epg_guide_id and country_code and channel_id:
+            feed_ids, _name_index = feed_index if feed_index else (None, None)
+            if feed_ids and epg_guide_id in feed_ids:
+                print(
+                    "[Match] GUIDE ID HIT (source catalog): {} -> {}".format(
+                        channel_name, epg_guide_id))
+                self._cleanup_stale_unmatched(
+                    channel_name, country_code, servicetype)
+                return epg_guide_id, unique_fallback_sref(
+                    servicetype, channel_id), 'live'
 
         # 3. Live matching
         print("[Match] Doing local matching for: {}".format(channel_name))
         if search_key in self.new_matches:
             m = self.new_matches[search_key]
-            return m['id'], m['sref']
+            return m['id'], m['sref'], m.get('source', 'live')
 
         result_id, result_sref = self._find_match_internal(
             channel_name, country_code, channel_id=channel_id,
-            servicetype=servicetype)
+            servicetype=servicetype, feed_index=feed_index)
 
         # Is there already an entry in the cache (even with invalid ID)?
         # Resolve via normalized_index first: the raw key an entry is
@@ -2533,14 +2660,15 @@ class VavooEPGMatcher(object):
             self.new_matches[search_key] = {
                 'id': result_id,
                 'sref': final_sref,
-                'name': channel_name
+                'name': channel_name,
+                'source': 'live'
             }
             save_unmatched(
                 channel_name,
                 country_code,
                 servicetype,
                 matched=True)
-            return result_id, final_sref
+            return result_id, final_sref, 'live'
         else:
             # If no live match, but there is an existing entry with a valid
             # sref, use it (with matched=False)
@@ -2562,9 +2690,15 @@ class VavooEPGMatcher(object):
                         # that path always writes matched=True, which would
                         # be wrong here. This branch is rare (only when a
                         # previously-matched channel stops live-matching),
-                        # so an eager write is an acceptable tradeoff.
-                        save_cache(self.cache)
-                    return existing_entry.get('id'), existing_sref
+                        # so an eager write is an acceptable tradeoff - the
+                        # actual save_cache() call happens in find_match(),
+                        # after self._cache_lock is released (see its own
+                        # comment on pending_save for why).
+                        if pending_save is not None:
+                            pending_save.append(True)
+                    return (
+                        existing_entry.get('id'), existing_sref,
+                        existing_entry.get('source') or 'live')
                 elif existing_entry.get('matched') is not False:
                     # Stale entry with an invalid id AND no usable sref -
                     # a leftover from before this channel ever properly
@@ -2576,14 +2710,15 @@ class VavooEPGMatcher(object):
                     existing_entry['matched'] = False
                     self.cache[existing_key] = existing_entry
                     self._index_cache_key(existing_key)
-                    save_cache(self.cache)
+                    if pending_save is not None:
+                        pending_save.append(True)
             # Otherwise, no match and no valid sref
             save_unmatched(
                 channel_name,
                 country_code,
                 servicetype,
                 matched=False)
-            return None, None
+            return None, None, None
 
 
 # ==================== EPG CACHE FUNCTIONS ====================
@@ -2615,19 +2750,6 @@ def _prune_cache_if_needed(cache, max_entries=MAX_CACHE_ENTRIES):
     except Exception as e:
         print("[Cache] Error pruning cache: {}".format(e))
     return cache
-
-
-def load_temp_cache():
-    """Load EPG cache from /tmp/vavoo_epg_cache.json"""
-    temp_file = "/tmp/vavoo_epg_cache.json"
-    try:
-        if exists(temp_file):
-            with open(temp_file, 'r') as f:
-                return load(f)
-    except Exception as e:
-        print("[Cache] Error loading {}: {}".format(temp_file, e))
-
-    return None
 
 
 def load_cache():
@@ -2671,130 +2793,73 @@ def save_cache(cache):
         return False
 
 
-def clean_cache_and_unmatched():
-    """
-    Move to the unmatched cache all entries from the main cache
-    that have invalid IDs or that do not match the channel name.
-    Also fixes the formatting of sref.
-    """
-    # Load main cache
-    if not exists(CACHE_FILE):
-        return
-    with open(CACHE_FILE, 'r') as f:
-        main_cache = load(f)
-
-    # Load existing unmatched cache
-    unmatched = {}
-    if exists(UNMATCHED_FILE):
-        with open(UNMATCHED_FILE, 'r') as f:
-            unmatched = load(f)
-
-    # Get matcher to access Rytec names
-    matcher = get_epg_matcher()
-
-    new_main = {}
-    moved = 0
-
-    for key, value in main_cache.items():
-        # Fix sref
-        sref = value.get('sref', '')
-        if sref and not sref.endswith(':'):
-            value['sref'] = sref + ':'
-
-        id_val = value.get('id')
-        if not matcher.is_valid_rytec_id(id_val):
-            # Move to unmatched
-            unmatched[key] = value
-            moved += 1
-            continue
-
-        # Check if the ID matches the channel name
-        # Extract name from Rytec comment if possible, otherwise use the ID
-        rytec_name = matcher.rytec_names.get(id_val, '')
-        if not rytec_name:
-            # Try to derive from ID: remove country suffix and replace dots
-            # with spaces
-            rytec_name = id_val.split('.')[0].replace('.', ' ')
-        # rsplit on the last '_' (not split()[0] on the first) to match
-        # how these "name_country" keys are actually built elsewhere
-        # (_index_cache_key(), save_cache()) - a name containing a
-        # literal underscore would otherwise get truncated here.
-        clean_rytec_name = matcher._clean_name_for_similarity(rytec_name)
-        clean_channel_name = matcher._clean_name_for_similarity(
-            key.rsplit('_', 1)[0])
-
-        if clean_rytec_name != clean_channel_name:
-            # Move to unmatched to be re-matched
-            unmatched[key] = value
-            moved += 1
-        else:
-            new_main[key] = value
-
-    # Save caches
-    cache_temp = CACHE_FILE + ".tmp"
-    with open(cache_temp, 'w') as f:
-        dump(new_main, f, indent=2)
-    rename(cache_temp, CACHE_FILE)
-    unmatched_temp = UNMATCHED_FILE + ".tmp"
-    with open(unmatched_temp, 'w') as f:
-        dump(unmatched, f, indent=2)
-    rename(unmatched_temp, UNMATCHED_FILE)
-    with matcher._cache_lock:
-        matcher.cache = new_main
-        matcher._build_normalized_index()
-    print("[Cache] Cleanup completed: moved {} entries to unmatched".format(moved))
-    return moved
+def _favourite_key(name, url):
+    return "{}###{}".format(name, url)
 
 
-def cleanup_cache_matched_flag():
-    """Fix the matched flag for entries with invalid id."""
-    if not exists(CACHE_FILE):
-        return
-    with open(CACHE_FILE, 'r') as f:
-        cache = load(f)
-    changed = False
-    for key, value in cache.items():
-        if not VavooEPGMatcher.is_valid_rytec_id(value.get('id')):
-            if value.get('matched', False):
-                value['matched'] = False
-                changed = True
-    if changed:
-        temp_file = CACHE_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(cache, f, indent=2)
-        rename(temp_file, CACHE_FILE)
-        print("[Cache] Cleaned matched flags for invalid IDs.")
-
-
-def download_epg_cache_if_needed():
-    """Download vavoo_epg_cache.json to /tmp/ if not exists"""
-    temp_file = "/tmp/vavoo_epg_cache.json"
-
-    # If already exists, don't download
-    if exists(temp_file):
-        return True
-
+def load_favourites():
+    """Return the persisted favourites dict ({key: {name, url,
+    timestamp}}), or {} on any error/missing file - never raises,
+    matching every other cache reader in this module."""
     try:
-        import requests
-        url = "{}/vavoo_epg_cache.json".format(HOST_MAIN)
-        print("[Cache] Downloading to /tmp...")
-
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            download_tmp = temp_file + ".tmp"
-            with open(download_tmp, 'wb') as f:
-                f.write(response.content)
-            rename(download_tmp, temp_file)
-            print("[Cache] Downloaded to: {}".format(temp_file))
-            return True
+        if not isfile(FAVOURITES_FILE):
+            return {}
+        with open(FAVOURITES_FILE, 'r') as f:
+            data = load(f)
+        return data if isinstance(data, dict) else {}
     except Exception as e:
-        print("[Cache] Download error: {}".format(e))
+        print("[Favourites] Error loading {}: {}".format(FAVOURITES_FILE, e))
+        return {}
 
-    return False
+
+def is_favourite(name, url):
+    return _favourite_key(name, url) in load_favourites()
+
+
+def toggle_favourite(name, url, country_name=None, country_code=None):
+    """Add the (name, url) channel if it isn't already a favourite,
+    remove it if it is. Returns the new state (True = now a favourite)
+    on success, or None on error - same atomic temp-file-then-rename
+    write as save_cache()/_update_favorite_file().
+
+    country_name/country_code are stored alongside the channel so a
+    favourite played back later can still be checked against
+    parental-control's locked-country list (which matches on the
+    display name, e.g. "Italy") and still carry a country_code through
+    to Playstream2 for EPG matching - neither is available again once
+    the user has left the channel-browsing screen that knew them."""
+    try:
+        favourites = load_favourites()
+        key = _favourite_key(name, url)
+        now_favourite = key not in favourites
+        if now_favourite:
+            favourites[key] = {
+                'name': name,
+                'url': url,
+                'country_name': country_name,
+                'country_code': country_code,
+                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
+            }
+        else:
+            del favourites[key]
+
+        temp_file = FAVOURITES_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
+            dump(favourites, f, indent=2, sort_keys=True)
+        rename(temp_file, FAVOURITES_FILE)
+        return now_favourite
+    except Exception as e:
+        print("[Favourites] Error saving {}: {}".format(FAVOURITES_FILE, e))
+        return None
 
 
 _curated_channel_db_cache = {}
+_curated_channel_db_lock = threading.Lock()
 _CURATED_CHANNEL_DB_TTL = 86400
+# How long a failed/empty fetch is remembered - see
+# _load_curated_channel_db(). Same value and reasoning as
+# _EPG_FEED_INDEX_NEGATIVE_TTL further down.
+_CURATED_CHANNEL_DB_NEGATIVE_TTL = 60
 
 
 def _load_curated_channel_db(country_code):
@@ -2813,33 +2878,48 @@ def _load_curated_channel_db(country_code):
     if not country_code:
         return {}
 
-    cached = _curated_channel_db_cache.get(country_code)
-    if cached and (time() - cached[0] < _CURATED_CHANNEL_DB_TTL):
-        return cached[1]
+    with _curated_channel_db_lock:
+        cached = _curated_channel_db_cache.get(country_code)
+        if cached:
+            ttl = (_CURATED_CHANNEL_DB_TTL if cached[1]
+                   else _CURATED_CHANNEL_DB_NEGATIVE_TTL)
+            if time() - cached[0] < ttl:
+                return cached[1]
 
-    db = {}
-    try:
-        url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
-            HOST_MAIN, country_code.lower())
-        data = getUrl(url, timeout=15, retries=1)
-        if data:
-            parsed = loads(ensure_str(data))
-            if isinstance(parsed, dict):
-                db = parsed
-    except Exception as e:
-        debug(
-            "Could not fetch curated channel db for {}: {}".format(
-                country_code, e))
+        # Held across the fetch itself (not just the cache read/write) -
+        # this is a per-country cache and the lock is process-wide, so
+        # two threads racing the SAME cold country previously could both
+        # fire the network fetch; the tradeoff is two DIFFERENT
+        # countries' cold-cache fetches now also serialize against each
+        # other, which is fine given this only runs once per country
+        # per export, not per channel.
+        db = {}
+        try:
+            url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
+                HOST_MAIN, country_code.lower())
+            data = getUrl(url, timeout=15, retries=1)
+            if data:
+                parsed = loads(ensure_str(data))
+                if isinstance(parsed, dict):
+                    db = parsed
+        except Exception as e:
+            debug(
+                "Could not fetch curated channel db for {}: {}".format(
+                    country_code, e))
 
-    if db:
-        # Only cache successful, non-empty results. An empty result
-        # (missing file, transient error) isn't cached at all, so the
-        # next export retries instead of being stuck on a stale miss
-        # for up to _CURATED_CHANNEL_DB_TTL - unlike
-        # _get_epg_feed_index(), this is called once per country per
-        # export, not per channel, so the retry cost is negligible.
+        # A good result is kept for _CURATED_CHANNEL_DB_TTL. An empty
+        # one (no file for this country, or GitHub unreachable right
+        # now) is remembered too, but only for
+        # _CURATED_CHANNEL_DB_NEGATIVE_TTL (see the ttl choice above):
+        # find_match() asks for this on EVERY channel lookup, so not
+        # remembering a failure at all meant one GitHub request per
+        # channel for a country with no file - and, with GitHub
+        # unreachable, up to this fetch's whole timeout per channel,
+        # with this process-wide lock held the entire time. A minute is
+        # short enough that a transient failure is retried by the next
+        # export.
         _curated_channel_db_cache[country_code] = (time(), db)
-    return db
+        return db
 
 
 def update_complete_cache(
@@ -2886,6 +2966,13 @@ def update_complete_cache(
                 'name': m['name'],
                 'country': country_code,
                 'matched': True,
+                # Carried over from find_match()'s return value so a
+                # future cache hit knows whether this entry already
+                # came from the curated DB (see
+                # _try_promote_to_curated()) without re-deriving it -
+                # defaults to 'live' for callers that don't pass it
+                # through (pre-existing entries/older code paths).
+                'source': m.get('source', 'live'),
                 'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
             }
             print("[Cache] Added matched: %s -> %s" % (key, m['rytec_id']))
@@ -3200,6 +3287,13 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     clean = matcher._clean_name_for_similarity(channel_name)
     if not clean:
         return None
+    # name_index is already keyed by this exact cleaned name
+    # (_get_epg_feed_index() builds it that way) - an exact hit means
+    # the fuzzy loop below (a full scan, scored with SequenceMatcher)
+    # isn't needed at all.
+    exact = name_index.get(clean)
+    if exact:
+        return exact[0]
     source_tokens = _tokenize_for_compat(clean)
     best_score = 0.0
     best_id = None
@@ -3230,6 +3324,33 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     if best_id and best_score >= threshold:
         return best_id
     return None
+
+
+def _build_epg_channels_xml(unique):
+    """The channels.xml text for write_epg_mapping_file() - `unique`
+    maps each full service reference to its (epg_id, channel_name).
+
+    Everything is XML-escaped: EPGImport reads this file with a strict
+    XML parser and skips the whole file (every channel of the country)
+    on the first malformed line. Ids taken from an EPG feed arrive here
+    already un-escaped (so one containing "&" would have been written
+    raw into the attribute), and a channel name containing "--" is not
+    allowed inside an XML comment at all. Ids parsed out of Rytec's own
+    file by regex can still be in their escaped form - un-escaping
+    first makes the result the same either way instead of escaping
+    them twice."""
+    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
+    for dvb_ref, (epg_id, ch_name) in unique.items():
+        comment = ensure_str(ch_name, errors='ignore')
+        while '--' in comment:
+            comment = comment.replace('--', '- -')
+        xml_lines.append(
+            '  <channel id="{}">{}</channel><!-- {} -->'.format(
+                html_escape(html_unescape(epg_id)),
+                html_escape(dvb_ref),
+                comment))
+    xml_lines.append('</channels>')
+    return '\n'.join(xml_lines)
 
 
 def write_epg_mapping_file(epg_entries, country_code):
@@ -3300,19 +3421,13 @@ def write_epg_mapping_file(epg_entries, country_code):
         print("[EPG] No entries to write, skipping.")
         return None
 
-    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
-    for dvb_ref, (epg_id, ch_name) in unique.items():
-        # Add comment with channel name (optional but useful for
-        # readability)
-        xml_lines.append(
-            '  <channel id="{}">{}</channel><!-- {} -->'.format(epg_id, dvb_ref, ch_name))
-    xml_lines.append('</channels>')
+    channels_xml = _build_epg_channels_xml(unique)
 
     with _epg_lock:
         try:
             temp_path = channels_file + ".tmp"
             with open(temp_path, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
-                f.write('\n'.join(xml_lines))
+                f.write(channels_xml)
             rename(temp_path, channels_file)
             print(
                 "[EPG] Written {} entries to {}".format(
@@ -3402,17 +3517,15 @@ def ensure_vavoo_epg_sources_enabled():
     EPGImport's own config. Merges into whatever the user already has
     enabled there; never removes anything.
 
-    Only runs when the user has opted in via the "EPG Auto Update"
-    config toggle - otherwise EPGImport's own source list is left
-    exactly as the user configured it, same as the existing manual
-    "Start EPG update now?" flow (which still requires the source to
-    already be enabled). Never raises - this is a best-effort
-    convenience a failure here shouldn't be allowed to break bouquet
-    export over.
+    Only runs with "Enable Vavoo EPG" on - without it EPGImport's own
+    source list is left exactly as the user configured it. (This used
+    to need a second toggle as well, "Auto-update EPG"; it is simply
+    part of enabling the EPG now.) Never raises - this is a
+    best-effort convenience a failure here shouldn't be allowed to
+    break bouquet export over.
     """
     try:
-        if not (config.plugins.vavoo.epg_enabled.value and
-                config.plugins.vavoo.epg_auto_update.value):
+        if not config.plugins.vavoo.epg_enabled.value:
             return
 
         epg_dir = "/etc/epgimport"
@@ -3466,6 +3579,10 @@ def fix_cache_format(
             cache = load(f)
 
         required = {'id', 'name', 'country', 'sref', 'timestamp', 'matched'}
+        # 'source' (alias/curated/live - see update_complete_cache())
+        # is optional but meaningful: dropping it as an "extra" field
+        # made every entry look non-curated again after a cache fix.
+        allowed = required | {'source'}
         new_cache = {}
         modified = 0
         duplicates = 0
@@ -3484,7 +3601,7 @@ def fix_cache_format(
             changed = False
 
             # Remove extra fields
-            extra = set(value.keys()) - required
+            extra = set(value.keys()) - allowed
             if extra:
                 for k in extra:
                     del value[k]

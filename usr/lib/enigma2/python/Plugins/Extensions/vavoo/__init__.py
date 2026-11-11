@@ -5,7 +5,7 @@ __author__ = "Lululla & Qu4k3"
 __email__ = "ekekaz@gmail.com"
 __copyright__ = 'Copyright (c) 2024 Lululla'
 __license__ = "CC BY-NC-SA 4.0"
-__version__ = "1.88"
+__version__ = "1.89"
 
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
@@ -35,10 +35,27 @@ HOST_MAIN = 'https://raw.githubusercontent.com/Belfagor2005/vavoo/main'
 HOST_GIT = "https://raw.githubusercontent.com/Belfagor2005"
 INSTALLER_URL = HOST_MAIN + "/installer.sh"
 FLAG_CACHE_DIR = "/tmp/vavoo_flags"
+PICON_CACHE_DIR = "/tmp/vavoo_picons"
 LOG_FILE = "/tmp/vavoo.log"
 PRIMARY_BASE_URL = "https://vavoo.to"
 FALLBACK_BASE_URL = "https://kool.to"
 BASE_SITES = [PRIMARY_BASE_URL, FALLBACK_BASE_URL]
+# geil.to (and its mirrors - the same service) serves the same kind of
+# IPTV catalog with no addonSig/token step at all - tried first since
+# it needs no token, with BASE_SITES above as the fallback catalog
+# source when it's unreachable. Same approach the companion Android
+# app (pQu4k3r/vavoo_android) already ships.
+GEIL_SITES = ["https://geil.to", "https://geil.app", "https://geil.win"]
+GEIL_LIVE_PATH = "/live"
+# Separators geil.to's and Vavoo's own catalogs both use to join a
+# channel's country and category into one "group"/bouquet-name string
+# (e.g. "Italy ➾ Sport"). One shared constant here, imported by every
+# module that needs to split a group/bouquet name back into its
+# country part, instead of several independently-maintained literal
+# copies - those had already drifted out of sync with each other (two
+# different 4-item subsets of this same 6-item list, in different
+# files, missing "»"/"›").
+GROUP_NAME_SEPARATORS = ("➾", "⟾", "->", "→", "»", "›")
 PY2 = version_info[0] == 2
 PY3 = version_info[0] == 3
 
@@ -66,6 +83,10 @@ ENIGMA_PATH = get_enigma2_path()
 CACHE_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_cache.json")
 UNMATCHED_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_unmatched_cache.json")
 SREF_MAP_FILE = os.path.join(ENIGMA_PATH, "vavoo_sref_map.json")
+# The stream source the user picked (YELLOW in the player) for each
+# multi-source channel: {"grp:<country>:<key>": "<catalog id>"} - see
+# vavoo_proxy.py's VavooProxy.set_group_source().
+SOURCE_PREFS_FILE = os.path.join(ENIGMA_PATH, "vavoo_source_prefs.json")
 EPGIMPORT_CONF = os.path.join(ENIGMA_PATH, "epgimport.conf")
 ALIAS_FILE = os.path.join(ENIGMA_PATH, "channel_alias.json")
 

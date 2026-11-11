@@ -9,7 +9,6 @@ import threading
 from difflib import SequenceMatcher
 from os import listdir, unlink, remove, system as os_system
 from os.path import exists as file_exists, join, isfile, getsize
-from re import compile, DOTALL, search
 from json import loads
 from sys import version_info
 from enigma import eDVBDB
@@ -22,10 +21,6 @@ try:
 except Exception:
     requests = None
 
-try:
-    from urllib.request import Request as UrlRequest, urlopen
-except ImportError:
-    from urllib2 import Request as UrlRequest, urlopen
 try:
     from requests.adapters import HTTPAdapter
 except Exception:
@@ -96,12 +91,16 @@ from .vavoo_stats import (
     record_anonymous_startup, is_stats_enabled, start_heartbeat,
     stop_heartbeat, STATS_DISABLE_FILE
 )
-from .vavoo_proxy import proxy, run_proxy_in_background, shutdown_proxy
+from . import vavoo_proxy
+from .vavoo_proxy import (
+    run_proxy_in_background, restart_proxy_in_background, is_proxy_booting,
+    GROUP_ID_PREFIX
+)
 from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
-    PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, PROXY_SHUTDOWN_URL,
-    FLAG_CACHE_DIR, PRIMARY_BASE_URL, FALLBACK_BASE_URL, EPGIMPORT_CONF
+    PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, FLAG_CACHE_DIR,
+    EPGIMPORT_CONF, LOG_FILE, GROUP_NAME_SEPARATORS
 )
 from . import PY2, PY3, vUtils
 from .bouquet_manager import (
@@ -124,11 +123,12 @@ from .vUtils import (
     cleanup_old_temp_files,
     check_remote_installer_version,
     decodeHtml,
-    download_flag_online,
+    download_picon_online,
     ensure_str,
     fix_cache_format,
     getUrl,
     get_country_code,
+    get_picon_cache_path,
     initialize_cache_with_local_flags,
     is_proxy_ready,
     is_proxy_running,
@@ -136,6 +136,7 @@ from .vUtils import (
     returnIMDB,
     remove_parentheses,
     ReloadBouquets,
+    strip_control_chars,
     trace_error
 )
 from .Console import Console
@@ -227,14 +228,15 @@ def to_text(value, encoding="utf-8", errors="ignore"):
         return converted.decode("latin-1", "ignore")
 
 
-def url_quote(value):
-    """Quote URL fragments in a Python 2/3 safe way."""
+def url_quote(value, safe='/'):
+    """Quote URL fragments in a Python 2/3 safe way. `safe` is passed
+    straight through to urllib's quote() (characters left as-is)."""
     if PY2:
         value = to_text(value).encode("utf-8")
     else:
         value = to_text(value)
 
-    return _url_quote(value)
+    return _url_quote(value, safe)
 
 
 def url_unquote(value):
@@ -304,9 +306,8 @@ def _is_vavoo_already_open(session):
 
 
 # set plugin
-global HALIGN, BackPath, FNTPath
-global search_ok, screen_width
-global proxy_instance, proxy_thread
+global HALIGN, BackPath
+global screen_width
 
 title_plug = 'Vavoo'
 desc_plugin = ('..:: Vavoo by Lululla & Qu4k3 v.%s ::..' % __version__)
@@ -314,7 +315,6 @@ PLUGIN_PATH = PLUGIN_ROOT
 PLUGLOGO = join(PLUGIN_PATH, 'plugin.png')
 ENIGMA_PATH = get_enigma2_path()
 CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
-regexs = '<a[^>]*href="([^"]+)"[^>]*><img[^>]*src="([^"]+)"[^>]*>'
 
 _session = None
 # Guards autostart() itself against re-scheduling delayed_boot_tasks() on
@@ -322,11 +322,6 @@ _session = None
 # uses to detect whether the user has actually opened a plugin screen.
 _autostart_scheduled = False
 auto_start_timer = None
-now = None
-proxy_instance = None
-proxy_thread = None
-search_ok = False
-tmlast = None
 
 # Per-country parsed EPG document + channel->programme index, shared
 # across Playstream2 instances (module-level, not per-instance) so
@@ -414,7 +409,7 @@ def _start_update_check():
         _update_check_done = True
 
     _update_thread = threading.Thread(target=_worker)
-    _update_thread.setDaemon(True)
+    _update_thread.daemon = True
     _update_thread.start()
 
 
@@ -453,17 +448,32 @@ else:
     BackPath = join(BackfPath, 'images')
     skin_path = join(BackfPath, 'hd')
 
+# Box for the current channel's picon, bottom-left of the screen -
+# over the stock MoviePlayer skin's own "cover" placeholder icon in
+# that corner (self.skinName = 'MoviePlayer' reuses the box's own
+# built-in skin section for that seek-bar/title strip, not one this
+# plugin defines, so the placeholder itself can't be removed - this
+# widget just draws on top of it at a higher zPosition). Width keeps
+# the 3:2 aspect ratio used everywhere else in this plugin for icon
+# boxes, sized up from a plain OVERLAY_HEIGHT_TOP-based box (too
+# small next to the stock icon) to stand out as the main icon there.
+OVERLAY_PICON_H = int(OVERLAY_HEIGHT_TOP * 1.8)
+OVERLAY_PICON_W = int(OVERLAY_PICON_H * 1.5)
+SCREEN_HEIGHT = screen_real.height()
+OVERLAY_PICON_X = 10
+# Position is a best-effort estimate (proportional to the real screen
+# height so it scales across resolutions), calibrated from an
+# on-screen photo: the first attempt (plain SCREEN_HEIGHT * 0.78, no
+# extra offset) rendered about one icon-height too high - visibly
+# stacked above the stock placeholder icon instead of over it -
+# shifted down by that same amount (OVERLAY_HEIGHT_TOP, the old,
+# smaller icon's own height) to compensate. Still an estimate, not a
+# measurement - nudge it further if it's still not aligned.
+OVERLAY_PICON_Y = int(SCREEN_HEIGHT * 0.78) + OVERLAY_HEIGHT_TOP
+
 print('folder back: ', BackPath)
 
 
-# system
-stripurl = 'aHR0cHM6Ly92YXZvby50by9jaGFubmVscw=='
-# If vavoo.to returns HTTP 451 (Unavailable For Legal Reasons),
-# fall back to this mirror.
-HTTP_451_SENTINEL = "__HTTP451__"
-keyurl = 'aHR0cDovL3BhdGJ1d2ViLmNvbS92YXZvby92YXZvb2tleQ=='
-myser = [(PRIMARY_BASE_URL, "vavoo"), ("https://oha.tooha-tv", "oha"),
-         (FALLBACK_BASE_URL, "kool"), ("https://huhu.to", "huhu")]
 modemovie = [("4097", "4097")]
 if file_exists("/usr/bin/gstplayer"):
     modemovie.append(("5001", "5001"))
@@ -508,24 +518,47 @@ def to_string(text):
 
 
 # config section
-# --- Live search input field integrated in plugin config ---
-class ConfigSearchText(ConfigText):
-    def __init__(self, default=""):
-        ConfigText.__init__(self, default=default)
+class ConfigAction(ConfigSelection):
+    """A config-list entry with a single, fixed choice, so left/right
+    can't cycle it - used purely as a "press OK to trigger an action"
+    row (gnm3u()'s dispatch below only checks which row is
+    highlighted, never this value) instead of a Yes/No toggle that
+    looks like a real setting but never actually gates anything.
+
+    The choice's description is a plain, non-empty "OK" rather than an
+    empty string - an earlier version used choices=[""] specifically
+    to show a blank value column, but an empty-text list cell can fail
+    to fully repaint over whatever the previous row (or a prior state
+    of this one) had drawn there, visibly leaving old text showing
+    through on real hardware. A short, fixed, always-the-same-length
+    label repaints cleanly and still doesn't look like an actual
+    setting."""
+
+    def __init__(self):
+        ConfigSelection.__init__(self, choices=[("ok", _("OK"))])
 
 
 config.plugins.vavoo = ConfigSubsection()
 cfg = config.plugins.vavoo
-cfg.proxy_enabled = ConfigEnableDisable(default=True)
 cfg.autobouquetupdate = ConfigEnableDisable(default=False)
-cfg.genm3u = NoSave(ConfigYesNo(default=False))
-cfg.server = ConfigSelection(default=PRIMARY_BASE_URL, choices=myser)
+cfg.genm3u = NoSave(ConfigAction())
+cfg.show_log = NoSave(ConfigAction())
+cfg.view_favourites = NoSave(ConfigAction())
+# Which catalog/stream source vavoo_proxy.py's initialize_proxy()
+# tries - "auto" keeps its default Geil-first/Vavoo-fallback
+# order; "geil"/"vavoo" pin it to exactly one source, with no
+# fallback to the other if it fails (an explicit choice is respected
+# as-is). Read directly by vavoo_proxy.py via its own e2_config
+# import, not this cfg reference (that would be a circular import).
+cfg.catalog_source = ConfigSelection(
+    default="auto",
+    choices=[
+        ("auto", _("Auto (Geil, fallback Vavoo)")),
+        ("geil", _("Geil only")),
+        ("vavoo", _("Vavoo/Kool only")),
+    ])
 cfg.services = ConfigSelection(default='4097', choices=modemovie)
 cfg.epg_enabled = ConfigEnableDisable(default=False)
-cfg.epg_auto_update = ConfigEnableDisable(default=False)
-cfg.similarity_threshold = ConfigSelectionNumber(
-    default=75, min=50, max=100, stepwidth=5)
-cfg.timerupdate = ConfigSelectionNumber(default=5, min=1, max=60, stepwidth=1)
 cfg.timetype = ConfigSelection(
     default="interval", choices=[
         ("interval", _("interval")), ("fixed time", _("fixed time"))])
@@ -542,21 +575,13 @@ cfg.debug_logging.addNotifier(
 )
 # cfg.ipv6 = ConfigEnableDisable(default=False)
 cfg.back = ConfigSelection(default='oktus', choices=BakP)
-"""
-cfg.default_view = ConfigSelection(
-    default="countries",
-    choices=[("countries", _("Countries")), ("categories", _("Categories"))]
-)
-"""
-cfg.default_view = ConfigSelection(
-    default="countries",
-    choices=[("countries", _("Countries"))]
-)
 cfg.list_position = ConfigSelection(
     default="bottom",
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
 )
-cfg.search_text = ConfigSearchText(default="")
+cfg.playlist_key = ConfigText(default="")
+cfg.parental_pin = ConfigText(default="")
+cfg.parental_countries = ConfigText(default="")
 cfg.proxy_startup_timeout = ConfigSelectionNumber(
     default=120, min=15, max=300, stepwidth=5)
 
@@ -568,6 +593,10 @@ cfg.proxy_startup_timeout = ConfigSelectionNumber(
 # comments) at two of those six call sites.
 PROXY_MONITOR_INTERVAL_MS = 10000
 PROXY_WATCHDOG_INTERVAL_MS = 60000
+
+# How many times vavoo.cat() asks the proxy for a country's channel
+# list before reporting failure - see its own docstring.
+CHANNEL_FETCH_ATTEMPTS = 3
 
 
 def normalize_language_code(language):
@@ -613,7 +642,7 @@ class m2list(MenuList):
         return entry
 
 
-def show_list(name, link, is_category=False, is_channel=False):
+def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     """Build a MultiContent entry with icon and text."""
 
     safe_name = to_string(name)
@@ -624,6 +653,27 @@ def show_list(name, link, is_category=False, is_channel=False):
     # Default icon
     default_icon = join(PLUGIN_PATH, 'skin/pics/vavoo_ico.png')
     icon_path = default_icon
+
+    using_channel_picon = False
+    if is_channel and logo_url:
+        # Same convention as the flag icon below: only ever read the
+        # cache here, never download synchronously inside this
+        # function (called once per row while building a possibly
+        # large list) - a channel's picon shows up once
+        # _preload_channel_picons() has actually fetched it and
+        # rebuilt the list, same lag the flag icons already have for
+        # countries.
+        try:
+            cache_file = get_picon_cache_path(logo_url)
+            if cache_file and file_exists(cache_file):
+                if getsize(cache_file) > 100:
+                    icon_path = cache_file
+                    using_channel_picon = True
+                else:
+                    unlink(cache_file)
+        except Exception as e:
+            debug("Picon cache check failed for {}: {}".format(
+                logo_url, e))
 
     if not is_channel and not is_category:
         country_name = safe_name.split('➾')[0].split(
@@ -654,30 +704,97 @@ def show_list(name, link, is_category=False, is_channel=False):
                 debug("Flag icon resolution failed for {}: {}".format(
                     country_name, e))
 
+    # icon_size used to be a flat (60, 40) at every resolution tier,
+    # regardless of each tier's own item_height (m2list.__init__) -
+    # 80% of the row height on the fhd/hd tiers, 66.7% on wqhd, and
+    # visually dominant enough that channel/flag icons looked like the
+    # main content instead of a small marker next to the name. A
+    # follow-up pass pushed this down further to ~40% of item_height,
+    # which went too far the other way: at that size even the plain
+    # default icon (not just a detailed channel logo) rendered as an
+    # indistinct blob, confirmed from an on-screen photo - a real
+    # channel logo (unlike the bundled flags, simple bold national
+    # flag art that stays legible even very small) needs more pixels
+    # than that to read as anything at all. Settled at ~60% of
+    # item_height instead - the one size in this box's history that
+    # hasn't actually been shown broken - keeping the same 3:2 aspect
+    # ratio the bundled flag PNGs (skin/cowntry/*.png, all exactly
+    # 60x40) are already hand-cropped to, so they keep scaling
+    # uniformly with zero distortion, and vertically centered in the
+    # row ((item_height - icon_height) // 2) rather than the old
+    # fixed y-offsets, which were tuned for the original, taller box.
     if screen_width >= 2560:
-        icon_size = (60, 40)
-        icon_pos = (10, 10)
+        icon_size = (54, 36)
+        icon_pos = (10, 12)
         text_size = (750, 60)
         text_pos = (icon_size[0] + 20, 0)
     elif screen_width >= 1920:
-        icon_size = (60, 40)
-        icon_pos = (10, 5)
+        icon_size = (45, 30)
+        icon_pos = (10, 10)
         text_size = (540, 50)
         text_pos = (icon_size[0] + 20, 0)
     else:
-        icon_size = (60, 40)
-        icon_pos = (10, 5)
+        icon_size = (45, 30)
+        icon_pos = (10, 10)
         text_size = (380, 50)
         text_pos = (icon_size[0] + 20, 0)
 
-    # Load PNG
-    try:
-        png_data = loadPNG(icon_path)
-    except Exception:
+    # Load the icon pixmap, already sized correctly for icon_size.
+    #
+    # Channel picons are cached at whatever native resolution the
+    # third-party catalog serves them - unlike the default icon and
+    # the bundled flags (both pre-sized to match icon_size exactly),
+    # MultiContentEntryPixmapAlphaTest does NOT scale a mismatched
+    # source to fit its size= box - it blits the image at its own
+    # native resolution, clipped to that box. A same-size-or-larger
+    # picon therefore only ever showed a small corner fragment of
+    # itself (confirmed from an on-screen photo: mostly blank, with a
+    # sliver of the real logo in one corner) - the earlier fix here
+    # that computed a smaller pos/size never actually fixed anything,
+    # since nothing was scaling the pixel data to match it either way.
+    # ePicLoad actually resamples the source to the target size
+    # (letterboxed, aspect-preserving - see setPara()'s own comment
+    # below) before handing back a pixmap that's already the right
+    # size - the same mechanism this file's own splash screen
+    # (startVavoo.decodeImage()) and the playback overlay
+    # (_update_overlay_picon()) already use for exactly this reason.
+    png_data = None
+    if using_channel_picon:
         try:
-            png_data = loadPNG(default_icon)
-        except Exception:
+            picload = ePicLoad()
+            av_scale = AVSwitch().getFramebufferScale()
+            # Same setPara()/startDecode() shape as
+            # startVavoo.decodeImage()/_update_overlay_picon() -
+            # resize_mode=1 scales to fit while preserving aspect
+            # ratio, padded with the given transparent background,
+            # rather than mode=0 (plain stretch).
+            picload.setPara([
+                icon_size[0], icon_size[1],
+                av_scale[0], av_scale[1], 0, 1, '#00000000'])
+            if isfile("/var/lib/dpkg/status"):
+                picload.startDecode(icon_path, False)
+            else:
+                picload.startDecode(icon_path, 0, 0, False)
+            png_data = picload.getData()
+        except Exception as e:
+            debug("Picon decode failed for {}: {}".format(icon_path, e))
             png_data = None
+
+    if not png_data:
+        # Either not a channel picon (default icon / country flag,
+        # both already pre-sized to exactly icon_size - no scaling
+        # needed) or the decode above failed - either way, fall back
+        # to a plain, un-scaled load of whichever asset is safe to
+        # load natively at this size (never the oversized picon file
+        # itself, which would reintroduce the clipping problem above).
+        fallback_path = default_icon if using_channel_picon else icon_path
+        try:
+            png_data = loadPNG(fallback_path)
+        except Exception:
+            try:
+                png_data = loadPNG(default_icon)
+            except Exception:
+                png_data = None
 
     if png_data:
         res.append(MultiContentEntryPixmapAlphaTest(
@@ -708,9 +825,16 @@ class vavoo_config(Screen, ConfigListScreen):
             self.skin = apply_selected_background(f.read())
         self.setup_title = ('Vavoo Config')
 
-        self.old_proxy_enabled = cfg.proxy_enabled.value
         self.old_back = cfg.back.value
         self.old_list_position = cfg.list_position.value
+        self.old_catalog_source = cfg.catalog_source.value
+
+        # So background M3U-fetch threads (_fetch_countries_async/
+        # _fetch_channels_async) can notice this screen was left and
+        # stop trying to pop dialogs on top of whatever the user has
+        # since navigated to.
+        self._closed = False
+        self.onClose.append(self._mark_closed)
 
         self.list = []
         self.onChangedEntry = []
@@ -739,6 +863,9 @@ class vavoo_config(Screen, ConfigListScreen):
         self.showhide()
         self.onLayoutFinish.append(self.layoutFinished)
 
+    def _mark_closed(self):
+        self._closed = True
+
     def update_status(self):
         if cfg.autobouquetupdate.value:
             self['statusbar'].setText(
@@ -760,85 +887,42 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Generate .m3u files and save to device %s.") %
                 downloadfree))
 
-        self.list.append(
-            getConfigListEntry(
-                _("Proxy Enabled"),
-                cfg.proxy_enabled,
-                _("Enable or disable proxy.")
-            )
-        )
+        self.list.append(getConfigListEntry(
+            _("Playlist Access Key (optional)"),
+            cfg.playlist_key,
+            _("If set, the live playlist at /playlist.m3u requires "
+              "?key=<this value> - leave empty for no key. "
+              "URL: http://%s:%d/playlist.m3u") % (PROXY_HOST, PORT)))
 
         self.list.append(
             getConfigListEntry(
-                _("Default View"),
-                cfg.default_view,
-                _("Default view when opening the plugin")))
+                _("Catalog/Stream Source"),
+                cfg.catalog_source,
+                _("Which service to load channels and streams from. "
+                  "Auto tries Geil first and falls back to Vavoo "
+                  "if it's unavailable; the other two options pin it "
+                  "to exactly that one source. Takes effect on save "
+                  "(restarts the proxy if it's running).")
+            )
+        )
 
         self.list.append(getConfigListEntry(
             _("Proxy startup timeout (seconds)"),
             cfg.proxy_startup_timeout,
             _("Increase if proxy takes long due to VPN or slow connection.")))
 
-        help_text = _("Server for player.") + "\n" + \
-            _("Now %s") % cfg.server.value
-
-        self.list.append(
-            getConfigListEntry(
-                _("Server for Player Used"),
-                cfg.server,
-                help_text
-            )
-        )
         self.list.append(getConfigListEntry(
             _("Enable Vavoo EPG"),
             cfg.epg_enabled,
-            _("Create EPG source for EPGImport with Vavoo program data")
+            _("Create the EPG source for EPGImport with Vavoo program data "
+              "and enable it there after each export.")
         ))
 
-        if cfg.epg_enabled.value:
-            self.list.append(getConfigListEntry(
-                _("Auto-update EPG"),
-                cfg.epg_auto_update,
-                _("Automatically enable the Vavoo EPG source(s) in EPGImport "
-                  "after each export, so you don't have to enable them there "
-                  "yourself.")
-            ))
-            self.list.append(
-                getConfigListEntry(
-                    _("EPG Similarity Threshold (%)"),
-                    cfg.similarity_threshold,
-                    _("Minimum similarity for matching channels (higher = stricter).")))
-
-        self.list.append(
-            getConfigListEntry(
-                _("Movie Services Reference"),
-                cfg.services,
-                _("Configure service Reference Iptv-Gstreamer-Exteplayer3")))
-
-        self.list.append(
-            getConfigListEntry(
-                _("Bouquet Position in List"),
-                cfg.list_position,
-                _("Position of Vavoo bouquets in the main list"))
-        )
-
-        help_line1 = _("Refresh stream every X minutes (1-15)")
-        help_line2 = _("Recommended: 5-8 minutes")
-        help_line3 = _("Lower = less interruption but more refreshes")
-        help_text = help_line1 + "\n" + help_line2 + "\n" + help_line3
-        self.list.append(
-            getConfigListEntry(
-                _("Refresh stream (minutes):"),
-                cfg.timerupdate,
-                help_text
-            )
-        )
-        self.list.append(
-            getConfigListEntry(
-                _("Select Background"),
-                cfg.back,
-                _("Configure Main Background Image.")))
-
+        # Grouped with "Enable Vavoo EPG" above rather than left down by
+        # the other bouquet-related entries below: this schedule drives
+        # EPG refresh timing too, not just bouquet regeneration -
+        # AutoStartTimer._update_bouquets() does Rytec matching, EPG
+        # feed downloads, and bouquet file I/O as one combined cycle.
         self.list.append(
             getConfigListEntry(
                 _("Scheduled EPG/Bouquet Update:"),
@@ -891,6 +975,25 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self.list.append(
             getConfigListEntry(
+                _("Movie Services Reference"),
+                cfg.services,
+                _("Configure service Reference Iptv-Gstreamer-Exteplayer3")))
+
+        self.list.append(
+            getConfigListEntry(
+                _("Bouquet Position in List"),
+                cfg.list_position,
+                _("Position of Vavoo bouquets in the main list"))
+        )
+
+        self.list.append(
+            getConfigListEntry(
+                _("Select Background"),
+                cfg.back,
+                _("Configure Main Background Image.")))
+
+        self.list.append(
+            getConfigListEntry(
                 _('Link in Main Menu'),
                 cfg.stmain,
                 _("Link in Main Menu")))
@@ -898,6 +1001,26 @@ class vavoo_config(Screen, ConfigListScreen):
             "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out.")))
         self.list.append(getConfigListEntry(_("Debug logging"), cfg.debug_logging, _(
             "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting.")))
+        self.list.append(getConfigListEntry(
+            _("Show Log (Ok to view)"),
+            cfg.show_log,
+            _("View the last 200 lines of %s.") % LOG_FILE))
+        self.list.append(getConfigListEntry(
+            _("View Favourites (Ok to open)"),
+            cfg.view_favourites,
+            _("Browse and play your starred channels. Star/unstar a "
+              "channel with the INFO key while browsing.")))
+        self.list.append(getConfigListEntry(
+            _("Parental Control PIN"),
+            cfg.parental_pin,
+            _("Set a PIN to lock the countries below. Leave empty to "
+              "disable parental control entirely.")))
+        if cfg.parental_pin.value.strip():
+            self.list.append(getConfigListEntry(
+                _("Locked Countries"),
+                cfg.parental_countries,
+                _("Comma-separated country names (e.g. \"Italy, Spain\") "
+                  "that require the PIN above to open.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -913,6 +1036,31 @@ class vavoo_config(Screen, ConfigListScreen):
                 MessageBox.TYPE_YESNO,
                 timeout=10,
                 default=True)
+        elif sel and sel == cfg.show_log:
+            self.session.open(
+                VavooLogViewer,
+                title=_("Vavoo Log"),
+                file_path=LOG_FILE,
+                tail_lines=200)
+        elif sel and sel == cfg.view_favourites:
+            self.session.open(VavooFavourites)
+        elif sel and sel in (
+                cfg.playlist_key, cfg.parental_pin, cfg.parental_countries):
+            # Plain ConfigText entries have nothing else wired to the
+            # "ok" key in this screen (gnm3u() is its sole handler) -
+            # without this, pressing OK on these did nothing and the
+            # field could never actually be set.
+            self.session.openWithCallback(
+                lambda result: self._on_text_entry_result(sel, result),
+                VirtualKeyBoard,
+                title=self.getCurrentEntry(),
+                text=sel.value)
+
+    def _on_text_entry_result(self, config_element, result):
+        if result is not None:
+            config_element.setValue(result)
+            config_element.save()
+            self.createSetup()
 
     def generate_m3u(self, result):
         if result:
@@ -930,8 +1078,6 @@ class vavoo_config(Screen, ConfigListScreen):
             MessageBox.TYPE_ERROR,
             timeout=5
         )
-        cfg.genm3u.setValue(0)
-        cfg.genm3u.save()
 
     def show_m3u_ip_selection(self):
         """Ask whether the M3U links should use 127.0.0.1 (playable only
@@ -959,8 +1105,6 @@ class vavoo_config(Screen, ConfigListScreen):
     def on_m3u_ip_selected(self, result):
         """Callback for M3U host selection"""
         if result is None:
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
             return
 
         self._m3u_host = result[1]
@@ -1003,14 +1147,9 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=5
             )
 
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
-
     def on_m3u_mode_selected(self, result):
         """Callback for M3U mode selection"""
         if result is None or result[1] == "cancel":
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
             return
 
         mode = result[1]
@@ -1045,9 +1184,6 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=5
             )
 
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
-
     def show_country_selection(self, countries):
         """Show country list for single selection"""
         from Screens.ChoiceBox import ChoiceBox
@@ -1069,8 +1205,6 @@ class vavoo_config(Screen, ConfigListScreen):
     def on_country_selected(self, result):
         """Callback for selected country"""
         if result is None or result[1] == "cancel":
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
             return
 
         selected_country = result[1]
@@ -1090,8 +1224,6 @@ class vavoo_config(Screen, ConfigListScreen):
                 MessageBox.TYPE_WARNING,
                 timeout=5
             )
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
             return
 
         # Ask confirmation for single country
@@ -1111,8 +1243,6 @@ class vavoo_config(Screen, ConfigListScreen):
     def generate_single_country_m3u(self, confirm, country_name, channels):
         """Generate M3U for a single country"""
         if not confirm:
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
             return
 
         try:
@@ -1150,17 +1280,19 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=5
             )
 
-        cfg.genm3u.setValue(0)
-        cfg.genm3u.save()
-
     def generate_all_m3u_files(self, confirm, countries):
-        """Generate .m3u files for all countries"""
+        """Generate .m3u files for all countries - the actual work runs
+        on a background thread. This is invoked directly as a MessageBox
+        confirmation callback, which Enigma2 runs synchronously on the
+        GUI thread; looping get_channels_for_country() (a blocking
+        getUrl(timeout=15) call) once per country here would freeze the
+        whole box for up to countries*15 seconds, exactly what every
+        other channel-fetch path in this wizard already avoids via
+        _fetch_countries_async()/_fetch_channels_async()."""
         if not confirm:
-            cfg.genm3u.setValue(0)
-            cfg.genm3u.save()
             return
 
-        try:
+        def task():
             total_channels = 0
             generated = 0
             failed = 0
@@ -1190,11 +1322,27 @@ class vavoo_config(Screen, ConfigListScreen):
                     failed += 1
                     print("[M3U Export] Error %s: %s" % (country, str(e)))
 
+            reactor.callFromThread(
+                self._on_all_m3u_files_done,
+                generated, failed, total_channels, len(countries))
+
+        t = threading.Thread(target=task)
+        t.daemon = True
+        t.start()
+
+    def _on_all_m3u_files_done(
+            self, generated, failed, total_channels, total_countries):
+        """Runs back on the GUI thread once generate_all_m3u_files()'s
+        background loop finishes."""
+        if getattr(self, "_closed", False):
+            return
+
+        try:
             # Show detailed result
             msg = _("M3U generation completed!")
             msg += "\n"
             msg += _("Countries: %(generated)d/%(total)d") % {
-                'generated': generated, 'total': len(countries)}
+                'generated': generated, 'total': total_countries}
             msg += "\n"
             msg += _("Failed: %(failed)d") % {'failed': failed}
             msg += "\n"
@@ -1218,9 +1366,6 @@ class vavoo_config(Screen, ConfigListScreen):
                 MessageBox.TYPE_ERROR,
                 timeout=5
             )
-
-        cfg.genm3u.setValue(0)
-        cfg.genm3u.save()
 
     def generate_single_m3u(self, country_name, channels):
         """Generate a single .m3u file for a country"""
@@ -1249,14 +1394,35 @@ class vavoo_config(Screen, ConfigListScreen):
                             # Rebuild the proxy URL with the chosen host
                             # instead of the LAN IP the proxy always
                             # embeds in its /channels response.
+                            # channel_id is catalog data too (same
+                            # threat model as channel_name below) and
+                            # is embedded directly into this line's
+                            # URL, not just its text - url_quote()
+                            # closes both the newline-injection gap and
+                            # a stray "&"/"#"/space corrupting the URL
+                            # itself. ensure_str(), not a plain str() -
+                            # a grouped channel's id can carry a
+                            # non-ASCII base name (clean_name_for_
+                            # similarity() only strips punctuation, not
+                            # non-ASCII letters), and plain str() on a
+                            # Python 2 unicode value raises
+                            # UnicodeEncodeError for any of those,
+                            # silently dropping the channel (caught by
+                            # this loop's own try/except below).
                             channel_url = "http://{}:{}/vavoo?channel={}".format(
-                                host, PORT, channel_id)
+                                host, PORT, url_quote(strip_control_chars(ensure_str(channel_id))))
                         else:
-                            channel_url = channel.get('url', '')
+                            channel_url = strip_control_chars(channel.get('url', ''))
 
                         # Clean channel name
                         channel_name = decodeHtml(channel_name)
                         channel_name = remove_parentheses(channel_name)
+                        # Catalog-sourced, already treated as
+                        # attacker-influenceable elsewhere (bouquet
+                        # #NAME/Favorite.txt lines) - an embedded
+                        # newline would inject extra lines into the
+                        # generated .m3u file.
+                        channel_name = strip_control_chars(channel_name)
 
                         # Write M3U entry
                         m3u_content += "#EXTINF:-1,%s\n" % channel_name
@@ -1272,21 +1438,11 @@ class vavoo_config(Screen, ConfigListScreen):
                 return 0
 
             # Write file
-            try:
-                with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
-                    f.write(m3u_content)
-                print(
-                    "[M3U] File created: %s (%d channels)" %
-                    (m3u_path, channel_count))
-            except Exception as e:
-                print("[M3U] Error writing file: %s" % str(e))
-                # Keep the same explicit utf-8 encoding as the primary
-                # write attempt above - a bare open() here would use the
-                # platform default encoding, which raises
-                # UnicodeEncodeError on Python 2 for the non-ASCII
-                # channel names decodeHtml() commonly produces.
-                with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
-                    f.write(m3u_content)
+            with codecs.open(m3u_path, 'w', encoding='utf-8') as f:
+                f.write(m3u_content)
+            print(
+                "[M3U] File created: %s (%d channels)" %
+                (m3u_path, channel_count))
 
             return channel_count
 
@@ -1323,19 +1479,27 @@ class vavoo_config(Screen, ConfigListScreen):
         already running on Enigma2's single GUI thread, so calling it
         directly would freeze the whole box for that long."""
         def task():
+            if self._closed:
+                return
             countries = self.get_countries_from_proxy()
+            if self._closed:
+                return
             reactor.callFromThread(on_done, countries)
         t = threading.Thread(target=task)
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
 
     def _fetch_channels_async(self, country_name, on_done):
         """Same as _fetch_countries_async(), for get_channels_for_country()."""
         def task():
+            if self._closed:
+                return
             channels = self.get_channels_for_country(country_name)
+            if self._closed:
+                return
             reactor.callFromThread(on_done, channels)
         t = threading.Thread(target=task)
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
 
     def check_and_start_proxy_async(
@@ -1464,8 +1628,11 @@ class vavoo_config(Screen, ConfigListScreen):
         own save API instead, so it's safe to call here.
         """
         try:
-            if cfg.epg_auto_update.value:
-                ensure_vavoo_epg_sources_enabled()
+            # Checks "Enable Vavoo EPG" itself; there is no separate
+            # option for this any more (it used to hide behind a
+            # second toggle named "Auto-update EPG", which sounded
+            # like it scheduled something - it never did).
+            ensure_vavoo_epg_sources_enabled()
 
         except Exception as e:
             print("[Vavoo] Error scheduling EPG update:", str(e))
@@ -1475,15 +1642,23 @@ class vavoo_config(Screen, ConfigListScreen):
             for x in self["config"].list:
                 x[1].save()
 
-            if self.old_proxy_enabled != cfg.proxy_enabled.value:
-                if cfg.proxy_enabled.value:
-                    run_proxy_in_background(
-                        startup_timeout=cfg.proxy_startup_timeout.value)
-                    # Schedule a non‑blocking status check after 1 second
-                    reactor.callLater(1, self._check_proxy_started)
-                else:
-                    shutdown_proxy()
-                self.old_proxy_enabled = cfg.proxy_enabled.value
+            # Tracks whether this save() has already restarted the
+            # proxy, so the "Manage EPG source" block further down
+            # doesn't start it a second time.
+            restart_handled = False
+
+            if self.old_catalog_source != cfg.catalog_source.value:
+                self.old_catalog_source = cfg.catalog_source.value
+                # initialize_proxy() only reads catalog_source once, at
+                # startup - restart the proxy so the new choice actually
+                # takes effect. Stop + wait for the port + start all
+                # happen off the GUI thread; calling shutdown_proxy()
+                # and run_proxy_in_background() back to back right
+                # here used to find the old server still listening and
+                # skip the start altogether.
+                restart_proxy_in_background()
+                reactor.callLater(1, self._check_proxy_started)
+                restart_handled = True
 
             # Sync the anonymous-stats opt-out file with this toggle -
             # is_stats_enabled() (vavoo_stats.py) checks for this file's
@@ -1504,14 +1679,15 @@ class vavoo_config(Screen, ConfigListScreen):
             except Exception as e:
                 print("[Config] Error syncing stats opt-out: " + str(e))
 
-            # Manage EPG source
-            if cfg.epg_enabled.value and not is_proxy_running():
-                run_proxy_in_background(
-                    startup_timeout=cfg.proxy_startup_timeout.value)
+            # Manage EPG source - skipped if a restart already happened
+            # above in this same save() (catalog_source changing).
+            if cfg.epg_enabled.value and not is_proxy_running() and not restart_handled:
+                run_proxy_in_background()
                 # No sleep here – the proxy will become ready asynchronously
 
-            # If auto‑update is enabled, schedule the EPG update
-            if cfg.epg_enabled.value and cfg.epg_auto_update.value:
+            # With the EPG on, make sure its source(s) are enabled in
+            # EPGImport too.
+            if cfg.epg_enabled.value:
                 self.schedule_epg_update()
 
             # Apply any change to the scheduled bouquet auto-update timer
@@ -1555,12 +1731,29 @@ class vavoo_config(Screen, ConfigListScreen):
 
             self.close()
 
-    def _check_proxy_started(self):
-        """Callback to verify proxy has started (non‑blocking)."""
-        if cfg.proxy_enabled.value and not is_proxy_running():
+    def _check_proxy_started(self, attempts=0):
+        """Callback to verify proxy has started (non‑blocking).
+
+        Capped by cfg.proxy_startup_timeout instead of retrying every 2s
+        forever - previously, if the proxy never came up (missing
+        binary, crash-loop, blocked network), this rescheduled itself
+        indefinitely for the life of the Enigma2 process, keeping this
+        (by then already-closed, since save() closes the screen right
+        after scheduling this) vavoo_config instance alive forever."""
+        try:
+            timeout_secs = int(cfg.proxy_startup_timeout.value)
+        except (TypeError, ValueError):
+            timeout_secs = 30
+        max_attempts = max(1, timeout_secs // 2)
+        if not is_proxy_running():
+            if attempts >= max_attempts:
+                print(
+                    "[Config] Proxy still not ready after {}s, giving up".format(
+                        timeout_secs))
+                return
             print("[Config] Proxy not yet ready, will check later")
-            # Optionally schedule another check after 2 seconds
-            reactor.callLater(2, self._check_proxy_started)
+            reactor.callLater(
+                2, lambda: self._check_proxy_started(attempts + 1))
         else:
             print("[Config] Proxy is ready")
 
@@ -1715,11 +1908,6 @@ class startVavoo(Screen):
     def _check_ready(self):
         self._elapsed_ms += self.POLL_MS
 
-        if not cfg.proxy_enabled.value:
-            # Nothing to wait for - proceed right away.
-            self._finish()
-            return
-
         # The proxy's HTTP port only opens once the whole catalog has
         # loaded, so every connection is refused until then. Check the
         # port cheaply first (near-instant) and only pay for the HTTP
@@ -1774,12 +1962,9 @@ class startVavoo(Screen):
     # ── proxy kickoff (non-blocking - see run_proxy_in_background) ──────────
     def _start_proxy_if_needed(self):
         try:
-            if not cfg.proxy_enabled.value:
-                return
             if is_proxy_running() and is_proxy_ready(timeout=0.5):
                 return
-            run_proxy_in_background(
-                startup_timeout=cfg.proxy_startup_timeout.value)
+            run_proxy_in_background()
         except Exception as e:
             print("[startVavoo] proxy start error: " + str(e))
 
@@ -1827,6 +2012,10 @@ class startVavoo(Screen):
     def clsgo(self):
         global first
         # stop any running timers safely
+        try:
+            self.timer.stop()
+        except Exception:
+            pass
         try:
             self._anim_timer.stop()
         except Exception:
@@ -1929,29 +2118,46 @@ def _shared_update_proxy_status_display(screen):
     for a sibling pair of constants, see PROXY_MONITOR_INTERVAL_MS
     above)."""
     try:
-        if not cfg.proxy_enabled.value:
-            screen['proxy_status'].setText(_("Proxy Disabled"))
-            return
         if is_proxy_running():
             try:
+                # retries=1: this runs synchronously on the GUI/reactor
+                # thread from a repeating 10s eTimer (MainVavoo and
+                # vavoo both have one) - getUrl()'s default retries=3
+                # with backoff could block the ENTIRE UI for up to
+                # ~18s on a slow/unresponsive proxy, out of every 10s
+                # window. is_proxy_ready() right next to this call's
+                # own callers already caps itself at a single attempt
+                # for exactly this reason - this call just hadn't
+                # matched it.
                 response = getUrl(
-                    PROXY_STATUS_URL, timeout=5)
+                    PROXY_STATUS_URL, timeout=5, retries=1)
                 if response:
                     status_data = loads(ensure_str(response))
 
-                    if status_data.get(
-                            "initialized", False) and status_data.get(
-                            "addon_sig_valid", False):
-                        token_age = status_data.get("addon_sig_age", 0)
-
-                        if token_age < 300:
-                            status_text = "✓ Proxy OK"
-                        elif token_age < 540:
-                            ttl = 600 - token_age
-                            status_text = "✓ Proxy (" + \
-                                str(int(ttl)) + "s)"
+                    # Geil (the default catalog source - see
+                    # vavoo_proxy.py's catalog_source) needs no
+                    # addonSig token at all, so addon_sig_valid is
+                    # always False while running on it - requiring it
+                    # unconditionally here showed "Proxy Error" on an
+                    # otherwise perfectly healthy Geil proxy.
+                    token_required = status_data.get(
+                        "catalog_source", "vavoo") != "geil"
+                    if status_data.get("initialized", False) and (
+                            not token_required or status_data.get(
+                                "addon_sig_valid", False)):
+                        if not token_required:
+                            status_text = "✓ Proxy OK (Geil)"
                         else:
-                            status_text = "Proxy (expiring)"
+                            token_age = status_data.get("addon_sig_age", 0)
+
+                            if token_age < 300:
+                                status_text = "✓ Proxy OK"
+                            elif token_age < 540:
+                                ttl = 600 - token_age
+                                status_text = "✓ Proxy (" + \
+                                    str(int(ttl)) + "s)"
+                            else:
+                                status_text = "Proxy (expiring)"
                     else:
                         status_text = "✗ Proxy Error"
                 else:
@@ -2008,11 +2214,63 @@ def _shared_confirm_reload_bouquets(screen, result):
         debug("User cancelled reload")
 
 
+def _is_country_locked(country_name):
+    """True if `country_name` is in the parental-control locked-country
+    list and a PIN is actually configured (an empty PIN means the
+    feature is off, same as every other opt-in cfg string in this
+    plugin). Module-level so both MainVavoo (opening a country's
+    channel list) and VavooFavourites (playing a favourite channel
+    that remembers which country it came from) can gate on it, instead
+    of only the former - a favourite from a locked country used to
+    play with no PIN prompt at all."""
+    pin = cfg.parental_pin.value.strip()
+    if not pin or not country_name:
+        return False
+    locked = [
+        c.strip().lower()
+        for c in cfg.parental_countries.value.split(',') if c.strip()
+    ]
+    return country_name.strip().lower() in locked
+
+
+def _require_parental_pin(session, screen, country_name, on_success):
+    """If country_name is locked, prompt for the PIN and call
+    on_success() only on a correct match; otherwise call on_success()
+    immediately. `screen` is the calling Screen instance, checked for
+    `_closed` before acting on the PIN result, since the prompt is an
+    async callback that can outlive a screen the user has since left."""
+    if not _is_country_locked(country_name):
+        on_success()
+        return
+
+    def _on_result(result):
+        if getattr(screen, '_closed', False):
+            return
+        if result is not None and result == cfg.parental_pin.value:
+            on_success()
+        else:
+            session.open(
+                MessageBox,
+                _("Incorrect PIN"),
+                MessageBox.TYPE_ERROR,
+                timeout=3)
+
+    session.openWithCallback(
+        _on_result,
+        VirtualKeyBoard,
+        title=_("Enter parental control PIN"))
+
+
 class MainVavoo(Screen):
     def __init__(self, session):
         self.session = session
         global _session
         _session = session
+
+        # So a background flag-download thread still in flight when the
+        # user exits (closex()) can notice and skip re-arming timers /
+        # touching UI on a screen that's no longer executing.
+        self._closed = False
 
         Screen.__init__(self, session)
         init_notification_system(session)
@@ -2033,55 +2291,38 @@ class MainVavoo(Screen):
         self._initialize_labels()
         self._initialize_actions()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
-        self.url = vUtils.b64decoder(stripurl)
         self.currentList = 'menulist'
-        self.loading_ok = False
-        self.count = 0
-        self.loading = 0
-        self.current_view = "categories"
-        self.flag_refresh_timer = eTimer()
+        # How many times in a row the country list came back empty -
+        # see _on_countries_response().
+        self._country_load_failures = 0
+
+        self.start_vavoo_proxy()
+
+        # Watchdog timer - check every 60 seconds
+        self.proxy_watchdog_timer = eTimer()
         try:
-            self.flag_refresh_timer.callback.append(
-                self.refresh_list_with_flags)
-        except Exception:
-            # Fallback in case the callback attribute does not exist
-            self.flag_refresh_timer.timeout.connect(
-                self.refresh_list_with_flags)
+            self.proxy_watchdog_timer.timeout.connect(
+                self._proxy_watchdog_check
+            )
+        except BaseException:
+            self.proxy_watchdog_timer.callback.append(
+                self._proxy_watchdog_check
+            )
 
-        if cfg.proxy_enabled.value:
-            self.start_vavoo_proxy()
+        self.proxy_watchdog_timer.start(PROXY_WATCHDOG_INTERVAL_MS)
 
-            # Watchdog timer - check every 60 seconds
-            self.proxy_watchdog_timer = eTimer()
-            try:
-                self.proxy_watchdog_timer.timeout.connect(
-                    self._proxy_watchdog_check
-                )
-            except BaseException:
-                self.proxy_watchdog_timer.callback.append(
-                    self._proxy_watchdog_check
-                )
+        # Monitor timer - check proxy status every 10 seconds
+        self.proxy_monitor_timer = eTimer()
+        try:
+            self.proxy_monitor_timer.timeout.connect(
+                self._check_and_update_proxy_status
+            )
+        except BaseException:
+            self.proxy_monitor_timer.callback.append(
+                self._check_and_update_proxy_status
+            )
 
-            self.proxy_watchdog_timer.start(PROXY_WATCHDOG_INTERVAL_MS)
-
-            # Monitor timer - check proxy status every 10 seconds
-            self.proxy_monitor_timer = eTimer()
-            try:
-                self.proxy_monitor_timer.timeout.connect(
-                    self._check_and_update_proxy_status
-                )
-            except BaseException:
-                self.proxy_monitor_timer.callback.append(
-                    self._check_and_update_proxy_status
-                )
-
-            self.proxy_monitor_timer.start(PROXY_MONITOR_INTERVAL_MS)
-
-        else:
-            print("[MainVavoo] Proxy disabled by configuration")
-
-            # Optional: stop proxy if it is running
-            shutdown_proxy()
+        self.proxy_monitor_timer.start(PROXY_MONITOR_INTERVAL_MS)
 
         # proxy_monitor_timer's first tick is still PROXY_MONITOR_INTERVAL_MS
         # (10s) away, so without this the label would sit on "Checking
@@ -2107,11 +2348,15 @@ class MainVavoo(Screen):
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
         self.menulist = []
-        global search_ok
-        search_ok = False
         self['menulist'] = m2list([])
         self['red'] = Label(_('Exit'))
-        self['green'] = Label(_('Remove') + ' Fav')
+        # Bound to msgdeleteBouquets, which deletes every Vavoo bouquet
+        # (country + category + container, see its own confirmation
+        # text) - not a single favourite. The `vavoo` screen's own
+        # green button is correctly labeled "Remove Fav" for its
+        # genuinely per-item action; reusing that exact caption here
+        # primed a user familiar with one screen to misread the other.
+        self['green'] = Label(_('Remove ALL'))
         self['yellow'] = Label()
         if cfg.epg_enabled.value:
             self['yellow'].setText(_("Fix Cache"))
@@ -2241,6 +2486,7 @@ class MainVavoo(Screen):
 
     def closex(self):
         debug("Exit from plugin. Cleaning up plugin timers...")
+        self._closed = True
         if is_stats_enabled():
             stop_heartbeat()
             print("[Stats] Heartbeat fermato")
@@ -2252,8 +2498,6 @@ class MainVavoo(Screen):
                 self.proxy_watchdog_timer.stop()
             if hasattr(self, '_update_popup_timer'):
                 self._update_popup_timer.stop()
-            if hasattr(self, 'flag_refresh_timer'):
-                self.flag_refresh_timer.stop()
             if hasattr(self, '_country_retry_timer'):
                 self._country_retry_timer.stop()
         except Exception as e:
@@ -2277,104 +2521,15 @@ class MainVavoo(Screen):
 
         self.close()
 
-    def preload_flags_for_visible_countries(self):
-        """Preload flags for visible countries"""
-        try:
-            if not hasattr(self, 'all_data'):
-                return
-
-            countries = set()
-            for entry in self.all_data:
-                country = url_unquote(entry["country"]).strip("\r\n")
-                if "➾" not in country:
-                    countries.add(country)
-
-            countries_list = sorted(list(countries))
-
-            print(
-                "[MainVavoo] Preloading flags for %d countries" %
-                len(countries_list))
-
-            # Preload first 8 flags SYNCHRONOUSLY
-            downloaded = 0
-            for i, country in enumerate(countries_list[:8]):  # First 8
-                try:
-                    success, _unused = download_flag_online(
-                        country, screen_width=screen_width)
-                    if success:
-                        downloaded += 1
-                        print("[Preload] OK: %s" % country)
-                except Exception as e:
-                    print("[Preload] Error %s: %s" % (country, str(e)))
-
-            print("[MainVavoo] Downloaded %d flags synchronously" % downloaded)
-
-            # Start timer for refresh after 1 second
-            if downloaded > 0:
-                self.flag_refresh_timer.start(1000, True)
-
-            # Download remaining in background
-            if len(countries_list) > 8:
-
-                def download_rest():
-                    downloaded_rest = 0
-                    for country in countries_list[8:]:
-                        try:
-                            success, _unused = download_flag_online(
-                                country, screen_width=screen_width)
-                            if success:
-                                downloaded_rest += 1
-                        except BaseException as e:
-                            debug(
-                                "Background flag download failed for {}: {}".format(
-                                    country, e))
-
-                    print("[Background] Finished downloading remaining flags")
-                    # The single-shot refresh above only covers the first
-                    # 8 countries - without this, flags for every country
-                    # after that silently never appear until something
-                    # else happens to rebuild the list.
-                    if downloaded_rest > 0:
-                        reactor.callFromThread(
-                            self.flag_refresh_timer.start, 1000, True)
-                thread = threading.Thread(target=download_rest)
-                thread.setDaemon(True)
-                thread.start()
-
-        except Exception as e:
-            print("[MainVavoo] Error preloading flags: %s" % str(e))
-
-    def refresh_list_with_flags(self):
-        """Refresh list to show downloaded flags (Python 2/3 compatible)"""
-        try:
-            print("[MainVavoo] Refreshing list to show downloaded flags")
-
-            # Recreate the list
-            if cfg.default_view.value == "countries":
-                self.show_countries_view()
-            else:
-                self.show_categories_view()
-
-            self._update_ui()
-
-            # Stop the timer
-            self.flag_refresh_timer.stop()
-
-        except Exception as e:
-            print("[MainVavoo] Error refreshing list: %s" % str(e))
-
     def _proxy_watchdog_check(self):
         """Watchdog to check if the proxy is still alive"""
         try:
-            if not cfg.proxy_enabled.value:
-                return
             if not is_proxy_running():
                 print("[Watchdog] Proxy not running, attempting restart...")
                 self['proxy_status'].setText(_(" Restarting..."))
 
                 # Try restart
-                timeout = cfg.proxy_startup_timeout.value
-                success = run_proxy_in_background(startup_timeout=timeout)
+                success = run_proxy_in_background()
 
                 if success:
                     print("[Watchdog] Proxy restarted successfully")
@@ -2388,9 +2543,6 @@ class MainVavoo(Screen):
 
     def _check_and_update_proxy_status(self):
         """Check and update the proxy status periodically"""
-        if not cfg.proxy_enabled.value:
-            self['proxy_status'].setText(_("Proxy Disabled"))
-            return
         try:
             if not is_proxy_ready(timeout=2):
                 self.proxy_needs_attention = True
@@ -2416,9 +2568,6 @@ class MainVavoo(Screen):
 
     def refresh_proxy(self):
         """Force proxy refresh"""
-        if not cfg.proxy_enabled.value:
-            self['name'].setText(_("Proxy disabled"))
-            return
         try:
             self.session.openWithCallback(
                 self._refresh_proxy_callback,
@@ -2545,9 +2694,6 @@ class MainVavoo(Screen):
         )
 
     def start_vavoo_proxy(self):
-        if not cfg.proxy_enabled.value:
-            return False
-
         # If the proxy is already active and working, do nothing
         if is_proxy_running() and is_proxy_ready(timeout=1):
             print("[MainVavoo] Proxy already ready")
@@ -2561,13 +2707,14 @@ class MainVavoo(Screen):
             return True
 
         print("[MainVavoo] Starting proxy...")
-        timeout = cfg.proxy_startup_timeout.value
-        success = run_proxy_in_background(startup_timeout=timeout)
+        success = run_proxy_in_background()
         if success:
             self._wait_for_proxy()
         return success
 
     def _wait_for_proxy(self, attempts=0):
+        if self._closed:
+            return
         # ConfigSelectionNumber.value has been confirmed (via a user log)
         # to come back as a str rather than an int on at least some
         # images/Python versions - "str" * 2 doesn't raise, it silently
@@ -2590,62 +2737,73 @@ class MainVavoo(Screen):
             reactor.callLater(0.5, lambda: self._wait_for_proxy(attempts + 1))
 
     def _restart_proxy(self):
-        """Restart the proxy asynchronously."""
+        """Restart the proxy without blocking the GUI - stopping the
+        old one, waiting for its port and starting the new one all
+        happen in vavoo_proxy's own helper thread."""
         try:
-            # 1. Try to shut down existing proxy (non‑blocking request)
-            try:
-                if requests is not None:
-                    requests.get(PROXY_SHUTDOWN_URL, timeout=2)
-                else:
-                    req = UrlRequest(
-                        PROXY_SHUTDOWN_URL, headers={
-                            'User-Agent': vUtils.RequestAgent()})
-                    urlopen(req, timeout=2)
-            except Exception as e:
-                debug("Graceful proxy shutdown request failed, "
-                      "falling back to pkill: {}".format(e))
-
-            # 2. Kill any remaining python processes
-            os_system("pkill -f 'python.*vavoo_proxy' 2>/dev/null")
-
-            # 3. Wait 2 seconds without blocking, then do the restart
-            reactor.callLater(2, self._do_restart_proxy)
+            restart_proxy_in_background()
         except Exception as e:
             print("[Restart] Error: {0}".format(e))
-
-    def _do_restart_proxy(self):
-        """Actually start the proxy after the delay."""
-        timeout = cfg.proxy_startup_timeout.value
-        run_proxy_in_background(startup_timeout=timeout)
 
     def cat(self):
         """
         Load and display the country list.
         Uses the local proxy if available, otherwise waits and retries.
         """
-        if not cfg.proxy_enabled.value:
-            self['name'].setText(_("Proxy disabled"))
-            return
-
         self.cat_list = []
         self.items_tmp = []
 
-        # If proxy is not ready yet, schedule a quick retry
-        if not is_proxy_ready(timeout=0.5):
+        # If proxy is not ready yet, schedule a quick retry. "Booting"
+        # counts as not ready even while the port still answers: right
+        # after a restart was requested (e.g. a changed catalog source
+        # in the settings), the old proxy keeps serving its old
+        # catalog for a moment before it goes down.
+        if is_proxy_booting() or not is_proxy_ready(timeout=0.5):
             print("[MainVavoo] Proxy not ready, will retry shortly")
-            if not hasattr(self, '_country_retry_timer'):
-                self._country_retry_timer = eTimer()
-                try:
-                    self._country_retry_timer.callback.append(self.cat)
-                except Exception:
-                    # Fallback in case the callback attribute does not exist
-                    self._country_retry_timer.timeout.connect(self.cat)
-            self._country_retry_timer.start(500, True)
+            self._retry_cat_later()
             return
 
+        # getUrl() below can block for tens of seconds (default
+        # retries=3 with backoff) on a slow/unresponsive proxy -
+        # fetch it off the GUI/reactor thread (same pattern
+        # _fetch_countries_async() already proves out for the M3U
+        # wizard) so a flaky proxy can't freeze the whole box while
+        # the main menu is loading, same as every other screen opening
+        # for the first time.
+        def _task():
+            if self._closed:
+                return
+            exc = None
+            response = None
+            try:
+                response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
+            except Exception as e:
+                exc = e
+            if self._closed:
+                return
+            reactor.callFromThread(self._on_countries_response, response, exc)
+
+        t = threading.Thread(target=_task)
+        t.daemon = True
+        t.start()
+
+    def _retry_cat_later(self):
+        """Run cat() again in 500ms (single shot)."""
+        if not hasattr(self, '_country_retry_timer'):
+            self._country_retry_timer = eTimer()
+            try:
+                self._country_retry_timer.callback.append(self.cat)
+            except Exception:
+                # Fallback in case the callback attribute does not exist
+                self._country_retry_timer.timeout.connect(self.cat)
+        self._country_retry_timer.start(500, True)
+
+    def _on_countries_response(self, response, exc):
+        if self._closed:
+            return
         try:
-            # Fetch countries from the proxy
-            response = getUrl(PROXY_COUNTRIES_URL, timeout=10)
+            if exc is not None:
+                raise exc
             if response:
                 countries = loads(ensure_str(response))
                 print(
@@ -2655,158 +2813,32 @@ class MainVavoo(Screen):
                     self.cat_list.append(show_list(country, country))
                 self._update_ui()
                 self["version"].setText(to_string("V." + __version__))
+                self._country_load_failures = 0
                 # Clear the retry timer if it exists
                 if hasattr(self, '_country_retry_timer'):
                     self._country_retry_timer.stop()
                     del self._country_retry_timer
                 return
             else:
-                print("[MainVavoo] Proxy countries request failed")
-                # Fallback to original method (may fail, but we try)
-                self._load_countries_from_original_source()
+                # The proxy is the only source of the country list -
+                # ask it again a few times before giving up. (This
+                # used to fall back to vavoo.to/kool.to's old
+                # "/channels" listing, which no longer exists - both
+                # answer 404 - so all it did was add ~10 seconds
+                # before showing nothing.)
+                self._country_load_failures += 1
+                print("[MainVavoo] Proxy countries request failed "
+                      "(attempt {})".format(self._country_load_failures))
+                if self._country_load_failures < 5:
+                    self._retry_cat_later()
+                else:
+                    self._country_load_failures = 0
+                    self["name"].setText(
+                        _("Could not load the country list from the proxy"))
         except Exception as e:
             print("[MainVavoo] Error in cat(): %s" % str(e))
             trace_error()
             self["name"].setText(to_string("Error loading data"))
-
-    def _load_countries_from_original_source(self):
-        """Fallback: load countries from the original source (may fail if blocked)."""
-        try:
-            content = self._get_content()
-            if PY3:
-                content = vUtils.ensure_str(content)
-            if not content:
-                self["name"].setText(to_string("Error: No data received"))
-                return
-            data = self._parse_json(content)
-            if data is None:
-                self["name"].setText(to_string("Error: Invalid data format"))
-                return
-            self.all_data = data
-            countries = set()
-            for entry in self.all_data:
-                country = url_unquote(entry["country"]).strip("\r\n")
-                if "➾" not in country and country.lower() != "default" and len(country) > 1:
-                    countries.add(country)
-            for country in sorted(countries):
-                self.cat_list.append(show_list(country, country))
-            self._update_ui()
-            self["version"].setText(to_string("V." + __version__))
-        except Exception as e:
-            print("[MainVavoo] Fallback error: %s" % str(e))
-            self["name"].setText(to_string("Error loading data"))
-
-    def _parse_select_options(self, html_content):
-        """Parses options from the HTML select menu"""
-        options = []
-
-        # Regex to find the select menu and its options
-        select_pattern = r'<select[^>]*>(.*?)</select>'
-        option_pattern = r'<option[^>]*value="([^"]*)"[^>]*>([^<]*)</option>'
-
-        select_match = compile(select_pattern, DOTALL).search(html_content)
-        if select_match:
-            select_content = select_match.group(1)
-            option_matches = compile(
-                option_pattern, DOTALL).findall(select_content)
-            for value, text in option_matches:
-                if value and text and text != "All countries":
-                    options.append((text.strip(), value))
-
-        return options
-
-    def _get_content(self):
-        """Get catalog content with 451-aware fallback to kool.to"""
-
-        def _try(url):
-            data = getUrl(url)
-            if PY3:
-                data = ensure_str(data)
-            return data
-
-        content = _try(self.url)
-
-        # Detect 451 or empty payload and try mirror
-        if (not content) or (content == HTTP_451_SENTINEL):
-            try:
-                if "vavoo.to" in self.url:
-                    fallback_url = self.url.replace(
-                        PRIMARY_BASE_URL, FALLBACK_BASE_URL)
-                else:
-                    # If self.url was altered somewhere, still try mirror
-                    fallback_url = FALLBACK_BASE_URL.rstrip("/") + "/channels"
-
-                print(
-                    "[PROXY] Primary source blocked/empty, trying mirror: {0}".format(fallback_url))
-                content2 = _try(fallback_url)
-                if content2 and content2 != HTTP_451_SENTINEL:
-                    return content2
-            except Exception as e:
-                print("[PROXY] Mirror fallback failed: %s" % str(e))
-
-        # If still blocked, return empty so UI shows the existing error
-        if content == HTTP_451_SENTINEL:
-            return ""
-        return content
-
-    def _parse_json(self, content):
-        try:
-            return loads(content)
-        except ValueError:
-            print("Error parsing JSON data")
-            self["name"].setText(_("Error parsing data"))
-            return None
-
-    def show_categories_view(self):
-        """Show only categories (without main countries) - SINGLE FILE EXPORT"""
-        if not cfg.proxy_enabled.value:
-            self.session.open(
-                MessageBox,
-                _("Proxy is disabled. Please enable it in the configuration."),
-                MessageBox.TYPE_WARNING,
-                timeout=5
-            )
-            return
-
-        self.current_view = "categories"
-        self.cat_list = []
-
-        if not hasattr(self, 'all_data'):
-            return
-
-        categories = set()
-        for entry in self.all_data:
-            country = url_unquote(entry["country"]).strip("\r\n")
-            if "➾" in country:
-                categories.add(country)
-
-        categories_list = sorted(list(categories))
-
-        for category in categories_list:
-            self.cat_list.append(show_list(category, self.url, True))
-
-        self._update_ui()
-
-    def show_countries_view(self):
-        """Show only main countries"""
-        self.current_view = "countries"
-        self.cat_list = []
-
-        if not hasattr(self, 'all_data'):
-            return
-
-        countries = set()
-        for entry in self.all_data:
-            country = url_unquote(entry["country"]).strip("\r\n")
-            if "➾" not in country:
-                countries.add(country)
-
-        countries_list = sorted(list(countries))
-
-        for country in countries_list:
-            self.cat_list.append(show_list(country, self.url))
-
-        self._update_ui()
 
     def ok(self):
         try:
@@ -2818,35 +2850,32 @@ class MainVavoo(Screen):
             name = current_item[0][0]  # Country name (e.g., "Italy")
             print("[MainVavoo] Selected: " + str(name))
 
-            # Pass ONLY the country name to the vavoo class
-            # The vavoo class will handle the proxy internally
-            try:
-                if not cfg.proxy_enabled.value:
-                    self.session.open(
-                        MessageBox,
-                        _("Proxy is disabled. Please Set Proxy On first. -- Menu Config --"),
-                        MessageBox.TYPE_WARNING,
-                        timeout=5)
-                    return
-
-                if not is_proxy_running():
-                    self.session.open(
-                        MessageBox,
-                        _("Proxy is not running. Please start the proxy first.") +
-                        "\n" +
-                        _("You can start it from the menu or by pressing the TEXT button."),
-                        MessageBox.TYPE_WARNING,
-                        timeout=5)
-                    return
-
-                # Pass ONLY the country name to the vavoo class
-                self.session.open(vavoo, name, None)
-            except Exception as e:
-                print("Error opening vavoo screen: " + str(e))
-                trace_error()
+            _require_parental_pin(
+                self.session, self, name,
+                lambda: self._open_country(name))
 
         except Exception as e:
             print("Error in ok method: " + str(e))
+            trace_error()
+
+    def _open_country(self, name):
+        # Pass ONLY the country name to the vavoo class
+        # The vavoo class will handle the proxy internally
+        try:
+            if not is_proxy_running():
+                self.session.open(
+                    MessageBox,
+                    _("Proxy is not running. Please start the proxy first.") +
+                    "\n" +
+                    _("You can start it from the menu or by pressing the TEXT button."),
+                    MessageBox.TYPE_WARNING,
+                    timeout=5)
+                return
+
+            # Pass ONLY the country name to the vavoo class
+            self.session.open(vavoo, name, None)
+        except Exception as e:
+            print("Error opening vavoo screen: " + str(e))
             trace_error()
 
     def manual_epg_update(self):
@@ -2932,9 +2961,10 @@ class MainVavoo(Screen):
             # source list nextImport() just closes the import right
             # away - "0 events imported" with no error, since nothing
             # was actually queued to import in the first place.
-            cfg = EPGConfig.loadUserSettings()
+            epg_user_cfg = EPGConfig.loadUserSettings()
             sources = list(
-                EPGConfig.enumSources(CONFIG_PATH, filter=cfg["sources"]))
+                EPGConfig.enumSources(
+                    CONFIG_PATH, filter=epg_user_cfg["sources"]))
             if not sources:
                 self.session.open(
                     MessageBox,
@@ -2980,6 +3010,14 @@ class MainVavoo(Screen):
     def deleteBouquets(self, result):
         """Delete all Vavoo bouquets"""
         if result:
+            # Same lock message2()'s export uses - deleting every bouquet
+            # while an export's background thread is still writing one of
+            # them can corrupt it.
+            if not export_lock.acquire(False):
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(
+                        _("An export for another country is already in progress. Please wait."), 4)
+                return
             try:
                 removed_count = remove_bouquets_by_name()
 
@@ -3011,75 +3049,31 @@ class MainVavoo(Screen):
 
             except Exception as e:
                 print("Error in deleteBouquets: " + str(e))
+            finally:
+                export_lock.release()
 
     def goConfig(self):
         self.session.openWithCallback(self._on_config_closed, vavoo_config)
 
     def _on_config_closed(self, *args, **kwargs):
-        # called when user exits config
-        self._apply_proxy_setting_and_refresh_ui()
-
-    def _apply_proxy_setting_and_refresh_ui(self):
+        """Back from the settings screen: make sure the proxy is up,
+        restart the status timers and reload the country list (the
+        catalog source may have changed)."""
         try:
-            if cfg.proxy_enabled.value:
-                # Start proxy (already also done in config.save, but safe)
-                self.start_vavoo_proxy()
+            self.start_vavoo_proxy()
+            self.proxy_watchdog_timer.start(PROXY_WATCHDOG_INTERVAL_MS)
+            self.proxy_monitor_timer.start(PROXY_MONITOR_INTERVAL_MS)
 
-                # Start timers if they don't exist or were stopped
-                if not hasattr(self, "proxy_watchdog_timer"):
-                    self.proxy_watchdog_timer = eTimer()
-                    try:
-                        self.proxy_watchdog_timer.timeout.connect(
-                            self._proxy_watchdog_check)
-                    except BaseException:
-                        self.proxy_watchdog_timer.callback.append(
-                            self._proxy_watchdog_check)
+            self["proxy_status"].setText(_("Checking proxy..."))
+            try:
+                self._update_proxy_status_display()
+            except Exception as e:
+                debug("_update_proxy_status_display failed, label may "
+                      "stay stuck on 'Checking proxy...': {}".format(e))
 
-                if not hasattr(self, "proxy_monitor_timer"):
-                    self.proxy_monitor_timer = eTimer()
-                    try:
-                        self.proxy_monitor_timer.timeout.connect(
-                            self._check_and_update_proxy_status)
-                    except BaseException:
-                        self.proxy_monitor_timer.callback.append(
-                            self._check_and_update_proxy_status)
-
-                # (Re)start them
-                self.proxy_watchdog_timer.start(PROXY_WATCHDOG_INTERVAL_MS)
-                self.proxy_monitor_timer.start(PROXY_MONITOR_INTERVAL_MS)
-
-                # Refresh labels + list
-                self["proxy_status"].setText(_("Checking proxy..."))
-                try:
-                    self._update_proxy_status_display()
-                except Exception as e:
-                    debug("_update_proxy_status_display failed, label may "
-                          "stay stuck on 'Checking proxy...': {}".format(e))
-
-                # If previously proxy disabled, cat() would have returned early.
-                # Rebuild list now that proxy is enabled.
-                self.cat()
-
-            else:
-                # Stop timers if running
-                for tname in ("proxy_watchdog_timer", "proxy_monitor_timer"):
-                    if hasattr(self, tname):
-                        try:
-                            getattr(self, tname).stop()
-                        except Exception:
-                            pass
-
-                # Stop proxy process
-                shutdown_proxy()
-
-                # Update UI immediately
-                self["proxy_status"].setText(_("Proxy Disabled"))
-                self["name"].setText(_("Proxy disabled"))
-                self.cat_list = []
-                self._update_ui()
-
+            self.cat()
         except Exception as e:
-            print("[MainVavoo] Error applying proxy setting: " + str(e))
+            print("[MainVavoo] Error refreshing after settings: " + str(e))
 
     def info(self):
         """Display plugin information"""
@@ -3197,6 +3191,12 @@ class vavoo(Screen):
         global _session
         _session = session
 
+        # So a bouquet-export background thread still running when the
+        # user exits this screen (Screen.close() doesn't clear
+        # self.session, so that alone can't be used to detect this) can
+        # notice and skip touching this screen's UI/state afterward.
+        self._closed = False
+
         Screen.__init__(self, session)
         init_notification_system(session)
         self._load_skin()
@@ -3212,17 +3212,18 @@ class vavoo(Screen):
         self.option_value = option_value
         self._update_export_button_label()
 
-        self.current_view = "countries"  # default
+        # (name, url, logo_url) per currently-listed channel, parallel
+        # to cat_list - lets _refresh_channel_list_with_picons()
+        # rebuild the list once more picons have been cached, without
+        # re-fetching the channel data over the network.
+        self._channel_entries = []
+        self.picon_refresh_timer = eTimer()
         try:
-            for screen in self.session.dialog_stack:
-                if hasattr(screen, 'current_view'):
-                    self.current_view = screen.current_view
-                    print(
-                        "DEBUG: Got current_view from main screen: " +
-                        self.current_view)
-                    break
-        except Exception as e:
-            print("DEBUG: Error getting current_view: " + str(e))
+            self.picon_refresh_timer.callback.append(
+                self._refresh_channel_list_with_picons)
+        except Exception:
+            self.picon_refresh_timer.timeout.connect(
+                self._refresh_channel_list_with_picons)
 
         # Do NOT try to initialize proxy here - it should already be running
         # Just verify it's ready
@@ -3277,8 +3278,6 @@ class vavoo(Screen):
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
         self.menulist = []
-        global search_ok
-        search_ok = False
         self['menulist'] = m2list([])
         self['red'] = Label(_('Back'))
         self['green'] = Label(_('Export') + ' Fav')
@@ -3312,7 +3311,7 @@ class vavoo(Screen):
                 "blue": self.reload_bouquets_with_popup,
                 "cancel": self.backhome,
                 "menu": self.goConfig,
-                # "info": self.info,
+                "info": self.toggle_favourite,
                 "red": self.backhome
             },
             -1
@@ -3328,103 +3327,91 @@ class vavoo(Screen):
         self.timer.start(500, True)
 
     def cat(self):
-        """Load channels for the selected country with proxy verification and fallback"""
+        """Load this country's channels from the proxy.
+
+        The fetch is a blocking getUrl() call and this runs from a
+        GUI-thread eTimer every time a country is opened, so it runs
+        in a background thread (same pattern _fetch_countries_async()
+        already proves out for the M3U wizard) and only the actual
+        list-building is marshalled back to the reactor thread.
+
+        The proxy is the only source there is: a slow or empty answer
+        is simply asked for again (CHANNEL_FETCH_ATTEMPTS short tries
+        instead of one long one - a healthy proxy answers this from
+        memory in milliseconds, so a try that hasn't answered within
+        a few seconds isn't going to). This used to give up after a
+        single 10-second timeout and fall back to vavoo.to/kool.to's
+        old "/channels" listing, which no longer exists (both answer
+        404) - so one hiccup cost about 20 seconds and ended on an
+        empty screen, where simply asking again would have worked.
+        """
         debug("vavoo.cat() called for country: " + str(self.country_name))
-        if not cfg.proxy_enabled.value:
-            print("[vavoo] Proxy disabled, using fallback directly")
-            self._fallback_to_original_method()
-            return
-        try:
-            # 1. TRY THE PROXY FIRST
+
+        def _task():
+            if self._closed:
+                return
             try:
                 country_encoded = url_quote(self.country_name)
                 proxy_url = PROXY_BASE_URL + \
                     "/channels?country={}".format(country_encoded)
-                debug("Fetching from proxy: " + proxy_url)
 
-                content = ensure_str(getUrl(proxy_url, timeout=10))
+                channels_data = None
+                for attempt in range(CHANNEL_FETCH_ATTEMPTS):
+                    if self._closed:
+                        return
+                    debug("Fetching from proxy: " + proxy_url)
+                    try:
+                        content = ensure_str(
+                            getUrl(proxy_url, timeout=5, retries=1))
+                        if content and content.strip() and content != "null":
+                            channels_data = loads(content)
+                            break
+                    except Exception as proxy_error:
+                        debug("[cat] Proxy error: " + str(proxy_error))
+                    print("[vavoo] No channel list from proxy (attempt "
+                          "{}/{})".format(attempt + 1, CHANNEL_FETCH_ATTEMPTS))
+                    if attempt < CHANNEL_FETCH_ATTEMPTS - 1:
+                        time.sleep(1)
 
-                if content and content.strip() and content != "null":
-                    channels_data = loads(content)
-                    self._build_channel_list(channels_data)
+                if self._closed:
                     return
+                if channels_data is None:
+                    reactor.callFromThread(self._on_channels_unavailable)
                 else:
-                    debug(
-                        "[cat] Proxy returned empty response, trying fallback...")
-            except Exception as proxy_error:
-                debug("[cat] Proxy error: " + str(proxy_error))
+                    reactor.callFromThread(
+                        self._build_channel_list, channels_data)
 
-            # 2. FALLBACK: use the original method
-            self._fallback_to_original_method()
+            except Exception as e:
+                print("[ERROR] CRITICAL in cat(): " + str(e))
+                trace_error()
+                if not self._closed:
+                    reactor.callFromThread(self._handle_cat_error, e)
 
-        except Exception as e:
-            print("[ERROR] CRITICAL in cat(): " + str(e))
-            trace_error()
-            self._handle_cat_error(e)
+        t = threading.Thread(target=_task)
+        t.daemon = True
+        t.start()
 
-    def _fallback_to_original_method(self):
-        """Fallback to the original method without using the proxy"""
-        try:
-            print("[Fallback] Using original data source...")
-
-            # Retrieve data directly from vavoo.to
-            url = vUtils.b64decoder(stripurl)
-            content = ensure_str(getUrl(url, timeout=10))
-
-            # 451-aware mirror fallback
-            if (not content) or (content == HTTP_451_SENTINEL):
-                fb = url.replace(PRIMARY_BASE_URL, FALLBACK_BASE_URL)
-                print(
-                    "[Fallback] Primary source blocked/empty, trying mirror: %s" %
-                    fb)
-                content = ensure_str(getUrl(fb, timeout=10))
-                if content == HTTP_451_SENTINEL:
-                    content = ""
-
-            if not content:
-                self['name'].setText(to_string("Error: No data received"))
-                return
-
-            data = loads(content)
-            self.cat_list = []
-
-            for entry in data:
-                country = url_unquote(entry.get("country", "")).strip("\r\n")
-                if self.country_name in country:  # Partial match
-                    name = entry.get("name", "")
-                    url = entry.get("url", "")
-
-                    if name and url:
-                        self.cat_list.append(
-                            show_list(name, url, is_channel=True)
-                        )
-
-            if not self.cat_list:
-                self['name'].setText(
-                    to_string("No channels found for " + self.country_name)
-                )
-                return
-
-            self.itemlist = [
-                item[0][0] + "###" + item[0][1]
-                for item in self.cat_list
-            ]
-            self.update_menu()
-            print(
-                "[Fallback] Loaded " +
-                str(len(self.cat_list)) +
-                " channels"
-            )
-
-        except Exception as e:
-            print("[Fallback] Error: " + str(e))
-            self['name'].setText(
-                to_string("Error loading channels")
-            )
+    def _on_channels_unavailable(self):
+        """cat() got nothing from the proxy after all its tries."""
+        if self._closed:
+            return
+        self['name'].setText(
+            _("Could not load channels - proxy not responding"))
 
     def _build_channel_list(self, channels_data):
         """Build channel list from proxy data"""
+        # cat()'s background _task() already checks self._closed before
+        # scheduling this via reactor.callFromThread, but that only
+        # queues the call - the user can still press Back/Cancel (which
+        # sets self._closed and tears the screen down) in the gap
+        # before the reactor actually runs it. Every sibling path that
+        # can land here the same way (_on_channels_unavailable(),
+        # MainVavoo._on_countries_response()) already re-checks this as
+        # its first line - this one was missing it.
+        if self._closed:
+            return
         self.cat_list = []
+        self._channel_entries = []
 
         if not isinstance(channels_data, list):
             print("[vavoo] Invalid channels data type: " +
@@ -3435,9 +3422,17 @@ class vavoo(Screen):
             if isinstance(channel, dict):
                 channel_name = channel.get("name", "Unknown")
                 channel_url = channel.get("url", "")
+                # Already fixed up (Geil/Vavoo) by our own proxy's
+                # /channels endpoint - no need to run it through
+                # fix_logo_url() again here.
+                logo = channel.get("logo", "")
 
+                self._channel_entries.append(
+                    (channel_name, channel_url, logo))
                 self.cat_list.append(
-                    show_list(channel_name, channel_url, is_channel=True)
+                    show_list(
+                        channel_name, channel_url, is_channel=True,
+                        logo_url=logo)
                 )
 
         if not self.cat_list:
@@ -3448,7 +3443,93 @@ class vavoo(Screen):
             item[0][0] + "###" + item[0][1] for item in self.cat_list
         ]
         self.update_menu()
+        self._preload_channel_picons()
         debug("List built with " + str(len(self.cat_list)) + " items.")
+
+    def _preload_channel_picons(self):
+        """Download picons for this country's channel list in the
+        background (see show_list()'s logo_url handling), then
+        refresh the list once they land.
+
+        Entirely on a background thread, including the first batch -
+        this runs right after _build_channel_list() on the
+        GUI/reactor thread itself, so a
+        synchronous network call here would block the UI exactly the
+        way this session's getUrl()-on-the-GUI-thread fixes were
+        about avoiding. Downloads a first batch and refreshes the
+        list so the visible screenful gets its picons quickly, then
+        keeps going through the rest with one final refresh.
+        """
+        entries = [
+            entry for entry in self._channel_entries if entry[2]
+        ]
+        if not entries:
+            return
+
+        first_batch_size = 20
+
+        def _download_batch(batch):
+            count = 0
+            for name, url, logo in batch:
+                if self._closed:
+                    break
+                try:
+                    success, _unused = download_picon_online(logo)
+                    if success:
+                        count += 1
+                except Exception as e:
+                    debug("Picon download failed for {}: {}".format(
+                        name, e))
+            return count
+
+        def _worker():
+            first = _download_batch(entries[:first_batch_size])
+            if first > 0 and not self._closed:
+                reactor.callFromThread(
+                    self.picon_refresh_timer.start, 500, True)
+            if len(entries) > first_batch_size and not self._closed:
+                rest = _download_batch(entries[first_batch_size:])
+                if rest > 0 and not self._closed:
+                    reactor.callFromThread(
+                        self.picon_refresh_timer.start, 500, True)
+
+        t = threading.Thread(target=_worker)
+        t.daemon = True
+        t.start()
+
+    def _refresh_channel_list_with_picons(self):
+        """Rebuild the channel list from the already-fetched channel
+        data (no new network fetch) so rows whose picon finished
+        downloading since the list was first built pick it up."""
+        self.picon_refresh_timer.stop()
+        if self._closed or not self._channel_entries:
+            return
+        try:
+            # setList() below replaces the whole list - preserve
+            # wherever the user had scrolled to instead of silently
+            # snapping back to the top under them.
+            try:
+                selected_index = self['menulist'].getSelectedIndex()
+            except Exception:
+                selected_index = None
+
+            self.cat_list = [
+                show_list(name, url, is_channel=True, logo_url=logo)
+                for name, url, logo in self._channel_entries
+            ]
+            self.itemlist = [
+                item[0][0] + "###" + item[0][1] for item in self.cat_list
+            ]
+            self.update_menu()
+
+            if selected_index is not None and self.cat_list:
+                try:
+                    self['menulist'].moveToIndex(
+                        min(selected_index, len(self.cat_list) - 1))
+                except Exception:
+                    pass
+        except Exception as e:
+            print("[vavoo] Error refreshing picon list: %s" % str(e))
 
     def _handle_cat_error(self, e):
         """Handle cat() method errors"""
@@ -3491,23 +3572,39 @@ class vavoo(Screen):
                 print("No selection available")
                 return
 
+            # Parallel to cat_list (see _channel_entries' own
+            # declaration comment) - lets Playstream2 show this
+            # channel's picon on its playback overlay without a
+            # second network fetch, the same way country_codes lets
+            # it keep EPG lookups matched to the right country.
+            logo_urls = [entry[2] for entry in self._channel_entries]
+            logo_url = (
+                self._channel_entries[i][2]
+                if 0 <= i < len(self._channel_entries) else None)
+
             self.play_that_shit(
                 url,
                 name,
                 self.currentindex,
                 item,
-                self.cat_list)
+                self.cat_list,
+                logo_url,
+                logo_urls)
         except Exception as e:
             print('error as:', e)
             trace_error()
 
-    def play_that_shit(self, url, name, index, item, cat_list):
+    def play_that_shit(
+            self, url, name, index, item, cat_list,
+            logo_url=None, logo_urls=None):
         try:
             country_code = get_country_code(self.country_name)
             self.session.open(
                 Playstream2,
                 name, url, index, item, cat_list,
-                country_code=country_code
+                country_code=country_code,
+                logo_url=logo_url,
+                logo_urls=logo_urls
             )
         except Exception as e:
             print("Error in play_that_shit: {}".format(e))
@@ -3518,6 +3615,36 @@ class vavoo(Screen):
                 MessageBox.TYPE_ERROR,
                 timeout=3
             )
+
+    def toggle_favourite(self):
+        """Star/unstar the highlighted channel - same selection lookup
+        ok() uses, bound to the 'info' key (free in this screen: no
+        info() method exists here, unlike MainVavoo's unrelated one)."""
+        try:
+            i = self['menulist'].getSelectedIndex()
+            selection = self['menulist'].l.getCurrentSelection()
+            if selection is None:
+                return
+            item = self.cat_list[i][0]
+            name = item[0]
+            url = item[1]
+        except Exception as e:
+            print('[vavoo] toggle_favourite selection error:', e)
+            return
+
+        now_favourite = vUtils.toggle_favourite(
+            name, url,
+            country_name=self.country_name,
+            country_code=get_country_code(self.country_name))
+        if now_favourite is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Could not update favourites"), 3)
+            return
+        if NOTIFICATION_AVAILABLE:
+            if now_favourite:
+                quick_notify(_("Added to favourites: {}").format(name), 3)
+            else:
+                quick_notify(_("Removed from favourites: {}").format(name), 3)
 
     def _update_export_button_label(self):
         """Green button reads 'Remove Fav' if this bouquet is already
@@ -3560,6 +3687,14 @@ class vavoo(Screen):
         if not answer:
             print("Remove favorite cancelled by user")
             return
+        # Same lock message2()'s export uses - removing a bouquet while
+        # its own (or another country's) export background thread is
+        # still writing the same files/Favorite.txt can corrupt them.
+        if not export_lock.acquire(False):
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(
+                    _("An export for another country is already in progress. Please wait."), 4)
+            return
         try:
             removed = remove_bouquets_by_name(self.name)
             if removed > 0:
@@ -3577,6 +3712,8 @@ class vavoo(Screen):
             print("[vavoo] Error removing favorite: {}".format(e))
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Remove failed: {}").format(str(e)), 4)
+        finally:
+            export_lock.release()
         self._update_export_button_label()
 
     def message2(self, name, url, response):
@@ -3591,7 +3728,7 @@ class vavoo(Screen):
             return
 
         self._export_type = "hierarchical" if any(
-            sep in name for sep in ["➾", "⟾", "->", "→"]) else "flat"
+            sep in name for sep in GROUP_NAME_SEPARATORS) else "flat"
 
         try:
             export_bouquet_async(
@@ -3631,7 +3768,11 @@ class vavoo(Screen):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
-                self._update_export_button_label()
+                # Notifying is fine even if the user has since left this
+                # screen (quick_notify() is session-global), but touching
+                # this screen's own widgets after close() is not.
+                if not self._closed:
+                    self._update_export_button_label()
                 # Register with Favorite.txt so "Scheduled List" auto-update
                 # (AutoStartTimer) picks this bouquet up going forward -
                 # that feature only ever re-updates bouquets already listed
@@ -3661,10 +3802,13 @@ class vavoo(Screen):
                     quick_notify(message, 3)
 
         except Exception as e:
+            # Intentionally swallowed so a UI-touching failure here (e.g.
+            # _update_export_button_label() on a screen the user has
+            # since left) can't crash the export callback - but that
+            # means it's log-only, with no user-visible indication.
             print("[Bouquet] Error in _on_export_complete: %s" % e)
 
     def search_vavoo(self):
-        self.saved_itemlist = self.itemlist
         self.session.openWithCallback(
             self.onSearchResult, VavooSearch, self, self.itemlist)
 
@@ -3740,6 +3884,7 @@ class vavoo(Screen):
             self['name'].setText(_("Error"))
 
     def close(self, *args, **kwargs):
+        self._closed = True
         try:
             self.timer.stop()
             try:
@@ -3762,12 +3907,252 @@ class vavoo(Screen):
                 self.proxy_status_timer.stop()
         except Exception as e:
             print("Error stopping proxy_status_timer: " + str(e))
+        try:
+            if hasattr(self, 'picon_refresh_timer'):
+                self.picon_refresh_timer.stop()
+        except Exception as e:
+            print("Error stopping picon_refresh_timer: " + str(e))
         return Screen.close(self, *args, **kwargs)
 
     def backhome(self):
-        if search_ok:
-            self.cat()
+        # search_ok (previously gating an alternate self.cat() branch
+        # here) was always False and never set True anywhere in this
+        # file - VavooSearch now uses a direct openWithCallback/
+        # return-value pattern instead. Removed as dead code.
         self.close()
+
+
+class VavooFavourites(Screen):
+    """Browse and play starred channels (see vUtils.toggle_favourite()/
+    load_favourites()). Deliberately minimal compared to the `vavoo`
+    class: no country/proxy fetching, no auto-update timer - just a
+    static list built once from the favourites file. Reuses
+    defaultListScreen.xml (the same skin `vavoo`/`MainVavoo` already
+    load) so there's no new skin XML to keep in sync across
+    resolutions."""
+
+    def __init__(self, session):
+        self.session = session
+        Screen.__init__(self, session)
+        skin = join(skin_path, 'defaultListScreen.xml')
+        if isfile('/var/lib/dpkg/status'):
+            skin = skin.replace('.xml', '_cvs.xml')
+        with codecs.open(skin, "r", encoding="utf-8") as f:
+            self.skin = apply_selected_background(f.read())
+
+        init_notification_system(session)
+        self._closed = False
+        self.onClose.append(self._mark_closed)
+
+        self.cat_list = []
+        self['menulist'] = m2list([])
+        self['name'] = Label(_('Favourites'))
+        self['version'] = Label(to_string("V." + __version__))
+        self['proxy_status'] = Label('')
+        self['red'] = Label(_('Back'))
+        self['green'] = Label(_('Remove'))
+        self['yellow'] = Label()
+        self['blue'] = Label()
+
+        self['actions'] = ActionMap(
+            ['OkCancelActions', 'ColorActions', 'DirectionActions'],
+            {
+                "up": self.moveUp,
+                "down": self.moveDown,
+                "ok": self.ok,
+                "green": self.remove_selected,
+                "cancel": self.close,
+                "red": self.close,
+            },
+            -1
+        )
+        self.onLayoutFinish.append(self._build_list)
+
+    def _mark_closed(self):
+        self._closed = True
+
+    def _build_list(self):
+        favourites = vUtils.load_favourites()
+        # Kept as a parallel list (same order/indices as cat_list) so
+        # ok()/remove_selected() can look up each row's country_name/
+        # country_code - show_list()'s (name, url) tuple has no room
+        # for them, and they're needed for the parental-control check
+        # and for EPG matching in Playstream2.
+        self.favourite_entries = sorted(
+            favourites.values(), key=lambda e: e.get('name', ''))
+        self.cat_list = [
+            show_list(entry['name'], entry['url'], is_channel=True)
+            for entry in self.favourite_entries
+        ]
+        if self.cat_list:
+            self['menulist'].l.setList(self.cat_list)
+        else:
+            self['menulist'].l.setList([])
+            self['name'].setText(_('No favourites yet'))
+
+    def moveUp(self):
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx - 1) % len(self.cat_list))
+
+    def moveDown(self):
+        if not self.cat_list:
+            return
+        idx = self['menulist'].getSelectedIndex()
+        self['menulist'].moveToIndex((idx + 1) % len(self.cat_list))
+
+    def _current_selection(self):
+        """Returns (index, item, name, url) for the highlighted row, or
+        (None, None, None, None) if nothing is selected."""
+        if not self.cat_list:
+            return None, None, None, None
+        i = self['menulist'].getSelectedIndex()
+        selection = self['menulist'].l.getCurrentSelection()
+        if selection is None:
+            return None, None, None, None
+        item = self.cat_list[i][0]
+        return i, item, item[0], item[1]
+
+    def ok(self):
+        try:
+            i, item, name, url = self._current_selection()
+            if name is None:
+                return
+            entry = self.favourite_entries[i]
+            country_name = entry.get('country_name')
+            country_code = entry.get('country_code')
+
+            # Parallel to self.cat_list - favourites can mix channels
+            # from several countries (unlike every other Playstream2
+            # caller's single-country list), so channel-surfing
+            # (nextitem()/previousitem()) needs a country_code per
+            # entry to keep EPG lookups matched to the right country
+            # instead of staying stuck on this first channel's one.
+            country_codes = [
+                e.get('country_code') for e in self.favourite_entries]
+
+            def _play():
+                self.session.open(
+                    Playstream2,
+                    name, url, i, item, self.cat_list,
+                    country_code=country_code,
+                    country_codes=country_codes
+                )
+            # A favourite from a locked country used to play with no
+            # PIN prompt at all, since this screen never checked
+            # parental control - see MainVavoo.ok()'s own use of the
+            # same helper for the channel-browsing path.
+            _require_parental_pin(self.session, self, country_name, _play)
+        except Exception as e:
+            print('[VavooFavourites] Error opening channel:', e)
+            trace_error()
+
+    def remove_selected(self):
+        _i, _item, name, url = self._current_selection()
+        if name is None:
+            return
+        now_favourite = vUtils.toggle_favourite(name, url)
+        if now_favourite is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Could not update favourites"), 3)
+            return
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Removed from favourites: {}").format(name), 3)
+        self._build_list()
+
+
+class VavooLogViewer(Screen):
+    """Dedicated log-tail viewer with real up/down/page scrolling -
+    Console.py (used for this previously) has none at all: its text
+    widget is a plain Label that always shows just the last ~13 lines
+    of whatever's been printed, by design (built for live
+    install-script output, where only the latest line matters - fine
+    there, useless for browsing a static multi-hundred-line log file
+    where most of it is further back than that).
+
+    Reuses Console's own skin (the exact same inline XML, picked for
+    the current resolution once at Console's class-definition time -
+    no new skin file to keep in sync across hd/fhd/wqhd) but not
+    Console's class or ActionMap: this reads the file directly in
+    Python (no eConsoleAppContainer/shell command needed for a plain
+    file read) and binds OkCancelActions - the convention every other
+    screen in this file actually uses - instead of Console's
+    WizardActions/"exit", which nothing else here relies on."""
+
+    VISIBLE_LINES = Console.VISIBLE_LINES
+
+    def __init__(self, session, title, file_path, tail_lines=200):
+        Screen.__init__(self, session)
+        # Same skin, minus the two things that don't apply to a
+        # read-only log view: the static "Command execution..."
+        # header and the green "Restart GUI" caption (no green key
+        # bound here at all - same reasoning as Console.py's own
+        # allow_restart=False path).
+        self.skin = Console.skin.replace(
+            'Command execution...', title
+        ).replace('text="Restart GUI"', 'text=""')
+        self._closed = False
+        self.onClose.append(self._mark_closed)
+
+        try:
+            with codecs.open(
+                    file_path, 'r', encoding='utf-8',
+                    errors='replace') as f:
+                self.lines = [
+                    line.rstrip('\n') for line in f.readlines()[-tail_lines:]]
+        except Exception as e:
+            self.lines = ["Could not read {}: {}".format(file_path, e)]
+
+        # Start scrolled to the most recent lines (what "tail" means),
+        # same as the command this replaced - up/page-up reach
+        # earlier ones.
+        self.offset = max(0, len(self.lines) - self.VISIBLE_LINES)
+
+        self['text'] = Label('')
+        self['key_red'] = Label(_('Close'))
+        self['actions'] = ActionMap(
+            ['OkCancelActions', 'ColorActions', 'DirectionActions'],
+            {
+                "ok": self.close,
+                "cancel": self.close,
+                "red": self.close,
+                "up": self.moveUp,
+                "down": self.moveDown,
+                "left": self.pageUp,
+                "right": self.pageDown,
+            },
+            -1
+        )
+        self.onLayoutFinish.append(self._render)
+
+    def _mark_closed(self):
+        self._closed = True
+
+    def _max_offset(self):
+        return max(0, len(self.lines) - self.VISIBLE_LINES)
+
+    def _render(self):
+        window = self.lines[self.offset:self.offset + self.VISIBLE_LINES]
+        self['text'].setText('\n'.join(window))
+
+    def moveUp(self):
+        if self.offset > 0:
+            self.offset -= 1
+            self._render()
+
+    def moveDown(self):
+        if self.offset < self._max_offset():
+            self.offset += 1
+            self._render()
+
+    def pageUp(self):
+        self.offset = max(0, self.offset - self.VISIBLE_LINES)
+        self._render()
+
+    def pageDown(self):
+        self.offset = min(self._max_offset(), self.offset + self.VISIBLE_LINES)
+        self._render()
 
 
 # --- Live search screen ---
@@ -3929,7 +4314,7 @@ class VavooSearch(Screen):
                     name = item.split('###')[0].lower()
                     if text in name:
                         self.filteredList.append(item)
-                except BaseException:
+                except Exception:
                     continue
 
             if self.filteredList:
@@ -3973,8 +4358,15 @@ class VavooSearch(Screen):
                 url = item.split('###')[1].replace(
                     '%0a', '').replace(
                     '%0A', '').strip("\r\n")
-                display_list.append(show_list(name, url))
-            except BaseException:
+                # Without is_channel=True, show_list() takes its
+                # "this is a country name" branch for every search
+                # result - running get_country_code()'s full linear
+                # scan + substring match (and a disk stat) against
+                # the whole country table for each row, on every
+                # single keystroke, and occasionally resolving a
+                # channel name to a bogus flag icon by accident.
+                display_list.append(show_list(name, url, is_channel=True))
+            except Exception:
                 continue
         self["channel_list"].l.setList(display_list)
 
@@ -4055,7 +4447,27 @@ class TvInfoBarShowHide():
         self.__locked = 0
         debug("TvInfoBarShowHide.__init__ state={}")
 
-        # Top overlay: controls + proxy status
+        # Current channel's picon, bottom-left of the screen (see
+        # OVERLAY_PICON_W/H/X/Y's own comment) - populated read-only
+        # from the on-disk picon cache by show_help_overlay(), same
+        # "only ever read the cache, never download here" rule
+        # show_list() follows for the channel list. Only
+        # vavoo.ok()/play_that_shit() passes a logo_url into
+        # Playstream2 today, so this stays empty/hidden for
+        # Favourites/Search playback. zPosition=99 draws it above the
+        # stock MoviePlayer skin's own placeholder icon in that
+        # corner.
+        self.channelPicon = Pixmap()
+        self.channelPicon.skinAttributes = [
+            ("position", "{},{}".format(OVERLAY_PICON_X, OVERLAY_PICON_Y)),
+            ("size", "{},{}".format(OVERLAY_PICON_W, OVERLAY_PICON_H)),
+            ("zPosition", "99"),
+        ]
+        self["channelPicon"] = self.channelPicon
+        self["channelPicon"].hide()
+
+        # Top overlay: controls + proxy status - full width, the
+        # picon above no longer shares this bar.
         self.helpOverlay = Label("")
         self.helpOverlay.skinAttributes = [
             ("position", "0,0"),
@@ -4124,6 +4536,77 @@ class TvInfoBarShowHide():
         """Method to be overridden by child class (Playstream2)."""
         return "EPG not available"
 
+    def _update_overlay_picon(self):
+        """Show the current channel's picon on the help overlay, if
+        one is already cached - read-only, same rule show_list()
+        follows for the channel list: never download synchronously
+        here. Relies on the channel-list screen's own background
+        preload (_preload_channel_picons()) having already fetched it
+        while the user was browsing; if it hasn't yet, this channel's
+        overlay just shows no picon for this viewing - no retry/
+        refresh is attempted here.
+
+        Uses ePicLoad to decode AND scale/letterbox the picon to this
+        widget's own size in one step - the same mechanism
+        startVavoo.decodeImage() already uses for the splash image in
+        this exact file. loadPNG() (used by show_list() for the
+        channel list) decodes a PNG at its own native pixel size with
+        no scaling at all; that's fine there because
+        MultiContentEntryPixmapAlphaTest's own size= argument scales
+        list-cell content into its box, but a standalone Pixmap
+        widget's setPixmap() has no such behavior - it just paints
+        the pixmap's native pixels, so a picon larger than the box
+        was only ever showing its clipped top-left corner, and a
+        smaller one sat un-scaled instead of filling it.
+        """
+        try:
+            logo_url = getattr(self, 'current_logo_url', None)
+            if not logo_url:
+                self["channelPicon"].hide()
+                return
+
+            cache_file = get_picon_cache_path(logo_url)
+            if not cache_file or not file_exists(cache_file) \
+                    or getsize(cache_file) <= 100:
+                self["channelPicon"].hide()
+                return
+
+            size = self["channelPicon"].instance.size()
+            picload = ePicLoad()
+            scale = AVSwitch().getFramebufferScale()
+            # Same setPara()/startDecode() shape as
+            # startVavoo.decodeImage() - width, height, the display's
+            # own aspect-correction factors, and resize_mode=1 (scale
+            # to fit, preserving the image's own aspect ratio, padded
+            # with the given transparent background) rather than
+            # mode=0 (plain stretch).
+            picload.setPara([
+                size.width(), size.height(),
+                scale[0], scale[1], 0, 1, '#00000000'])
+            if isfile("/var/lib/dpkg/status"):
+                picload.startDecode(cache_file, False)
+            else:
+                picload.startDecode(cache_file, 0, 0, False)
+            ptr = picload.getData()
+            if ptr is None:
+                self["channelPicon"].hide()
+                return
+
+            self["channelPicon"].instance.setPixmap(ptr)
+            self["channelPicon"].show()
+            # Keep the ePicLoad instance alive for as long as its
+            # decoded pixmap is on screen - same reason
+            # startVavoo.decodeImage() keeps self.picload around
+            # rather than letting it go out of scope right after this
+            # call returns.
+            self._channel_picload = picload
+        except Exception as e:
+            debug("Overlay picon update failed: {}".format(e))
+            try:
+                self["channelPicon"].hide()
+            except Exception:
+                pass
+
     def show_help_overlay(self):
         """Show custom overlays and start the auto‑hide timer."""
         debug("show_help_overlay START")
@@ -4151,7 +4634,8 @@ class TvInfoBarShowHide():
             else:
                 proxy_details = _("✗ Proxy Offline")
 
-            controls = _("CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit")
+            controls = _(
+                "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit")
             credit = "by Lululla & Qu4k3"
             help_text = "{} | {} | {}".format(controls, proxy_details, credit)
             self["helpOverlay"].setText(help_text)
@@ -4162,6 +4646,8 @@ class TvInfoBarShowHide():
             self["epgOverlay"].setText(_("Loading EPG..."))
             self["epgOverlay"].show()
             debug("show_help_overlay epgOverlay shown")
+
+            self._update_overlay_picon()
 
             # Start timer to update proxy status every 30s
             if not self.proxy_update_timer.isActive():
@@ -4175,6 +4661,15 @@ class TvInfoBarShowHide():
                 # don't touch it any further.
                 if self._closed:
                     return
+                # Snapshot which channel this fetch is actually for -
+                # nextitem()/previousitem() can switch channels while
+                # this fetch is still in flight (a surfed-past
+                # channel's slow cache-miss fetch can finish AFTER a
+                # later, faster one started after it), so without
+                # this, the overlay could show stale programme info
+                # for whichever fetch happens to finish last instead
+                # of the channel actually playing.
+                fetch_url = self.url
                 try:
                     epg_text = self.get_current_epg()
                 except Exception as e:
@@ -4185,7 +4680,8 @@ class TvInfoBarShowHide():
 
                 def _apply_epg_text():
                     try:
-                        if not self._closed and self["helpOverlay"].visible:
+                        if (not self._closed and self["helpOverlay"].visible
+                                and self.url == fetch_url):
                             self["epgOverlay"].setText(epg_text)
                             debug("show_help_overlay EPG updated: {}".format(
                                 epg_text[:50]))
@@ -4194,7 +4690,7 @@ class TvInfoBarShowHide():
                 reactor.callFromThread(_apply_epg_text)
 
             _epg_fetch_thread = threading.Thread(target=_fetch_epg_async)
-            _epg_fetch_thread.setDaemon(True)
+            _epg_fetch_thread.daemon = True
             _epg_fetch_thread.start()
 
         except Exception as e:
@@ -4246,6 +4742,7 @@ class TvInfoBarShowHide():
         if self["helpOverlay"].visible:
             self["helpOverlay"].hide()
             self["epgOverlay"].hide()
+            self["channelPicon"].hide()
             debug("hide_help_overlay overlays hidden")
         debug("hide_help_overlay END")
 
@@ -4290,6 +4787,8 @@ class TvInfoBarShowHide():
         debug("startHideTimer END")
 
     def doTimerHide(self):
+        if self._closed:
+            return
         debug("doTimerHide START, state={}".format(self.__state))
         self.hideTimer.stop()
         if self.__state == self.STATE_SHOWN:
@@ -4421,7 +4920,10 @@ class Playstream2(
             index,
             item,
             cat_list,
-            country_code=None):
+            country_code=None,
+            country_codes=None,
+            logo_url=None,
+            logo_urls=None):
         Screen.__init__(self, session)
         self.session = session
         init_notification_system(session)
@@ -4440,6 +4942,22 @@ class Playstream2(
         self.itemscount = len(cat_list)
         self.list = cat_list
         self.country_code = country_code
+        # Parallel to cat_list, one country_code per entry - only
+        # VavooFavourites passes this (its list can mix channels from
+        # several countries, unlike every other caller's single-
+        # country list). nextitem()/previousitem() use it to keep
+        # self.country_code correct as the user channel-surfs, so EPG
+        # lookups (get_current_epg()) stay matched to the right
+        # country instead of staying stuck on whichever country the
+        # very first channel happened to belong to.
+        self.country_codes = country_codes
+        self.current_logo_url = logo_url
+        # Parallel to cat_list, like country_codes above - only
+        # vavoo.ok()/play_that_shit() passes this today (the main
+        # channel-list playback path). Favourites/Search leave it
+        # None, so self.current_logo_url simply stays None for those
+        # and the overlay picon area just stays empty for them.
+        self.logo_urls = logo_urls
         self.name = name
         self.url = url.replace('%0a', '').replace('%0A', '')
         self.state = self.STATE_PLAYING
@@ -4466,7 +4984,8 @@ class Playstream2(
                 'InfobarShowHideActions',
                 'InfobarActions',
                 'DirectionActions',
-                'InfobarSeekActions'
+                'InfobarSeekActions',
+                'ColorActions'
             ],
             {
                 "stop": self.leavePlayer,
@@ -4478,6 +4997,11 @@ class Playstream2(
                 "back": self.cancel,
                 'epg': self.showIMDB,
                 "info": self.showIMDB,
+                # YELLOW: pick which physical source (Vavoo/Geil's
+                # ".b"/".c"/".s" convention) plays a channel that has
+                # more than one - see chooseStreamSource()'s own
+                # docstring.
+                "yellow": self.chooseStreamSource,
             },
             -1
         )
@@ -4503,6 +5027,11 @@ class Playstream2(
             print("[Playstream2] Error stopping timers: {}".format(e))
 
         self.eof_recovery_timer = eTimer()
+        # Handle for restartAfterEOF()'s second-stage reactor.callLater -
+        # see _do_restart_after_eof()/cancel() for why this needs to be
+        # cancellable too, not just eof_recovery_timer itself.
+        self._eof_restart_call = None
+
         self.onFirstExecBegin.append(lambda: self.startStream())
         self.onClose.append(self.cancel)
 
@@ -4519,7 +5048,14 @@ class Playstream2(
                 quick_notify(_("No programme info available"), 3)
             return
 
-        def _openForEpgText(epg_text):
+        def _openForEpgText(epg_text, fetch_url):
+            if self._closed or self.url != fetch_url:
+                # Either torn down, or the user has already changed
+                # channel since INFO was pressed - this fetch's result
+                # belongs to a channel that isn't playing any more,
+                # opening IMDb/TMDB for it would search the wrong
+                # programme.
+                return
             try:
                 # get_current_epg() returns several distinct "EPG ..."
                 # error strings ("EPG not available (no country code)",
@@ -4561,16 +5097,32 @@ class Playstream2(
                 print('[Playstream2] Error opening IMDb/TMDB: %s' % e)
 
         def _fetchEpgThenOpen():
+            # Mirrors _fetch_epg_async()'s _closed check above - the
+            # user may have already left this channel by the time this
+            # slow fetch finishes.
+            if self._closed:
+                return
+            fetch_url = self.url
             try:
                 epg_text = self.get_current_epg()
             except Exception as e:
                 print('[Playstream2] Error fetching EPG for IMDb: %s' % e)
                 epg_text = ""
-            reactor.callFromThread(_openForEpgText, epg_text)
+            if self._closed:
+                return
+            reactor.callFromThread(_openForEpgText, epg_text, fetch_url)
 
         epg_thread = threading.Thread(target=_fetchEpgThenOpen)
-        epg_thread.setDaemon(True)
+        epg_thread.daemon = True
         epg_thread.start()
+
+    def _update_country_code_for_index(self, i):
+        if self.country_codes is not None and 0 <= i < len(self.country_codes):
+            self.country_code = self.country_codes[i]
+
+    def _update_logo_url_for_index(self, i):
+        if self.logo_urls is not None and 0 <= i < len(self.logo_urls):
+            self.current_logo_url = self.logo_urls[i]
 
     def nextitem(self):
         """Switch to next channel"""
@@ -4583,6 +5135,8 @@ class Playstream2(
         item = self.list[i][0]
         self.name = item[0]
         self.url = item[1]
+        self._update_country_code_for_index(i)
+        self._update_logo_url_for_index(i)
         self.startStream()
 
     def previousitem(self):
@@ -4596,7 +5150,24 @@ class Playstream2(
         item = self.list[i][0]
         self.name = item[0]
         self.url = item[1]
+        self._update_country_code_for_index(i)
+        self._update_logo_url_for_index(i)
         self.startStream()
+
+    def isSeekable(self):
+        """Live TV is never seekable - InfoBarSeek (a base class of
+        this screen, for its EOF/evUpdatedInfo plumbing, not because
+        this content is actually seekable) binds LEFT/RIGHT to
+        seekBack()/seekFwd() by default and only guards them with
+        this exact check. Without overriding it, pressing LEFT/RIGHT
+        during live playback tried to seek a stream with no real
+        duration/seek support - the backend stalls audio attempting
+        it, and needs a second press (itself swallowed by the same
+        broken seek attempt, which is what actually clears the
+        stall) to recover. Returning False here makes InfoBarSeek's
+        own seek methods no-ops instead, exactly as intended for a
+        continuous live stream."""
+        return False
 
     def doEofInternal(self, playing):
         """Handle end of file (stream ended).
@@ -4617,7 +5188,6 @@ class Playstream2(
         """Event: End of file reached (see doEofInternal for why this
         duplicates that hook)."""
         print('[Playstream2] __evEOF')
-        self.end = True
         self._handleEofEvent("__evEOF")
 
     def _handleEofEvent(self, source):
@@ -4634,8 +5204,11 @@ class Playstream2(
         # doEofInternal() and __evEOF() both fire for the same real EOF,
         # typically within the same event-loop tick - a gap this short
         # means this is the other handler for the event just processed,
-        # not a second, genuinely separate EOF.
-        if 0 < time_since_last_eof < 1.5:
+        # not a second, genuinely separate EOF. (0 <=, not 0 <: two
+        # calls landing on the very same clock reading are exactly
+        # that duplicate, and last_eof_time's initial 0 can never
+        # produce a gap this small.)
+        if 0 <= time_since_last_eof < 1.5:
             print(
                 "[Playstream2] Ignoring duplicate EOF signal from " +
                 source)
@@ -4643,8 +5216,8 @@ class Playstream2(
 
         self.last_eof_time = current_time
 
-        # The retry backoff below already waits 4-8s (2 + eof_count*2,
-        # capped at eof_count==3) before the next restart attempt, plus
+        # The retry backoff below waits 0-4s ((eof_count-1) * 2, capped
+        # at eof_count==3) before the next restart attempt, plus
         # whatever the resolve+reconnect itself takes (typically a
         # couple more seconds) - a 10s "frequent" window was shorter
         # than that combined delay could easily run, so a stream that
@@ -4670,9 +5243,22 @@ class Playstream2(
         else:
             self.eof_count = 1
 
-        # Restart based on EOF frequency
+        # Whatever the proxy was answering with for this channel just
+        # ended - have it drop that address (and, for a multi-source
+        # channel, decide whether to stay on the same source) before
+        # the restart below asks it again. Reported here, once per
+        # real EOF - never as a parameter on the stream address,
+        # which the player would repeat on every playlist refresh
+        # (see playProxyStream()'s own docstring).
+        self._report_stream_failure()
+
+        # Restart based on EOF frequency. The first retry is
+        # immediate - a fresh address usually fixes it, and waiting
+        # on general backoff principle only makes the common case
+        # slower. The escalating delay only kicks in for a 2nd/3rd
+        # retry, i.e. when the fresh address ALSO failed fast.
         if self.eof_count <= 3:  # Allow up to 3 quick retries
-            delay = 2 + (self.eof_count * 2)  # 2, 4, 6 seconds
+            delay = (self.eof_count - 1) * 2  # 0, 2, 4 seconds
             print(
                 "[Playstream2] Restarting stream in " +
                 str(delay) +
@@ -4704,9 +5290,14 @@ class Playstream2(
         print("Playback started successfully")
         self.state = self.STATE_PLAYING
 
-    def startStream(self, force=False):
-        """Start the stream - proxy handles authentication"""
-        if self.stream_running and not force:
+    def startStream(self, is_retry=False):
+        """Start the stream - proxy handles authentication.
+
+        is_retry=True is a restart of the channel that is already
+        selected (after an EOF or a source pick - see
+        restartAfterEOF()): it goes ahead even though a stream is
+        marked as running, and keeps the EOF/retry counters."""
+        if self.stream_running and not is_retry:
             return
 
         print("[Playstream2] Starting stream: " + str(self.name))
@@ -4715,11 +5306,11 @@ class Playstream2(
         self.stream_running = True
         self.is_streaming = True
 
-        if not force:
+        if not is_retry:
             # Fresh channel selection - start its EOF/retry tracking clean.
-            # A force=True call is an EOF-triggered restart of the SAME
-            # channel (see restartAfterEOF); eof_count must survive that,
-            # or the "give up after N quick retries" limit never engages
+            # A retry is a restart of the SAME channel (see
+            # restartAfterEOF); eof_count must survive that, or the
+            # "give up after N quick retries" limit never engages
             # since every retry would reset its own counter to 0 first.
             self.eof_count = 0
             self.last_eof_time = 0
@@ -4730,16 +5321,7 @@ class Playstream2(
             channel_id = self.url.split("/live2/play/")[1].replace(".ts", "")
             self.url = PROXY_BASE_URL + "/vavoo?channel=" + channel_id
 
-        # Determine playback method - FIXED LOGIC
-        print("[Playstream2] DEBUG URL: " + self.url)
-
-        # Check if it's ANY proxy URL (localhost or network IP)
-        if ":{}/vavoo".format(PORT) in self.url or ":{}/resolve".format(PORT) in self.url:
-            print("[Playstream2] Proxy URL detected")
-            self.playProxyStream(force_refresh=force)
-        else:
-            print("[Playstream2] Non-proxy URL, using old system")
-            self.playOldSystem()
+        self.playProxyStream()
 
     def restartStreamDelayed(self, delay_ms):
         """Restart stream after a delay"""
@@ -4761,10 +5343,25 @@ class Playstream2(
             self.restartAfterEOF()
 
     def restartAfterEOF(self):
-        """Callback to restart stream after EOF (non‑blocking)."""
-        print("[Playstream2] Restarting stream after EOF")
+        """Stop and (after a short, cancellable delay) restart the
+        current stream - despite the name, not EOF-specific: also
+        reused by _onStreamSourceChosen() for a manual source pick,
+        which needs the exact same deferred-restart safety this
+        already has."""
+        print("[Playstream2] Restarting stream (non-blocking)")
         self.stopStream(restore_original=False)
-        reactor.callLater(0.5, lambda: self.startStream(force=True))
+        # Stored so cancel() can cancel it - previously this handle was
+        # discarded, so a STOP/BACK press during this 0.5s window closed
+        # the screen but couldn't stop the pending restart, which then
+        # fired startStream() on a torn-down screen, silently hijacking
+        # whatever the user navigated back to.
+        self._eof_restart_call = reactor.callLater(
+            0.5, self._do_restart_after_eof)
+
+    def _do_restart_after_eof(self):
+        if self._closed:
+            return
+        self.startStream(is_retry=True)
 
     def get_current_epg(self):
         """
@@ -4816,7 +5413,7 @@ class Playstream2(
 
             # Find Rytec ID - this is the expensive part
             match_start = time.time()
-            rytec_id, _unused = matcher.find_match(
+            rytec_id, _unused, _unused_source = matcher.find_match(
                 clean_name, country_code=self.country_code,
                 channel_id=channel_id)
             match_time = time.time() - match_start
@@ -5022,43 +5619,63 @@ class Playstream2(
             trace_error()
             return "EPG error"
 
-    def playProxyStream(self, force_refresh=False):
-        """Play via proxy - token management is handled by proxy.
+    def _current_channel_id(self):
+        """The catalog id (or "grp:<country>:<key>" group id - see
+        vavoo_proxy.py's make_group_id()) this screen is playing,
+        taken from self.url's "vavoo?channel=<id>", or None if
+        self.url isn't a proxy stream address at all.
 
-        force_refresh=True (an EOF-triggered retry, see restartAfterEOF)
-        tells the proxy to bypass its resolve cache - reusing the same
-        cached URL that just failed for up to resolve_cache_ttl would
-        otherwise make every quick retry fail the exact same way.
+        Decoded: self.url carries the id URL-quoted (/channels'
+        own response already quotes it - "grp%3Aitaly%3A...", not
+        "grp:italy:..."), and everything this is handed to
+        (report_stream_failure(), get_group_sources(),
+        set_group_source()) takes the real id."""
+        if "vavoo?channel=" not in self.url:
+            return None
+        channel_id = self.url.split("vavoo?channel=")[1]
+        for separator in ('&', '?', '#'):
+            if separator in channel_id:
+                channel_id = channel_id.split(separator)[0]
+        if not channel_id:
+            return None
+        return url_unquote(channel_id)
+
+    def _current_group_channel_id(self):
+        """_current_channel_id() if it is a grouped (multi-source)
+        channel, else None."""
+        channel_id = self._current_channel_id()
+        if channel_id and channel_id.startswith(GROUP_ID_PREFIX):
+            return channel_id
+        return None
+
+    def playProxyStream(self):
+        """Play self.url's channel through the local proxy.
+
+        The address handed to the player is always the plain
+        http://127.0.0.1:<PORT>/vavoo?channel=<id> and nothing else.
+        The player does not request it once: /vavoo answers with a
+        302, so it comes back to this same address on every playlist
+        refresh, about every 10 seconds, for as long as the channel
+        is watched. Earlier versions put one-off instructions into
+        it ("&force=1" after an EOF, "&keep=1", "&source=<id>" after
+        a source pick), and every one of them was then repeated on
+        every refresh - a fresh upstream address every few seconds,
+        and on a multi-source channel a different source every other
+        time, which is what kept ending streams. A failed stream or
+        a source pick is now reported to the proxy once, directly
+        (_handleEofEvent(), _onStreamSourceChosen()), and the proxy
+        keeps answering with the same address in between.
         """
         try:
-            # Extract channel ID from URL
-            channel_id = None
-
-            if "vavoo?channel=" in self.url:
-                channel_id = self.url.split("vavoo?channel=")[1]
-
-            # Clean up any extra parameters
-            if channel_id and '?' in channel_id:
-                channel_id = channel_id.split('?')[0]
-
+            channel_id = self._current_channel_id()
             if not channel_id:
                 print("[Playstream2] Could not extract channel ID")
-                self.playOldSystem()
+                self._notify_cannot_play()
                 return
 
-            # Get proxy host from URL or use default
-            proxy_host = "{}:{}".format(PROXY_HOST, PORT)
-            if "://" in self.url:
-                match = search(r'://([^/]+)', self.url)
-                if match:
-                    proxy_host = match.group(1)
-
-            # Build proxy URL WITHOUT extra parameters
-            proxy_url = "http://" + str(proxy_host) + \
-                "/vavoo?channel=" + str(channel_id)
-            if force_refresh:
-                proxy_url += "&force=1"
-            print("[Playstream2] Clean proxy URL: " + proxy_url)
+            proxy_url = "http://{}:{}/vavoo?channel={}".format(
+                PROXY_HOST, PORT, url_quote(channel_id, safe=''))
+            print("[Playstream2] Proxy URL: " + proxy_url)
 
             # Add User-Agent as fragment
             stream_url_with_ua = proxy_url + "#User-Agent=VAVOO/2.6"
@@ -5085,7 +5702,12 @@ class Playstream2(
             self.sref = sref
 
             try:
-                proxy.stream_started()
+                # Read through the module, not a plain `from .vavoo_proxy
+                # import proxy` value binding - vavoo_proxy.start_proxy()
+                # reassigns its own module-level `proxy` on every restart,
+                # which a one-time value import would never see, silently
+                # accounting this stream against a dead, orphaned instance.
+                vavoo_proxy.proxy.stream_started()
                 print("[Playstream2] Notified proxy: stream started")
             except Exception as e:
                 print("[Playstream2] Failed to notify proxy: {}".format(e))
@@ -5097,37 +5719,109 @@ class Playstream2(
 
         except Exception as e:
             print("[Playstream2] playProxyStream error: " + str(e))
-            # self.playOldSystem()
-            # Fallback to old system
             trace_error()
 
-    def playOldSystem(self):
-        """Fallback to old playback system"""
+    def _notify_cannot_play(self):
+        """self.url isn't something the proxy can play (a damaged
+        favourite, say) - tell the user instead of sitting on a black
+        screen. Every channel list in this plugin comes from the
+        proxy, so there is no other playback path to fall back to."""
+        self.stream_running = False
+        self.is_streaming = False
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("This channel cannot be played"), 4)
+
+    def _report_stream_failure(self):
+        """Tell the proxy the stream it gave us for this channel just
+        ended - see VavooProxy.report_stream_failure() for what it
+        does with that. Called once per real EOF, right before the
+        restart that follows it."""
+        channel_id = self._current_channel_id()
+        if not channel_id:
+            return
         try:
-            sig = vUtils.getAuthSignature()
-            app = '?n=1&b=5&vavoo_auth=' + str(sig) + '#User-Agent=VAVOO/2.6'
-            url = self.url
-            if not url.startswith("http"):
-                url = "http://" + url
-
-            full_url = url + app
-            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(
-                cfg.services.value,
-                full_url.replace(":", "%3a"),
-                self.name.replace(":", "%3a")
-            )
-
-            print("[Playstream2] Old system ref: " + ref)
-
-            sref = eServiceReference(ref)
-            sref.setName(self.name)
-            self.sref = sref
-            self.session.nav.stopService()
-            self.session.nav.playService(self.sref)
-
+            vavoo_proxy.proxy.report_stream_failure(channel_id)
         except Exception as e:
-            print("[Playstream2] playOldSystem error: " + str(e))
-            trace_error()
+            print("[Playstream2] Failed to report stream failure: {}".format(e))
+
+    def chooseStreamSource(self):
+        """YELLOW: let the user manually pick which physical source
+        (Vavoo/Geil's ".b"/".c"/".s" convention - see
+        vavoo_proxy.py's _group_key()/_strip_source_suffix()) plays a
+        channel that has more than one, instead of leaving the choice
+        to automatic selection/failure-recovery - the companion
+        Android app offers the same choice in its own player menu.
+        Only meaningful for a grouped channel; a single-source one has
+        nothing to choose between.
+        """
+        group_id = self._current_group_channel_id()
+        data = None
+        if group_id:
+            try:
+                # In-process (the proxy is a thread of this same
+                # Enigma2, like stream_started() above) - a couple of
+                # dict lookups, no network, so the menu opens at once.
+                data = vavoo_proxy.proxy.get_group_sources(group_id)
+            except Exception as e:
+                print(
+                    "[Playstream2] Error reading stream sources: {}".format(e))
+
+        members = (data or {}).get("members") or []
+        if len(members) < 2:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Only one source available for this channel"), 3)
+            return
+
+        current = data.get("current")
+        choices = []
+        for member in members:
+            # to_string(): the label is the source's catalog name,
+            # which on Python 2 is unicode - joining that with a
+            # translated (byte string) "(current)" would fail on any
+            # non-ASCII character in either.
+            label = to_string(member.get("label", ""))
+            if member.get("id") == current:
+                label = label + " " + _("(current)")
+            choices.append((label, member.get("id")))
+
+        from Screens.ChoiceBox import ChoiceBox
+        self.session.openWithCallback(
+            self._onStreamSourceChosen,
+            ChoiceBox,
+            title=_("Choose Stream Source"),
+            list=choices
+        )
+
+    def _onStreamSourceChosen(self, choice):
+        if self._closed or not choice or not choice[1]:
+            return
+        group_id = self._current_group_channel_id()
+        if not group_id:
+            return
+        print("[Playstream2] Source chosen: " + str(choice[1]))
+        try:
+            if not vavoo_proxy.proxy.set_group_source(group_id, choice[1]):
+                return
+        except Exception as e:
+            print("[Playstream2] Error setting stream source: {}".format(e))
+            return
+        # restartAfterEOF() stops the current stream and defers the
+        # actual restart by 0.5s rather than doing it synchronously -
+        # not EOF-specific despite the name, and needed here too: this
+        # runs as the ChoiceBox's own close callback, while the screen
+        # stack is still settling back from that dialog closing.
+        # Tearing down and recreating the service right then was
+        # observed to leave self.execing False for several seconds
+        # instead of the usual well under one, stalling
+        # serviceStarted()'s 500ms retry loop
+        # (TvInfoBarShowHide._retry_start()) and the overlay/EPG
+        # refresh that depends on it - the stream looked frozen even
+        # though it likely wasn't. Reusing this also means a STOP/
+        # BACK press in that 0.5s window correctly cancels the
+        # pending restart (see cancel()'s own handling of
+        # self._eof_restart_call), exactly as it already does for a
+        # real EOF.
+        self.restartAfterEOF()
 
     def stopStream(self, restore_original=True):
         """Stop the stream and cleanup.
@@ -5144,7 +5838,7 @@ class Playstream2(
             print("[Playstream2] Stream stopped")
 
             try:
-                proxy.stream_ended()
+                vavoo_proxy.proxy.stream_ended()
                 print("[Playstream2] Notified proxy: stream ended")
             except Exception as e:
                 print("[Playstream2] Failed to notify proxy: {}".format(e))
@@ -5169,6 +5863,32 @@ class Playstream2(
             return
         print("[Playstream2] Closing player...")
         self._closed = True
+
+        # Stop this screen's own timers - previously only stopped by whichever
+        # timer's own callback happened to run first; a screen closed before
+        # that could leave one re-arming itself against a torn-down instance.
+        for timer_name in ("proxy_update_timer", "hideTimer",
+                            "delayed_start_timer", "retry_start_timer",
+                            "eof_recovery_timer"):
+            timer = getattr(self, timer_name, None)
+            if timer is not None:
+                try:
+                    timer.stop()
+                except Exception as e:
+                    print("[Playstream2] Error stopping {}: {}".format(
+                        timer_name, e))
+
+        # restartAfterEOF()'s second-stage reactor.callLater isn't an
+        # eTimer, so it needs its own cancellation - previously left
+        # running, so a STOP press during its 0.5s window still fired
+        # startStream() on this now-closed screen.
+        if self._eof_restart_call is not None:
+            try:
+                if self._eof_restart_call.active():
+                    self._eof_restart_call.cancel()
+            except Exception as e:
+                print("[Playstream2] Error cancelling EOF restart: {}".format(e))
+
         self.stopStream()
         try:
             for screen in self.session.dialog_stack:
@@ -5200,10 +5920,11 @@ class Playstream2(
         self.close()
 
     def leavePlayer(self):
-        """Alternative close method"""
-        self._closed = True
-        self.stopStream()
-        self.close()
+        """Alternative close method (STOP button) - runs the exact same
+        cleanup as cancel() instead of skipping it (previously set
+        _closed early, which made cancel()'s own dedupe guard skip its
+        entire cleanup body when it ran via onClose)."""
+        self.cancel()
 
 
 class AutoStartTimer(object):
@@ -5224,6 +5945,15 @@ class AutoStartTimer(object):
         except BaseException:
             self.timer.timeout.connect(self.on_timer)
 
+        # The actual intended fire time, persisted across on_timer()
+        # calls instead of recomputed fresh each time - see update()/
+        # on_timer() for why: get_wake_time() for "interval" mode
+        # always returns now + interval*60 relative to whenever it's
+        # called, so calling it fresh at check-time can never look
+        # "due" the way it needs to for on_timer() to detect that the
+        # real target has actually been reached.
+        self.next_wake_time = None
+
         # Check if there are bouquets to update
         favorite_channel = join(PLUGIN_PATH, 'Favorite.txt')
 
@@ -5236,18 +5966,26 @@ class AutoStartTimer(object):
         self.update()
 
     def on_timer(self):
-        """Timer callback - triggered when timer expires"""
+        """Timer callback - triggered when timer expires.
+
+        update()'s eTimer schedule is capped at 3600s even when the
+        real target is further out (a safety re-check, e.g. across
+        suspend/resume or a clock change) - so this can fire well
+        before the actual configured interval/fixed-time target. Must
+        check elapsed wall-clock time against the real persisted
+        target (self.next_wake_time), not just treat "the timer fired"
+        as "it's time" - the previous version did exactly that for
+        "interval" mode (never checked at all), which was why it ran
+        every ~60 minutes regardless of the configured interval.
+        """
         print("[AutoStartTimer] Timer triggered")
         self.timer.stop()
 
         now = int(time.time())
-        wake = now
+        wake = self.next_wake_time if self.next_wake_time is not None else now
         constant = 0
 
-        if cfg.timetype.value == "fixed time":
-            wake = self.get_wake_time()
-
-        if abs(wake - now) < 60:
+        if wake - now < 60:
             try:
                 self.startMain()
                 constant = 60
@@ -5290,8 +6028,27 @@ class AutoStartTimer(object):
             return -1
 
     def update(self, constant=0):
+        """Schedule the next timer wake-up.
+
+        Only computes a fresh target via get_wake_time() when none is
+        persisted yet (first run, or scheduling was disabled) -
+        otherwise reuses self.next_wake_time so a capped, early
+        re-check (see on_timer()) doesn't lose track of the real
+        target and reschedule based on a brand new one every time it
+        wakes up. When on_timer() just ran because the persisted
+        target was actually reached (constant=60), the `wake < nowt +
+        constant` branch below is what advances next_wake_time to the
+        following cycle - not a separate reset.
+        """
         self.timer.stop()
-        wake = self.get_wake_time()
+        # Not just "is None": get_wake_time() returns -1 while
+        # scheduling is disabled (autobouquetupdate off) - must keep
+        # recomputing in that case too, or re-enabling it later would
+        # get stuck reusing a stale -1 forever instead of picking up
+        # a real target.
+        if not self.next_wake_time or self.next_wake_time <= 0:
+            self.next_wake_time = self.get_wake_time()
+        wake = self.next_wake_time
         nowt = time.time()
         if wake > 0:
             if wake < nowt + constant:
@@ -5300,6 +6057,7 @@ class AutoStartTimer(object):
                     wake += interval * 60
                 elif cfg.timetype.value == "fixed time":
                     wake += 86400
+                self.next_wake_time = wake
             next_time = wake - int(nowt)
             if next_time > 3600:
                 next_time = 3600
@@ -5342,8 +6100,7 @@ class AutoStartTimer(object):
             # 2. Ensure proxy is running
             if not is_proxy_running():
                 print("[AutoStartTimer] Starting proxy...")
-                if not run_proxy_in_background(
-                        startup_timeout=cfg.proxy_startup_timeout.value):
+                if not run_proxy_in_background():
                     print("[AutoStartTimer] Failed to start proxy")
                     return
 
@@ -5423,7 +6180,6 @@ class AutoStartTimer(object):
                     name,
                     url,  # Can be empty
                     export_type,
-                    cfg.server.value,
                     cfg.list_position.value
                 )
 
@@ -5463,20 +6219,18 @@ delayed_start_timer = None
 def delayed_boot_tasks():
     global auto_start_timer
     try:
-        if cfg.proxy_enabled.value:
-            # If the plugin has already been opened, do not start the proxy
-            # here
-            if _session is not None:
-                print("[Vavoo] Plugin already opened, boot tasks skipped")
-                return
-            if not is_proxy_running():
-                print("[Vavoo] Starting proxy at boot...")
-                run_proxy_in_background(
-                    startup_timeout=cfg.proxy_startup_timeout.value)
-            else:
-                print("[Vavoo] Proxy already running at boot")
+        # If the plugin has already been opened, do not start the proxy
+        # here
+        if _session is not None:
+            print("[Vavoo] Plugin already opened, boot tasks skipped")
+            return
+        if not is_proxy_running():
+            print("[Vavoo] Starting proxy at boot...")
+            run_proxy_in_background()
+        else:
+            print("[Vavoo] Proxy already running at boot")
 
-        if cfg.autobouquetupdate.value and cfg.proxy_enabled.value:
+        if cfg.autobouquetupdate.value:
             if auto_start_timer is None:
                 auto_start_timer = AutoStartTimer()
 

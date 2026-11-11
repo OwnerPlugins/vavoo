@@ -31,12 +31,15 @@ import re
 # suffix is still there - stripping in the other order left "FHD"/"HD"
 # stuck in the cleaned name (e.g. "6ter fhd" instead of "6ter"), which
 # tanks the similarity score against the plain Rytec name.
-_BRACKETS_RE = re.compile(r'\[.*\]')
-_PARENS_RE = re.compile(r'\(.*\)')
+# Non-greedy (.*?): a greedy match spans from the FIRST "[" or "(" to
+# the LAST "]"/")" in the whole name, eating any unrelated text between
+# two separate tag groups (e.g. "Channel [FR] Group [HD]" collapsed all
+# the way to "Channel", silently dropping "Group").
+_BRACKETS_RE = re.compile(r'\[.*?\]')
+_PARENS_RE = re.compile(r'\(.*?\)')
 _VAVOO_SUFFIX_RE = re.compile(r'\s+\.[A-Z0-9]{1,3}$')
 _QUALITY_TAG_RE = re.compile(
-    r'\s+(HD|FHD|SD|4K|ITA|ITALIA|BACKUP|TIMVISION|PLUS)$')
-_TRAILING_PLUS_RE = re.compile(r'\s+\+$')
+    r'\s+(HD|FHD|SD|4K|ITA|BACKUP|TIMVISION|PLUS)$')
 # Any word character in any script (Unicode-aware in both Py2 - via the
 # explicit UNICODE flag - and Py3, where it's the default for str
 # patterns) plus space survives; everything else (punctuation, symbols)
@@ -49,24 +52,49 @@ _MULTI_SPACE_RE = re.compile(r'\s+')
 _DIGIT_BOUNDARY_RE = re.compile(r'(?<=[a-z])(?=[0-9])')
 
 
+# name -> its cleaned result. A plain dict, not functools.lru_cache
+# (Python 2 has no such thing, and this module must stay importable
+# there - see its own module docstring). Unbounded growth isn't a
+# real concern here: the input is always a channel name, and the
+# universe of distinct channel names across every country's catalog
+# is at most a few thousand - nowhere near large enough to matter on
+# a process that itself gets restarted periodically. No lock: worst
+# case under concurrent callers is a value computed twice (the same
+# result either way), never a corrupted dict - CPython's own
+# per-opcode atomicity already covers plain dict get/set.
+_similarity_cache = {}
+
+
 def clean_name_for_similarity(name):
     """Normalize a channel name for similarity comparison: uppercase,
     strip Vavoo's own [.]/(.) tags, its trailing .c/.s/.b-style suffix,
     common quality tags, and any non-word character, collapsing
     whitespace - so two spellings of the same channel end up as the
-    same key regardless of source/formatting quirks."""
+    same key regardless of source/formatting quirks.
+
+    Memoized: called repeatedly for the same channel name, often
+    several times within a single find_match() call and again across
+    many calls during a bouquet export or the live EPG overlay."""
     if not name:
         return ""
+    cached = _similarity_cache.get(name)
+    if cached is not None:
+        return cached
     n = name.upper()
     n = _BRACKETS_RE.sub('', n)
     n = _PARENS_RE.sub('', n)
-    if not n.startswith("HISTORY"):
-        n = _VAVOO_SUFFIX_RE.sub('', n)
+    n = _VAVOO_SUFFIX_RE.sub('', n)
     n = _QUALITY_TAG_RE.sub('', n)
-    n = _TRAILING_PLUS_RE.sub('', n)
+    # _NON_WORD_RE below already strips "+" (not a \w character)
+    # wherever it appears, and the final strip()/_MULTI_SPACE_RE pass
+    # already cleans up the whitespace a trailing one leaves behind -
+    # a separate _TRAILING_PLUS_RE step here was fully redundant,
+    # verified byte-for-byte identical output with or without it.
     n = _NON_WORD_RE.sub('', n)
     n = _MULTI_SPACE_RE.sub(' ', n)
-    return n.strip().lower()
+    result = n.strip().lower()
+    _similarity_cache[name] = result
+    return result
 
 
 def tokenize_for_compat(clean_name):
