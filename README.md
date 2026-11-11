@@ -317,7 +317,7 @@ The proxy provides these endpoints:
 
 - **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen with YELLOW in the player, per multi-source channel (`{"grp:<country>:<name>": "<source id>"}`). Delete it to go back to automatic selection everywhere
 
-- **Curated Channel DB Cache** (in-memory only, not a file on disk): each country's downloaded `epg-channel-db/vavoo_channels_<cc>.json` is kept in memory for 24h per process so repeated exports/lookups don't re-download it every time - cleared on plugin/proxy restart
+- **Curated Channel DB Cache** (in-memory only, not a file on disk): each country's downloaded `epg-channel-db/vavoo_channels_<cc>.json` is kept in memory for 24h per process so repeated exports/lookups don't re-download it every time (a failed download is retried after a minute) - cleared on plugin/proxy restart
 
 ## 🚨 Troubleshooting
 

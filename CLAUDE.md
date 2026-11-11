@@ -137,10 +137,12 @@ against that country's own `epg_<cc>.xml` feed, using name-normalization
 helpers shared with the runtime matcher via `epg_name_utils.py`, a
 plain-Python module with no Enigma2 dependency so it can be imported
 both on-box and off-box). `vUtils.py`'s `_load_curated_channel_db()`
-downloads and caches it in-memory for 24h (only on a successful,
-non-empty fetch — a failure/empty result isn't cached, so a transient
-blip doesn't get stuck rejecting real data until the next restart or
-TTL). Every match this path (and Rytec, and the alias table) produces
+downloads and caches it in-memory for 24h. A failed/empty fetch is
+remembered too, but only for 60 seconds: `find_match()` asks for this on
+every channel lookup, so not remembering a failure at all cost one
+GitHub request per channel (or a full timeout each when GitHub is
+unreachable), while a short TTL still lets a transient blip clear by the
+next export. Every match this path (and Rytec, and the alias table) produces
 gets a synthetic, per-channel-unique service reference via
 `unique_fallback_sref()` rather than a shared Rytec tuple, so different
 channels/countries can never collide in Enigma2's `eEPGCache` (which

@@ -114,6 +114,37 @@ def _ensure_trailing_newline(lines):
     return lines
 
 
+def _merge_bouquet_lines(vavoo_lines, other_lines, list_position):
+    """The new content of bouquets.tv/.radio: every Vavoo bouquet line
+    as one block at the top or the bottom of everything else.
+
+    - The file's own "#NAME ..." header line stays the first line -
+      "top" used to put the Vavoo block above it.
+    - Vavoo lines are de-duplicated keeping their order. This used to
+      be list(dict.fromkeys(...)), which only preserves order on
+      Python 3.7+ - on Python 2 it reshuffled the Vavoo bouquets on
+      every export.
+    """
+    seen = set()
+    unique = []
+    for line in vavoo_lines:
+        if not line.endswith('\n'):
+            line += '\n'
+        if line not in seen:
+            seen.add(line)
+            unique.append(line)
+
+    header = []
+    rest = list(other_lines)
+    if rest and rest[0].startswith('#NAME'):
+        header = _ensure_trailing_newline(rest[:1])
+        rest = rest[1:]
+
+    if list_position == "top":
+        return header + unique + rest
+    return header + _ensure_trailing_newline(rest) + unique
+
+
 def _strip_control_chars(text):
     """Strip characters with ord() <= 31 (e.g. an embedded newline) from
     network-sourced text before it's written as a raw bouquet line -
@@ -187,16 +218,10 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
         # Add the current bouquet to Vavoo lines
         vavoo_lines.append(bouquet_line)
 
-        position_info = list_position
-        vavoo_lines = list(dict.fromkeys(vavoo_lines))
-
         # Configurable position
-        if list_position == "top":
-            new_lines = _ensure_trailing_newline(vavoo_lines) + non_vavoo_lines
-            position_info = "top"
-        else:
-            new_lines = _ensure_trailing_newline(non_vavoo_lines) + vavoo_lines
-            position_info = "bottom"
+        position_info = "top" if list_position == "top" else "bottom"
+        new_lines = _merge_bouquet_lines(
+            vavoo_lines, non_vavoo_lines, list_position)
 
         # Write file atomically (temp file + rename) - this is
         # Enigma2's entire channel/bouquet index, not just Vavoo's own
@@ -1429,12 +1454,8 @@ def reorganize_all_bouquets_position(list_position="bottom"):
                     non_vavoo_lines.append(line)
 
             # Apply the configured position
-            if list_position == "top":
-                new_lines = _ensure_trailing_newline(
-                    vavoo_lines) + non_vavoo_lines
-            else:
-                new_lines = _ensure_trailing_newline(
-                    non_vavoo_lines) + vavoo_lines
+            new_lines = _merge_bouquet_lines(
+                vavoo_lines, non_vavoo_lines, list_position)
 
             # Atomic write (temp file + rename) - same reasoning as
             # _add_to_main_bouquet()/deep_clean_bouquet_files().

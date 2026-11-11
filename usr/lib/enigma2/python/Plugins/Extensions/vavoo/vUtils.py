@@ -912,8 +912,25 @@ def purge(directory, pattern):
 """
 
 
+def _in_main_thread():
+    """True on Enigma2's main/GUI thread. Not threading.main_thread():
+    that only exists on Python 3.4+, and this has to run on Python 2
+    images too."""
+    return isinstance(threading.current_thread(), threading._MainThread)
+
+
 def ReloadBouquets(delay=500):
-    """Reload bouquets after delay (non‑blocking in main thread)."""
+    """Reload Enigma2's bouquets and service list after `delay` ms.
+
+    The reload itself always runs on the GUI thread and the caller is
+    never blocked. Called from a background thread (every bouquet
+    export does, via bouquet_manager._add_to_main_bouquet()) this used
+    to sleep for the delay and then call eDVBDB right there - Enigma2's
+    service database is not safe to touch off the GUI thread - and on
+    Python 2 it never got that far at all, dying on
+    threading.main_thread() (Python 3 only), so bouquets were never
+    reloaded after an export.
+    """
     from enigma import eDVBDB
 
     def do_reload():
@@ -925,32 +942,37 @@ def ReloadBouquets(delay=500):
         except Exception as e:
             print("Error during service reload: " + str(e))
 
+    seconds = max(delay, 0) / 1000.0
+    reactor = None
+    try:
+        from twisted.internet import reactor
+    except Exception as e:
+        debug("twisted reactor unavailable: {}".format(e))
+
+    if not _in_main_thread():
+        if reactor is not None and reactor.running:
+            reactor.callFromThread(reactor.callLater, seconds, do_reload)
+        else:
+            # No running reactor to hand it to - never the case inside
+            # Enigma2, where the reactor is the main loop.
+            do_reload()
+        return
+
     if delay <= 0:
         do_reload()
         return
 
-    # If in main thread, use non‑blocking timer
-    if threading.current_thread() is threading.main_thread():
-        try:
-            from twisted.internet import reactor
-            if reactor.running:
-                reactor.callLater(delay / 1000.0, do_reload)
-                return
-        except Exception as e:
-            debug(
-                "reactor.callLater unavailable, falling back to eTimer: {}".format(e))
-        # Fallback: eTimer
-        timer = eTimer()
-        try:
-            timer.callback.append(do_reload)
-        except AttributeError:
-            timer.timeout.connect(do_reload)
-        timer.start(delay, True)
-    else:
-        # Background thread: safe to sleep
-        import time
-        time.sleep(delay / 1000.0)
-        do_reload()
+    if reactor is not None and reactor.running:
+        reactor.callLater(seconds, do_reload)
+        return
+
+    # Fallback: eTimer
+    timer = eTimer()
+    try:
+        timer.callback.append(do_reload)
+    except AttributeError:
+        timer.timeout.connect(do_reload)
+    timer.start(delay, True)
 
 
 def ensure_sref_trailing_colon(sref):
@@ -1086,6 +1108,25 @@ def getserviceinfo(service_ref):
 # ============================================================================
 # FLAG DOWNLOAD FUNCTIONS
 # ============================================================================
+def _write_file_atomic(path, data):
+    """Write bytes to path via a temp file + rename, so a reader (the
+    channel list loads these images while they are still being
+    downloaded in the background) can never see a half-written file.
+    The temp name carries the thread id: two threads fetching the same
+    image at once must not write into each other's temp file."""
+    temp_path = "%s.%s.tmp" % (path, threading.current_thread().ident)
+    try:
+        with open(temp_path, 'wb') as f:
+            f.write(data)
+        rename(temp_path, path)
+    except Exception:
+        try:
+            unlink(temp_path)
+        except Exception:
+            pass
+        raise
+
+
 def initialize_cache_with_local_flags():
     """Copy all local flags from skin/cowntry/ to cache directory.
 
@@ -1249,8 +1290,7 @@ def download_flag_online(
 
         # 12. Save to cache
         try:
-            with open(cache_file, 'wb') as f:
-                f.write(flag_data)
+            _write_file_atomic(cache_file, flag_data)
             print("Flag %dx%d saved: %s (%d bytes)" %
                   (width, height, cache_file, len(flag_data)))
             return True, cache_file
@@ -1356,8 +1396,7 @@ def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
             return False, "Not a valid PNG"
 
         try:
-            with open(cache_file, 'wb') as f:
-                f.write(picon_data)
+            _write_file_atomic(cache_file, picon_data)
             return True, cache_file
         except Exception as e:
             return False, "Save error: %s" % e
@@ -1663,10 +1702,26 @@ def get_orbital_position(service_ref):
         return 0
 
 
+def _signed_orbital_position(orbpos):
+    """Enigma2's own form of an orbital position (tenths of a degree,
+    west stored as 3600 - position: 5.0W = 3550) converted to the
+    signed form get_orbital_position() returns (5.0W = -50)."""
+    try:
+        orbpos = int(orbpos)
+    except (TypeError, ValueError):
+        return orbpos
+    return orbpos - 3600 if orbpos >= 1800 else orbpos
+
+
 def get_configured_satellites():
     """
     Get list of satellites configured by user in Enigma2.
-    Returns list of orbital positions in tenths of degree (e.g., [130, 192, 282])
+    Returns orbital positions in tenths of a degree, west negative -
+    the same form get_orbital_position() returns (e.g. [130, 192, -50]),
+    since _find_match_internal() compares the two directly. They used
+    to be returned in Enigma2's own 0-3600 form, so a western satellite
+    (5.0W = 3550 there, -50 from get_orbital_position()) never compared
+    equal and never got the configured-satellite boost.
     """
     try:
         configured_sats = []
@@ -1675,7 +1730,8 @@ def get_configured_satellites():
         if hasattr(nimmanager, 'getConfiguredSats'):
             sats = nimmanager.getConfiguredSats()
             if sats:
-                configured_sats = list(sats)
+                configured_sats = [
+                    _signed_orbital_position(s) for s in sats]
                 print(
                     "[SatConfig] Found {} configured satellites via NimManager".format(
                         len(configured_sats)))
@@ -1705,6 +1761,8 @@ def get_configured_satellites():
                                 print(
                                     "[SatConfig] Found configured sat: {}".format(orbpos))
 
+        configured_sats = [
+            _signed_orbital_position(s) for s in configured_sats]
         print("[SatConfig] Total configured satellites: {}".format(configured_sats))
         return configured_sats
 
@@ -2798,6 +2856,10 @@ def toggle_favourite(name, url, country_name=None, country_code=None):
 _curated_channel_db_cache = {}
 _curated_channel_db_lock = threading.Lock()
 _CURATED_CHANNEL_DB_TTL = 86400
+# How long a failed/empty fetch is remembered - see
+# _load_curated_channel_db(). Same value and reasoning as
+# _EPG_FEED_INDEX_NEGATIVE_TTL further down.
+_CURATED_CHANNEL_DB_NEGATIVE_TTL = 60
 
 
 def _load_curated_channel_db(country_code):
@@ -2818,8 +2880,11 @@ def _load_curated_channel_db(country_code):
 
     with _curated_channel_db_lock:
         cached = _curated_channel_db_cache.get(country_code)
-        if cached and (time() - cached[0] < _CURATED_CHANNEL_DB_TTL):
-            return cached[1]
+        if cached:
+            ttl = (_CURATED_CHANNEL_DB_TTL if cached[1]
+                   else _CURATED_CHANNEL_DB_NEGATIVE_TTL)
+            if time() - cached[0] < ttl:
+                return cached[1]
 
         # Held across the fetch itself (not just the cache read/write) -
         # this is a per-country cache and the lock is process-wide, so
@@ -2842,14 +2907,18 @@ def _load_curated_channel_db(country_code):
                 "Could not fetch curated channel db for {}: {}".format(
                     country_code, e))
 
-        if db:
-            # Only cache successful, non-empty results. An empty result
-            # (missing file, transient error) isn't cached at all, so the
-            # next export retries instead of being stuck on a stale miss
-            # for up to _CURATED_CHANNEL_DB_TTL - unlike
-            # _get_epg_feed_index(), this is called once per country per
-            # export, not per channel, so the retry cost is negligible.
-            _curated_channel_db_cache[country_code] = (time(), db)
+        # A good result is kept for _CURATED_CHANNEL_DB_TTL. An empty
+        # one (no file for this country, or GitHub unreachable right
+        # now) is remembered too, but only for
+        # _CURATED_CHANNEL_DB_NEGATIVE_TTL (see the ttl choice above):
+        # find_match() asks for this on EVERY channel lookup, so not
+        # remembering a failure at all meant one GitHub request per
+        # channel for a country with no file - and, with GitHub
+        # unreachable, up to this fetch's whole timeout per channel,
+        # with this process-wide lock held the entire time. A minute is
+        # short enough that a transient failure is retried by the next
+        # export.
+        _curated_channel_db_cache[country_code] = (time(), db)
         return db
 
 
@@ -3257,6 +3326,33 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     return None
 
 
+def _build_epg_channels_xml(unique):
+    """The channels.xml text for write_epg_mapping_file() - `unique`
+    maps each full service reference to its (epg_id, channel_name).
+
+    Everything is XML-escaped: EPGImport reads this file with a strict
+    XML parser and skips the whole file (every channel of the country)
+    on the first malformed line. Ids taken from an EPG feed arrive here
+    already un-escaped (so one containing "&" would have been written
+    raw into the attribute), and a channel name containing "--" is not
+    allowed inside an XML comment at all. Ids parsed out of Rytec's own
+    file by regex can still be in their escaped form - un-escaping
+    first makes the result the same either way instead of escaping
+    them twice."""
+    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
+    for dvb_ref, (epg_id, ch_name) in unique.items():
+        comment = ensure_str(ch_name, errors='ignore')
+        while '--' in comment:
+            comment = comment.replace('--', '- -')
+        xml_lines.append(
+            '  <channel id="{}">{}</channel><!-- {} -->'.format(
+                html_escape(html_unescape(epg_id)),
+                html_escape(dvb_ref),
+                comment))
+    xml_lines.append('</channels>')
+    return '\n'.join(xml_lines)
+
+
 def write_epg_mapping_file(epg_entries, country_code):
     """
     Write the EPG mapping file for a specific country.
@@ -3325,19 +3421,13 @@ def write_epg_mapping_file(epg_entries, country_code):
         print("[EPG] No entries to write, skipping.")
         return None
 
-    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
-    for dvb_ref, (epg_id, ch_name) in unique.items():
-        # Add comment with channel name (optional but useful for
-        # readability)
-        xml_lines.append(
-            '  <channel id="{}">{}</channel><!-- {} -->'.format(epg_id, dvb_ref, ch_name))
-    xml_lines.append('</channels>')
+    channels_xml = _build_epg_channels_xml(unique)
 
     with _epg_lock:
         try:
             temp_path = channels_file + ".tmp"
             with open(temp_path, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
-                f.write('\n'.join(xml_lines))
+                f.write(channels_xml)
             rename(temp_path, channels_file)
             print(
                 "[EPG] Written {} entries to {}".format(
@@ -3489,6 +3579,10 @@ def fix_cache_format(
             cache = load(f)
 
         required = {'id', 'name', 'country', 'sref', 'timestamp', 'matched'}
+        # 'source' (alias/curated/live - see update_complete_cache())
+        # is optional but meaningful: dropping it as an "extra" field
+        # made every entry look non-curated again after a cache fix.
+        allowed = required | {'source'}
         new_cache = {}
         modified = 0
         duplicates = 0
@@ -3507,7 +3601,7 @@ def fix_cache_format(
             changed = False
 
             # Remove extra fields
-            extra = set(value.keys()) - required
+            extra = set(value.keys()) - allowed
             if extra:
                 for k in extra:
                     del value[k]
