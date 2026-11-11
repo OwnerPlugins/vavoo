@@ -1,17 +1,24 @@
 #!/bin/bash
 
-version='1.88'
-changelog="- Added a self-hosted, Rytec-independent curated EPG channel database
-  for countries Rytec covers poorly (e.g. Spain, Poland, Turkey)
-- Fixed cross-country EPG collisions that could show the wrong
-  country's programme guide on some channels
-- Fixed the live 'Now Playing' EPG overlay never using the curated
-  database, even though bouquet export already did
-- Added wraparound Up/Down navigation on the country and channel
-  lists (pressing Up on the first entry jumps to the last, and
-  vice versa) - now consistent across every Enigma2 image
-- Fixed the installer failing to download on images (e.g. OpenPLi)
-  whose wget has limited HTTPS support, by trying curl first"
+version='1.89'
+changelog="- Streams no longer stop every few minutes: a channel now keeps one
+  stream address for the whole viewing, and a failed stream is
+  retried and then moved to another source automatically
+- New default channel source (Geil, needs no token) with Vavoo/Kool
+  as fallback - choose it in Config
+- A channel available from several sources is shown once; press
+  YELLOW in the player to choose the source by name
+- Channel logos (picons) in the channel list and on the player overlay
+- New: Favourites (INFO key), parental control PIN, log viewer in
+  Config, live /playlist.m3u for other players
+- Fixed LEFT/RIGHT muting the sound during playback
+- Fixed a freeze when opening the plugin right after boot, and empty
+  channel lists after a slow start
+- Fixed a proxy restart that could crash the whole box
+- Simpler settings: removed Proxy Enabled, Auto-update EPG and EPG
+  Similarity Threshold
+- Many EPG and bouquet fixes (scheduled update timing, western
+  satellites, reload after export, notification bar on HD screens)"
 
 
 echo "$changelog"
