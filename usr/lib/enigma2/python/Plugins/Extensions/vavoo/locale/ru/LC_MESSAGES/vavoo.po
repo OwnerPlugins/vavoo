@@ -18,6 +18,9 @@ msgstr "(%d каналов)?"
 msgid "(%s files deleted)"
 msgstr "(%s файлов удалено)"
 
+msgid "(current)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(у вас есть v{})"
 
@@ -93,6 +96,9 @@ msgstr "- {} записей обновлено"
 msgid "? Proxy Unknown"
 msgstr "? Прокси Неизвестен"
 
+msgid "Added to favourites: {}"
+msgstr ""
+
 msgid "All countries (%d)"
 msgstr "Все страны (%d)"
 
@@ -111,11 +117,8 @@ msgstr "С интервалом в часах или в фиксированно
 msgid "Author:"
 msgstr "Автор:"
 
-msgid "Auto-update EPG"
-msgstr "Автообновление EPG"
-
-msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
-msgstr "Автоматически включайте источники Vavoo EPG в EPGImport после каждого экспорта, чтобы вам не приходилось включать их там самостоятельно."
+msgid "Auto (Geil, fallback Vavoo)"
+msgstr ""
 
 msgid "Back"
 msgstr "Назад"
@@ -143,7 +146,11 @@ msgstr "Букеты успешно реорганизованы!"
 msgid "Bouquets reorganized successfully!"
 msgstr "Букеты успешно реорганизованы!"
 
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit"
+msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
+msgstr ""
+
+#, fuzzy
+msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
 msgstr "CH±=Изменить | ОК=Переключить | ИНФО = IMDb | СТОП=Выход"
 
 msgid "Cache format fix completed:"
@@ -160,6 +167,9 @@ msgstr "Отменить выполнение?"
 
 msgid "Case: {}"
 msgstr "Регистр: {}"
+
+msgid "Catalog/Stream Source"
+msgstr ""
 
 #, fuzzy
 msgid "Changelog:"
@@ -178,8 +188,17 @@ msgstr "Каналы: %d"
 msgid "Checking proxy..."
 msgstr "Проверка прокси..."
 
+msgid "Choose Stream Source"
+msgstr ""
+
 msgid "Clear All"
 msgstr "Очистить все"
+
+msgid "Close"
+msgstr ""
+
+msgid "Comma-separated country names (e.g. \\\\\\\\"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "Конфигурация успешно сохранена!"
@@ -199,11 +218,17 @@ msgstr "Консоль"
 msgid "Continuing, proxy still syncing..."
 msgstr "Продолжаем, прокси-сервер все еще синхронизируется..."
 
+msgid "Could not load channels - proxy not responding"
+msgstr ""
+
+msgid "Could not load the country list from the proxy"
+msgstr ""
+
 msgid "Could not save the installer script."
 msgstr "Не удалось сохранить сценарий установщика."
 
-msgid "Countries"
-msgstr "Страны"
+msgid "Could not update favourites"
+msgstr ""
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "Страны: %(generated)d/%(total)d"
@@ -211,7 +236,8 @@ msgstr "Страны: %(generated)d/%(total)d"
 msgid "Country: %s"
 msgstr "Страна: %s"
 
-msgid "Create EPG source for EPGImport with Vavoo program data"
+#, fuzzy
+msgid "Create the EPG source for EPGImport with Vavoo program data and enable it there after each export."
 msgstr "Создать источник EPG для EPGImport с данными программ Vavoo"
 
 msgid "Credits:"
@@ -220,21 +246,12 @@ msgstr "Благодарности:"
 msgid "Debug logging"
 msgstr "Ведение журнала отладки"
 
-msgid "Default View"
-msgstr "Вид по умолчанию"
-
-msgid "Default view when opening the plugin"
-msgstr "Вид по умолчанию при открытии плагина"
-
 msgid "Do you want to export this bouquet?"
 msgstr "Хотите экспортировать этот букет?"
 
 #, fuzzy
 msgid "Do you want to fix the cache format?"
 msgstr "Хотите экспортировать этот букет?"
-
-msgid "EPG Similarity Threshold (%)"
-msgstr "Порог сходства EPG (%)"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -263,8 +280,8 @@ msgstr "Плагин EPGImport не найден: {}"
 msgid "Enable Vavoo EPG"
 msgstr "Включить EPG Vavoo"
 
-msgid "Enable or disable proxy."
-msgstr "Включить или отключить прокси."
+msgid "Enter parental control PIN"
+msgstr ""
 
 msgid "Enter text to search..."
 msgstr "Введите текст для поиска..."
@@ -276,10 +293,6 @@ msgstr "Ошибка: %s"
 #, fuzzy
 msgid "Error fixing cache: {}"
 msgstr "Ошибка запуска обновления EPG: {}"
-
-#, fuzzy
-msgid "Error parsing data"
-msgstr "Ошибка запуска канала"
 
 msgid "Error starting EPG update: {}"
 msgstr "Ошибка запуска обновления EPG: {}"
@@ -314,6 +327,9 @@ msgstr "Не удалось обновить прокси:"
 msgid "Failed: %(failed)d"
 msgstr "Не удалось: %(failed)d"
 
+msgid "Favourites"
+msgstr ""
+
 msgid "Fix Cache"
 msgstr "Исправить кеш"
 
@@ -325,6 +341,9 @@ msgstr "Принудительно обновить прокси?"
 
 msgid "Found: {} channels"
 msgstr "Найдено: {} каналов"
+
+msgid "Geil only"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "Сгенерировать файл .m3u для:"
@@ -344,8 +363,14 @@ msgstr "Сгенерировать файлы .m3u для ВСЕХ %d стран
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Как часто повторно сопоставлять EPG и обновлять букеты, считая с этого момента."
 
+msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "Важные замечания:"
+
+msgid "Incorrect PIN"
+msgstr ""
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Увеличьте, если прокси-сервер занимает много времени из-за VPN или медленного соединения."
@@ -372,8 +397,9 @@ msgstr "Обновление EPG..."
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "Только локально (127.0.0.1) — только это устройство"
 
-msgid "Lower = less interruption but more refreshes"
-msgstr "Меньше = меньше прерываний, но больше обновлений"
+#, fuzzy
+msgid "Locked Countries"
+msgstr "Страны"
 
 msgid "M3U file generated successfully!"
 msgstr "Файл M3U успешно сгенерирован!"
@@ -383,9 +409,6 @@ msgstr "Генерация M3U завершена!"
 
 msgid "M3U generation error: %s"
 msgstr "Ошибка генерации M3U: %s"
-
-msgid "Minimum similarity for matching channels (higher = stricter)."
-msgstr "Минимальное сходство для сопоставления каналов (выше = строже)."
 
 msgid "Movie Services Reference"
 msgstr "Ссылка на сервисы фильмов"
@@ -417,6 +440,9 @@ msgstr "Каналы не найдены"
 msgid "No channels found for: %s"
 msgstr "Каналы не найдены для: %s"
 
+msgid "No favourites yet"
+msgstr ""
+
 msgid "No items available"
 msgstr "Нет доступных товаров"
 
@@ -432,14 +458,23 @@ msgstr "Нет действительных каналов для: %s"
 msgid "Nothing to remove for: {}"
 msgstr "Нечего удалять: {}"
 
-msgid "Now %s"
-msgstr "Сейчас %s"
+msgid "OK"
+msgstr ""
+
+msgid "Only one source available for this channel"
+msgstr ""
 
 msgid "Only one specific country"
 msgstr "Только одна конкретная страна"
 
+msgid "Parental Control PIN"
+msgstr ""
+
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Периодически повторно сопоставляйте EPG и обновляйте букеты для ваших любимых стран в фоновом режиме."
+
+msgid "Playlist Access Key (optional)"
+msgstr ""
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Позиция букетов Vavoo в основном списке"
@@ -447,21 +482,6 @@ msgstr "Позиция букетов Vavoo в основном списке"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "Нажмите кнопку TEXT для ввода, BACKSPACE для удаления"
-
-msgid "Proxy Disabled"
-msgstr "Прокси отключен"
-
-msgid "Proxy Enabled"
-msgstr "Прокси включен"
-
-msgid "Proxy disabled"
-msgstr "Прокси отключен"
-
-msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
-msgstr "Прокси отключен. Пожалуйста, сначала включите прокси. -- Конфигурация меню --"
-
-msgid "Proxy is disabled. Please enable it in the configuration."
-msgstr "Прокси отключен. Пожалуйста, включите его в конфигурации."
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "Прокси не запущен. Пожалуйста, сначала запустите прокси."
@@ -481,15 +501,6 @@ msgstr "Токен прокси успешно обновлен"
 msgid "Really close without saving settings?"
 msgstr "Действительно закрыть без сохранения настроек?"
 
-msgid "Recommended: 5-8 minutes"
-msgstr "Рекомендуется: 5-8 минут"
-
-msgid "Refresh stream (minutes):"
-msgstr "Обновлять поток (минуты):"
-
-msgid "Refresh stream every X minutes (1-15)"
-msgstr "Обновлять поток каждые X минут (1-15)"
-
 msgid "Reload Bouqet"
 msgstr "Перезагрузить букет"
 
@@ -497,6 +508,10 @@ msgid "Reload bouquets and service list?"
 msgstr "Обновить букеты и список услуг?"
 
 msgid "Remove"
+msgstr "Удалить"
+
+#, fuzzy
+msgid "Remove ALL"
 msgstr "Удалить"
 
 msgid "Remove ALL Vavoo bouquets?"
@@ -511,6 +526,10 @@ msgstr "Удалить экспортированный букет для это
 
 msgid "Removed exported bouquet: {}"
 msgstr "Удален экспортированный букет: {}"
+
+#, fuzzy
+msgid "Removed from favourites: {}"
+msgstr "Экспорт не удался: {}"
 
 #, fuzzy
 msgid "Restarting..."
@@ -565,11 +584,11 @@ msgstr "Выберите IP-адрес для использования в сс
 msgid "Send Anonymous Statistics"
 msgstr "Отправить анонимную статистику"
 
-msgid "Server for Player Used"
-msgstr "Сервер для используемого плеера"
+msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+msgstr ""
 
-msgid "Server for player."
-msgstr "Сервер для плеера."
+msgid "Show Log (Ok to view)"
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Показывать подробные сообщения уровня DEBUG в vavoo.log (жизненный цикл пользовательского интерфейса, подробности для каждого запроса). Вступает в силу немедленно — прекратите действие, если не потребуется устранение неполадок."
@@ -588,6 +607,9 @@ msgstr "Поток завершен. Слишком много проблем с
 
 msgid "Technical Features:"
 msgstr "Технические характеристики:"
+
+msgid "This channel cannot be played"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "Это обновит токен аутентификации."
@@ -630,6 +652,9 @@ msgstr "Источник EPG Vavoo не включен в EPGImport. Пожал�
 msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Источник EPG Vavoo не найден. Пожалуйста, сначала экспортируйте хотя бы один букет."
 
+msgid "Vavoo Log"
+msgstr ""
+
 msgid "Vavoo Stream Live"
 msgstr "Vavoo Прямой эфир"
 
@@ -645,11 +670,23 @@ msgstr "Букеты Vavoo успешно удалены!"
 msgid "Vavoo is already running."
 msgstr "Vavoo уже запущен."
 
+msgid "Vavoo/Kool only"
+msgstr ""
+
 msgid "Version:"
 msgstr "Версия:"
 
+msgid "View Favourites (Ok to open)"
+msgstr ""
+
+msgid "View the last 200 lines of %s."
+msgstr ""
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Добро пожаловать в Vavoo Proxy с поддержкой EPG."
+
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -695,6 +732,67 @@ msgstr "✗ Прокси офлайн"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Не удалось перезапустить"
+
+#~ msgid "Auto-update EPG"
+#~ msgstr "Автообновление EPG"
+
+#~ msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+#~ msgstr "Автоматически включайте источники Vavoo EPG в EPGImport после каждого экспорта, чтобы вам не приходилось включать их там самостоятельно."
+
+#~ msgid "Default View"
+#~ msgstr "Вид по умолчанию"
+
+#~ msgid "Default view when opening the plugin"
+#~ msgstr "Вид по умолчанию при открытии плагина"
+
+#~ msgid "EPG Similarity Threshold (%)"
+#~ msgstr "Порог сходства EPG (%)"
+
+#~ msgid "Enable or disable proxy."
+#~ msgstr "Включить или отключить прокси."
+
+#, fuzzy
+#~ msgid "Error parsing data"
+#~ msgstr "Ошибка запуска канала"
+
+#~ msgid "Lower = less interruption but more refreshes"
+#~ msgstr "Меньше = меньше прерываний, но больше обновлений"
+
+#~ msgid "Minimum similarity for matching channels (higher = stricter)."
+#~ msgstr "Минимальное сходство для сопоставления каналов (выше = строже)."
+
+#~ msgid "Now %s"
+#~ msgstr "Сейчас %s"
+
+#~ msgid "Proxy Disabled"
+#~ msgstr "Прокси отключен"
+
+#~ msgid "Proxy Enabled"
+#~ msgstr "Прокси включен"
+
+#~ msgid "Proxy disabled"
+#~ msgstr "Прокси отключен"
+
+#~ msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
+#~ msgstr "Прокси отключен. Пожалуйста, сначала включите прокси. -- Конфигурация меню --"
+
+#~ msgid "Proxy is disabled. Please enable it in the configuration."
+#~ msgstr "Прокси отключен. Пожалуйста, включите его в конфигурации."
+
+#~ msgid "Recommended: 5-8 minutes"
+#~ msgstr "Рекомендуется: 5-8 минут"
+
+#~ msgid "Refresh stream (minutes):"
+#~ msgstr "Обновлять поток (минуты):"
+
+#~ msgid "Refresh stream every X minutes (1-15)"
+#~ msgstr "Обновлять поток каждые X минут (1-15)"
+
+#~ msgid "Server for Player Used"
+#~ msgstr "Сервер для используемого плеера"
+
+#~ msgid "Server for player."
+#~ msgstr "Сервер для плеера."
 
 #~ msgid "Active Automatic Bouquet Update"
 #~ msgstr "Активное автоматическое обновление букетов"

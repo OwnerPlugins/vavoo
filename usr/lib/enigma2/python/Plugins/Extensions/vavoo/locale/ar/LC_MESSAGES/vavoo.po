@@ -17,6 +17,9 @@ msgstr "(%d قناة)؟"
 msgid "(%s files deleted)"
 msgstr "(%s ملف تم حذفها)"
 
+msgid "(current)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(لديك الخامس {})"
 
@@ -92,6 +95,9 @@ msgstr "- تم تحديث {} الإدخالات"
 msgid "? Proxy Unknown"
 msgstr "؟ الوكيل غير معروف"
 
+msgid "Added to favourites: {}"
+msgstr ""
+
 msgid "All countries (%d)"
 msgstr "جميع الدول (%d)"
 
@@ -110,11 +116,8 @@ msgstr "بفاصل زمني بالساعات أو وقت محدد"
 msgid "Author:"
 msgstr "المؤلف:"
 
-msgid "Auto-update EPG"
-msgstr "تحديث EPG التلقائي"
-
-msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
-msgstr "قم بتمكين مصدر (مصادر) Vavoo EPG تلقائيًا في EPGImport بعد كل عملية تصدير، لذلك لا يتعين عليك تمكينها هناك بنفسك."
+msgid "Auto (Geil, fallback Vavoo)"
+msgstr ""
 
 msgid "Back"
 msgstr "خلف"
@@ -140,7 +143,11 @@ msgstr "إعادة تحميل الباقات المجدولة."
 msgid "Bouquets reorganized successfully!"
 msgstr "تم إعادة تنظيم الباقات بنجاح!"
 
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit"
+msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
+msgstr ""
+
+#, fuzzy
+msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
 msgstr "CH ± = التغيير | موافق=تبديل | معلومات=IMDb | توقف=خروج"
 
 msgid "Cache format fix completed:"
@@ -158,6 +165,9 @@ msgstr "إلغاء التنفيذ؟"
 msgid "Case: {}"
 msgstr "حالة الأحرف: {}"
 
+msgid "Catalog/Stream Source"
+msgstr ""
+
 #, fuzzy
 msgid "Changelog:"
 msgstr "القنوات"
@@ -174,8 +184,17 @@ msgstr "القنوات: %d"
 msgid "Checking proxy..."
 msgstr "جاري فحص الوكيل..."
 
+msgid "Choose Stream Source"
+msgstr ""
+
 msgid "Clear All"
 msgstr "مسح الكل"
+
+msgid "Close"
+msgstr ""
+
+msgid "Comma-separated country names (e.g. \\\\\\\\"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "تم حفظ الإعدادات بنجاح!"
@@ -195,11 +214,17 @@ msgstr "وحدة التحكم"
 msgid "Continuing, proxy still syncing..."
 msgstr "جارٍ المتابعة، لا تزال مزامنة الوكيل جارية..."
 
+msgid "Could not load channels - proxy not responding"
+msgstr ""
+
+msgid "Could not load the country list from the proxy"
+msgstr ""
+
 msgid "Could not save the installer script."
 msgstr "تعذر حفظ البرنامج النصي للمثبت."
 
-msgid "Countries"
-msgstr "الدول"
+msgid "Could not update favourites"
+msgstr ""
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "الدول: %(generated)d/%(total)d"
@@ -207,7 +232,8 @@ msgstr "الدول: %(generated)d/%(total)d"
 msgid "Country: %s"
 msgstr "الدولة: %s"
 
-msgid "Create EPG source for EPGImport with Vavoo program data"
+#, fuzzy
+msgid "Create the EPG source for EPGImport with Vavoo program data and enable it there after each export."
 msgstr "إنشاء مصدر EPG لـ EPGImport مع بيانات برنامج Vavoo"
 
 msgid "Credits:"
@@ -216,20 +242,11 @@ msgstr "الإبداع:"
 msgid "Debug logging"
 msgstr "تسجيل التصحيح"
 
-msgid "Default View"
-msgstr "العرض الافتراضي"
-
-msgid "Default view when opening the plugin"
-msgstr "العرض الافتراضي عند فتح الإضافة"
-
 msgid "Do you want to export this bouquet?"
 msgstr "هل تريد تصدير هذه الباقة؟"
 
 msgid "Do you want to fix the cache format?"
 msgstr "هل تريد إصلاح تنسيق ذاكرة التخزين المؤقت؟"
-
-msgid "EPG Similarity Threshold (%)"
-msgstr "عتبة تشابه دليل البرامج الإلكتروني (%)"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -257,8 +274,8 @@ msgstr "لم يتم العثور على البرنامج المساعد EPGImpor
 msgid "Enable Vavoo EPG"
 msgstr "تفعيل EPG فافو"
 
-msgid "Enable or disable proxy."
-msgstr "تفعيل أو تعطيل الوكيل."
+msgid "Enter parental control PIN"
+msgstr ""
 
 msgid "Enter text to search..."
 msgstr "أدخل نصا للبحث..."
@@ -268,9 +285,6 @@ msgstr "خطأ"
 
 msgid "Error fixing cache: {}"
 msgstr "خطأ في إصلاح ذاكرة التخزين المؤقت: {}"
-
-msgid "Error parsing data"
-msgstr "خطأ في تحليل البيانات"
 
 msgid "Error starting EPG update: {}"
 msgstr "خطأ في بدء تحديث EPG: {}"
@@ -305,6 +319,9 @@ msgstr "فشل تحديث الوكيل:"
 msgid "Failed: %(failed)d"
 msgstr "فشل: %(failed)d"
 
+msgid "Favourites"
+msgstr ""
+
 msgid "Fix Cache"
 msgstr "إصلاح ذاكرة التخزين المؤقت"
 
@@ -316,6 +333,9 @@ msgstr "فرض تحديث الوكيل؟"
 
 msgid "Found: {} channels"
 msgstr "تم العثور: {} قناة"
+
+msgid "Geil only"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "إنشاء ملف .m3u لـ:"
@@ -335,8 +355,14 @@ msgstr "إنشاء ملفات .m3u لجميع %d دولة؟"
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "عدد مرات إعادة مطابقة دليل البرامج الإلكتروني (EPG) وتحديث الباقات، بدءًا من الآن."
 
+msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "ملاحظات مهمة:"
+
+msgid "Incorrect PIN"
+msgstr ""
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "تزيد إذا استغرق الوكيل وقتًا طويلاً بسبب VPN أو الاتصال البطيء."
@@ -363,8 +389,9 @@ msgstr "جاري تحديث EPG..."
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "محلي فقط (127.0.0.1) - هذا الجهاز فقط"
 
-msgid "Lower = less interruption but more refreshes"
-msgstr "قيمة أقل = انقطاع أقل ولكن تحديثات أكثر"
+#, fuzzy
+msgid "Locked Countries"
+msgstr "الدول"
 
 msgid "M3U file generated successfully!"
 msgstr "تم إنشاء ملف M3U بنجاح!"
@@ -374,9 +401,6 @@ msgstr "اكتمل إنشاء M3U!"
 
 msgid "M3U generation error: %s"
 msgstr "خطأ في إنشاء M3U: %s"
-
-msgid "Minimum similarity for matching channels (higher = stricter)."
-msgstr "الحد الأدنى من التشابه للقنوات المطابقة (أعلى = أكثر صرامة)."
 
 msgid "Movie Services Reference"
 msgstr "مرجع خدمات الأفلام"
@@ -408,6 +432,9 @@ msgstr "لم يتم العثور على قنوات"
 msgid "No channels found for: %s"
 msgstr "لم يتم العثور على قنوات لـ: %s"
 
+msgid "No favourites yet"
+msgstr ""
+
 msgid "No items available"
 msgstr "لا توجد عناصر متاحة"
 
@@ -423,14 +450,23 @@ msgstr "لا توجد قنوات صالحة لـ: %s"
 msgid "Nothing to remove for: {}"
 msgstr "لا يوجد شيء يمكن إزالته من أجل: {}"
 
-msgid "Now %s"
-msgstr "الآن %s"
+msgid "OK"
+msgstr ""
+
+msgid "Only one source available for this channel"
+msgstr ""
 
 msgid "Only one specific country"
 msgstr "دولة محددة واحدة فقط"
 
+msgid "Parental Control PIN"
+msgstr ""
+
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "قم بإعادة مطابقة دليل البرامج الإلكتروني بشكل دوري وتحديث الباقات للبلدان المفضلة لديك في الخلفية."
+
+msgid "Playlist Access Key (optional)"
+msgstr ""
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "موضع باقات Vavoo في القائمة الرئيسية"
@@ -438,21 +474,6 @@ msgstr "موضع باقات Vavoo في القائمة الرئيسية"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "اضغط زر TEXT للكتابة، BACKSPACE للحذف"
-
-msgid "Proxy Disabled"
-msgstr "الوكيل معطل"
-
-msgid "Proxy Enabled"
-msgstr "الوكيل مفعل"
-
-msgid "Proxy disabled"
-msgstr "الوكيل معطل"
-
-msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
-msgstr "الوكيل معطل. الرجاء تفعيل الوكيل أولا. -- إعدادات القائمة --"
-
-msgid "Proxy is disabled. Please enable it in the configuration."
-msgstr "الوكيل معطل. الرجاء تفعيله في الإعدادات."
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "الوكيل لا يعمل. الرجاء تشغيل الوكيل أولا."
@@ -472,15 +493,6 @@ msgstr "تم تحديث رمز الوكيل بنجاح"
 msgid "Really close without saving settings?"
 msgstr "هل تريد الإغلاق دون حفظ الإعدادات؟"
 
-msgid "Recommended: 5-8 minutes"
-msgstr "موصى به: 5-8 دقائق"
-
-msgid "Refresh stream (minutes):"
-msgstr "تحديث التدفق (بالدقائق):"
-
-msgid "Refresh stream every X minutes (1-15)"
-msgstr "تحديث التدفق كل X دقائق (1-15)"
-
 msgid "Reload Bouqet"
 msgstr "إعادة تحميل الباقة"
 
@@ -488,6 +500,10 @@ msgid "Reload bouquets and service list?"
 msgstr "تحديث الباقات وقائمة الخدمات؟"
 
 msgid "Remove"
+msgstr "يزيل"
+
+#, fuzzy
+msgid "Remove ALL"
 msgstr "يزيل"
 
 msgid "Remove ALL Vavoo bouquets?"
@@ -502,6 +518,10 @@ msgstr "هل تريد إزالة الباقة المصدرة لهذه الدول
 
 msgid "Removed exported bouquet: {}"
 msgstr "تمت إزالة الباقة المصدرة: {}"
+
+#, fuzzy
+msgid "Removed from favourites: {}"
+msgstr "فشل التصدير: {}"
 
 msgid "Restarting..."
 msgstr "جارٍ إعادة التشغيل..."
@@ -555,11 +575,11 @@ msgstr "حدد عنوان IP الذي تريد استخدامه في روابط 
 msgid "Send Anonymous Statistics"
 msgstr "إرسال إحصائيات مجهولة"
 
-msgid "Server for Player Used"
-msgstr "الخادم المستخدم للمشغل"
+msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+msgstr ""
 
-msgid "Server for player."
-msgstr "الخادم للمشغل."
+msgid "Show Log (Ok to view)"
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "عرض رسائل مطولة على مستوى DEBUG في vavoo.log (دورة حياة واجهة المستخدم، تفاصيل لكل طلب). يسري مفعوله على الفور - اتركه ما لم يتم استكشاف الأخطاء وإصلاحها."
@@ -578,6 +598,9 @@ msgstr "انتهى التدفق. مشاكل اتصال كثيرة."
 
 msgid "Technical Features:"
 msgstr "الميزات التقنية:"
+
+msgid "This channel cannot be played"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "سيؤدي هذا إلى تحديث رمز المصادقة."
@@ -619,6 +642,9 @@ msgstr "مصدر EPG فافو غير مفعل في EPGImport. الرجاء تف�
 msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "لم يتم العثور على مصدر EPG فافو. الرجاء تصدير باقة واحدة على الأقل أولا."
 
+msgid "Vavoo Log"
+msgstr ""
+
 msgid "Vavoo Stream Live"
 msgstr "بث مباشر فافو"
 
@@ -634,11 +660,23 @@ msgstr "تمت إزالة باقات Vavoo بنجاح!"
 msgid "Vavoo is already running."
 msgstr "Vavoo قيد التشغيل بالفعل."
 
+msgid "Vavoo/Kool only"
+msgstr ""
+
 msgid "Version:"
 msgstr "الإصدار:"
 
+msgid "View Favourites (Ok to open)"
+msgstr ""
+
+msgid "View the last 200 lines of %s."
+msgstr ""
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "مرحبًا بك في Vavoo Proxy الذي يدعم EPG"
+
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -682,6 +720,66 @@ msgstr "✗ الوكيل غير متصل"
 
 msgid "✗ Restart Failed"
 msgstr "✗ فشلت عملية إعادة التشغيل"
+
+#~ msgid "Auto-update EPG"
+#~ msgstr "تحديث EPG التلقائي"
+
+#~ msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+#~ msgstr "قم بتمكين مصدر (مصادر) Vavoo EPG تلقائيًا في EPGImport بعد كل عملية تصدير، لذلك لا يتعين عليك تمكينها هناك بنفسك."
+
+#~ msgid "Default View"
+#~ msgstr "العرض الافتراضي"
+
+#~ msgid "Default view when opening the plugin"
+#~ msgstr "العرض الافتراضي عند فتح الإضافة"
+
+#~ msgid "EPG Similarity Threshold (%)"
+#~ msgstr "عتبة تشابه دليل البرامج الإلكتروني (%)"
+
+#~ msgid "Enable or disable proxy."
+#~ msgstr "تفعيل أو تعطيل الوكيل."
+
+#~ msgid "Error parsing data"
+#~ msgstr "خطأ في تحليل البيانات"
+
+#~ msgid "Lower = less interruption but more refreshes"
+#~ msgstr "قيمة أقل = انقطاع أقل ولكن تحديثات أكثر"
+
+#~ msgid "Minimum similarity for matching channels (higher = stricter)."
+#~ msgstr "الحد الأدنى من التشابه للقنوات المطابقة (أعلى = أكثر صرامة)."
+
+#~ msgid "Now %s"
+#~ msgstr "الآن %s"
+
+#~ msgid "Proxy Disabled"
+#~ msgstr "الوكيل معطل"
+
+#~ msgid "Proxy Enabled"
+#~ msgstr "الوكيل مفعل"
+
+#~ msgid "Proxy disabled"
+#~ msgstr "الوكيل معطل"
+
+#~ msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
+#~ msgstr "الوكيل معطل. الرجاء تفعيل الوكيل أولا. -- إعدادات القائمة --"
+
+#~ msgid "Proxy is disabled. Please enable it in the configuration."
+#~ msgstr "الوكيل معطل. الرجاء تفعيله في الإعدادات."
+
+#~ msgid "Recommended: 5-8 minutes"
+#~ msgstr "موصى به: 5-8 دقائق"
+
+#~ msgid "Refresh stream (minutes):"
+#~ msgstr "تحديث التدفق (بالدقائق):"
+
+#~ msgid "Refresh stream every X minutes (1-15)"
+#~ msgstr "تحديث التدفق كل X دقائق (1-15)"
+
+#~ msgid "Server for Player Used"
+#~ msgstr "الخادم المستخدم للمشغل"
+
+#~ msgid "Server for player."
+#~ msgstr "الخادم للمشغل."
 
 #~ msgid "Active Automatic Bouquet Update"
 #~ msgstr "تحديث الباقات التلقائي نشط"

@@ -18,6 +18,9 @@ msgstr "(%d チャンネル)?"
 msgid "(%s files deleted)"
 msgstr "(%s ファイルは削除されました)"
 
+msgid "(current)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(v{} を持っています)"
 
@@ -93,6 +96,9 @@ msgstr "- {} エントリが更新されました"
 msgid "? Proxy Unknown"
 msgstr "?プロキシが不明"
 
+msgid "Added to favourites: {}"
+msgstr ""
+
 msgid "All countries (%d)"
 msgstr "すべての国 (%d)"
 
@@ -111,11 +117,8 @@ msgstr "時間間隔または一定時間ごとに"
 msgid "Author:"
 msgstr "著者："
 
-msgid "Auto-update EPG"
-msgstr "EPG の自動更新"
-
-msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
-msgstr "各エクスポート後に EPGImport で Vavoo EPG ソースが自動的に有効になるため、そこで自分で有効にする必要はありません。"
+msgid "Auto (Geil, fallback Vavoo)"
+msgstr ""
 
 msgid "Back"
 msgstr "戻る"
@@ -141,7 +144,11 @@ msgstr "ブーケのリロードがスケジュールされています。"
 msgid "Bouquets reorganized successfully!"
 msgstr "ブーケの再編成が成功しました！"
 
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit"
+msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
+msgstr ""
+
+#, fuzzy
+msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
 msgstr "CH±=変更 | OK=切り替え |情報=IMDb |停止=終了"
 
 msgid "Cache format fix completed:"
@@ -159,6 +166,9 @@ msgstr "実行をキャンセルしますか?"
 msgid "Case: {}"
 msgstr "場合： {}"
 
+msgid "Catalog/Stream Source"
+msgstr ""
+
 #, fuzzy
 msgid "Changelog:"
 msgstr "チャンネル"
@@ -175,8 +185,17 @@ msgstr "チャンネル: %d"
 msgid "Checking proxy..."
 msgstr "プロキシを確認しています..."
 
+msgid "Choose Stream Source"
+msgstr ""
+
 msgid "Clear All"
 msgstr "すべてクリア"
+
+msgid "Close"
+msgstr ""
+
+msgid "Comma-separated country names (e.g. \\\\\\\\"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "設定が正常に保存されました。"
@@ -196,11 +215,17 @@ msgstr "コンソール"
 msgid "Continuing, proxy still syncing..."
 msgstr "続行中、プロキシはまだ同期中です..."
 
+msgid "Could not load channels - proxy not responding"
+msgstr ""
+
+msgid "Could not load the country list from the proxy"
+msgstr ""
+
 msgid "Could not save the installer script."
 msgstr "インストーラー スクリプトを保存できませんでした。"
 
-msgid "Countries"
-msgstr "国"
+msgid "Could not update favourites"
+msgstr ""
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "国: %(生成)d/%(合計)d"
@@ -208,7 +233,8 @@ msgstr "国: %(生成)d/%(合計)d"
 msgid "Country: %s"
 msgstr "国: %s"
 
-msgid "Create EPG source for EPGImport with Vavoo program data"
+#, fuzzy
+msgid "Create the EPG source for EPGImport with Vavoo program data and enable it there after each export."
 msgstr "Vavoo プログラム データを使用して EPGImport 用の EPG ソースを作成する"
 
 msgid "Credits:"
@@ -217,20 +243,11 @@ msgstr "クレジット:"
 msgid "Debug logging"
 msgstr "デバッグログ"
 
-msgid "Default View"
-msgstr "デフォルトビュー"
-
-msgid "Default view when opening the plugin"
-msgstr "プラグインを開いたときのデフォルトのビュー"
-
 msgid "Do you want to export this bouquet?"
 msgstr "この花束をエクスポートしますか?"
 
 msgid "Do you want to fix the cache format?"
 msgstr "キャッシュ形式を修正しますか?"
-
-msgid "EPG Similarity Threshold (%)"
-msgstr "EPG 類似性のしきい値 (%)"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -258,8 +275,8 @@ msgstr "EPGImport プラグインが見つかりません: {}"
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG を有効にする"
 
-msgid "Enable or disable proxy."
-msgstr "プロキシを有効または無効にします。"
+msgid "Enter parental control PIN"
+msgstr ""
 
 msgid "Enter text to search..."
 msgstr "検索するテキストを入力してください..."
@@ -269,9 +286,6 @@ msgstr "エラー"
 
 msgid "Error fixing cache: {}"
 msgstr "キャッシュ修正エラー: {}"
-
-msgid "Error parsing data"
-msgstr "データ解析エラー"
 
 msgid "Error starting EPG update: {}"
 msgstr "EPG 更新開始時のエラー: {}"
@@ -306,6 +320,9 @@ msgstr "プロキシの更新に失敗しました:"
 msgid "Failed: %(failed)d"
 msgstr "失敗: %(失敗)d"
 
+msgid "Favourites"
+msgstr ""
+
 msgid "Fix Cache"
 msgstr "キャッシュを修正する"
 
@@ -317,6 +334,9 @@ msgstr "プロキシを強制的に更新しますか?"
 
 msgid "Found: {} channels"
 msgstr "見つかりました: {} チャンネル"
+
+msgid "Geil only"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "以下の .m3u ファイルを生成します。"
@@ -336,8 +356,14 @@ msgstr "%d か国すべての .m3u ファイルを生成しますか?"
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "今から数えて、EPG を再照合してブーケを更新する頻度。"
 
+msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "重要な注意事項:"
+
+msgid "Incorrect PIN"
+msgstr ""
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "VPN や接続速度が遅いためにプロキシに時間がかかる場合は増加します。"
@@ -364,8 +390,9 @@ msgstr "EPG を更新中..."
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "ローカルのみ (127.0.0.1) - このデバイスのみ"
 
-msgid "Lower = less interruption but more refreshes"
-msgstr "低い = 中断は少なくなりますが、リフレッシュが多くなります"
+#, fuzzy
+msgid "Locked Countries"
+msgstr "国"
 
 msgid "M3U file generated successfully!"
 msgstr "M3U ファイルが正常に生成されました。"
@@ -375,9 +402,6 @@ msgstr "M3U世代完了！"
 
 msgid "M3U generation error: %s"
 msgstr "M3U 生成エラー: %s"
-
-msgid "Minimum similarity for matching channels (higher = stricter)."
-msgstr "一致するチャネルの最小類似性 (高いほど厳密)。"
 
 msgid "Movie Services Reference"
 msgstr "映画サービスのリファレンス"
@@ -409,6 +433,9 @@ msgstr "チャンネルが見つかりません"
 msgid "No channels found for: %s"
 msgstr "チャンネルが見つかりません: %s"
 
+msgid "No favourites yet"
+msgstr ""
+
 msgid "No items available"
 msgstr "利用可能なアイテムはありません"
 
@@ -424,14 +451,23 @@ msgstr "有効なチャネルがありません: %s"
 msgid "Nothing to remove for: {}"
 msgstr "削除するものはありません: {}"
 
-msgid "Now %s"
-msgstr "現在 %s"
+msgid "OK"
+msgstr ""
+
+msgid "Only one source available for this channel"
+msgstr ""
 
 msgid "Only one specific country"
 msgstr "特定の国は 1 つだけ"
 
+msgid "Parental Control PIN"
+msgstr ""
+
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "定期的に EPG を再照合し、バックグラウンドでお気に入りの国の花束を更新します。"
+
+msgid "Playlist Access Key (optional)"
+msgstr ""
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "メインリストにおけるVavooブーケの位置"
@@ -439,21 +475,6 @@ msgstr "メインリストにおけるVavooブーケの位置"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "TEXT ボタンを押して入力し、BACKSPACE を押して削除します"
-
-msgid "Proxy Disabled"
-msgstr "プロキシが無効です"
-
-msgid "Proxy Enabled"
-msgstr "プロキシが有効です"
-
-msgid "Proxy disabled"
-msgstr "プロキシが無効になっています"
-
-msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
-msgstr "プロキシが無効になっています。最初にプロキシをオンに設定してください。 -- メニュー構成 --"
-
-msgid "Proxy is disabled. Please enable it in the configuration."
-msgstr "プロキシが無効になっています。設定で有効にしてください。"
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "プロキシが実行されていません。まずプロキシを開始してください。"
@@ -473,15 +494,6 @@ msgstr "プロキシ トークンが正常に更新されました"
 msgid "Really close without saving settings?"
 msgstr "本当に設定を保存せずに閉じますか?"
 
-msgid "Recommended: 5-8 minutes"
-msgstr "推奨: 5 ～ 8 分"
-
-msgid "Refresh stream (minutes):"
-msgstr "ストリームの更新 (分):"
-
-msgid "Refresh stream every X minutes (1-15)"
-msgstr "X 分ごとにストリームを更新 (1 ～ 15)"
-
 msgid "Reload Bouqet"
 msgstr "ブーケをリロードする"
 
@@ -489,6 +501,10 @@ msgid "Reload bouquets and service list?"
 msgstr "花束とサービスリストを再読み込みしますか?"
 
 msgid "Remove"
+msgstr "取り除く"
+
+#, fuzzy
+msgid "Remove ALL"
 msgstr "取り除く"
 
 msgid "Remove ALL Vavoo bouquets?"
@@ -503,6 +519,10 @@ msgstr "この国/カテゴリにエクスポートされた花束を削除し�
 
 msgid "Removed exported bouquet: {}"
 msgstr "エクスポートされた花束を削除しました: {}"
+
+#, fuzzy
+msgid "Removed from favourites: {}"
+msgstr "エクスポートに失敗しました: {}"
 
 msgid "Restarting..."
 msgstr "再起動中..."
@@ -556,11 +576,11 @@ msgstr "M3U リンクで使用する IP アドレスを選択します。"
 msgid "Send Anonymous Statistics"
 msgstr "匿名の統計情報を送信する"
 
-msgid "Server for Player Used"
-msgstr "使用するプレーヤーのサーバー"
+msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+msgstr ""
 
-msgid "Server for player."
-msgstr "プレイヤー用のサーバー。"
+msgid "Show Log (Ok to view)"
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "vavoo.log に詳細な DEBUG レベルのメッセージを表示します (UI ライフサイクル、リクエストごとの詳細)。すぐに有効になります。トラブルシューティングを行う場合を除き、そのままにしておきます。"
@@ -579,6 +599,9 @@ msgstr "ストリームが終了しました。接続の問題が多すぎます
 
 msgid "Technical Features:"
 msgstr "技術的特徴:"
+
+msgid "This channel cannot be played"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "これにより、認証トークンが更新されます。"
@@ -620,6 +643,9 @@ msgstr "Vavoo EPG ソースが EPGImport で有効になっていません。 EP
 msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Vavoo EPG ソースが見つかりません。最初に少なくとも 1 つの花束をエクスポートしてください。"
 
+msgid "Vavoo Log"
+msgstr ""
+
 msgid "Vavoo Stream Live"
 msgstr "Vavoo ストリーム ライブ"
 
@@ -635,11 +661,23 @@ msgstr "Vavoo の花束が正常に削除されました。"
 msgid "Vavoo is already running."
 msgstr "Vavoo はすでに実行されています。"
 
+msgid "Vavoo/Kool only"
+msgstr ""
+
 msgid "Version:"
 msgstr "バージョン:"
 
+msgid "View Favourites (Ok to open)"
+msgstr ""
+
+msgid "View the last 200 lines of %s."
+msgstr ""
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG サポートを備えた Vavoo プロキシへようこそ"
+
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -683,6 +721,66 @@ msgstr "✗ プロキシオフライン"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 再起動に失敗しました"
+
+#~ msgid "Auto-update EPG"
+#~ msgstr "EPG の自動更新"
+
+#~ msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+#~ msgstr "各エクスポート後に EPGImport で Vavoo EPG ソースが自動的に有効になるため、そこで自分で有効にする必要はありません。"
+
+#~ msgid "Default View"
+#~ msgstr "デフォルトビュー"
+
+#~ msgid "Default view when opening the plugin"
+#~ msgstr "プラグインを開いたときのデフォルトのビュー"
+
+#~ msgid "EPG Similarity Threshold (%)"
+#~ msgstr "EPG 類似性のしきい値 (%)"
+
+#~ msgid "Enable or disable proxy."
+#~ msgstr "プロキシを有効または無効にします。"
+
+#~ msgid "Error parsing data"
+#~ msgstr "データ解析エラー"
+
+#~ msgid "Lower = less interruption but more refreshes"
+#~ msgstr "低い = 中断は少なくなりますが、リフレッシュが多くなります"
+
+#~ msgid "Minimum similarity for matching channels (higher = stricter)."
+#~ msgstr "一致するチャネルの最小類似性 (高いほど厳密)。"
+
+#~ msgid "Now %s"
+#~ msgstr "現在 %s"
+
+#~ msgid "Proxy Disabled"
+#~ msgstr "プロキシが無効です"
+
+#~ msgid "Proxy Enabled"
+#~ msgstr "プロキシが有効です"
+
+#~ msgid "Proxy disabled"
+#~ msgstr "プロキシが無効になっています"
+
+#~ msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
+#~ msgstr "プロキシが無効になっています。最初にプロキシをオンに設定してください。 -- メニュー構成 --"
+
+#~ msgid "Proxy is disabled. Please enable it in the configuration."
+#~ msgstr "プロキシが無効になっています。設定で有効にしてください。"
+
+#~ msgid "Recommended: 5-8 minutes"
+#~ msgstr "推奨: 5 ～ 8 分"
+
+#~ msgid "Refresh stream (minutes):"
+#~ msgstr "ストリームの更新 (分):"
+
+#~ msgid "Refresh stream every X minutes (1-15)"
+#~ msgstr "X 分ごとにストリームを更新 (1 ～ 15)"
+
+#~ msgid "Server for Player Used"
+#~ msgstr "使用するプレーヤーのサーバー"
+
+#~ msgid "Server for player."
+#~ msgstr "プレイヤー用のサーバー。"
 
 #~ msgid "Active Automatic Bouquet Update"
 #~ msgstr "アクティブな自動花束更新"

@@ -17,6 +17,9 @@ msgstr "(%d کانال)؟"
 msgid "(%s files deleted)"
 msgstr "(%s فایل حذف شد)"
 
+msgid "(current)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(شما v{}) دارید"
 
@@ -92,6 +95,9 @@ msgstr "- {} ورودی به روز شد"
 msgid "? Proxy Unknown"
 msgstr "? پروکسی ناشناس"
 
+msgid "Added to favourites: {}"
+msgstr ""
+
 msgid "All countries (%d)"
 msgstr "همه کشورها (%d)"
 
@@ -110,11 +116,8 @@ msgstr "در یک ساعت فاصله یا زمان ثابت"
 msgid "Author:"
 msgstr "نویسنده:"
 
-msgid "Auto-update EPG"
-msgstr "به روز رسانی خودکار EPG"
-
-msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
-msgstr "پس از هر بار صادرات، منبع(های) Vavoo EPG را در EPGImport به طور خودکار فعال کنید، بنابراین لازم نیست خودتان آنها را در آنجا فعال کنید."
+msgid "Auto (Geil, fallback Vavoo)"
+msgstr ""
 
 msgid "Back"
 msgstr "برگشت"
@@ -140,7 +143,11 @@ msgstr "بارگیری مجدد دسته گل ها برنامه ریزی شده 
 msgid "Bouquets reorganized successfully!"
 msgstr "دسته گل ها با موفقیت دوباره سازماندهی شدند!"
 
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit"
+msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
+msgstr ""
+
+#, fuzzy
+msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
 msgstr "CH±=تغییر | OK=تغییر | INFO=IMDb | STOP=خروج"
 
 msgid "Cache format fix completed:"
@@ -158,6 +165,9 @@ msgstr "لغو اجرا؟"
 msgid "Case: {}"
 msgstr "مورد: {}"
 
+msgid "Catalog/Stream Source"
+msgstr ""
+
 #, fuzzy
 msgid "Changelog:"
 msgstr "کانال ها"
@@ -174,8 +184,17 @@ msgstr "کانال ها: %d"
 msgid "Checking proxy..."
 msgstr "در حال بررسی پروکسی..."
 
+msgid "Choose Stream Source"
+msgstr ""
+
 msgid "Clear All"
 msgstr "پاک کردن همه"
+
+msgid "Close"
+msgstr ""
+
+msgid "Comma-separated country names (e.g. \\\\\\\\"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "پیکربندی با موفقیت ذخیره شد!"
@@ -195,11 +214,17 @@ msgstr "کنسول"
 msgid "Continuing, proxy still syncing..."
 msgstr "در حال ادامه، پراکسی همچنان در حال همگام سازی است..."
 
+msgid "Could not load channels - proxy not responding"
+msgstr ""
+
+msgid "Could not load the country list from the proxy"
+msgstr ""
+
 msgid "Could not save the installer script."
 msgstr "اسکریپت نصب کننده ذخیره نشد."
 
-msgid "Countries"
-msgstr "کشورها"
+msgid "Could not update favourites"
+msgstr ""
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "کشورها: %(تولید شده)d/%(کل)d"
@@ -207,7 +232,8 @@ msgstr "کشورها: %(تولید شده)d/%(کل)d"
 msgid "Country: %s"
 msgstr "کشور: %s"
 
-msgid "Create EPG source for EPGImport with Vavoo program data"
+#, fuzzy
+msgid "Create the EPG source for EPGImport with Vavoo program data and enable it there after each export."
 msgstr "منبع EPG برای EPGImport با داده های برنامه Vavoo ایجاد کنید"
 
 msgid "Credits:"
@@ -216,20 +242,11 @@ msgstr "اعتبارات:"
 msgid "Debug logging"
 msgstr "ثبت اشکال زدایی"
 
-msgid "Default View"
-msgstr "نمای پیش فرض"
-
-msgid "Default view when opening the plugin"
-msgstr "نمای پیش فرض هنگام باز کردن افزونه"
-
 msgid "Do you want to export this bouquet?"
 msgstr "آیا می خواهید این دسته گل را صادر کنید؟"
 
 msgid "Do you want to fix the cache format?"
 msgstr "آیا می خواهید فرمت کش را اصلاح کنید؟"
-
-msgid "EPG Similarity Threshold (%)"
-msgstr "آستانه تشابه EPG (%)"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -257,8 +274,8 @@ msgstr "افزونه EPGImport پیدا نشد: {}"
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG را فعال کنید"
 
-msgid "Enable or disable proxy."
-msgstr "فعال یا غیرفعال کردن پروکسی"
+msgid "Enter parental control PIN"
+msgstr ""
 
 msgid "Enter text to search..."
 msgstr "متن را برای جستجو وارد کنید..."
@@ -268,9 +285,6 @@ msgstr "خطا"
 
 msgid "Error fixing cache: {}"
 msgstr "خطا در رفع حافظه پنهان: {}"
-
-msgid "Error parsing data"
-msgstr "خطا در تجزیه داده ها"
 
 msgid "Error starting EPG update: {}"
 msgstr "خطا در شروع به‌روزرسانی EPG: {}"
@@ -305,6 +319,9 @@ msgstr "پروکسی بازخوانی نشد:"
 msgid "Failed: %(failed)d"
 msgstr "ناموفق: %(شکست)d"
 
+msgid "Favourites"
+msgstr ""
+
 msgid "Fix Cache"
 msgstr "رفع کش"
 
@@ -316,6 +333,9 @@ msgstr "اجباری به‌روزرسانی پراکسی؟"
 
 msgid "Found: {} channels"
 msgstr "پیدا شد: {} کانال"
+
+msgid "Geil only"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "تولید فایل m3u برای:"
@@ -335,8 +355,14 @@ msgstr "فایل‌های m3u. برای همه %d کشور ایجاد شود؟"
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "هر چند وقت یک‌بار باید EPG را مجدداً مطابقت داد و دسته‌های گل را تازه کرد، از هم اکنون شمارش می‌شود."
 
+msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "نکات مهم:"
+
+msgid "Incorrect PIN"
+msgstr ""
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "اگر پروکسی به دلیل VPN یا اتصال کند طولانی شود، افزایش دهید."
@@ -363,8 +389,9 @@ msgstr "در حال به روز رسانی EPG..."
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "فقط محلی (127.0.0.1) - فقط این دستگاه"
 
-msgid "Lower = less interruption but more refreshes"
-msgstr "کمتر = وقفه کمتر اما تازه کردن بیشتر"
+#, fuzzy
+msgid "Locked Countries"
+msgstr "کشورها"
 
 msgid "M3U file generated successfully!"
 msgstr "فایل M3U با موفقیت تولید شد!"
@@ -374,9 +401,6 @@ msgstr "نسل M3U تکمیل شد!"
 
 msgid "M3U generation error: %s"
 msgstr "خطای تولید M3U: %s"
-
-msgid "Minimum similarity for matching channels (higher = stricter)."
-msgstr "حداقل شباهت برای کانال های منطبق (بالاتر = سختگیرتر)."
 
 msgid "Movie Services Reference"
 msgstr "مرجع خدمات فیلم"
@@ -408,6 +432,9 @@ msgstr "کانالی پیدا نشد"
 msgid "No channels found for: %s"
 msgstr "هیچ کانالی برای: %s یافت نشد"
 
+msgid "No favourites yet"
+msgstr ""
+
 msgid "No items available"
 msgstr "هیچ موردی در دسترس نیست"
 
@@ -423,14 +450,23 @@ msgstr "هیچ کانال معتبری برای: %s وجود ندارد"
 msgid "Nothing to remove for: {}"
 msgstr "چیزی برای حذف وجود ندارد: {}"
 
-msgid "Now %s"
-msgstr "اکنون %s"
+msgid "OK"
+msgstr ""
+
+msgid "Only one source available for this channel"
+msgstr ""
 
 msgid "Only one specific country"
 msgstr "فقط یک کشور خاص"
 
+msgid "Parental Control PIN"
+msgstr ""
+
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "به صورت دوره‌ای EPG را مجدداً مطابقت دهید و دسته‌های گل را برای کشورهای مورد علاقه خود در پس‌زمینه تازه کنید."
+
+msgid "Playlist Access Key (optional)"
+msgstr ""
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "جایگاه دسته گل های Vavoo در لیست اصلی"
@@ -438,21 +474,6 @@ msgstr "جایگاه دسته گل های Vavoo در لیست اصلی"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "دکمه TEXT را برای تایپ، BACKSPACE را برای حذف فشار دهید"
-
-msgid "Proxy Disabled"
-msgstr "پروکسی غیرفعال است"
-
-msgid "Proxy Enabled"
-msgstr "پروکسی فعال شد"
-
-msgid "Proxy disabled"
-msgstr "پروکسی غیرفعال شد"
-
-msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
-msgstr "پروکسی غیرفعال است لطفاً ابتدا پروکسی را روشن کنید. -- پیکربندی منو --"
-
-msgid "Proxy is disabled. Please enable it in the configuration."
-msgstr "پروکسی غیرفعال است لطفاً آن را در پیکربندی فعال کنید."
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "پروکسی اجرا نمی شود. لطفاً ابتدا پروکسی را راه اندازی کنید."
@@ -472,15 +493,6 @@ msgstr "رمز پراکسی با موفقیت به روز شد"
 msgid "Really close without saving settings?"
 msgstr "آیا واقعاً بدون ذخیره تنظیمات بسته می شود؟"
 
-msgid "Recommended: 5-8 minutes"
-msgstr "توصیه می شود: 5-8 دقیقه"
-
-msgid "Refresh stream (minutes):"
-msgstr "بازخوانی جریان (دقیقه):"
-
-msgid "Refresh stream every X minutes (1-15)"
-msgstr "بازخوانی جریان هر X دقیقه (1-15)"
-
 msgid "Reload Bouqet"
 msgstr "بارگیری مجدد Bouqet"
 
@@ -488,6 +500,10 @@ msgid "Reload bouquets and service list?"
 msgstr "بارگیری مجدد دسته گل ها و لیست خدمات؟"
 
 msgid "Remove"
+msgstr "حذف کنید"
+
+#, fuzzy
+msgid "Remove ALL"
 msgstr "حذف کنید"
 
 msgid "Remove ALL Vavoo bouquets?"
@@ -502,6 +518,10 @@ msgstr "دسته گل صادر شده برای این کشور/رده حذف ش�
 
 msgid "Removed exported bouquet: {}"
 msgstr "دسته گل صادر شده حذف شد: {}"
+
+#, fuzzy
+msgid "Removed from favourites: {}"
+msgstr "صادر نشد: {}"
 
 msgid "Restarting..."
 msgstr "شروع مجدد..."
@@ -555,11 +575,11 @@ msgstr "آدرس IP را برای استفاده در پیوندهای M3U ان�
 msgid "Send Anonymous Statistics"
 msgstr "ارسال آمار ناشناس"
 
-msgid "Server for Player Used"
-msgstr "سرور برای پلیر استفاده شده است"
+msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+msgstr ""
 
-msgid "Server for player."
-msgstr "سرور برای بازیکن"
+msgid "Show Log (Ok to view)"
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "نمایش پیام‌های پرمخاطب در سطح DEBUG در vavoo.log (چرخه عمر UI، جزئیات هر درخواست). فوراً اعمال می شود - آن را متوقف کنید مگر اینکه عیب یابی شود."
@@ -578,6 +598,9 @@ msgstr "استریم به پایان رسید. مشکلات اتصال بسیا�
 
 msgid "Technical Features:"
 msgstr "ویژگی های فنی:"
+
+msgid "This channel cannot be played"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "با این کار کد احراز هویت تازه می شود."
@@ -619,6 +642,9 @@ msgstr "منبع Vavoo EPG در EPGImport فعال نیست. لطفاً آن ر�
 msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "منبع Vavoo EPG یافت نشد. لطفاً ابتدا حداقل یک دسته گل صادر کنید."
 
+msgid "Vavoo Log"
+msgstr ""
+
 msgid "Vavoo Stream Live"
 msgstr ""
 
@@ -634,11 +660,23 @@ msgstr "دسته‌های Vavoo با موفقیت حذف شدند!"
 msgid "Vavoo is already running."
 msgstr "Vavoo در حال اجرا است."
 
+msgid "Vavoo/Kool only"
+msgstr ""
+
 msgid "Version:"
 msgstr "نسخه:"
 
+msgid "View Favourites (Ok to open)"
+msgstr ""
+
+msgid "View the last 200 lines of %s."
+msgstr ""
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "به Vavoo Proxy با پشتیبانی از EPG خوش آمدید"
+
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -682,6 +720,66 @@ msgstr "✗ پروکسی آفلاین"
 
 msgid "✗ Restart Failed"
 msgstr "✗ راه اندازی مجدد انجام نشد"
+
+#~ msgid "Auto-update EPG"
+#~ msgstr "به روز رسانی خودکار EPG"
+
+#~ msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+#~ msgstr "پس از هر بار صادرات، منبع(های) Vavoo EPG را در EPGImport به طور خودکار فعال کنید، بنابراین لازم نیست خودتان آنها را در آنجا فعال کنید."
+
+#~ msgid "Default View"
+#~ msgstr "نمای پیش فرض"
+
+#~ msgid "Default view when opening the plugin"
+#~ msgstr "نمای پیش فرض هنگام باز کردن افزونه"
+
+#~ msgid "EPG Similarity Threshold (%)"
+#~ msgstr "آستانه تشابه EPG (%)"
+
+#~ msgid "Enable or disable proxy."
+#~ msgstr "فعال یا غیرفعال کردن پروکسی"
+
+#~ msgid "Error parsing data"
+#~ msgstr "خطا در تجزیه داده ها"
+
+#~ msgid "Lower = less interruption but more refreshes"
+#~ msgstr "کمتر = وقفه کمتر اما تازه کردن بیشتر"
+
+#~ msgid "Minimum similarity for matching channels (higher = stricter)."
+#~ msgstr "حداقل شباهت برای کانال های منطبق (بالاتر = سختگیرتر)."
+
+#~ msgid "Now %s"
+#~ msgstr "اکنون %s"
+
+#~ msgid "Proxy Disabled"
+#~ msgstr "پروکسی غیرفعال است"
+
+#~ msgid "Proxy Enabled"
+#~ msgstr "پروکسی فعال شد"
+
+#~ msgid "Proxy disabled"
+#~ msgstr "پروکسی غیرفعال شد"
+
+#~ msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
+#~ msgstr "پروکسی غیرفعال است لطفاً ابتدا پروکسی را روشن کنید. -- پیکربندی منو --"
+
+#~ msgid "Proxy is disabled. Please enable it in the configuration."
+#~ msgstr "پروکسی غیرفعال است لطفاً آن را در پیکربندی فعال کنید."
+
+#~ msgid "Recommended: 5-8 minutes"
+#~ msgstr "توصیه می شود: 5-8 دقیقه"
+
+#~ msgid "Refresh stream (minutes):"
+#~ msgstr "بازخوانی جریان (دقیقه):"
+
+#~ msgid "Refresh stream every X minutes (1-15)"
+#~ msgstr "بازخوانی جریان هر X دقیقه (1-15)"
+
+#~ msgid "Server for Player Used"
+#~ msgstr "سرور برای پلیر استفاده شده است"
+
+#~ msgid "Server for player."
+#~ msgstr "سرور برای بازیکن"
 
 #~ msgid "Active Automatic Bouquet Update"
 #~ msgstr "به روز رسانی خودکار دسته گل"

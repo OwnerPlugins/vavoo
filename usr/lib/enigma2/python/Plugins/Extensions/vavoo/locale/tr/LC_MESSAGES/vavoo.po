@@ -22,6 +22,9 @@ msgstr "(%d kanal)?"
 msgid "(%s files deleted)"
 msgstr "(%s dosya silindi)"
 
+msgid "(current)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(v{}'niz var)"
 
@@ -97,6 +100,9 @@ msgstr "- {} giriş güncellendi"
 msgid "? Proxy Unknown"
 msgstr "? Proxy Bilinmiyor"
 
+msgid "Added to favourites: {}"
+msgstr ""
+
 msgid "All countries (%d)"
 msgstr "Tüm ülkeler (%d)"
 
@@ -115,11 +121,8 @@ msgstr "Saat aralığı veya sabit zamanda"
 msgid "Author:"
 msgstr "Yazar:"
 
-msgid "Auto-update EPG"
-msgstr "EPG'yi otomatik güncelle"
-
-msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
-msgstr "Vavoo EPG kaynaklarını her dışa aktarımdan sonra EPGImport'ta otomatik olarak etkinleştirin, böylece onları orada kendi başınıza etkinleştirmenize gerek kalmaz."
+msgid "Auto (Geil, fallback Vavoo)"
+msgstr ""
 
 msgid "Back"
 msgstr "Geri"
@@ -145,7 +148,11 @@ msgstr "Buketlerin yeniden yüklenmesi planlandı."
 msgid "Bouquets reorganized successfully!"
 msgstr "Buketler başarıyla yeniden düzenlendi!"
 
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | STOP=Exit"
+msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
+msgstr ""
+
+#, fuzzy
+msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
 msgstr "CH±=Değiştir | OK=Aç/Kapat | INFO=IMDb | STOP=Çıkış"
 
 msgid "Cache format fix completed:"
@@ -163,6 +170,9 @@ msgstr "Çalıştırma iptal edilsin mi?"
 msgid "Case: {}"
 msgstr "Durum: {}"
 
+msgid "Catalog/Stream Source"
+msgstr ""
+
 #, fuzzy
 msgid "Changelog:"
 msgstr "Kanallar"
@@ -179,8 +189,17 @@ msgstr "Kanallar: %d"
 msgid "Checking proxy..."
 msgstr "Proxy kontrol ediliyor..."
 
+msgid "Choose Stream Source"
+msgstr ""
+
 msgid "Clear All"
 msgstr "Tümünü Temizle"
+
+msgid "Close"
+msgstr ""
+
+msgid "Comma-separated country names (e.g. \\\\\\\\"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "Yapılandırma başarıyla kaydedildi!"
@@ -200,11 +219,17 @@ msgstr "Konsol"
 msgid "Continuing, proxy still syncing..."
 msgstr "Devam ediyor, proxy hâlâ senkronize ediliyor..."
 
+msgid "Could not load channels - proxy not responding"
+msgstr ""
+
+msgid "Could not load the country list from the proxy"
+msgstr ""
+
 msgid "Could not save the installer script."
 msgstr "Yükleyici komut dosyası kaydedilemedi."
 
-msgid "Countries"
-msgstr "Ülkeler"
+msgid "Could not update favourites"
+msgstr ""
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "Ülkeler: %(generated)d/%(total)d"
@@ -212,7 +237,8 @@ msgstr "Ülkeler: %(generated)d/%(total)d"
 msgid "Country: %s"
 msgstr "Ülke: %s"
 
-msgid "Create EPG source for EPGImport with Vavoo program data"
+#, fuzzy
+msgid "Create the EPG source for EPGImport with Vavoo program data and enable it there after each export."
 msgstr "Vavoo program verileriyle EPGImport için EPG kaynağı oluştur"
 
 msgid "Credits:"
@@ -221,20 +247,11 @@ msgstr "Katkıda bulunanlar:"
 msgid "Debug logging"
 msgstr "Hata ayıklama günlüğü"
 
-msgid "Default View"
-msgstr "Varsayılan Görünüm"
-
-msgid "Default view when opening the plugin"
-msgstr "Eklenti açıldığında varsayılan görünüm"
-
 msgid "Do you want to export this bouquet?"
 msgstr "Bu buketi dışa aktarmak istiyor musunuz?"
 
 msgid "Do you want to fix the cache format?"
 msgstr "Önbellek formatını düzeltmek istiyor musunuz?"
-
-msgid "EPG Similarity Threshold (%)"
-msgstr "EPG Benzerlik Eşiği (%)"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -262,8 +279,8 @@ msgstr "EPGImport eklentisi bulunamadı: {}"
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG'yi etkinleştir"
 
-msgid "Enable or disable proxy."
-msgstr "Proxy'yi etkinleştir veya devre dışı bırak."
+msgid "Enter parental control PIN"
+msgstr ""
 
 msgid "Enter text to search..."
 msgstr "Aranacak metni girin..."
@@ -273,9 +290,6 @@ msgstr "Hata"
 
 msgid "Error fixing cache: {}"
 msgstr "Önbellek düzeltme hatası: {}"
-
-msgid "Error parsing data"
-msgstr "Veri ayrıştırma hatası"
 
 msgid "Error starting EPG update: {}"
 msgstr "EPG güncellemesi başlatma hatası: {}"
@@ -310,6 +324,9 @@ msgstr "Proxy yenilenemedi:"
 msgid "Failed: %(failed)d"
 msgstr "Başarısız: %(failed)d"
 
+msgid "Favourites"
+msgstr ""
+
 msgid "Fix Cache"
 msgstr "Önbelleği Düzelt"
 
@@ -321,6 +338,9 @@ msgstr "Proxy yenileme zorlansın mı?"
 
 msgid "Found: {} channels"
 msgstr "Bulunan: {} kanal"
+
+msgid "Geil only"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr ".m3u dosyası oluştur:"
@@ -340,8 +360,14 @@ msgstr "TÜM %d ülke için .m3u dosyaları oluşturulsun mu?"
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Şu andan itibaren EPG'nin ne sıklıkla yeniden eşleştirileceği ve buketlerin yenileneceği."
 
+msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "Önemli Notlar:"
+
+msgid "Incorrect PIN"
+msgstr ""
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "VPN veya yavaş bağlantı nedeniyle proxy uzun sürüyorsa artırın."
@@ -368,8 +394,9 @@ msgstr "EPG güncelleniyor..."
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "Yalnızca yerel (127.0.0.1) - yalnızca bu cihaz"
 
-msgid "Lower = less interruption but more refreshes"
-msgstr "Düşük = daha az kesinti ama daha fazla yenileme"
+#, fuzzy
+msgid "Locked Countries"
+msgstr "Ülkeler"
 
 msgid "M3U file generated successfully!"
 msgstr "M3U dosyası başarıyla oluşturuldu!"
@@ -379,9 +406,6 @@ msgstr "M3U oluşturma tamamlandı!"
 
 msgid "M3U generation error: %s"
 msgstr "M3U oluşturma hatası: %s"
-
-msgid "Minimum similarity for matching channels (higher = stricter)."
-msgstr "Eşleşen kanallar için minimum benzerlik (yüksek = daha katı)."
 
 msgid "Movie Services Reference"
 msgstr "Film Servis Referansı"
@@ -413,6 +437,9 @@ msgstr "Kanal bulunamadı"
 msgid "No channels found for: %s"
 msgstr "%s için kanal bulunamadı"
 
+msgid "No favourites yet"
+msgstr ""
+
 msgid "No items available"
 msgstr "Öğe mevcut değil"
 
@@ -428,14 +455,23 @@ msgstr "%s için geçerli kanal yok"
 msgid "Nothing to remove for: {}"
 msgstr "Şunun için kaldırılacak bir şey yok: {}"
 
-msgid "Now %s"
-msgstr "Şimdi %s"
+msgid "OK"
+msgstr ""
+
+msgid "Only one source available for this channel"
+msgstr ""
 
 msgid "Only one specific country"
 msgstr "Yalnızca belirli bir ülke"
 
+msgid "Parental Control PIN"
+msgstr ""
+
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "EPG'yi periyodik olarak yeniden eşleştirin ve favori ülkeleriniz için buketleri arka planda yenileyin."
+
+msgid "Playlist Access Key (optional)"
+msgstr ""
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Ana listede Vavoo buketlerinin konumu"
@@ -443,21 +479,6 @@ msgstr "Ana listede Vavoo buketlerinin konumu"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "Yazmak için TEXT tuşuna, silmek için BACKSPACE tuşuna basın"
-
-msgid "Proxy Disabled"
-msgstr "Proxy Devre Dışı"
-
-msgid "Proxy Enabled"
-msgstr "Proxy Etkin"
-
-msgid "Proxy disabled"
-msgstr "Proxy devre dışı"
-
-msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
-msgstr "Proxy devre dışı. Lütfen önce Proxy'yi Açın. -- Menü Yapılandırma --"
-
-msgid "Proxy is disabled. Please enable it in the configuration."
-msgstr "Proxy devre dışı. Lütfen yapılandırmadan etkinleştirin."
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "Proxy çalışmıyor. Lütfen önce proxy'yi başlatın."
@@ -477,15 +498,6 @@ msgstr "Proxy token başarıyla yenilendi"
 msgid "Really close without saving settings?"
 msgstr "Ayarları kaydetmeden gerçekten kapatılsın mı?"
 
-msgid "Recommended: 5-8 minutes"
-msgstr "Önerilen: 5-8 dakika"
-
-msgid "Refresh stream (minutes):"
-msgstr "Akışı yenile (dakika):"
-
-msgid "Refresh stream every X minutes (1-15)"
-msgstr "Akışı her X dakikada bir yenile (1-15)"
-
 msgid "Reload Bouqet"
 msgstr "Buketi Yeniden Yükle"
 
@@ -493,6 +505,10 @@ msgid "Reload bouquets and service list?"
 msgstr "Buketler ve servis listesi yeniden yüklensin mi?"
 
 msgid "Remove"
+msgstr "Kaldır"
+
+#, fuzzy
+msgid "Remove ALL"
 msgstr "Kaldır"
 
 msgid "Remove ALL Vavoo bouquets?"
@@ -507,6 +523,10 @@ msgstr "Bu ülke/kategori için dışa aktarılan buket kaldırılsın mı?"
 
 msgid "Removed exported bouquet: {}"
 msgstr "Dışa aktarılan buket kaldırıldı: {}"
+
+#, fuzzy
+msgid "Removed from favourites: {}"
+msgstr "Dışa aktarma başarısız: {}"
 
 msgid "Restarting..."
 msgstr "Yeniden başlatılıyor..."
@@ -560,11 +580,11 @@ msgstr "M3U bağlantılarında kullanılacak IP adresini seçin:"
 msgid "Send Anonymous Statistics"
 msgstr "Anonim İstatistikleri Gönder"
 
-msgid "Server for Player Used"
-msgstr "Kullanılan Oynatıcı Sunucusu"
+msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+msgstr ""
 
-msgid "Server for player."
-msgstr "Oynatıcı için sunucu."
+msgid "Show Log (Ok to view)"
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Vavoo.log'da ayrıntılı DEBUG düzeyindeki mesajları gösterin (UI yaşam döngüsü, istek başına ayrıntı). Hemen etkili olur; sorun giderme sürece bırakın."
@@ -583,6 +603,9 @@ msgstr "Yayın sonlandı. Çok fazla bağlantı sorunu."
 
 msgid "Technical Features:"
 msgstr "Teknik Özellikler:"
+
+msgid "This channel cannot be played"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "Bu, kimlik doğrulama tokenini yenileyecektir."
@@ -624,6 +647,9 @@ msgstr "Vavoo EPG kaynağı EPGImport'ta etkin değil. Lütfen EPGImport ayarlar
 msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Vavoo EPG kaynağı bulunamadı. Lütfen önce en az bir buket dışa aktarın."
 
+msgid "Vavoo Log"
+msgstr ""
+
 msgid "Vavoo Stream Live"
 msgstr "Vavoo Canlı Yayın"
 
@@ -639,11 +665,23 @@ msgstr "Vavoo buketleri başarıyla kaldırıldı!"
 msgid "Vavoo is already running."
 msgstr "Vavoo zaten çalışıyor."
 
+msgid "Vavoo/Kool only"
+msgstr ""
+
 msgid "Version:"
 msgstr "Sürüm:"
 
+msgid "View Favourites (Ok to open)"
+msgstr ""
+
+msgid "View the last 200 lines of %s."
+msgstr ""
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG destekli Vavoo Proxy'ye hoş geldiniz"
+
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -687,6 +725,66 @@ msgstr "✗ Proxy çevrimdışı"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yeniden başlatma başarısız"
+
+#~ msgid "Auto-update EPG"
+#~ msgstr "EPG'yi otomatik güncelle"
+
+#~ msgid "Automatically enable the Vavoo EPG source(s) in EPGImport after each export, so you don't have to enable them there yourself."
+#~ msgstr "Vavoo EPG kaynaklarını her dışa aktarımdan sonra EPGImport'ta otomatik olarak etkinleştirin, böylece onları orada kendi başınıza etkinleştirmenize gerek kalmaz."
+
+#~ msgid "Default View"
+#~ msgstr "Varsayılan Görünüm"
+
+#~ msgid "Default view when opening the plugin"
+#~ msgstr "Eklenti açıldığında varsayılan görünüm"
+
+#~ msgid "EPG Similarity Threshold (%)"
+#~ msgstr "EPG Benzerlik Eşiği (%)"
+
+#~ msgid "Enable or disable proxy."
+#~ msgstr "Proxy'yi etkinleştir veya devre dışı bırak."
+
+#~ msgid "Error parsing data"
+#~ msgstr "Veri ayrıştırma hatası"
+
+#~ msgid "Lower = less interruption but more refreshes"
+#~ msgstr "Düşük = daha az kesinti ama daha fazla yenileme"
+
+#~ msgid "Minimum similarity for matching channels (higher = stricter)."
+#~ msgstr "Eşleşen kanallar için minimum benzerlik (yüksek = daha katı)."
+
+#~ msgid "Now %s"
+#~ msgstr "Şimdi %s"
+
+#~ msgid "Proxy Disabled"
+#~ msgstr "Proxy Devre Dışı"
+
+#~ msgid "Proxy Enabled"
+#~ msgstr "Proxy Etkin"
+
+#~ msgid "Proxy disabled"
+#~ msgstr "Proxy devre dışı"
+
+#~ msgid "Proxy is disabled. Please Set Proxy On first. -- Menu Config --"
+#~ msgstr "Proxy devre dışı. Lütfen önce Proxy'yi Açın. -- Menü Yapılandırma --"
+
+#~ msgid "Proxy is disabled. Please enable it in the configuration."
+#~ msgstr "Proxy devre dışı. Lütfen yapılandırmadan etkinleştirin."
+
+#~ msgid "Recommended: 5-8 minutes"
+#~ msgstr "Önerilen: 5-8 dakika"
+
+#~ msgid "Refresh stream (minutes):"
+#~ msgstr "Akışı yenile (dakika):"
+
+#~ msgid "Refresh stream every X minutes (1-15)"
+#~ msgstr "Akışı her X dakikada bir yenile (1-15)"
+
+#~ msgid "Server for Player Used"
+#~ msgstr "Kullanılan Oynatıcı Sunucusu"
+
+#~ msgid "Server for player."
+#~ msgstr "Oynatıcı için sunucu."
 
 #~ msgid "Active Automatic Bouquet Update"
 #~ msgstr "Aktif Otomatik Buket Güncelleme"
