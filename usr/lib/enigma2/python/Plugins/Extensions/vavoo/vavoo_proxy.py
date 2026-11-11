@@ -1969,8 +1969,9 @@ class VavooProxy(object):
                 self.invalidate_resolved(member.get("url"))
                 break
         if gave_up:
-            print("[Proxy] {0}: source {1} keeps failing, trying another".format(
-                channel_id, failed_member_id))
+            print(
+                "[Proxy] {0}: source {1} keeps failing, trying another".format(
+                    channel_id, failed_member_id))
         else:
             print("[Proxy] {0}: source {1} failed, retrying it".format(
                 channel_id, failed_member_id))
@@ -2507,10 +2508,10 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                             _strip_source_suffix(m.get("name", "")) or
                             m.get("name", "") for m in members]
                         display_name = min(display_names, key=len)
-                        logo = next(
-                            (m.get("logo") for m in members if m.get("logo")), "")
-                        epg_id = next(
-                            (m.get("epg_id") for m in members if m.get("epg_id")), "")
+                        logo = next((m.get("logo")
+                                     for m in members if m.get("logo")), "")
+                        epg_id = next((m.get("epg_id")
+                                       for m in members if m.get("epg_id")), "")
                         proxy_url = "http://%s:%d/vavoo?channel=%s" % (
                             local_ip, PORT, quote(group_id, safe=''))
                         response_channels.append({
@@ -2604,7 +2605,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     # set by plugin.py long before this thread can ever
                     # start, but log it so a configured key silently
                     # not applying wouldn't go unnoticed.
-                    print("[Proxy] Could not read playlist_key config: {}".format(e))
+                    print(
+                        "[Proxy] Could not read playlist_key config: {}".format(e))
                     playlist_key = ""
                 if playlist_key:
                     supplied_key = query_params.get('key', [None])[0]
@@ -2630,7 +2632,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                         channel_id = channel.get("id", "")
                         if not channel_id:
                             continue
-                        channel_name = decodeHtml(channel.get("name", "Unknown"))
+                        channel_name = decodeHtml(
+                            channel.get("name", "Unknown"))
                         channel_name = remove_parentheses(channel_name)
                         # Catalog data is remote/mirror-switchable and
                         # already treated as attacker-influenceable
@@ -2654,7 +2657,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
                 if not self.safe_send_response(200):
                     return
-                self.send_header('Content-Type', 'audio/x-mpegurl; charset=utf-8')
+                self.send_header(
+                    'Content-Type',
+                    'audio/x-mpegurl; charset=utf-8')
                 self.end_headers()
                 if not self.safe_write(m3u_text.encode('utf-8')):
                     return

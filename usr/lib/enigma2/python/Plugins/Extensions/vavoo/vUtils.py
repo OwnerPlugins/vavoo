@@ -2384,8 +2384,10 @@ class VavooEPGMatcher(object):
         holding the lock the concurrent EPG-overlay thread also needs
         for its own, unrelated find_match() calls would stall it for
         that whole duration for no reason."""
-        curated_db = _load_curated_channel_db(country_code) if country_code else None
-        feed_index = _get_epg_feed_index(country_code) if country_code else None
+        curated_db = _load_curated_channel_db(
+            country_code) if country_code else None
+        feed_index = _get_epg_feed_index(
+            country_code) if country_code else None
         # A plain local list, not an instance attribute - _find_match_
         # locked() appends to it (under self._cache_lock, so that part
         # is already safe) when a cache downgrade needs persisting;
@@ -2501,7 +2503,8 @@ class VavooEPGMatcher(object):
             cached = self.cache[cached_key]
             id_val = cached.get('id')
             if self.is_valid_rytec_id(id_val):
-                # Check if the channel name matches the Rytec name associated with that ID
+                # Check if the channel name matches the Rytec name associated
+                # with that ID
                 channel_clean = self._clean_name_for_similarity(channel_name)
                 rytec_clean = self.rytec_names.get(id_val, '')
                 if rytec_clean:

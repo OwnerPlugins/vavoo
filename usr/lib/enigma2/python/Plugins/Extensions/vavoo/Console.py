@@ -125,7 +125,8 @@ class Console(Screen):
             # would be more confusing than removing the button outright
             # (plain string removal, not regex: exact, no-op if the
             # text ever changes rather than silently mismatching).
-            self.skin = type(self).skin.replace('text="Restart GUI"', 'text=""')
+            self.skin = type(self).skin.replace(
+                'text="Restart GUI"', 'text=""')
         self.errorOcurred = False
         self._text_buffer = ''
         # Plain Label, not ScrollLabel: ScrollLabel's setText() depends on
@@ -147,7 +148,8 @@ class Console(Screen):
         # caller keeps today's behavior unchanged.
         if allow_restart:
             actions["green"] = self.restartenigma
-        self["actions"] = ActionMap(["WizardActions", 'ColorActions'], actions, -1)
+        self["actions"] = ActionMap(
+            ["WizardActions", 'ColorActions'], actions, -1)
 
         self.newtitle = title == 'Console' and _(
             'Console') or title  # Fixed: Added _ function

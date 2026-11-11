@@ -1412,7 +1412,8 @@ class vavoo_config(Screen, ConfigListScreen):
                             channel_url = "http://{}:{}/vavoo?channel={}".format(
                                 host, PORT, url_quote(strip_control_chars(ensure_str(channel_id))))
                         else:
-                            channel_url = strip_control_chars(channel.get('url', ''))
+                            channel_url = strip_control_chars(
+                                channel.get('url', ''))
 
                         # Clean channel name
                         channel_name = decodeHtml(channel_name)
@@ -5769,7 +5770,8 @@ class Playstream2(
         members = (data or {}).get("members") or []
         if len(members) < 2:
             if NOTIFICATION_AVAILABLE:
-                quick_notify(_("Only one source available for this channel"), 3)
+                quick_notify(
+                    _("Only one source available for this channel"), 3)
             return
 
         current = data.get("current")
@@ -5868,8 +5870,8 @@ class Playstream2(
         # timer's own callback happened to run first; a screen closed before
         # that could leave one re-arming itself against a torn-down instance.
         for timer_name in ("proxy_update_timer", "hideTimer",
-                            "delayed_start_timer", "retry_start_timer",
-                            "eof_recovery_timer"):
+                           "delayed_start_timer", "retry_start_timer",
+                           "eof_recovery_timer"):
             timer = getattr(self, timer_name, None)
             if timer is not None:
                 try:
