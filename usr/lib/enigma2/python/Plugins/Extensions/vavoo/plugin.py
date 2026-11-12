@@ -6,14 +6,11 @@ import codecs
 import ssl
 import time
 import threading
-from difflib import SequenceMatcher
 from os import listdir, unlink, remove, system as os_system
 from os.path import exists as file_exists, join, isfile, getsize
 from json import loads
 from sys import version_info
 from enigma import eDVBDB
-import xml.etree.ElementTree as ET
-import datetime
 from twisted.internet import reactor
 
 try:
@@ -118,7 +115,6 @@ from .vUtils import (
     make_print,
     update_epg_sources,
     ensure_vavoo_epg_sources_enabled,
-    get_epg_matcher,
     get_proxy_status,
     cleanup_old_temp_files,
     check_remote_installer_version,
@@ -323,54 +319,6 @@ _session = None
 _autostart_scheduled = False
 auto_start_timer = None
 
-# Per-country parsed EPG document + channel->programme index, shared
-# across Playstream2 instances (module-level, not per-instance) so
-# switching channels or reopening the player doesn't re-fetch/re-parse/
-# re-index the same country's EPG document within the TTL window - see
-# Playstream2.get_current_epg().
-# country_code -> (timestamp, root, channel_index, display_name_index)
-_epg_xml_cache = {}
-_epg_result_cache = {}   # "epg_<name>_<country>" -> (timestamp, result_str)
-
-# Safety-net caps: entries here are only ever added, never removed on
-# their own (the 5-minute figure elsewhere is a reuse TTL, not an
-# eviction one) - unlike vUtils.py's persistent EPG matcher cache (which
-# already has its own size cap), these two are plain in-memory dicts
-# that grow for the life of the process, one entry per unique
-# channel+country (_epg_result_cache) or country (_epg_xml_cache) ever
-# viewed. _epg_xml_cache is naturally small (bounded by distinct
-# countries actually browsed), but capped too for consistency/safety.
-_EPG_RESULT_CACHE_MAX = 500
-_EPG_XML_CACHE_MAX = 50
-
-
-def _cache_epg_result(cache_key, result):
-    _epg_result_cache[cache_key] = (time.time(), result)
-    if len(_epg_result_cache) > _EPG_RESULT_CACHE_MAX:
-        oldest = sorted(
-            _epg_result_cache, key=lambda k: _epg_result_cache[k][0]
-        )[:len(_epg_result_cache) - _EPG_RESULT_CACHE_MAX]
-        # pop(k, None), not del: this runs unlocked from whichever
-        # per-channel EPG-fetch daemon thread last called
-        # get_current_epg() (see Playstream2), so two threads can race
-        # into eviction at once - the second one's `oldest` snapshot may
-        # include a key the first already removed. del would raise
-        # KeyError there; pop is a no-op instead.
-        for k in oldest:
-            _epg_result_cache.pop(k, None)
-
-
-def _cache_epg_xml(country_code, root, channel_index, display_name_index):
-    _epg_xml_cache[country_code] = (
-        time.time(), root, channel_index, display_name_index)
-    if len(_epg_xml_cache) > _EPG_XML_CACHE_MAX:
-        oldest = sorted(
-            _epg_xml_cache, key=lambda k: _epg_xml_cache[k][0]
-        )[:len(_epg_xml_cache) - _EPG_XML_CACHE_MAX]
-        for k in oldest:
-            _epg_xml_cache.pop(k, None)
-
-
 # Auto-update check state, shared between startVavoo (kicks off the
 # background check) and MainVavoo (shows the popup once, after the main
 # menu is open). See _start_update_check() /
@@ -559,6 +507,8 @@ cfg.catalog_source = ConfigSelection(
     ])
 cfg.services = ConfigSelection(default='4097', choices=modemovie)
 cfg.epg_enabled = ConfigEnableDisable(default=False)
+# The Now/Next panel beside the channel list - see NowNextPanel.
+cfg.list_epg = ConfigYesNo(default=True)
 cfg.timetype = ConfigSelection(
     default="interval", choices=[
         ("interval", _("interval")), ("fixed time", _("fixed time"))])
@@ -814,6 +764,244 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     return list(res)
 
 
+# ---------------------------------------------------------------------
+# Now / Next panel (channel list, Favourites)
+# ---------------------------------------------------------------------
+# The four labels defaultListScreen.xml declares to the right of the
+# preview window. Every screen that loads that skin file has to own
+# all four, used or not: a <widget name="..."> with no matching
+# self["..."] is a skin error on current images and a crash
+# ("component with name ... was not found in skin of screen") on
+# older ones.
+EPG_PANEL_WIDGETS = (
+    "epg_now_time", "epg_now_title", "epg_next_time", "epg_next_title")
+# How long the highlight has to rest on a row before its programme is
+# looked up - holding UP/DOWN runs through rows much faster than this,
+# and none of those should cost a lookup.
+EPG_PANEL_SETTLE_MS = 350
+# How often a filled panel is looked at again, so that it moves on
+# when the programme ends. Answered from memory, no network.
+EPG_PANEL_REFRESH_MS = 60000
+
+
+def add_epg_panel_labels(screen):
+    """Give `screen` the (empty) Now/Next labels its skin declares."""
+    for widget in EPG_PANEL_WIDGETS:
+        screen[widget] = Label("")
+
+
+def _epg_channel_id(url):
+    """The channel id in a proxy stream address, the way the player
+    overlay has always handed it to find_match() (still URL-quoted:
+    there it only goes into a service reference nobody keeps), or
+    None if `url` is not such an address."""
+    if not url or "vavoo?channel=" not in url:
+        return None
+    channel_id = url.split("vavoo?channel=")[1]
+    if '?' in channel_id:
+        channel_id = channel_id.split('?')[0]
+    return channel_id or None
+
+
+class NowNextPanel(object):
+    """Mixed into a list screen: shows what is on the highlighted
+    channel now and what follows, in the EPG_PANEL_WIDGETS labels.
+
+    The screen supplies _epg_panel_selection(), calls
+    _epg_panel_init() once while building its widgets,
+    _epg_panel_changed() whenever the highlighted row may have
+    changed and _epg_panel_stop() when it closes, and sets
+    self._closed on closing.
+
+    Nothing here makes the GUI thread wait. A row whose answer is
+    already in memory (vUtils.peek_now_next()) is drawn at once.
+    Anything else waits EPG_PANEL_SETTLE_MS for the highlight to stop
+    moving, then goes to one background thread - never more than one
+    per screen, and it only ever works on the latest row asked for,
+    so scrolling through a list while a guide is still downloading
+    cannot pile up threads or downloads. An answer is only drawn if
+    its row is still the highlighted one.
+    """
+
+    def _epg_panel_init(self):
+        add_epg_panel_labels(self)
+        # The row the panel is about: (name, url, country code), drawn
+        # or still being looked up. None = nothing to show.
+        self._epg_panel_row = None
+        self._epg_panel_lock = threading.Lock()
+        # Next row for the background thread (latest wins).
+        self._epg_panel_wanted = None
+        self._epg_panel_working = False
+        self._epg_panel_timer = eTimer()
+        try:
+            self._epg_panel_timer.callback.append(self._epg_panel_tick)
+        except Exception:
+            self._epg_panel_timer.timeout.connect(self._epg_panel_tick)
+        try:
+            self.onExecBegin.append(self._epg_panel_resume)
+        except Exception as e:
+            debug("Now/Next: no onExecBegin hook: {}".format(e))
+
+    def _epg_panel_selection(self):
+        """(channel name, stream url, country code) of the highlighted
+        row, or None when there is nothing to look up. Supplied by the
+        screen."""
+        return None
+
+    def _epg_panel_changed(self):
+        """The highlighted row may have changed."""
+        if getattr(self, '_closed', False):
+            return
+        request = None
+        if cfg.list_epg.value:
+            try:
+                request = self._epg_panel_selection()
+            except Exception as e:
+                debug("Now/Next: reading the selection failed: {}".format(e))
+        if request is not None and request == self._epg_panel_row:
+            # Same row announced again (the list was rebuilt once its
+            # picons arrived): whatever is shown or under way stands.
+            return
+        self._epg_panel_row = request
+        self._epg_panel_timer.stop()
+        if request is None:
+            self._epg_panel_show("", "", "", "")
+            return
+        answer = self._epg_panel_peek(request)
+        if answer is not None:
+            self._epg_panel_draw(answer)
+            self._epg_panel_timer.start(EPG_PANEL_REFRESH_MS, True)
+            return
+        # Never leave the previous channel's programme standing under
+        # a different channel's name while this one is looked up.
+        self._epg_panel_show("", "", "", "")
+        self._epg_panel_timer.start(EPG_PANEL_SETTLE_MS, True)
+
+    def _epg_panel_resume(self):
+        """This screen is on top again (first shown, or back from the
+        player, the settings or a message box)."""
+        if getattr(self, '_closed', False):
+            return
+        if self._epg_panel_row is None:
+            # e.g. the setting was just switched on in the settings.
+            self._epg_panel_changed()
+        elif not self._epg_panel_timer.isActive():
+            self._epg_panel_timer.start(EPG_PANEL_SETTLE_MS, True)
+
+    def _epg_panel_peek(self, request):
+        try:
+            return vUtils.peek_now_next(request[0], request[2])
+        except Exception as e:
+            debug("Now/Next: peek failed: {}".format(e))
+            return None
+
+    def _epg_panel_tick(self):
+        """The highlight has rested long enough on a row that still
+        needs looking up - or it is time to look again at a row
+        already shown."""
+        if getattr(self, '_closed', False):
+            return
+        request = self._epg_panel_row
+        if request is None:
+            return
+        if not cfg.list_epg.value:
+            self._epg_panel_row = None
+            self._epg_panel_show("", "", "", "")
+            return
+        if not getattr(self, 'execing', True):
+            # Another screen is on top (the player, a message box).
+            # Nothing is looked up for a list nobody is looking at -
+            # above all, no guide download while a stream is playing.
+            # _epg_panel_resume() picks this up again.
+            return
+        answer = self._epg_panel_peek(request)
+        if answer is not None:
+            self._epg_panel_draw(answer)
+            self._epg_panel_timer.start(EPG_PANEL_REFRESH_MS, True)
+            return
+        if vUtils.peek_epg_guide(request[2]) is None:
+            # The slow case: this country's guide has to be downloaded
+            # first. Matching one more channel against a guide already
+            # in memory takes a moment at most - no message for that.
+            self._epg_panel_show(
+                "", _("Loading programme guide..."), "", "")
+        with self._epg_panel_lock:
+            self._epg_panel_wanted = request
+            start_worker = not self._epg_panel_working
+            if start_worker:
+                self._epg_panel_working = True
+        if start_worker:
+            worker = threading.Thread(target=self._epg_panel_work)
+            worker.daemon = True
+            worker.start()
+
+    def _epg_panel_work(self):
+        """Background thread: answer the latest row asked for, until
+        there is none left."""
+        while True:
+            with self._epg_panel_lock:
+                request = self._epg_panel_wanted
+                self._epg_panel_wanted = None
+                if request is None or getattr(self, '_closed', False):
+                    self._epg_panel_working = False
+                    return
+            try:
+                answer = vUtils.lookup_now_next(
+                    request[0], request[2],
+                    channel_id=_epg_channel_id(request[1]))
+            except Exception as e:
+                debug("Now/Next: lookup failed: {}".format(e))
+                answer = ("no_guide", None, None)
+            if not getattr(self, '_closed', False):
+                reactor.callFromThread(
+                    self._epg_panel_arrived, request, answer)
+
+    def _epg_panel_arrived(self, request, answer):
+        """Back on the GUI thread with the background thread's answer."""
+        if getattr(self, '_closed', False) or request != self._epg_panel_row:
+            # Closed meanwhile, or the highlight has moved on (that
+            # row has its own lookup under way).
+            return
+        self._epg_panel_draw(answer)
+        self._epg_panel_timer.start(EPG_PANEL_REFRESH_MS, True)
+
+    def _epg_panel_draw(self, answer):
+        status, current, following = answer
+        now_time = now_title = next_time = next_title = ""
+        if status != "no_country":
+            if current is not None:
+                now_time = "{}  {} - {}".format(
+                    _("Now"), vUtils.epg_clock(current[0]),
+                    vUtils.epg_clock(current[1]))
+                now_title = current[2]
+            else:
+                now_title = _("No programme information")
+            if following is not None:
+                next_time = "{}  {} - {}".format(
+                    _("Next"), vUtils.epg_clock(following[0]),
+                    vUtils.epg_clock(following[1]))
+                next_title = following[2]
+        self._epg_panel_show(now_time, now_title, next_time, next_title)
+
+    def _epg_panel_show(self, *texts):
+        try:
+            for widget, text in zip(EPG_PANEL_WIDGETS, texts):
+                self[widget].setText(to_string(text))
+        except Exception as e:
+            debug("Now/Next: updating the labels failed: {}".format(e))
+
+    def _epg_panel_stop(self):
+        try:
+            self._epg_panel_timer.stop()
+        except Exception:
+            pass
+        try:
+            with self._epg_panel_lock:
+                self._epg_panel_wanted = None
+        except Exception:
+            pass
+
+
 class vavoo_config(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -916,6 +1104,14 @@ class vavoo_config(Screen, ConfigListScreen):
             cfg.epg_enabled,
             _("Create the EPG source for EPGImport with Vavoo program data "
               "and enable it there after each export.")
+        ))
+
+        self.list.append(getConfigListEntry(
+            _("Now/Next in channel list"),
+            cfg.list_epg,
+            _("Show the current and the next programme beside the "
+              "channel list. The country's programme guide is "
+              "downloaded when you open a country.")
         ))
 
         # Grouped with "Enable Vavoo EPG" above rather than left down by
@@ -2365,6 +2561,9 @@ class MainVavoo(Screen):
         self['name'] = Label('Loading...')
         self['version'] = Label()
         self['proxy_status'] = Label('Wait...')
+        # Declared by the skin this screen shares with the channel
+        # list; unused here (a country has no programme).
+        add_epg_panel_labels(self)
 
     def _initialize_actions(self):
         """Initialize the actions for buttons."""
@@ -3186,7 +3385,7 @@ class MainVavoo(Screen):
             self['name'].setText(_("Error"))
 
 
-class vavoo(Screen):
+class vavoo(Screen, NowNextPanel):
     def __init__(self, session, name, url, option_value=None):
         self.session = session
         global _session
@@ -3204,10 +3403,16 @@ class vavoo(Screen):
         self._initialize_labels()
         self._initialize_actions()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
+        self["menulist"].onSelectionChanged.append(self._epg_panel_changed)
         self.currentList = 'menulist'
 
         # Store country name properly
         self.country_name = name
+        # For the Now/Next panel - same lookup play_that_shit() does.
+        try:
+            self._epg_country_code = get_country_code(name)
+        except Exception:
+            self._epg_country_code = ""
         self.name = name
         self.url = url
         self.option_value = option_value
@@ -3288,6 +3493,18 @@ class vavoo(Screen):
         self['version'] = Label()
         self["version"].setText(to_string("V." + __version__))
         self['proxy_status'] = Label('...')
+        self._epg_panel_init()
+
+    def _epg_panel_selection(self):
+        """See NowNextPanel."""
+        current = self['menulist'].getCurrent()
+        if not current:
+            return None
+        name, url = current[0][0], current[0][1]
+        country_code = getattr(self, '_epg_country_code', "")
+        if not name or not country_code:
+            return None
+        return (name, url, country_code)
 
     def _initialize_actions(self):
         """Initialize the actions for buttons."""
@@ -3444,6 +3661,9 @@ class vavoo(Screen):
             item[0][0] + "###" + item[0][1] for item in self.cat_list
         ]
         self.update_menu()
+        # Filling the list does not reliably announce a selection
+        # change by itself - make sure the first row gets its panel.
+        self._epg_panel_changed()
         self._preload_channel_picons()
         debug("List built with " + str(len(self.cat_list)) + " items.")
 
@@ -3886,6 +4106,7 @@ class vavoo(Screen):
 
     def close(self, *args, **kwargs):
         self._closed = True
+        self._epg_panel_stop()
         try:
             self.timer.stop()
             try:
@@ -3923,7 +4144,7 @@ class vavoo(Screen):
         self.close()
 
 
-class VavooFavourites(Screen):
+class VavooFavourites(Screen, NowNextPanel):
     """Browse and play starred channels (see vUtils.toggle_favourite()/
     load_favourites()). Deliberately minimal compared to the `vavoo`
     class: no country/proxy fetching, no auto-update timer - just a
@@ -3954,6 +4175,10 @@ class VavooFavourites(Screen):
         self['green'] = Label(_('Remove'))
         self['yellow'] = Label()
         self['blue'] = Label()
+        self.favourite_entries = []
+        self._epg_panel_init()
+        self['menulist'].onSelectionChanged.append(self._epg_panel_changed)
+        self.onClose.append(self._epg_panel_stop)
 
         self['actions'] = ActionMap(
             ['OkCancelActions', 'ColorActions', 'DirectionActions'],
@@ -3990,6 +4215,22 @@ class VavooFavourites(Screen):
         else:
             self['menulist'].l.setList([])
             self['name'].setText(_('No favourites yet'))
+        self._epg_panel_changed()
+
+    def _epg_panel_selection(self):
+        """See NowNextPanel. Favourites mix countries: each entry
+        carries its own country code."""
+        if not self.cat_list:
+            return None
+        i = self['menulist'].getSelectedIndex()
+        if i is None or not 0 <= i < len(self.favourite_entries):
+            return None
+        entry = self.favourite_entries[i]
+        name = entry.get('name')
+        country_code = entry.get('country_code')
+        if not name or not country_code:
+            return None
+        return (name, entry.get('url', ''), country_code)
 
     def moveUp(self):
         if not self.cat_list:
@@ -5365,255 +5606,36 @@ class Playstream2(
         self.startStream(is_retry=True)
 
     def get_current_epg(self):
-        """
-        Get current EPG program for the playing channel.
-        Results are cached for 5 minutes to avoid repeated lookups.
-        """
-        start_time = time.time()
+        """The playing channel's current programme as the one line
+        the OK overlay shows: "HH:MM-HH:MM Title - Description"
+        (showIMDB() takes the title back out of exactly this shape),
+        or one of the "EPG ..." / "No programme found" texts when
+        there is none.
 
+        Can block on a guide download: background threads only (see
+        show_help_overlay() and showIMDB()). The guide itself, its
+        caching and the channel matching are vUtils.lookup_now_next()
+        - the same lookup the channel list's Now/Next panel uses, so
+        the two always agree.
+        """
         try:
             if not self.country_code:
                 return "EPG not available (no country code)"
 
-            # Clean channel name for better matching
-            clean_name = decodeHtml(self.name)
-            clean_name = remove_parentheses(clean_name)
+            status, current, _following = vUtils.lookup_now_next(
+                self.name, self.country_code,
+                channel_id=_epg_channel_id(self.url))
+            if status == "no_guide":
+                return "EPG not available"
+            if status == "no_match":
+                return "EPG not available (ID not found)"
+            if current is None:
+                return "No programme found"
 
-            # Create cache key
-            cache_key = "epg_{}_{}".format(clean_name, self.country_code)
-
-            # Check if we have cached result (5 minutes TTL)
-            if cache_key in _epg_result_cache:
-                cached_time, cached_result = _epg_result_cache[cache_key]
-                if time.time() - cached_time < 300:  # 5 minutes
-                    elapsed = time.time() - start_time
-                    if elapsed > 0.05:
-                        print(
-                            "[EPG] Cache HIT for {} (took {:.3f}s)".format(
-                                clean_name, elapsed))
-                    return cached_result
-
-            # Get matcher (singleton, already loaded)
-            matcher = get_epg_matcher()
-
-            # Extract channel ID from URL (same as playProxyStream()) -
-            # find_match()'s curated-channel-db lookup only returns a
-            # hit when channel_id is given (it's needed to build a
-            # collision-free synthetic sref via unique_fallback_sref()),
-            # so without this the curated DB - the primary EPG source
-            # for countries with weak Rytec coverage like Spain/Poland/
-            # Turkey - was silently never consulted here, even though
-            # bouquet export (which does pass channel_id) uses it fine.
-            # The sref this call gets back is discarded either way
-            # (_unused below), so this doesn't add any collision risk.
-            channel_id = None
-            if self.url and "vavoo?channel=" in self.url:
-                channel_id = self.url.split("vavoo?channel=")[1]
-            if channel_id and '?' in channel_id:
-                channel_id = channel_id.split('?')[0]
-
-            # Find Rytec ID - this is the expensive part
-            match_start = time.time()
-            rytec_id, _unused, _unused_source = matcher.find_match(
-                clean_name, country_code=self.country_code,
-                channel_id=channel_id)
-            match_time = time.time() - match_start
-
-            if match_time > 0.1:
-                print(
-                    "[EPG] Slow match for {}: {:.3f}s".format(
-                        clean_name, match_time))
-
-            if not rytec_id:
-                result = "EPG not available (ID not found)"
-                _cache_epg_result(cache_key, result)
-                return result
-
-            # The whole country's EPG document (all channels, potentially
-            # thousands of <programme> entries across all channels/days)
-            # is what's slow to fetch, parse, and scan - not any single
-            # channel's lookup. Reuse a recently parsed copy, and a
-            # channel->programmes index built alongside it, across
-            # channels in the same country instead of re-downloading,
-            # re-parsing, and re-scanning the whole thing from scratch on
-            # every single channel view.
-            xml_cached = _epg_xml_cache.get(self.country_code)
-            if xml_cached and (time.time() - xml_cached[0] < 300):
-                root, channel_index, display_name_index = (
-                    xml_cached[1], xml_cached[2], xml_cached[3])
-            else:
-                # Build EPG URL
-                epg_url = "http://{}:{}/epg/{}.xml".format(
-                    PROXY_HOST, PORT, self.country_code or "")
-
-                # Fetch XML data
-                fetch_start = time.time()
-                # Reduced timeout to 3 seconds
-                xml_data = getUrl(epg_url, timeout=3)
-                fetch_time = time.time() - fetch_start
-
-                if fetch_time > 0.5:
-                    print(
-                        "[EPG] Slow fetch from {}: {:.3f}s".format(
-                            epg_url, fetch_time))
-
-                if not xml_data:
-                    result = "EPG not available"
-                    _cache_epg_result(cache_key, result)
-                    return result
-
-                try:
-                    root = ET.fromstring(xml_data)
-                except Exception as e:
-                    print("[EPG] XML parsing error: {}".format(e))
-                    result = "EPG parsing error"
-                    _cache_epg_result(cache_key, result)
-                    return result
-
-                # Index once per document: channel id (dots stripped, to
-                # match id_match()'s old comparison) -> its own programme
-                # entries, so a single channel's lookup only ever scans
-                # that channel's handful of entries instead of every
-                # <programme> in the whole country.
-                index_start = time.time()
-                channel_index = {}
-                for prog in root.findall('programme'):
-                    prog_channel = prog.get('channel')
-                    if not prog_channel:
-                        continue
-                    channel_index.setdefault(
-                        prog_channel.replace('.', ''), []).append(prog)
-                index_time = time.time() - index_start
-                if index_time > 0.1:
-                    print(
-                        "[EPG] Slow index build: {:.3f}s ({} channels)".format(
-                            index_time, len(channel_index)))
-
-                # Secondary, display-only index: cleaned <display-name>
-                # text -> channel id, used as a fallback (see below) when
-                # the primary rytec_id lookup finds nothing - some
-                # country feeds use their own id convention (e.g.
-                # "Canal.Hollywood.HD.pt", "RTP.1.HD.pt") that diverges
-                # from the separate Rytec matching database's ids for
-                # the same real channel, even though this feed has
-                # perfectly good programme data under its own id.
-                display_name_index = {}
-                for chan in root.findall('channel'):
-                    chan_id = chan.get('id')
-                    if not chan_id:
-                        continue
-                    for dn in chan.findall('display-name'):
-                        dn_text = (dn.text or '').strip()
-                        if not dn_text:
-                            continue
-                        clean_dn = matcher._clean_name_for_similarity(
-                            dn_text)
-                        if clean_dn:
-                            display_name_index[clean_dn] = chan_id
-
-                _cache_epg_xml(
-                    self.country_code, root, channel_index,
-                    display_name_index)
-
-            # Find current programme
-            parse_start = time.time()
-            try:
-                import calendar
-                now = time.time()
-
-                def _current_in(programmes):
-                    for prog in programmes:
-                        start_str = prog.get('start')
-                        stop_str = prog.get('stop')
-                        if not start_str or not stop_str:
-                            continue
-                        try:
-                            # Parse dates without timezone for speed
-                            start_clean = start_str.split(' ')[0]
-                            stop_clean = stop_str.split(' ')[0]
-                            start_dt = datetime.datetime.strptime(
-                                start_clean, "%Y%m%d%H%M%S")
-                            stop_dt = datetime.datetime.strptime(
-                                stop_clean, "%Y%m%d%H%M%S")
-                            start_ts = calendar.timegm(start_dt.timetuple())
-                            stop_ts = calendar.timegm(stop_dt.timetuple())
-                            if start_ts <= now <= stop_ts:
-                                return prog
-                        except Exception:
-                            continue
-                    return None
-
-                rid_key = rytec_id.replace('.', '')
-                current_prog = _current_in(channel_index.get(rid_key, []))
-
-                # Fallback: the matched rytec_id has no coverage in this
-                # feed (a different id scheme for the same real channel,
-                # e.g. matcher assigns "rtp1.pt" but this feed uses
-                # "RTP.1.HD.pt") - try matching this channel's own name
-                # directly against the feed's <display-name> tags
-                # instead. Display-only: never touches matcher.cache,
-                # dvb_ref, or anything bouquet-export/satellite-EPG
-                # relies on - purely a better answer for this overlay.
-                if current_prog is None and display_name_index:
-                    clean_for_fallback = matcher._clean_name_for_similarity(
-                        clean_name)
-                    if clean_for_fallback:
-                        best_score = 0.0
-                        best_id = None
-                        sm = SequenceMatcher(None, clean_for_fallback)
-                        for dn_key, dn_id in display_name_index.items():
-                            sm.set_seq2(dn_key)
-                            score = sm.ratio()
-                            if score > best_score:
-                                best_score = score
-                                best_id = dn_id
-                        if best_id and best_score >= matcher.similarity_threshold:
-                            fallback_key = best_id.replace('.', '')
-                            current_prog = _current_in(
-                                channel_index.get(fallback_key, []))
-                            if current_prog is not None:
-                                print(
-                                    "[EPG] Fallback name match: '{}' -> {} "
-                                    "(score={:.2f})".format(
-                                        clean_name, best_id, best_score))
-
-                parse_time = time.time() - parse_start
-                if parse_time > 0.1:
-                    print("[EPG] Slow parse: {:.3f}s".format(parse_time))
-
-                if current_prog is not None:
-                    title = current_prog.findtext('title', '')
-                    desc = current_prog.findtext('desc', '')
-
-                    # Extract start/stop times for display
-                    start_str = current_prog.get('start')
-                    stop_str = current_prog.get('stop')
-
-                    try:
-                        start_dt = datetime.datetime.strptime(
-                            start_str.split(' ')[0], "%Y%m%d%H%M%S")
-                        stop_dt = datetime.datetime.strptime(
-                            stop_str.split(' ')[0], "%Y%m%d%H%M%S")
-
-                        start_local = start_dt.strftime('%H:%M')
-                        end_local = stop_dt.strftime('%H:%M')
-
-                        result = "{}-{} {} - {}".format(
-                            start_local, end_local, title, desc)
-                    except Exception:
-                        result = "{} - {}".format(title, desc)
-                else:
-                    result = "No programme found"
-
-                # Cache the result
-                _cache_epg_result(cache_key, result)
-                return result
-
-            except Exception as e:
-                print("[EPG] Programme matching error: {}".format(e))
-                result = "EPG parsing error"
-                _cache_epg_result(cache_key, result)
-                return result
+            start, stop, title, description = current
+            return "{}-{} {} - {}".format(
+                vUtils.epg_clock(start), vUtils.epg_clock(stop),
+                to_string(title), to_string(description))
 
         except Exception as e:
             print("[EPG] Exception in get_current_epg: {}".format(e))

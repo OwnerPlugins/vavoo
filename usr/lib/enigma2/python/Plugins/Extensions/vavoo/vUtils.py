@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 import base64
+import calendar
 import glob
 import hashlib
 import io
@@ -24,6 +25,13 @@ try:
 except ImportError:
     urllib3 = None
 import xml.etree.ElementTree as ET
+try:
+    # Python 2: the C parser lives here (plain ElementTree is the
+    # slow pure-Python one there). Gone in Python 3.9+, where
+    # ElementTree itself already is the C parser.
+    import xml.etree.cElementTree as _fast_ET
+except ImportError:
+    _fast_ET = ET
 import zlib
 from datetime import datetime as _datetime
 from collections import OrderedDict
@@ -40,8 +48,8 @@ from shutil import copy2
 from sys import maxsize
 from six import iteritems, unichr
 from six.moves import html_entities, html_parser
-from time import time, strftime, localtime
-from unicodedata import normalize
+from time import time, strftime, localtime, gmtime
+from unicodedata import combining, normalize
 
 from . import (
     __version__,
@@ -481,6 +489,120 @@ def b64decoder(data):
         return ""
 
 
+def _urlopen_unverified(request, timeout):
+    """urlopen() the way getUrl() has always done it (certificate
+    checks off), on whichever Python this box runs. Shared by getUrl()
+    and open_url_stream() so the two cannot drift apart."""
+    if PY3:
+        import ssl
+        unverified_context = ssl.create_default_context()
+        unverified_context.check_hostname = False
+        unverified_context.verify_mode = ssl.CERT_NONE
+        return urlopen(
+            request,
+            timeout=timeout,
+            context=unverified_context)
+    # Python 2: use ssl if it is there, plain urlopen() otherwise
+    try:
+        import ssl
+    except ImportError:
+        return urlopen(request, timeout=timeout)
+    # Python 2.7.9+ has ssl._create_unverified_context
+    unverified_context = ssl._create_unverified_context() if hasattr(
+        ssl, '_create_unverified_context') else None
+    if unverified_context:
+        return urlopen(
+            request, timeout=timeout, context=unverified_context)
+    return urlopen(request, timeout=timeout)
+
+
+class _HttpStream(object):
+    """File-like read()/close() over an HTTP response body, unpacking
+    it on the fly when the server sent it gzip-compressed.
+
+    Not gzip.GzipFile: on Python 2 that needs a seekable file, which a
+    socket is not. zlib's own streaming decompressor has no such need
+    and behaves the same on Python 2 and 3. `max_length` keeps each
+    read() at about the size asked for, so a small compressed chunk
+    that unpacks to megabytes never lands in memory all at once.
+    """
+
+    def __init__(self, response, compressed):
+        self._response = response
+        self._inflater = (
+            zlib.decompressobj(16 + zlib.MAX_WBITS) if compressed else None)
+        self._pending = b''
+        self._eof = False
+        # Bytes that actually came over the network.
+        self.bytes_received = 0
+
+    def read(self, size=-1):
+        if size is None or size < 0:
+            chunks = []
+            while True:
+                chunk = self.read(65536)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+            return b''.join(chunks)
+        if size == 0:
+            return b''
+        if self._inflater is None:
+            data = self._response.read(size)
+            self.bytes_received += len(data)
+            return data
+        while True:
+            if self._pending:
+                data = self._inflater.decompress(self._pending, size)
+                self._pending = self._inflater.unconsumed_tail
+                if data:
+                    return data
+            if self._eof:
+                # Whatever the decompressor still holds, then b''
+                # forever after (flush() of a drained one is empty).
+                return self._inflater.flush()
+            chunk = self._response.read(16384)
+            if chunk:
+                self.bytes_received += len(chunk)
+                self._pending = chunk
+            else:
+                self._eof = True
+
+    def close(self):
+        try:
+            self._response.close()
+        except Exception:
+            pass
+
+
+def open_url_stream(url, timeout=20):
+    """Open `url` for reading piece by piece instead of loading the
+    whole answer into memory the way getUrl() does. Returns a
+    file-like object (read(n), close(), bytes_received); raises on any
+    failure - the caller decides what a failure means.
+
+    Asks for a gzip-compressed answer. The programme-guide files this
+    exists for are 2 to 60 MB of XML and GitHub serves them at roughly
+    a tenth of that when asked (16.7 MB -> 1.55 MB for Portugal, 63 MB
+    -> 9.1 MB for Poland, measured). `timeout` is per network read,
+    not for the whole download.
+    """
+    url = ensure_str(url, errors='ignore').strip()
+    if not url.startswith(("http://", "https://")):
+        raise ValueError("Invalid URL (missing scheme): %s" % url)
+    request = Request(url, headers={
+        'User-Agent': RequestAgent(),
+        'Accept-Encoding': 'gzip',
+    })
+    response = _urlopen_unverified(request, timeout)
+    encoding = ''
+    try:
+        encoding = response.info().get('Content-Encoding') or ''
+    except Exception:
+        pass
+    return _HttpStream(response, 'gzip' in encoding.lower())
+
+
 def getUrl(url, timeout=30, retries=3, backoff=2):
     """Fetch URL with exponential backoff retry logic. Returns the
     response body, or "" on failure."""
@@ -502,32 +624,7 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
             # elsewhere warn that mutating the global default poisons
             # unrelated sockets (e.g. streaming) that don't set their own.
             request = Request(url, headers=headers)
-
-            if PY3:
-                import ssl
-                unverified_context = ssl.create_default_context()
-                unverified_context.check_hostname = False
-                unverified_context.verify_mode = ssl.CERT_NONE
-                response = urlopen(
-                    request,
-                    timeout=timeout,
-                    context=unverified_context)
-            else:
-                # Python 2: prova a usare ssl se disponibile, altrimenti
-                # fallback
-                try:
-                    import ssl
-                    # Python 2.7.9+ supporta ssl._create_unverified_context
-                    unverified_context = ssl._create_unverified_context() if hasattr(
-                        ssl, '_create_unverified_context') else None
-                    if unverified_context:
-                        response = urlopen(
-                            request, timeout=timeout, context=unverified_context)
-                    else:
-                        response = urlopen(request, timeout=timeout)
-                except ImportError:
-                    response = urlopen(request, timeout=timeout)
-
+            response = _urlopen_unverified(request, timeout)
             data = response.read()
             return data
 
@@ -3191,6 +3288,16 @@ def _get_epg_feed_index(country_code):
     if not country_code:
         return None, None
 
+    # A programme guide already in memory for this country (see
+    # load_epg_guide()) was read from this very file and carries the
+    # same channel list - no need to ask the network for it again.
+    # find_match() calls this once per channel, and the channel list's
+    # Now/Next panel calls find_match() for every row the user stops
+    # on, right after loading that guide.
+    guide = peek_epg_guide(country_code)
+    if guide is not None and guide.feed_ids:
+        return guide.feed_ids, guide.name_index
+
     cached = _epg_feed_index_cache.get(country_code)
     if cached:
         cached_time, cached_ids, cached_index = cached
@@ -3199,77 +3306,89 @@ def _get_epg_feed_index(country_code):
         if time() - cached_time < ttl:
             return cached_ids, cached_index
 
-    try:
-        url = "http://{}:{}/epg/{}.xml".format(
-            PROXY_HOST, PORT, country_code.lower())
-        # These feeds run several MB to 10+ MB (full multi-day guide for
-        # every channel in the country) - the default 10s/3-retries
-        # getUrl() timeout budget (tuned for small JSON/HTML responses)
-        # routinely isn't enough to pull one down over a set-top box's
-        # real-world connection, which silently disabled this whole
-        # id-correction path and left most channels stuck on their
-        # (usually wrong, see below) Rytec-matched id.
-        xml_data = getUrl(url, timeout=30, retries=2)
-        if not xml_data:
-            warning(
-                "EPG feed fetch returned empty for {} - id-correction "
-                "fallback disabled for this export, channels will keep "
-                "their Rytec-matched id even if the feed uses a "
-                "different one".format(country_code))
-            # Cache the failure too (empty result, same TTL) - without
-            # this, a country with no feed at all (most of them - only
-            # a minority of country codes have one) would re-attempt this
-            # same failing network fetch for every single unmatched
-            # channel once _find_match_internal() starts consulting this
-            # index as a fallback, instead of once per TTL window.
-            _epg_feed_index_cache[country_code] = (time(), None, None)
-            return None, None
+    url = "http://{}:{}/epg/{}.xml".format(
+        PROXY_HOST, PORT, country_code.lower())
+    feed_ids = None
+    name_index = None
+    last_error = None
+    # Two tries, as before (this used to be getUrl(url, retries=2)).
+    for _attempt in range(2):
+        stream = None
+        try:
+            # These files are 2 to 60 MB (a multi-day guide for every
+            # channel in the country), almost all of it <programme>
+            # entries, with the <channel> definitions this needs all at
+            # the very top, per the XMLTV convention. Read as a stream
+            # and stop at the first <programme>: that is the first few
+            # hundred KB (less, compressed) instead of the whole file,
+            # which this used to download in full on every call just to
+            # read that list.
+            stream = open_url_stream(url, timeout=30)
+            feed_ids, name_index = _read_epg_feed_channels(stream)
+            break
+        except Exception as e:
+            last_error = e
+            feed_ids = None
+            name_index = None
+        finally:
+            if stream is not None:
+                stream.close()
 
-        xml_source = io.BytesIO(
-            xml_data if isinstance(xml_data, binary_type)
-            else xml_data.encode('utf-8'))
-
-        matcher = get_epg_matcher()
-        feed_ids = set()
-        name_index = {}
-        # Stream-parse instead of ET.fromstring(): these feeds are almost
-        # entirely <programme> entries (tens of thousands of them) with
-        # the actual <channel> definitions front-loaded before any of
-        # them, per the XMLTV convention. Building a full DOM of the
-        # whole guide just to read the channel list is both slow and
-        # memory-heavy on box-class hardware - stop as soon as the
-        # <programme> section starts instead.
-        for event, elem in ET.iterparse(xml_source, events=('start', 'end')):
-            if event == 'end' and elem.tag == 'channel':
-                chan_id = elem.get('id')
-                if chan_id:
-                    feed_ids.add(chan_id)
-                    for dn in elem.findall('display-name'):
-                        dn_text = (dn.text or '').strip()
-                        if not dn_text:
-                            continue
-                        clean_dn = matcher._clean_name_for_similarity(dn_text)
-                        if clean_dn:
-                            # Tokens precomputed once here rather than by
-                            # every _find_feed_id_by_name() call that
-                            # scans this same index (once per channel
-                            # whose Rytec id isn't one this feed uses,
-                            # which - see write_epg_mapping_file() - can
-                            # be a large fraction of a country's channels).
-                            name_index[clean_dn] = (
-                                chan_id, _tokenize_for_compat(clean_dn))
-                elem.clear()
-            elif event == 'start' and elem.tag == 'programme':
-                break
-    except Exception as e:
-        warning("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
-        # Same reasoning as the empty-response branch above: cache the
-        # failure so repeated calls for this country within the TTL
-        # window short-circuit instead of retrying the network fetch.
+    if not feed_ids:
+        warning(
+            "Could not read the EPG feed's channel list for {} ({}) - "
+            "id-correction fallback disabled for this export, channels "
+            "will keep their Rytec-matched id even if the feed uses a "
+            "different one".format(country_code, last_error or "empty"))
+        # Remember the failure too (briefly): a country with no feed at
+        # all (most of them - only a minority of country codes have
+        # one) would otherwise re-attempt this same failing fetch for
+        # every single channel instead of once per TTL window.
         _epg_feed_index_cache[country_code] = (time(), None, None)
         return None, None
 
     _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)
+    return feed_ids, name_index
+
+
+def _index_epg_feed_channel(elem, feed_ids, name_index, folded_names=None):
+    """Record one <channel> element of an EPG feed: its id, and each
+    of its display names, cleaned, -> (id, tokens). With
+    `folded_names`, also each cleaned name without its accents -> id
+    (see EpgGuide.folded_names)."""
+    chan_id = elem.get('id')
+    if not chan_id:
+        return
+    feed_ids.add(chan_id)
+    for dn in elem.findall('display-name'):
+        dn_text = (dn.text or '').strip()
+        if not dn_text:
+            continue
+        clean_dn = clean_name_for_similarity(dn_text)
+        if clean_dn and folded_names is not None:
+            folded_names.setdefault(_fold_accents(clean_dn), chan_id)
+        if clean_dn:
+            # Tokens precomputed once here rather than by every
+            # _find_feed_id_by_name() call that scans this same index
+            # (once per channel whose Rytec id isn't one this feed
+            # uses, which - see write_epg_mapping_file() - can be a
+            # large fraction of a country's channels).
+            name_index[clean_dn] = (
+                chan_id, _tokenize_for_compat(clean_dn))
+
+
+def _read_epg_feed_channels(stream):
+    """(set of channel ids, {cleaned display name: (id, tokens)}) from
+    the top of an EPG feed, reading no further than the first
+    <programme>."""
+    feed_ids = set()
+    name_index = {}
+    for event, elem in _fast_ET.iterparse(stream, events=('start', 'end')):
+        if event == 'end' and elem.tag == 'channel':
+            _index_epg_feed_channel(elem, feed_ids, name_index)
+            elem.clear()
+        elif event == 'start' and elem.tag == 'programme':
+            break
     return feed_ids, name_index
 
 
@@ -3327,6 +3446,539 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     if best_id and best_score >= threshold:
         return best_id
     return None
+
+
+# ---------------------------------------------------------------------
+# Programme guide: what is on now, and what comes next
+# ---------------------------------------------------------------------
+# One country's epg_<cc>.xml reduced to what the channel list's
+# Now/Next panel and the player's OK overlay need.
+#
+# The files are 2 to 60 MB of XML with 15 000 to 110 000 programmes
+# (measured: tr 2.4 MB, it 13.6, pt 16.7, es 20.4, de 21.3, fr 46.1,
+# pl 63.2). The overlay used to download one whole, build the complete
+# document in memory with ET.fromstring() and keep it - hundreds of MB
+# on a set-top box for the larger countries, never freed. Here the
+# file is read while it downloads (compressed: about a tenth of the
+# size on the wire) and only the programmes that can still matter are
+# kept, as small tuples: a few MB at most.
+#
+# Times: every entry carries its own UTC offset and the files mix
+# them freely ("+0000", "+0100", "+0300", "-0600" all occur, pl is
+# almost entirely "-0600"). The offset used to be thrown away and the
+# rest read as UTC, which is only right for "+0000": the programme
+# shown as current was 1 hour off for es, 3 for tr, 6 for pl.
+
+# A loaded guide is reused this long before it is fetched again.
+_EPG_GUIDE_TTL = 3600
+# If fetching it again fails, the old copy is still used up to this
+# age (it holds _EPG_GUIDE_AHEAD worth of programmes, so it stays
+# right for hours) before giving up on it.
+_EPG_GUIDE_STALE_MAX = 6 * 3600
+# After a failed load, wait this long before the next attempt.
+_EPG_GUIDE_RETRY = 120
+# Programmes are kept if they are still running at load time or start
+# within this long after it.
+_EPG_GUIDE_AHEAD = 12 * 3600
+# Countries kept in memory at once (least recently used goes first).
+_EPG_GUIDE_KEEP = 3
+# Descriptions are cut to this many characters; they are only ever
+# shown in the player overlay's few lines.
+_EPG_GUIDE_DESC_MAX = 400
+# Per network read, not for the whole download.
+_EPG_GUIDE_TIMEOUT = 20
+# Widest UTC offset an XMLTV time can carry (real ones span -12h to
+# +14h) - see the coarse pre-filter in _parse_epg_guide().
+_XMLTV_MAX_OFFSET = 14 * 3600
+
+_XMLTV_TIME_RE = compile(
+    r'^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?'
+    r'\s*(?:([+-])(\d{2}):?(\d{2})|Z|UTC|GMT)?$')
+
+_epg_guide_cache = {}       # country code -> EpgGuide
+_epg_guide_failed = {}      # country code -> time of the last failed load
+_epg_guide_load_locks = {}  # country code -> Lock held while downloading
+# Guards the three dicts above (never held during a download).
+_epg_guide_lock = threading.Lock()
+
+
+# Character codes that reached the file as text instead of as the
+# character: "Praça" - or, with the backslash lost on the way,
+# "Prau00e7a" - for "Praça". Counted in the real files: about 1400
+# titles/descriptions in pl (nearly all "&" for "&") and 90 in
+# pt ("Prau00e7a da Alegria", "O Preu00e7o Certo", ...).
+_BROKEN_ESCAPE_RE = compile(r'(\\?)u00([0-9a-fA-F]{2})')
+
+# Letters that Unicode does not split into "base letter + accent",
+# for _fold_accents().
+_UNSPLIT_LETTERS = {
+    u'ł': u'l', u'Ł': u'L',     # l with stroke (pl)
+    u'ø': u'o', u'Ø': u'O',     # o with stroke
+    u'đ': u'd', u'Đ': u'D',     # d with stroke
+    u'ı': u'i',                      # dotless i (tr)
+    u'ß': u'ss',
+    u'æ': u'ae', u'Æ': u'AE',
+    u'œ': u'oe', u'Œ': u'OE',
+}
+
+
+def _repair_guide_text(text):
+    """Put back characters that arrived as their code (see
+    _BROKEN_ESCAPE_RE). With the backslash still there it is
+    unmistakable; without it only codes of accented letters are
+    touched, so ordinary text that merely contains "u00" and two more
+    hex digits ("Menu0026") is left alone."""
+    if 'u00' not in text:
+        return text
+
+    def _put_back(m):
+        code = int(m.group(2), 16)
+        if code < 0x20 or (not m.group(1) and code < 0xA0):
+            return m.group(0)
+        if code == 0xA0:
+            return u' '
+        return unichr(code)
+
+    return _BROKEN_ESCAPE_RE.sub(_put_back, text)
+
+
+def _fold_accents(text):
+    """Text with its accents dropped ("notícias" -> "noticias"), for
+    comparing a channel name written without them - Vavoo's lists
+    often are: "SIC NOTICIAS", "RTP ACORES" - against a guide that
+    writes them."""
+    text = ensure_str(text, errors='ignore')
+    return u''.join(
+        _UNSPLIT_LETTERS.get(ch, ch)
+        for ch in normalize('NFKD', text) if not combining(ch))
+
+
+def parse_xmltv_time(value):
+    """An XMLTV time such as "20261111233000 +0100" as Unix time (an
+    int), or None if it is not one. No offset means UTC.
+
+    Parsed by hand rather than with datetime.strptime(): this runs
+    from background threads, and strptime()'s first call from two
+    threads at once is a known crash on Python 2 (its lazy import of
+    _strptime is not thread-safe).
+    """
+    if not value:
+        return None
+    m = _XMLTV_TIME_RE.match(value.strip())
+    if not m:
+        return None
+    try:
+        timestamp = calendar.timegm((
+            int(m.group(1)), int(m.group(2)), int(m.group(3)),
+            int(m.group(4)), int(m.group(5)), int(m.group(6) or 0),
+            0, 0, 0))
+    except (ValueError, OverflowError):
+        return None
+    if m.group(7):
+        offset = int(m.group(8)) * 3600 + int(m.group(9)) * 60
+        # "23:30 +0100" is 22:30 UTC: local = UTC + offset.
+        if m.group(7) == '+':
+            timestamp -= offset
+        else:
+            timestamp += offset
+    return timestamp
+
+
+def epg_clock(timestamp):
+    """A Unix time as "HH:MM" on this box's own clock."""
+    return strftime('%H:%M', localtime(timestamp))
+
+
+def _guide_id(feed_id):
+    """A feed channel id as text. On Python 2 an id arrives as UTF-8
+    bytes from one place and as unicode from another
+    ("RTP.África.pt"); as text it still meets itself."""
+    return ensure_str(feed_id, errors='ignore')
+
+
+class EpgGuide(object):
+    """One country's programme guide, reduced to now-and-soon.
+
+    programmes: {feed channel id: [(start, stop, title, description),
+    ...]} sorted by start, times as Unix time. Only channels that
+    have something on now or soon are in it.
+    feed_ids / name_index: the feed's own channel list, in the exact
+    shape _get_epg_feed_index() returns it.
+    """
+
+    def __init__(self, country_code, loaded_at):
+        self.country_code = country_code
+        self.loaded_at = loaded_at
+        self.last_used = loaded_at
+        self.programmes = {}
+        # id with its dots dropped -> the id in `programmes` to use
+        # for it - see channel_for().
+        self.dotless = {}
+        self.feed_ids = set()
+        self.name_index = {}
+        # cleaned display name with its accents dropped -> feed id
+        # (the first channel carrying that name) - see
+        # _resolve_guide_channel().
+        self.folded_names = {}
+        self.programme_count = 0
+        # cleaned channel name -> id in `programmes` ("" = not in
+        # this guide), so a channel is matched once per loaded guide
+        # and every later look at it is a dictionary lookup.
+        self.resolved = {}
+
+    def age(self):
+        return time() - self.loaded_at
+
+    def channel_for(self, some_id):
+        """The id in `programmes` that `some_id` means, or None.
+
+        The id itself if this guide has programmes under it. Failing
+        that, an id that differs from it only in its dots: the EPG
+        matcher often hands back another source's spelling of the
+        same channel ("RTP1.pt" for the feed's "RTP.1.pt"), which is
+        the comparison the player overlay has always made.
+
+        Exact first, and never the two merged: the real files list
+        some channels twice under ids that differ only in dots
+        (fr: "France.2.fr" and "France.2..fr", also France 3/4/5 and
+        Arte; it: "Sky.Uno.+.it" and "Sky.Uno.+..it"), and the two
+        copies do not agree on the time zone - in the French file the
+        same programme sits one hour apart in them. Mixing them, as
+        keying everything by its dotless form used to, gives a
+        schedule that jumps between the two.
+        """
+        if not some_id:
+            return None
+        text = _guide_id(some_id)
+        if text in self.programmes:
+            return text
+        return self.dotless.get(text.replace('.', ''))
+
+    def now_next(self, key, now=None):
+        """(current, following) for one id in `programmes`; either
+        can be None. Each is a (start, stop, title, description)
+        tuple."""
+        entries = self.programmes.get(key)
+        if not entries:
+            return None, None
+        if now is None:
+            now = time()
+        current = None
+        following = None
+        for entry in entries:
+            if entry[0] > now:
+                following = entry
+                break
+            if now < entry[1]:
+                # Overlapping entries (it happens): the one that
+                # started last is the one on air.
+                current = entry
+        return current, following
+
+
+def _parse_epg_guide(stream, country_code, now):
+    """Read an XMLTV stream into an EpgGuide - see the notes above."""
+    guide = EpgGuide(country_code, now)
+    keep_from = now
+    keep_until = now + _EPG_GUIDE_AHEAD
+    # Most of a file is other days. An entry's digits, read as if they
+    # were UTC, are at most _XMLTV_MAX_OFFSET away from its real time,
+    # so anything outside this wider range can be dropped on a plain
+    # string comparison, before paying for two timestamp conversions.
+    coarse_from = strftime(
+        '%Y%m%d%H%M%S', gmtime(keep_from - _XMLTV_MAX_OFFSET))
+    coarse_until = strftime(
+        '%Y%m%d%H%M%S', gmtime(keep_until + _XMLTV_MAX_OFFSET))
+
+    programmes = guide.programmes
+    # One programme's stop is normally the next one's start.
+    parsed_times = {}
+    kept = 0
+    root = None
+    for event, elem in _fast_ET.iterparse(stream, events=('start', 'end')):
+        if event == 'start':
+            if root is None:
+                root = elem
+            continue
+        tag = elem.tag
+        if tag == 'programme':
+            channel = elem.get('channel')
+            start_raw = elem.get('start') or ''
+            stop_raw = elem.get('stop') or ''
+            if (channel and stop_raw[:14] >= coarse_from
+                    and start_raw[:14] <= coarse_until):
+                if len(parsed_times) > 2000:
+                    # Only the last few are ever asked for again.
+                    parsed_times.clear()
+                start = parsed_times.get(start_raw)
+                if start is None:
+                    start = parsed_times[start_raw] = parse_xmltv_time(
+                        start_raw)
+                stop = parsed_times.get(stop_raw)
+                if stop is None:
+                    stop = parsed_times[stop_raw] = parse_xmltv_time(
+                        stop_raw)
+                if (start is not None and stop is not None
+                        and start < stop
+                        and stop > keep_from and start < keep_until):
+                    title = _repair_guide_text(
+                        elem.findtext('title') or '').strip()
+                    description = _repair_guide_text(
+                        elem.findtext('desc') or '').strip()
+                    if len(description) > _EPG_GUIDE_DESC_MAX:
+                        description = (
+                            description[:_EPG_GUIDE_DESC_MAX].rstrip() +
+                            '...')
+                    programmes.setdefault(_guide_id(channel), []).append(
+                        (start, stop, title, description))
+                    kept += 1
+            # Drop the element, and everything read so far, from the
+            # tree iterparse() builds behind the scenes - without this
+            # the whole document would pile up in memory anyway.
+            root.clear()
+        elif tag == 'channel':
+            _index_epg_feed_channel(
+                elem, guide.feed_ids, guide.name_index, guide.folded_names)
+            root.clear()
+
+    for entries in programmes.values():
+        # By time only: never let two entries with the same times fall
+        # through to comparing their titles (bytes against unicode on
+        # Python 2).
+        entries.sort(key=lambda entry: (entry[0], entry[1]))
+    # Of several ids that are the same but for their dots, the
+    # shortest stands for all of them when a lookup only matches
+    # without dots (see EpgGuide.channel_for()): the longer ones
+    # ("France.2..fr", "Arte...fr") come from a source that turned a
+    # stray space or sign in the channel's name into an extra dot,
+    # and in the files checked those are the copies with the wrong
+    # time zone. Not dependent on the order in the file.
+    dotless = guide.dotless
+    for feed_id in programmes:
+        key = feed_id.replace('.', '')
+        other = dotless.get(key)
+        if other is None or len(feed_id) < len(other):
+            dotless[key] = feed_id
+    guide.programme_count = kept
+    return guide
+
+
+def _download_epg_guide(country_code):
+    """Fetch and read one country's guide. None on any failure
+    (including "this country has no guide file": a 404)."""
+    url = "http://{}:{}/epg/{}.xml".format(PROXY_HOST, PORT, country_code)
+    started = time()
+    stream = None
+    try:
+        stream = open_url_stream(url, timeout=_EPG_GUIDE_TIMEOUT)
+        guide = _parse_epg_guide(stream, country_code, started)
+        received = stream.bytes_received
+    except Exception as e:
+        warning("Could not load the programme guide for {}: {}".format(
+            country_code, e))
+        return None
+    finally:
+        if stream is not None:
+            stream.close()
+    if not guide.feed_ids and not guide.programmes:
+        warning("Programme guide for {} is empty".format(country_code))
+        return None
+    print("[EPG] Guide {} loaded in {:.1f}s: {} channels, {} programmes "
+          "kept, {} KB downloaded".format(
+              country_code, time() - started, len(guide.feed_ids),
+              guide.programme_count, received // 1024))
+    return guide
+
+
+def _usable_epg_guide(guide):
+    """A guide that can still answer (fresh, or stale but recent)."""
+    return guide is not None and guide.age() < _EPG_GUIDE_STALE_MAX
+
+
+def peek_epg_guide(country_code):
+    """The guide for this country if a usable one is already in
+    memory, else None. Never touches the network, so it is safe on
+    the GUI thread."""
+    code = ensure_str(country_code or '', errors='ignore').lower()
+    if not code:
+        return None
+    with _epg_guide_lock:
+        guide = _epg_guide_cache.get(code)
+        if not _usable_epg_guide(guide):
+            return None
+        guide.last_used = time()
+        return guide
+
+
+def load_epg_guide(country_code):
+    """The guide for this country, downloading it if there is none in
+    memory or the one there is older than _EPG_GUIDE_TTL. Blocks for
+    the length of the download - call it from a background thread.
+
+    Returns None when there is nothing usable (no guide file for this
+    country, or the download failed and no recent copy is left).
+    Several threads asking for the same country share one download.
+    """
+    code = ensure_str(country_code or '', errors='ignore').lower()
+    if not code:
+        return None
+
+    def _current():
+        """(guide or None, whether a download should be tried) -
+        call with _epg_guide_lock held."""
+        guide = _epg_guide_cache.get(code)
+        if guide is not None and guide.age() < _EPG_GUIDE_TTL:
+            guide.last_used = time()
+            return guide, False
+        if not _usable_epg_guide(guide):
+            guide = None
+        failed_at = _epg_guide_failed.get(code)
+        if failed_at is not None and time() - failed_at < _EPG_GUIDE_RETRY:
+            return guide, False
+        return guide, True
+
+    with _epg_guide_lock:
+        guide, should_load = _current()
+        if not should_load:
+            return guide
+        load_lock = _epg_guide_load_locks.get(code)
+        if load_lock is None:
+            load_lock = _epg_guide_load_locks[code] = threading.Lock()
+
+    with load_lock:
+        # Another thread may have finished the same download (or just
+        # failed at it) while this one waited for the lock.
+        with _epg_guide_lock:
+            guide, should_load = _current()
+            if not should_load:
+                return guide
+
+        fresh = _download_epg_guide(code)
+
+        with _epg_guide_lock:
+            if fresh is None:
+                _epg_guide_failed[code] = time()
+                return guide
+            _epg_guide_failed.pop(code, None)
+            _epg_guide_cache[code] = fresh
+            while len(_epg_guide_cache) > _EPG_GUIDE_KEEP:
+                oldest = min(
+                    (other for other in _epg_guide_cache if other != code),
+                    key=lambda other: _epg_guide_cache[other].last_used)
+                del _epg_guide_cache[oldest]
+            return fresh
+
+
+def _guide_channel_name(channel_name):
+    """A channel name the way it is handed to the matcher for a guide
+    lookup - what the player overlay has always done to it first."""
+    return remove_parentheses(decodeHtml(channel_name))
+
+
+def _resolve_guide_channel(guide, clean_name, country_code, channel_id):
+    """The id in guide.programmes for this channel, "" if the guide
+    has nothing for it. Slow the first time for a channel (it runs the
+    EPG matcher), a dictionary lookup afterwards.
+
+    The same two steps the player overlay has always taken: the id
+    find_match() gives (alias table, local cache, curated database,
+    Rytec, the feed's own names - see its docstring), and if this
+    feed has no programmes under that id, the channel's name against
+    the feed's own channel names - which now also finds a name that
+    differs only in its accents.
+    """
+    key = guide.resolved.get(clean_name)
+    if key is not None:
+        return key
+
+    matcher = get_epg_matcher()
+    key = ''
+    matched_id = None
+    try:
+        matched_id, _unused_sref, _unused_source = matcher.find_match(
+            clean_name, country_code=country_code, channel_id=channel_id)
+    except Exception as e:
+        debug("EPG match failed for {}: {}".format(clean_name, e))
+    if matched_id:
+        key = guide.channel_for(matched_id) or ''
+    if not key:
+        feed_id = None
+        try:
+            cleaned = matcher._clean_name_for_similarity(clean_name)
+            # The feed's own name for it, letter for letter ...
+            exact = guide.name_index.get(cleaned)
+            if exact:
+                feed_id = exact[0]
+            # ... or the same name but for its accents ("SIC NOTICIAS"
+            # is the feed's "SIC Notícias": the similarity search
+            # below refuses that pair, its two second words not being
+            # the same word) ...
+            if not feed_id and cleaned:
+                feed_id = guide.folded_names.get(_fold_accents(cleaned))
+            # ... or the closest name that is similar enough.
+            if not feed_id:
+                feed_id = _find_feed_id_by_name(
+                    clean_name, matcher, guide.name_index)
+        except Exception as e:
+            feed_id = None
+            debug("EPG name match failed for {}: {}".format(clean_name, e))
+        if feed_id:
+            key = guide.channel_for(feed_id) or ''
+    guide.resolved[clean_name] = key
+    return key
+
+
+def lookup_now_next(channel_name, country_code, channel_id=None):
+    """What is on this channel now, and what follows.
+
+    Returns (status, current, following). current / following are
+    (start, stop, title, description) tuples with Unix times, or None.
+    status says why they may be missing:
+      "ok"           at least one of the two was found
+      "no_country"   no country code to look under
+      "no_guide"     no programme guide for this country (none exists,
+                     or it could not be downloaded)
+      "no_match"     the guide has no channel that matches this one
+      "no_programme" the channel is in the guide, with nothing listed
+                     for now or later
+
+    Can block on a download (see load_epg_guide()) and on the EPG
+    matcher: background threads only. peek_now_next() is the variant
+    for the GUI thread.
+    """
+    if not country_code:
+        return "no_country", None, None
+    guide = load_epg_guide(country_code)
+    if guide is None:
+        return "no_guide", None, None
+    key = _resolve_guide_channel(
+        guide, _guide_channel_name(channel_name), country_code, channel_id)
+    if not key:
+        return "no_match", None, None
+    current, following = guide.now_next(key)
+    if current is None and following is None:
+        return "no_programme", None, None
+    return "ok", current, following
+
+
+def peek_now_next(channel_name, country_code):
+    """lookup_now_next() answered from memory alone: the same
+    (status, current, following), or None when answering would need a
+    download or the matcher. Never blocks - safe on the GUI thread."""
+    if not country_code:
+        return "no_country", None, None
+    guide = peek_epg_guide(country_code)
+    if guide is None:
+        return None
+    key = guide.resolved.get(_guide_channel_name(channel_name))
+    if key is None:
+        return None
+    if not key:
+        return "no_match", None, None
+    current, following = guide.now_next(key)
+    if current is None and following is None:
+        return "no_programme", None, None
+    return "ok", current, following
 
 
 def _build_epg_channels_xml(unique):

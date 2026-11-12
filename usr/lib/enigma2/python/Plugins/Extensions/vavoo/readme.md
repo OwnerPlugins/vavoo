@@ -52,6 +52,7 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Live TV Streaming** – Thousands of live channels, browsed by country, with country flags and channel logos (picons)
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
 - **Choose Your Source** – A channel available from several sources is shown as one row. Press **YELLOW** in the player to pick the source by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
+- **Now / Next Beside the List** – While you browse a country (or your Favourites), the area next to the preview window shows what is on the highlighted channel now and what comes next, with start and end times on your box's clock. No export or EPGImport needed
 - **Player Overlay** – Press OK for the current programme, the channel logo and the proxy status; INFO looks the programme up in IMDb/TMDB
 - **Search** – Find channels by name inside a country
 - **Favourites** – Star/unstar any channel with the INFO key while browsing; "View Favourites" in Config to browse and play them
@@ -104,6 +105,8 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 | MENU | Settings |
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Back |
+
+Next to the preview window the list shows the highlighted channel's current and next programme ("Now" / "Next"). It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
 ### Player
 | Key | Action |
@@ -169,6 +172,7 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 - Export (or re-export) a country: the plugin writes that country's EPG files to `/etc/epgimport/` and enables the "Vavoo" sources in EPGImport for you
 - Press **EPG** in the main menu to start an EPG import right away
 - In the player, press OK to see the current programme
+- The Now/Next lines in the channel list and the player's OK overlay do not need any of the above: they read the country's programme guide directly (setting "Now/Next in channel list")
 
 ### Cache Maintenance
 - Press **YELLOW button** in the main menu to fix cache format
@@ -185,6 +189,7 @@ Press **MENU** in the main menu or the channel list. Options appear in this orde
 | **Catalog/Stream Source** | Where channels and streams come from: "Auto (Geil, fallback Vavoo)", "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |
 | **Proxy startup timeout (seconds)** | How long the start screen waits for the proxy. Raise it on a slow connection or VPN | 120 (15-300) |
 | **Enable Vavoo EPG** | Creates the EPG source for EPGImport with Vavoo programme data and enables it there after each export | Off |
+| **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for an hour. Switch it off on a slow connection or a weak box | Yes |
 | **Scheduled EPG/Bouquet Update:** | Periodically re-matches EPG and refreshes the bouquets of your exported countries in the background | Off |
 | – **Schedule type:** | "interval" or "fixed time" (shown when the schedule is on) | interval |
 | – **EPG/Bouquet update interval (minutes):** | How often, counting from now | 360 (5-3600) |
@@ -284,6 +289,11 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - EPG data is generated per country and stored in `/etc/epgimport/vavoo_<country>.channels.xml`
 - A master source file (`vavoo.sources.xml`) is created for EPGImport
 - The player fetches EPG via the proxy redirect to GitHub raw files
+- **In-plugin programme info** (the channel list's Now/Next lines and the player's OK overlay) reads the same per-country guide file (`epg_<cc>.xml`), with no EPGImport involved:
+  - the file is read while it downloads, compressed (about a tenth of its size on the wire), and only the programmes running now or starting in the next 12 hours are kept - a few MB of memory at most, where the whole file is 2 to 60 MB
+  - one copy per country is reused for an hour (at most three countries in memory); if refreshing it fails, the previous copy keeps being used
+  - every entry's own time zone is applied and times are shown on the box's clock. (Earlier versions ignored the time zone, which showed the wrong programme for guides not written in UTC - Spain by one hour, Turkey by three, Poland by six)
+  - a channel is found through the same matching chain as below, then through the guide's own channel names (accents do not matter: "SIC NOTICIAS" finds "SIC Notícias")
 - **Intelligent Channel Matching** (in priority order):
   - Local per-box cache
   - **Curated EPG channel database** (`epg-channel-db/vavoo_channels_<cc>.json`,
@@ -442,6 +452,11 @@ curl -s http://127.0.0.1:4323/health
 | A channel keeps stopping or buffering | Press YELLOW in the player and pick another source |
 | Duplicate cache entries | Press YELLOW button in main menu to fix cache format |
 
+**"No programme information" beside the channel list**
+- The country's guide file has no entry for that channel (not every channel is covered), or the country has no guide file at all
+- If it says so for every channel of a country that used to work, the guide could not be downloaded: it is tried again after two minutes. `/tmp/vavoo.log` has a line "Could not load the programme guide for <country>" with the reason
+- Nothing is shown at all: check that "Now/Next in channel list" is set to Yes
+
 ### Notification Issues
 | Problem | Solution |
 |---------|----------|
@@ -503,4 +518,4 @@ https://creativecommons.org/licenses/by-nc-sa/4.0
 **For modifications and redistribution, please maintain this credit header.**
 
 ---
-*Last Modified: 2026-11-11*
+*Last Modified: 2026-11-12*

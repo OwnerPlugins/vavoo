@@ -152,6 +152,42 @@ regenerates this weekly (plus on-demand) on a self-hosted runner — required
 since fetching Vavoo's live channel list needs an authenticated
 `vavoo_proxy` instance, unreachable from GitHub's hosted cloud runners.
 
+**In-plugin programme info (`vUtils.py`'s `load_epg_guide()` /
+`lookup_now_next()`)** — what is on a channel now and next, read
+straight from the country's `epg_<cc>.xml` (through the proxy's
+`/epg/<cc>.xml` redirect), no EPGImport involved. Two users, one
+lookup, so they always agree: the Now/Next panel beside the channel
+list (`NowNextPanel` mixin in `plugin.py`, used by `vavoo` and
+`VavooFavourites`; setting `cfg.list_epg`) and the player's OK overlay
+(`Playstream2.get_current_epg()`, a thin wrapper). Rules that come from
+the real files (measured, see the comment block above
+`_EPG_GUIDE_TTL`):
+- The files are 2 to 60 MB with up to 110 000 programmes. Never build
+  one whole (`ET.fromstring()` did, and kept it: hundreds of MB on a
+  box). `open_url_stream()` reads it compressed while it downloads and
+  `_parse_epg_guide()` keeps only what is running now or starts within
+  12 hours, as tuples. One `EpgGuide` per country, reused for an hour,
+  three countries at most, one download at a time per country.
+- Every entry carries its own UTC offset and the files mix them
+  (`+0000`, `+0100`, `+0300`, `-0600`). `parse_xmltv_time()` applies
+  it; `epg_clock()` shows box-local time. Ignoring the offset is only
+  right for `+0000` files.
+- Channel ids: exact id first, "same but for the dots" only as a
+  fallback (`EpgGuide.channel_for()`), and never merge the two - the
+  French file lists France 2/3/4/5 and Arte twice under ids that
+  differ only in dots, with different time zones.
+- Names: the feed writes accents, Vavoo's lists often do not
+  (`_fold_accents()`); some titles arrive with character codes instead
+  of characters (`_repair_guide_text()`).
+- `lookup_now_next()` can block (download, matcher): background
+  threads only. On the GUI thread use `peek_now_next()`, which answers
+  from memory or returns None. `NowNextPanel` waits for the highlight
+  to stop moving, then uses one worker thread per screen that only
+  ever handles the latest row.
+- `_get_epg_feed_index()` (bouquet export, `find_match()`) reuses a
+  loaded guide's channel list, and otherwise reads the same stream
+  only up to the first `<programme>`.
+
 **Notifications (`notification_system.py`)** — singleton
 `HybridNotificationManager`, thread-safe (lock-protected), with a message
 queue for messages sent before the UI is ready. `init_notification_system(session)`
@@ -208,6 +244,16 @@ f-strings before choosing).
   change a screen's layout/widgets in `plugin.py`, check whether the
   corresponding skin XML(s) need matching updates across all three
   resolutions.
+- `defaultListScreen.xml` (and its `_cvs` DreamOS twin) is one skin
+  shared by three screens: `MainVavoo`, `vavoo` and `VavooFavourites`.
+  A `<widget name="...">` added to it must be created by all three,
+  used or not (see `add_epg_panel_labels()`): a named widget the
+  screen does not own is a skin error on current images and a crash on
+  older ones. Positions are in the skin's own coordinates, measured on
+  the background images (`skin/images/` for HD, `skin/images_new/` for
+  Full HD, which WQHD scales by 4/3) - a user's screenshot may show
+  the GUI scaled into the TV's safe area, so its pixels are not skin
+  coordinates.
 
 ## Translations
 
