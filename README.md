@@ -60,6 +60,8 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), stream info (resolution, frame rate, codec, source) and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
 - **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
+- **Programme Guide** – As in the app: INFO (or EPG) in a channel list, Favourites or Recently watched, or MENU → "Programme guide" in the player, shows a grid of those channels with three hours across - a box per programme, the now line, what is on now in its own colour. Look back 3 hours or ahead to the end of the guide (about a day)
+- **Reminders** – OK on a programme still to come → "Remind me": at its start a window offers to watch it, also with the plugin closed
 - **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed
 - **Search** – As in the app: the words in any order, accents and case do not count, "1" finds "SPORT 1" but not "SPORT 11"; from 3 letters also the channels whose programme on now has the text. Inside a country (YELLOW in the channel list) or in every country at once (YELLOW in the main menu - each result shows its country). The results become the player's list
 - **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them. Put them in your own order (YELLOW Move) and in folders (BLUE Folder), as in the app. Kept in `/etc/enigma2`, so a plugin update keeps them
@@ -115,7 +117,7 @@ The list starts with "★ Favourites (n)" once you have favourites, then "Recent
 | YELLOW | Search this country (also from inside a category: the whole country) |
 | 0-9 | Go to that channel number (typed within 1.5 s the digits add up: 1, 2 = 12) |
 | MENU | Settings, Export this country as a bouquet (or Remove this country's bouquet), Reload bouquets, Show Log |
-| INFO | Version and this country's channels |
+| INFO / EPG | The programme guide of this list, from the highlighted channel (on category rows: version and channels) |
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Back |
 
@@ -133,7 +135,7 @@ The app's keys, in every theme (the Classic theme keeps its own bar and overlays
 | GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
 | 1-9 | Go to that channel number ("12-" and "→ name" show while you type; it goes after 1.5 s, on OK, or at once when no larger number exists) |
 | 0 or RECALL | The channel watched before |
-| MENU | Options: favourite, audio track, subtitles, source (multi-source channels), aspect ratio, sleep timer, stream info, IMDb / TMDB |
+| MENU | Options: favourite, audio track, subtitles, source (multi-source channels), aspect ratio, sleep timer, stream info, programme guide (over the video), IMDb / TMDB |
 | INFO | Show / hide the bar |
 | EPG | Look up the current programme in IMDb/TMDB (needs "Enable Vavoo EPG" and an IMDb or TMDB plugin) |
 | AUDIO | Audio track |
@@ -162,7 +164,7 @@ Every word typed has to be at the start of a word of the name, or (3 letters or 
 | BLUE | Folder: on a channel, "Folder for X" (the folders, No folder, New folder…); on a folder row, Rename folder (another folder's name merges the two) / Remove folder (its channels stay favourites) |
 | 0-9 | Go to that row |
 | MENU | Settings, Show Log |
-| INFO | Version and number of channels |
+| INFO / EPG | The programme guide of these channels (on folder rows: version and number of channels) |
 | RED / EXIT | Back |
 
 Once a favourite is in a folder, the Favourites open on "All channels (n)", the folders A-Z and "No folder (n)". A folder with no channels left is gone. Moving inside a folder only swaps that folder's channels.
@@ -174,8 +176,31 @@ Once a favourite is in a folder, the Favourites open on "All channels (n)", the 
 | GREEN | Add Fav / Remove Fav |
 | YELLOW | Search this list |
 | BLUE | Full screen at once |
+| INFO / EPG | The programme guide of this list |
 | MENU | Settings, Clear recently watched, Show Log |
 | RED / EXIT | Back |
+
+### Programme guide
+The app's grid: the channels of the list it was opened from (numbered, in the same order, from the highlighted one), three hours across, a box per programme with its title - the one on now in its own colour, the highlighted one in the theme's colour, a clock mark where a reminder is set. The ruler shows the half hours (the weekday at midnight) and the now line, which moves every minute. Under the grid: "Channel · 20:00–21:00 Title" and the description; with the preview window on, it keeps playing in the corner. A channel with nothing in those hours says "No programme information" ("Loading…" while its guide comes); a locked channel shows only a padlock.
+
+| Key | Action |
+|-----|--------|
+| UP / DOWN | Previous / next channel (round the ends) |
+| CH+ / CH- | A page of channels (over the player: change the channel playing, the grid follows) |
+| LEFT / RIGHT | Previous / next programme (none left: the window moves half an hour) |
+| YELLOW / BLUE | An hour back / on (from 3 hours back to the end of the guide, about a day ahead) |
+| INFO / EPG / 0 | Back to now |
+| 1-9 | Go to that channel (typed within 1.5 s the digits add up) |
+| OK | A programme still to come: Remind me (or Cancel reminder) / Watch. Anything else: watch the channel |
+| GREEN | Watch the channel (asks for the PIN where needed) |
+| MENU | Settings (over the player: close the guide) |
+| RED / EXIT | Back |
+
+### Reminders
+- OK on a programme still to come in the guide → **Remind me** ("Reminder set: Title"); the box gets a clock mark. The same menu cancels it
+- At the programme's start (as in the app) a window asks **"Starting now: Title - On Channel. Watch it?"** for 30 seconds, also with the plugin closed or while you watch something else. Yes: the plugin opens on that channel (in the player, if it is open, it zaps there). With the box in standby the reminder passes without a word
+- The row **"Reminders (n)"** in the main list (while there are any) and Settings → **Reminders** list them ("Title · Channel" and the day and time): OK → Cancel reminder, GREEN Delete (press twice)
+- Kept in `/etc/enigma2/vavoo_timers.json`, so a reboot keeps them; one missed by more than a minute (the box was off) is dropped
 
 ### Settings
 | Key | Action |
@@ -252,7 +277,8 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Debug logging** | Verbose messages in `vavoo.log`; takes effect immediately. Leave off unless troubleshooting | No |
 | **Choose countries** | The countries of the main list and of "Search all": OK shows / hides one (✓ / ✗); Back · Save · Show all · Hide all. At least one stays | all shown |
 | **Parental Control** | The PIN and what it locks (see below). Asks for the PIN first when one is set | no PIN |
-| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries - not parental control. Asks for the PIN when one is set | – |
+| **Reminders** | The reminders set in the programme guide (see "Reminders" above) | – |
+| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries, the reminders - not parental control. Asks for the PIN when one is set | – |
 | **Restore from Backup** | Lists the backups found there, newest first; the chosen one replaces all of the above (no merge) and the proxy restarts. The theme and text size change when the plugin is opened again | – |
 | **Show Log (Ok to view)** | View the last 200 lines of `/tmp/vavoo.log` | – |
 | **View Favourites (Ok to open)** | Browse and play your starred channels | – |
@@ -358,8 +384,8 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - A master source file (`vavoo.sources.xml`) is created for EPGImport
 - The player fetches EPG via the proxy redirect to GitHub raw files
 - **In-plugin programme info** (the channel list's Now/Next lines and the player's OK overlay) reads the same per-country guide file (`epg_<cc>.xml`), with no EPGImport involved:
-  - the file is read while it downloads, compressed (about a tenth of its size on the wire), and only the programmes running now or starting in the next 12 hours are kept - a few MB of memory at most, where the whole file is 2 to 60 MB
-  - one copy per country is reused for an hour (at most three countries in memory); if refreshing it fails, the previous copy keeps being used
+  - the file is read while it downloads, compressed (about a tenth of its size on the wire), and only the programmes from 3 hours ago to 24 hours ahead are kept (for the programme guide) - measured with the largest files: 11 MB for Poland, 6 MB for France, where the whole file is 2 to 60 MB
+  - one copy per country is reused for an hour (at most four countries in memory); if refreshing it fails, the previous copy keeps being used
   - every entry's own time zone is applied and times are shown on the box's clock. (Earlier versions ignored the time zone, which showed the wrong programme for guides not written in UTC - Spain by one hour, Turkey by three, Poland by six)
   - a channel is found through the same matching chain as below, then through the guide's own channel names (accents do not matter: "SIC NOTICIAS" finds "SIC Notícias")
 - **Intelligent Channel Matching** (in priority order):
@@ -491,13 +517,15 @@ The proxy provides these endpoints:
 
 - **Recently Watched**: `/etc/enigma2/vavoo_recent.json` – The last 20 channels watched, newest first (`[{"name", "url", "country_name", "country_code", "logo", "timestamp"}]`). Delete it (or MENU → "Clear recently watched") to empty the list
 
+- **Reminders**: `/etc/enigma2/vavoo_timers.json` – `{"format": "vavoo_timers", "version": 1, "timers": [{"id", "kind": "remind", "url", "name", "country", "country_code", "logo", "title", "start", "stop"}]}` (times as Unix time). In backups too. Delete it to drop every reminder
+
 - **Hidden Countries**: `/etc/enigma2/vavoo_hidden_countries.json` – Settings → Choose countries (`["Albania", "Spain"]`). Delete it to show every country again
 
 - **Parental Control**: `/etc/enigma2/vavoo_parental.json` – The PIN (salted SHA-256, never in clear), the locked countries, the two lock options and the wrong-PIN pause. Not in backups. Delete it to remove the PIN
 
 - **Exported Bouquets List**: `/etc/enigma2/vavoo_bouquet_list.txt` – The countries "Scheduled EPG/Bouquet Update" re-exports (`name|url|flat or hierarchical|time` per line; `Favorite.txt` in the plugin folder before)
 
-- **Backups**: `VavooStream-backup-YYYYMMDD-HHMM.json` in `/media/hdd`, `/media/usb`, `/media/mmc` or `/etc/enigma2` – `{"format": "vavoo_e2_backup", "version", "saved", "settings", "favourites", "recent", "source_prefs", "hidden_countries"}`
+- **Backups**: `VavooStream-backup-YYYYMMDD-HHMM.json` in `/media/hdd`, `/media/usb`, `/media/mmc` or `/etc/enigma2` – `{"format": "vavoo_e2_backup", "version", "saved", "settings", "favourites", "recent", "source_prefs", "hidden_countries", "timers"}`
 
 - **Initials Tiles**: `/tmp/vavoo_tiles/` – The channel tiles and padlocks drawn by the plugin (one per colour and size), made again after a reboot
 

@@ -243,9 +243,13 @@ the real files (measured, see the comment block above
 - The files are 2 to 60 MB with up to 110 000 programmes. Never build
   one whole (`ET.fromstring()` did, and kept it: hundreds of MB on a
   box). `open_url_stream()` reads it compressed while it downloads and
-  `_parse_epg_guide()` keeps only what is running now or starts within
-  12 hours, as tuples. One `EpgGuide` per country, reused for an hour,
-  three countries at most, one download at a time per country.
+  `_parse_epg_guide()` keeps only the programmes from 3 hours before
+  load time to 24 hours after it (`_EPG_GUIDE_BEHIND` /
+  `_EPG_GUIDE_AHEAD`, for the guide grid; measured: pl 11 MB, fr 6 MB),
+  as tuples. One `EpgGuide` per country, reused for an hour, four
+  countries at most, one download at a time per country.
+  `lookup_programmes()` / `peek_programmes()` give a channel's
+  programmes between two times (`EpgGuide.between()`).
 - Every entry carries its own UTC offset and the files mix them
   (`+0000`, `+0100`, `+0300`, `-0600`). `parse_xmltv_time()` applies
   it; `epg_clock()` shows box-local time. Ignoring the offset is only
@@ -304,6 +308,24 @@ proxy's `channel_rows()` `category`); a category opens a new `vavoo`
 with `category=` and the country's `channels=` (no second request).
 `VavooSearch` closes with `(name, url, country, results, index)` -
 callers use `play_search_result()`.
+
+**Programme guide and reminders (`plugin.py`'s `VavooGuide`,
+`_ReminderService`)** — the app's EpgGuideActivity: opened with INFO /
+EPG in `vavoo` / `VavooFavourites` (closes with `("watch", index)`)
+and from the player's options (`over_player=True`, `on_zap`). The grid
+is two `GuideList` MultiContent lists (ruler, rows) whose entries the
+screen computes (boxes with `backcolor`, `floor_half_hour()` window
+rules of `EpgGrid`, 3 h across, `GUIDE_BACK` = 3 h, up to the guide's
+end); only visible rows are looked up (peek, then one worker thread).
+Skins: `vavoo_theme.guide_screen()` / `guide_classic()` (no XML),
+`guide_metrics()`, `guide_colors()`, `e2_int()`. Reminders are
+`vavoo_store` timers of kind "remind" (`vavoo_timers.json`, phase 5
+adds "record"); `REMINDERS` is started at session start
+(`autostart()`) and by `MainVavoo`, ticks every 15 s, takes due ones
+(`due_timers()`) and asks with `Tools.Notifications.
+AddNotificationWithCallback`; "watch it" goes through `ACTIVE`
+(player → `play_channel()`, main → `_open_channel()`, else the plugin
+opens with `ACTIVE["pending"]`). `VavooReminders` lists them.
 
 **Notifications (`notification_system.py`)** — singleton
 `HybridNotificationManager`, thread-safe (lock-protected), with a message
