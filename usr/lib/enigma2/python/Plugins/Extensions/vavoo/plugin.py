@@ -1129,8 +1129,16 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
             if value is None:
                 text_size = (text_size[0] - lock_w - 10, text_size[1])
     if value is not None:
-        # the value's column: three row heights at the right end
-        value_w = min(text_size[1] * 3, text_size[0] // 2)
+        # the value's column at the right end: three row heights, or
+        # as wide as its text needs (a date), at most half the row
+        if themed:
+            font_size = theme_metrics(kind)["font_size"]
+        else:
+            font_size = 38 if screen_width >= 2560 else (
+                34 if screen_width >= 1920 else 22)
+        value_w = min(max(text_size[1] * 3,
+                          int(len(to_text(value)) * font_size * 0.58)),
+                      text_size[0] // 2)
         res.append(MultiContentEntryText(
             pos=(text_pos[0] + text_size[0] - value_w, text_pos[1]),
             size=(value_w, text_size[1]),
