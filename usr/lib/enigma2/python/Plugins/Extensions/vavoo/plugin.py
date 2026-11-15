@@ -42,6 +42,11 @@ from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
 from Components.MenuList import MenuList
 from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
+try:
+    # blends a picture's soft edges (the initials tiles' round corners)
+    from Components.MultiContent import MultiContentEntryPixmapAlphaBlend
+except ImportError:
+    MultiContentEntryPixmapAlphaBlend = MultiContentEntryPixmapAlphaTest
 from Components.Pixmap import Pixmap
 from Components.ProgressBar import ProgressBar
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
@@ -59,6 +64,7 @@ from Components.config import (
     NoSave
 )
 from enigma import (
+    RT_HALIGN_CENTER,
     RT_HALIGN_LEFT,
     RT_HALIGN_RIGHT,
     RT_VALIGN_CENTER,
@@ -585,6 +591,10 @@ cfg.playlist_key = ConfigText(default="")
 # The app's list settings: several sources of one channel in one row;
 # a country's catalog categories ("Italy ➾ Sport") as rows first.
 cfg.group_sources = ConfigYesNo(default=True)
+# The channels' logos in the lists and the player (the app's "Channel
+# Logos", off): off, a theme shows each channel's initials on a tile of
+# its own colour, and no logo is downloaded.
+cfg.logos = ConfigYesNo(default=False)
 cfg.subcategories = ConfigYesNo(default=True)
 # "Choose countries" opened by itself once, on a first start (see
 # MainVavoo._maybe_first_run()).
@@ -827,6 +837,13 @@ class m2list(MenuList):
             item_height = metrics["row_h"]
             font_name = metrics["font"]
             text_font_size = metrics["font_size"]
+            # the initials on a channel's tile (show_list()): two
+            # letters / one letter, as the app's Monogram sizes them
+            side = metrics["icon_h"]
+            self.l.setFont(1, gFont(metrics["font_bold"],
+                                    max(8, int(side * 0.42))))
+            self.l.setFont(2, gFont(metrics["font_bold"],
+                                    max(8, int(side * 0.55))))
         elif screen_width == 2560:
             item_height = 60
             text_font_size = 38
@@ -882,7 +899,7 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
     icon_path = default_icon
 
     using_channel_picon = False
-    if is_channel and logo_url:
+    if is_channel and logo_url and cfg.logos.value:
         # Same convention as the flag icon below: only ever read the
         # cache here, never download synchronously inside this
         # function (called once per row while building a possibly
@@ -1037,6 +1054,30 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
                 png_data = loadPNG(default_icon)
             except Exception:
                 png_data = None
+
+    if themed and is_channel and not using_channel_picon:
+        # No logo (or Channel Logos off): the channel's initials on a
+        # rounded tile of its own colour, square in the icon box (the
+        # app's Monogram; vavoo_store draws the tile once per colour).
+        side = icon_size[1]
+        tile = None
+        try:
+            tile = vavoo_store.tile_path(safe_name, side)
+        except Exception as e:
+            debug("Initials tile not drawn: {}".format(e))
+        tile_png = scaled_icon(tile, side, side) if tile else None
+        if tile_png is not None:
+            png_data = None
+            tile_pos = (icon_pos[0] + (icon_size[0] - side) // 2, icon_pos[1])
+            letters = vavoo_store.initials(safe_name)
+            res.append(MultiContentEntryPixmapAlphaBlend(
+                pos=tile_pos, size=(side, side), png=tile_png))
+            res.append(MultiContentEntryText(
+                pos=tile_pos, size=(side, side),
+                font=1 if len(letters) > 1 else 2,
+                text=to_string(letters),
+                flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER,
+                color=0xffffff, color_sel=0xffffff))
 
     if png_data:
         res.append(MultiContentEntryPixmapAlphaTest(
@@ -1848,6 +1889,12 @@ class vavoo_config(Screen, ConfigListScreen):
             _("The sources of one channel (.b, .c, .s) in one row; MENU "
               "→ Source in the player picks one. Off: every source in "
               "its own row.")))
+        self.list.append(getConfigListEntry(
+            _("Channel Logos"),
+            cfg.logos,
+            _("Show the channels' logos in the lists and the player. "
+              "Off: each channel's initials on a tile of its own colour "
+              "(Classic: the Vavoo icon), and no logo is downloaded.")))
         self.list.append(getConfigListEntry(
             _("Sub-categories"),
             cfg.subcategories,
@@ -4875,6 +4922,9 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         list so the visible screenful gets its picons quickly, then
         keeps going through the rest with one final refresh.
         """
+        if not cfg.logos.value:
+            # Channel Logos off: initials instead, nothing downloaded
+            return
         entries = [
             entry for entry in self._channel_entries if entry[2]
         ]
@@ -7116,7 +7166,7 @@ class TvInfoBarShowHide():
         """
         try:
             logo_url = getattr(self, 'current_logo_url', None)
-            if not logo_url:
+            if not logo_url or not cfg.logos.value:
                 self["channelPicon"].hide()
                 return
 
@@ -8024,7 +8074,7 @@ class Playstream2(
         flag - scaled into the logo box (as _update_overlay_picon())."""
         path = None
         logo_url = getattr(self, 'current_logo_url', None)
-        if logo_url:
+        if logo_url and cfg.logos.value:
             cache_file = get_picon_cache_path(logo_url)
             if cache_file and file_exists(cache_file) and getsize(cache_file) > 100:
                 path = cache_file

@@ -297,6 +297,7 @@ def list_metrics(theme, large, width, kind="list"):
     return {
         "row_h": row_px, "rows": rows, "list_w": list_w, "list_h": list_h,
         "font": look["font"][0] if look else "Regular",
+        "font_bold": look["font_bold"][0] if look else "Regular",
         "font_size": max(8, scaled(font_size, width)),
         "icon_x": icon_x, "icon_y": max(0, (row_px - icon_h) // 2),
         "icon_w": icon_w, "icon_h": icon_h,
