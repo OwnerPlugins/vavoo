@@ -3529,11 +3529,16 @@ _EPG_GUIDE_TTL = 3600
 _EPG_GUIDE_STALE_MAX = 6 * 3600
 # After a failed load, wait this long before the next attempt.
 _EPG_GUIDE_RETRY = 120
-# Programmes are kept if they are still running at load time or start
-# within this long after it.
-_EPG_GUIDE_AHEAD = 12 * 3600
-# Countries kept in memory at once (least recently used goes first).
-_EPG_GUIDE_KEEP = 3
+# Programmes are kept from this long before load time (the guide grid
+# looks back 3 hours, as the app's) to this long after it (the grid's
+# window reaches its end). Measured with the largest files: pl keeps
+# about 22 000 programmes in 11 MB, fr 17 000 in 6 MB (12 hours ahead
+# and nothing before, as it used to be: 6 and 3 MB).
+_EPG_GUIDE_BEHIND = 3 * 3600
+_EPG_GUIDE_AHEAD = 24 * 3600
+# Countries kept in memory at once (least recently used goes first) -
+# four, as a page of Favourites or of the guide grid often mixes them.
+_EPG_GUIDE_KEEP = 4
 # Descriptions are cut to this many characters; they are only ever
 # shown in the player overlay's few lines.
 _EPG_GUIDE_DESC_MAX = 400
@@ -3649,11 +3654,12 @@ def _guide_id(feed_id):
 
 
 class EpgGuide(object):
-    """One country's programme guide, reduced to now-and-soon.
+    """One country's programme guide, reduced to the hours around now.
 
     programmes: {feed channel id: [(start, stop, title, description),
-    ...]} sorted by start, times as Unix time. Only channels that
-    have something on now or soon are in it.
+    ...]} sorted by start, times as Unix time, from _EPG_GUIDE_BEHIND
+    before load time to _EPG_GUIDE_AHEAD after it. Only channels that
+    have something in those hours are in it.
     feed_ids / name_index: the feed's own channel list, in the exact
     shape _get_epg_feed_index() returns it.
     """
@@ -3727,6 +3733,16 @@ class EpgGuide(object):
                 current = entry
         return current, following
 
+    def horizon(self):
+        """The end of the hours this guide holds."""
+        return self.loaded_at + _EPG_GUIDE_AHEAD
+
+    def between(self, key, start, stop):
+        """The programmes of one id that are on at any moment between
+        `start` and `stop` (the guide grid's window), by start time."""
+        return [entry for entry in self.programmes.get(key) or ()
+                if entry[1] > start and entry[0] < stop]
+
     def schedule(self, key, count=4, now=None):
         """The programme on now (if any) and the ones after it, up to
         `count` in all - the player's mini guide. Same tuples as
@@ -3754,7 +3770,7 @@ class EpgGuide(object):
 def _parse_epg_guide(stream, country_code, now):
     """Read an XMLTV stream into an EpgGuide - see the notes above."""
     guide = EpgGuide(country_code, now)
-    keep_from = now
+    keep_from = now - _EPG_GUIDE_BEHIND
     keep_until = now + _EPG_GUIDE_AHEAD
     # Most of a file is other days. An entry's digits, read as if they
     # were UTC, are at most _XMLTV_MAX_OFFSET away from its real time,
@@ -3950,7 +3966,8 @@ def _guide_channel_name(channel_name):
     return remove_parentheses(decodeHtml(channel_name))
 
 
-def _resolve_guide_channel(guide, clean_name, country_code, channel_id):
+def _resolve_guide_channel(guide, clean_name, country_code, channel_id,
+                           epg_id=None):
     """The id in guide.programmes for this channel, "" if the guide
     has nothing for it. Slow the first time for a channel (it runs the
     EPG matcher), a dictionary lookup afterwards.
@@ -3960,7 +3977,8 @@ def _resolve_guide_channel(guide, clean_name, country_code, channel_id):
     Rytec, the feed's own names - see its docstring), and if this
     feed has no programmes under that id, the channel's name against
     the feed's own channel names - which now also finds a name that
-    differs only in its accents.
+    differs only in its accents. `epg_id`: the catalog's own guide id
+    for the channel, when known (find_match()'s epg_guide_id).
     """
     key = guide.resolved.get(clean_name)
     if key is not None:
@@ -3971,7 +3989,8 @@ def _resolve_guide_channel(guide, clean_name, country_code, channel_id):
     matched_id = None
     try:
         matched_id, _unused_sref, _unused_source = matcher.find_match(
-            clean_name, country_code=country_code, channel_id=channel_id)
+            clean_name, country_code=country_code, channel_id=channel_id,
+            epg_guide_id=epg_id or None)
     except Exception as e:
         debug("EPG match failed for {}: {}".format(clean_name, e))
     if matched_id:
@@ -4089,6 +4108,49 @@ def peek_schedule(channel_name, country_code, count=4):
         return "no_match", []
     programmes = guide.schedule(key, count)
     return ("ok" if programmes else "no_programme"), programmes
+
+
+def lookup_programmes(channel_name, country_code, start, stop,
+                      channel_id=None, epg_id=None):
+    """(status, programmes): what is on this channel between `start`
+    and `stop` - the guide grid. Same matching and status words as
+    lookup_schedule(); can block the same way: background threads only
+    (peek_programmes() on the GUI thread)."""
+    if not country_code:
+        return "no_country", []
+    guide = load_epg_guide(country_code)
+    if guide is None:
+        return "no_guide", []
+    key = _resolve_guide_channel(
+        guide, _guide_channel_name(channel_name), country_code, channel_id,
+        epg_id)
+    if not key:
+        return "no_match", []
+    programmes = guide.between(key, start, stop)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
+def peek_programmes(channel_name, country_code, start, stop):
+    """lookup_programmes() from memory alone, or None when it would
+    need a download or the matcher. Never blocks."""
+    if not country_code:
+        return "no_country", []
+    guide = peek_epg_guide(country_code)
+    if guide is None:
+        return None
+    key = guide.resolved.get(_guide_channel_name(channel_name))
+    if key is None:
+        return None
+    if not key:
+        return "no_match", []
+    programmes = guide.between(key, start, stop)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
+def guide_horizon(country_code):
+    """The end of the hours a loaded guide holds, or None."""
+    guide = peek_epg_guide(country_code) if country_code else None
+    return guide.horizon() if guide is not None else None
 
 
 def _build_epg_channels_xml(unique):
