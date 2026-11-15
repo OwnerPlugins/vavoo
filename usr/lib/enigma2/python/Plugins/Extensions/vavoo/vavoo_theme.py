@@ -411,6 +411,11 @@ def asset_specs(theme):
     box("toast", 1000, 108, look["bar"], look["progress"][0], 3, radius)
     box("dialog_pin", 700, 420, look["guide_bg"], look["progress"][0], 3,
         radius)
+    # the guide grid's panel, over the background / over the video
+    box("guide_panel", 1840, 940, look["guide_bg"], look["panel_stroke"], 2,
+        radius)
+    box("guide_panel_over", 1840, 940, look["guide_bg_over"],
+        look["panel_stroke"], 2, radius)
 
     # the start screen's card with its halo (SplashActivity.buildModern)
     specs["splash_card"] = {"size": (1340 + 36, 820 + 36), "layers": [
@@ -1200,6 +1205,196 @@ def player_list_classic(width):
             % (width, height, "\n".join(lines)))
 
 
+# ---------------------------------------------------------------------
+# The programme guide grid (the app's EpgGuideActivity / EpgGrid)
+# ---------------------------------------------------------------------
+# Classic's guide colours (the app's Classic Look).
+CLASSIC_GRID = {
+    "guide_bg": "#F00e0f1a", "guide_bg_over": "#B00e0f1a",
+    "grid_header": "#101225", "grid_name": "#181b2e",
+    "grid_prog": "#23263d", "grid_now": "#33375a",
+    "grid_now_line": "#ff3b5c", "selected": "#743554",
+    "tick_text": "#c8b6e2", "tick_line": "#2a2d45",
+    "no_info": "#6f6f80", "text": "#e0d6ee", "details": "#e6d6f5",
+    "font": "Regular", "font_bold": "Regular",
+}
+# The guide's three hours across.
+GUIDE_WINDOW = 3 * 3600
+
+
+def e2_int(color):
+    """An Android colour as the integer Enigma2's list entries take
+    (0xTTRRGGBB, TT = transparency)."""
+    r, g, b, a = parse_color(color)
+    return ((255 - a) << 24) | (r << 16) | (g << 8) | b
+
+
+def _blend(color, under, alpha):
+    """`color` at `alpha` (0-255) over `under`, opaque."""
+    r1, g1, b1, _a = parse_color(color)
+    r2, g2, b2, _b = parse_color(under)
+    def mix(a, b):
+        return int(round(a * alpha / 255.0 + b * (255 - alpha) / 255.0))
+    return "#%02x%02x%02x" % (mix(r1, r2), mix(g1, g2), mix(b1, b2))
+
+
+def guide_colors(theme):
+    """The grid's colours (EpgGrid): a theme's Look, or Classic's."""
+    if not is_modern(theme):
+        out = dict(CLASSIC_GRID)
+    else:
+        look = LOOKS[normalize_theme(theme)]
+        out = {
+            "guide_bg": look["guide_bg"], "guide_bg_over": look["guide_bg_over"],
+            "grid_header": look["grid_header"], "grid_name": look["grid_name"],
+            "grid_prog": look["grid_prog"], "grid_now": look["grid_now"],
+            "grid_now_line": look["grid_now_line"],
+            "selected": look["selected"], "tick_text": look["text_sub"],
+            "tick_line": "#" + look["divider"].lstrip("#")[-6:],
+            "no_info": look["text_dim"], "text": look["text"],
+            "details": look["text"], "font": look["font"][0],
+            "font_bold": look["font_bold"][0],
+        }
+    # a row with nothing in the window: grid_prog at 0x99 over the
+    # guide's background (EpgGrid's colNone)
+    out["none"] = _blend(out["grid_prog"], "#" + out["guide_bg"][-6:], 0x99)
+    return out
+
+
+def guide_metrics(large, width, preview=False):
+    """The grid's measures in real pixels (EpgGuideActivity.buildUi,
+    EpgGrid.layout): the grid area, its rows, the time ruler above
+    them, the channel column, the details text and the preview."""
+    grid_h = 600 if preview else 690
+    rows = (9 if preview else 10) - (1 if large else 0)
+    header_h = grid_h / float(rows + 1) * 0.8
+    row_h = (grid_h - header_h) / rows
+    grid_x, grid_y, grid_w = 56, 110, 1808
+    name_w = grid_w * 0.26
+    info_y = 120 + grid_h
+    info_h = 940 - grid_h - 100
+    out = {
+        "rows": rows,
+        "grid_x": scaled(grid_x, width), "grid_y": scaled(grid_y, width),
+        "grid_w": scaled(grid_w, width),
+        "header_h": max(10, scaled(header_h, width)),
+        "row_h": max(10, scaled(row_h, width)),
+        "name_w": scaled(name_w, width),
+        "info": (64, info_y, 1792, info_h),
+        "font_size": max(8, scaled(row_h * 0.40, width)),
+        "pad": max(2, scaled(row_h * 0.12, width)),
+        "details_font": 26 * text_scale(large),
+    }
+    out["time_w"] = out["grid_w"] - out["name_w"]
+    out["rows_y"] = out["grid_y"] + out["header_h"]
+    if preview:
+        pw = min(int((info_h - 12) * 16 / 9.0), int(1792 * 0.45))
+        ph = pw * 9 // 16
+        out["preview"] = (64 + 1792 - pw, info_y + (info_h - ph) // 2, pw, ph)
+        out["info"] = (64, info_y, 1792 - pw - 30, info_h)
+    return out
+
+
+def _guide_widgets(add, px_rect, metrics, colors, width, font_name,
+                   details_font, title_font):
+    """The guide's named widgets (both looks)."""
+    m = metrics
+    bg = "#" + colors["guide_bg"][-6:]
+    add('<widget name="heading" position="%d,%d" size="%d,%d" font="%s;%d" '
+        'halign="left" valign="center" foregroundColor="#ffffff" '
+        'backgroundColor="%s" transparent="1" zPosition="3" noWrap="1" />'
+        % (px_rect(64, 44, 1792, 56) + (title_font, max(8, scaled(36, width)),
+                                         bg)))
+    for name, top, height in (("ruler", m["grid_y"], m["header_h"]),
+                              ("grid", m["rows_y"], m["rows"] * m["row_h"])):
+        add('<widget name="%s" position="%d,%d" size="%d,%d" zPosition="2" '
+            'scrollbarMode="showNever" selectionDisabled="1" transparent="1" '
+            'backgroundColor="%s" backgroundColorSelected="%s" '
+            'foregroundColor="#ffffff" foregroundColorSelected="#ffffff" />'
+            % (name, m["grid_x"], top, m["grid_w"], height, bg, bg))
+    add('<widget name="details" position="%d,%d" size="%d,%d" font="%s;%d" '
+        'halign="left" valign="top" foregroundColor="%s" backgroundColor="%s" '
+        'transparent="1" zPosition="3" />'
+        % (px_rect(*m["info"]) + (font_name,
+                                  max(8, scaled(details_font, width)),
+                                  "#" + colors["details"][-6:], bg)))
+    if "preview" in m:
+        add('<widget source="session.VideoPicture" render="Pig" '
+            'position="%d,%d" size="%d,%d" zPosition="3" '
+            'backgroundColor="#ff000000" />' % px_rect(*m["preview"]))
+
+
+def guide_screen(theme, large, width, preview=False, over=False,
+                 base_dir=None):
+    """The programme guide grid (EpgGuideActivity): the panel, the
+    heading, the time ruler and the grid (two MultiContent lists that
+    plugin.py's VavooGuide draws), the details under them, the
+    preview window when it is open, the four colour keys."""
+    if not is_modern(theme):
+        return None
+    skin = _Skin(theme, large, width, base_dir)
+    if not over:
+        skin.background()
+    skin.picture("guide_panel_over" if over else "guide_panel", 40, 30)
+    m = guide_metrics(large, width, preview)
+    colors = guide_colors(theme)
+
+    def add(line):
+        skin.lines.append("\t" + line)
+
+    _guide_widgets(add, lambda *b: skin.rect(*b), m, colors, width,
+                   skin.look["font"][0], m["details_font"],
+                   skin.look["font_bold"][0])
+    if over:
+        # the keys over the video: a dark strip behind them
+        skin.block((0, 975, 1920, 105), "#B0000000", z=0)
+    skin.color_keys(KEY_NAMES)
+    return skin.text("VavooGuide", transparent=over)
+
+
+def guide_classic(width, large=True, preview=False, over=False):
+    """guide_screen() for Classic, which has no file for this screen:
+    the same boxes in Classic's colours, drawn with labels."""
+    colors = guide_colors("classic")
+    m = guide_metrics(large, width, preview)
+    lines = []
+
+    def px_rect(x, y, w, h):
+        return (scaled(x, width), scaled(y, width),
+                max(1, scaled(x + w, width) - scaled(x, width)),
+                max(1, scaled(y + h, width) - scaled(y, width)))
+
+    def rect(x, y, w, h, color, z):
+        lines.append('\t<eLabel position="%d,%d" size="%d,%d" '
+                     'backgroundColor="%s" zPosition="%d" />'
+                     % (px_rect(x, y, w, h) + (color, z)))
+
+    panel = e2_color(colors["guide_bg_over" if over else "guide_bg"])
+    rect(40, 30, 1840, 940, panel, 0)
+    for bx, by, bw, bh in ((40, 30, 1840, 3), (40, 967, 1840, 3),
+                           (40, 30, 3, 940), (1877, 30, 3, 940)):
+        rect(bx, by, bw, bh, colors["selected"], 1)
+    _guide_widgets(lines.append, px_rect, m, colors, width,
+                   CLASSIC_COLORS["font"], 26 * (1.2 if large else 1.0),
+                   CLASSIC_COLORS["font"])
+    # Classic's keys: the label and a coloured bar under it
+    for index, (name, color) in enumerate(zip(
+            KEY_NAMES, ("#ff0000", "#00ff00", "#ffff00", "#0000ff"))):
+        x = (58, 355, 652, 948)[index]
+        lines.append(
+            '\t<widget name="%s" position="%d,%d" size="%d,%d" font="%s;%d" '
+            'halign="center" valign="center" foregroundColor="#ffffff" '
+            'backgroundColor="#181b2e" transparent="1" zPosition="3" />'
+            % ((name,) + px_rect(x, 995, 297, 50) +
+               (CLASSIC_COLORS["font"], max(8, scaled(30, width)))))
+        rect(x, 1048, 300, 6, color, 3)
+    height = int(round(width * BASE_HEIGHT / float(BASE_WIDTH)))
+    back = "#ff000000" if over else "#181b2e"
+    return ('<screen name="VavooGuide" position="0,0" size="%d,%d" '
+            'backgroundColor="%s" flags="wfNoBorder">\n%s\n</screen>\n'
+            % (width, height, back, "\n".join(lines)))
+
+
 # Everything a caller can ask for by name (plugin.py's
 # load_screen_skin(), the tests, the mock-ups).
 BUILDERS = {
@@ -1216,4 +1411,5 @@ BUILDERS = {
     "player": player_bar,
     "player_list": player_list,
     "player_menu": player_menu,
+    "guide": guide_screen,
 }
