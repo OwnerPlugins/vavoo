@@ -8,7 +8,7 @@ import ssl
 import time
 import threading
 from os import listdir, unlink, remove, system as os_system
-from os.path import exists as file_exists, join, isfile, getsize
+from os.path import basename, dirname, exists as file_exists, join, isfile, getsize
 from json import loads
 from sys import version_info
 from enigma import eDVBDB
@@ -523,6 +523,11 @@ cfg.show_log = NoSave(ConfigAction())
 cfg.view_favourites = NoSave(ConfigAction())
 cfg.choose_countries = NoSave(ConfigAction())
 cfg.parental = NoSave(ConfigAction())
+cfg.backup = NoSave(ConfigAction())
+cfg.restore = NoSave(ConfigAction())
+cfg.clear_favourites = NoSave(ConfigAction())
+cfg.licences = NoSave(ConfigAction())
+cfg.about = NoSave(ConfigAction())
 # Which catalog/stream source vavoo_proxy.py's initialize_proxy()
 # tries - "auto" keeps its default Geil-first/Vavoo-fallback
 # order; "geil"/"vavoo" pin it to exactly one source, with no
@@ -2027,6 +2032,18 @@ class vavoo_config(Screen, ConfigListScreen):
               "(optionally) the settings. Once entered, all is open for "
               "15 minutes or until the plugin is left.")))
         self.list.append(getConfigListEntry(
+            _("Backup Settings & Favourites"),
+            cfg.backup,
+            _("Saves the settings, the favourites (with folders and "
+              "order), recently watched, the chosen sources and countries "
+              "in /media/hdd, /media/usb or /media/mmc (else %s) - not "
+              "parental control.") % ENIGMA_PATH))
+        self.list.append(getConfigListEntry(
+            _("Restore from Backup"),
+            cfg.restore,
+            _("Choose a backup: its settings and favourites replace the "
+              "ones here.")))
+        self.list.append(getConfigListEntry(
             _("Show Log (Ok to view)"),
             cfg.show_log,
             _("View the last 200 lines of %s.") % LOG_FILE))
@@ -2035,9 +2052,63 @@ class vavoo_config(Screen, ConfigListScreen):
             cfg.view_favourites,
             _("Browse and play your starred channels. Add or remove a "
               "channel with the GREEN key while browsing.")))
+        self.list.append(getConfigListEntry(
+            _("Clear Favourites"),
+            cfg.clear_favourites,
+            _("Remove all favourite channels (asks to confirm).")))
+        self.list.append(getConfigListEntry(
+            _("Licences"),
+            cfg.licences,
+            _("The plugin's licence and the fonts' (SIL OFL).")))
+        self.list.append(getConfigListEntry(
+            _("About"),
+            cfg.about,
+            _("Vavoo Stream Live %s by Lululla & Qu4k3 - License CC "
+              "BY-NC-SA 4.0.") % __version__))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
+
+    def backup(self):
+        path = vavoo_store.write_backup(plugin_settings(), __version__)
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Saved: {}").format(path) if path
+                         else _("The backup could not be saved"), 5)
+
+    def restore(self):
+        found = vavoo_store.list_backups()
+        if not found:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("No backup found"), 4)
+            return
+        entries = [(to_string(u"{}  ({})".format(
+            basename(path), to_text(dirname(path)))), path)
+            for path, _mtime in found]
+        open_action_menu(self.session, _("Restore from Backup"), entries,
+                         self._restore_file)
+
+    def _restore_file(self, path):
+        data = vavoo_store.read_backup(path)
+        if data is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("That file is not a Vavoo Stream backup"), 4)
+            return
+        apply_settings(vavoo_store.restore_backup(data))
+        # the chosen sources are read by the proxy when it starts
+        restart_proxy_in_background()
+        try:
+            self.createSetup()
+        except Exception as e:
+            debug("Settings list not rebuilt: {}".format(e))
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Restored - the theme and text size change when "
+                           "the plugin is opened again"), 5)
+
+    def _clear_favourites(self, answer=None):
+        if answer:
+            vavoo_store.clear_favourites()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Favourites cleared"), 3)
 
     def gnm3u(self):
         sel = self["config"].getCurrent()[1]
@@ -2057,6 +2128,19 @@ class vavoo_config(Screen, ConfigListScreen):
         elif sel and sel == cfg.parental:
             ask_pin(self.session, self,
                     lambda: self.session.open(VavooParental))
+        elif sel and sel == cfg.backup:
+            ask_pin(self.session, self, self.backup)
+        elif sel and sel == cfg.restore:
+            ask_pin(self.session, self, self.restore)
+        elif sel and sel == cfg.clear_favourites:
+            self.session.openWithCallback(
+                self._clear_favourites, MessageBox,
+                _("Remove all favourite channels?"), MessageBox.TYPE_YESNO,
+                default=False)
+        elif sel and sel == cfg.licences:
+            show_licences(self.session)
+        elif sel and sel == cfg.about:
+            show_about(self.session)
         elif sel and sel == cfg.view_favourites:
             self.session.open(VavooFavourites)
         elif sel and sel == cfg.playlist_key:
@@ -4327,52 +4411,7 @@ class MainVavoo(Screen, PreviewWindow):
 
     def info(self):
         """Display plugin information"""
-        message_parts = []
-        message_parts.append(_("Vavoo Stream Live Plugin"))
-        message_parts.append("=" * 40)
-
-        message_parts.append(_("Version: ") + str(__version__))
-        message_parts.append(_("Author: ") + str(__author__))
-        message_parts.append(_("License: ") + str(__license__))
-        message_parts.append("")
-
-        message_parts.append(_("Technical Features:"))
-        message_parts.append(_("- HTTP Live Streaming"))
-        message_parts.append(_("- TS/M3U8 formats"))
-        message_parts.append(_("- Service references: 4097, 5001, 5002"))
-        message_parts.append(_("- Automatic bouquet generation"))
-        message_parts.append(
-            _("- Automatic Epg generation with Service Reference"))
-        message_parts.append(_("- Integrated proxy system"))
-        message_parts.append(_("- Auto token refresh every 9 minutes"))
-        message_parts.append("")
-
-        message_parts.append(_("Credits:"))
-        message_parts.append(_("- Graphics: @oktus"))
-        message_parts.append(
-            _("- Technical support: Qu4k3, @KiddaC, @giorbak"))
-        message_parts.append(
-            _("- Community: Linuxsat-support.com, Corvoboys.org Forum"))
-        message_parts.append("")
-
-        message_parts.append(_("Important Notes:"))
-        message_parts.append(_("- Free content only"))
-        message_parts.append(_("- Streams from public sources"))
-        message_parts.append(_("- No direct server hosting"))
-        message_parts.append("")
-
-        message_parts.append(_("License: CC BY-NC-SA 4.0"))
-        message_parts.append(_("- Redistribution must maintain attribution"))
-        message_parts.append(_("- Commercial use is strictly prohibited"))
-
-        info_text = "\n".join(message_parts)
-
-        aboutbox = self.session.open(
-            MessageBox,
-            info_text,
-            MessageBox.TYPE_INFO
-        )
-        aboutbox.setTitle(_('Vavoo Stream Live - Information'))
+        show_about(self.session)
 
     def chUp(self):
         """Handle page up and update name"""
@@ -6572,6 +6611,151 @@ class VavooParental(VavooPickScreen):
 
     def _closed_flag(self):
         return getattr(self, '_closed', False)
+
+
+# ---------------------------------------------------------------------
+# Settings → Backup / Restore, Licences, About
+# ---------------------------------------------------------------------
+# The plugin's settings a backup carries: the ones the user chooses -
+# not the action rows, not parental control (as in the app, a backup
+# does not carry the PIN out nor a restore remove the one set here).
+BACKUP_SETTINGS = (
+    "theme", "text_size", "show_counts", "clock_format", "back",
+    "catalog_source", "playlist_key", "proxy_startup_timeout",
+    "epg_enabled", "preview_window", "start_last", "list_epg",
+    "group_sources", "logos", "subcategories", "autobouquetupdate",
+    "timetype", "updateinterval", "fixedtime", "services",
+    "list_position", "stmain", "stats_enabled", "debug_logging",
+)
+
+
+def plugin_settings():
+    """{name: saved text} of BACKUP_SETTINGS."""
+    out = {}
+    for name in BACKUP_SETTINGS:
+        element = getattr(cfg, name, None)
+        if element is None:
+            continue
+        try:
+            out[name] = to_text(element.tostring(element.value))
+        except Exception as e:
+            debug("Setting {} not saved in the backup: {}".format(name, e))
+    return out
+
+
+def apply_settings(settings):
+    """A backup's settings into Enigma2's settings (and saved)."""
+    for name, text in settings.items():
+        if name not in BACKUP_SETTINGS:
+            continue
+        element = getattr(cfg, name, None)
+        if element is None:
+            continue
+        try:
+            element.saved_value = to_string(text)
+            element.load()
+            element.save()
+        except Exception as e:
+            debug("Setting {} not restored: {}".format(name, e))
+    try:
+        configfile.save()
+    except Exception as e:
+        print("[vavoo] Settings not saved: {}".format(e))
+
+
+LICENCES_FILE = "/tmp/vavoo_licences.txt"
+
+
+def licences_text():
+    """The plugin's licence, then the fonts' (fonts/*-OFL.txt), each
+    under a header (the app's Licences screen)."""
+    parts = [
+        u"Vavoo Stream Live V.{} - {}".format(to_text(__version__),
+                                             to_text(__author__)),
+        u"License: CC BY-NC-SA 4.0 - "
+        u"https://creativecommons.org/licenses/by-nc-sa/4.0/",
+        to_text(_("Non-commercial use only, with attribution; changes "
+                  "shared under the same licence.")),
+        u""]
+    fonts_dir = join(PLUGIN_PATH, "fonts")
+    try:
+        names = sorted(n for n in listdir(fonts_dir) if n.endswith("-OFL.txt"))
+    except Exception:
+        names = []
+    for name in names:
+        try:
+            with codecs.open(join(fonts_dir, name), "r", encoding="utf-8") as f:
+                text = f.read()
+        except Exception as e:
+            text = u"({})".format(to_text(e))
+        parts.append(u"━" * 10 + u"  {}  ".format(name[:-8]) +
+                     u"━" * 10)
+        parts.append(text.rstrip())
+        parts.append(u"")
+    return u"\n".join(parts)
+
+
+def show_licences(session):
+    try:
+        with codecs.open(LICENCES_FILE, "w", encoding="utf-8") as f:
+            f.write(licences_text())
+    except Exception as e:
+        print("[vavoo] Licences not written: {}".format(e))
+    session.open(VavooLogViewer, title=_("Licences"),
+                 file_path=LICENCES_FILE, tail_lines=100000)
+
+
+def show_about(session):
+    """Display plugin information"""
+    message_parts = []
+    message_parts.append(_("Vavoo Stream Live Plugin"))
+    message_parts.append("=" * 40)
+
+    message_parts.append(_("Version: ") + str(__version__))
+    message_parts.append(_("Author: ") + str(__author__))
+    message_parts.append(_("License: ") + str(__license__))
+    message_parts.append("")
+
+    message_parts.append(_("Technical Features:"))
+    message_parts.append(_("- HTTP Live Streaming"))
+    message_parts.append(_("- TS/M3U8 formats"))
+    message_parts.append(_("- Service references: 4097, 5001, 5002"))
+    message_parts.append(_("- Automatic bouquet generation"))
+    message_parts.append(
+        _("- Automatic Epg generation with Service Reference"))
+    message_parts.append(_("- Integrated proxy system"))
+    message_parts.append(_("- Auto token refresh every 9 minutes"))
+    message_parts.append("")
+
+    message_parts.append(_("Credits:"))
+    message_parts.append(_("- Graphics: @oktus"))
+    message_parts.append(
+        _("- Technical support: Qu4k3, @KiddaC, @giorbak"))
+    message_parts.append(
+        _("- Community: Linuxsat-support.com, Corvoboys.org Forum"))
+    message_parts.append("")
+
+    message_parts.append(_("Important Notes:"))
+    message_parts.append(_("- Free content only"))
+    message_parts.append(_("- Streams from public sources"))
+    message_parts.append(_("- No direct server hosting"))
+    message_parts.append("")
+
+    message_parts.append(_("License: CC BY-NC-SA 4.0"))
+    message_parts.append(_("- Redistribution must maintain attribution"))
+    message_parts.append(_("- Commercial use is strictly prohibited"))
+
+    info_text = "\n".join(message_parts)
+
+    aboutbox = session.open(
+        MessageBox,
+        info_text,
+        MessageBox.TYPE_INFO
+    )
+    try:
+        aboutbox.setTitle(_('Vavoo Stream Live - Information'))
+    except Exception:
+        pass
 
 
 def open_settings(session, on_closed=None):
