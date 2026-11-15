@@ -523,6 +523,7 @@ cfg.show_log = NoSave(ConfigAction())
 cfg.view_favourites = NoSave(ConfigAction())
 cfg.choose_countries = NoSave(ConfigAction())
 cfg.parental = NoSave(ConfigAction())
+cfg.reminders = NoSave(ConfigAction())
 cfg.backup = NoSave(ConfigAction())
 cfg.restore = NoSave(ConfigAction())
 cfg.clear_favourites = NoSave(ConfigAction())
@@ -818,6 +819,7 @@ def programme_time(timestamp):
 # country name).
 FAVOURITES_ROW = "__vavoo_favourites__"
 RECENT_ROW = "__vavoo_recent__"
+REMINDERS_ROW = "__vavoo_reminders__"
 
 
 def info_text(channels=None, countries=None):
@@ -2041,6 +2043,11 @@ class vavoo_config(Screen, ConfigListScreen):
               "(optionally) the settings. Once entered, all is open for "
               "15 minutes or until the plugin is left.")))
         self.list.append(getConfigListEntry(
+            _("Reminders"),
+            cfg.reminders,
+            _("The reminders set in the programme guide (OK on a programme "
+              "still to come).")))
+        self.list.append(getConfigListEntry(
             _("Backup Settings & Favourites"),
             cfg.backup,
             _("Saves the settings, the favourites (with folders and "
@@ -2137,6 +2144,8 @@ class vavoo_config(Screen, ConfigListScreen):
         elif sel and sel == cfg.parental:
             ask_pin(self.session, self,
                     lambda: self.session.open(VavooParental))
+        elif sel and sel == cfg.reminders:
+            self.session.open(VavooReminders)
         elif sel and sel == cfg.backup:
             ask_pin(self.session, self, self.backup)
         elif sel and sel == cfg.restore:
@@ -3882,9 +3891,14 @@ class MainVavoo(Screen, PreviewWindow):
                     debug("Channel counts not available: {}".format(e))
             favourite_count = len(vUtils.load_favourites())
             recent = vUtils.load_recent()
+            try:
+                reminders = len(vavoo_store.load_timers(
+                    vavoo_store.KIND_REMIND))
+            except Exception:
+                reminders = 0
             reactor.callFromThread(
                 self._on_countries_response, response, exc, counts,
-                favourite_count, recent)
+                favourite_count, recent, reminders)
 
         t = threading.Thread(target=_task)
         t.daemon = True
@@ -3902,7 +3916,7 @@ class MainVavoo(Screen, PreviewWindow):
         self._country_retry_timer.start(500, True)
 
     def _on_countries_response(self, response, exc, counts=None,
-                               favourite_count=0, recent=None):
+                               favourite_count=0, recent=None, reminders=0):
         if self._closed:
             return
         try:
@@ -3939,6 +3953,15 @@ class MainVavoo(Screen, PreviewWindow):
                     self.cat_list.append(show_list(
                         label, RECENT_ROW, is_category=True,
                         display="{} ({})".format(label, len(recent))
+                        if show_counts else label,
+                        themed=self._themed))
+                if reminders:
+                    # The app's third row (its "Recordings"): the
+                    # reminders set, while there are any.
+                    label = _("Reminders")
+                    self.cat_list.append(show_list(
+                        label, REMINDERS_ROW, is_category=True,
+                        display="{} ({})".format(label, reminders)
                         if show_counts else label,
                         themed=self._themed))
                 # (the hidden ones out: Choose countries)
@@ -4017,6 +4040,10 @@ class MainVavoo(Screen, PreviewWindow):
                 self.session.openWithCallback(
                     self._on_child_closed, VavooFavourites,
                     VavooFavourites.MODE_RECENT)
+                return
+            if current_item[0][1] == REMINDERS_ROW:
+                self.session.openWithCallback(
+                    self._on_child_closed, VavooReminders)
                 return
             print("[MainVavoo] Selected: " + str(name))
 
@@ -7512,6 +7539,95 @@ def show_about(session):
         aboutbox.setTitle(_('Vavoo Stream Live - Information'))
     except Exception:
         pass
+
+
+def timer_when(timestamp):
+    """"Sat 16 Nov 20:00" (the app's list of timers)."""
+    moment = time.localtime(timestamp)
+    return to_text(time.strftime("%a %d %b ", moment)) + \
+        to_text(clock_text(timestamp))
+
+
+class VavooReminders(VavooPickScreen):
+    """The reminders set (the app's RecordingsActivity, timers part;
+    phase 5 adds the recordings): "Title  ·  Channel" with the day and
+    time. OK → Cancel reminder; GREEN Delete (press twice); RED Back."""
+
+    REFRESH_MS = 30000
+
+    def __init__(self, session):
+        self.timers = []
+        self._delete_armed = None
+        VavooPickScreen.__init__(
+            self, session,
+            _("Set with OK on a programme still to come in the programme "
+              "guide (INFO in a channel list). At the programme's start a "
+              "window offers to watch it."),
+            (_("Back"), _("Delete"), "", ""))
+        self._timer = eTimer()
+        try:
+            self._timer.callback.append(self._tick)
+        except Exception:
+            self._timer.timeout.connect(self._tick)
+        self.onLayoutFinish.append(
+            lambda: self._timer.start(self.REFRESH_MS, True))
+        self.onClose.append(self._timer.stop)
+
+    def key_actions(self):
+        return {"ok": self.ok, "green": self.delete}
+
+    def _tick(self):
+        # (one that went off meanwhile has left the file)
+        self.refresh()
+        self._timer.start(self.REFRESH_MS, True)
+
+    def refresh(self, select=None):
+        self.timers = vavoo_store.load_timers(vavoo_store.KIND_REMIND)
+        rows = []
+        for timer in self.timers:
+            rows.append(show_list(
+                to_string(u"{}  ·  {}".format(
+                    to_text(timer.get("title")), to_text(timer.get("name")))),
+                str(timer["id"]), is_category=True, kind="big",
+                themed=self._themed, value=timer_when(timer["start"]),
+                no_icon=True))
+        self._show(rows, select)
+        self['statusbar'].setText(
+            _("{} reminders").format(len(self.timers)) if self.timers
+            else _("No reminders"))
+
+    def _selected(self):
+        index = self._index()
+        if 0 <= index < len(self.timers):
+            return self.timers[index]
+        return None
+
+    def _remove(self, timer):
+        vavoo_store.remove_timer(timer["id"])
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Cancelled"), 2)
+        self.refresh()
+
+    def ok(self):
+        timer = self._selected()
+        if timer is None:
+            return
+        open_action_menu(
+            self.session, to_string(timer.get("title")),
+            [(_("Cancel reminder"), "cancel")],
+            lambda key: self._remove(timer) if key == "cancel" else None)
+
+    def delete(self):
+        timer = self._selected()
+        if timer is None:
+            return
+        if self._delete_armed != timer["id"]:
+            self._delete_armed = timer["id"]
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Press again to delete"), 3)
+            return
+        self._delete_armed = None
+        self._remove(timer)
 
 
 def open_settings(session, on_closed=None):
