@@ -1,0 +1,11 @@
+<screen name="VavooPin" position="center,center" size="933,560" backgroundColor="#181b2e" flags="wfNoBorder">
+    <eLabel position="0,0" size="933,560" backgroundColor="#181b2e" zPosition="-1" />
+    <eLabel position="0,0" size="933,4" backgroundColor="#743554" zPosition="1" />
+    <eLabel position="0,556" size="933,4" backgroundColor="#743554" zPosition="1" />
+    <eLabel position="0,0" size="4,560" backgroundColor="#743554" zPosition="1" />
+    <eLabel position="929,0" size="4,560" backgroundColor="#743554" zPosition="1" />
+    <widget name="title" position="40,32" size="853,85" font="cvfont;48" halign="center" valign="center" foregroundColor="#ffffff" backgroundColor="#181b2e" transparent="1" zPosition="2" noWrap="1" />
+    <widget name="dots" position="40,139" size="853,160" font="Regular;96" halign="center" valign="center" foregroundColor="#ffff00" backgroundColor="#181b2e" transparent="1" zPosition="2" noWrap="1" />
+    <widget name="message" position="40,315" size="853,75" font="cvfont;37" halign="center" valign="center" foregroundColor="#ffffff" backgroundColor="#181b2e" transparent="1" zPosition="2" noWrap="1" />
+    <widget name="hint" position="40,432" size="853,85" font="cvfont;35" halign="center" valign="center" foregroundColor="#cccccc" backgroundColor="#181b2e" transparent="1" zPosition="2" noWrap="1" />
+</screen>

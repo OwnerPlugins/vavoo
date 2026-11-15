@@ -522,6 +522,7 @@ cfg.genm3u = NoSave(ConfigAction())
 cfg.show_log = NoSave(ConfigAction())
 cfg.view_favourites = NoSave(ConfigAction())
 cfg.choose_countries = NoSave(ConfigAction())
+cfg.parental = NoSave(ConfigAction())
 # Which catalog/stream source vavoo_proxy.py's initialize_proxy()
 # tries - "auto" keeps its default Geil-first/Vavoo-fallback
 # order; "geil"/"vavoo" pin it to exactly one source, with no
@@ -878,14 +879,16 @@ def list_page_rows(widget, themed):
 
 
 def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
-              display=None, kind="list", themed=None, value=None, dim=False):
+              display=None, kind="list", themed=None, value=None, dim=False,
+              value_icon=False):
     """Build a MultiContent entry with icon and text.
 
     The entry's first item is always (name, link); `display` is what
     the row shows instead of the name, when it differs (a country with
     its channel count). `kind` / `themed`: the list it goes into (see
     m2list). `value`: a short text at the row's right end (✓ / ✗ in
-    Choose countries); `dim`: greyed out (a hidden country)."""
+    Choose countries); `dim`: greyed out (a hidden country);
+    `value_icon`: a padlock at the row's right end (a locked country)."""
 
     safe_name = to_string(name)
     safe_link = to_string(link)
@@ -1089,6 +1092,26 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
     colours = {}
     if dim:
         colours = {"color": 0x7a7a86, "color_sel": 0xb0b0b8}
+    if value_icon:
+        # the padlock, white, a little over half the row high, at the
+        # right end (drawn once by vavoo_store)
+        lock_h = max(8, int(text_size[1] * 0.56))
+        lock_w = max(6, int(round(lock_h * 0.75)))
+        lock_png = None
+        try:
+            lock = vavoo_store.lock_path(lock_h)
+            if lock:
+                lock_png = scaled_icon(lock, lock_w, lock_h) if themed \
+                    else loadPNG(lock)
+        except Exception as e:
+            debug("Padlock not drawn: {}".format(e))
+        if lock_png is not None:
+            res.append(MultiContentEntryPixmapAlphaBlend(
+                pos=(text_pos[0] + text_size[0] - lock_w,
+                     text_pos[1] + (text_size[1] - lock_h) // 2),
+                size=(lock_w, lock_h), png=lock_png))
+            if value is None:
+                text_size = (text_size[0] - lock_w - 10, text_size[1])
     if value is not None:
         # the value's column: three row heights at the right end
         value_w = min(text_size[1] * 3, text_size[0] // 2)
@@ -1300,6 +1323,10 @@ class NowNextPanel(object):
         screen."""
         return None
 
+    def _epg_panel_country(self):
+        """The highlighted channel's country (for parental control)."""
+        return getattr(self, 'country_name', None)
+
     def _epg_panel_changed(self):
         """The highlighted row may have changed."""
         if getattr(self, '_closed', False):
@@ -1318,6 +1345,15 @@ class NowNextPanel(object):
         self._epg_panel_timer.stop()
         if request is None:
             self._epg_panel_show("", "", "", "")
+            return
+        try:
+            locked = vavoo_store.needs_pin_for_channel(
+                request[0], self._epg_panel_country())
+        except Exception:
+            locked = False
+        if locked:
+            # a channel that needs the PIN shows no programme (the app)
+            self._epg_panel_show("", _("Locked"), "", "")
             return
         answer = self._epg_panel_peek(request)
         if answer is not None:
@@ -1985,6 +2021,12 @@ class vavoo_config(Screen, ConfigListScreen):
             _("Hide the countries you never watch from the main list and "
               "from search.")))
         self.list.append(getConfigListEntry(
+            _("Parental Control"),
+            cfg.parental,
+            _("A 4-digit PIN for adult channels, chosen countries and "
+              "(optionally) the settings. Once entered, all is open for "
+              "15 minutes or until the plugin is left.")))
+        self.list.append(getConfigListEntry(
             _("Show Log (Ok to view)"),
             cfg.show_log,
             _("View the last 200 lines of %s.") % LOG_FILE))
@@ -1993,17 +2035,6 @@ class vavoo_config(Screen, ConfigListScreen):
             cfg.view_favourites,
             _("Browse and play your starred channels. Add or remove a "
               "channel with the GREEN key while browsing.")))
-        self.list.append(getConfigListEntry(
-            _("Parental Control PIN"),
-            cfg.parental_pin,
-            _("Set a PIN to lock the countries below. Leave empty to "
-              "disable parental control entirely.")))
-        if cfg.parental_pin.value.strip():
-            self.list.append(getConfigListEntry(
-                _("Locked Countries"),
-                cfg.parental_countries,
-                _("Comma-separated country names (e.g. \"Italy, Spain\") "
-                  "that require the PIN above to open.")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -2023,10 +2054,12 @@ class vavoo_config(Screen, ConfigListScreen):
             open_log_viewer(self.session)
         elif sel and sel == cfg.choose_countries:
             self.session.open(VavooCountries)
+        elif sel and sel == cfg.parental:
+            ask_pin(self.session, self,
+                    lambda: self.session.open(VavooParental))
         elif sel and sel == cfg.view_favourites:
             self.session.open(VavooFavourites)
-        elif sel and sel in (
-                cfg.playlist_key, cfg.parental_pin, cfg.parental_countries):
+        elif sel and sel == cfg.playlist_key:
             # Plain ConfigText entries have nothing else wired to the
             # "ok" key in this screen (gnm3u() is its sole handler) -
             # without this, pressing OK on these did nothing and the
@@ -3203,53 +3236,6 @@ def _shared_confirm_reload_bouquets(screen, result):
         debug("User cancelled reload")
 
 
-def _is_country_locked(country_name):
-    """True if `country_name` is in the parental-control locked-country
-    list and a PIN is actually configured (an empty PIN means the
-    feature is off, same as every other opt-in cfg string in this
-    plugin). Module-level so both MainVavoo (opening a country's
-    channel list) and VavooFavourites (playing a favourite channel
-    that remembers which country it came from) can gate on it, instead
-    of only the former - a favourite from a locked country used to
-    play with no PIN prompt at all."""
-    pin = cfg.parental_pin.value.strip()
-    if not pin or not country_name:
-        return False
-    locked = [
-        c.strip().lower()
-        for c in cfg.parental_countries.value.split(',') if c.strip()
-    ]
-    return country_name.strip().lower() in locked
-
-
-def _require_parental_pin(session, screen, country_name, on_success):
-    """If country_name is locked, prompt for the PIN and call
-    on_success() only on a correct match; otherwise call on_success()
-    immediately. `screen` is the calling Screen instance, checked for
-    `_closed` before acting on the PIN result, since the prompt is an
-    async callback that can outlive a screen the user has since left."""
-    if not _is_country_locked(country_name):
-        on_success()
-        return
-
-    def _on_result(result):
-        if getattr(screen, '_closed', False):
-            return
-        if result is not None and result == cfg.parental_pin.value:
-            on_success()
-        else:
-            session.open(
-                MessageBox,
-                _("Incorrect PIN"),
-                MessageBox.TYPE_ERROR,
-                timeout=3)
-
-    session.openWithCallback(
-        _on_result,
-        VirtualKeyBoard,
-        title=_("Enter parental control PIN"))
-
-
 class MainVavoo(Screen, PreviewWindow):
     def __init__(self, session):
         self.session = session
@@ -3483,6 +3469,8 @@ class MainVavoo(Screen, PreviewWindow):
     def closex(self):
         debug("Exit from plugin. Cleaning up plugin timers...")
         self._closed = True
+        # the PIN is asked again next time (the app: relock())
+        vavoo_store.relock()
         if is_stats_enabled():
             stop_heartbeat()
             print("[Stats] Heartbeat fermato")
@@ -3863,7 +3851,9 @@ class MainVavoo(Screen, PreviewWindow):
                         country, country,
                         display="{} ({})".format(to_string(country), count)
                         if show_counts and count else None,
-                        themed=self._themed))
+                        themed=self._themed,
+                        # a padlock on a locked country (the app's 🔒)
+                        value_icon=vavoo_store.is_country_locked(country)))
                 self._channel_total = sum(counts.values()) if counts else None
                 self._update_ui()
                 if selected_link:
@@ -4074,7 +4064,8 @@ class MainVavoo(Screen, PreviewWindow):
                 country_name=channel.get('country_name'),
                 hand_back=cfg.preview_window.value)
         _require_parental_pin(
-            self.session, self, channel.get('country_name'), _play)
+            self.session, self, channel.get('country_name'), _play,
+            channel_name=name)
 
     def reload_list(self, answer=None):
         """BLUE: download the channel list again (the app's Reload List).
@@ -4312,7 +4303,7 @@ class MainVavoo(Screen, PreviewWindow):
                 export_lock.release()
 
     def goConfig(self):
-        self.session.openWithCallback(self._on_config_closed, vavoo_config)
+        open_settings(self.session, self._on_config_closed)
 
     def _on_config_closed(self, *args, **kwargs):
         """Back from the settings screen: make sure the proxy is up,
@@ -5042,15 +5033,39 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                 get_country_code(self.country_name),
                 "logo": logo or "",
             }
-            self._preview_or_play(channel, self.full_screen)
+            # an adult channel asks for the PIN (the country's was
+            # asked when it was opened)
+            _require_parental_pin(
+                self.session, self, self.country_name,
+                lambda: self._preview_or_play(channel, self.full_screen),
+                channel_name=name, group=self._category_at(i))
         except Exception as e:
             print('error as:', e)
             trace_error()
+
+    def _category_at(self, i):
+        """The catalog category of row i (for the adult lock)."""
+        try:
+            url = self._channel_entries[i][1]
+            for channel in self._all_channels:
+                if channel.get("url") == url:
+                    return channel.get("category") or None
+        except Exception:
+            pass
+        return None
 
     def full_screen(self):
         if self.showing_categories:
             self.open_category()
             return
+        i, name, _url = self._selected_row()
+        if i is None:
+            return
+        _require_parental_pin(self.session, self, self.country_name,
+                              self._full_screen, channel_name=name,
+                              group=self._category_at(i))
+
+    def _full_screen(self):
         try:
             i = self['menulist'].getSelectedIndex()
             self.currentindex = i
@@ -5353,7 +5368,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                 break
 
     def goConfig(self):
-        self.session.open(vavoo_config)
+        open_settings(self.session)
 
     def chUp(self):
         """Handle page up and update name"""
@@ -5702,6 +5717,12 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         vUtils.clear_recent()
         self._build_list()
 
+    def _epg_panel_country(self):
+        i = self['menulist'].getSelectedIndex()
+        if i is None or not 0 <= i < len(self.favourite_entries):
+            return None
+        return self.favourite_entries[i].get('country_name')
+
     def _epg_panel_selection(self):
         """See NowNextPanel. Favourites mix countries: each entry
         carries its own country code."""
@@ -5961,7 +5982,8 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             }
             _require_parental_pin(
                 self.session, self, entry.get('country_name'),
-                lambda: self._preview_or_play(channel, self._play_selected))
+                lambda: self._preview_or_play(channel, self._play_selected),
+                channel_name=name)
         except Exception as e:
             print('[VavooFavourites] Error opening channel:', e)
             trace_error()
@@ -5974,7 +5996,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             entry = self.favourite_entries[i]
             _require_parental_pin(
                 self.session, self, entry.get('country_name'),
-                self._play_selected)
+                self._play_selected, channel_name=name)
         except Exception as e:
             print('[VavooFavourites] Error opening channel:', e)
             trace_error()
@@ -6240,9 +6262,330 @@ class VavooCountries(VavooPickScreen):
         self.close(False)
 
 
-def open_settings(session):
-    """The plugin's settings (MENU → Settings everywhere)."""
-    session.open(vavoo_config)
+# ---------------------------------------------------------------------
+# Parental control (vavoo_store: the PIN, what it locks, the pause
+# after wrong PINs, the 15 minutes it stays open)
+# ---------------------------------------------------------------------
+class VavooPin(Screen):
+    """The PIN pad (the app's PinPopup): the remote's number keys fill
+    the dots, LEFT deletes one, EXIT cancels. Once `length` digits are
+    in, checker(pin) decides: True closes with the PIN, False says
+    "Wrong PIN - try again" and empties the dots, None closes with
+    nothing (the pause after too many wrong PINs). Without a checker
+    the PIN is handed back as typed. OK checks what is typed so far
+    (an older PIN of another length)."""
+
+    SUBMIT_MS = 150
+
+    def __init__(self, session, title, length=4, checker=None):
+        Screen.__init__(self, session)
+        self.skin, self._themed = load_screen_skin(
+            "pin", 'vavoo_pin.xml', background=False)
+        self.length = max(1, int(length or 4))
+        self.checker = checker
+        self.digits = ""
+        self['title'] = Label(title)
+        self['dots'] = Label("")
+        self['message'] = Label("")
+        self['hint'] = Label(_("0-9: the PIN  ·  ◄ delete  "
+                               "·  EXIT cancel"))
+        actions = {"ok": self.submit, "cancel": self.cancel,
+                   "left": self.delete, "red": self.cancel}
+        for digit in range(10):
+            actions[str(digit)] = (lambda d: lambda: self.key(d))(digit)
+        self['actions'] = ActionMap(
+            ['OkCancelActions', 'DirectionActions', 'NumberActions',
+             'ColorActions'], actions, -1)
+        self._submit_timer = eTimer()
+        try:
+            self._submit_timer.callback.append(self.submit)
+        except Exception:
+            self._submit_timer.timeout.connect(self.submit)
+        self._draw()
+
+    def _draw(self):
+        shown = max(self.length, len(self.digits))
+        self['dots'].setText(to_string(u" ".join(
+            u"●" if i < len(self.digits) else u"○"
+            for i in range(shown))))
+
+    def key(self, digit):
+        if len(self.digits) >= self.length:
+            return
+        self.digits += str(digit)
+        self['message'].setText("")
+        self._draw()
+        if len(self.digits) == self.length:
+            # (a moment to see the last dot, as in the app)
+            self._submit_timer.start(self.SUBMIT_MS, True)
+
+    def delete(self):
+        self.digits = self.digits[:-1]
+        self._draw()
+
+    def submit(self):
+        self._submit_timer.stop()
+        if not self.digits:
+            return
+        pin, self.digits = self.digits, ""
+        result = self.checker(pin) if self.checker else True
+        if result is True:
+            self.close(pin)
+        elif result is None:
+            self.close(None)
+        else:
+            self['message'].setText(_("Wrong PIN - try again"))
+            self._draw()
+
+    def cancel(self):
+        self._submit_timer.stop()
+        self.close(None)
+
+
+def _pin_wait_note(seconds):
+    if NOTIFICATION_AVAILABLE:
+        quick_notify(_("Too many wrong PINs - try again in {} s").format(
+            seconds), 3)
+
+
+def ask_pin(session, screen, on_success, on_cancel=None):
+    """The app's askPin(): open (no PIN, or entered in the last 15
+    minutes) - on_success() at once; in the pause after too many wrong
+    PINs - a note; else the PIN pad. `screen` is checked for `_closed`
+    before acting: the pad can outlive a screen the user has left."""
+    if vavoo_store.is_unlocked():
+        on_success()
+        return
+    wait = vavoo_store.pin_wait()
+    if wait:
+        _pin_wait_note(wait)
+        if on_cancel:
+            on_cancel()
+        return
+
+    def checker(pin):
+        state, seconds = vavoo_store.check_pin(pin)
+        if state == "ok":
+            return True
+        if state == "blocked":
+            _pin_wait_note(seconds)
+            return None
+        return False
+
+    def done(pin=None):
+        if getattr(screen, '_closed', False):
+            return
+        if pin is not None and vavoo_store.is_unlocked():
+            on_success()
+        elif on_cancel:
+            on_cancel()
+
+    if not vavoo_store.pin_is_digits():
+        # an older PIN with letters (carried over from the settings):
+        # typed on the keyboard until a new one is set
+        def typed(text=None):
+            if text is None:
+                done(None)
+            elif checker(to_text(text)) is True:
+                done(text)
+            else:
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Wrong PIN - try again"), 2)
+                done(None)
+        session.openWithCallback(typed, VirtualKeyBoard,
+                                 title=_("Enter the PIN"))
+        return
+    session.openWithCallback(done, VavooPin, _("Enter the PIN"),
+                             vavoo_store.pin_length(), checker)
+
+
+def ask_new_pin(session, on_done):
+    """A new PIN, typed twice (4 digits)."""
+    def second(first):
+        if first is None:
+            return
+
+        def check(again=None):
+            if again is None:
+                return
+            if again == first:
+                on_done(first)
+            elif NOTIFICATION_AVAILABLE:
+                quick_notify(_("The two PINs differ - not changed"), 3)
+        session.openWithCallback(check, VavooPin, _("The same PIN again"), 4)
+    session.openWithCallback(second, VavooPin, _("New PIN (4 digits)"), 4)
+
+
+def _is_country_locked(country_name):
+    """True if `country_name` is a locked country and a PIN is set
+    (vavoo_store)."""
+    return vavoo_store.is_country_locked(country_name)
+
+
+def _require_parental_pin(session, screen, country_name, on_success,
+                          channel_name=None, group=None):
+    """on_success() at once, unless it needs the PIN: a locked country
+    - or, given a channel, its country is locked or it is an adult
+    channel (name or category) - and the PIN was not entered in the
+    last 15 minutes. Then the PIN pad first (ask_pin())."""
+    if channel_name is not None:
+        needed = vavoo_store.needs_pin_for_channel(
+            channel_name, country_name, group)
+    else:
+        needed = vavoo_store.needs_pin_for_country(country_name)
+    if not needed:
+        on_success()
+        return
+    ask_pin(session, screen, on_success)
+
+
+def _move_parental_out_of_settings():
+    """The PIN (in clear) and the locked countries were settings
+    before: into vavoo_store, the PIN hashed - once."""
+    try:
+        if vavoo_store.migrate_parental(cfg.parental_pin.value,
+                                        cfg.parental_countries.value):
+            print("[vavoo] Parental control moved to {}".format(
+                vavoo_store.parental_file()))
+        if cfg.parental_pin.value or cfg.parental_countries.value:
+            cfg.parental_pin.value = ""
+            cfg.parental_countries.value = ""
+            cfg.parental_pin.save()
+            cfg.parental_countries.save()
+            configfile.save()
+    except Exception as e:
+        print("[vavoo] Parental control not moved: {}".format(e))
+
+
+_move_parental_out_of_settings()
+
+
+class VavooParental(VavooPickScreen):
+    """Settings → Parental Control (the app's ParentalActivity): set /
+    change / remove the PIN, lock adult channels, lock the settings,
+    and the countries it locks (a padlock, or "—"). OK / LEFT / RIGHT
+    act on a row; changes are kept at once; RED goes back."""
+
+    ROW_PIN = "pin"
+    ROW_REMOVE = "remove"
+    ROW_ADULT = "adult"
+    ROW_SETTINGS = "settings"
+
+    def __init__(self, session, countries=None):
+        self.countries = sorted(countries if countries is not None
+                                else proxy_countries(),
+                                key=lambda c: to_text(c).lower())
+        self.keys = []
+        self._remove_armed = False
+        VavooPickScreen.__init__(
+            self, session,
+            _("A 4-digit PIN for adult channels, chosen countries and "
+              "(optionally) the settings. Once entered, all is open for "
+              "15 minutes or until the plugin is left."),
+            (_("Back"), "", "", ""))
+
+    def key_actions(self):
+        return {"ok": self.act, "left": self.act, "right": self.act}
+
+    def refresh(self, select=None):
+        has_pin = vavoo_store.has_pin()
+        yes, no = _("Yes"), _("No")
+        rows, keys = [], []
+
+        def setting(key, label, value, **kw):
+            keys.append(key)
+            rows.append(show_list(to_string(label), key, is_category=True,
+                                  kind="big", themed=self._themed,
+                                  value=value, **kw))
+
+        setting(self.ROW_PIN, _("Change the PIN") if has_pin
+                else _("Set a PIN"),
+                u"●●●●" if has_pin else u"—")
+        if has_pin:
+            setting(self.ROW_REMOVE, _("Remove the PIN (unlock everything)"),
+                    u"")
+        setting(self.ROW_ADULT, _("Lock adult channels"), u"‹ {} ›".format(
+            to_text(yes if vavoo_store.lock_adult() else no)))
+        setting(self.ROW_SETTINGS, _("Lock the settings"), u"‹ {} ›".format(
+            to_text(yes if vavoo_store.lock_settings() else no)))
+        locked = set(c.lower() for c in vavoo_store.locked_countries())
+        for country in self.countries:
+            is_locked = to_text(country).lower() in locked
+            keys.append(u"c:" + to_text(country))
+            rows.append(show_list(
+                country, country, kind="big", themed=self._themed,
+                value=u"" if is_locked else u"—",
+                value_icon=is_locked))
+        self.keys = keys
+        self._show(rows, select)
+        if has_pin:
+            self['statusbar'].setText(_("PIN set · {} countries locked").format(
+                len(locked)))
+        else:
+            self['statusbar'].setText(
+                _("No PIN yet: nothing is locked until one is set."))
+
+    def act(self):
+        if not self.keys:
+            return
+        key = self.keys[self._index()]
+        if key != self.ROW_REMOVE:
+            self._remove_armed = False
+        if key == self.ROW_PIN:
+            ask_new_pin(self.session, self._new_pin)
+        elif key == self.ROW_REMOVE:
+            if not self._remove_armed:
+                self._remove_armed = True
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Press again to confirm"), 3)
+                return
+            self._remove_armed = False
+            vavoo_store.set_pin(None)
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("PIN removed"), 3)
+            self.refresh(0)
+        elif key == self.ROW_ADULT:
+            vavoo_store.set_option("adult", not vavoo_store.lock_adult())
+            self.refresh()
+        elif key == self.ROW_SETTINGS:
+            vavoo_store.set_option("settings",
+                                   not vavoo_store.lock_settings())
+            self.refresh()
+        elif key.startswith(u"c:"):
+            country = key[2:]
+            locked = vavoo_store.locked_countries()
+            match = [c for c in locked if c.lower() == country.lower()]
+            if match:
+                locked -= set(match)
+            else:
+                locked.add(country)
+            vavoo_store.set_locked_countries(locked)
+            self.refresh()
+
+    def _new_pin(self, pin):
+        if self._closed_flag():
+            return
+        vavoo_store.set_pin(pin)
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("PIN saved"), 3)
+        self.refresh()
+
+    def _closed_flag(self):
+        return getattr(self, '_closed', False)
+
+
+def open_settings(session, on_closed=None):
+    """The plugin's settings (MENU → Settings everywhere) - after the
+    PIN when Parental Control locks them."""
+    def _open():
+        if on_closed:
+            session.openWithCallback(on_closed, vavoo_config)
+        else:
+            session.open(vavoo_config)
+    if vavoo_store.needs_pin_for_settings():
+        ask_pin(session, None, _open)
+    else:
+        _open()
 
 
 def open_log_viewer(session):
@@ -6379,7 +6722,8 @@ def play_search_result(session, screen, selected, on_closed,
             country_code=country_codes[index], country_codes=country_codes,
             country_name=names[index], country_names=names,
             hand_back=cfg.preview_window.value)
-    _require_parental_pin(session, screen, names[index], _play)
+    _require_parental_pin(session, screen, names[index], _play,
+                          channel_name=rows[index][0][0])
 
 
 class VavooSearch(Screen):
@@ -7565,13 +7909,9 @@ class Playstream2(
         # The bar button highlighted with LEFT / RIGHT (-1: none).
         self._bar_sel = -1
         # A channel number being typed (0 = none), the channel before
-        # the current one (RECALL / 0), countries unlocked by PIN in
-        # this player (zapping through mixed Favourites).
+        # the current one (RECALL / 0).
         self._typed = 0
         self._previous_index = None
-        self._unlocked = set()
-        if country_name:
-            self._unlocked.add(to_text(country_name).strip().lower())
         self._digit_timer = eTimer()
         try:
             self._digit_timer.callback.append(self._commit_digits)
@@ -7819,12 +8159,11 @@ class Playstream2(
         if not 0 <= i < self.itemscount or i == int(self.currentindex):
             return
         country = self._country_name_at(i)
-        key = to_text(country or "").strip().lower()
-        if _is_country_locked(country) and key not in self._unlocked:
-            def _unlocked():
-                self._unlocked.add(key)
-                self.zap_to(i)
-            _require_parental_pin(self.session, self, country, _unlocked)
+        name = self.list[i][0][0]
+        if vavoo_store.needs_pin_for_channel(name, country):
+            # a locked country's or an adult channel: the PIN first
+            # (then open for 15 minutes, vavoo_store)
+            ask_pin(self.session, self, lambda: self.zap_to(i))
             return
         self._previous_index = int(self.currentindex)
         self.stopStream(restore_original=False)

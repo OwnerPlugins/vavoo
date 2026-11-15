@@ -177,6 +177,8 @@ _GEO_NORMAL = {
     "update": (360, 195, 1200, 690),
     "splash_card": (290, 130, 1340, 820),
     "menu_box": (560, 190, 800, 700),
+    # the PIN pad (the app's PinPopup), centred
+    "pin_box": (610, 330, 700, 420),
 }
 
 _GEO_LARGE = dict(_GEO_NORMAL)
@@ -407,6 +409,8 @@ def asset_specs(theme):
     box("dialog_inner_s", 1110, 330, look["grid_prog"], look["divider"], 2,
         small_radius)
     box("toast", 1000, 108, look["bar"], look["progress"][0], 3, radius)
+    box("dialog_pin", 700, 420, look["guide_bg"], look["progress"][0], 3,
+        radius)
 
     # the start screen's card with its halo (SplashActivity.buildModern)
     specs["splash_card"] = {"size": (1340 + 36, 820 + 36), "layers": [
@@ -982,6 +986,26 @@ def menu_popup(theme, large, width, base_dir=None):
     return skin.text("VavooMenu", mx, my, mw, mh, transparent=True)
 
 
+def pin_popup(theme, large, width, base_dir=None):
+    """The PIN pad (vavoo_pin.xml; the app's PinPopup): its title, the
+    four dots, a line for "Wrong PIN" and what the keys do."""
+    if not is_modern(theme):
+        return None
+    skin = _Skin(theme, large, width, base_dir)
+    look = skin.look
+    px, py, pw, ph = skin.geo["pin_box"]
+    skin.picture("dialog_pin", 0, 0, z=0)
+    skin.label("title", (30, 24, pw - 60, 64), 36, look["title"], "center",
+               bold=True, z=3, nowrap=True, back=look["guide_bg"])
+    skin.label("dots", (30, 104, pw - 60, 120), 72, look["accent"],
+               "center", z=3, nowrap=True, back=look["guide_bg"])
+    skin.label("message", (30, 236, pw - 60, 56), 28, look["title"],
+               "center", z=3, nowrap=True, back=look["guide_bg"])
+    skin.label("hint", (30, ph - 96, pw - 60, 64), 26, look["text_sub"],
+               "center", z=3, nowrap=True, back=look["guide_bg"])
+    return skin.text("VavooPin", px, py, pw, ph, transparent=True)
+
+
 def notify_bar(theme, large, width, base_dir=None):
     """The notification at the top of the screen (the app's popup())."""
     if not is_modern(theme):
@@ -1184,6 +1208,7 @@ BUILDERS = {
     "splash": splash_screen,
     "update": update_popup,
     "menu": menu_popup,
+    "pin": pin_popup,
     "notify": notify_bar,
     "log": log_screen,
     "player": player_bar,
