@@ -105,10 +105,37 @@ from them for the box's resolution. Rules:
   / Full Screen; MENU opens `open_action_menu()` (`VavooMenu` in a
   theme, `ChoiceBox` in Classic) holding Settings and the Enigma2 tools
   (bouquets, EPG import, cache fix, token, log, about).
+- Screens with no Classic file of their own get a built Classic-coloured
+  skin instead of None: `player_list_classic()` (the player's channel
+  list). The player bar (`player_bar`) is themes-only: Classic keeps
+  `skinName = 'MoviePlayer'` and the top overlays, and only creates the
+  bar's widgets (`PLAYER_BAR_LABELS` + logo / info_box /
+  progress_track / progress) when the theme skin is used.
 - Main-list counts come from `vavoo_proxy.proxy.country_counts()`
   (in-process, from `cat()`'s background thread; grouped like
   `/channels`, computed once per catalog). "Reload List" =
   `restart_proxy_in_background()` (the catalog is only loaded at start).
+
+**Preview window and player (`plugin.py`)** — as in the app, OK on a
+channel plays it in the list's preview window and OK again (or BLUE)
+opens `Playstream2` full screen on the same stream. One stream at a
+time, owned by `NOW_PLAYING` (`_NowPlaying`): `preview_play()` /
+`player_take()` (the player carries on without restarting) /
+`player_give_back()` (on close with `hand_back`, it keeps playing in
+the window) / `preview_stop()` (`MainVavoo.closex()`: stop and put back
+the service that played before the plugin opened). The proxy's
+`stream_started()` / `stream_ended()` count travels with the stream -
+never call them twice for one stream. Both play the address from
+`build_stream_sref()` (the plain `/vavoo?channel=` rule below).
+`PreviewWindow` retries a preview stream that ends (3 times a minute,
+`report_stream_failure()` each time). Every fresh play goes to
+"Recently watched" (`remember_recent()` → `vUtils.add_recent()`,
+background thread, `/etc/enigma2/vavoo_recent.json`, 20 max). The
+player's mini guide uses `vUtils.lookup_schedule()` /
+`peek_schedule()` (same rules as `lookup_now_next()`); its keys are the
+app's (OK bar → list, GREEN fav, YELLOW/BLUE CH∓, digits, 0/RECALL,
+MENU options via `open_action_menu(..., layout="player_menu")`;
+`mainMenu()` is overridden so MENU never opens Enigma2's own menu).
 
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
 started as an in-process daemon thread (`threading.Thread(target=
@@ -126,8 +153,8 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
   URL would be re-applied every refresh. One-off events go through
   in-process calls on `vavoo_proxy.proxy` instead -
   `report_stream_failure(channel_id)` (the player's EOF handler),
-  `set_group_source()` / `get_group_sources()` (the player's YELLOW
-  source menu; the pick is persisted in
+  `set_group_source()` / `get_group_sources()` (the player's source
+  menu, MENU → Source; the pick is persisted in
   `/etc/enigma2/vavoo_source_prefs.json`).
 - Channels with several sources are grouped into one row
   (`grp:<country>:<key>` ids); the proxy stays on one source per group

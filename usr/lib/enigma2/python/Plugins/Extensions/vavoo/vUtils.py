@@ -2953,6 +2953,71 @@ def toggle_favourite(name, url, country_name=None, country_code=None):
         return None
 
 
+# Recently watched channels (the app's "Recently watched"): newest
+# first, each channel once. Under /etc/enigma2, so an update of the
+# plugin (which replaces the plugin folder) keeps it.
+RECENT_FILE = "/etc/enigma2/vavoo_recent.json"
+RECENT_MAX = 20
+# Every zap adds one, from a background thread (plugin.py) - two quick
+# zaps must not write the file at the same time.
+_recent_lock = threading.Lock()
+
+
+def load_recent():
+    """[{name, url, country_name, country_code, logo, timestamp}],
+    newest first, or [] on any error / missing file - never raises."""
+    try:
+        if not isfile(RECENT_FILE):
+            return []
+        with open(RECENT_FILE, 'r') as f:
+            data = load(f)
+        if not isinstance(data, list):
+            return []
+        return [entry for entry in data
+                if isinstance(entry, dict) and entry.get('name')
+                and entry.get('url')][:RECENT_MAX]
+    except Exception as e:
+        print("[Recent] Error loading {}: {}".format(RECENT_FILE, e))
+        return []
+
+
+def _save_recent(entries):
+    try:
+        temp_file = RECENT_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
+            dump(entries[:RECENT_MAX], f, indent=2)
+        rename(temp_file, RECENT_FILE)
+        return True
+    except Exception as e:
+        print("[Recent] Error saving {}: {}".format(RECENT_FILE, e))
+        return False
+
+
+def add_recent(name, url, country_name=None, country_code=None, logo=None):
+    """Put a channel that was just watched at the top of the list
+    (moved there if it was already in it). Same channel = same name and
+    address, as for the favourites."""
+    if not name or not url:
+        return False
+    with _recent_lock:
+        entries = [entry for entry in load_recent()
+                   if (entry.get('name'), entry.get('url')) != (name, url)]
+        entries.insert(0, {
+            'name': name,
+            'url': url,
+            'country_name': country_name,
+            'country_code': country_code,
+            'logo': logo or "",
+            'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime()),
+        })
+        return _save_recent(entries)
+
+
+def clear_recent():
+    with _recent_lock:
+        return _save_recent([])
+
+
 _curated_channel_db_cache = {}
 _curated_channel_db_lock = threading.Lock()
 _CURATED_CHANNEL_DB_TTL = 86400
@@ -3675,6 +3740,29 @@ class EpgGuide(object):
                 current = entry
         return current, following
 
+    def schedule(self, key, count=4, now=None):
+        """The programme on now (if any) and the ones after it, up to
+        `count` in all - the player's mini guide. Same tuples as
+        now_next()."""
+        entries = self.programmes.get(key)
+        if not entries:
+            return []
+        if now is None:
+            now = time()
+        out = []
+        for entry in entries:
+            if entry[1] <= now:
+                continue
+            if out and entry[0] <= now:
+                # Overlapping entries: the one that started last is
+                # the one on air (as in now_next()).
+                out[-1] = entry
+                continue
+            out.append(entry)
+            if len(out) >= count:
+                break
+        return out
+
 
 def _parse_epg_guide(stream, country_code, now):
     """Read an XMLTV stream into an EpgGuide - see the notes above."""
@@ -3979,6 +4067,41 @@ def peek_now_next(channel_name, country_code):
     if current is None and following is None:
         return "no_programme", None, None
     return "ok", current, following
+
+
+def lookup_schedule(channel_name, country_code, channel_id=None, count=4):
+    """(status, programmes): the programme on now and the next ones,
+    up to `count` - the player's mini guide. Same matching and the same
+    status words as lookup_now_next(); can block the same way:
+    background threads only (peek_schedule() on the GUI thread)."""
+    if not country_code:
+        return "no_country", []
+    guide = load_epg_guide(country_code)
+    if guide is None:
+        return "no_guide", []
+    key = _resolve_guide_channel(
+        guide, _guide_channel_name(channel_name), country_code, channel_id)
+    if not key:
+        return "no_match", []
+    programmes = guide.schedule(key, count)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
+def peek_schedule(channel_name, country_code, count=4):
+    """lookup_schedule() from memory alone, or None when it would need
+    a download or the matcher. Never blocks."""
+    if not country_code:
+        return "no_country", []
+    guide = peek_epg_guide(country_code)
+    if guide is None:
+        return None
+    key = guide.resolved.get(_guide_channel_name(channel_name))
+    if key is None:
+        return None
+    if not key:
+        return "no_match", []
+    programmes = guide.schedule(key, count)
+    return ("ok" if programmes else "no_programme"), programmes
 
 
 def _build_epg_channels_xml(unique):

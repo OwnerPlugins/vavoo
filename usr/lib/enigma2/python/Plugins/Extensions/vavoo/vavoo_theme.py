@@ -408,6 +408,21 @@ def asset_specs(theme):
     box("splash_track", 1190, 14, "#33ffffff", TRANSPARENT, 0, small_radius)
     grad("splash_fill", 1190, 14, look["progress"][0], look["progress"][1],
          small_radius)
+
+    # the player (PlayerActivity.buildLandscapeBar / overlayPanel /
+    # buildChannelList / buildInfoOverlay)
+    box("player_bar", 1800, 270, look["bar"], look["panel_stroke"], 2, radius)
+    box("player_track", 190, 8, "#40ffffff", TRANSPARENT, 0, 4)
+    box("player_fill", 190, 8, look["progress"][0], TRANSPARENT, 0, 4)
+    box("pkey", 190, 54, look["key_bg"], look["key_stroke"], 1, key_radius)
+    for name, color in zip(KEY_NAMES, look["key_colors"]):
+        specs["pckey_" + name] = {"size": (280, 54), "layers": [
+            ("key", 0, 0, 280, 54, look["key_bg"], look["key_stroke"], 1,
+             key_radius, color, 12)]}
+    box("plist_panel", 664, 690, look["bar"], look["panel_stroke"], 2, radius)
+    box("pguide_panel", 950, 690, look["bar"], look["panel_stroke"], 2,
+        radius)
+    box("info_box", 1100, 168, look["bar"], look["panel_stroke"], 2, radius)
     return specs
 
 
@@ -944,6 +959,173 @@ def notify_bar(theme, large, width, base_dir=None):
     return skin.text("VavooNotify", tx, ty, tw, th, transparent=True)
 
 
+# ---------------------------------------------------------------------
+# The player
+# ---------------------------------------------------------------------
+PLAYER_SMALL_KEYS = (
+    # (widget, x, y): the app's Options / Cast / List / Recall - Cast
+    # has no Enigma2 counterpart, its place shows the AUDIO key's job
+    ("key_options", 1440, 906), ("key_audio", 1640, 906),
+    ("key_list", 1440, 978), ("key_recall", 1640, 978))
+PLAYER_KEY_X = (110, 410, 710, 1010)
+
+
+def player_bar(theme, large, width, clock_24=True, base_dir=None):
+    """The full-screen player's info bar (the app's landscape bar),
+    over the video: logo, number, name, programme now with its progress
+    and minutes left, next, status, clock, the small keys and the
+    colour keys; and the stream-info box at the top left (hidden until
+    asked for)."""
+    if not is_modern(theme):
+        return None
+    skin = _Skin(theme, large, width, base_dir)
+    look = skin.look
+    back = look["bar"]
+    skin.picture("player_bar", 60, 780, z=0)
+    left, top, w, h = skin.rect(100, 815, 120, 80)
+    skin.add("widget", [
+        ("name", "logo"), ("position", "%d,%d" % (left, top)),
+        ("size", "%d,%d" % (w, h)), ("alphatest", "blend"),
+        ("zPosition", 3)])
+    skin.label("number", (70, 900, 186, 40), 30, look["hilite"], "center",
+               bold=True, z=3, nowrap=True, back=back)
+    skin.label("name", (260, 798, 1160, 62), 52, WHITE, bold=True, z=3,
+               nowrap=True, back=back)
+    skin.label("now", (260, 862, 860, 38), 30, look["text"], z=3,
+               nowrap=True, back=back)
+    # (a widget, not a fixed picture: with no programme known the
+    # player hides the empty bar, as the app does)
+    left, top, w, h = skin.rect(1130, 877, 190, 8)
+    skin.assets.append("player_track")
+    skin.add("widget", [
+        ("name", "progress_track"), ("position", "%d,%d" % (left, top)),
+        ("size", "%d,%d" % asset_pixel_size(theme, "player_track", width)),
+        ("pixmap", asset_path(theme, "player_track", width, base_dir)),
+        ("alphatest", "blend"), ("zPosition", 2)])
+    skin.assets.append("player_fill")
+    skin.add("widget", [
+        ("name", "progress"), ("position", "%d,%d" % (left, top)),
+        ("size", "%d,%d" % asset_pixel_size(theme, "player_fill", width)),
+        ("pixmap", asset_path(theme, "player_fill", width, base_dir)),
+        ("backgroundColor", solid(back)),
+        ("borderWidth", "0"), ("transparent", "1"), ("zPosition", 3)])
+    skin.label("left", (1325, 862, 95, 38), 24, look["text_sub"], "right",
+               z=3, nowrap=True, back=back)
+    skin.label("next", (260, 902, 1160, 34), 28 if large else 26,
+               look["text_sub"], z=3, nowrap=True, back=back)
+    skin.label("status", (260, 938, 1160, 30), 26 if large else 24,
+               look["hilite"], z=3, nowrap=True, back=back)
+    left, top, w, h = skin.rect(1440, 800, 390, 90)
+    skin.add("widget", [
+        ("source", "global.CurrentTime"), ("render", "Label"),
+        ("position", "%d,%d" % (left, top)), ("size", "%d,%d" % (w, h)),
+        ("font", skin.font(56)), ("halign", "right"), ("valign", "center"),
+        ("foregroundColor", "#ffffff"), ("backgroundColor", solid(back)),
+        ("transparent", "1"), ("zPosition", 3)],
+        ['<convert type="ClockToText">%s</convert>'
+         % ("Format:%H:%M" if clock_24 else "Format:%l:%M")])
+    for name, x, y in PLAYER_SMALL_KEYS:
+        skin.picture("pkey", x, y, z=1)
+        skin.label(name, (x, y, 190, 54), 28, WHITE, "center", z=3,
+                   nowrap=True, back=look["key_bg"])
+    for index, name in enumerate(KEY_NAMES):
+        x = PLAYER_KEY_X[index]
+        skin.picture("pckey_" + name, x, 978, z=1)
+        skin.label("key_" + name, (x + 10, 978, 270, 54), 30, WHITE,
+                   "center", z=3, nowrap=True, back=look["key_bg"])
+    # Stream info (Options -> Stream Info), top left, inside the safe
+    # area. Its box is a widget too, so the player can show and hide
+    # both together.
+    left, top, w, h = skin.rect(96, 54, 1100, 168)
+    skin.assets.append("info_box")
+    skin.add("widget", [
+        ("name", "info_box"), ("position", "%d,%d" % (left, top)),
+        ("size", "%d,%d" % asset_pixel_size(theme, "info_box", width)),
+        ("pixmap", asset_path(theme, "info_box", width, base_dir)),
+        ("alphatest", "blend"), ("zPosition", 4)])
+    skin.label("stream_info", (126, 66, 1040, 144), 28, look["text"],
+               "left", "top", z=5, back=back)
+    return skin.text("VavooPlayer", transparent=True)
+
+
+def player_list(theme, large, width, base_dir=None):
+    """The channel list over the video, with the mini guide beside it
+    (PlayerActivity.buildChannelList)."""
+    if not is_modern(theme):
+        return None
+    skin = _Skin(theme, large, width, base_dir)
+    look = skin.look
+    skin.picture("plist_panel", 140, 150, z=0)
+    skin.listbox("menulist", (152, 170, 640, 650), "list",
+                 "sel_list_" + ("l" if large else "n"))
+    skin.picture("pguide_panel", 830, 150, z=0)
+    skin.label("guide", (860, 174, 890, 642), 30 if large else 28,
+               look["text"], "left", "top", z=3, back=look["bar"])
+    return skin.text("VavooPlayerList", transparent=True)
+
+
+def player_menu(theme, large, width, base_dir=None):
+    """The player's options (MENU) where the app shows them: in the
+    list panel on the left, over the video (PlayerActivity.buildOptions
+    - overlayPanel without icons). Same widgets as menu_popup()."""
+    if not is_modern(theme):
+        return None
+    skin = _Skin(theme, large, width, base_dir)
+    skin.picture("plist_panel", 140, 150, z=0)
+    skin.listbox("menulist", (152, 170, 640, 650), "list",
+                 "sel_list_" + ("l" if large else "n"))
+    return skin.text("VavooPlayerMenu", transparent=True)
+
+
+CLASSIC_COLORS = {
+    # Classic's own: the list skins' navy and wine red (defaultListScreen
+    # .xml) and the app's Classic overlay box (#EE121018, white edge)
+    "panel": "#11121018", "edge": "#ffffff", "selected": "#743554",
+    "text": "#ffffff", "font": "cvfont",
+}
+
+
+def player_list_classic(width):
+    """player_list() for the Classic theme, which has no file for this
+    screen: the same boxes in Classic's colours, drawn with labels (no
+    pictures). Rows are Classic's own (plugin.py's m2list)."""
+    def px(value):
+        return scaled(value, width)
+
+    lines = []
+
+    def rect(x, y, w, h, color, z):
+        lines.append(
+            '	<eLabel position="%d,%d" size="%d,%d" backgroundColor="%s" '
+            'zPosition="%d" />' % (px(x), px(y), max(1, px(x + w) - px(x)),
+                                   max(1, px(y + h) - px(y)), color, z))
+
+    def framed(x, y, w, h):
+        rect(x, y, w, h, CLASSIC_COLORS["panel"], 0)
+        for bx, by, bw, bh in ((x, y, w, 3), (x, y + h - 3, w, 3),
+                               (x, y, 3, h), (x + w - 3, y, 3, h)):
+            rect(bx, by, bw, bh, CLASSIC_COLORS["edge"], 1)
+
+    framed(140, 150, 664, 690)
+    framed(830, 150, 950, 690)
+    lines.append(
+        '	<widget name="menulist" position="%d,%d" size="%d,%d" '
+        'zPosition="2" scrollbarMode="showOnDemand" transparent="1" '
+        'backgroundColor="#121018" foregroundColor="#ffffff" '
+        'backgroundColorSelected="%s" foregroundColorSelected="#ffffff" />'
+        % (px(152), px(170), px(640), px(650), CLASSIC_COLORS["selected"]))
+    lines.append(
+        '	<widget name="guide" position="%d,%d" size="%d,%d" '
+        'font="%s;%d" halign="left" valign="top" foregroundColor="#ffffff" '
+        'backgroundColor="#121018" transparent="1" zPosition="3" />'
+        % (px(860), px(174), px(890), px(642), CLASSIC_COLORS["font"],
+           max(8, px(28))))
+    height = int(round(width * BASE_HEIGHT / float(BASE_WIDTH)))
+    return ('<screen name="VavooPlayerList" position="0,0" size="%d,%d" '
+            'backgroundColor="#ff000000" flags="wfNoBorder">\n%s\n</screen>\n'
+            % (width, height, "\n".join(lines)))
+
+
 # Everything a caller can ask for by name (plugin.py's
 # load_screen_skin(), the tests, the mock-ups).
 BUILDERS = {
@@ -955,4 +1137,7 @@ BUILDERS = {
     "menu": menu_popup,
     "notify": notify_bar,
     "log": log_screen,
+    "player": player_bar,
+    "player_list": player_list,
+    "player_menu": player_menu,
 }

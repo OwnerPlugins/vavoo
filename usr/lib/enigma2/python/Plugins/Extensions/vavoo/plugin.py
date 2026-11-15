@@ -68,6 +68,7 @@ from enigma import (
     gFont,
     getDesktop,
     iPlayableService,
+    iServiceInformation,
     loadPNG,
 )
 
@@ -567,6 +568,12 @@ cfg.show_counts = ConfigYesNo(default=True)
 cfg.clock_format = ConfigSelection(
     default="24",
     choices=[("24", _("24 hours")), ("12", _("12 hours"))])
+# OK on a channel plays it in the list's small window first (OK again:
+# full screen), as in the app - see _NowPlaying.
+cfg.preview_window = ConfigYesNo(default=True)
+# Open the last watched channel when the plugin starts (the app's
+# "Start with last channel").
+cfg.start_last = ConfigYesNo(default=False)
 cfg.list_position = ConfigSelection(
     default="bottom",
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
@@ -765,9 +772,11 @@ def programme_time(timestamp):
     return text
 
 
-# What the row of the main list that opens the Favourites links to (a
-# country row links to its country name).
+# What the rows of the main list that open the Favourites and the
+# recently watched channels link to (a country row links to its
+# country name).
 FAVOURITES_ROW = "__vavoo_favourites__"
+RECENT_ROW = "__vavoo_recent__"
 
 
 def info_text(channels=None, countries=None):
@@ -1008,9 +1017,9 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
     return list(res)
 
 
-def menu_row(label):
+def menu_row(label, kind="menu"):
     """A row of a theme's action menu (VavooMenu): text only."""
-    metrics = theme_metrics("menu")
+    metrics = theme_metrics(kind)
     text = to_string(label)
     return [
         (text, None),
@@ -1025,12 +1034,16 @@ class VavooMenu(Screen):
     """The MENU key's list of actions in a modern theme - the app's
     PickerPopup. Closes with the chosen entry's key, or None."""
 
-    def __init__(self, session, title, entries):
+    def __init__(self, session, title, entries, layout="menu"):
         Screen.__init__(self, session)
-        self.skin = build_theme_skin("menu")
+        # "menu": the popup in the middle; "player_menu": the player's
+        # options in the left panel over the video, as in the app
+        # (its rows are the channel list's).
+        self.skin = build_theme_skin(layout) or build_theme_skin("menu")
+        self._row_kind = "list" if layout == "player_menu" else "menu"
         self.entries = list(entries)
         self["title"] = Label(to_string(title))
-        self["menulist"] = m2list([], kind="menu", themed=True)
+        self["menulist"] = m2list([], kind=self._row_kind, themed=True)
         self["actions"] = ActionMap(
             ["OkCancelActions", "DirectionActions"],
             {
@@ -1045,7 +1058,7 @@ class VavooMenu(Screen):
 
     def _fill(self):
         self["menulist"].l.setList(
-            [menu_row(label) for label, _key in self.entries])
+            [menu_row(label, self._row_kind) for label, _key in self.entries])
 
     def ok(self):
         index = self["menulist"].getSelectedIndex()
@@ -1074,16 +1087,17 @@ class VavooMenu(Screen):
         self["menulist"].pageDown()
 
 
-def open_action_menu(session, title, entries, on_choice):
+def open_action_menu(session, title, entries, on_choice, layout="menu"):
     """The MENU key's actions: `entries` = [(label, key)], on_choice(key)
-    once one is picked. The theme's own popup in a modern theme,
-    Enigma2's ChoiceBox in Classic."""
+    once one is picked. The theme's own popup in a modern theme
+    (`layout` "player_menu": the player's left panel), Enigma2's
+    ChoiceBox in Classic."""
     def _picked(key):
         if key is not None:
             on_choice(key)
 
     if build_theme_skin("menu") is not None:
-        session.openWithCallback(_picked, VavooMenu, title, entries)
+        session.openWithCallback(_picked, VavooMenu, title, entries, layout)
         return
     from Screens.ChoiceBox import ChoiceBox
     session.openWithCallback(
@@ -1362,6 +1376,263 @@ class NowNextPanel(object):
             pass
 
 
+# ---------------------------------------------------------------------
+# What is playing: the preview window and the full-screen player share
+# one stream (the app's PreviewPlayer)
+# ---------------------------------------------------------------------
+def stream_channel_id(url):
+    """The catalog id (or "grp:<country>:<key>" group id) in a proxy
+    stream address "...vavoo?channel=<id>", decoded, or None."""
+    if not url or "vavoo?channel=" not in url:
+        return None
+    channel_id = url.split("vavoo?channel=")[1]
+    for separator in ('&', '?', '#'):
+        if separator in channel_id:
+            channel_id = channel_id.split(separator)[0]
+    if not channel_id:
+        return None
+    return url_unquote(channel_id)
+
+
+def build_stream_sref(name, url):
+    """The service reference a proxy channel is played with, or None
+    when `url` is not a proxy stream address.
+
+    Always the plain http://127.0.0.1:<PORT>/vavoo?channel=<id> and
+    nothing else: the player comes back to that address on every
+    playlist refresh (see Playstream2.playProxyStream()), so it must
+    never carry anything one-off."""
+    channel_id = stream_channel_id(url)
+    if not channel_id:
+        return None
+    proxy_url = "http://{}:{}/vavoo?channel={}".format(
+        PROXY_HOST, PORT, url_quote(channel_id, safe=''))
+    # Add User-Agent as fragment, encode for Enigma2
+    encoded_url = (proxy_url + "#User-Agent=VAVOO/2.6").replace(":", "%3a")
+    safe_name = to_string(name)
+    # Use the configured player service type ("Movie Services
+    # Reference" - 4097/5001/5002/8193), as bouquet export does.
+    ref = (cfg.services.value + ":0:1:0:0:0:0:0:0:0:" + encoded_url + ":" +
+           safe_name.replace(":", "%3a"))
+    sref = eServiceReference(ref)
+    sref.setName(safe_name)
+    return sref
+
+
+def remember_recent(channel):
+    """A channel was just watched: to the top of "Recently watched"
+    (a small file write - in the background, never on a zap's way)."""
+    if not channel or not channel.get('name') or not channel.get('url'):
+        return
+
+    def _write():
+        vUtils.add_recent(
+            channel.get('name'), channel.get('url'),
+            country_name=channel.get('country_name'),
+            country_code=channel.get('country_code'),
+            logo=channel.get('logo'))
+
+    worker = threading.Thread(target=_write)
+    worker.daemon = True
+    worker.start()
+
+
+class _NowPlaying(object):
+    """The one stream the plugin plays, and who has it: the list
+    screens' preview window ("preview") or the full-screen player
+    ("player"). OK on a channel plays it in the preview; OK again (or
+    BLUE) hands that same stream to the player, which gives it back to
+    the preview when it closes - never a second stream, never a
+    restart in between (the app's PreviewPlayer / handBackToPreview).
+
+    The proxy's stream_started() / stream_ended() count is kept here
+    while the preview owns the stream, and moves with the stream to
+    the player and back. `original` is what played before the plugin
+    opened: put back when the plugin closes (MainVavoo.closex())."""
+
+    PREVIEW = "preview"
+    PLAYER = "player"
+    # A preview stream that keeps ending: tried again this often within
+    # a minute, then given up (the player does the same).
+    MAX_QUICK_RETRIES = 3
+
+    def __init__(self):
+        self.owner = None
+        self.channel = None
+        self.sref = None
+        self.original = None
+        self.has_original = False
+        self._failures = []
+
+    def begin(self, session):
+        """The plugin opens: remember what the box was playing."""
+        if self.owner is None and not self.has_original:
+            try:
+                self.original = session.nav.getCurrentlyPlayingServiceReference()
+            except Exception as e:
+                debug("NowPlaying: no current service: {}".format(e))
+                self.original = None
+            self.has_original = True
+
+    def preview_plays(self, url):
+        return (self.owner == self.PREVIEW and self.channel is not None and
+                self.channel.get('url') == url)
+
+    def preview_play(self, session, channel):
+        """Play `channel` ({name, url, country_name, country_code,
+        logo}) in the preview window. False when it cannot be played
+        (not a proxy address)."""
+        sref = build_stream_sref(channel.get('name'), channel.get('url'))
+        if sref is None:
+            return False
+        self.release_preview()
+        try:
+            vavoo_proxy.proxy.stream_started()
+        except Exception as e:
+            debug("NowPlaying: stream_started failed: {}".format(e))
+        try:
+            session.nav.stopService()
+            session.nav.playService(sref)
+        except Exception as e:
+            print("[Preview] Could not play {}: {}".format(
+                channel.get('name'), e))
+            self._ended()
+            return False
+        self.owner = self.PREVIEW
+        self.channel = dict(channel)
+        self.sref = sref
+        self._failures = []
+        remember_recent(self.channel)
+        return True
+
+    def _ended(self):
+        try:
+            vavoo_proxy.proxy.stream_ended()
+        except Exception as e:
+            debug("NowPlaying: stream_ended failed: {}".format(e))
+
+    def release_preview(self):
+        """Forget the preview's stream (its count ends); the caller
+        stops or replaces the service itself."""
+        if self.owner == self.PREVIEW:
+            self._ended()
+        if self.owner != self.PLAYER:
+            self.owner = None
+            self.channel = None
+            self.sref = None
+
+    def player_take(self, url):
+        """The full-screen player opens on `url`: True when the preview
+        is playing exactly that - the player then carries on with it
+        (and its count) instead of starting it again."""
+        if self.preview_plays(url):
+            self.owner = self.PLAYER
+            return True
+        self.release_preview()
+        return False
+
+    def player_give_back(self, channel, sref):
+        """The player closes and leaves its stream playing for the
+        preview window (its count goes with it)."""
+        self.owner = self.PREVIEW
+        self.channel = dict(channel)
+        self.sref = sref
+        self._failures = []
+
+    def player_closed(self):
+        """The player closed and stopped its stream itself."""
+        if self.owner == self.PLAYER:
+            self.owner = None
+            self.channel = None
+            self.sref = None
+
+    def preview_stop(self, session, restore=True):
+        """Stop the preview's stream and put back what the box played
+        before the plugin opened (the plugin closes)."""
+        had_stream = self.owner == self.PREVIEW
+        self.release_preview()
+        if had_stream:
+            try:
+                session.nav.stopService()
+                if restore and self.original is not None:
+                    session.nav.playService(self.original)
+            except Exception as e:
+                print("[Preview] Could not restore the service: {}".format(e))
+        self.original = None
+        self.has_original = False
+
+    def preview_failed(self, session):
+        """The preview's stream ended by itself: tell the proxy (it
+        moves to another source after repeated failures) and play it
+        again - up to MAX_QUICK_RETRIES times a minute. Returns False
+        when it gave up."""
+        if self.owner != self.PREVIEW or not self.channel:
+            return False
+        now = time.time()
+        self._failures = [t for t in self._failures if now - t < 60]
+        self._failures.append(now)
+        channel_id = stream_channel_id(self.channel.get('url'))
+        if channel_id:
+            try:
+                vavoo_proxy.proxy.report_stream_failure(channel_id)
+            except Exception as e:
+                debug("NowPlaying: report_stream_failure failed: {}".format(e))
+        if len(self._failures) > self.MAX_QUICK_RETRIES:
+            channel = self.channel
+            self.release_preview()
+            try:
+                session.nav.stopService()
+            except Exception:
+                pass
+            print("[Preview] Giving up on {}".format(channel.get('name')))
+            return False
+        try:
+            session.nav.stopService()
+            session.nav.playService(self.sref)
+        except Exception as e:
+            print("[Preview] Retry failed: {}".format(e))
+        return True
+
+
+NOW_PLAYING = _NowPlaying()
+
+
+class PreviewWindow(object):
+    """Mixed into the screens with a preview window (the list screens):
+    a stream that ends while it plays in the window is tried again
+    (_NowPlaying.preview_failed()). The screen calls
+    _preview_init() while building itself."""
+
+    def _preview_init(self):
+        self._preview_tracker = ServiceEventTracker(
+            screen=self, eventmap={iPlayableService.evEOF: self._preview_eof})
+
+    def _preview_eof(self):
+        if getattr(self, '_closed', False) or not getattr(self, 'execing', True):
+            return
+        if NOW_PLAYING.owner != NOW_PLAYING.PREVIEW:
+            return
+        # Not at once: the service is still tearing itself down.
+        reactor.callLater(1, self._preview_retry)
+
+    def _preview_retry(self):
+        if getattr(self, '_closed', False):
+            return
+        if not NOW_PLAYING.preview_failed(self.session):
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("This channel cannot be played"), 4)
+
+    def _preview_or_play(self, channel, open_player):
+        """OK on a channel: into the preview window - or, when it is
+        already playing there (or the preview is switched off), the
+        full-screen player (`open_player()`)."""
+        if cfg.preview_window.value and \
+                not NOW_PLAYING.preview_plays(channel.get('url')):
+            if NOW_PLAYING.preview_play(self.session, channel):
+                return
+        open_player()
+
+
 class vavoo_config(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -1500,6 +1771,17 @@ class vavoo_config(Screen, ConfigListScreen):
             _("Create the EPG source for EPGImport with Vavoo program data "
               "and enable it there after each export.")
         ))
+
+        self.list.append(getConfigListEntry(
+            _("Preview Window"),
+            cfg.preview_window,
+            _("OK plays the channel in the small window beside the list; "
+              "OK again on it opens full screen (BLUE goes straight to "
+              "full screen). Off: OK opens full screen at once.")))
+        self.list.append(getConfigListEntry(
+            _("Start with last channel"),
+            cfg.start_last,
+            _("Open the last watched channel when the plugin starts.")))
 
         self.list.append(getConfigListEntry(
             _("Now/Next in channel list"),
@@ -2850,7 +3132,7 @@ def _require_parental_pin(session, screen, country_name, on_success):
         title=_("Enter parental control PIN"))
 
 
-class MainVavoo(Screen):
+class MainVavoo(Screen, PreviewWindow):
     def __init__(self, session):
         self.session = session
         global _session
@@ -2864,6 +3146,8 @@ class MainVavoo(Screen):
         Screen.__init__(self, session)
         self.skin, self._themed = load_screen_skin(
             "list", 'defaultListScreen.xml', cvs=True, clock_24=clock_24())
+        # What the box was playing: back on when the plugin closes.
+        NOW_PLAYING.begin(session)
         set_notification_theme()
         init_notification_system(session)
         if NOTIFICATION_AVAILABLE:
@@ -2875,6 +3159,8 @@ class MainVavoo(Screen):
         self._channel_total = None
         self._reloading = False
         self._search_loading = False
+        # "Start with last channel" is done once, on the first list.
+        self._start_last_done = not cfg.start_last.value
 
         if is_stats_enabled():
             record_anonymous_startup()
@@ -2882,6 +3168,7 @@ class MainVavoo(Screen):
 
         self._initialize_labels()
         self._initialize_actions()
+        self._preview_init()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
         self.currentList = 'menulist'
         # How many times in a row the country list came back empty -
@@ -3099,6 +3386,13 @@ class MainVavoo(Screen):
             print("[Cleanup] Removed %d temporary files" % cleaned)
         except Exception as e:
             print("[Cleanup] Error: %s" % str(e))
+
+        # A channel left playing in the preview window stops, and what
+        # the box played before the plugin opened comes back.
+        try:
+            NOW_PLAYING.preview_stop(self.session, restore=True)
+        except Exception as e:
+            print("[Close] Error restoring the service: %s" % str(e))
 
         # Reload bouquets in background without popup
         try:
@@ -3383,9 +3677,10 @@ class MainVavoo(Screen):
                 except Exception as e:
                     debug("Channel counts not available: {}".format(e))
             favourite_count = len(vUtils.load_favourites())
+            recent = vUtils.load_recent()
             reactor.callFromThread(
                 self._on_countries_response, response, exc, counts,
-                favourite_count)
+                favourite_count, recent)
 
         t = threading.Thread(target=_task)
         t.daemon = True
@@ -3403,7 +3698,7 @@ class MainVavoo(Screen):
         self._country_retry_timer.start(500, True)
 
     def _on_countries_response(self, response, exc, counts=None,
-                               favourite_count=0):
+                               favourite_count=0, recent=None):
         if self._closed:
             return
         try:
@@ -3434,6 +3729,14 @@ class MainVavoo(Screen):
                         display="{} ({})".format(label, favourite_count)
                         if show_counts else label,
                         themed=self._themed))
+                if recent:
+                    # The app's second row: the recently watched.
+                    label = _("Recently watched")
+                    self.cat_list.append(show_list(
+                        label, RECENT_ROW, is_category=True,
+                        display="{} ({})".format(label, len(recent))
+                        if show_counts else label,
+                        themed=self._themed))
                 for country in self.countries:
                     count = counts.get(to_text(country).lower())
                     self.cat_list.append(show_list(
@@ -3455,11 +3758,15 @@ class MainVavoo(Screen):
                         quick_notify(_("Channel list updated: {} channels").format(
                             self._channel_total or 0), 4)
                     self._update_proxy_status_display()
+                if not self._start_last_done:
+                    self._start_last_done = True
+                    if recent:
+                        self._open_channel(recent[0])
                 self._country_load_failures = 0
                 # Clear the retry timer if it exists
-                if hasattr(self, '_country_retry_timer'):
-                    self._country_retry_timer.stop()
-                    del self._country_retry_timer
+                retry_timer = self.__dict__.pop('_country_retry_timer', None)
+                if retry_timer is not None:
+                    retry_timer.stop()
                 return
             else:
                 # The proxy is the only source of the country list -
@@ -3492,6 +3799,11 @@ class MainVavoo(Screen):
             name = current_item[0][0]  # Country name (e.g., "Italy")
             if current_item[0][1] == FAVOURITES_ROW:
                 self.open_favourites()
+                return
+            if current_item[0][1] == RECENT_ROW:
+                self.session.openWithCallback(
+                    self._on_child_closed, VavooFavourites,
+                    VavooFavourites.MODE_RECENT)
                 return
             print("[MainVavoo] Selected: " + str(name))
 
@@ -3606,14 +3918,28 @@ class MainVavoo(Screen):
             return
         name, url = selected_item[0], selected_item[1]
         country = selected_item[2] if len(selected_item) > 2 else None
+        self._open_channel({
+            "name": name, "url": url, "country_name": country,
+            "country_code": get_country_code(country) if country else None})
+
+    def _open_channel(self, channel):
+        """One channel full screen from the main menu (a search result,
+        "Start with last channel"). A channel of a locked country asks
+        for the PIN, as opening that country would."""
+        name, url = channel.get('name'), channel.get('url')
+        if not name or not url:
+            return
 
         def _play():
-            self.session.open(
+            self.session.openWithCallback(
+                self._on_child_closed,
                 Playstream2, name, url, 0, [name, url], [[[name, url]]],
-                country_code=get_country_code(country) if country else None)
-        # A channel of a locked country asks for the PIN, as opening
-        # that country would.
-        _require_parental_pin(self.session, self, country, _play)
+                country_code=channel.get('country_code'),
+                logo_url=channel.get('logo') or None,
+                country_name=channel.get('country_name'),
+                hand_back=cfg.preview_window.value)
+        _require_parental_pin(
+            self.session, self, channel.get('country_name'), _play)
 
     def reload_list(self, answer=None):
         """BLUE: download the channel list again (the app's Reload List).
@@ -3983,7 +4309,7 @@ class MainVavoo(Screen):
             self['name'].setText(_("Error"))
 
 
-class vavoo(Screen, NowNextPanel):
+class vavoo(Screen, NowNextPanel, PreviewWindow):
     def __init__(self, session, name, url, option_value=None):
         self.session = session
         global _session
@@ -4005,6 +4331,7 @@ class vavoo(Screen, NowNextPanel):
         self._proxy_down = False
         self._initialize_labels()
         self._initialize_actions()
+        self._preview_init()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
         self["menulist"].onSelectionChanged.append(self._epg_panel_changed)
         self.onExecBegin.append(self._reload_favourite_keys)
@@ -4172,9 +4499,10 @@ class vavoo(Screen, NowNextPanel):
                 "ok": self.ok,
                 "green": self.toggle_favourite,
                 "yellow": self.search_vavoo,
-                # "Full Screen": the highlighted channel in the player,
-                # as OK does (the app's BLUE).
-                "blue": self.ok,
+                # "Full Screen": the highlighted channel straight into
+                # the player (the app's BLUE); OK goes through the
+                # preview window first.
+                "blue": self.full_screen,
                 "cancel": self.backhome,
                 "menu": self.open_menu,
                 "info": self.info_toast,
@@ -4428,6 +4756,27 @@ class vavoo(Screen, NowNextPanel):
         _shared_confirm_reload_bouquets(self, result)
 
     def ok(self):
+        """OK: the channel into the preview window; on the channel
+        already playing there, full screen."""
+        try:
+            i, name, url = self._selected_row()
+            if i is None:
+                return
+            logo = (self._channel_entries[i][2]
+                    if 0 <= i < len(self._channel_entries) else None)
+            channel = {
+                "name": name, "url": url,
+                "country_name": self.country_name,
+                "country_code": getattr(self, '_epg_country_code', None) or
+                get_country_code(self.country_name),
+                "logo": logo or "",
+            }
+            self._preview_or_play(channel, self.full_screen)
+        except Exception as e:
+            print('error as:', e)
+            trace_error()
+
+    def full_screen(self):
         try:
             i = self['menulist'].getSelectedIndex()
             self.currentindex = i
@@ -4467,12 +4816,15 @@ class vavoo(Screen, NowNextPanel):
             logo_url=None, logo_urls=None):
         try:
             country_code = get_country_code(self.country_name)
-            self.session.open(
+            self.session.openWithCallback(
+                self._on_player_closed,
                 Playstream2,
                 name, url, index, item, cat_list,
                 country_code=country_code,
                 logo_url=logo_url,
-                logo_urls=logo_urls
+                logo_urls=logo_urls,
+                country_name=self.country_name,
+                hand_back=cfg.preview_window.value
             )
         except Exception as e:
             print("Error in play_that_shit: {}".format(e))
@@ -4705,15 +5057,29 @@ class vavoo(Screen, NowNextPanel):
         """Callback with the channel selected by the search"""
         if selected_item:
             name, url = selected_item[0], selected_item[1]
-            self.session.open(
+            self.session.openWithCallback(
+                self._on_player_closed,
                 Playstream2,
                 name,
                 url,
                 0,
                 [name, url],
                 [[[name, url]]],
-                country_code=get_country_code(self.country_name)
+                country_code=get_country_code(self.country_name),
+                country_name=self.country_name,
+                hand_back=cfg.preview_window.value
             )
+
+    def _on_player_closed(self, result=None):
+        """Back from full screen: the highlight goes to the channel
+        watched last, if it is in this list."""
+        if self._closed or not result:
+            return
+        url = result[2] if len(result) > 2 else None
+        for index, row in enumerate(self.cat_list):
+            if row[0][1] == url:
+                self['menulist'].moveToIndex(index)
+                break
 
     def goConfig(self):
         self.session.open(vavoo_config)
@@ -4814,23 +5180,28 @@ class vavoo(Screen, NowNextPanel):
         self.close()
 
 
-class VavooFavourites(Screen, NowNextPanel):
+class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
     """Browse and play starred channels (see vUtils.toggle_favourite()/
-    load_favourites()). Deliberately minimal compared to the `vavoo`
-    class: no country/proxy fetching, no auto-update timer - just a
-    static list built once from the favourites file. Reuses
+    load_favourites()) - or, with mode="recent", the recently watched
+    ones (vUtils.load_recent(), newest first). Deliberately minimal
+    compared to the `vavoo` class: no country/proxy fetching, no
+    auto-update timer - just a static list built from the file. Reuses
     defaultListScreen.xml (the same skin `vavoo`/`MainVavoo` already
     load) so there's no new skin XML to keep in sync across
     resolutions."""
 
-    def __init__(self, session):
+    MODE_FAVOURITES = "favourites"
+    MODE_RECENT = "recent"
+
+    def __init__(self, session, mode="favourites"):
         self.session = session
+        self.mode = mode
         Screen.__init__(self, session)
-        # Only RED and GREEN here for now (the app's YELLOW / BLUE in
-        # its Favourites - move, folders - come with the lists phase).
+        # RED / GREEN / BLUE (the app's YELLOW in its Favourites - move
+        # - and folders come with the lists phase).
         self.skin, self._themed = load_screen_skin(
             "list", 'defaultListScreen.xml', cvs=True,
-            keys=("red", "green"), clock_24=clock_24())
+            keys=("red", "green", "blue"), clock_24=clock_24())
 
         init_notification_system(session)
         self._closed = False
@@ -4838,15 +5209,18 @@ class VavooFavourites(Screen, NowNextPanel):
 
         self.cat_list = []
         self['menulist'] = m2list([], themed=self._themed)
-        self['name'] = Label(_('Favourites'))
+        self['name'] = Label(self._title())
         self['version'] = Label(to_string("V." + __version__))
         self['proxy_status'] = Label('')
         self['red'] = Label(_('Back'))
-        self['green'] = Label(_('Remove Fav'))
+        self['green'] = Label(_('Remove Fav') if mode != self.MODE_RECENT
+                              else _('Add Fav'))
         self['yellow'] = Label()
-        self['blue'] = Label()
+        self['blue'] = Label(_('Full Screen'))
         add_key_hint_labels(self)
         self.favourite_entries = []
+        self._favourite_keys = set()
+        self._preview_init()
         self._epg_panel_init()
         self['menulist'].onSelectionChanged.append(self._epg_panel_changed)
         self['menulist'].onSelectionChanged.append(self._update_selection)
@@ -4860,6 +5234,7 @@ class VavooFavourites(Screen, NowNextPanel):
                 "down": self.moveDown,
                 "ok": self.ok,
                 "green": self.remove_selected,
+                "blue": self.full_screen,
                 "cancel": self.close,
                 "red": self.close,
                 "menu": self.open_menu,
@@ -4872,17 +5247,26 @@ class VavooFavourites(Screen, NowNextPanel):
     def _mark_closed(self):
         self._closed = True
 
+    def _title(self):
+        return _("Recently watched") if self.mode == self.MODE_RECENT \
+            else _("★ Favourites")
+
     def _build_list(self):
         favourites = vUtils.load_favourites()
+        self._favourite_keys = set(favourites.keys())
         # Kept as a parallel list (same order/indices as cat_list) so
         # ok()/remove_selected() can look up each row's country_name/
         # country_code - show_list()'s (name, url) tuple has no room
         # for them, and they're needed for the parental-control check
         # and for EPG matching in Playstream2.
-        self.favourite_entries = sorted(
-            favourites.values(), key=lambda e: e.get('name', ''))
+        if self.mode == self.MODE_RECENT:
+            self.favourite_entries = vUtils.load_recent()
+        else:
+            self.favourite_entries = sorted(
+                favourites.values(), key=lambda e: e.get('name', ''))
         self.cat_list = [
             show_list(entry['name'], entry['url'], is_channel=True,
+                      logo_url=entry.get('logo') or None,
                       themed=self._themed)
             for entry in self.favourite_entries
         ]
@@ -4890,7 +5274,9 @@ class VavooFavourites(Screen, NowNextPanel):
             self['menulist'].l.setList(self.cat_list)
         else:
             self['menulist'].l.setList([])
-            self['name'].setText(_('No favourites yet'))
+            self['name'].setText(
+                _('No channels watched yet') if self.mode == self.MODE_RECENT
+                else _('No favourites yet'))
         self._epg_panel_changed()
         self._update_selection()
 
@@ -4900,15 +5286,22 @@ class VavooFavourites(Screen, NowNextPanel):
         if self._closed:
             return
         try:
-            label = _("★ Favourites")
+            label = self._title()
             if not self.cat_list:
                 self['proxy_status'].setText(label)
                 return
             i = self['menulist'].getSelectedIndex() or 0
+            text = "{} · {}/{}".format(label, i + 1, len(self.cat_list))
             if 0 <= i < len(self.cat_list):
-                self['name'].setText(to_string(self.cat_list[i][0][0]))
-            self['proxy_status'].setText("{} · {}/{}".format(
-                label, i + 1, len(self.cat_list)))
+                name, url = self.cat_list[i][0][0], self.cat_list[i][0][1]
+                self['name'].setText(to_string(name))
+                if self.mode == self.MODE_RECENT:
+                    favourite = "{}###{}".format(name, url) in self._favourite_keys
+                    self['green'].setText(
+                        _('Remove Fav') if favourite else _('Add Fav'))
+                    if favourite:
+                        text += "  ★"
+            self['proxy_status'].setText(text)
         except Exception as e:
             debug("Favourites status line not updated: {}".format(e))
 
@@ -4922,9 +5315,16 @@ class VavooFavourites(Screen, NowNextPanel):
             "settings": lambda: self.session.open(vavoo_config),
             "log": lambda: open_log_viewer(self.session),
         }
+        if self.mode == self.MODE_RECENT:
+            entries.insert(1, (_("Clear recently watched"), "clear"))
+            actions["clear"] = self.clear_recent
         open_action_menu(
-            self.session, _("★ Favourites"), entries,
+            self.session, self._title(), entries,
             lambda key: actions[key]() if key in actions else None)
+
+    def clear_recent(self):
+        vUtils.clear_recent()
+        self._build_list()
 
     def _epg_panel_selection(self):
         """See NowNextPanel. Favourites mix countries: each entry
@@ -4966,6 +5366,40 @@ class VavooFavourites(Screen, NowNextPanel):
         return i, item, item[0], item[1]
 
     def ok(self):
+        """OK: into the preview window (after the PIN of a locked
+        country); on the channel already playing there, full screen."""
+        try:
+            i, item, name, url = self._current_selection()
+            if name is None:
+                return
+            entry = self.favourite_entries[i]
+            channel = {
+                "name": name, "url": url,
+                "country_name": entry.get('country_name'),
+                "country_code": entry.get('country_code'),
+                "logo": entry.get('logo') or "",
+            }
+            _require_parental_pin(
+                self.session, self, entry.get('country_name'),
+                lambda: self._preview_or_play(channel, self._play_selected))
+        except Exception as e:
+            print('[VavooFavourites] Error opening channel:', e)
+            trace_error()
+
+    def full_screen(self):
+        try:
+            i, item, name, url = self._current_selection()
+            if name is None:
+                return
+            entry = self.favourite_entries[i]
+            _require_parental_pin(
+                self.session, self, entry.get('country_name'),
+                self._play_selected)
+        except Exception as e:
+            print('[VavooFavourites] Error opening channel:', e)
+            trace_error()
+
+    def _play_selected(self):
         try:
             i, item, name, url = self._current_selection()
             if name is None:
@@ -4982,26 +5416,64 @@ class VavooFavourites(Screen, NowNextPanel):
             # instead of staying stuck on this first channel's one.
             country_codes = [
                 e.get('country_code') for e in self.favourite_entries]
-
-            def _play():
-                self.session.open(
-                    Playstream2,
-                    name, url, i, item, self.cat_list,
-                    country_code=country_code,
-                    country_codes=country_codes
-                )
-            # A favourite from a locked country used to play with no
-            # PIN prompt at all, since this screen never checked
-            # parental control - see MainVavoo.ok()'s own use of the
-            # same helper for the channel-browsing path.
-            _require_parental_pin(self.session, self, country_name, _play)
+            # (the PIN was asked by ok() / full_screen(): a favourite
+            # from a locked country used to play with no PIN prompt at
+            # all - see MainVavoo.ok()'s use of the same helper)
+            self.session.openWithCallback(
+                self._on_player_closed,
+                Playstream2,
+                name, url, i, item, self.cat_list,
+                country_code=country_code,
+                country_codes=country_codes,
+                logo_url=entry.get('logo') or None,
+                logo_urls=[e.get('logo') or None
+                           for e in self.favourite_entries],
+                country_name=country_name,
+                country_names=[e.get('country_name')
+                               for e in self.favourite_entries],
+                hand_back=cfg.preview_window.value
+            )
         except Exception as e:
             print('[VavooFavourites] Error opening channel:', e)
             trace_error()
 
+    def _on_player_closed(self, result=None):
+        if self._closed:
+            return
+        if self.mode == self.MODE_RECENT:
+            # what was watched moved to the top
+            self._build_list()
+        if not result:
+            return
+        url = result[2] if len(result) > 2 else None
+        for index, row in enumerate(self.cat_list):
+            if row[0][1] == url:
+                self['menulist'].moveToIndex(index)
+                break
+
     def remove_selected(self):
-        _i, _item, name, url = self._current_selection()
+        i, _item, name, url = self._current_selection()
         if name is None:
+            return
+        if self.mode == self.MODE_RECENT:
+            # GREEN here is the channel list's Add Fav / Remove Fav.
+            entry = self.favourite_entries[i]
+            now_favourite = vUtils.toggle_favourite(
+                name, url, country_name=entry.get('country_name'),
+                country_code=entry.get('country_code'))
+            if now_favourite is None:
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Could not update favourites"), 3)
+                return
+            key = "{}###{}".format(name, url)
+            if now_favourite:
+                self._favourite_keys.add(key)
+            else:
+                self._favourite_keys.discard(key)
+            self._update_selection()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify((_("Added to favourites: {}") if now_favourite
+                              else _("Removed from favourites: {}")).format(name), 3)
             return
         now_favourite = vUtils.toggle_favourite(name, url)
         if now_favourite is None:
@@ -5390,6 +5862,309 @@ class VavooSearch(Screen):
             print("[VavooSearch] Error in close: {0}".format(e))
 
         return Screen.close(self, *args, **kwargs)
+
+
+# ---------------------------------------------------------------------
+# Player helpers
+# ---------------------------------------------------------------------
+# The labels of the theme's player bar (vavoo_theme.player_bar()).
+PLAYER_BAR_LABELS = (
+    "number", "name", "now", "left", "next", "status", "stream_info",
+    "key_options", "key_audio", "key_list", "key_recall",
+    "key_red", "key_green", "key_yellow", "key_blue")
+# Enigma2's aspect ratio settings (AVSwitch.setAspectRatio()).
+PLAYER_ASPECTS = (
+    (0, "4:3 Letterbox"), (1, "4:3 PanScan"), (2, "16:9"),
+    (3, "16:9 Always"), (4, "16:10 Letterbox"), (5, "16:10 PanScan"),
+    (6, "16:9 Letterbox"))
+SLEEP_CHOICES = (15, 30, 60, 90, 120)
+# iServiceInformation.sVideoType values (the common ones).
+VIDEO_CODECS = {0: "MPEG-2", 1: "H.264", 2: "MPEG-1", 3: "MPEG-4",
+                4: "VC-1", 5: "VC-1", 6: "H.265", 7: "AVS", 8: "VP8",
+                9: "VP9"}
+
+
+class _SleepTimer(object):
+    """The player's sleep timer (Options -> Sleep timer): when it runs
+    out the box goes to standby; a message comes a minute before. Lives
+    outside the player, so zapping or going back to the list keeps it."""
+
+    def __init__(self):
+        self.ends_at = 0
+        self.warned = False
+        self.session = None
+        self.timer = None
+
+    def set(self, session, minutes):
+        self.session = session
+        self.ends_at = time.time() + minutes * 60 if minutes else 0
+        self.warned = False
+        if self.timer is None:
+            self.timer = eTimer()
+            try:
+                self.timer.callback.append(self._tick)
+            except Exception:
+                self.timer.timeout.connect(self._tick)
+        self.timer.stop()
+        if minutes:
+            self.timer.start(15000, False)
+
+    def minutes_left(self):
+        """Minutes left (at least 1), or None when off."""
+        if not self.ends_at:
+            return None
+        return max(1, int((self.ends_at - time.time() + 59) // 60))
+
+    def _tick(self):
+        if not self.ends_at:
+            self.timer.stop()
+            return
+        left = self.ends_at - time.time()
+        if left <= 0:
+            self.ends_at = 0
+            self.timer.stop()
+            try:
+                from Screens.Standby import Standby
+                import Screens.Standby
+                if not Screens.Standby.inStandby and self.session:
+                    self.session.open(Standby)
+            except Exception as e:
+                print("[Sleep] Standby failed: {}".format(e))
+        elif left <= 60 and not self.warned:
+            self.warned = True
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Sleep timer: standby in 1 minute"), 6)
+
+
+SLEEP_TIMER = _SleepTimer()
+
+
+class VavooPlayerList(Screen):
+    """The channel list over the video, with the mini guide of the
+    highlighted channel beside it (the app's player list). Closes with
+    the chosen index, or None. GREEN adds / removes a favourite."""
+
+    GUIDE_SETTLE_MS = 300
+
+    def __init__(self, session, channels, index, country_codes, logos):
+        Screen.__init__(self, session)
+        skin = build_theme_skin("player_list")
+        self._themed = skin is not None
+        self.skin = skin or vavoo_theme.player_list_classic(THEME_WIDTH)
+        self.channels = channels
+        self.country_codes = country_codes
+        self.logos = logos
+        self.start_index = index
+        self._closed = False
+        self.onClose.append(self._mark_closed)
+        self._favourite_keys = set()
+        self["menulist"] = m2list([], themed=self._themed)
+        self["guide"] = Label("")
+        self["actions"] = ActionMap(
+            ["OkCancelActions", "ColorActions", "DirectionActions",
+             "InfobarChannelSelection"],
+            {
+                "ok": self.ok,
+                "cancel": self.cancel,
+                "red": self.cancel,
+                "green": self.toggle_favourite,
+                "up": self.move_up,
+                "down": self.move_down,
+                "left": self.page_up,
+                "right": self.page_down,
+            }, -1)
+        self._guide_lock = threading.Lock()
+        self._guide_wanted = None
+        self._guide_working = False
+        self._guide_timer = eTimer()
+        try:
+            self._guide_timer.callback.append(self._guide_tick)
+        except Exception:
+            self._guide_timer.timeout.connect(self._guide_tick)
+        self["menulist"].onSelectionChanged.append(self._selection_changed)
+        self.onLayoutFinish.append(self._fill)
+
+    def _mark_closed(self):
+        self._closed = True
+        try:
+            self._guide_timer.stop()
+        except Exception:
+            pass
+
+    def _row(self, i):
+        name, url = self.channels[i]
+        digits = len(str(len(self.channels)))
+        text = u"{}  {}".format(str(i + 1).rjust(digits), to_text(name))
+        if u"{}###{}".format(to_text(name), to_text(url)) in self._favourite_keys \
+                or "{}###{}".format(name, url) in self._favourite_keys:
+            text += u"  \u2605"
+        logo = self.logos[i] if i < len(self.logos) else None
+        return show_list(name, url, is_channel=True, logo_url=logo,
+                         display=to_string(text), themed=self._themed)
+
+    def _fill(self):
+        try:
+            self._favourite_keys = set(vUtils.load_favourites().keys())
+        except Exception:
+            self._favourite_keys = set()
+        self.rows = [self._row(i) for i in range(len(self.channels))]
+        self["menulist"].l.setList(self.rows)
+        if 0 <= self.start_index < len(self.rows):
+            self["menulist"].moveToIndex(self.start_index)
+        self._selection_changed()
+
+    def _index(self):
+        index = self["menulist"].getSelectedIndex()
+        if index is None or not 0 <= index < len(self.channels):
+            return None
+        return index
+
+    def ok(self):
+        self.close(self._index())
+
+    def cancel(self):
+        self.close(None)
+
+    def move_up(self):
+        if self.channels:
+            self["menulist"].moveToIndex(
+                ((self._index() or 0) - 1) % len(self.channels))
+
+    def move_down(self):
+        if self.channels:
+            self["menulist"].moveToIndex(
+                ((self._index() or 0) + 1) % len(self.channels))
+
+    def page_up(self):
+        self["menulist"].pageUp()
+
+    def page_down(self):
+        self["menulist"].pageDown()
+
+    def toggle_favourite(self):
+        index = self._index()
+        if index is None:
+            return
+        name, url = self.channels[index]
+        code = self.country_codes[index] if index < len(self.country_codes) else None
+        now_favourite = vUtils.toggle_favourite(name, url, country_code=code)
+        if now_favourite is None:
+            return
+        key = "{}###{}".format(name, url)
+        if now_favourite:
+            self._favourite_keys.add(key)
+        else:
+            self._favourite_keys.discard(key)
+        self.rows[index] = self._row(index)
+        self["menulist"].l.setList(self.rows)
+        self["menulist"].moveToIndex(index)
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Added to favourites") if now_favourite
+                         else _("Removed from favourites"), 2)
+
+    # ---- the mini guide (the app's updateMiniGuide())
+
+    def _request(self, index):
+        name, url = self.channels[index]
+        code = self.country_codes[index] if index < len(self.country_codes) else None
+        return (index, name, url, code)
+
+    def _selection_changed(self):
+        index = self._index()
+        if index is None:
+            self["guide"].setText("")
+            return
+        request = self._request(index)
+        if not cfg.list_epg.value or not request[3]:
+            self._draw_guide(request, ("off", []))
+            return
+        answer = vUtils.peek_schedule(request[1], request[3])
+        if answer is not None:
+            self._draw_guide(request, answer)
+            return
+        self._draw_guide(request, None)
+        self._guide_timer.stop()
+        self._guide_timer.start(self.GUIDE_SETTLE_MS, True)
+
+    def _guide_tick(self):
+        index = self._index()
+        if self._closed or index is None:
+            return
+        request = self._request(index)
+        with self._guide_lock:
+            self._guide_wanted = request
+            start = not self._guide_working
+            if start:
+                self._guide_working = True
+        if start:
+            worker = threading.Thread(target=self._guide_work)
+            worker.daemon = True
+            worker.start()
+
+    def _guide_work(self):
+        while True:
+            with self._guide_lock:
+                request = self._guide_wanted
+                self._guide_wanted = None
+                if request is None or self._closed:
+                    self._guide_working = False
+                    return
+            try:
+                answer = vUtils.lookup_schedule(
+                    request[1], request[3],
+                    channel_id=_epg_channel_id(request[2]))
+            except Exception as e:
+                debug("Mini guide lookup failed: {}".format(e))
+                answer = ("no_guide", [])
+            if not self._closed:
+                reactor.callFromThread(self._guide_arrived, request, answer)
+
+    def _guide_arrived(self, request, answer):
+        index = self._index()
+        if self._closed or index is None or self._request(index) != request:
+            return
+        self._draw_guide(request, answer)
+
+    def _draw_guide(self, request, answer):
+        self["guide"].setText(to_string(mini_guide_text(request[1], answer)))
+
+
+def mini_guide_text(name, answer, now=None):
+    """The mini guide's text: the name, the programme on now with its
+    start and minutes left, the next three, the description. `answer`
+    is lookup_schedule()'s (status, programmes), or None while it is
+    being looked up."""
+    lines = [to_text(name)]
+    if answer is None:
+        lines += [u"", to_text(_("Loading..."))]
+        return u"\n".join(lines)
+    status, programmes = answer
+    if status == "off":
+        return u"\n".join(lines)
+    if not programmes:
+        lines += [u"", to_text(_("No programme information"))]
+        return u"\n".join(lines)
+    if now is None:
+        now = time.time()
+    rest = programmes
+    current = programmes[0] if programmes[0][0] <= now < programmes[0][1] else None
+    if current is not None:
+        lines += [u"", u"\u25b6 {}  {}".format(
+            to_text(programme_time(current[0])), to_text(current[2])),
+            u"   " + to_text(_("{} min left")).format(
+                max(0, int((current[1] - now) // 60)))]
+        rest = programmes[1:]
+    elif rest:
+        lines.append(u"")
+    for programme in rest[:3]:
+        lines.append(u"\u00bb {}  {}".format(
+            to_text(programme_time(programme[0])), to_text(programme[2])))
+    if current is not None and current[3]:
+        description = to_text(current[3]).strip()
+        if len(description) > 400:
+            description = description[:399].rstrip() + u"\u2026"
+        lines += [u"", description]
+    return u"\n".join(lines)
 
 
 class TvInfoBarShowHide():
@@ -5900,11 +6675,54 @@ class Playstream2(
             country_code=None,
             country_codes=None,
             logo_url=None,
-            logo_urls=None):
+            logo_urls=None,
+            country_name=None,
+            country_names=None,
+            hand_back=False):
         Screen.__init__(self, session)
         self.session = session
         init_notification_system(session)
         self.skinName = 'MoviePlayer'
+        # Opened from a screen with a preview window: carry on with the
+        # stream already playing there (if it is this channel) and,
+        # when closing, leave the channel playing for that window
+        # instead of stopping it - see _NowPlaying.
+        self.hand_back = hand_back
+        self._inherit_pending = True
+        self.country_name = country_name
+        # Parallel to cat_list like country_codes (Favourites / Recent
+        # mix countries) - for "Recently watched" and parental control.
+        self.country_names = country_names
+        # The app's info bar in a modern theme (vavoo_theme.player_bar);
+        # Classic keeps the MoviePlayer bar and the overlays at the top.
+        bar_skin = build_theme_skin("player", clock_24=clock_24())
+        self._bar_themed = bar_skin is not None
+        if self._bar_themed:
+            self.skin = bar_skin
+            self.skinName = "VavooPlayer"
+            for widget in PLAYER_BAR_LABELS:
+                self[widget] = Label("")
+            self["logo"] = Pixmap()
+            self["info_box"] = Pixmap()
+            self["progress_track"] = Pixmap()
+            self["progress"] = ProgressBar()
+            self.onLayoutFinish.append(self._bar_layout_finished)
+        # A channel number being typed (0 = none), the channel before
+        # the current one (RECALL / 0), countries unlocked by PIN in
+        # this player (zapping through mixed Favourites).
+        self._typed = 0
+        self._previous_index = None
+        self._unlocked = set()
+        if country_name:
+            self._unlocked.add(to_text(country_name).strip().lower())
+        self._digit_timer = eTimer()
+        try:
+            self._digit_timer.callback.append(self._commit_digits)
+        except Exception:
+            self._digit_timer.timeout.connect(self._commit_digits)
+        self._info_shown = False
+        self._bar_epg_for = None
+        self._channel_logo_picload = None
 
         self.stream_running = False
         self.is_streaming = False
@@ -5962,7 +6780,9 @@ class Playstream2(
                 'InfobarActions',
                 'DirectionActions',
                 'InfobarSeekActions',
-                'ColorActions'
+                'ColorActions',
+                'NumberActions',
+                'InfobarChannelSelection'
             ],
             {
                 "stop": self.leavePlayer,
@@ -5973,12 +6793,26 @@ class Playstream2(
                 "up": self.nextitem,
                 "back": self.cancel,
                 'epg': self.showIMDB,
-                "info": self.showIMDB,
-                # YELLOW: pick which physical source (Vavoo/Geil's
-                # ".b"/".c"/".s" convention) plays a channel that has
-                # more than one - see chooseStreamSource()'s own
-                # docstring.
-                "yellow": self.chooseStreamSource,
+                # The app's keys: INFO shows / hides the bar, RED back,
+                # GREEN favourite, YELLOW / BLUE channel down / up. The
+                # stream source (YELLOW before) is in the options
+                # (MENU - see mainMenu()).
+                "info": self.toggle_bar,
+                "red": self.cancel,
+                "green": self.toggle_favourite,
+                "yellow": self.previousitem,
+                "blue": self.nextitem,
+                "historyBack": self.recall,
+                "1": lambda: self.key_digit(1),
+                "2": lambda: self.key_digit(2),
+                "3": lambda: self.key_digit(3),
+                "4": lambda: self.key_digit(4),
+                "5": lambda: self.key_digit(5),
+                "6": lambda: self.key_digit(6),
+                "7": lambda: self.key_digit(7),
+                "8": lambda: self.key_digit(8),
+                "9": lambda: self.key_digit(9),
+                "0": lambda: self.key_digit(0),
             },
             -1
         )
@@ -6096,6 +6930,8 @@ class Playstream2(
     def _update_country_code_for_index(self, i):
         if self.country_codes is not None and 0 <= i < len(self.country_codes):
             self.country_code = self.country_codes[i]
+        if self.country_names is not None and 0 <= i < len(self.country_names):
+            self.country_name = self.country_names[i]
 
     def _update_logo_url_for_index(self, i):
         if self.logo_urls is not None and 0 <= i < len(self.logo_urls):
@@ -6103,12 +6939,35 @@ class Playstream2(
 
     def nextitem(self):
         """Switch to next channel"""
+        if self.itemscount:
+            self.zap_to((int(self.currentindex) + 1) % self.itemscount)
+
+    def previousitem(self):
+        """Switch to previous channel"""
+        if self.itemscount:
+            self.zap_to((int(self.currentindex) - 1) % self.itemscount)
+
+    def _country_name_at(self, i):
+        if self.country_names is not None and 0 <= i < len(self.country_names):
+            return self.country_names[i]
+        return self.country_name
+
+    def zap_to(self, i):
+        """Play the channel at index `i` of the list (a locked
+        country's channel after its PIN, once per player)."""
+        if not 0 <= i < self.itemscount or i == int(self.currentindex):
+            return
+        country = self._country_name_at(i)
+        key = to_text(country or "").strip().lower()
+        if _is_country_locked(country) and key not in self._unlocked:
+            def _unlocked():
+                self._unlocked.add(key)
+                self.zap_to(i)
+            _require_parental_pin(self.session, self, country, _unlocked)
+            return
+        self._previous_index = int(self.currentindex)
         self.stopStream(restore_original=False)
-        currentindex = int(self.currentindex) + 1
-        if currentindex == self.itemscount:
-            currentindex = 0
-        self.currentindex = currentindex
-        i = self.currentindex
+        self.currentindex = i
         item = self.list[i][0]
         self.name = item[0]
         self.url = item[1]
@@ -6116,20 +6975,455 @@ class Playstream2(
         self._update_logo_url_for_index(i)
         self.startStream()
 
-    def previousitem(self):
-        """Switch to previous channel"""
-        self.stopStream(restore_original=False)
-        currentindex = int(self.currentindex) - 1
-        if currentindex < 0:
-            currentindex = self.itemscount - 1
-        self.currentindex = currentindex
-        i = self.currentindex
-        item = self.list[i][0]
-        self.name = item[0]
-        self.url = item[1]
-        self._update_country_code_for_index(i)
-        self._update_logo_url_for_index(i)
-        self.startStream()
+    def recall(self):
+        """RECALL / 0: back to the channel before (the app's Recall)."""
+        if self._previous_index is not None:
+            self.zap_to(self._previous_index)
+
+    # ---- channel numbers (the app's onDigitKey)
+
+    def key_digit(self, digit):
+        if not self._typed and digit == 0:
+            # 0 first: the channel before, as on a receiver's remote
+            self.recall()
+            return
+        self._typed = min(self._typed * 10 + digit, 99999)
+        self._show_bar_now()
+        self._digit_timer.stop()
+        if self._typed * 10 > self.itemscount:
+            # no further digit can make a channel number: no waiting
+            self._commit_digits()
+        else:
+            self._digit_timer.start(1500, True)
+
+    def _commit_digits(self):
+        self._digit_timer.stop()
+        number, self._typed = self._typed, 0
+        if 1 <= number <= self.itemscount and number - 1 != int(self.currentindex):
+            self.zap_to(number - 1)
+        else:
+            self._fill_bar()
+
+    # ---- favourites
+
+    def _is_favourite(self):
+        try:
+            return vUtils.is_favourite(self.name, self.url)
+        except Exception:
+            return False
+
+    def toggle_favourite(self):
+        """GREEN: the playing channel in / out of the favourites."""
+        now_favourite = vUtils.toggle_favourite(
+            self.name, self.url, country_name=self.country_name,
+            country_code=self.country_code)
+        if now_favourite is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Could not update favourites"), 3)
+            return
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Added to favourites") if now_favourite
+                         else _("Removed from favourites"), 2)
+        self._fill_bar()
+
+    # ---- the info bar (modern themes) and OK / INFO
+
+    def _bar_layout_finished(self):
+        for widget in ("info_box", "stream_info", "progress_track",
+                       "progress", "logo"):
+            try:
+                self[widget].hide()
+            except Exception:
+                pass
+
+    def _bar_visible(self):
+        if self._bar_themed:
+            return bool(getattr(self, 'shown', False))
+        try:
+            return self["helpOverlay"].visible
+        except Exception:
+            return False
+
+    def OkPressed(self):
+        """OK: the bar; OK with the bar showing: the channel list (the
+        app's player). A channel number being typed: go there."""
+        if self._typed:
+            self._commit_digits()
+            return
+        if self._bar_visible():
+            self.hide_help_overlay()
+            self.doHide()
+            self.open_channel_list()
+            return
+        TvInfoBarShowHide.OkPressed(self)
+
+    def toggle_bar(self):
+        """INFO: show / hide the bar."""
+        TvInfoBarShowHide.OkPressed(self)
+
+    def _show_bar_now(self):
+        if self._bar_visible():
+            self._fill_bar()
+        else:
+            TvInfoBarShowHide.OkPressed(self)
+
+    def show_help_overlay(self):
+        if not self._bar_themed:
+            return TvInfoBarShowHide.show_help_overlay(self)
+        self._fill_bar()
+
+    def hide_help_overlay(self):
+        TvInfoBarShowHide.hide_help_overlay(self)
+        if self._bar_themed and self._info_shown:
+            self._info_shown = False
+            for widget in ("info_box", "stream_info"):
+                try:
+                    self[widget].hide()
+                except Exception:
+                    pass
+
+    def _fill_bar(self):
+        """The bar's texts for the channel playing (or the one a typed
+        number goes to): the app's updateInfo()."""
+        if not self._bar_themed or self._closed:
+            return
+        try:
+            count = self.itemscount
+            index = int(self.currentindex)
+            if self._typed:
+                number = u"{}-".format(self._typed)
+                target = self._typed - 1
+                name = (u"\u2192 " + to_text(self.list[target][0][0])
+                        if 0 <= target < count else u"\u2014")
+            else:
+                number = (u"{}/{}".format(index + 1, count) if count <= 9999
+                          else u"{}".format(index + 1))
+                name = to_text(self.name)
+            self["number"].setText(to_string(number))
+            self["name"].setText(to_string(name))
+            favourite = self._is_favourite()
+            keys = {
+                "key_red": to_text(_("Back")),
+                "key_green": (u"\u2605 " if favourite else u"\u2606 ") +
+                to_text(_("Fav")),
+                "key_yellow": u"\u25c0 " + to_text(_("CH-")),
+                "key_blue": to_text(_("CH+")) + u" \u25b6",
+                "key_options": to_text(_("Options")),
+                "key_audio": to_text(_("Audio")),
+                "key_list": to_text(_("List")),
+                "key_recall": to_text(_("Recall")),
+            }
+            for widget, text in keys.items():
+                self[widget].setText(to_string(text))
+            self["status"].setText(to_string(self._status_text()))
+            self._set_logo()
+            self._bar_epg()
+        except Exception as e:
+            debug("Player bar not filled: {}".format(e))
+
+    def _status_text(self):
+        parts = []
+        group_id = self._current_group_channel_id()
+        if group_id:
+            try:
+                data = vavoo_proxy.proxy.get_group_sources(group_id) or {}
+                members = data.get("members") or []
+                current = data.get("current")
+                if len(members) > 1:
+                    label = next((m.get("label") for m in members
+                                  if m.get("id") == current), None)
+                    parts.append(to_text(_("Source: {}")).format(
+                        to_text(label)) if label else
+                        to_text(_("{} sources")).format(len(members)))
+            except Exception as e:
+                debug("Player bar: sources not read: {}".format(e))
+        left = SLEEP_TIMER.minutes_left()
+        if left is not None:
+            parts.append(u"\u263e " + to_text(_("{} min")).format(left))
+        return u"  \u00b7  ".join(parts)
+
+    def _set_logo(self):
+        """The channel's picon when it is cached, else its country's
+        flag - scaled into the logo box (as _update_overlay_picon())."""
+        path = None
+        logo_url = getattr(self, 'current_logo_url', None)
+        if logo_url:
+            cache_file = get_picon_cache_path(logo_url)
+            if cache_file and file_exists(cache_file) and getsize(cache_file) > 100:
+                path = cache_file
+        if path is None and self.country_code:
+            flag = join(PLUGIN_PATH, "skin", "cowntry",
+                        "%s.png" % to_text(self.country_code).lower())
+            if isfile(flag):
+                path = flag
+        if path is None:
+            self["logo"].hide()
+            return
+        try:
+            size = self["logo"].instance.size()
+            picload = ePicLoad()
+            scale = AVSwitch().getFramebufferScale()
+            picload.setPara([size.width(), size.height(), scale[0], scale[1],
+                             0, 1, '#00000000'])
+            if IS_DREAMOS:
+                picload.startDecode(path, False)
+            else:
+                picload.startDecode(path, 0, 0, False)
+            ptr = picload.getData()
+            if ptr is None:
+                self["logo"].hide()
+                return
+            self["logo"].instance.setPixmap(ptr)
+            self["logo"].show()
+            self._channel_logo_picload = picload
+        except Exception as e:
+            debug("Player logo not shown: {}".format(e))
+
+    def _bar_epg(self):
+        """The programme lines, progress and minutes left - from memory
+        when the guide is there, else looked up in the background (the
+        bar shows the country meanwhile)."""
+        if not self.country_code:
+            self._draw_bar_epg(("no_country", None, None))
+            return
+        answer = vUtils.peek_now_next(self.name, self.country_code)
+        if answer is not None:
+            self._draw_bar_epg(answer)
+            return
+        self._draw_bar_epg(("loading", None, None))
+        wanted = self.url
+        if self._bar_epg_for == wanted:
+            return
+        self._bar_epg_for = wanted
+        name, country_code = self.name, self.country_code
+        channel_id = _epg_channel_id(self.url)
+
+        def _work():
+            try:
+                found = vUtils.lookup_now_next(
+                    name, country_code, channel_id=channel_id)
+            except Exception as e:
+                debug("Player bar EPG lookup failed: {}".format(e))
+                found = ("no_guide", None, None)
+
+            def _apply():
+                self._bar_epg_for = None
+                if not self._closed and self.url == wanted:
+                    self._draw_bar_epg(found)
+            reactor.callFromThread(_apply)
+
+        worker = threading.Thread(target=_work)
+        worker.daemon = True
+        worker.start()
+
+    def _draw_bar_epg(self, answer):
+        status, current, following = answer
+        now = time.time()
+        fallback = to_text(self.country_name or "")
+        if status == "loading":
+            fallback = to_text(_("Loading programme guide..."))
+        now_text, next_text, left, pct = fallback, u"", u"", None
+        if current is not None:
+            now_text = u"\u25b6 {}  {}".format(
+                to_text(programme_time(current[0])), to_text(current[2]))
+            start, stop = current[0], current[1]
+            if stop > start and start <= now < stop:
+                pct = max(1, min(100, int(100 * (now - start) / (stop - start))))
+                left = u"+" + to_text(_("{} min")).format(
+                    int((stop - now + 59) // 60))
+        if following is not None:
+            next_text = u"\u00bb {}  {}".format(
+                to_text(programme_time(following[0])), to_text(following[2]))
+        self["now"].setText(to_string(now_text))
+        self["next"].setText(to_string(next_text))
+        self["left"].setText(to_string(left))
+        if pct is None:
+            self["progress"].hide()
+            self["progress_track"].hide()
+        else:
+            self["progress"].setValue(pct)
+            self["progress"].show()
+            self["progress_track"].show()
+
+    # ---- options (MENU)
+
+    def mainMenu(self):
+        """MENU: the player's options (InfoBarMenu would open Enigma2's
+        main menu here)."""
+        self.open_options()
+
+    def _source_count(self):
+        group_id = self._current_group_channel_id()
+        if not group_id:
+            return 1
+        try:
+            data = vavoo_proxy.proxy.get_group_sources(group_id) or {}
+            return len(data.get("members") or [])
+        except Exception:
+            return 1
+
+    def open_options(self):
+        entries = [
+            (_("Remove from favourites") if self._is_favourite()
+             else _("Add to favourites"), "fav"),
+            (_("Audio track"), "audio"),
+            (_("Subtitles"), "subtitles"),
+        ]
+        if self._source_count() > 1:
+            entries.append((_("Source"), "source"))
+        entries.append((_("Aspect ratio"), "aspect"))
+        left = SLEEP_TIMER.minutes_left()
+        entries.append((
+            _("Sleep timer") if left is None
+            else "{}: {}".format(_("Sleep timer"), _("{} min").format(left)),
+            "sleep"))
+        entries.append((_("Stream Info"), "info"))
+        # (short: the panel is the channel list's width)
+        entries.append((_("IMDb / TMDB"), "imdb"))
+        open_action_menu(self.session, _("Options"), entries, self._on_option,
+                         layout="player_menu")
+
+    def _on_option(self, key):
+        if self._closed:
+            return
+        if key == "fav":
+            self.toggle_favourite()
+        elif key == "audio":
+            self._call_infobar("audioSelection")
+        elif key == "subtitles":
+            self._call_infobar("subtitleSelection")
+        elif key == "source":
+            self.chooseStreamSource()
+        elif key == "aspect":
+            self._choose_aspect()
+        elif key == "sleep":
+            self._choose_sleep()
+        elif key == "info":
+            self.show_stream_info()
+        elif key == "imdb":
+            self.showIMDB()
+
+    def _call_infobar(self, method):
+        """Enigma2's own audio / subtitle selection (from the InfoBar
+        classes this player is built from)."""
+        function = getattr(self, method, None)
+        try:
+            if function is None:
+                raise AttributeError(method)
+            function()
+        except Exception as e:
+            print("[Playstream2] {} not available: {}".format(method, e))
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Not available on this receiver"), 3)
+
+    def _choose_aspect(self):
+        try:
+            current = AVSwitch().getAspectRatioSetting()
+        except Exception:
+            current = None
+        entries = []
+        for value, label in PLAYER_ASPECTS:
+            text = label
+            try:
+                if current is not None and int(current) == value:
+                    text = "{} {}".format(label, _("(current)"))
+            except (TypeError, ValueError):
+                pass
+            entries.append((text, value))
+
+        def _picked(value):
+            try:
+                AVSwitch().setAspectRatio(value)
+            except Exception as e:
+                print("[Playstream2] Aspect ratio not set: {}".format(e))
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Not available on this receiver"), 3)
+        open_action_menu(self.session, _("Aspect ratio"), entries, _picked,
+                         layout="player_menu")
+
+    def _choose_sleep(self):
+        entries = [(_("Off"), 0)] + [
+            (_("{} min").format(minutes), minutes)
+            for minutes in SLEEP_CHOICES]
+
+        def _picked(minutes):
+            SLEEP_TIMER.set(self.session, minutes)
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Sleep timer: {} min").format(minutes)
+                             if minutes else _("Sleep timer off"), 3)
+            self._fill_bar()
+        open_action_menu(self.session, _("Sleep timer"), entries, _picked,
+                         layout="player_menu")
+
+    def stream_info_text(self):
+        """Picture and source of the stream playing (the app's Stream
+        Info): resolution, frame rate, codec, source, proxy."""
+        lines = []
+        try:
+            service = self.session.nav.getCurrentService()
+            info = service and service.info()
+            if info:
+                width = info.getInfo(iServiceInformation.sVideoWidth)
+                height = info.getInfo(iServiceInformation.sVideoHeight)
+                fps = info.getInfo(iServiceInformation.sFrameRate)
+                codec = info.getInfo(iServiceInformation.sVideoType)
+                picture = []
+                if width and height and width > 0 and height > 0:
+                    picture.append(u"{}\u00d7{}".format(width, height))
+                if fps and fps > 0:
+                    picture.append(u"{:g} fps".format(
+                        round((fps / 1000.0 if fps > 1000 else fps), 2)))
+                if codec in VIDEO_CODECS:
+                    picture.append(VIDEO_CODECS[codec])
+                if picture:
+                    lines.append(u"  \u00b7  ".join(picture))
+        except Exception as e:
+            debug("Stream info not read: {}".format(e))
+        if not lines:
+            lines.append(to_text(_("Picture: not known yet")))
+        status = self._status_text()
+        if status:
+            lines.append(status)
+        lines.append(u"{}  \u00b7  {}:{}".format(
+            to_text(self.name), PROXY_HOST, PORT))
+        return u"\n".join(lines)
+
+    def show_stream_info(self):
+        text = self.stream_info_text()
+        if not self._bar_themed:
+            self.session.open(MessageBox, to_string(text),
+                              MessageBox.TYPE_INFO, timeout=10)
+            return
+        self["stream_info"].setText(to_string(text))
+        self["info_box"].show()
+        self["stream_info"].show()
+        self._info_shown = True
+        if not self._bar_visible():
+            TvInfoBarShowHide.OkPressed(self)
+
+    # ---- the channel list over the video
+
+    def open_channel_list(self):
+        if not self.itemscount:
+            return
+        channels = [(row[0][0], row[0][1]) for row in self.list]
+        codes = (list(self.country_codes) if self.country_codes is not None
+                 else [self.country_code] * len(channels))
+        logos = (list(self.logo_urls) if self.logo_urls is not None
+                 else [None] * len(channels))
+        self.session.openWithCallback(
+            self._on_channel_list_closed, VavooPlayerList,
+            channels, int(self.currentindex), codes, logos)
+
+    def _on_channel_list_closed(self, index=None):
+        if self._closed or index is None:
+            return
+        if index == int(self.currentindex):
+            if not self.stream_running:
+                # chosen again after it stopped: start it again
+                self.startStream()
+            return
+        self.zap_to(index)
 
     def isSeekable(self):
         """Live TV is never seekable - InfoBarSeek (a base class of
@@ -6298,7 +7592,32 @@ class Playstream2(
             channel_id = self.url.split("/live2/play/")[1].replace(".ts", "")
             self.url = PROXY_BASE_URL + "/vavoo?channel=" + channel_id
 
+        if not is_retry:
+            remember_recent(self._channel_info())
+            if self._inherit_pending:
+                self._inherit_pending = False
+                if NOW_PLAYING.player_take(self.url):
+                    # The preview window is playing this very channel:
+                    # the same stream simply goes full screen. No
+                    # service start event comes for it - show the bar
+                    # the way a start would.
+                    self.sref = NOW_PLAYING.sref
+                    self.hand_back = True
+                    print("[Playstream2] Carrying on with the preview's stream")
+                    self.serviceStarted()
+                    return
+
         self.playProxyStream()
+
+    def _channel_info(self):
+        """The playing channel as the preview / "Recently watched"
+        keep it."""
+        return {
+            "name": self.name, "url": self.url,
+            "country_name": self.country_name,
+            "country_code": self.country_code,
+            "logo": self.current_logo_url or "",
+        }
 
     def restartStreamDelayed(self, delay_ms):
         """Restart stream after a delay"""
@@ -6388,15 +7707,7 @@ class Playstream2(
         "grp:italy:..."), and everything this is handed to
         (report_stream_failure(), get_group_sources(),
         set_group_source()) takes the real id."""
-        if "vavoo?channel=" not in self.url:
-            return None
-        channel_id = self.url.split("vavoo?channel=")[1]
-        for separator in ('&', '?', '#'):
-            if separator in channel_id:
-                channel_id = channel_id.split(separator)[0]
-        if not channel_id:
-            return None
-        return url_unquote(channel_id)
+        return stream_channel_id(self.url)
 
     def _current_group_channel_id(self):
         """_current_channel_id() if it is a grouped (multi-source)
@@ -6425,38 +7736,17 @@ class Playstream2(
         keeps answering with the same address in between.
         """
         try:
-            channel_id = self._current_channel_id()
-            if not channel_id:
+            # build_stream_sref(): the plain proxy address with the
+            # configured player service type ("Movie Services
+            # Reference" - 4097/5001/5002/8193), shared with the
+            # preview window so both play exactly the same thing.
+            sref = build_stream_sref(self.name, self.url)
+            if sref is None:
                 print("[Playstream2] Could not extract channel ID")
                 self._notify_cannot_play()
                 return
-
-            proxy_url = "http://{}:{}/vavoo?channel={}".format(
-                PROXY_HOST, PORT, url_quote(channel_id, safe=''))
-            print("[Playstream2] Proxy URL: " + proxy_url)
-
-            # Add User-Agent as fragment
-            stream_url_with_ua = proxy_url + "#User-Agent=VAVOO/2.6"
-
-            # Encode for Enigma2
-            encoded_url = stream_url_with_ua.replace(":", "%3a")
-            encoded_name = self.name.replace(":", "%3a")
-
-            # Use the configured player service type ("Server for Player
-            # Used" in settings - 4097/5001/5002/8193) instead of always
-            # hardcoding 4097 - bouquet export already respects this
-            # setting (see cfg.services.value usage there), but this
-            # in-plugin player was silently ignoring it, always using
-            # 4097's backend regardless of what the user picked.
-            ref = (
-                cfg.services.value + ":0:1:0:0:0:0:0:0:0:" +
-                encoded_url +
-                ":" +
-                encoded_name
-            )
-            print("[Playstream2] Service reference: " + ref)
-            sref = eServiceReference(ref)
-            sref.setName(self.name)
+            print("[Playstream2] Playing through the proxy: " +
+                  to_string(self.name))
             self.sref = sref
 
             try:
@@ -6648,7 +7938,19 @@ class Playstream2(
             except Exception as e:
                 print("[Playstream2] Error cancelling EOF restart: {}".format(e))
 
-        self.stopStream()
+        if self.hand_back and self.stream_running and \
+                getattr(self, 'sref', None) is not None:
+            # Back to the list: the channel keeps playing in its
+            # preview window (with its proxy count) instead of
+            # stopping - the app's handBackToPreview.
+            self.stream_running = False
+            self.is_streaming = False
+            if hasattr(self, 'eof_recovery_timer'):
+                self.eof_recovery_timer.stop()
+            NOW_PLAYING.player_give_back(self._channel_info(), self.sref)
+        else:
+            self.stopStream()
+            NOW_PLAYING.player_closed()
         try:
             for screen in self.session.dialog_stack:
                 if hasattr(screen[0], 'proxy_monitor_timer'):
@@ -6676,7 +7978,9 @@ class Playstream2(
         except BaseException as e:
             debug("aspect_manager.restore_aspect() failed: {}".format(e))
 
-        self.close()
+        # The list it came from moves its highlight to the channel
+        # watched last (the user may have zapped).
+        self.close((self.currentindex, self.name, self.url))
 
     def leavePlayer(self):
         """Alternative close method (STOP button) - runs the exact same

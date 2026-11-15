@@ -52,9 +52,12 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Looks Like the Android App** – The themes of the companion Android app: **Prism** (Vavoo's violet, the default), **Halo** (frosted glass over a blue aurora) and **Orbit** (a teal cockpit display), each with its own background, fonts, rounded panels, colour keys and preview frame, in large or normal text. **Classic** keeps the plugin's original look and backgrounds (see "Themes" below)
 - **Live TV Streaming** – Thousands of live channels, browsed by country, with country flags and channel logos (picons)
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
-- **Choose Your Source** – A channel available from several sources is shown as one row. Press **YELLOW** in the player to pick the source by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
+- **Preview Window** – As in the app: OK on a channel plays it in the small window beside the list; OK again on it (or BLUE) opens it full screen with the same stream, no restart. Closing full screen leaves it playing in the window; leaving the plugin brings back the TV channel you were watching before
+- **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use and the clock. OK twice opens the channel list over the video with a **mini guide** (now, the next three, the description); type a channel number to go there; 0 (or RECALL) goes back to the previous channel
+- **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), stream info (resolution, frame rate, codec, source) and IMDb/TMDB
+- **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
+- **Choose Your Source** – A channel available from several sources is shown as one row. Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
 - **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed
-- **Player Overlay** – Press OK for the current programme, the channel logo and the proxy status; INFO looks the programme up in IMDb/TMDB
 - **Search** – Find channels by name inside a country (YELLOW in the channel list), or in every country at once (YELLOW in the main menu - each result shows its country)
 - **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them
 - **Parental Control** – Optional PIN lock on chosen countries
@@ -97,12 +100,13 @@ The colour keys are the Android app's, in every theme. The Enigma2 tools that us
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Quit |
 
-The list starts with "★ Favourites (n)" once you have favourites, and shows each country's channel count ("Portugal (174)", setting "Show Counts"). The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch".
+The list starts with "★ Favourites (n)" once you have favourites, then "Recently watched (n)", and shows each country's channel count ("Portugal (174)", setting "Show Counts"). The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch".
 
 ### Channel list
 | Key | Action |
 |-----|--------|
-| OK / BLUE (Full Screen) | Play the channel |
+| OK | Play the channel in the preview window; OK again on it: full screen (setting "Preview Window"; off: full screen at once) |
+| BLUE (Full Screen) | Full screen at once |
 | GREEN | Add Fav / Remove Fav (the caption follows the highlighted channel) |
 | YELLOW | Search this country |
 | MENU | Settings, Export this country as a bouquet (or Remove this country's bouquet), Reload bouquets, Show Log |
@@ -113,13 +117,21 @@ The list starts with "★ Favourites (n)" once you have favourites, and shows ea
 The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
 ### Player
+The app's keys, in every theme (the Classic theme keeps its own bar and overlays):
+
 | Key | Action |
 |-----|--------|
+| OK | Show the info bar; with the bar showing: the channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds/removes a favourite, RED / EXIT closes it) |
 | CH+ / CH- or UP / DOWN | Next / previous channel |
-| OK | Show / hide the overlay (programme, logo, proxy status) |
-| YELLOW | Choose Stream Source (channels with more than one source) |
-| INFO or EPG | Look up the current programme in IMDb/TMDB (needs "Enable Vavoo EPG" and an IMDb or TMDB plugin) |
-| STOP / EXIT | Close the player |
+| YELLOW / BLUE | Previous / next channel (the bar's "◀ CH-" / "CH+ ▶") |
+| GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
+| 1-9 | Go to that channel number ("12-" and "→ name" show while you type; it goes after 1.5 s, on OK, or at once when no larger number exists) |
+| 0 or RECALL | The channel watched before |
+| MENU | Options: favourite, audio track, subtitles, source (multi-source channels), aspect ratio, sleep timer, stream info, IMDb / TMDB |
+| INFO | Show / hide the bar |
+| EPG | Look up the current programme in IMDb/TMDB (needs "Enable Vavoo EPG" and an IMDb or TMDB plugin) |
+| AUDIO | Audio track |
+| RED / STOP / EXIT | Close the player (with the preview window on, the channel keeps playing in it) |
 
 LEFT and RIGHT do nothing during live playback (there is nothing to seek in a live stream).
 
@@ -133,13 +145,14 @@ LEFT and RIGHT do nothing during live playback (there is nothing to seek in a li
 | RED | Clear all |
 | OK | Play the selected result |
 
-### Favourites
+### Favourites and Recently watched
 | Key | Action |
 |-----|--------|
-| OK | Play |
-| GREEN | Remove Fav |
-| MENU | Settings, Show Log |
-| INFO | Version and number of favourites |
+| OK | Preview window, then full screen (as in the channel list) |
+| BLUE | Full screen at once |
+| GREEN | Favourites: Remove Fav. Recently watched: Add Fav / Remove Fav |
+| MENU | Settings, Show Log (Recently watched: also "Clear recently watched") |
+| INFO | Version and number of channels |
 | RED / EXIT | Back |
 
 ### Settings
@@ -177,7 +190,7 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 - Turn on **"Enable Vavoo EPG"** in the configuration menu
 - Export (or re-export) a country: the plugin writes that country's EPG files to `/etc/epgimport/` and enables the "Vavoo" sources in EPGImport for you
 - Press **EPG** in the main menu to start an EPG import right away
-- In the player, press OK to see the current programme
+- In the player, press OK to see the current programme (and OK again for the mini guide of every channel)
 - The Now/Next lines in the channel list and the player's OK overlay do not need any of the above: they read the country's programme guide directly (setting "Now/Next in channel list")
 
 ### Cache Maintenance
@@ -200,6 +213,8 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Catalog/Stream Source** | Where channels and streams come from: "Auto" (Geil first, Vavoo/Kool if Geil is unavailable), "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |
 | **Proxy startup timeout (seconds)** | How long the start screen waits for the proxy. Raise it on a slow connection or VPN | 120 (15-300) |
 | **Enable Vavoo EPG** | Creates the EPG source for EPGImport with Vavoo programme data and enables it there after each export | Off |
+| **Preview Window** | OK on a channel plays it in the small window beside the list; OK again on it opens full screen (BLUE goes straight there). Off: OK opens full screen at once | Yes |
+| **Start with last channel** | Open the last watched channel when the plugin starts | No |
 | **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for an hour. Switch it off on a slow connection or a weak box | Yes |
 | **Scheduled EPG/Bouquet Update:** | Periodically re-matches EPG and refreshes the bouquets of your exported countries in the background | Off |
 | – **Schedule type:** | "interval" or "fixed time" (shown when the schedule is on) | interval |
@@ -235,7 +250,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
 
 ### Choosing a stream source
 - Channels that exist from several sources (Vavoo's ".b" / ".c" / ".s" variants and the like) appear once in the list
-- While such a channel is playing, press **YELLOW**: the menu lists every source by its channel name and marks the one in use with "(current)"
+- While such a channel is playing, press **MENU → Source**: the menu lists every source by its channel name and marks the one in use with "(current)"; the bar's status line shows the source in use
 - Pick another one if a source buffers or keeps stopping. The choice is remembered for that channel, also in exported bouquets
 
 ## 🎯 Benefits
@@ -246,7 +261,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - ✅ **Clean system** – Single configuration point
 - ✅ **Real-time monitoring** – Proxy status always visible
 - ✅ **Visual feedback** – Notifications for all operations
-- ✅ **Manual control** – Pick the stream source with YELLOW, refresh the proxy token with TEXT
+- ✅ **Manual control** – Pick the stream source in the player's options, refresh the proxy token with TEXT
 - ✅ **Cache management** – Fix cache format from the MENU key
 
 ## 🛠 Technical Features
@@ -292,7 +307,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
   sources" option. The proxy picks one source and stays on it. When
   the plugin's player reports that the stream ended, the same source
   is retried once with a fresh address; a second failure within a
-  minute moves on to the next source. In the player, **YELLOW** opens
+  minute moves on to the next source. In the player, **MENU → Source** opens
   a "Choose Stream Source" menu to pick one yourself - each source is
   listed under its own catalog name (e.g. "SIC .b", "SIC HD .s"), the
   pick is remembered (`/etc/enigma2/vavoo_source_prefs.json`) and also
@@ -425,7 +440,9 @@ The proxy provides these endpoints:
 
 - **SREF Map**: `/etc/enigma2/vavoo_sref_map.json` – Maps service references to channel IDs for the proxy
 
-- **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen with YELLOW in the player, per multi-source channel (`{"grp:<country>:<name>": "<source id>"}`). Delete it to go back to automatic selection everywhere
+- **Recently Watched**: `/etc/enigma2/vavoo_recent.json` – The last 20 channels watched, newest first (`[{"name", "url", "country_name", "country_code", "logo", "timestamp"}]`). Delete it (or MENU → "Clear recently watched") to empty the list
+
+- **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen in the player (MENU → Source), per multi-source channel (`{"grp:<country>:<name>": "<source id>"}`). Delete it to go back to automatic selection everywhere
 
 - **Curated Channel DB Cache** (in-memory only, not a file on disk): each country's downloaded `epg-channel-db/vavoo_channels_<cc>.json` is kept in memory for 24h per process so repeated exports/lookups don't re-download it every time (a failed download is retried after a minute) - cleared on plugin/proxy restart
 
@@ -459,13 +476,13 @@ curl -s http://127.0.0.1:4323/health
 | "Could not load channels - proxy not responding" | The proxy did not answer after three tries: wait for the proxy status to show OK, then open the country again |
 | Bouquets don't open | Ensure proxy is running (check with curl) |
 | Stream doesn't start | Check the proxy status line; on the Vavoo source press TEXT to refresh the token |
-| A channel stops after a while | The player retries it by itself and then moves to another source; if it keeps happening, press YELLOW and pick another source |
+| A channel stops after a while | The player retries it by itself and then moves to another source; if it keeps happening, press MENU → Source and pick another source |
 | M3U export fails | Verify port 4323 is accessible |
 | "No programme found" | Clear EPG cache and re-export bouquet; check country EPG file exists |
 | EPG not updating | Verify EPG is enabled in config and GitHub files are accessible |
 | HTTP 451 errors | Proxy automatically switches to mirror sites (Geil's mirrors, or Kool on the Vavoo fallback) |
 | Streams not resolving at all | Check `catalog_source` in `/status` - if stuck on "vavoo" with no token, Geil may be unreachable from your network |
-| A channel keeps stopping or buffering | Press YELLOW in the player and pick another source |
+| A channel keeps stopping or buffering | In the player press MENU → Source and pick another source |
 | Duplicate cache entries | Main menu: MENU → "Fix EPG cache" |
 
 **"No programme information" beside the channel list**
@@ -512,7 +529,7 @@ Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - **Unmatched channels are persistent** – They survive plugin restarts and are used for future matching attempts
 - **EPG cache includes matched/unmatched status** – Each entry has a `matched: true/false` flag
 - Use **TEXT button** in main menu to manually refresh proxy token
-- Use **MENU → "Fix EPG cache"** in the main menu to fix the cache format, and **YELLOW** in the player to choose the stream source
+- Use **MENU → "Fix EPG cache"** in the main menu to fix the cache format, and **MENU → Source** in the player to choose the stream source
 - Proxy status is displayed in real-time in the main interface
 - For developers: `quick_notify(message, seconds)` is thread-safe and can be called from any background thread; messages sent before the UI is ready are queued
 
