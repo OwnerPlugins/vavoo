@@ -830,12 +830,25 @@ class m2list(MenuList):
             item_height = 50
             text_font_size = 22
             font_name = 'Regular'
+        self.item_height = item_height
         self.l.setItemHeight(item_height)
         self.l.setFont(0, gFont(font_name, text_font_size))
 
     def buildEntry(self, entry):
         """Build list entry - entry should be [ (name, link), icon, text ]"""
         return entry
+
+
+def list_page_rows(widget, themed):
+    """Rows a list shows at once (a page): the theme's whole rows, or
+    the Classic list's height shared by its row height."""
+    if themed:
+        return max(1, theme_metrics("list")["rows"])
+    try:
+        height = widget.instance.size().height()
+        return max(1, int(height // widget.item_height))
+    except Exception:
+        return 10
 
 
 def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
@@ -5207,138 +5220,243 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
 
 
 class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
-    """Browse and play starred channels (see vUtils.toggle_favourite()/
-    load_favourites()) - or, with mode="recent", the recently watched
-    ones (vUtils.load_recent(), newest first). Deliberately minimal
-    compared to the `vavoo` class: no country/proxy fetching, no
-    auto-update timer - just a static list built from the file. Reuses
-    defaultListScreen.xml (the same skin `vavoo`/`MainVavoo` already
-    load) so there's no new skin XML to keep in sync across
-    resolutions."""
+    """The favourites - or, with mode="recent", the recently watched
+    channels (vUtils.load_recent(), newest first) - as the app's
+    channel list (ChannelsActivity) shows them: no proxy fetching, a
+    list built from the file. Reuses defaultListScreen.xml (the skin
+    `vavoo` / `MainVavoo` load).
+
+    Favourites in folders (vavoo_store): the top shows "All channels",
+    the folders A-Z and "No folder" first; OK opens one (a new screen
+    with `folder`). Keys as in the app: Back / Remove Fav / Move (Done)
+    / Folder - Recently watched has the country list's: Back / Add Fav
+    / Search / Full Screen."""
 
     MODE_FAVOURITES = "favourites"
     MODE_RECENT = "recent"
+    # Folder rows' keys (a folder's own name otherwise)
+    FOLDER_ALL = "\x00all"
+    FOLDER_NONE = "\x00none"
 
-    def __init__(self, session, mode="favourites"):
+    def __init__(self, session, mode="favourites", folder=None):
         self.session = session
         self.mode = mode
+        self.folder = folder
         Screen.__init__(self, session)
-        # RED / GREEN / BLUE (the app's YELLOW in its Favourites - move
-        # - and folders come with the lists phase).
         self.skin, self._themed = load_screen_skin(
-            "list", 'defaultListScreen.xml', cvs=True,
-            keys=("red", "green", "blue"), clock_24=clock_24())
+            "list", 'defaultListScreen.xml', cvs=True, clock_24=clock_24())
 
         init_notification_system(session)
         self._closed = False
         self.onClose.append(self._mark_closed)
 
         self.cat_list = []
+        self.favourite_entries = []
+        # True: the rows are folders (self.folder_keys), not channels
+        self.showing_folders = False
+        self.folder_keys = []
+        self.moving = False
+        self._moved = False
+        self._digits = ""
+        self._digit_time = 0
         self['menulist'] = m2list([], themed=self._themed)
         self['name'] = Label(self._title())
         self['version'] = Label(to_string("V." + __version__))
         self['proxy_status'] = Label('')
         self['red'] = Label(_('Back'))
-        self['green'] = Label(_('Remove Fav') if mode != self.MODE_RECENT
-                              else _('Add Fav'))
-        self['yellow'] = Label()
-        self['blue'] = Label(_('Full Screen'))
+        if mode == self.MODE_RECENT:
+            self['green'] = Label(_('Add Fav'))
+            self['yellow'] = Label(_('Search'))
+            self['blue'] = Label(_('Full Screen'))
+        else:
+            self['green'] = Label(_('Remove Fav'))
+            self['yellow'] = Label(_('Move'))
+            self['blue'] = Label(_('Folder'))
         add_key_hint_labels(self)
-        self.favourite_entries = []
         self._favourite_keys = set()
         self._preview_init()
         self._epg_panel_init()
         self['menulist'].onSelectionChanged.append(self._epg_panel_changed)
         self['menulist'].onSelectionChanged.append(self._update_selection)
         self.onClose.append(self._epg_panel_stop)
+        self.onClose.append(self._finish_move)
 
+        actions = {
+            "up": self.moveUp,
+            "down": self.moveDown,
+            "left": self.page_up,
+            "right": self.page_down,
+            "prevBouquet": self.page_down,
+            "nextBouquet": self.page_up,
+            "ok": self.ok,
+            "green": self.green,
+            "yellow": self.yellow,
+            "blue": self.blue,
+            "cancel": self.cancel,
+            "red": self.cancel,
+            "menu": self.open_menu,
+            "info": self.info_toast,
+        }
+        for digit in range(10):
+            actions[str(digit)] = (lambda d: lambda: self.number(d))(digit)
         self['actions'] = ActionMap(
             ['OkCancelActions', 'ColorActions', 'DirectionActions',
-             'MenuActions', 'EPGSelectActions'],
-            {
-                "up": self.moveUp,
-                "down": self.moveDown,
-                "ok": self.ok,
-                "green": self.remove_selected,
-                "blue": self.full_screen,
-                "cancel": self.close,
-                "red": self.close,
-                "menu": self.open_menu,
-                "info": self.info_toast,
-            },
-            -1
-        )
+             'MenuActions', 'EPGSelectActions', 'NumberActions'],
+            actions, -1)
         self.onLayoutFinish.append(self._build_list)
+        self.onExecBegin.append(self._back_on_top)
 
     def _mark_closed(self):
         self._closed = True
 
     def _title(self):
-        return _("Recently watched") if self.mode == self.MODE_RECENT \
-            else _("★ Favourites")
+        if self.mode == self.MODE_RECENT:
+            return _("Recently watched")
+        if self.folder is None:
+            return _("★ Favourites")
+        return u"{} ➾ {}".format(to_text(_("★ Favourites")),
+                                     to_text(self._folder_label(self.folder)))
 
-    def _build_list(self):
+    def _folder_label(self, key):
+        if key == self.FOLDER_ALL:
+            return _("All channels")
+        if key == self.FOLDER_NONE:
+            return _("No folder")
+        return key
+
+    def _back_on_top(self):
+        """A folder screen changed folders, or a player added / removed
+        favourites: the rows again (not while moving)."""
+        if self.cat_list and not self.moving:
+            self._build_list(keep=True)
+
+    # ---- the rows
+
+    def _channels_in_view(self, favourites):
+        if self.folder is None or self.folder == self.FOLDER_ALL:
+            return favourites
+        if self.folder == self.FOLDER_NONE:
+            return [e for e in favourites if not e.get('folder')]
+        return [e for e in favourites if e.get('folder') == self.folder]
+
+    def _channel_row(self, index, entry, total):
+        digits = len(str(total))
+        text = u"{}  {}".format(str(index + 1).rjust(digits, u" "),
+                                to_text(entry['name']))
+        return show_list(entry['name'], entry['url'], is_channel=True,
+                         logo_url=entry.get('logo') or None,
+                         display=to_string(text), themed=self._themed)
+
+    def _build_list(self, keep=False):
+        selected = None
+        if keep:
+            selected = self._selected_link()
         favourites = vUtils.load_favourites()
         self._favourite_keys = set(to_text(e['url']) for e in favourites)
-        # Kept as a parallel list (same order/indices as cat_list) so
-        # ok()/remove_selected() can look up each row's country_name/
-        # country_code - show_list()'s (name, url) tuple has no room
-        # for them, and they're needed for the parental-control check
-        # and for EPG matching in Playstream2.
+        self.showing_folders = False
+        self.folder_keys = []
         if self.mode == self.MODE_RECENT:
             self.favourite_entries = vUtils.load_recent()
         else:
+            folders = vavoo_store.folders()
+            if self.folder is None and folders:
+                self._build_folder_rows(favourites, folders)
+                self._show_rows(selected)
+                return
             # in the user's order (vavoo_store)
-            self.favourite_entries = favourites
-        self.cat_list = [
-            show_list(entry['name'], entry['url'], is_channel=True,
-                      logo_url=entry.get('logo') or None,
-                      themed=self._themed)
-            for entry in self.favourite_entries
-        ]
+            self.favourite_entries = self._channels_in_view(favourites)
+        total = len(self.favourite_entries)
+        self.cat_list = [self._channel_row(i, entry, total)
+                         for i, entry in enumerate(self.favourite_entries)]
+        self._show_rows(selected)
+
+    def _build_folder_rows(self, favourites, folders):
+        """The app's folder rows: All channels (n), the folders A-Z,
+        No folder (n) - a count only with Show Channel Count."""
+        self.showing_folders = True
+        self.favourite_entries = []
+        counts = {}
+        for entry in favourites:
+            key = entry.get('folder') or self.FOLDER_NONE
+            counts[key] = counts.get(key, 0) + 1
+        keys = [self.FOLDER_ALL] + list(folders)
+        if counts.get(self.FOLDER_NONE):
+            keys.append(self.FOLDER_NONE)
+        self.folder_keys = keys
+        rows = []
+        for key in keys:
+            count = len(favourites) if key == self.FOLDER_ALL \
+                else counts.get(key, 0)
+            label = to_text(self._folder_label(key))
+            display = u"{} ({})".format(label, count) \
+                if cfg.show_counts.value else label
+            rows.append(show_list(to_string(label), to_string(key),
+                                  is_category=True, display=to_string(display),
+                                  themed=self._themed))
+        self.cat_list = rows
+
+    def _selected_link(self):
+        try:
+            current = self['menulist'].getCurrent()
+            return current[0][1] if current else None
+        except Exception:
+            return None
+
+    def _show_rows(self, selected=None):
+        self['menulist'].l.setList(self.cat_list)
         if self.cat_list:
-            self['menulist'].l.setList(self.cat_list)
+            index = 0
+            if selected is not None:
+                for i, row in enumerate(self.cat_list):
+                    if row[0][1] == selected:
+                        index = i
+                        break
+            self['menulist'].moveToIndex(index)
         else:
-            self['menulist'].l.setList([])
             self['name'].setText(
                 _('No channels watched yet') if self.mode == self.MODE_RECENT
-                else _('No favourites yet'))
+                else _('No favourites'))
         self._epg_panel_changed()
         self._update_selection()
 
     def _update_selection(self):
-        """The highlighted favourite's name, and the app's status line:
-        "★ Favourites · 3/12"."""
+        """The highlighted row's name, the app's status line
+        ("★ Favourites · 3/12", "⇅  Name" while moving) and GREEN's
+        caption in Recently watched."""
         if self._closed:
             return
         try:
-            label = self._title()
+            label = to_text(self._title())
             if not self.cat_list:
-                self['proxy_status'].setText(label)
+                self['proxy_status'].setText(to_string(label))
                 return
             i = self['menulist'].getSelectedIndex() or 0
-            text = "{} · {}/{}".format(label, i + 1, len(self.cat_list))
+            text = u"{} · {}/{}".format(label, i + 1, len(self.cat_list))
             if 0 <= i < len(self.cat_list):
                 name, url = self.cat_list[i][0][0], self.cat_list[i][0][1]
                 self['name'].setText(to_string(name))
-                if self.mode == self.MODE_RECENT:
+                if self.moving:
+                    text = u"⇅  " + to_text(name)
+                elif self.mode == self.MODE_RECENT:
                     favourite = to_text(url) in self._favourite_keys
                     self['green'].setText(
                         _('Remove Fav') if favourite else _('Add Fav'))
                     if favourite:
-                        text += "  ★"
-            self['proxy_status'].setText(text)
+                        text += u"  ★"
+            self['proxy_status'].setText(to_string(text))
         except Exception as e:
             debug("Favourites status line not updated: {}".format(e))
 
     def info_toast(self):
         if NOTIFICATION_AVAILABLE:
-            quick_notify(info_text(len(self.cat_list) or None), 5)
+            quick_notify(info_text(len(self.favourite_entries) or None), 5)
 
     def open_menu(self):
+        if self.moving:
+            return
         entries = [(_("Settings"), "settings"), (_("Show Log"), "log")]
         actions = {
-            "settings": lambda: self.session.open(vavoo_config),
+            "settings": lambda: open_settings(self.session),
             "log": lambda: open_log_viewer(self.session),
         }
         if self.mode == self.MODE_RECENT:
@@ -5355,7 +5473,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
     def _epg_panel_selection(self):
         """See NowNextPanel. Favourites mix countries: each entry
         carries its own country code."""
-        if not self.cat_list:
+        if not self.cat_list or self.showing_folders:
             return None
         i = self['menulist'].getSelectedIndex()
         if i is None or not 0 <= i < len(self.favourite_entries):
@@ -5367,33 +5485,237 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             return None
         return (name, entry.get('url', ''), country_code)
 
-    def moveUp(self):
+    # ---- moving along the list
+
+    def _page_rows(self):
+        return list_page_rows(self['menulist'], self._themed)
+
+    def _go(self, index, wrap=False):
         if not self.cat_list:
             return
-        idx = self['menulist'].getSelectedIndex()
-        self['menulist'].moveToIndex((idx - 1) % len(self.cat_list))
+        if self.moving:
+            self._move_to(index)
+            return
+        if wrap:
+            index %= len(self.cat_list)
+        index = max(0, min(index, len(self.cat_list) - 1))
+        self['menulist'].moveToIndex(index)
+
+    def _index(self):
+        return self['menulist'].getSelectedIndex() or 0
+
+    def moveUp(self):
+        self._go(self._index() - 1, wrap=not self.moving)
 
     def moveDown(self):
-        if not self.cat_list:
+        self._go(self._index() + 1, wrap=not self.moving)
+
+    def page_up(self):
+        self._go(self._index() - self._page_rows())
+
+    def page_down(self):
+        self._go(self._index() + self._page_rows())
+
+    def number(self, digit):
+        """The number keys go to that row (to that place while
+        moving); typed within 1.5 s they add up (1, 2 = row 12)."""
+        if not self.cat_list or self.showing_folders:
             return
-        idx = self['menulist'].getSelectedIndex()
-        self['menulist'].moveToIndex((idx + 1) % len(self.cat_list))
+        now = time.time()
+        if now - self._digit_time > 1.5:
+            self._digits = ""
+        self._digit_time = now
+        self._digits = (self._digits + str(digit))[-4:]
+        target = int(self._digits) - 1
+        if 0 <= target < len(self.cat_list):
+            self._go(target)
+
+    # ---- favourites: move (the app's YELLOW)
+
+    def _set_moving(self, on):
+        if not on:
+            self._finish_move()
+        self.moving = bool(on and not self.showing_folders and
+                           self.mode != self.MODE_RECENT and
+                           len(self.cat_list) > 1)
+        self['yellow'].setText(_('Done') if self.moving else _('Move'))
+        if self.moving and NOTIFICATION_AVAILABLE:
+            name = self.cat_list[self._index()][0][0]
+            quick_notify(_("Moving {}: ▲▼, ◄► a page, "
+                           "a number; OK to finish").format(name), 6)
+        self._update_selection()
+
+    def _move_to(self, target):
+        """The channel being moved to row `target` (not saved yet:
+        once, on Done)."""
+        pos = self._index()
+        target = max(0, min(target, len(self.cat_list) - 1))
+        if target == pos:
+            return
+        entry = self.favourite_entries.pop(pos)
+        self.favourite_entries.insert(target, entry)
+        total = len(self.favourite_entries)
+        self.cat_list = [self._channel_row(i, e, total)
+                         for i, e in enumerate(self.favourite_entries)]
+        self._moved = True
+        self['menulist'].l.setList(self.cat_list)
+        self['menulist'].moveToIndex(target)
+
+    def _finish_move(self):
+        if self._moved:
+            self._moved = False
+            vavoo_store.reorder_favourites(
+                [e['url'] for e in self.favourite_entries])
+
+    # ---- keys
+
+    def cancel(self):
+        if self.moving:
+            self._set_moving(False)
+            return
+        self.close()
+
+    def green(self):
+        if self.moving or self.showing_folders:
+            return
+        self.remove_selected()
+
+    def yellow(self):
+        if self.mode == self.MODE_RECENT:
+            self.search_list()
+            return
+        self._set_moving(not self.moving)
+
+    def blue(self):
+        if self.mode == self.MODE_RECENT:
+            self.full_screen()
+            return
+        if self.moving:
+            return
+        if self.showing_folders:
+            i = self._index()
+            if 0 <= i < len(self.folder_keys):
+                key = self.folder_keys[i]
+                if key not in (self.FOLDER_ALL, self.FOLDER_NONE):
+                    self.folder_actions(key)
+            return
+        self.choose_folder()
+
+    def search_list(self):
+        """Recently watched's YELLOW: search in this list."""
+        if not self.favourite_entries:
+            return
+        items = ["###".join((to_string(e['name']), to_string(e['url'])))
+                 for e in self.favourite_entries]
+        self.session.openWithCallback(
+            self._on_search_result, VavooSearch, self, items,
+            scope=self._title())
+
+    def _on_search_result(self, selected=None):
+        if not selected or self._closed:
+            return
+        for index, row in enumerate(self.cat_list):
+            if row[0][1] == selected[1]:
+                self['menulist'].moveToIndex(index)
+                self._play_selected()
+                break
+
+    # ---- favourites: folders (the app's BLUE)
+
+    def choose_folder(self):
+        """BLUE on a channel: "Folder for X" - the folders, No folder,
+        New folder…"""
+        i, _item, name, url = self._current_selection()
+        if name is None:
+            return
+        folders = vavoo_store.folders()
+        entries = [(to_string(f), "f:" + to_string(f)) for f in folders]
+        entries.append((_("No folder"), "none"))
+        entries.append((_("New folder…"), "new"))
+
+        def chosen(key):
+            if not key:
+                return
+            if key == "new":
+                self._ask_folder_name(url, name)
+            elif key == "none":
+                self._set_folder(url, name, None)
+            else:
+                self._set_folder(url, name, key[2:])
+
+        open_action_menu(self.session,
+                         _("Folder for {}").format(to_string(name)),
+                         entries, chosen)
+
+    def _ask_folder_name(self, url=None, name=None, renaming=None):
+        def done(text=None):
+            text = to_text(text).strip() if text else u""
+            if not text or self._closed:
+                return
+            if renaming is not None:
+                vavoo_store.rename_folder(renaming, text)
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Folder renamed to {}").format(
+                        to_string(text)), 3)
+                self._build_list()
+            else:
+                self._set_folder(url, name, text)
+
+        self.session.openWithCallback(
+            done, VirtualKeyBoard, title=_("Folder name (e.g. Sport)"),
+            text=to_string(renaming or ""))
+
+    def _set_folder(self, url, name, folder):
+        vavoo_store.set_folder(url, folder)
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(u"{} → {}".format(
+                to_text(name), to_text(folder or _("No folder"))), 3)
+        self._build_list(keep=True)
+
+    def folder_actions(self, folder):
+        """BLUE on a folder row: rename or remove it."""
+        def chosen(key):
+            if key == "rename":
+                self._ask_folder_name(renaming=folder)
+            elif key == "remove":
+                vavoo_store.delete_folder(folder)
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("Folder {} removed - its channels stay in "
+                                   "the favourites").format(
+                                       to_string(folder)), 4)
+                self._build_list()
+
+        open_action_menu(
+            self.session, to_string(folder),
+            [(_("Rename folder"), "rename"), (_("Remove folder"), "remove")],
+            chosen)
+
+    # ---- playing
 
     def _current_selection(self):
-        """Returns (index, item, name, url) for the highlighted row, or
-        (None, None, None, None) if nothing is selected."""
-        if not self.cat_list:
+        """Returns (index, item, name, url) for the highlighted channel
+        row, or (None, None, None, None)."""
+        if not self.cat_list or self.showing_folders:
             return None, None, None, None
         i = self['menulist'].getSelectedIndex()
-        selection = self['menulist'].l.getCurrentSelection()
-        if selection is None:
+        if i is None or not 0 <= i < len(self.favourite_entries):
             return None, None, None, None
         item = self.cat_list[i][0]
         return i, item, item[0], item[1]
 
     def ok(self):
-        """OK: into the preview window (after the PIN of a locked
-        country); on the channel already playing there, full screen."""
+        """OK: a folder row opens it; a channel goes into the preview
+        window (after the PIN of a locked country), and on the channel
+        already playing there, full screen. While moving: Done."""
+        if self.moving:
+            self._set_moving(False)
+            return
+        if self.showing_folders:
+            i = self._index()
+            if 0 <= i < len(self.folder_keys):
+                self.session.open(VavooFavourites, self.mode,
+                                  self.folder_keys[i])
+            return
         try:
             i, item, name, url = self._current_selection()
             if name is None:
@@ -5510,6 +5832,14 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         if NOTIFICATION_AVAILABLE:
             quick_notify(_("Removed from favourites: {}").format(name), 3)
         self._build_list()
+        # the next channel takes the removed one's place
+        if self.cat_list and not self.showing_folders:
+            self['menulist'].moveToIndex(min(i, len(self.cat_list) - 1))
+
+
+def open_settings(session):
+    """The plugin's settings (MENU → Settings everywhere)."""
+    session.open(vavoo_config)
 
 
 def open_log_viewer(session):
