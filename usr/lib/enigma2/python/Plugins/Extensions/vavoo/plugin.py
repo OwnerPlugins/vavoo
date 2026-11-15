@@ -7186,8 +7186,8 @@ class Playstream2(
                 "key_red": to_text(_("Back")),
                 "key_green": (u"\u2605 " if favourite else u"\u2606 ") +
                 to_text(_("Fav")),
-                "key_yellow": u"\u25c0 " + to_text(_("CH-")),
-                "key_blue": to_text(_("CH+")) + u" \u25b6",
+                "key_yellow": u"\u25bc " + to_text(_("CH-")),
+                "key_blue": to_text(_("CH+")) + u" \u25b2",
                 "key_options": to_text(_("Options")),
                 "key_audio": to_text(_("Audio")),
                 "key_list": to_text(_("List")),

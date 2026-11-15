@@ -122,9 +122,9 @@ The app's keys, in every theme (the Classic theme keeps its own bar and overlays
 | Key | Action |
 |-----|--------|
 | OK | Show the info bar; with the bar showing: the channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds/removes a favourite, RED / EXIT closes it). With a bar button highlighted (LEFT / RIGHT): press that button |
-| LEFT / RIGHT | Go along the bar's buttons, as in the app: Back · ★ Fav · ◀ CH- · CH+ ▶ · Options · Audio · List · Recall (round the ends); the highlighted one gets the theme's selection bar and OK presses it. With the bar hidden, LEFT / RIGHT show it with the last / first button highlighted. Themes only (Classic's bar has no buttons) |
+| LEFT / RIGHT | Go along the bar's buttons, as in the app: Back · ★ Fav · ▼ CH- · CH+ ▲ · Options · Audio · List · Recall (round the ends); the highlighted one gets the theme's selection bar and OK presses it. With the bar hidden, LEFT / RIGHT show it with the last / first button highlighted. Themes only (Classic's bar has no buttons) |
 | CH+ / CH- or UP / DOWN | Next / previous channel |
-| YELLOW / BLUE | Previous / next channel (the bar's "◀ CH-" / "CH+ ▶") |
+| YELLOW / BLUE | Previous / next channel (the bar's "▼ CH-" / "CH+ ▲") |
 | GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
 | 1-9 | Go to that channel number ("12-" and "→ name" show while you type; it goes after 1.5 s, on OK, or at once when no larger number exists) |
 | 0 or RECALL | The channel watched before |
