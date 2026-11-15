@@ -121,7 +121,8 @@ The app's keys, in every theme (the Classic theme keeps its own bar and overlays
 
 | Key | Action |
 |-----|--------|
-| OK | Show the info bar; with the bar showing: the channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds/removes a favourite, RED / EXIT closes it) |
+| OK | Show the info bar; with the bar showing: the channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds/removes a favourite, RED / EXIT closes it). With a bar button highlighted (LEFT / RIGHT): press that button |
+| LEFT / RIGHT | Go along the bar's buttons, as in the app: Back · ★ Fav · ◀ CH- · CH+ ▶ · Options · Audio · List · Recall (round the ends); the highlighted one gets the theme's selection bar and OK presses it. With the bar hidden, LEFT / RIGHT show it with the last / first button highlighted. Themes only (Classic's bar has no buttons) |
 | CH+ / CH- or UP / DOWN | Next / previous channel |
 | YELLOW / BLUE | Previous / next channel (the bar's "◀ CH-" / "CH+ ▶") |
 | GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
@@ -133,7 +134,7 @@ The app's keys, in every theme (the Classic theme keeps its own bar and overlays
 | AUDIO | Audio track |
 | RED / STOP / EXIT | Close the player (with the preview window on, the channel keeps playing in it) |
 
-LEFT and RIGHT do nothing during live playback (there is nothing to seek in a live stream).
+There is nothing to seek in a live stream, so LEFT / RIGHT are free for the bar's buttons; the highlight goes when the bar hides.
 
 ### Search
 | Key | Action |

@@ -415,6 +415,11 @@ def asset_specs(theme):
     box("player_track", 190, 8, "#40ffffff", TRANSPARENT, 0, 4)
     box("player_fill", 190, 8, look["progress"][0], TRANSPARENT, 0, 4)
     box("pkey", 190, 54, look["key_bg"], look["key_stroke"], 1, key_radius)
+    # a bar button highlighted with LEFT / RIGHT (the app's
+    # selectBarButton(): the selection bar in place of the button)
+    grad("pkey_sel", 190, 54, look["selected"], look["selected2"], sel_radius)
+    grad("pckey_sel", 280, 54, look["selected"], look["selected2"],
+         sel_radius)
     for name, color in zip(KEY_NAMES, look["key_colors"]):
         specs["pckey_" + name] = {"size": (280, 54), "layers": [
             ("key", 0, 0, 280, 54, look["key_bg"], look["key_stroke"], 1,
@@ -1024,13 +1029,25 @@ def player_bar(theme, large, width, clock_24=True, base_dir=None):
         ("transparent", "1"), ("zPosition", 3)],
         ['<convert type="ClockToText">%s</convert>'
          % ("Format:%H:%M" if clock_24 else "Format:%l:%M")])
+    def highlight(widget, asset, x, y):
+        # over the button, under its text; hidden until LEFT / RIGHT
+        skin.assets.append(asset)
+        skin.add("widget", [
+            ("name", "sel_" + widget), ("position", "%d,%d" % (
+                skin.px(x), skin.px(y))),
+            ("size", "%d,%d" % asset_pixel_size(theme, asset, width)),
+            ("pixmap", asset_path(theme, asset, width, base_dir)),
+            ("alphatest", "blend"), ("zPosition", 2)])
+
     for name, x, y in PLAYER_SMALL_KEYS:
         skin.picture("pkey", x, y, z=1)
+        highlight(name, "pkey_sel", x, y)
         skin.label(name, (x, y, 190, 54), 28, WHITE, "center", z=3,
                    nowrap=True, back=look["key_bg"])
     for index, name in enumerate(KEY_NAMES):
         x = PLAYER_KEY_X[index]
         skin.picture("pckey_" + name, x, 978, z=1)
+        highlight("key_" + name, "pckey_sel", x, 978)
         skin.label("key_" + name, (x + 10, 978, 270, 54), 30, WHITE,
                    "center", z=3, nowrap=True, back=look["key_bg"])
     # Stream info (Options -> Stream Info), top left, inside the safe

@@ -5872,6 +5872,13 @@ PLAYER_BAR_LABELS = (
     "number", "name", "now", "left", "next", "status", "stream_info",
     "key_options", "key_audio", "key_list", "key_recall",
     "key_red", "key_green", "key_yellow", "key_blue")
+# The bar's buttons in LEFT / RIGHT order (the app's: the colour ones,
+# then the small ones) and the Playstream2 method each one runs.
+PLAYER_BAR_BUTTONS = (
+    ("key_red", "cancel"), ("key_green", "toggle_favourite"),
+    ("key_yellow", "previousitem"), ("key_blue", "nextitem"),
+    ("key_options", "open_options"), ("key_audio", "_bar_audio"),
+    ("key_list", "_bar_list"), ("key_recall", "recall"))
 # Enigma2's aspect ratio settings (AVSwitch.setAspectRatio()).
 PLAYER_ASPECTS = (
     (0, "4:3 Letterbox"), (1, "4:3 PanScan"), (2, "16:9"),
@@ -6706,7 +6713,11 @@ class Playstream2(
             self["info_box"] = Pixmap()
             self["progress_track"] = Pixmap()
             self["progress"] = ProgressBar()
+            for widget, _action in PLAYER_BAR_BUTTONS:
+                self["sel_" + widget] = Pixmap()
             self.onLayoutFinish.append(self._bar_layout_finished)
+        # The bar button highlighted with LEFT / RIGHT (-1: none).
+        self._bar_sel = -1
         # A channel number being typed (0 = none), the channel before
         # the current one (RECALL / 0), countries unlocked by PIN in
         # this player (zapping through mixed Favourites).
@@ -6803,6 +6814,10 @@ class Playstream2(
                 "yellow": self.previousitem,
                 "blue": self.nextitem,
                 "historyBack": self.recall,
+                # LEFT / RIGHT go along the bar's buttons, OK presses
+                # the highlighted one (the app's barButtons)
+                "left": self.bar_left,
+                "right": self.bar_right,
                 "1": lambda: self.key_digit(1),
                 "2": lambda: self.key_digit(2),
                 "3": lambda: self.key_digit(3),
@@ -7029,8 +7044,9 @@ class Playstream2(
     # ---- the info bar (modern themes) and OK / INFO
 
     def _bar_layout_finished(self):
-        for widget in ("info_box", "stream_info", "progress_track",
-                       "progress", "logo"):
+        hidden = ["info_box", "stream_info", "progress_track", "progress",
+                  "logo"] + ["sel_" + widget for widget, _a in PLAYER_BAR_BUTTONS]
+        for widget in hidden:
             try:
                 self[widget].hide()
             except Exception:
@@ -7050,12 +7066,73 @@ class Playstream2(
         if self._typed:
             self._commit_digits()
             return
+        if self._bar_sel >= 0 and self._bar_visible():
+            self._bar_press()
+            return
         if self._bar_visible():
             self.hide_help_overlay()
             self.doHide()
             self.open_channel_list()
             return
         TvInfoBarShowHide.OkPressed(self)
+
+    # ---- the bar's buttons with LEFT / RIGHT (the app's selectBarButton)
+
+    def bar_left(self):
+        self._bar_move(-1)
+
+    def bar_right(self):
+        self._bar_move(1)
+
+    def _bar_move(self, step):
+        """Highlight the next / previous bar button (round the end);
+        with the bar hidden, show it with the first (RIGHT) or last
+        (LEFT) one highlighted. Classic's bar has no buttons."""
+        if not self._bar_themed or self._closed:
+            return
+        count = len(PLAYER_BAR_BUTTONS)
+        if not self._bar_visible():
+            TvInfoBarShowHide.OkPressed(self)
+            index = 0 if step > 0 else count - 1
+        elif self._bar_sel < 0:
+            index = 0 if step > 0 else count - 1
+        else:
+            index = (self._bar_sel + step) % count
+        self._bar_select(index)
+        self.startHideTimer()
+
+    def _bar_select(self, index):
+        self._bar_clear()
+        try:
+            self["sel_" + PLAYER_BAR_BUTTONS[index][0]].show()
+        except Exception as e:
+            debug("Bar highlight not shown: {}".format(e))
+        self._bar_sel = index
+
+    def _bar_clear(self):
+        if self._bar_sel >= 0:
+            try:
+                self["sel_" + PLAYER_BAR_BUTTONS[self._bar_sel][0]].hide()
+            except Exception:
+                pass
+        self._bar_sel = -1
+
+    def _bar_press(self):
+        """OK on the highlighted button: what it says. The bar stays
+        (CH- / CH+ can be pressed again and again), except for List,
+        which opens the channel list in its place."""
+        widget, action = PLAYER_BAR_BUTTONS[self._bar_sel]
+        if action == "_bar_list":
+            self.hide_help_overlay()
+            self.doHide()
+            self.open_channel_list()
+            return
+        getattr(self, action)()
+        if not self._closed and self._bar_visible():
+            self.startHideTimer()
+
+    def _bar_audio(self):
+        self._call_infobar("audioSelection")
 
     def toggle_bar(self):
         """INFO: show / hide the bar."""
@@ -7074,6 +7151,9 @@ class Playstream2(
 
     def hide_help_overlay(self):
         TvInfoBarShowHide.hide_help_overlay(self)
+        # the bar goes: so does its highlight
+        if self._bar_themed:
+            self._bar_clear()
         if self._bar_themed and self._info_shown:
             self._info_shown = False
             for widget in ("info_box", "stream_info"):

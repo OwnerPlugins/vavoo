@@ -135,6 +135,9 @@ player's mini guide uses `vUtils.lookup_schedule()` /
 `peek_schedule()` (same rules as `lookup_now_next()`); its keys are the
 app's (OK bar → list, GREEN fav, YELLOW/BLUE CH∓, digits, 0/RECALL,
 MENU options via `open_action_menu(..., layout="player_menu")`;
+LEFT / RIGHT highlight the bar's buttons in `PLAYER_BAR_BUTTONS` order
+(`sel_<button>` widgets, themes only) and OK presses the highlighted
+one; `hide_help_overlay()` clears the highlight;
 `mainMenu()` is overridden so MENU never opens Enigma2's own menu).
 
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
