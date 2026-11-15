@@ -812,7 +812,8 @@ def config_screen(theme, large, width, clock_24=True, cvs=False,
     return skin.text("vavoo_config")
 
 
-def pick_screen(theme, large, width, clock_24=True, base_dir=None):
+def pick_screen(theme, large, width, clock_24=True, keys=KEY_NAMES,
+                base_dir=None):
     """Choose countries / Parental Control (vavoo_pick.xml): the
     settings' wide list with icons and a value column, its description
     under it, the status line, all four colour keys
@@ -831,7 +832,8 @@ def pick_screen(theme, large, width, clock_24=True, base_dir=None):
                WHITE, "left", z=3, nowrap=True)
     skin.version()
     skin.clock(clock_24)
-    skin.color_keys(KEY_NAMES)
+    # (only the keys the screen uses: Parental Control has just Back)
+    skin.color_keys(keys)
     return skin.text("VavooPick")
 
 

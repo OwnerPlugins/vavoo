@@ -885,7 +885,7 @@ def list_page_rows(widget, themed):
 
 def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
               display=None, kind="list", themed=None, value=None, dim=False,
-              value_icon=False):
+              value_icon=False, no_icon=False):
     """Build a MultiContent entry with icon and text.
 
     The entry's first item is always (name, link); `display` is what
@@ -893,7 +893,8 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
     its channel count). `kind` / `themed`: the list it goes into (see
     m2list). `value`: a short text at the row's right end (✓ / ✗ in
     Choose countries); `dim`: greyed out (a hidden country);
-    `value_icon`: a padlock at the row's right end (a locked country)."""
+    `value_icon`: a padlock at the row's right end (a locked country);
+    `no_icon`: text only (an option row of Parental Control)."""
 
     safe_name = to_string(name)
     safe_link = to_string(link)
@@ -1086,6 +1087,14 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
                 text=to_string(letters),
                 flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER,
                 color=0xffffff, color_sel=0xffffff))
+
+    if no_icon:
+        png_data = None
+        if themed:
+            metrics = theme_metrics(kind)
+            right = text_pos[0] + text_size[0]
+            text_pos = (metrics["plain_x"], 0)
+            text_size = (right - metrics["plain_x"], text_size[1])
 
     if png_data:
         res.append(MultiContentEntryPixmapAlphaTest(
@@ -6148,8 +6157,10 @@ class VavooPickScreen(Screen):
     def __init__(self, session, description, keys):
         self.session = session
         Screen.__init__(self, session)
+        used = tuple(name for name, label in
+                     zip(("red", "green", "yellow", "blue"), keys) if label)
         self.skin, self._themed = load_screen_skin(
-            "pick", 'vavoo_pick.xml', clock_24=clock_24())
+            "pick", 'vavoo_pick.xml', clock_24=clock_24(), keys=used)
         self['menulist'] = m2list([], kind="big", themed=self._themed)
         self['description'] = Label(description)
         self['statusbar'] = Label("")
@@ -6531,18 +6542,18 @@ class VavooParental(VavooPickScreen):
         yes, no = _("Yes"), _("No")
         rows, keys = [], []
 
-        def setting(key, label, value, **kw):
+        def setting(key, label, value):
             keys.append(key)
             rows.append(show_list(to_string(label), key, is_category=True,
                                   kind="big", themed=self._themed,
-                                  value=value, **kw))
+                                  value=value, no_icon=True))
 
         setting(self.ROW_PIN, _("Change the PIN") if has_pin
                 else _("Set a PIN"),
                 u"●●●●" if has_pin else u"—")
         if has_pin:
             setting(self.ROW_REMOVE, _("Remove the PIN (unlock everything)"),
-                    u"")
+                    None)
         setting(self.ROW_ADULT, _("Lock adult channels"), u"‹ {} ›".format(
             to_text(yes if vavoo_store.lock_adult() else no)))
         setting(self.ROW_SETTINGS, _("Lock the settings"), u"‹ {} ›".format(
