@@ -60,6 +60,7 @@ from Components.config import (
 )
 from enigma import (
     RT_HALIGN_LEFT,
+    RT_HALIGN_RIGHT,
     RT_VALIGN_CENTER,
     eListboxPythonMultiContent,
     ePicLoad,
@@ -514,6 +515,7 @@ cfg.autobouquetupdate = ConfigEnableDisable(default=False)
 cfg.genm3u = NoSave(ConfigAction())
 cfg.show_log = NoSave(ConfigAction())
 cfg.view_favourites = NoSave(ConfigAction())
+cfg.choose_countries = NoSave(ConfigAction())
 # Which catalog/stream source vavoo_proxy.py's initialize_proxy()
 # tries - "auto" keeps its default Geil-first/Vavoo-fallback
 # order; "geil"/"vavoo" pin it to exactly one source, with no
@@ -580,6 +582,13 @@ cfg.list_position = ConfigSelection(
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
 )
 cfg.playlist_key = ConfigText(default="")
+# The app's list settings: several sources of one channel in one row;
+# a country's catalog categories ("Italy ➾ Sport") as rows first.
+cfg.group_sources = ConfigYesNo(default=True)
+cfg.subcategories = ConfigYesNo(default=True)
+# "Choose countries" opened by itself once, on a first start (see
+# MainVavoo._maybe_first_run()).
+cfg.countries_asked = ConfigYesNo(default=False)
 cfg.parental_pin = ConfigText(default="")
 cfg.parental_countries = ConfigText(default="")
 cfg.proxy_startup_timeout = ConfigSelectionNumber(
@@ -852,13 +861,14 @@ def list_page_rows(widget, themed):
 
 
 def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
-              display=None, kind="list", themed=None):
+              display=None, kind="list", themed=None, value=None, dim=False):
     """Build a MultiContent entry with icon and text.
 
     The entry's first item is always (name, link); `display` is what
     the row shows instead of the name, when it differs (a country with
     its channel count). `kind` / `themed`: the list it goes into (see
-    m2list)."""
+    m2list). `value`: a short text at the row's right end (✓ / ✗ in
+    Choose countries); `dim`: greyed out (a hidden country)."""
 
     safe_name = to_string(name)
     safe_link = to_string(link)
@@ -1035,12 +1045,25 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
             png=png_data
         ))
 
+    colours = {}
+    if dim:
+        colours = {"color": 0x7a7a86, "color_sel": 0xb0b0b8}
+    if value is not None:
+        # the value's column: three row heights at the right end
+        value_w = min(text_size[1] * 3, text_size[0] // 2)
+        res.append(MultiContentEntryText(
+            pos=(text_pos[0] + text_size[0] - value_w, text_pos[1]),
+            size=(value_w, text_size[1]),
+            font=0,
+            text=to_string(value),
+            flags=RT_HALIGN_RIGHT | RT_VALIGN_CENTER, **colours))
+        text_size = (text_size[0] - value_w - 10, text_size[1])
     res.append(MultiContentEntryText(
         pos=text_pos,
         size=text_size,
         font=0,
         text=to_string(display) if display is not None else safe_name,
-        flags=HALIGN | RT_VALIGN_CENTER
+        flags=HALIGN | RT_VALIGN_CENTER, **colours
     ))
 
     return list(res)
@@ -1819,6 +1842,18 @@ class vavoo_config(Screen, ConfigListScreen):
               "channel list. The country's programme guide is "
               "downloaded when you open a country.")
         ))
+        self.list.append(getConfigListEntry(
+            _("Group Sources"),
+            cfg.group_sources,
+            _("The sources of one channel (.b, .c, .s) in one row; MENU "
+              "→ Source in the player picks one. Off: every source in "
+              "its own row.")))
+        self.list.append(getConfigListEntry(
+            _("Sub-categories"),
+            cfg.subcategories,
+            _("A country whose channels come in categories (Sport, "
+              "News...) lists them first: All channels, the categories, "
+              "General.")))
 
         # Grouped with "Enable Vavoo EPG" above rather than left down by
         # the other bouquet-related entries below: this schedule drives
@@ -1898,6 +1933,11 @@ class vavoo_config(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_("Debug logging"), cfg.debug_logging, _(
             "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting.")))
         self.list.append(getConfigListEntry(
+            _("Choose countries"),
+            cfg.choose_countries,
+            _("Hide the countries you never watch from the main list and "
+              "from search.")))
+        self.list.append(getConfigListEntry(
             _("Show Log (Ok to view)"),
             cfg.show_log,
             _("View the last 200 lines of %s.") % LOG_FILE))
@@ -1934,6 +1974,8 @@ class vavoo_config(Screen, ConfigListScreen):
                 default=True)
         elif sel and sel == cfg.show_log:
             open_log_viewer(self.session)
+        elif sel and sel == cfg.choose_countries:
+            self.session.open(VavooCountries)
         elif sel and sel == cfg.view_favourites:
             self.session.open(VavooFavourites)
         elif sel and sel in (
@@ -3702,7 +3744,8 @@ class MainVavoo(Screen, PreviewWindow):
             counts = {}
             if response:
                 try:
-                    counts = vavoo_proxy.proxy.country_counts()
+                    counts = vavoo_proxy.proxy.country_counts(
+                        cfg.group_sources.value)
                 except Exception as e:
                     debug("Channel counts not available: {}".format(e))
             favourite_count = len(vUtils.load_favourites())
@@ -3766,7 +3809,8 @@ class MainVavoo(Screen, PreviewWindow):
                         display="{} ({})".format(label, len(recent))
                         if show_counts else label,
                         themed=self._themed))
-                for country in self.countries:
+                # (the hidden ones out: Choose countries)
+                for country in vavoo_store.visible_countries(self.countries):
                     count = counts.get(to_text(country).lower())
                     self.cat_list.append(show_list(
                         country, country,
@@ -3791,6 +3835,7 @@ class MainVavoo(Screen, PreviewWindow):
                     self._start_last_done = True
                     if recent:
                         self._open_channel(recent[0])
+                self._maybe_first_run(favourite_count, recent)
                 self._country_load_failures = 0
                 # Clear the retry timer if it exists
                 retry_timer = self.__dict__.pop('_country_retry_timer', None)
@@ -3866,6 +3911,29 @@ class MainVavoo(Screen, PreviewWindow):
             print("Error opening vavoo screen: " + str(e))
             trace_error()
 
+    def _maybe_first_run(self, favourite_count, recent):
+        """On the very first start (no favourites, nothing watched, no
+        country hidden, more than one country) Choose countries opens
+        by itself, once, as in the app."""
+        if cfg.countries_asked.value:
+            return
+        cfg.countries_asked.value = True
+        cfg.countries_asked.save()
+        try:
+            configfile.save()
+        except Exception:
+            pass
+        if favourite_count or recent or vavoo_store.hidden_countries() or \
+                len(self.countries) < 2:
+            return
+        self.session.openWithCallback(
+            self._on_countries_chosen, VavooCountries, self.countries,
+            first_run=True)
+
+    def _on_countries_chosen(self, saved=False):
+        if saved and not self._closed:
+            self.cat()
+
     def _on_child_closed(self, *args, **kwargs):
         """Back from a country, the Favourites or a search: the
         favourites row may have changed."""
@@ -3884,10 +3952,11 @@ class MainVavoo(Screen, PreviewWindow):
         self.session.openWithCallback(self._on_child_closed, VavooFavourites)
 
     def search_all(self):
-        """YELLOW: search every country's channels (the app's search
-        from its main screen). The lists are asked of the proxy in the
-        background, then the search opens."""
-        countries = list(self.countries)
+        """YELLOW: search every shown country's channels (the app's
+        search from its main screen) - read in-process from the proxy
+        (VavooProxy.channel_rows()), in the background, then the search
+        opens. Hidden countries are left out (Choose countries)."""
+        countries = vavoo_store.visible_countries(self.countries)
         if not countries:
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("The channel list is still loading..."), 3)
@@ -3895,8 +3964,7 @@ class MainVavoo(Screen, PreviewWindow):
         if self._search_loading:
             return
         self._search_loading = True
-        if NOTIFICATION_AVAILABLE:
-            quick_notify(_("Loading all channels..."), 2)
+        grouped = cfg.group_sources.value
 
         def _task():
             items = []
@@ -3904,18 +3972,12 @@ class MainVavoo(Screen, PreviewWindow):
                 if self._closed:
                     return
                 try:
-                    content = getUrl(
-                        PROXY_BASE_URL + "/channels?country=" +
-                        url_quote(country), timeout=5, retries=1)
-                    channels = loads(ensure_str(content)) if content else []
+                    channels = vavoo_proxy.proxy.channel_rows(
+                        country, grouped)
                 except Exception as e:
                     debug("Search: no channels for {}: {}".format(country, e))
                     continue
-                if not isinstance(channels, list):
-                    continue
-                for channel in channels:
-                    if not isinstance(channel, dict):
-                        continue
+                for channel in channels or []:
                     name, url = channel.get("name"), channel.get("url")
                     if name and url:
                         # VavooSearch's "name###url" plus the country,
@@ -3936,7 +3998,7 @@ class MainVavoo(Screen, PreviewWindow):
             return
         if not items:
             if NOTIFICATION_AVAILABLE:
-                quick_notify(_("Could not load channels - proxy not responding"), 4)
+                quick_notify(_("The channel list is still loading..."), 4)
             return
         self.session.openWithCallback(
             self._on_search_all_result, VavooSearch, self, items,
@@ -3945,11 +4007,8 @@ class MainVavoo(Screen, PreviewWindow):
     def _on_search_all_result(self, selected_item=None):
         if not selected_item or self._closed:
             return
-        name, url = selected_item[0], selected_item[1]
-        country = selected_item[2] if len(selected_item) > 2 else None
-        self._open_channel({
-            "name": name, "url": url, "country_name": country,
-            "country_code": get_country_code(country) if country else None})
+        play_search_result(self.session, self, selected_item,
+                           self._on_child_closed)
 
     def _open_channel(self, channel):
         """One channel full screen from the main menu (a search result,
@@ -4339,8 +4398,27 @@ class MainVavoo(Screen, PreviewWindow):
 
 
 class vavoo(Screen, NowNextPanel, PreviewWindow):
-    def __init__(self, session, name, url, option_value=None):
+    """A country's channels (the app's ChannelsActivity). With
+    Sub-categories on and two or more catalog categories, the country
+    first lists "All channels", its categories A-Z and "General"; OK
+    opens one in a new screen of this class (`category`, with the
+    country's `channels` already loaded - no second proxy request)."""
+
+    CATEGORY_ALL = "\x00all"
+    CATEGORY_GENERAL = "\x00general"
+
+    def __init__(self, session, name, url, option_value=None,
+                 category=None, channels=None):
         self.session = session
+        self.category = category
+        self._preloaded = channels
+        # every channel of the country (the proxy's rows), for the
+        # categories and the search
+        self._all_channels = []
+        self.showing_categories = False
+        self.category_keys = []
+        self._digits = ""
+        self._digit_time = 0
         global _session
         _session = session
 
@@ -4480,21 +4558,41 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                 self['proxy_status'].setText(_("✗ Proxy Offline"))
                 return
             index, name, url = self._selected_row()
+            title = to_text(self._title())
             if index is None:
-                self['proxy_status'].setText(to_string(self.country_name))
+                self['proxy_status'].setText(to_string(title))
+                return
+            text = u"{} · {}/{}".format(title, index + 1, len(self.cat_list))
+            if self.showing_categories:
+                self['proxy_status'].setText(to_string(text))
                 return
             favourite = to_text(url) in self._favourite_keys
-            text = "{} · {}/{}".format(
-                to_string(self.country_name), index + 1, len(self.cat_list))
             if favourite:
-                text += "  ★"
-            self['proxy_status'].setText(text)
+                text += u"  \u2605"
+            self['proxy_status'].setText(to_string(text))
             self['green'].setText(_('Remove Fav') if favourite else _('Add Fav'))
         except Exception as e:
             debug("Status line not updated: {}".format(e))
 
+    def _title(self):
+        """"Italy", or "Italy ➾ Sport" in a category's screen."""
+        if self.category is None:
+            return self.country_name
+        return u"{} \u27be {}".format(to_text(self.country_name),
+                                      to_text(self._category_label(
+                                          self.category)))
+
+    def _category_label(self, key):
+        if key == self.CATEGORY_ALL:
+            return _("All channels")
+        if key == self.CATEGORY_GENERAL:
+            return _("General")
+        return key
+
     def _epg_panel_selection(self):
         """See NowNextPanel."""
+        if self.showing_categories:
+            return None
         current = self['menulist'].getCurrent()
         if not current:
             return None
@@ -4535,6 +4633,25 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             },
             -1
         )
+        # The number keys go to that row (the app's numbered rows).
+        self["number_actions"] = ActionMap(
+            ['NumberActions'],
+            dict((str(d), (lambda n: lambda: self.number(n))(d))
+                 for d in range(10)),
+            -1)
+
+    def number(self, digit):
+        """Typed within 1.5 s the digits add up (1, 2 = row 12)."""
+        if not self.cat_list or self.showing_categories:
+            return
+        now = time.time()
+        if now - self._digit_time > 1.5:
+            self._digits = ""
+        self._digit_time = now
+        self._digits = (self._digits + str(digit))[-4:]
+        target = int(self._digits) - 1
+        if 0 <= target < len(self.cat_list):
+            self['menulist'].moveToIndex(target)
 
     def _initialize_timer(self):
         """Initialize the timer with proper timeout handling"""
@@ -4565,6 +4682,10 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         empty screen, where simply asking again would have worked.
         """
         debug("vavoo.cat() called for country: " + str(self.country_name))
+        if self._preloaded is not None:
+            # a category's screen: the country's list came with it
+            self._build_channel_list(self._preloaded)
+            return
 
         def _task():
             if self._closed:
@@ -4573,6 +4694,10 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                 country_encoded = url_quote(self.country_name)
                 proxy_url = PROXY_BASE_URL + \
                     "/channels?country={}".format(country_encoded)
+                if not cfg.group_sources.value:
+                    # every source its own row (the app's Group
+                    # Sources off)
+                    proxy_url += "&grouped=0"
 
                 channels_data = None
                 for attempt in range(CHANNEL_FETCH_ATTEMPTS):
@@ -4618,15 +4743,13 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             _("Could not load channels - proxy not responding"))
 
     def _build_channel_list(self, channels_data):
-        """Build channel list from proxy data"""
+        """Build the rows from the proxy's list (cat()), or from the
+        country's list a category screen was given."""
         # cat()'s background _task() already checks self._closed before
         # scheduling this via reactor.callFromThread, but that only
         # queues the call - the user can still press Back/Cancel (which
         # sets self._closed and tears the screen down) in the gap
-        # before the reactor actually runs it. Every sibling path that
-        # can land here the same way (_on_channels_unavailable(),
-        # MainVavoo._on_countries_response()) already re-checks this as
-        # its first line - this one was missing it.
+        # before the reactor actually runs it.
         if self._closed:
             return
         self.cat_list = []
@@ -4636,42 +4759,46 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             print("[vavoo] Invalid channels data type: " +
                   str(type(channels_data)))
             return
+        self._all_channels = [
+            c for c in channels_data if isinstance(c, dict) and c.get("url")]
 
-        for channel in channels_data:
-            if isinstance(channel, dict):
-                channel_name = channel.get("name", "Unknown")
-                channel_url = channel.get("url", "")
-                # Already fixed up (Geil/Vavoo) by our own proxy's
-                # /channels endpoint - no need to run it through
-                # fix_logo_url() again here.
-                logo = channel.get("logo", "")
+        if self.category is None:
+            # A favourite whose channel got a new id in the catalog:
+            # found again by its name (vavoo_store.repair_favourites()).
+            try:
+                if vavoo_store.repair_favourites(
+                        self.country_name,
+                        [{"name": c.get("name"), "url": c.get("url"),
+                          "logo": c.get("logo")}
+                         for c in self._all_channels]):
+                    self._favourite_keys = vUtils.favourite_urls()
+            except Exception as e:
+                debug("Favourites not repaired: {}".format(e))
 
-                self._channel_entries.append(
-                    (channel_name, channel_url, logo))
-                self.cat_list.append(
-                    show_list(
-                        channel_name, channel_url, is_channel=True,
-                        logo_url=logo, themed=self._themed)
-                )
+        # The search always looks in the whole country (as in the app).
+        self.itemlist = [
+            "###".join((to_string(c.get("name", "")), to_string(c["url"])))
+            for c in self._all_channels]
+
+        categories = self._categories() \
+            if self.category is None and cfg.subcategories.value else []
+        if categories:
+            self._show_categories(categories)
+            return
+
+        for channel in self._channels_in(self.category):
+            # Already fixed up (Geil/Vavoo) by our own proxy's
+            # /channels endpoint - no need to run it through
+            # fix_logo_url() again here.
+            self._channel_entries.append(
+                (channel.get("name", "Unknown"), channel["url"],
+                 channel.get("logo", "")))
+        self.cat_list = self._channel_rows()
 
         if not self.cat_list:
             self['name'].setText(to_string("No proxy URLs built."))
             return
 
-        # A favourite whose channel got a new id in the catalog: found
-        # again by its name (vavoo_store.repair_favourites()).
-        try:
-            if vavoo_store.repair_favourites(
-                    self.country_name,
-                    [{"name": n, "url": u, "logo": logo}
-                     for n, u, logo in self._channel_entries]):
-                self._favourite_keys = vUtils.favourite_urls()
-        except Exception as e:
-            debug("Favourites not repaired: {}".format(e))
-
-        self.itemlist = [
-            item[0][0] + "###" + item[0][1] for item in self.cat_list
-        ]
         self.update_menu()
         # Filling the list does not reliably announce a selection
         # change by itself - make sure the first row gets its panel
@@ -4680,6 +4807,59 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         self._update_status_line()
         self._preload_channel_picons()
         debug("List built with " + str(len(self.cat_list)) + " items.")
+
+    def _category_of(self, channel):
+        return to_text(channel.get("category") or "").strip() or \
+            self.CATEGORY_GENERAL
+
+    def _channels_in(self, category):
+        if category is None or category == self.CATEGORY_ALL:
+            return self._all_channels
+        return [c for c in self._all_channels
+                if self._category_of(c) == category]
+
+    def _categories(self):
+        """[(key, count)]: All channels, the categories A-Z, General
+        last - or [] when the country has fewer than two."""
+        counts = {}
+        for channel in self._all_channels:
+            key = self._category_of(channel)
+            counts[key] = counts.get(key, 0) + 1
+        if len(counts) < 2:
+            return []
+        keys = sorted(counts, key=lambda k: (k == self.CATEGORY_GENERAL,
+                                             k.lower(), k))
+        return [(self.CATEGORY_ALL, len(self._all_channels))] + \
+            [(k, counts[k]) for k in keys]
+
+    def _show_categories(self, categories):
+        """The category rows, each with the country's flag."""
+        self.showing_categories = True
+        self.category_keys = [key for key, _count in categories]
+        rows = []
+        for key, count in categories:
+            label = to_text(self._category_label(key))
+            display = u"{} ({})".format(label, count) \
+                if cfg.show_counts.value else label
+            rows.append(show_list(to_string(self.country_name),
+                                  to_string(key), display=to_string(display),
+                                  themed=self._themed))
+        self.cat_list = rows
+        self.update_menu()
+        self._epg_panel_changed()
+        self._update_status_line()
+
+    def _channel_rows(self):
+        """The channel rows, numbered like a receiver's list."""
+        total = len(self._channel_entries)
+        digits = len(str(total))
+        return [
+            show_list(name, url, is_channel=True, logo_url=logo,
+                      display=to_string(u"{}  {}".format(
+                          str(i + 1).rjust(digits, u"\u2007"),
+                          to_text(name))),
+                      themed=self._themed)
+            for i, (name, url, logo) in enumerate(self._channel_entries)]
 
     def _preload_channel_picons(self):
         """Download picons for this country's channel list in the
@@ -4748,14 +4928,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             except Exception:
                 selected_index = None
 
-            self.cat_list = [
-                show_list(name, url, is_channel=True, logo_url=logo,
-                          themed=self._themed)
-                for name, url, logo in self._channel_entries
-            ]
-            self.itemlist = [
-                item[0][0] + "###" + item[0][1] for item in self.cat_list
-            ]
+            self.cat_list = self._channel_rows()
             self.update_menu()
 
             if selected_index is not None and self.cat_list:
@@ -4791,9 +4964,21 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         """Callback after user confirmation"""
         _shared_confirm_reload_bouquets(self, result)
 
+    def open_category(self):
+        """OK on a category row: its channels in a new screen."""
+        i = self['menulist'].getSelectedIndex()
+        if i is None or not 0 <= i < len(self.category_keys):
+            return
+        self.session.open(vavoo, self.country_name, self.url,
+                          self.option_value, category=self.category_keys[i],
+                          channels=self._all_channels)
+
     def ok(self):
         """OK: the channel into the preview window; on the channel
-        already playing there, full screen."""
+        already playing there, full screen. On a category: open it."""
+        if self.showing_categories:
+            self.open_category()
+            return
         try:
             i, name, url = self._selected_row()
             if i is None:
@@ -4813,6 +4998,9 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             trace_error()
 
     def full_screen(self):
+        if self.showing_categories:
+            self.open_category()
+            return
         try:
             i = self['menulist'].getSelectedIndex()
             self.currentindex = i
@@ -4873,9 +5061,10 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             )
 
     def toggle_favourite(self):
-        """Star/unstar the highlighted channel - same selection lookup
-        ok() uses, bound to the 'info' key (free in this screen: no
-        info() method exists here, unlike MainVavoo's unrelated one)."""
+        """GREEN: star/unstar the highlighted channel (nothing on a
+        category row)."""
+        if self.showing_categories:
+            return
         try:
             i = self['menulist'].getSelectedIndex()
             selection = self['menulist'].l.getCurrentSelection()
@@ -5086,28 +5275,21 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             print("[Bouquet] Error in _on_export_complete: %s" % e)
 
     def search_vavoo(self):
+        """YELLOW: search the whole country (also from a category)."""
         if not getattr(self, 'itemlist', None):
             return
         self.session.openWithCallback(
             self.onSearchResult, VavooSearch, self, self.itemlist,
-            scope=self.country_name)
+            scope=self.country_name,
+            country_code=getattr(self, '_epg_country_code', None))
 
     def onSearchResult(self, selected_item=None):
-        """Callback with the channel selected by the search"""
-        if selected_item:
-            name, url = selected_item[0], selected_item[1]
-            self.session.openWithCallback(
-                self._on_player_closed,
-                Playstream2,
-                name,
-                url,
-                0,
-                [name, url],
-                [[[name, url]]],
-                country_code=get_country_code(self.country_name),
-                country_name=self.country_name,
-                hand_back=cfg.preview_window.value
-            )
+        """The channel chosen in the search, full screen, the results
+        as the player's list."""
+        if selected_item and not self._closed:
+            play_search_result(
+                self.session, self, selected_item, self._on_player_closed,
+                self.country_name)
 
     def _on_player_closed(self, result=None):
         """Back from full screen: the highlight goes to the channel
@@ -5837,6 +6019,177 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             self['menulist'].moveToIndex(min(i, len(self.cat_list) - 1))
 
 
+def proxy_countries():
+    """The catalog's countries, A-Z (the proxy's list, in-process)."""
+    try:
+        return list(getattr(vavoo_proxy.proxy, 'countries_list', None) or [])
+    except Exception:
+        return []
+
+
+class VavooPickScreen(Screen):
+    """The settings-wide list screen of Choose countries / Parental
+    Control (vavoo_pick.xml, vavoo_theme.pick_screen()): a list of
+    rows with a value at their right end, a description under it, the
+    status line and the four colour keys. Subclasses fill the rows
+    (refresh()) and say what the keys do (key_actions())."""
+
+    def __init__(self, session, description, keys):
+        self.session = session
+        Screen.__init__(self, session)
+        self.skin, self._themed = load_screen_skin(
+            "pick", 'vavoo_pick.xml', clock_24=clock_24())
+        self['menulist'] = m2list([], kind="big", themed=self._themed)
+        self['description'] = Label(description)
+        self['statusbar'] = Label("")
+        self['version'] = Label(to_string("V." + __version__))
+        for name, label in zip(("red", "green", "yellow", "blue"), keys):
+            self[name] = Label(label)
+        actions = {
+            "up": self.move_up,
+            "down": self.move_down,
+            "prevBouquet": self.page_down,
+            "nextBouquet": self.page_up,
+            "cancel": self.back,
+            "red": self.back,
+        }
+        actions.update(self.key_actions())
+        self['actions'] = ActionMap(
+            ['OkCancelActions', 'ColorActions', 'DirectionActions',
+             'EPGSelectActions'], actions, -1)
+        self.rows = []
+        self.onLayoutFinish.append(lambda: self.refresh(0))
+
+    def key_actions(self):
+        return {}
+
+    def refresh(self, select=None):
+        pass
+
+    def _index(self):
+        return self['menulist'].getSelectedIndex() or 0
+
+    def _show(self, rows, select=None):
+        self.rows = rows
+        if select is None:
+            select = self._index()
+        self['menulist'].l.setList(rows)
+        if rows:
+            self['menulist'].moveToIndex(max(0, min(select, len(rows) - 1)))
+
+    def move_up(self):
+        if self.rows:
+            self['menulist'].moveToIndex((self._index() - 1) % len(self.rows))
+
+    def move_down(self):
+        if self.rows:
+            self['menulist'].moveToIndex((self._index() + 1) % len(self.rows))
+
+    def page_up(self):
+        if self.rows:
+            self['menulist'].moveToIndex(max(
+                0, self._index() - list_page_rows(self['menulist'],
+                                                  self._themed)))
+
+    def page_down(self):
+        if self.rows:
+            self['menulist'].moveToIndex(min(
+                len(self.rows) - 1,
+                self._index() + list_page_rows(self['menulist'],
+                                               self._themed)))
+
+    def back(self):
+        self.close()
+
+
+class VavooCountries(VavooPickScreen):
+    """Settings → Choose countries (the app's CountriesActivity): every
+    catalog country with its flag, ✓ shown / ✗ hidden. OK / LEFT /
+    RIGHT switch one; Back · Save · Show all · Hide all. The hidden
+    ones leave the main list and "Search all" (vavoo_store); never all
+    of them. Closes with True when saved."""
+
+    def __init__(self, session, countries=None, first_run=False):
+        self.countries = sorted(countries if countries is not None
+                                else proxy_countries(),
+                                key=lambda c: to_text(c).lower())
+        self.hidden = set(vavoo_store.hidden_countries())
+        self._changed = False
+        self._warned = False
+        self.first_run = first_run
+        VavooPickScreen.__init__(
+            self, session,
+            _("Hide the countries you never watch from the main list and "
+              "from search."),
+            (_("Back"), _("Save"), _("Show all"), _("Hide all")))
+        if first_run:
+            self.onLayoutFinish.append(self._welcome)
+
+    def key_actions(self):
+        return {"ok": self.toggle, "left": self.toggle,
+                "right": self.toggle, "green": self.save,
+                "yellow": self.show_all, "blue": self.hide_all}
+
+    def _welcome(self):
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Welcome! Choose the countries for the main list "
+                           "(OK shows or hides one), then GREEN saves. "
+                           "Settings → Choose countries changes it later."),
+                         8)
+
+    def refresh(self, select=None):
+        rows = []
+        for country in self.countries:
+            shown = to_text(country) not in self.hidden
+            rows.append(show_list(
+                country, country, kind="big", themed=self._themed,
+                value=u"✓" if shown else u"✗", dim=not shown))
+        self._show(rows, select)
+        shown = len([c for c in self.countries
+                     if to_text(c) not in self.hidden])
+        self['statusbar'].setText(_("{} of {} countries shown").format(
+            shown, len(self.countries)))
+
+    def toggle(self):
+        if not self.countries:
+            return
+        country = to_text(self.countries[self._index()])
+        if country in self.hidden:
+            self.hidden.discard(country)
+        else:
+            self.hidden.add(country)
+        self._changed = True
+        self.refresh()
+
+    def show_all(self):
+        self.hidden -= set(to_text(c) for c in self.countries)
+        self._changed = True
+        self.refresh()
+
+    def hide_all(self):
+        self.hidden |= set(to_text(c) for c in self.countries)
+        self._changed = True
+        self.refresh()
+
+    def save(self):
+        if self.countries and all(to_text(c) in self.hidden
+                                  for c in self.countries):
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Keep at least one country"), 3)
+            return
+        vavoo_store.set_hidden_countries(self.hidden)
+        self.close(True)
+
+    def back(self):
+        if self._changed and not self._warned:
+            self._warned = True
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Changes not saved: GREEN saves, press again "
+                               "to leave without saving"), 4)
+            return
+        self.close(False)
+
+
 def open_settings(session):
     """The plugin's settings (MENU → Settings everywhere)."""
     session.open(vavoo_config)
@@ -5946,6 +6299,39 @@ class VavooLogViewer(Screen):
 
 
 # --- Live search screen ---
+def play_search_result(session, screen, selected, on_closed,
+                       default_country=None):
+    """VavooSearch's answer: the chosen channel full screen, the
+    results as the player's list, after the PIN of a locked country."""
+    name, url = selected[0], selected[1]
+    country = (selected[2] if len(selected) > 2 else None) or default_country
+    results = list(selected[3]) if len(selected) > 3 and selected[3] \
+        else [(name, url, country)]
+    index = selected[4] if len(selected) > 4 else 0
+    if not 0 <= index < len(results):
+        results, index = [(name, url, country)], 0
+    names = [r[2] or default_country for r in results]
+    codes = {}
+    for country_name in names:
+        if country_name not in codes:
+            try:
+                codes[country_name] = get_country_code(country_name) \
+                    if country_name else None
+            except Exception:
+                codes[country_name] = None
+    country_codes = [codes[c] for c in names]
+    rows = [[(to_string(r[0]), to_string(r[1]))] for r in results]
+
+    def _play():
+        session.openWithCallback(
+            on_closed, Playstream2, rows[index][0][0], rows[index][0][1],
+            index, rows[index][0], rows,
+            country_code=country_codes[index], country_codes=country_codes,
+            country_name=names[index], country_names=names,
+            hand_back=cfg.preview_window.value)
+    _require_parental_pin(session, screen, names[index], _play)
+
+
 class VavooSearch(Screen):
     """Live search. `itemlist`: "name###url" strings, or
     "name###url###country" when searching several countries (each row
@@ -5953,10 +6339,32 @@ class VavooSearch(Screen):
     item). `scope`: what is searched, for the title ("Portugal", "all
     channels")."""
 
-    def __init__(self, session, parentScreen, itemlist, scope=None):
+    # Programme matches (the app's): from 3 letters, at most this many.
+    PROGRAMME_MIN = 3
+    PROGRAMME_MAX = 100
+
+    def __init__(self, session, parentScreen, itemlist, scope=None,
+                 country_code=None):
         self.session = session
         self.parentScreen = parentScreen
         self.itemlist = itemlist
+        # [(name, url, country)] and each name normalized once
+        # (vavoo_store.normalize(): no accents, no case)
+        self._items = []
+        for item in itemlist or []:
+            parts = to_string(item).split('###')
+            if len(parts) < 2:
+                continue
+            url = parts[1].replace('%0a', '').replace(
+                '%0A', '').strip("\r\n")
+            self._items.append((parts[0], url,
+                                parts[2] if len(parts) > 2 else None))
+        self._norms = [vavoo_store.normalize(item[0]) for item in self._items]
+        # one country searched: its code, for the programme matches
+        self._country_code = country_code
+        self._codes = {}
+        self._favourites = vUtils.favourite_urls()
+        # [(name, url, country, programme title or None)]
         self.filteredList = []
         self.selectedIndex = 0
         self.search_text = ""
@@ -6096,44 +6504,30 @@ class VavooSearch(Screen):
                 _("Showing all channels: {}").format(len(self.filteredList)))
 
     def updateFilteredList(self):
-        text = self.search_text.lower().strip()
-
-        if not text:
-            self.filteredList = self.itemlist[:]
+        """The app's search (vavoo_store.search_matches()): every word
+        at the start of a word of the name, or (3+ letters) anywhere;
+        numbers whole. Names starting with the first word first. From
+        3 letters, then the channels whose programme on now has the
+        text (guides already in memory only)."""
+        words = vavoo_store.search_words(self.search_text)
+        if not words:
+            self.filteredList = [item + (None,) for item in self._items]
             self["status"].setText(
-                _("Showing all channels: {}").format(len(self.filteredList)))
+                _("{} channels").format(len(self.filteredList)))
         else:
-            self.filteredList = []
-            for item in self.itemlist:
-                try:
-                    name = item.split('###')[0].lower()
-                    if text in name:
-                        self.filteredList.append(item)
-                except Exception:
-                    continue
-
-            if self.filteredList:
-                # Build message parts without embedding quotes in translations
-                part1 = _("Search:")
-                part2 = _("Found: {} channels").format(len(self.filteredList))
-
-                message = '{} "{}" - {}'.format(
-                    part1,
-                    self.search_text,
-                    part2
-                )
-                self["status"].setText(message)
-            else:
-                # Build message parts without embedding quotes in translations
-                part1 = _("Search:")
-                part2 = _("No channels found")
-
-                message = '{} "{}" - {}'.format(
-                    part1,
-                    self.search_text,
-                    part2
-                )
-                self["status"].setText(message)
+            found = []
+            for index, norm in enumerate(self._norms):
+                if vavoo_store.search_matches(norm, words):
+                    found.append((not norm.startswith(words[0]), norm, index))
+            found.sort()
+            self.filteredList = [self._items[i] + (None,)
+                                 for _first, _norm, i in found]
+            query = u" ".join(words)
+            if len(query) >= self.PROGRAMME_MIN:
+                self.filteredList += self._programme_matches(
+                    query, set(i for _first, _norm, i in found))
+            self["status"].setText(
+                _("{} found").format(len(self.filteredList)))
 
         self.updateChannelList()
 
@@ -6145,28 +6539,72 @@ class VavooSearch(Screen):
 
         self["version"].setText(to_string("V." + __version__))
 
-    def updateChannelList(self):
-        display_list = []
-        for item in self.filteredList:
+    def _code_for(self, country):
+        if not country:
+            return self._country_code
+        if country not in self._codes:
             try:
-                parts = item.split('###')
-                name = parts[0]
-                url = parts[1].replace(
-                    '%0a', '').replace(
-                    '%0A', '').strip("\r\n")
-                # Several countries searched: "Channel  · Country", as
-                # the app's search of all channels shows it.
-                display = "{}  · {}".format(name, parts[2]) \
-                    if len(parts) > 2 and parts[2] else None
+                self._codes[country] = get_country_code(country)
+            except Exception:
+                self._codes[country] = None
+        return self._codes[country]
+
+    def _programme_matches(self, query, skip):
+        """Channels whose programme on now holds `query`, from the
+        guides in memory (vUtils.peek_now_next(): never a download) -
+        locked channels left out."""
+        out = []
+        loaded = {}
+        for index, (name, url, country) in enumerate(self._items):
+            if index in skip:
+                continue
+            code = self._code_for(country)
+            if not code:
+                continue
+            if code not in loaded:
+                try:
+                    loaded[code] = vUtils.peek_epg_guide(code) is not None
+                except Exception:
+                    loaded[code] = False
+            if not loaded[code]:
+                continue
+            try:
+                if vavoo_store.is_channel_locked(
+                        name, country or getattr(self.parentScreen,
+                                                 'country_name', None)):
+                    continue
+                answer = vUtils.peek_now_next(name, code)
+            except Exception:
+                continue
+            if not answer or answer[0] != "ok" or not answer[1]:
+                continue
+            title = to_text(answer[1][2])
+            if query in vavoo_store.normalize(title):
+                out.append((name, url, country, title))
+                if len(out) >= self.PROGRAMME_MAX:
+                    break
+        return out
+
+    def updateChannelList(self):
+        """Rows as the app's: "Name  ★" (a favourite), "  · Country"
+        when several countries are searched, "  ▶ title" for a
+        programme match."""
+        display_list = []
+        for name, url, country, title in self.filteredList:
+            try:
+                text = to_text(name)
+                if to_text(url) in self._favourites:
+                    text += u"  \u2605"
+                if country:
+                    text += u"  \u00b7 " + to_text(country)
+                if title:
+                    text += u"  \u25b6 " + title[:30]
                 # Without is_channel=True, show_list() takes its
                 # "this is a country name" branch for every search
-                # result - running get_country_code()'s full linear
-                # scan + substring match (and a disk stat) against
-                # the whole country table for each row, on every
-                # single keystroke, and occasionally resolving a
-                # channel name to a bogus flag icon by accident.
+                # result - a country lookup (and a disk stat) for each
+                # row, on every single keystroke.
                 display_list.append(show_list(
-                    name, url, is_channel=True, display=display,
+                    name, url, is_channel=True, display=to_string(text),
                     kind="search", themed=self._themed))
             except Exception:
                 continue
@@ -6190,17 +6628,13 @@ class VavooSearch(Screen):
         self.moveDown()
 
     def onOk(self):
+        """Closes with (name, url, country, results, index): the
+        results go to the player as its list (CH± goes along them)."""
         if self.filteredList and 0 <= self.selectedIndex < len(
                 self.filteredList):
-            channel_item = self.filteredList[self.selectedIndex]
-            parts = channel_item.split('###')
-            name = parts[0]
-            url = parts[1].replace(
-                '%0a', '').replace('%0A', '').strip("\r\n")
-            if len(parts) > 2:
-                self.close((name, url, parts[2]))
-            else:
-                self.close((name, url))
+            name, url, country, _title = self.filteredList[self.selectedIndex]
+            results = [(n, u, c) for n, u, c, _t in self.filteredList]
+            self.close((name, url, country, results, self.selectedIndex))
         else:
             self.close(None)
 
@@ -8266,24 +8700,22 @@ class Playstream2(
             return
 
         current = data.get("current")
-        choices = []
+        entries = []
         for member in members:
-            # to_string(): the label is the source's catalog name,
-            # which on Python 2 is unicode - joining that with a
-            # translated (byte string) "(current)" would fail on any
-            # non-ASCII character in either.
-            label = to_string(member.get("label", ""))
+            # to_text(): the label is the source's catalog name (unicode
+            # on Python 2). ✓ the one playing, ✗ one that failed a
+            # moment ago (the app's marks).
+            label = to_text(member.get("label", ""))
             if member.get("id") == current:
-                label = label + " " + _("(current)")
-            choices.append((label, member.get("id")))
+                label += u"  \u2713"
+            elif member.get("failed"):
+                label += u"  \u2717"
+            entries.append((to_string(label), member.get("id")))
 
-        from Screens.ChoiceBox import ChoiceBox
-        self.session.openWithCallback(
-            self._onStreamSourceChosen,
-            ChoiceBox,
-            title=_("Choose Stream Source"),
-            list=choices
-        )
+        open_action_menu(
+            self.session, _("Source"), entries,
+            lambda member_id: self._onStreamSourceChosen((None, member_id)),
+            layout="player_menu")
 
     def _onStreamSourceChosen(self, choice):
         if self._closed or not choice or not choice[1]:

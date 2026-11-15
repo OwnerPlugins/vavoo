@@ -725,6 +725,17 @@ def _base_country_from_group(group):
     return base_country or "default"
 
 
+def _category_from_group(group):
+    """The sub-category part of a catalog item's "group" label
+    ("Italy ➾ Sport" -> "Sport"), or "" when it has none (the app's
+    CatalogParser.subCategoryOf)."""
+    group = group or ""
+    for sep in _GROUP_SEPARATORS:
+        if sep in group:
+            return group.split(sep, 1)[1].strip()
+    return ""
+
+
 def _group_key(name):
     """Grouping key: same key = sources of the same channel. Empty
     when nothing recognizable is left (never grouped with another
@@ -1976,7 +1987,133 @@ class VavooProxy(object):
             print("[Proxy] {0}: source {1} failed, retrying it".format(
                 channel_id, failed_member_id))
 
-    def country_counts(self):
+    def channel_rows(self, country, grouped=True):
+        """A country's channel list as /channels serves it: [{"id",
+        "name", "url", "logo", "country", "epg_id", "category"}], the
+        sources of one channel in one row ("grp:<country>:<key>" id)
+        unless grouped is False (the app's "Group Sources" off: every
+        source its own row, under its catalog name). "category" is the
+        catalog's sub-category ("Italy ➾ Sport" -> "Sport", "" when
+        there is none) - of a grouped row, its first source's. Also
+        called in-process by plugin.py (search all, the channel
+        list's sub-categories)."""
+        # O(channels-in-this-country) via the precomputed
+        # per-country index, instead of scanning the entire
+        # (every-country) catalog on every single /channels
+        # call.
+        matching_channels = (getattr(self, 'channels_by_country', None)
+                             or {}).get((country or "").lower(), [])
+
+        response_channels = []
+        local_ip = self.get_local_ip()
+
+        # Group sources of the same channel (Vavoo's own
+        # ".b"/".c"/".s" convention, which geil.to's "(N)"
+        # suffix is already normalized to by fix_geil_name())
+        # into a single row, like the companion Android app's
+        # "group sources" option - see _group_key()'s own
+        # docstring for why that, and not EPG matching's more
+        # tolerant clean_name_for_similarity(), is used here. A
+        # name that normalizes to "" (nothing recognizable
+        # left) is never grouped with anything else - shown
+        # standalone, same as today.
+        #
+        # _group_key() computed once per channel here (not
+        # twice, once per pass) and carried forward as
+        # channel_keys - halves the regex cost of this
+        # endpoint, which bouquet export calls once per
+        # country *and* once per category on every run.
+        channel_keys = [
+            (channel, _group_key(channel.get("name", "")) if grouped else "")
+            for channel in matching_channels]
+
+        key_members = {}
+        for channel, key in channel_keys:
+            if key:
+                key_members.setdefault(key, []).append(channel)
+
+        emitted_keys = set()
+        for channel, key in channel_keys:
+            members = key_members.get(key) if key else None
+
+            if members and len(members) > 1:
+                # Several sources of one channel - one row for
+                # all of them, emitted the first time any of
+                # its sources is reached (so the row lands
+                # where the first source would have, instead
+                # of reordering the list), skipped every other
+                # time. Resolved through resolve_group_with_
+                # retry() via its synthetic group id, which
+                # picks one source and stays on it until the
+                # player reports it as failed.
+                if key in emitted_keys:
+                    continue
+                emitted_keys.add(key)
+                group_id = make_group_id(country, key)
+                display_names = [
+                    _strip_source_suffix(m.get("name", "")) or
+                    m.get("name", "") for m in members]
+                display_name = min(display_names, key=len)
+                logo = next((m.get("logo")
+                             for m in members if m.get("logo")), "")
+                epg_id = next((m.get("epg_id")
+                               for m in members if m.get("epg_id")), "")
+                proxy_url = "http://%s:%d/vavoo?channel=%s" % (
+                    local_ip, PORT, quote(group_id, safe=''))
+                response_channels.append({
+                    "id": group_id,
+                    "name": display_name,
+                    "url": proxy_url,
+                    "logo": logo,
+                    # The catalog's own casing (e.g. "Italy"),
+                    # same as the standalone branch below -
+                    # not the raw query string (e.g. "italy"),
+                    # which made this field's casing differ
+                    # between a grouped and a standalone row
+                    # in the same response.
+                    "country": members[0].get("country", country),
+                    "epg_id": epg_id,
+                    "category": _category_from_group(
+                        members[0].get("group", ""))
+                })
+            else:
+                channel_id = channel.get("id", "")
+                if not channel_id:
+                    continue
+                # Quoted the same way the grouped branch above
+                # (group_id) and /playlist.m3u (channel_id) already
+                # are - this was the one place a raw catalog id
+                # with a "&"/"#"/space in it could still corrupt
+                # the query string.
+                proxy_url = "http://%s:%d/vavoo?channel=%s" % (
+                    local_ip, PORT, quote(str(channel_id), safe=''))
+                raw_name = channel.get("name", "")
+                shown_name = raw_name if not grouped else (
+                    _strip_source_suffix(raw_name) or raw_name)
+                response_channels.append({
+                    "id": channel_id,
+                    # Strip the same source-variant suffix the
+                    # grouped branch above already strips -
+                    # this channel just happens to have no
+                    # sibling source present in this country's
+                    # catalog right now (common - not every
+                    # channel actually has multiple sources
+                    # even though Vavoo/geil still tags it with
+                    # a letter), which is no reason to show the
+                    # raw ".b"/".c"/".s" suffix forever.
+                    # (grouped off: the catalog name, ".b"/".c"
+                    # included - it is what tells the sources apart)
+                    "name": shown_name,
+                    "url": proxy_url,
+                    "logo": channel.get("logo", ""),
+                    "country": channel.get("country", country),
+                    "epg_id": channel.get("epg_id", ""),
+                    "category": _category_from_group(
+                        channel.get("group", ""))
+                })
+        return response_channels
+
+    def country_counts(self, grouped=True):
         """{country.lower(): number of rows /channels lists for it} -
         the sources of one channel counted once, as /channels groups
         them (one row per _group_key(), plus every channel whose name
@@ -1988,6 +2125,10 @@ class VavooProxy(object):
         channels_by_country once and never changes it afterwards, so
         the same dict object means the same counts."""
         by_country = getattr(self, 'channels_by_country', None) or {}
+        if not grouped:
+            # every source its own row (Group Sources off)
+            return dict((country, len([c for c in channels if c.get("id")]))
+                        for country, channels in by_country.items())
         cached = getattr(self, '_country_counts', None)
         if cached is not None and cached[0] is by_country:
             return cached[1]
@@ -2015,13 +2156,18 @@ class VavooProxy(object):
         with self.group_lock:
             state = self._group_state.get(group_id) or {}
             current = state.get("member") or self._group_pins.get(group_id)
+            avoid = dict(state.get("avoid") or {})
         member_ids = [m.get("id") for m in members]
         if current not in member_ids:
             current = None
         labels = _unique_source_labels(members)
+        now = time.time()
         return {
             "members": [
-                {"id": m.get("id"), "label": labels[i]}
+                {"id": m.get("id"), "label": labels[i],
+                 # given up on a moment ago (the app's ✗)
+                 "failed": bool(avoid.get(m.get("id"))) and
+                 now - avoid.get(m.get("id"), 0) < GROUP_AVOID_SECONDS}
                 for i, m in enumerate(members)
             ],
             "current": current,
@@ -2479,113 +2625,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(400, "Missing country parameter")
                     return
 
-                # O(channels-in-this-country) via the precomputed
-                # per-country index, instead of scanning the entire
-                # (every-country) catalog on every single /channels
-                # call.
-                matching_channels = p.channels_by_country.get(
-                    country.lower(), []) if hasattr(
-                    p, 'channels_by_country') else []
-
-                response_channels = []
-                local_ip = p.get_local_ip()
-
-                # Group sources of the same channel (Vavoo's own
-                # ".b"/".c"/".s" convention, which geil.to's "(N)"
-                # suffix is already normalized to by fix_geil_name())
-                # into a single row, like the companion Android app's
-                # "group sources" option - see _group_key()'s own
-                # docstring for why that, and not EPG matching's more
-                # tolerant clean_name_for_similarity(), is used here. A
-                # name that normalizes to "" (nothing recognizable
-                # left) is never grouped with anything else - shown
-                # standalone, same as today.
-                #
-                # _group_key() computed once per channel here (not
-                # twice, once per pass) and carried forward as
-                # channel_keys - halves the regex cost of this
-                # endpoint, which bouquet export calls once per
-                # country *and* once per category on every run.
-                channel_keys = [
-                    (channel, _group_key(channel.get("name", "")))
-                    for channel in matching_channels]
-
-                key_members = {}
-                for channel, key in channel_keys:
-                    if key:
-                        key_members.setdefault(key, []).append(channel)
-
-                emitted_keys = set()
-                for channel, key in channel_keys:
-                    members = key_members.get(key) if key else None
-
-                    if members and len(members) > 1:
-                        # Several sources of one channel - one row for
-                        # all of them, emitted the first time any of
-                        # its sources is reached (so the row lands
-                        # where the first source would have, instead
-                        # of reordering the list), skipped every other
-                        # time. Resolved through resolve_group_with_
-                        # retry() via its synthetic group id, which
-                        # picks one source and stays on it until the
-                        # player reports it as failed.
-                        if key in emitted_keys:
-                            continue
-                        emitted_keys.add(key)
-                        group_id = make_group_id(country, key)
-                        display_names = [
-                            _strip_source_suffix(m.get("name", "")) or
-                            m.get("name", "") for m in members]
-                        display_name = min(display_names, key=len)
-                        logo = next((m.get("logo")
-                                     for m in members if m.get("logo")), "")
-                        epg_id = next((m.get("epg_id")
-                                       for m in members if m.get("epg_id")), "")
-                        proxy_url = "http://%s:%d/vavoo?channel=%s" % (
-                            local_ip, PORT, quote(group_id, safe=''))
-                        response_channels.append({
-                            "id": group_id,
-                            "name": display_name,
-                            "url": proxy_url,
-                            "logo": logo,
-                            # The catalog's own casing (e.g. "Italy"),
-                            # same as the standalone branch below -
-                            # not the raw query string (e.g. "italy"),
-                            # which made this field's casing differ
-                            # between a grouped and a standalone row
-                            # in the same response.
-                            "country": members[0].get("country", country),
-                            "epg_id": epg_id
-                        })
-                    else:
-                        channel_id = channel.get("id", "")
-                        if not channel_id:
-                            continue
-                        # Quoted the same way the grouped branch above
-                        # (group_id) and /playlist.m3u (channel_id) already
-                        # are - this was the one place a raw catalog id
-                        # with a "&"/"#"/space in it could still corrupt
-                        # the query string.
-                        proxy_url = "http://%s:%d/vavoo?channel=%s" % (
-                            local_ip, PORT, quote(str(channel_id), safe=''))
-                        raw_name = channel.get("name", "")
-                        response_channels.append({
-                            "id": channel_id,
-                            # Strip the same source-variant suffix the
-                            # grouped branch above already strips -
-                            # this channel just happens to have no
-                            # sibling source present in this country's
-                            # catalog right now (common - not every
-                            # channel actually has multiple sources
-                            # even though Vavoo/geil still tags it with
-                            # a letter), which is no reason to show the
-                            # raw ".b"/".c"/".s" suffix forever.
-                            "name": _strip_source_suffix(raw_name) or raw_name,
-                            "url": proxy_url,
-                            "logo": channel.get("logo", ""),
-                            "country": channel.get("country", country),
-                            "epg_id": channel.get("epg_id", "")
-                        })
+                grouped = query_params.get('grouped', ['1'])[0] != '0'
+                response_channels = p.channel_rows(country, grouped)
 
                 if not self.safe_send_response(200):
                     return

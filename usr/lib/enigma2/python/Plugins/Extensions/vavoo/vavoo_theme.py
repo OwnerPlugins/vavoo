@@ -247,7 +247,8 @@ def _rows(height, row_h):
 
 def list_metrics(theme, large, width, kind="list"):
     """What plugin.py's m2list / show_list() need to draw a row of the
-    `kind` of list ("list": countries and channels, "search", "menu")
+    `kind` of list ("list": countries and channels, "search", "menu",
+    "big": the settings-wide list of Choose countries / Parental)
     in a modern theme, in real pixels:
 
       row_h, rows, list_w, list_h   the listbox
@@ -270,6 +271,12 @@ def list_metrics(theme, large, width, kind="list"):
         box_w = table["menu_box"][2] - 40
         box_h = (table["menu_box"][3] - 110) // row_h * row_h
         font_size = table["row_font"] - 2
+    elif kind == "big":
+        # the wide list of Choose countries / Parental Control (the
+        # settings' list, rows with an icon and a value)
+        row_h = table["row_h"]
+        box_w, box_h = table["big_list"][2], table["big_list"][3]
+        font_size = table["row_font"] - 4
     else:
         row_h = table["row_h"]
         box_w, box_h = table["list"][2], table["list"][3]
@@ -800,6 +807,29 @@ def config_screen(theme, large, width, clock_24=True, cvs=False,
     return skin.text("vavoo_config")
 
 
+def pick_screen(theme, large, width, clock_24=True, base_dir=None):
+    """Choose countries / Parental Control (vavoo_pick.xml): the
+    settings' wide list with icons and a value column, its description
+    under it, the status line, all four colour keys
+    (CountriesActivity / ParentalActivity)."""
+    if not is_modern(theme):
+        return None
+    skin = _Skin(theme, large, width, base_dir)
+    table = skin.geo
+    skin.background()
+    skin.picture("panel_big", table["big_panel"][0], table["big_panel"][1])
+    skin.listbox("menulist", table["big_list"], "big",
+                 "sel_big_" + ("l" if large else "n"))
+    skin.label("description", table["description"], table["desc_font"],
+               WHITE, "center")
+    skin.label("statusbar", table["statusbar"], table["statusbar_font"],
+               WHITE, "left", z=3, nowrap=True)
+    skin.version()
+    skin.clock(clock_24)
+    skin.color_keys(KEY_NAMES)
+    return skin.text("VavooPick")
+
+
 def search_screen(theme, large, width, cvs=False, base_dir=None):
     """Search (vavoo_search.xml): a dialog over whatever is behind
     it."""
@@ -1148,6 +1178,7 @@ def player_list_classic(width):
 BUILDERS = {
     "list": list_screen,
     "config": config_screen,
+    "pick": pick_screen,
     "search": search_screen,
     "splash": splash_screen,
     "update": update_popup,
