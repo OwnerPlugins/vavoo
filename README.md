@@ -50,17 +50,21 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 
 ### Watching
 - **Looks Like the Android App** – The themes of the companion Android app: **Prism** (Vavoo's violet, the default), **Halo** (frosted glass over a blue aurora) and **Orbit** (a teal cockpit display), each with its own background, fonts, rounded panels, colour keys and preview frame, in large or normal text. **Classic** keeps the plugin's original look and backgrounds (see "Themes" below)
-- **Live TV Streaming** – Thousands of live channels, browsed by country, with country flags and channel logos (picons)
+- **Live TV Streaming** – Thousands of live channels, browsed by country, with country flags; channels numbered like a receiver's list (the number keys go to that row)
+- **Channel Logos or Initials** – As in the app: each channel's initials on a tile of its own colour ("RAI 1" → "R1"), or its logo with the setting "Channel Logos"
+- **Sub-categories** – A country whose channels come in categories (Sport, News...) lists "All channels", the categories and "General" first
+- **Choose Countries** – Hide the countries you never watch from the main list and from search
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
 - **Preview Window** – As in the app: OK on a channel plays it in the small window beside the list; OK again on it (or BLUE) opens it full screen with the same stream, no restart. Closing full screen leaves it playing in the window; leaving the plugin brings back the TV channel you were watching before
 - **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use and the clock. OK twice opens the channel list over the video with a **mini guide** (now, the next three, the description); type a channel number to go there; 0 (or RECALL) goes back to the previous channel
 - **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), stream info (resolution, frame rate, codec, source) and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
-- **Choose Your Source** – A channel available from several sources is shown as one row. Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
+- **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
 - **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed
-- **Search** – Find channels by name inside a country (YELLOW in the channel list), or in every country at once (YELLOW in the main menu - each result shows its country)
-- **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them
-- **Parental Control** – Optional PIN lock on chosen countries
+- **Search** – As in the app: the words in any order, accents and case do not count, "1" finds "SPORT 1" but not "SPORT 11"; from 3 letters also the channels whose programme on now has the text. Inside a country (YELLOW in the channel list) or in every country at once (YELLOW in the main menu - each result shows its country). The results become the player's list
+- **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them. Put them in your own order (YELLOW Move) and in folders (BLUE Folder), as in the app. Kept in `/etc/enigma2`, so a plugin update keeps them
+- **Parental Control** – A 4-digit PIN for adult channels, chosen countries and (optionally) the settings; once entered, all is open for 15 minutes
+- **Backup / Restore** – The settings, favourites (with folders and order), recently watched, sources and countries in one file on your disk
 
 ### In your Enigma2 channel list
 - **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom
@@ -100,21 +104,22 @@ The colour keys are the Android app's, in every theme. The Enigma2 tools that us
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Quit |
 
-The list starts with "★ Favourites (n)" once you have favourites, then "Recently watched (n)", and shows each country's channel count ("Portugal (174)", setting "Show Counts"). The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch".
+The list starts with "★ Favourites (n)" once you have favourites, then "Recently watched (n)", and shows each country's channel count ("Portugal (174)", setting "Show Counts"). Countries hidden in Settings → Choose countries are left out; a country locked by Parental Control has a padlock. The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch". On the very first start, Choose countries opens by itself once.
 
 ### Channel list
 | Key | Action |
 |-----|--------|
-| OK | Play the channel in the preview window; OK again on it: full screen (setting "Preview Window"; off: full screen at once) |
+| OK | Play the channel in the preview window; OK again on it: full screen (setting "Preview Window"; off: full screen at once). On a category row: open it |
 | BLUE (Full Screen) | Full screen at once |
 | GREEN | Add Fav / Remove Fav (the caption follows the highlighted channel) |
-| YELLOW | Search this country |
+| YELLOW | Search this country (also from inside a category: the whole country) |
+| 0-9 | Go to that channel number (typed within 1.5 s the digits add up: 1, 2 = 12) |
 | MENU | Settings, Export this country as a bouquet (or Remove this country's bouquet), Reload bouquets, Show Log |
 | INFO | Version and this country's channels |
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Back |
 
-The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
+With "Sub-categories" on, a country whose catalog has two or more categories first lists "All channels (n)", its categories A-Z and "General (n)"; OK opens one ("Italy ➾ Sport"). The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
 ### Player
 The app's keys, in every theme (the Classic theme keeps its own bar and overlays):
@@ -144,16 +149,32 @@ There is nothing to seek in a live stream, so LEFT / RIGHT are free for the bar'
 | YELLOW | Backspace |
 | BLUE | Space |
 | RED | Clear all |
-| OK | Play the selected result |
+| OK | Play the selected result - the results are the player's list (CH± goes along them) |
 
-### Favourites and Recently watched
+Every word typed has to be at the start of a word of the name, or (3 letters or more) anywhere in it; accents and case do not count, and a number must be a whole number ("1" finds "SPORT 1" and "SPORT1", not "SPORT 11"). Names starting with the first word come first. From 3 letters the channels whose programme on now has the text follow, marked "▶ title" (only countries whose guide is already loaded). Rows show "★" on favourites and, searching every country, the country.
+
+### Favourites
 | Key | Action |
 |-----|--------|
-| OK | Preview window, then full screen (as in the channel list) |
-| BLUE | Full screen at once |
-| GREEN | Favourites: Remove Fav. Recently watched: Add Fav / Remove Fav |
-| MENU | Settings, Show Log (Recently watched: also "Clear recently watched") |
+| OK | Preview window, then full screen (as in the channel list). On a folder row: open the folder. While moving: Done |
+| GREEN | Remove Fav (the next channel takes its place) |
+| YELLOW | Move / Done: move the highlighted channel - UP / DOWN one place, LEFT / RIGHT or CH± a page, a number to that place; OK, YELLOW or EXIT finish (saved once, at the end) |
+| BLUE | Folder: on a channel, "Folder for X" (the folders, No folder, New folder…); on a folder row, Rename folder (another folder's name merges the two) / Remove folder (its channels stay favourites) |
+| 0-9 | Go to that row |
+| MENU | Settings, Show Log |
 | INFO | Version and number of channels |
+| RED / EXIT | Back |
+
+Once a favourite is in a folder, the Favourites open on "All channels (n)", the folders A-Z and "No folder (n)". A folder with no channels left is gone. Moving inside a folder only swaps that folder's channels.
+
+### Recently watched
+| Key | Action |
+|-----|--------|
+| OK | Preview window, then full screen |
+| GREEN | Add Fav / Remove Fav |
+| YELLOW | Search this list |
+| BLUE | Full screen at once |
+| MENU | Settings, Clear recently watched, Show Log |
 | RED / EXIT | Back |
 
 ### Settings
@@ -217,6 +238,9 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Preview Window** | OK on a channel plays it in the small window beside the list; OK again on it opens full screen (BLUE goes straight there). Off: OK opens full screen at once | Yes |
 | **Start with last channel** | Open the last watched channel when the plugin starts | No |
 | **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for an hour. Switch it off on a slow connection or a weak box | Yes |
+| **Group Sources** | The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row | Yes |
+| **Channel Logos** | The channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), the country's flag in the player, and no logo is downloaded | No |
+| **Sub-categories** | A country whose channels come in categories lists "All channels", the categories and "General" first | Yes |
 | **Scheduled EPG/Bouquet Update:** | Periodically re-matches EPG and refreshes the bouquets of your exported countries in the background | Off |
 | – **Schedule type:** | "interval" or "fixed time" (shown when the schedule is on) | interval |
 | – **EPG/Bouquet update interval (minutes):** | How often, counting from now | 360 (5-3600) |
@@ -226,18 +250,25 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Link in Main Menu** | Show the plugin in the main Enigma2 menu | Yes |
 | **Send Anonymous Statistics** | Anonymous startup/heartbeat ping (see Privacy below) | Yes |
 | **Debug logging** | Verbose messages in `vavoo.log`; takes effect immediately. Leave off unless troubleshooting | No |
+| **Choose countries** | The countries of the main list and of "Search all": OK shows / hides one (✓ / ✗); Back · Save · Show all · Hide all. At least one stays | all shown |
+| **Parental Control** | The PIN and what it locks (see below). Asks for the PIN first when one is set | no PIN |
+| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries - not parental control. Asks for the PIN when one is set | – |
+| **Restore from Backup** | Lists the backups found there, newest first; the chosen one replaces all of the above (no merge) and the proxy restarts. The theme and text size change when the plugin is opened again | – |
 | **Show Log (Ok to view)** | View the last 200 lines of `/tmp/vavoo.log` | – |
 | **View Favourites (Ok to open)** | Browse and play your starred channels | – |
-| **Parental Control PIN** | Set a PIN to lock the countries below; empty disables parental control | empty (off) |
-| – **Locked Countries** | Comma-separated country names (e.g. "Italy, Spain") that need the PIN to open (shown once a PIN is set) | empty |
+| **Clear Favourites** | Remove all favourite channels (asks first) | – |
+| **Licences** | The plugin's licence and the fonts' (SIL OFL) | – |
+| **About** | Version, authors, licence | – |
 
 The local proxy has no on/off switch: every channel list and stream goes through it, and it is started and monitored automatically.
 
-**Removed in this version:** "Proxy Enabled" (the proxy is always on), "Auto-update EPG" (now simply part of "Enable Vavoo EPG") and "EPG Similarity Threshold" (fixed at 75%).
+**Removed in this version:** "Proxy Enabled" (the proxy is always on), "Auto-update EPG" (now simply part of "Enable Vavoo EPG") and "EPG Similarity Threshold" (fixed at 75%). "Parental Control PIN" and "Locked Countries" moved into the Parental Control screen (a PIN and countries set there before are carried over).
 
 ### Favourites
-- Press **GREEN** on any channel while browsing to add it (or remove it); the status line shows "★" on favourites
-- **GREEN** in the main menu, the **"★ Favourites"** row, or Settings → **"View Favourites"** opens them (GREEN removes the highlighted one)
+- Press **GREEN** on any channel while browsing (or in the player) to add it (or remove it); the status line shows "★" on favourites
+- **GREEN** in the main menu, the **"★ Favourites"** row, or Settings → **"View Favourites"** opens them, in your order (new ones at the end): YELLOW moves one, BLUE puts it in a folder (see the keys above)
+- They are kept in `/etc/enigma2/vavoo_favourites.json`, which a plugin update does not touch. Older versions kept them in the plugin folder, which every update deletes: the plugin, `installer.sh` and the ipk's `preinst` move that file (and the list of exported bouquets) to `/etc/enigma2` once, in the order you added them
+- A favourite whose channel got a new id in the catalog is found again by its name the next time you open its country
 
 ### Themes
 - **Prism**, **Halo** and **Orbit** are the Android app's own themes, measure for measure: the same layout, backgrounds, fonts (Lexend, Manrope, Sora, Oxanium - SIL Open Font License, in `fonts/`), rounded panels, colour keys, preview frame and selection bar
@@ -246,12 +277,17 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - Settings → **Theme** / **Text Size** / **Clock Format**; exit and reopen the plugin to see the change
 
 ### Parental Control
-- Config Menu → **"Parental Control PIN"**: enter a PIN, then list the countries to lock in **"Locked Countries"**
-- Opening a locked country, or playing a favourite from one, asks for the PIN first
+- Settings → **"Parental Control"** (as in the app): Set a PIN / Change the PIN (4 digits, typed twice), Remove the PIN (press twice; the choices below stay), **Lock adult channels** (on), **Lock the settings** (off), and every country with a padlock (locked) or "—". OK / LEFT / RIGHT change a row
+- The PIN is typed on the PIN pad: the number keys fill the four dots, LEFT deletes one, EXIT cancels. It is kept salted and hashed in `/etc/enigma2/vavoo_parental.json`, never in clear
+- It is asked for a locked country, an adult channel (by its name or category: XXX, adult, 18+, porn…, erotic…, Playboy and the like - "Adult Swim" is not one) when it is previewed, played, chosen in search or zapped to, for the settings when they are locked, and always for Parental Control and Backup / Restore. Once entered, all is open for 15 minutes or until you leave the plugin
+- Five wrong PINs in a row: a pause of 30 s, then 2 min, 8 min and 10 min
+- A locked country has a padlock in the main list; the Now/Next panel shows "Locked" for a channel that needs the PIN
+- Forgot the PIN? Delete `/etc/enigma2/vavoo_parental.json` (telnet/FTP) - nothing is locked any more
 
 ### Choosing a stream source
 - Channels that exist from several sources (Vavoo's ".b" / ".c" / ".s" variants and the like) appear once in the list
-- While such a channel is playing, press **MENU → Source**: the menu lists every source by its channel name and marks the one in use with "(current)"; the bar's status line shows the source in use
+- While such a channel is playing, press **MENU → Source**: the menu lists every source by its channel name, "✓" on the one in use and "✗" on one that failed a moment ago; the bar's status line shows the source in use
+- Settings → **"Group Sources"** off shows every source as its own row instead
 - Pick another one if a source buffers or keeps stopping. The choice is remembered for that channel, also in exported bouquets
 
 ## 🎯 Benefits
@@ -364,7 +400,10 @@ The proxy provides these endpoints:
 - `/channels?country=CountryName` – Get channels by country (sources of
   the same channel grouped into one row - see Grouped sources above;
   its `id` is then a synthetic `grp:<country>:<key>` handle rather
-  than a single catalog id)
+  than a single catalog id). Each row: `id`, `name`, `url`, `logo`,
+  `country`, `epg_id` and `category` (the catalog's sub-category,
+  "Italy ➾ Sport" → "Sport", "" when none). `&grouped=0`: every source
+  its own row, under its catalog name
 - `/vavoo?channel=ChannelID` – Resolve stream URLs (302 redirect). The
   answer stays the same address while it keeps being requested (see
   "One stream address per viewing" above); a `grp:...` id resolves to
@@ -441,7 +480,26 @@ The proxy provides these endpoints:
 
 - **SREF Map**: `/etc/enigma2/vavoo_sref_map.json` – Maps service references to channel IDs for the proxy
 
+- **Favourites**: `/etc/enigma2/vavoo_favourites.json` – In your order, each with its folder (missing = in none):
+  ```json
+  {"format": "vavoo_favourites", "version": 2, "favourites": [
+    {"name": "SIC", "url": "http://127.0.0.1:4323/vavoo?channel=grp%3Aportugal%3Asic",
+     "country_name": "Portugal", "country_code": "pt", "logo": "",
+     "folder": "News", "timestamp": "2026-11-15 12:00:00"}]}
+  ```
+  The older file (a `{"name###url": {...}}` dict, from the plugin folder) is read as it is.
+
 - **Recently Watched**: `/etc/enigma2/vavoo_recent.json` – The last 20 channels watched, newest first (`[{"name", "url", "country_name", "country_code", "logo", "timestamp"}]`). Delete it (or MENU → "Clear recently watched") to empty the list
+
+- **Hidden Countries**: `/etc/enigma2/vavoo_hidden_countries.json` – Settings → Choose countries (`["Albania", "Spain"]`). Delete it to show every country again
+
+- **Parental Control**: `/etc/enigma2/vavoo_parental.json` – The PIN (salted SHA-256, never in clear), the locked countries, the two lock options and the wrong-PIN pause. Not in backups. Delete it to remove the PIN
+
+- **Exported Bouquets List**: `/etc/enigma2/vavoo_bouquet_list.txt` – The countries "Scheduled EPG/Bouquet Update" re-exports (`name|url|flat or hierarchical|time` per line; `Favorite.txt` in the plugin folder before)
+
+- **Backups**: `VavooStream-backup-YYYYMMDD-HHMM.json` in `/media/hdd`, `/media/usb`, `/media/mmc` or `/etc/enigma2` – `{"format": "vavoo_e2_backup", "version", "saved", "settings", "favourites", "recent", "source_prefs", "hidden_countries"}`
+
+- **Initials Tiles**: `/tmp/vavoo_tiles/` – The channel tiles and padlocks drawn by the plugin (one per colour and size), made again after a reboot
 
 - **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen in the player (MENU → Source), per multi-source channel (`{"grp:<country>:<name>": "<source id>"}`). Delete it to go back to automatic selection everywhere
 

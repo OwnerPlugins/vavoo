@@ -34,6 +34,10 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
                           #   as-is by vUtils.py (on-box) and generate_epg_channel_db.py (off-box) -
                           #   has zero Enigma2 imports so both sides can use the exact same code
   notification_system.py # singleton, thread-safe on-screen notification/toast manager
+  vavoo_store.py         # the app's lists and data, no Enigma2 imports: favourites (order,
+                          #   folders), hidden countries, parental control (PIN, adult words,
+                          #   pause, unlock), backup/restore, initials + colour, search rules,
+                          #   a pure-Python PNG writer for the initials tiles / padlock
   vavoo_theme.py         # the themes (Prism/Halo/Orbit = the Android app's Look/Geo tables):
                           #   builds every screen's skin XML for hd/fhd/wqhd - no Enigma2 imports
   make_theme_assets.py   # dev-time script: draws skin/themes/<theme>/<hd|fhd|wqhd>/*.png
@@ -48,6 +52,7 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
                           #   curated channel-name -> EPG-feed-id mapping
   locale/<lang>/LC_MESSAGES/vavoo.{po,mo}  # gettext translations, ~90 languages
   skin/{hd,fhd,wqhd}/*.xml   # per-resolution skin layouts (HD, FullHD, WQHD/4K) = the Classic theme
+                            #   (vavoo_pick.xml: Choose countries / Parental; vavoo_pin.xml: PIN pad)
   skin/themes/<theme>/      # theme backgrounds (bg*_hd/fhd.jpg, the app's) + drawn PNGs per resolution
   skin/cowntry/*.png, skin/pics/*.png, skin/images*/*.png  # flags/backgrounds
   fonts/*.ttf               # cvfont (MavenPro-Medium = Liberation Sans) + the themes' Lexend,
@@ -102,7 +107,7 @@ from them for the box's resolution. Rules:
   `add_key_hint_labels()`); the time labels of Now/Next are 1 px there.
 - Keys follow the app in every theme: main menu Exit / Favourites /
   Search all / Reload List; channel list Back / Add-Remove Fav / Search
-  / Full Screen; MENU opens `open_action_menu()` (`VavooMenu` in a
+  / Full Screen; Favourites Back / Remove Fav / Move (Done) / Folder; MENU opens `open_action_menu()` (`VavooMenu` in a
   theme, `ChoiceBox` in Classic) holding Settings and the Enigma2 tools
   (bouquets, EPG import, cache fix, token, log, about).
 - Screens with no Classic file of their own get a built Classic-coloured
@@ -162,6 +167,9 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
 - Channels with several sources are grouped into one row
   (`grp:<country>:<key>` ids); the proxy stays on one source per group
   and only moves on after repeated failure reports.
+- `/channels` is `VavooProxy.channel_rows(country, grouped)` (also
+  called in-process: Search all, sub-categories); `&grouped=0` is
+  Group Sources off. `country_counts(grouped)` follows it.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
   `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (redirects to
   GitHub-hosted EPG), and `/shutdown`.
@@ -257,6 +265,45 @@ the real files (measured, see the comment block above
 - `_get_epg_feed_index()` (bouquet export, `find_match()`) reuses a
   loaded guide's channel list, and otherwise reads the same stream
   only up to the first `<programme>`.
+
+**Lists and data (`vavoo_store.py`)** — the app's Repository /
+Parental / Backup / Monogram / SearchText, all under `ENIGMA_PATH`
+(`vUtils` calls `vavoo_store.set_paths(ENIGMA_PATH, PLUGIN_ROOT)`):
+- Favourites: `vavoo_favourites.json` (`{"format", "version": 2,
+  "favourites": [entry]}`), the list order = the user's order, new
+  ones at the end, `"folder"` on the entry (no empty folders). A
+  favourite is its address (`/vavoo?channel=<id>`);
+  `repair_favourites()` re-finds one by name when a country's list
+  loads; `reorder_favourites()` keeps the places of the favourites it
+  is given (a folder's move swaps only that folder's channels). The
+  plugin folder is deleted by every update (installer.sh,
+  CONTROL/preinst): never keep user data there - `migrate_old_files()`
+  (and both installers) move the old `vavoo_favourites.json` /
+  `Favorite.txt` (now `vavoo_bouquet_list.txt`) out once; the old dict
+  format is read as it is.
+- Parental control: `vavoo_parental.json` (salted SHA-256 PIN, locked
+  countries, `adult` / `settings` options, the wrong-PIN pause). Only
+  `plugin.py`'s `ask_pin()` / `_require_parental_pin(...,
+  channel_name=)` ask for it (the `VavooPin` pad); once entered all is
+  open for 15 minutes (`is_unlocked()`, `/proc/uptime`) or until
+  `MainVavoo.closex()` calls `relock()`. Adult = `ADULT_RE` on the
+  name or category. Never in a backup, never touched by a restore.
+- Backup: `VavooStream-backup-*.json` (`"format": "vavoo_e2_backup"`):
+  `plugin.py`'s `BACKUP_SETTINGS` plus the lists; restore replaces.
+- `tile_path()` / `lock_path()` draw small PNGs into `/tmp/vavoo_tiles`
+  at run time (no Pillow on a box), so they are not theme assets.
+
+The settings-wide list screens (Choose countries, Parental Control)
+are `VavooPickScreen`s: theme `pick` builder ("big" list metrics) or
+`vavoo_pick.xml`; the PIN pad is the `pin` builder / `vavoo_pin.xml`.
+`show_list()` takes `value=` (right-end text), `dim=` and
+`value_icon=` (padlock); channel rows in a theme draw the initials
+tile unless `cfg.logos` is on and a logo is cached. A country's
+`vavoo` screen shows category rows first (`cfg.subcategories`, the
+proxy's `channel_rows()` `category`); a category opens a new `vavoo`
+with `category=` and the country's `channels=` (no second request).
+`VavooSearch` closes with `(name, url, country, results, index)` -
+callers use `play_search_result()`.
 
 **Notifications (`notification_system.py`)** — singleton
 `HybridNotificationManager`, thread-safe (lock-protected), with a message
