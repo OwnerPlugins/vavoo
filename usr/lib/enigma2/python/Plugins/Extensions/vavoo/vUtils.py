@@ -70,8 +70,10 @@ from . import (
     HOST_MAIN,
     ALIAS_FILE,
     INSTALLER_URL,
+    ENIGMA_PATH,
     export_lock,
 )
+from . import vavoo_store
 from .epg_name_utils import (
     clean_name_for_similarity,
     tokenize_for_compat,
@@ -274,10 +276,12 @@ def make_print(area, level="INFO"):
 
 PLUGIN_PATH = PLUGIN_ROOT
 
-# Plugin-local bookkeeping, same category/directory as Favorite.txt
-# (bouquet_manager.py) - not receiver-wide EPG state, so it follows the
-# PLUGIN_PATH convention rather than ENIGMA_PATH's.
-FAVOURITES_FILE = join(PLUGIN_PATH, 'vavoo_favourites.json')
+# The favourites (with their folders and order), hidden countries,
+# parental control and backups: vavoo_store.py, under ENIGMA_PATH - a
+# plugin update deletes the plugin folder, where the favourites used
+# to be (moved out by vavoo_store.migrate_old_files()).
+vavoo_store.set_paths(ENIGMA_PATH, PLUGIN_PATH)
+FAVOURITES_FILE = vavoo_store.favourites_file()
 
 
 if PY3:
@@ -2893,61 +2897,44 @@ def save_cache(cache):
         return False
 
 
-def _favourite_key(name, url):
-    return "{}###{}".format(name, url)
-
-
 def load_favourites():
-    """Return the persisted favourites dict ({key: {name, url,
-    timestamp}}), or {} on any error/missing file - never raises,
-    matching every other cache reader in this module."""
+    """[{name, url, country_name, country_code, logo, folder,
+    timestamp}] in the user's order, or [] - never raises (see
+    vavoo_store)."""
     try:
-        if not isfile(FAVOURITES_FILE):
-            return {}
-        with open(FAVOURITES_FILE, 'r') as f:
-            data = load(f)
-        return data if isinstance(data, dict) else {}
+        return vavoo_store.load_favourites()
     except Exception as e:
         print("[Favourites] Error loading {}: {}".format(FAVOURITES_FILE, e))
-        return {}
+        return []
+
+
+def favourite_urls():
+    """The favourites' addresses (a channel is its address)."""
+    try:
+        return vavoo_store.favourite_urls()
+    except Exception as e:
+        print("[Favourites] Error loading {}: {}".format(FAVOURITES_FILE, e))
+        return set()
 
 
 def is_favourite(name, url):
-    return _favourite_key(name, url) in load_favourites()
+    return vavoo_store.to_text(url) in favourite_urls()
 
 
-def toggle_favourite(name, url, country_name=None, country_code=None):
-    """Add the (name, url) channel if it isn't already a favourite,
-    remove it if it is. Returns the new state (True = now a favourite)
-    on success, or None on error - same atomic temp-file-then-rename
-    write as save_cache()/_update_favorite_file().
+def toggle_favourite(name, url, country_name=None, country_code=None,
+                     logo=None):
+    """Add the channel if it isn't a favourite yet (at the end, as in
+    the app), remove it if it is. Returns the new state (True = now a
+    favourite), or None on error.
 
-    country_name/country_code are stored alongside the channel so a
-    favourite played back later can still be checked against
-    parental-control's locked-country list (which matches on the
-    display name, e.g. "Italy") and still carry a country_code through
-    to Playstream2 for EPG matching - neither is available again once
-    the user has left the channel-browsing screen that knew them."""
+    country_name/country_code are kept with the channel so a favourite
+    played later is still checked against parental control's locked
+    countries and still carries a country code for the programme
+    guide - neither is known again once the screen that knew them is
+    gone."""
     try:
-        favourites = load_favourites()
-        key = _favourite_key(name, url)
-        now_favourite = key not in favourites
-        if now_favourite:
-            favourites[key] = {
-                'name': name,
-                'url': url,
-                'country_name': country_name,
-                'country_code': country_code,
-                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-            }
-        else:
-            del favourites[key]
-
-        temp_file = FAVOURITES_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(favourites, f, indent=2, sort_keys=True)
-        rename(temp_file, FAVOURITES_FILE)
-        return now_favourite
+        return vavoo_store.toggle_favourite(
+            name, url, country_name, country_code, logo)
     except Exception as e:
         print("[Favourites] Error saving {}: {}".format(FAVOURITES_FILE, e))
         return None
@@ -2956,7 +2943,7 @@ def toggle_favourite(name, url, country_name=None, country_code=None):
 # Recently watched channels (the app's "Recently watched"): newest
 # first, each channel once. Under /etc/enigma2, so an update of the
 # plugin (which replaces the plugin folder) keeps it.
-RECENT_FILE = "/etc/enigma2/vavoo_recent.json"
+RECENT_FILE = vavoo_store.recent_file()
 RECENT_MAX = 20
 # Every zap adds one, from a background thread (plugin.py) - two quick
 # zaps must not write the file at the same time.

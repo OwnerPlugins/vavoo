@@ -103,6 +103,7 @@ from . import (
 )
 from . import PY2, PY3, vUtils
 from . import vavoo_theme
+from . import vavoo_store
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -583,6 +584,21 @@ cfg.parental_pin = ConfigText(default="")
 cfg.parental_countries = ConfigText(default="")
 cfg.proxy_startup_timeout = ConfigSelectionNumber(
     default=120, min=15, max=300, stepwidth=5)
+
+
+def _move_data_out_of_plugin_folder():
+    """The favourites and the bouquet list used to live in the plugin
+    folder, which every update deletes: moved to ENIGMA_PATH once
+    (vavoo_store.migrate_old_files(); installer.sh and CONTROL/preinst
+    copy them there too, before they delete the folder)."""
+    try:
+        for path in vavoo_store.migrate_old_files():
+            print("[vavoo] Moved to {}".format(path))
+    except Exception as e:
+        print("[vavoo] Data not moved: {}".format(e))
+
+
+_move_data_out_of_plugin_folder()
 
 # MainVavoo's proxy_monitor_timer/proxy_watchdog_timer are created and
 # restarted from three different places (initial open, returning from
@@ -4145,11 +4161,11 @@ class MainVavoo(Screen, PreviewWindow):
             try:
                 removed_count = remove_bouquets_by_name()
 
-                # Remove Favorite.txt
-                favorite_path = join(PLUGIN_PATH, 'Favorite.txt')
+                # Remove the bouquet list (Favorite.txt before)
+                favorite_path = vavoo_store.bouquet_list_file()
                 if isfile(favorite_path):
                     remove(favorite_path)
-                    print("✓ Removed Favorite.txt")
+                    print("✓ Removed the bouquet list")
 
                 # Build message safely for translation
                 message = _("Vavoo bouquets removed successfully!")
@@ -4324,7 +4340,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         Screen.__init__(self, session)
         init_notification_system(session)
         self._load_skin()
-        # Favourites as keys (vUtils._favourite_key()), for the status
+        # The favourites' addresses (vUtils.favourite_urls()), for the status
         # line's star and the GREEN key's caption - read again whenever
         # this screen is back on top.
         self._favourite_keys = set()
@@ -4426,11 +4442,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         self._epg_panel_init()
 
     def _reload_favourite_keys(self):
-        try:
-            self._favourite_keys = set(vUtils.load_favourites().keys())
-        except Exception as e:
-            debug("Favourites not read: {}".format(e))
-            self._favourite_keys = set()
+        self._favourite_keys = vUtils.favourite_urls()
         self._update_status_line()
 
     def _selected_row(self):
@@ -4458,7 +4470,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             if index is None:
                 self['proxy_status'].setText(to_string(self.country_name))
                 return
-            favourite = "{}###{}".format(name, url) in self._favourite_keys
+            favourite = to_text(url) in self._favourite_keys
             text = "{} · {}/{}".format(
                 to_string(self.country_name), index + 1, len(self.cat_list))
             if favourite:
@@ -4632,6 +4644,17 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         if not self.cat_list:
             self['name'].setText(to_string("No proxy URLs built."))
             return
+
+        # A favourite whose channel got a new id in the catalog: found
+        # again by its name (vavoo_store.repair_favourites()).
+        try:
+            if vavoo_store.repair_favourites(
+                    self.country_name,
+                    [{"name": n, "url": u, "logo": logo}
+                     for n, u, logo in self._channel_entries]):
+                self._favourite_keys = vUtils.favourite_urls()
+        except Exception as e:
+            debug("Favourites not repaired: {}".format(e))
 
         self.itemlist = [
             item[0][0] + "###" + item[0][1] for item in self.cat_list
@@ -4852,15 +4875,18 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             print('[vavoo] toggle_favourite selection error:', e)
             return
 
+        logo = None
+        if 0 <= i < len(self._channel_entries):
+            logo = self._channel_entries[i][2] or None
         now_favourite = vUtils.toggle_favourite(
             name, url,
             country_name=self.country_name,
-            country_code=get_country_code(self.country_name))
+            country_code=get_country_code(self.country_name), logo=logo)
         if now_favourite is None:
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Could not update favourites"), 3)
             return
-        key = "{}###{}".format(name, url)
+        key = to_text(url)
         if now_favourite:
             self._favourite_keys.add(key)
         else:
@@ -5253,7 +5279,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
 
     def _build_list(self):
         favourites = vUtils.load_favourites()
-        self._favourite_keys = set(favourites.keys())
+        self._favourite_keys = set(to_text(e['url']) for e in favourites)
         # Kept as a parallel list (same order/indices as cat_list) so
         # ok()/remove_selected() can look up each row's country_name/
         # country_code - show_list()'s (name, url) tuple has no room
@@ -5262,8 +5288,8 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         if self.mode == self.MODE_RECENT:
             self.favourite_entries = vUtils.load_recent()
         else:
-            self.favourite_entries = sorted(
-                favourites.values(), key=lambda e: e.get('name', ''))
+            # in the user's order (vavoo_store)
+            self.favourite_entries = favourites
         self.cat_list = [
             show_list(entry['name'], entry['url'], is_channel=True,
                       logo_url=entry.get('logo') or None,
@@ -5296,7 +5322,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
                 name, url = self.cat_list[i][0][0], self.cat_list[i][0][1]
                 self['name'].setText(to_string(name))
                 if self.mode == self.MODE_RECENT:
-                    favourite = "{}###{}".format(name, url) in self._favourite_keys
+                    favourite = to_text(url) in self._favourite_keys
                     self['green'].setText(
                         _('Remove Fav') if favourite else _('Add Fav'))
                     if favourite:
@@ -5460,12 +5486,13 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             entry = self.favourite_entries[i]
             now_favourite = vUtils.toggle_favourite(
                 name, url, country_name=entry.get('country_name'),
-                country_code=entry.get('country_code'))
+                country_code=entry.get('country_code'),
+                logo=entry.get('logo') or None)
             if now_favourite is None:
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(_("Could not update favourites"), 3)
                 return
-            key = "{}###{}".format(name, url)
+            key = to_text(url)
             if now_favourite:
                 self._favourite_keys.add(key)
             else:
@@ -5953,13 +5980,17 @@ class VavooPlayerList(Screen):
 
     GUIDE_SETTLE_MS = 300
 
-    def __init__(self, session, channels, index, country_codes, logos):
+    def __init__(self, session, channels, index, country_codes, logos,
+                 country_names=None):
         Screen.__init__(self, session)
         skin = build_theme_skin("player_list")
         self._themed = skin is not None
         self.skin = skin or vavoo_theme.player_list_classic(THEME_WIDTH)
         self.channels = channels
         self.country_codes = country_codes
+        # kept with a favourite added here (parental control's
+        # locked countries match on the name)
+        self.country_names = country_names or []
         self.logos = logos
         self.start_index = index
         self._closed = False
@@ -6002,18 +6033,14 @@ class VavooPlayerList(Screen):
         name, url = self.channels[i]
         digits = len(str(len(self.channels)))
         text = u"{}  {}".format(str(i + 1).rjust(digits), to_text(name))
-        if u"{}###{}".format(to_text(name), to_text(url)) in self._favourite_keys \
-                or "{}###{}".format(name, url) in self._favourite_keys:
+        if to_text(url) in self._favourite_keys:
             text += u"  \u2605"
         logo = self.logos[i] if i < len(self.logos) else None
         return show_list(name, url, is_channel=True, logo_url=logo,
                          display=to_string(text), themed=self._themed)
 
     def _fill(self):
-        try:
-            self._favourite_keys = set(vUtils.load_favourites().keys())
-        except Exception:
-            self._favourite_keys = set()
+        self._favourite_keys = vUtils.favourite_urls()
         self.rows = [self._row(i) for i in range(len(self.channels))]
         self["menulist"].l.setList(self.rows)
         if 0 <= self.start_index < len(self.rows):
@@ -6054,10 +6081,15 @@ class VavooPlayerList(Screen):
             return
         name, url = self.channels[index]
         code = self.country_codes[index] if index < len(self.country_codes) else None
-        now_favourite = vUtils.toggle_favourite(name, url, country_code=code)
+        country = (self.country_names[index]
+                   if index < len(self.country_names) else None)
+        logo = self.logos[index] if index < len(self.logos) else None
+        now_favourite = vUtils.toggle_favourite(
+            name, url, country_name=country, country_code=code,
+            logo=logo or None)
         if now_favourite is None:
             return
-        key = "{}###{}".format(name, url)
+        key = to_text(url)
         if now_favourite:
             self._favourite_keys.add(key)
         else:
@@ -7031,7 +7063,8 @@ class Playstream2(
         """GREEN: the playing channel in / out of the favourites."""
         now_favourite = vUtils.toggle_favourite(
             self.name, self.url, country_name=self.country_name,
-            country_code=self.country_code)
+            country_code=self.country_code,
+            logo=getattr(self, "current_logo_url", None) or None)
         if now_favourite is None:
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Could not update favourites"), 3)
@@ -7491,9 +7524,10 @@ class Playstream2(
                  else [self.country_code] * len(channels))
         logos = (list(self.logo_urls) if self.logo_urls is not None
                  else [None] * len(channels))
+        names = [self._country_name_at(i) for i in range(len(channels))]
         self.session.openWithCallback(
             self._on_channel_list_closed, VavooPlayerList,
-            channels, int(self.currentindex), codes, logos)
+            channels, int(self.currentindex), codes, logos, names)
 
     def _on_channel_list_closed(self, index=None):
         if self._closed or index is None:
@@ -8098,13 +8132,13 @@ class AutoStartTimer(object):
         self.next_wake_time = None
 
         # Check if there are bouquets to update
-        favorite_channel = join(PLUGIN_PATH, 'Favorite.txt')
+        favorite_channel = vavoo_store.bouquet_list_file()
 
         if not isfile(favorite_channel):
-            print("[AutoStartTimer] No Favorite.txt yet - timer created but idle")
+            print("[AutoStartTimer] No bouquet list yet - timer created but idle")
             return
 
-        print("[AutoStartTimer] Favorite.txt found, starting timer...")
+        print("[AutoStartTimer] Bouquet list found, starting timer...")
         self.timer.start(100, True)
         self.update()
 
@@ -8212,9 +8246,9 @@ class AutoStartTimer(object):
         return wake
 
     def startMain(self):
-        favorite_channel = join(PLUGIN_PATH, 'Favorite.txt')
+        favorite_channel = vavoo_store.bouquet_list_file()
         if not isfile(favorite_channel):
-            print("Favorite.txt not found - no bouquets to update")
+            print("Bouquet list not found - no bouquets to update")
             return
 
         try:

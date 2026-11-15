@@ -41,6 +41,17 @@ print_header
 # Remove old version if found
 echo "Checking for existing Vavoo installations..."
 if [ -d "/usr/lib/enigma2/python/Plugins/Extensions/vavoo" ]; then
+    # Older versions kept the favourites and the list of exported
+    # bouquets in the plugin folder, deleted just below: keep them in
+    # /etc/enigma2, where the plugin reads them now. Never over newer
+    # ones already there.
+    OLD="/usr/lib/enigma2/python/Plugins/Extensions/vavoo"
+    if [ -f "$OLD/vavoo_favourites.json" ] && [ ! -f /etc/enigma2/vavoo_favourites.json ]; then
+        cp -p "$OLD/vavoo_favourites.json" /etc/enigma2/vavoo_favourites.json && echo "✓ Favourites kept in /etc/enigma2"
+    fi
+    if [ -f "$OLD/Favorite.txt" ] && [ ! -f /etc/enigma2/vavoo_bouquet_list.txt ]; then
+        cp -p "$OLD/Favorite.txt" /etc/enigma2/vavoo_bouquet_list.txt && echo "✓ Bouquet list kept in /etc/enigma2"
+    fi
     echo "Removing previous version of Vavoo plugin..."
     rm -rf /usr/lib/enigma2/python/Plugins/Extensions/vavoo > /dev/null 2>&1
     echo "✓ Previous version removed successfully"

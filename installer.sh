@@ -200,6 +200,16 @@ echo "Installing plugin files..."
 # a newer release could survive indefinitely across an upgrade done via
 # this installer, causing stale .py/.pyc/skin XML mismatches.
 if [ -d "$PLUGINPATH" ]; then
+    # Older versions kept the favourites and the list of exported
+    # bouquets in the plugin folder, deleted just below: keep them in
+    # /etc/enigma2, where the plugin reads them now (the old favourites
+    # file is read as it is). Never over newer ones already there.
+    if [ -f "$PLUGINPATH/vavoo_favourites.json" ] && [ ! -f /etc/enigma2/vavoo_favourites.json ]; then
+        cp -p "$PLUGINPATH/vavoo_favourites.json" /etc/enigma2/vavoo_favourites.json && echo "Favourites kept in /etc/enigma2"
+    fi
+    if [ -f "$PLUGINPATH/Favorite.txt" ] && [ ! -f /etc/enigma2/vavoo_bouquet_list.txt ]; then
+        cp -p "$PLUGINPATH/Favorite.txt" /etc/enigma2/vavoo_bouquet_list.txt && echo "Bouquet list kept in /etc/enigma2"
+    fi
     echo "Removing previous installation at $PLUGINPATH..."
     rm -rf "$PLUGINPATH"
 fi

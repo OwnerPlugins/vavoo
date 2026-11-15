@@ -41,11 +41,11 @@ from .vUtils import (
 from .vavoo_proxy import run_proxy_in_background
 from . import (
     PORT,
-    PLUGIN_ROOT,
     PROXY_HOST,
     ENIGMA_PATH,
     GROUP_NAME_SEPARATORS,
 )
+from . import vavoo_store
 
 """
 #########################################################
@@ -1326,7 +1326,8 @@ def create_bouquet_file(
 
 
 def _update_favorite_file(name, url, export_type):
-    """Update Favorite.txt - URL is always empty (proxy only).
+    """Update the bouquet list (vavoo_store.bouquet_list_file(), Favorite.txt
+    in the plugin folder before) - URL is always empty (proxy only).
 
     Precondition: caller holds plugin.py's module-level export_lock -
     same shared-file race as _add_to_main_bouquet()."""
@@ -1340,8 +1341,8 @@ def _update_favorite_file(name, url, export_type):
     # file.
     name = _strip_control_chars(name).replace('|', '')
 
-    favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
-    print("[Bouquet] Updating Favorite.txt: " +
+    favorite_path = vavoo_store.bouquet_list_file()
+    print("[Bouquet] Updating bouquet list: " +
           name + " (type: " + export_type + ")")
 
     # Read existing bouquets
@@ -1361,7 +1362,7 @@ def _update_favorite_file(name, url, export_type):
                                 'timestamp': parts[3].strip() if len(parts) > 3 else str(
                                     time.time())}
         except Exception as e:
-            print("[Bouquet] Error reading Favorite.txt: " + str(e))
+            print("[Bouquet] Error reading bouquet list: " + str(e))
 
     # Update/add current bouquet
     existing_bouquets[name] = {
@@ -1380,11 +1381,11 @@ def _update_favorite_file(name, url, export_type):
                 f.write(line + "\n")
         rename(temp_path, favorite_path)
 
-        print("[Bouquet] Favorite.txt updated with " +
+        print("[Bouquet] bouquet list updated with " +
               str(len(existing_bouquets)) + " bouquets")
 
     except Exception as e:
-        print("[Bouquet] Error writing Favorite.txt: " + str(e))
+        print("[Bouquet] Error writing bouquet list: " + str(e))
 
 
 def remove_favorite_entry(name):
@@ -1401,7 +1402,7 @@ def remove_favorite_entry(name):
     # '|'/newline still finds and removes the entry it actually wrote.
     name = _strip_control_chars(name).replace('|', '')
 
-    favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
+    favorite_path = vavoo_store.bouquet_list_file()
     if not isfile(favorite_path):
         return
 
@@ -1423,9 +1424,9 @@ def remove_favorite_entry(name):
             rename(temp_path, favorite_path)
         else:
             remove(favorite_path)
-        print("[Bouquet] Removed {} from Favorite.txt".format(name))
+        print("[Bouquet] Removed {} from bouquet list".format(name))
     except Exception as e:
-        print("[Bouquet] Error removing {} from Favorite.txt: {}".format(name, e))
+        print("[Bouquet] Error removing {} from bouquet list: {}".format(name, e))
 
 
 def reorganize_all_bouquets_position(list_position="bottom"):
