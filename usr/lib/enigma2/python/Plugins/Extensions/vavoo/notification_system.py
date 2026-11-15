@@ -67,6 +67,23 @@ def build_notify_skin(screen_width):
     }
 
 
+# The skin the plugin's theme asks for (plugin.py's
+# set_notification_theme()), or None for the bar's own look above.
+_theme_skin = None
+
+
+def set_notify_skin(skin_text):
+    """Use `skin_text` for the notification window from now on (None:
+    the default bar). A window already shown with another skin is
+    replaced the next time init_notification_system() runs."""
+    global _theme_skin
+    _theme_skin = skin_text or None
+
+
+def current_notify_skin():
+    return _theme_skin or SimpleNotifyWidget.skin
+
+
 class SimpleNotifyWidget(Screen):
     """Simple notification widget for Enigma2 plugins"""
 
@@ -74,10 +91,11 @@ class SimpleNotifyWidget(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
+        skin_text = current_notify_skin()
         try:
-            self.skin = SimpleNotifyWidget.skin
+            self.skin = skin_text
         except BaseException:
-            self.__dict__['skin'] = SimpleNotifyWidget.skin
+            self.__dict__['skin'] = skin_text
         self["notification_text"] = Label("")
         self.onLayoutFinish.append(self._setupUI)
 
@@ -117,6 +135,8 @@ class HybridNotificationManager(object):
                 return
             self._initialized = True
         self.notification_window = None
+        # The skin notification_window was built with.
+        self.window_skin = None
         self.session = None
         self.hide_timer = eTimer()
         try:
@@ -140,10 +160,22 @@ class HybridNotificationManager(object):
         # true.
         with self._lock:
             self.session = session
+            wanted = current_notify_skin()
+            if self.notification_window and session and \
+                    self.window_skin != wanted:
+                # The theme was changed: build the window again.
+                try:
+                    self.hide_timer.stop()
+                    self.notification_window.hide()
+                    session.deleteDialog(self.notification_window)
+                except Exception as e:
+                    print("Error replacing window: {}".format(e))
+                self.notification_window = None
             if not self.notification_window and session:
                 try:
                     self.notification_window = session.instantiateDialog(
                         SimpleNotifyWidget)
+                    self.window_skin = wanted
                     print("Notification window created")
                 except Exception as e:
                     print("Error creating window: {}".format(e))

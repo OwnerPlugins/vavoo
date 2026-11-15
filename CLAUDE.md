@@ -34,6 +34,10 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
                           #   as-is by vUtils.py (on-box) and generate_epg_channel_db.py (off-box) -
                           #   has zero Enigma2 imports so both sides can use the exact same code
   notification_system.py # singleton, thread-safe on-screen notification/toast manager
+  vavoo_theme.py         # the themes (Prism/Halo/Orbit = the Android app's Look/Geo tables):
+                          #   builds every screen's skin XML for hd/fhd/wqhd - no Enigma2 imports
+  make_theme_assets.py   # dev-time script: draws skin/themes/<theme>/<hd|fhd|wqhd>/*.png
+                          #   (pure Python, no Pillow) from vavoo_theme.asset_specs()
   vavoo_stats.py         # anonymous opt-out startup/heartbeat telemetry (no PII)
   Console.py             # generic subprocess-output Screen used for shell commands in the UI
   update_translations.py # dev-time script: extracts strings, updates .po/.pot, compiles .mo
@@ -43,9 +47,11 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
                           #   against its own epg_<cc>.xml feed (not Rytec) to bootstrap a
                           #   curated channel-name -> EPG-feed-id mapping
   locale/<lang>/LC_MESSAGES/vavoo.{po,mo}  # gettext translations, ~90 languages
-  skin/{hd,fhd,wqhd}/*.xml   # per-resolution skin layouts (HD, FullHD, WQHD/4K)
+  skin/{hd,fhd,wqhd}/*.xml   # per-resolution skin layouts (HD, FullHD, WQHD/4K) = the Classic theme
+  skin/themes/<theme>/      # theme backgrounds (bg*_hd/fhd.jpg, the app's) + drawn PNGs per resolution
   skin/cowntry/*.png, skin/pics/*.png, skin/images*/*.png  # flags/backgrounds
-  fonts/*.ttf
+  fonts/*.ttf               # cvfont (MavenPro-Medium = Liberation Sans) + the themes' Lexend,
+                            #   Manrope, Sora, Oxanium (SIL OFL, licence texts beside them)
   plugin.png             # plugin icon shown in Enigma2 menu
 
 CONTROL/                 # Debian/ipkg package control files (control, postinst, postrm, preinst)
@@ -69,6 +75,40 @@ config (`vavoo_config`), channel/category browsing (`vavoo`), search
 (`VavooSearch`), player overlay (`Playstream2`), and startup (`startVavoo`).
 `Plugins(**kwargs)` at the bottom is the Enigma2 entry point returning
 `PluginDescriptor`s for the menu, plugin-menu, and autostart hooks.
+
+**Themes (`vavoo_theme.py`)** — the plugin follows the companion Android
+app (`pQu4k3r/vavoo_android`): its `Look` (colours, radii, fonts per
+theme) and `Geo` (widget positions, in this plugin's own FHD skin
+coordinates) tables are carried over and every screen's skin is built
+from them for the box's resolution. Rules:
+- Classic (`cfg.theme == "classic"`) is never built: builders return
+  None and the screen loads its XML file as always. `plugin.py`'s
+  `load_screen_skin(kind, classic_file, ...)` returns `(text, themed)`;
+  `build_theme_skin()` is all or nothing (if the list skin cannot be
+  built, or a referenced picture / theme font is missing, no screen
+  uses the theme) and caches per settings.
+- Skins are built for `THEME_WIDTH` (2560 / 1920 / 1280, the Classic
+  tiers), and a picture's declared size must equal the PNG's: sizes
+  come from `asset_pixel_size()`, which `make_theme_assets.py` draws
+  to. Change a size or colour in the tables → re-run
+  `make_theme_assets.py` and commit the PNGs. Selection bars are exactly
+  one listbox row high; a list's row height is its height shared by
+  whole rows (`list_metrics()`), and `m2list` / `show_list()` use the
+  same metrics (icons scaled with `ePicLoad` once each, `scaled_icon()`).
+- Colours in the tables are Android `#AARRGGBB` (AA = opacity);
+  `e2_color()` converts to Enigma2's inverted transparency.
+- A theme skin names only widgets its screen creates: the list skin
+  adds `key_menu` / `key_info` (every list screen calls
+  `add_key_hint_labels()`); the time labels of Now/Next are 1 px there.
+- Keys follow the app in every theme: main menu Exit / Favourites /
+  Search all / Reload List; channel list Back / Add-Remove Fav / Search
+  / Full Screen; MENU opens `open_action_menu()` (`VavooMenu` in a
+  theme, `ChoiceBox` in Classic) holding Settings and the Enigma2 tools
+  (bouquets, EPG import, cache fix, token, log, about).
+- Main-list counts come from `vavoo_proxy.proxy.country_counts()`
+  (in-process, from `cat()`'s background thread; grouped like
+  `/channels`, computed once per catalog). "Reload List" =
+  `restart_proxy_in_background()` (the catalog is only loaded at start).
 
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
 started as an in-process daemon thread (`threading.Thread(target=
@@ -192,7 +232,9 @@ the real files (measured, see the comment block above
 `HybridNotificationManager`, thread-safe (lock-protected), with a message
 queue for messages sent before the UI is ready. `init_notification_system(session)`
 must be called exactly once (from `MainVavoo`). Use `quick_notify(message, seconds)`
-from anywhere, including background threads.
+from anywhere, including background threads. `set_notify_skin()` (called
+by `MainVavoo` via `set_notification_theme()`) gives it the theme's bar;
+the window is rebuilt on the next `initialize()` when that changes.
 
 **Stats (`vavoo_stats.py`)** — opt-out, anonymous-only startup/heartbeat
 ping (session id + version + event type + timestamp, no PII). Toggle: config
@@ -247,7 +289,8 @@ f-strings before choosing).
 - `defaultListScreen.xml` (and its `_cvs` DreamOS twin) is one skin
   shared by three screens: `MainVavoo`, `vavoo` and `VavooFavourites`.
   A `<widget name="...">` added to it must be created by all three,
-  used or not (see `add_epg_panel_labels()`): a named widget the
+  used or not (see `add_epg_panel_labels()` / `add_key_hint_labels()`;
+  the theme list skin follows the same rule): a named widget the
   screen does not own is a skin error on current images and a crash on
   older ones. Positions are in the skin's own coordinates, measured on
   the background images (`skin/images/` for HD, `skin/images_new/` for
@@ -314,14 +357,20 @@ when changing paths, dependencies, or version:
    `python3-requests`, `python3-six` deps) + `CONTROL/postinst` /
    `preinst` / `postrm` shell scripts.
 2. **Yocto/OpenEmbedded recipe** — `enigma2-plugin-extensions-vavoo.bb`,
-   pulls from `git://github.com/Belfagor2005/vavoo.git` branch `main`,
+   pulls from `git://github.com/OwnerPlugins/vavoo.git` branch `main`,
    depends on `ffmpeg gstplayer exteplayer3
    enigma2-plugin-systemplugins-serviceapp python3-requests python3-six`.
 3. **Self-installer** — `installer.sh`, a curl/wget-friendly script users
    run directly on the box: detects OS flavor (DreamOS/OE/Debian) and
    Python 2 vs 3, installs `wget`/`requests`/`six` (and OE-only deps),
-   downloads the `main` branch tarball from GitHub, and copies
-   `usr/` into place, then prompts a reboot.
+   downloads the `main` branch tarball of `OwnerPlugins/vavoo` from
+   GitHub, and copies `usr/` into place, then prompts a reboot.
+
+Updates come from `OwnerPlugins/vavoo` too: `__init__.py`'s
+`UPDATE_HOST` → `INSTALLER_URL` (the plugin's version check reads
+`version=` from that installer.sh). `HOST_MAIN` / `HOST_GIT` (still
+Belfagor2005) stay for the EPG feeds, `data.json` and the curated
+channel database.
 
 All three assume the plugin always lives at
 `usr/lib/enigma2/python/Plugins/Extensions/vavoo/` (or the `lib64`

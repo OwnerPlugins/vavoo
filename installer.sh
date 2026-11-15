@@ -160,7 +160,7 @@ cleanup
 mkdir -p "$TMPPATH"
 
 echo "Downloading vavoo..."
-DOWNLOAD_URL='https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz'
+DOWNLOAD_URL='https://github.com/OwnerPlugins/vavoo/archive/refs/heads/main.tar.gz'
 DOWNLOAD_OK=1
 if command -v curl >/dev/null 2>&1; then
     # Real TLS certificate verification - this script runs as root and

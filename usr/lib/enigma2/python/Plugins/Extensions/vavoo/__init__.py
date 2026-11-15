@@ -33,7 +33,12 @@ PROXY_SHUTDOWN_URL = PROXY_BASE_URL + "/shutdown"
 
 HOST_MAIN = 'https://raw.githubusercontent.com/Belfagor2005/vavoo/main'
 HOST_GIT = "https://raw.githubusercontent.com/Belfagor2005"
-INSTALLER_URL = HOST_MAIN + "/installer.sh"
+# Where updates come from: the version check reads installer.sh's
+# version= here, and that installer downloads this repository's main
+# branch. (Programme guides and the curated channel database still come
+# from HOST_MAIN / HOST_GIT, as before.)
+UPDATE_HOST = 'https://raw.githubusercontent.com/OwnerPlugins/vavoo/main'
+INSTALLER_URL = UPDATE_HOST + "/installer.sh"
 FLAG_CACHE_DIR = "/tmp/vavoo_flags"
 PICON_CACHE_DIR = "/tmp/vavoo_picons"
 LOG_FILE = "/tmp/vavoo.log"

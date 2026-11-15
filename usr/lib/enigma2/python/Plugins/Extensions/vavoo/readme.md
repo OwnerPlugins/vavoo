@@ -49,13 +49,14 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 ## ✨ Key Features
 
 ### Watching
+- **Looks Like the Android App** – The themes of the companion Android app: **Prism** (Vavoo's violet, the default), **Halo** (frosted glass over a blue aurora) and **Orbit** (a teal cockpit display), each with its own background, fonts, rounded panels, colour keys and preview frame, in large or normal text. **Classic** keeps the plugin's original look and backgrounds (see "Themes" below)
 - **Live TV Streaming** – Thousands of live channels, browsed by country, with country flags and channel logos (picons)
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
 - **Choose Your Source** – A channel available from several sources is shown as one row. Press **YELLOW** in the player to pick the source by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
-- **Now / Next Beside the List** – While you browse a country (or your Favourites), the area next to the preview window shows what is on the highlighted channel now and what comes next, with start and end times on your box's clock. No export or EPGImport needed
+- **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed
 - **Player Overlay** – Press OK for the current programme, the channel logo and the proxy status; INFO looks the programme up in IMDb/TMDB
-- **Search** – Find channels by name inside a country
-- **Favourites** – Star/unstar any channel with the INFO key while browsing; "View Favourites" in Config to browse and play them
+- **Search** – Find channels by name inside a country (YELLOW in the channel list), or in every country at once (YELLOW in the main menu - each result shows its country)
+- **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them
 - **Parental Control** – Optional PIN lock on chosen countries
 
 ### In your Enigma2 channel list
@@ -71,42 +72,45 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Two Catalog Sources** – Geil (default, needs no token) with automatic fallback to Vavoo/Kool, or pin one of them in the settings
 - **Mirror Fallback** – Automatic switch to a mirror when a site answers HTTP 451 or is unreachable
 - **Real-time Notifications** – A bar at the top of the screen for exports, EPG processing and errors, on any screen resolution
-- **Update Check** – On start the plugin checks for a newer version and shows its changelog; one key press installs it
+- **Update Check** – On start the plugin checks this repository (OwnerPlugins/vavoo, branch `main`) for a newer version and shows its changelog; one key press installs it
 - **In-UI Log Viewer** – "Show Log" in Config shows the last 200 lines of `vavoo.log`; "Debug logging" adds detail when troubleshooting
-- **Cache Format Fix** – YELLOW in the main menu cleans up the EPG match cache
+- **Cache Format Fix** – MENU → "Fix EPG cache" in the main menu cleans up the EPG match cache
 - **Multi-Language** – Translated into 90+ languages
-- **Custom Backgrounds** – Selectable background image
+- **Custom Backgrounds** – Selectable background image (Classic theme)
 - **Anonymous Statistics** – Opt-out, no personal data (see Privacy below)
 
 ## 🎮 Remote Control Keys
 
+The colour keys are the Android app's, in every theme. The Enigma2 tools that used to sit on them (bouquets, EPG cache) are in the **MENU** key's list.
+
 ### Main menu (country list)
 | Key | Action |
 |-----|--------|
-| OK | Open the selected country |
-| MENU | Settings |
-| GREEN | Remove ALL exported Vavoo bouquets (asks first) |
-| YELLOW | Fix the EPG cache format |
-| BLUE | Reload bouquets |
+| OK | Open the selected country (or the "★ Favourites" row) |
+| GREEN | Favourites |
+| YELLOW | Search all channels, in every country |
+| BLUE | Reload List: download the channel list again (asks first; the proxy restarts, a channel playing stops for a moment) |
+| MENU | Settings, Reload bouquets, Remove all Vavoo bouquets, Import EPG now, Fix EPG cache, Refresh token, Show Log, About |
+| INFO | Version, channels and countries (hold INFO: About) |
 | EPG | Start an EPG import now (needs "Enable Vavoo EPG") |
-| INFO | About the plugin |
 | TEXT | Refresh the proxy token |
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Quit |
 
+The list starts with "★ Favourites (n)" once you have favourites, and shows each country's channel count ("Portugal (174)", setting "Show Counts"). The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch".
+
 ### Channel list
 | Key | Action |
 |-----|--------|
-| OK | Play the channel |
-| GREEN | Export this country as a bouquet; on an already exported one, remove it |
-| YELLOW | Search |
-| BLUE | Reload bouquets |
-| INFO | Star / unstar as favourite |
-| MENU | Settings |
+| OK / BLUE (Full Screen) | Play the channel |
+| GREEN | Add Fav / Remove Fav (the caption follows the highlighted channel) |
+| YELLOW | Search this country |
+| MENU | Settings, Export this country as a bouquet (or Remove this country's bouquet), Reload bouquets, Show Log |
+| INFO | Version and this country's channels |
 | CH+ / CH- | Page up / down |
 | RED / EXIT | Back |
 
-Next to the preview window the list shows the highlighted channel's current and next programme ("Now" / "Next"). It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
+The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
 ### Player
 | Key | Action |
@@ -133,7 +137,9 @@ LEFT and RIGHT do nothing during live playback (there is nothing to seek in a li
 | Key | Action |
 |-----|--------|
 | OK | Play |
-| GREEN | Remove the highlighted favourite |
+| GREEN | Remove Fav |
+| MENU | Settings, Show Log |
+| INFO | Version and number of favourites |
 | RED / EXIT | Back |
 
 ### Settings
@@ -159,7 +165,7 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 1. **Open the Vavoo Plugin** – The proxy starts automatically (a start screen shows its progress)
 2. **Select a Country** – Choose your desired country (e.g., "Italy") and press OK
 3. **Watch** – Press OK on a channel to play it
-4. **Export (optional)** – In the channel list press GREEN to export the country to your Enigma2 bouquets (notifications show progress). Pressing GREEN again on an exported country offers to remove it
+4. **Export (optional)** – In the channel list press MENU → "Export this country as a bouquet" to put the country in your Enigma2 channel list (notifications show progress). On an exported country the same entry offers to remove it
 5. **Return to TV** – Your channels appear in the channel list
 
 ### Automatic Updates (Recommended)
@@ -175,18 +181,23 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 - The Now/Next lines in the channel list and the player's OK overlay do not need any of the above: they read the country's programme guide directly (setting "Now/Next in channel list")
 
 ### Cache Maintenance
-- Press **YELLOW button** in the main menu to fix cache format
+- In the main menu press **MENU** → **"Fix EPG cache"**
 - This will add missing fields and remove duplicate entries
 - A notification will show the result
 
 ## 🔧 User Configuration
-Press **MENU** in the main menu or the channel list. Options appear in this order:
+Press **MENU** → **Settings** in the main menu, the channel list or Favourites. Options appear in this order:
 
 | Option | What it does | Default |
 |--------|--------------|---------|
+| **Theme** | Prism, Halo, Orbit (the Android app's themes) or Classic (the plugin's original look). Takes effect when the plugin is opened again | Prism |
+| **Text Size** | Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Themes only | Large |
+| **Show Counts** | Channel count per country and number of favourites in the main list | Yes |
+| **Clock Format** | 24 or 12 hours, for the clock and the programme times. Themes only | 24 hours |
+| **Select Background** | Background image of the plugin screens (shown with the Classic theme only - each theme has its own) | oktus |
 | **Generate .m3u files (Ok for Exec)** | Press OK to export `.m3u` playlist files (one country or all), with links for this box only (127.0.0.1) or for other devices on your network | – |
 | **Playlist Access Key (optional)** | If set, the live playlist at `/playlist.m3u` requires `?key=<this value>` | empty (no key) |
-| **Catalog/Stream Source** | Where channels and streams come from: "Auto (Geil, fallback Vavoo)", "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |
+| **Catalog/Stream Source** | Where channels and streams come from: "Auto" (Geil first, Vavoo/Kool if Geil is unavailable), "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |
 | **Proxy startup timeout (seconds)** | How long the start screen waits for the proxy. Raise it on a slow connection or VPN | 120 (15-300) |
 | **Enable Vavoo EPG** | Creates the EPG source for EPGImport with Vavoo programme data and enables it there after each export | Off |
 | **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for an hour. Switch it off on a slow connection or a weak box | Yes |
@@ -196,7 +207,6 @@ Press **MENU** in the main menu or the channel list. Options appear in this orde
 | – **Time to start EPG/bouquet update:** | Time of day, for "fixed time" | – |
 | **Movie Services Reference** | The Enigma2 player used for streams: 4097 always; 5001 when gstplayer is installed; 5002 when exteplayer3 is installed; 8193 on DreamOS images | 4097 |
 | **Bouquet Position in List** | Put the Vavoo bouquets at the top or the bottom of the channel list | Bottom |
-| **Select Background** | Background image of the plugin screens | oktus |
 | **Link in Main Menu** | Show the plugin in the main Enigma2 menu | Yes |
 | **Send Anonymous Statistics** | Anonymous startup/heartbeat ping (see Privacy below) | Yes |
 | **Debug logging** | Verbose messages in `vavoo.log`; takes effect immediately. Leave off unless troubleshooting | No |
@@ -210,8 +220,14 @@ The local proxy has no on/off switch: every channel list and stream goes through
 **Removed in this version:** "Proxy Enabled" (the proxy is always on), "Auto-update EPG" (now simply part of "Enable Vavoo EPG") and "EPG Similarity Threshold" (fixed at 75%).
 
 ### Favourites
-- Press **INFO** on any channel while browsing to star/unstar it
-- Config Menu → **"View Favourites"** to browse and play your starred channels (GREEN removes the highlighted one)
+- Press **GREEN** on any channel while browsing to add it (or remove it); the status line shows "★" on favourites
+- **GREEN** in the main menu, the **"★ Favourites"** row, or Settings → **"View Favourites"** opens them (GREEN removes the highlighted one)
+
+### Themes
+- **Prism**, **Halo** and **Orbit** are the Android app's own themes, measure for measure: the same layout, backgrounds, fonts (Lexend, Manrope, Sora, Oxanium - SIL Open Font License, in `fonts/`), rounded panels, colour keys, preview frame and selection bar
+- **Classic** is the plugin's original skin with its selectable backgrounds, unchanged
+- The theme skins are built by `vavoo_theme.py` for HD, Full HD and WQHD from the app's tables; their pictures (`skin/themes/<theme>/`) are drawn by the dev script `make_theme_assets.py`. If a theme's file is missing, every screen falls back to Classic by itself (and says so in `vavoo.log`)
+- Settings → **Theme** / **Text Size** / **Clock Format**; exit and reopen the plugin to see the change
 
 ### Parental Control
 - Config Menu → **"Parental Control PIN"**: enter a PIN, then list the countries to lock in **"Locked Countries"**
@@ -231,7 +247,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - ✅ **Real-time monitoring** – Proxy status always visible
 - ✅ **Visual feedback** – Notifications for all operations
 - ✅ **Manual control** – Pick the stream source with YELLOW, refresh the proxy token with TEXT
-- ✅ **Cache management** – Fix cache format with YELLOW button
+- ✅ **Cache management** – Fix cache format from the MENU key
 
 ## 🛠 Technical Features
 
@@ -450,7 +466,7 @@ curl -s http://127.0.0.1:4323/health
 | HTTP 451 errors | Proxy automatically switches to mirror sites (Geil's mirrors, or Kool on the Vavoo fallback) |
 | Streams not resolving at all | Check `catalog_source` in `/status` - if stuck on "vavoo" with no token, Geil may be unreachable from your network |
 | A channel keeps stopping or buffering | Press YELLOW in the player and pick another source |
-| Duplicate cache entries | Press YELLOW button in main menu to fix cache format |
+| Duplicate cache entries | Main menu: MENU → "Fix EPG cache" |
 
 **"No programme information" beside the channel list**
 - The country's guide file has no entry for that channel (not every channel is covered), or the country has no guide file at all
@@ -467,9 +483,9 @@ curl -s http://127.0.0.1:4323/health
 | Problem | Solution |
 |---------|----------|
 | Unmatched channels not saving | Check write permissions to `/etc/enigma2/` |
-| Duplicate unmatched entries | Press YELLOW button or run `fix_cache_format(remove_duplicates=True)` |
+| Duplicate unmatched entries | MENU → "Fix EPG cache", or run `fix_cache_format(remove_duplicates=True)` |
 | Cache file corrupted | Delete the file and restart - it will be regenerated |
-| Old format entries | The plugin auto-converts them on read or use YELLOW button |
+| Old format entries | The plugin auto-converts them on read, or use MENU → "Fix EPG cache" |
 
 ## Privacy & Anonymous Stats
 
@@ -496,7 +512,7 @@ Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - **Unmatched channels are persistent** – They survive plugin restarts and are used for future matching attempts
 - **EPG cache includes matched/unmatched status** – Each entry has a `matched: true/false` flag
 - Use **TEXT button** in main menu to manually refresh proxy token
-- Use **YELLOW button** in the main menu to fix cache format, and in the player to choose the stream source
+- Use **MENU → "Fix EPG cache"** in the main menu to fix the cache format, and **YELLOW** in the player to choose the stream source
 - Proxy status is displayed in real-time in the main interface
 - For developers: `quick_notify(message, seconds)` is thread-safe and can be called from any background thread; messages sent before the UI is ready are queued
 

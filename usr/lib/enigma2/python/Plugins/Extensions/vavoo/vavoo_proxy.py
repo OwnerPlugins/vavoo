@@ -1976,6 +1976,35 @@ class VavooProxy(object):
             print("[Proxy] {0}: source {1} failed, retrying it".format(
                 channel_id, failed_member_id))
 
+    def country_counts(self):
+        """{country.lower(): number of rows /channels lists for it} -
+        the sources of one channel counted once, as /channels groups
+        them (one row per _group_key(), plus every channel whose name
+        leaves no key). For the main list's "Portugal (174)" in
+        plugin.py, which calls this in-process from a background
+        thread.
+
+        Worked out once per catalog: initialize_proxy() builds
+        channels_by_country once and never changes it afterwards, so
+        the same dict object means the same counts."""
+        by_country = getattr(self, 'channels_by_country', None) or {}
+        cached = getattr(self, '_country_counts', None)
+        if cached is not None and cached[0] is by_country:
+            return cached[1]
+        counts = {}
+        for country, channels in by_country.items():
+            keys = set()
+            standalone = 0
+            for channel in channels:
+                key = _group_key(channel.get("name", ""))
+                if key:
+                    keys.add(key)
+                elif channel.get("id"):
+                    standalone += 1
+            counts[country] = len(keys) + standalone
+        self._country_counts = (by_country, counts)
+        return counts
+
     def get_group_sources(self, group_id):
         """A grouped channel's individual sources and which one is in
         use: {"members": [{"id", "label"}, ...], "current": id or

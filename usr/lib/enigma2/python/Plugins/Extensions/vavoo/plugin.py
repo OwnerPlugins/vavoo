@@ -3,6 +3,7 @@
 from __future__ import absolute_import, print_function
 
 import codecs
+import re
 import ssl
 import time
 import threading
@@ -100,6 +101,7 @@ from . import (
     EPGIMPORT_CONF, LOG_FILE, GROUP_NAME_SEPARATORS
 )
 from . import PY2, PY3, vUtils
+from . import vavoo_theme
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -160,13 +162,20 @@ from .Console import Console
 
 # Import notification system
 try:
-    from .notification_system import init_notification_system, quick_notify
+    from .notification_system import (
+        init_notification_system, quick_notify, set_notify_skin)
     NOTIFICATION_AVAILABLE = True
 except ImportError as e:
     debug("Notification system not available: {}".format(e))
     NOTIFICATION_AVAILABLE = False
 
     def quick_notify(*args, **kwargs):
+        pass
+
+    def init_notification_system(*args, **kwargs):
+        pass
+
+    def set_notify_skin(*args, **kwargs):
         pass
 
 print = make_print("PLUGIN")
@@ -421,6 +430,17 @@ OVERLAY_PICON_Y = int(SCREEN_HEIGHT * 0.78) + OVERLAY_HEIGHT_TOP
 
 print('folder back: ', BackPath)
 
+# Desktop width the theme skins are built for (vavoo_theme.py): the
+# same three sizes as the Classic skins picked above, so that the
+# pictures drawn for them (make_theme_assets.py) fit to the pixel.
+if screen_width == 2560:
+    THEME_WIDTH = 2560
+elif screen_width >= 1920:
+    THEME_WIDTH = 1920
+else:
+    THEME_WIDTH = 1280
+IS_DREAMOS = isfile('/var/lib/dpkg/status')
+
 
 modemovie = [("4097", "4097")]
 if file_exists("/usr/bin/gstplayer"):
@@ -501,7 +521,9 @@ cfg.view_favourites = NoSave(ConfigAction())
 cfg.catalog_source = ConfigSelection(
     default="auto",
     choices=[
-        ("auto", _("Auto (Geil, fallback Vavoo)")),
+        # (short: the description says what Auto does - a long value
+        # runs into the option's name in the settings list)
+        ("auto", _("Auto")),
         ("geil", _("Geil only")),
         ("vavoo", _("Vavoo/Kool only")),
     ])
@@ -525,6 +547,26 @@ cfg.debug_logging.addNotifier(
 )
 # cfg.ipv6 = ConfigEnableDisable(default=False)
 cfg.back = ConfigSelection(default='oktus', choices=BakP)
+# The look of the plugin's screens (vavoo_theme.py): Prism, Halo and
+# Orbit are the Android app's own themes, Classic is this plugin's
+# original skin (skin/{hd,fhd,wqhd}/*.xml, unchanged - and what every
+# screen falls back to if a theme cannot be used). "Select Background"
+# (cfg.back) only applies to Classic: each theme has its own.
+cfg.theme = ConfigSelection(
+    default=vavoo_theme.DEFAULT_THEME,
+    choices=[
+        ("prism", "Prism"),
+        ("halo", "Halo"),
+        ("orbit", "Orbit"),
+        ("classic", _("Classic")),
+    ])
+cfg.text_size = ConfigSelection(
+    default="large",
+    choices=[("large", _("Large")), ("normal", _("Normal"))])
+cfg.show_counts = ConfigYesNo(default=True)
+cfg.clock_format = ConfigSelection(
+    default="24",
+    choices=[("24", _("24 hours")), ("12", _("12 hours"))])
 cfg.list_position = ConfigSelection(
     default="bottom",
     choices=[("bottom", _("Bottom")), ("top", _("Top"))]
@@ -571,32 +613,219 @@ except BaseException:
     pass
 
 
+# ---------------------------------------------------------------------
+# Themes (vavoo_theme.py)
+# ---------------------------------------------------------------------
+def current_theme():
+    return vavoo_theme.normalize_theme(cfg.theme.value)
+
+
+def large_text():
+    return cfg.text_size.value != "normal"
+
+
+def clock_24():
+    return cfg.clock_format.value != "12"
+
+
+def read_classic_skin(filename, cvs=False, background=True):
+    """One of the Classic skin files for this resolution (the DreamOS
+    "_cvs" twin when `cvs` and running on DreamOS), with the chosen
+    background put in when `background`."""
+    path = join(skin_path, filename)
+    if cvs and IS_DREAMOS:
+        path = path.replace('.xml', '_cvs.xml')
+    with codecs.open(path, "r", encoding="utf-8") as f:
+        text = f.read()
+    return apply_selected_background(text) if background else text
+
+
+# Every file a built skin points at: if one is missing (a copy of the
+# plugin without skin/themes/, say), the theme is not used at all.
+_SKIN_FILE_RE = re.compile(r'(?:pixmap|selectionPixmap)="([^"]+)"')
+_theme_skin_cache = {}
+
+
+def _theme_font_files(theme):
+    look = vavoo_theme.LOOKS[theme]
+    return [join(PLUGIN_PATH, "fonts", look[key][1])
+            for key in ("font", "font_bold")]
+
+
+def _build_skin(kind, theme, kwargs):
+    try:
+        text = vavoo_theme.BUILDERS[kind](
+            theme, large_text(), THEME_WIDTH, base_dir=PLUGIN_PATH, **kwargs)
+    except Exception as e:
+        print("[Theme] Building the {} screen of {} failed: {}".format(
+            kind, theme, e))
+        return None
+    if not text:
+        return None
+    missing = [path for path in _SKIN_FILE_RE.findall(text)
+               if not isfile(path)]
+    missing.extend(path for path in _theme_font_files(theme)
+                   if not isfile(path))
+    if missing:
+        print("[Theme] {} not used for the {} screen, missing: {}".format(
+            theme, kind, ", ".join(missing[:3])))
+        return None
+    return text
+
+
+def build_theme_skin(kind, **kwargs):
+    """The skin of a `kind` of screen (vavoo_theme.BUILDERS) in the
+    chosen theme, or None: Classic chosen, or the theme cannot be used
+    - then the caller loads its Classic XML.
+
+    All or nothing: if the list screen's skin cannot be built, no
+    screen uses the theme, so a themed list never ends up inside a
+    Classic screen or the other way round. Built once per set of
+    settings (theme, text size, clock...) and kept."""
+    theme = current_theme()
+    if not vavoo_theme.is_modern(theme):
+        return None
+    key = (kind, theme, large_text(), tuple(sorted(kwargs.items())))
+    if key not in _theme_skin_cache:
+        text = None
+        if kind == "list" or build_theme_skin("list") is not None:
+            text = _build_skin(kind, theme, kwargs)
+        _theme_skin_cache[key] = text
+    return _theme_skin_cache[key]
+
+
+def theme_active():
+    """True when the screens are drawn by a modern theme (chosen, and
+    all its files there)."""
+    return build_theme_skin("list") is not None
+
+
+def load_screen_skin(kind, classic_file, cvs=False, background=True,
+                     **kwargs):
+    """(skin text, themed) for a screen: the theme's, or the Classic
+    file when there is no theme (themed = False)."""
+    text = build_theme_skin(kind, **kwargs)
+    if text:
+        return text, True
+    return read_classic_skin(classic_file, cvs, background), False
+
+
+# Icons of the rows, already scaled to the theme's icon box. Flags and
+# picons come in all sizes and MultiContentEntryPixmapAlphaTest does not
+# scale - so each is decoded to size once and kept, instead of once
+# per row every time a list is drawn again.
+_icon_cache = {}
+_ICON_CACHE_MAX = 300
+
+
+def scaled_icon(path, width, height):
+    """The picture at `path` scaled to fit width x height (aspect
+    kept, transparent around it), or None."""
+    key = (path, width, height)
+    pixmap = _icon_cache.get(key)
+    if pixmap is not None:
+        return pixmap
+    try:
+        picload = ePicLoad()
+        av_scale = AVSwitch().getFramebufferScale()
+        picload.setPara([width, height, av_scale[0], av_scale[1], 0, 1,
+                         '#00000000'])
+        if IS_DREAMOS:
+            picload.startDecode(path, False)
+        else:
+            picload.startDecode(path, 0, 0, False)
+        pixmap = picload.getData()
+    except Exception as e:
+        debug("Icon decode failed for {}: {}".format(path, e))
+        pixmap = None
+    if pixmap is not None:
+        if len(_icon_cache) >= _ICON_CACHE_MAX:
+            _icon_cache.clear()
+        _icon_cache[key] = pixmap
+    return pixmap
+
+
+def theme_metrics(kind="list"):
+    """vavoo_theme.list_metrics() for the chosen theme and settings."""
+    return vavoo_theme.list_metrics(
+        current_theme(), large_text(), THEME_WIDTH, kind)
+
+
+def programme_time(timestamp):
+    """A programme's start the app's way: "20:30" or "8:30 PM" (the
+    clock setting), with the weekday in front when it is not today."""
+    moment = time.localtime(timestamp)
+    if clock_24():
+        text = time.strftime("%H:%M", moment)
+    else:
+        text = time.strftime("%I:%M %p", moment).lstrip("0")
+    today = time.localtime()
+    if (moment.tm_yday, moment.tm_year) != (today.tm_yday, today.tm_year):
+        text = time.strftime("%a ", moment) + text
+    return text
+
+
+# What the row of the main list that opens the Favourites links to (a
+# country row links to its country name).
+FAVOURITES_ROW = "__vavoo_favourites__"
+
+
+def info_text(channels=None, countries=None):
+    """The app's INFO message: version, channels and countries."""
+    parts = ["Vavoo Stream Live · V.{}".format(__version__)]
+    if channels:
+        parts.append(_("{} channels").format(channels))
+    if countries:
+        parts.append(_("{} countries").format(countries))
+    return " · ".join(parts)
+
+
 # menulist
 class m2list(MenuList):
-    def __init__(self, items):
+    def __init__(self, items, kind="list", themed=None):
         super(m2list, self).__init__(items, False, eListboxPythonMultiContent)
-        if screen_width == 2560:
+        if themed is None:
+            themed = theme_active()
+        if themed:
+            # The theme's rows: as many whole rows as the list holds
+            # (vavoo_theme.list_metrics()).
+            metrics = theme_metrics(kind)
+            item_height = metrics["row_h"]
+            font_name = metrics["font"]
+            text_font_size = metrics["font_size"]
+        elif screen_width == 2560:
             item_height = 60
             text_font_size = 38
+            font_name = 'Regular'
         elif screen_width == 1920:
             item_height = 50
             text_font_size = 34
+            font_name = 'Regular'
         else:
             item_height = 50
             text_font_size = 22
+            font_name = 'Regular'
         self.l.setItemHeight(item_height)
-        self.l.setFont(0, gFont('Regular', text_font_size))
+        self.l.setFont(0, gFont(font_name, text_font_size))
 
     def buildEntry(self, entry):
         """Build list entry - entry should be [ (name, link), icon, text ]"""
         return entry
 
 
-def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
-    """Build a MultiContent entry with icon and text."""
+def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
+              display=None, kind="list", themed=None):
+    """Build a MultiContent entry with icon and text.
+
+    The entry's first item is always (name, link); `display` is what
+    the row shows instead of the name, when it differs (a country with
+    its channel count). `kind` / `themed`: the list it goes into (see
+    m2list)."""
 
     safe_name = to_string(name)
     safe_link = to_string(link)
+    if themed is None:
+        themed = theme_active()
 
     res = [(safe_name, safe_link)]
 
@@ -673,7 +902,15 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     # uniformly with zero distortion, and vertically centered in the
     # row ((item_height - icon_height) // 2) rather than the old
     # fixed y-offsets, which were tuned for the original, taller box.
-    if screen_width >= 2560:
+    if themed:
+        # The app's rows (SkinList): the icon 4/5 of the row high, 3:2,
+        # vertically centred; the text after it.
+        metrics = theme_metrics(kind)
+        icon_size = (metrics["icon_w"], metrics["icon_h"])
+        icon_pos = (metrics["icon_x"], metrics["icon_y"])
+        text_size = (metrics["text_w"], metrics["row_h"])
+        text_pos = (metrics["text_x"], 0)
+    elif screen_width >= 2560:
         icon_size = (54, 36)
         icon_pos = (10, 12)
         text_size = (750, 60)
@@ -709,7 +946,14 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
     # (startVavoo.decodeImage()) and the playback overlay
     # (_update_overlay_picon()) already use for exactly this reason.
     png_data = None
-    if using_channel_picon:
+    if themed:
+        # Every icon scaled to the theme's box (the flags and the
+        # default icon too - they are drawn for Classic's smaller box),
+        # each decoded once (scaled_icon()'s cache).
+        png_data = scaled_icon(icon_path, icon_size[0], icon_size[1])
+        if png_data is None and icon_path != default_icon:
+            png_data = scaled_icon(default_icon, icon_size[0], icon_size[1])
+    elif using_channel_picon:
         try:
             picload = ePicLoad()
             av_scale = AVSwitch().getFramebufferScale()
@@ -730,7 +974,7 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
             debug("Picon decode failed for {}: {}".format(icon_path, e))
             png_data = None
 
-    if not png_data:
+    if not png_data and not themed:
         # Either not a channel picon (default icon / country flag,
         # both already pre-sized to exactly icon_size - no scaling
         # needed) or the decode above failed - either way, fall back
@@ -757,11 +1001,95 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None):
         pos=text_pos,
         size=text_size,
         font=0,
-        text=safe_name,
+        text=to_string(display) if display is not None else safe_name,
         flags=HALIGN | RT_VALIGN_CENTER
     ))
 
     return list(res)
+
+
+def menu_row(label):
+    """A row of a theme's action menu (VavooMenu): text only."""
+    metrics = theme_metrics("menu")
+    text = to_string(label)
+    return [
+        (text, None),
+        MultiContentEntryText(
+            pos=(metrics["plain_x"], 0),
+            size=(metrics["plain_w"], metrics["row_h"]),
+            font=0, text=text, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER),
+    ]
+
+
+class VavooMenu(Screen):
+    """The MENU key's list of actions in a modern theme - the app's
+    PickerPopup. Closes with the chosen entry's key, or None."""
+
+    def __init__(self, session, title, entries):
+        Screen.__init__(self, session)
+        self.skin = build_theme_skin("menu")
+        self.entries = list(entries)
+        self["title"] = Label(to_string(title))
+        self["menulist"] = m2list([], kind="menu", themed=True)
+        self["actions"] = ActionMap(
+            ["OkCancelActions", "DirectionActions"],
+            {
+                "ok": self.ok,
+                "cancel": self.cancel,
+                "up": self.move_up,
+                "down": self.move_down,
+                "left": self.page_up,
+                "right": self.page_down,
+            }, -1)
+        self.onLayoutFinish.append(self._fill)
+
+    def _fill(self):
+        self["menulist"].l.setList(
+            [menu_row(label) for label, _key in self.entries])
+
+    def ok(self):
+        index = self["menulist"].getSelectedIndex()
+        if index is not None and 0 <= index < len(self.entries):
+            self.close(self.entries[index][1])
+        else:
+            self.close(None)
+
+    def cancel(self):
+        self.close(None)
+
+    def move_up(self):
+        if self.entries:
+            index = self["menulist"].getSelectedIndex() or 0
+            self["menulist"].moveToIndex((index - 1) % len(self.entries))
+
+    def move_down(self):
+        if self.entries:
+            index = self["menulist"].getSelectedIndex() or 0
+            self["menulist"].moveToIndex((index + 1) % len(self.entries))
+
+    def page_up(self):
+        self["menulist"].pageUp()
+
+    def page_down(self):
+        self["menulist"].pageDown()
+
+
+def open_action_menu(session, title, entries, on_choice):
+    """The MENU key's actions: `entries` = [(label, key)], on_choice(key)
+    once one is picked. The theme's own popup in a modern theme,
+    Enigma2's ChoiceBox in Classic."""
+    def _picked(key):
+        if key is not None:
+            on_choice(key)
+
+    if build_theme_skin("menu") is not None:
+        session.openWithCallback(_picked, VavooMenu, title, entries)
+        return
+    from Screens.ChoiceBox import ChoiceBox
+    session.openWithCallback(
+        lambda result: _picked(result[1] if result else None),
+        ChoiceBox, title=to_string(title),
+        list=[(to_string(label), key) for label, key in entries])
 
 
 # ---------------------------------------------------------------------
@@ -788,6 +1116,23 @@ def add_epg_panel_labels(screen):
     """Give `screen` the (empty) Now/Next labels its skin declares."""
     for widget in EPG_PANEL_WIDGETS:
         screen[widget] = Label("")
+
+
+def add_key_hint_labels(screen):
+    """The MENU and INFO key hints a theme's list skin draws (Classic's
+    backgrounds have them painted in). Every screen that loads the
+    list skin owns both, as with the Now/Next labels."""
+    screen['key_menu'] = Label("MENU")
+    screen['key_info'] = Label("i")
+
+
+def set_notification_theme():
+    """Messages at the top of the screen in the chosen theme (None:
+    the notification bar's own Classic look)."""
+    try:
+        set_notify_skin(build_theme_skin("notify"))
+    except Exception as e:
+        debug("Notification theme not applied: {}".format(e))
 
 
 def _epg_channel_id(url):
@@ -968,6 +1313,21 @@ class NowNextPanel(object):
     def _epg_panel_draw(self, answer):
         status, current, following = answer
         now_time = now_title = next_time = next_title = ""
+        if getattr(self, '_themed', False):
+            # The app's two lines under the preview window (its
+            # epgText()): "▶ 20:00  Title" and "» 21:00  Title". The
+            # theme skin keeps the two time labels one pixel big.
+            if status != "no_country":
+                if current is not None:
+                    now_title = u"▶ {}  {}".format(
+                        to_text(programme_time(current[0])), to_text(current[2]))
+                else:
+                    now_title = _("No programme information")
+                if following is not None:
+                    next_title = u"» {}  {}".format(
+                        to_text(programme_time(following[0])), to_text(following[2]))
+            self._epg_panel_show("", now_title, "", next_title)
+            return
         if status != "no_country":
             if current is not None:
                 now_time = "{}  {} - {}".format(
@@ -1006,14 +1366,14 @@ class vavoo_config(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = join(skin_path, 'vavoo_config.xml')
-        if isfile('/var/lib/dpkg/status'):
-            skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = apply_selected_background(f.read())
+        self.skin, self._themed = load_screen_skin(
+            "config", 'vavoo_config.xml', cvs=True, clock_24=clock_24())
         self.setup_title = ('Vavoo Config')
 
         self.old_back = cfg.back.value
+        # The settings that change how the screens are built - the
+        # screen behind this one keeps the old look until reopened.
+        self.old_look = self._look_settings()
         self.old_list_position = cfg.list_position.value
         self.old_catalog_source = cfg.catalog_source.value
 
@@ -1054,6 +1414,11 @@ class vavoo_config(Screen, ConfigListScreen):
     def _mark_closed(self):
         self._closed = True
 
+    @staticmethod
+    def _look_settings():
+        # (not "Show Counts": the main list is filled again on return)
+        return (cfg.theme.value, cfg.text_size.value, cfg.clock_format.value)
+
     def update_status(self):
         if cfg.autobouquetupdate.value:
             self['statusbar'].setText(
@@ -1068,6 +1433,36 @@ class vavoo_config(Screen, ConfigListScreen):
         self.editListEntry = None
         self.list = []
         indent = "- "
+        # The look first, as in the app's settings.
+        self.list.append(getConfigListEntry(
+            _("Theme"),
+            cfg.theme,
+            _("Prism: Vavoo's violet. Halo: frosted glass over a blue "
+              "aurora. Orbit: a teal cockpit display. Classic: the "
+              "plugin's original skin, with its backgrounds. Takes "
+              "effect when the plugin is opened again.")))
+        self.list.append(getConfigListEntry(
+            _("Text Size"),
+            cfg.text_size,
+            _("Large: bigger lists, names and programme lines, easier to "
+              "read from the sofa. Normal: smaller, more rows. Not used "
+              "by Classic.")))
+        self.list.append(getConfigListEntry(
+            _("Show Counts"),
+            cfg.show_counts,
+            _("Show how many channels each country has, and how many "
+              "favourites, in the main list.")))
+        self.list.append(getConfigListEntry(
+            _("Clock Format"),
+            cfg.clock_format,
+            _("Clock in the top-right corner and programme times. Not "
+              "used by Classic's own clock.")))
+        if current_theme() == "classic":
+            self.list.append(
+                getConfigListEntry(
+                    _("Select Background"),
+                    cfg.back,
+                    _("Configure Main Background Image.")))
         self.list.append(
             getConfigListEntry(
                 _("Generate .m3u files (Ok for Exec)"),
@@ -1184,12 +1579,6 @@ class vavoo_config(Screen, ConfigListScreen):
 
         self.list.append(
             getConfigListEntry(
-                _("Select Background"),
-                cfg.back,
-                _("Configure Main Background Image.")))
-
-        self.list.append(
-            getConfigListEntry(
                 _('Link in Main Menu'),
                 cfg.stmain,
                 _("Link in Main Menu")))
@@ -1204,8 +1593,8 @@ class vavoo_config(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(
             _("View Favourites (Ok to open)"),
             cfg.view_favourites,
-            _("Browse and play your starred channels. Star/unstar a "
-              "channel with the INFO key while browsing.")))
+            _("Browse and play your starred channels. Add or remove a "
+              "channel with the GREEN key while browsing.")))
         self.list.append(getConfigListEntry(
             _("Parental Control PIN"),
             cfg.parental_pin,
@@ -1233,11 +1622,7 @@ class vavoo_config(Screen, ConfigListScreen):
                 timeout=10,
                 default=True)
         elif sel and sel == cfg.show_log:
-            self.session.open(
-                VavooLogViewer,
-                title=_("Vavoo Log"),
-                file_path=LOG_FILE,
-                tail_lines=200)
+            open_log_viewer(self.session)
         elif sel and sel == cfg.view_favourites:
             self.session.open(VavooFavourites)
         elif sel and sel in (
@@ -1907,7 +2292,15 @@ class vavoo_config(Screen, ConfigListScreen):
             bakk = str(cfg.back.getValue()) + '.png'
             add_skin_back(bakk)
 
+            look_changed = self.old_look != self._look_settings()
             message = _("Configuration saved successfully!")
+            if look_changed:
+                # Like the background below: the screens already open
+                # were built with the old settings.
+                message += "\n\n" + \
+                    _("Exit and reopen the plugin to see the new look.")
+                self.old_look = self._look_settings()
+                back_changed = False
             if back_changed:
                 # apply_selected_background() makes freshly-opened screens
                 # point at the actual selected file, avoiding Enigma2's
@@ -2008,9 +2401,8 @@ class startVavoo(Screen):
         _session = session
         first = True
         Screen.__init__(self, session)
-        skin = join(skin_path, 'Plgnstrt.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin, self._themed = load_screen_skin(
+            "splash", 'Plgnstrt.xml', background=False)
 
         # existing widgets (kept for skin compatibility)
         self["poster"] = Pixmap()
@@ -2237,9 +2629,8 @@ class UpdatePopup(Screen):
 
     def __init__(self, session, remote_version, changelog):
         Screen.__init__(self, session)
-        skin = join(skin_path, 'UpdatePopup.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin, self._themed = load_screen_skin(
+            "update", 'UpdatePopup.xml', background=False)
 
         self["title"] = Label(_("Update Available"))
         self["subtitle"] = Label(
@@ -2339,22 +2730,23 @@ def _shared_update_proxy_status_display(screen):
                     # otherwise perfectly healthy Geil proxy.
                     token_required = status_data.get(
                         "catalog_source", "vavoo") != "geil"
+                    # The app's status line: "✓ Vavoo OK · 1234 ch" -
+                    # the number the main list adds up to when it
+                    # knows it (sources of a channel counted once),
+                    # else the proxy's own count.
+                    source = "Vavoo" if token_required else "Geil"
+                    channels = getattr(screen, '_channel_total', None) or \
+                        status_data.get("channels_count", 0)
                     if status_data.get("initialized", False) and (
                             not token_required or status_data.get(
                                 "addon_sig_valid", False)):
-                        if not token_required:
-                            status_text = "✓ Proxy OK (Geil)"
+                        token_age = status_data.get("addon_sig_age", 0)
+                        if token_required and token_age >= 540:
+                            status_text = "{} {} · {} ch".format(
+                                source, _("(token expiring)"), channels)
                         else:
-                            token_age = status_data.get("addon_sig_age", 0)
-
-                            if token_age < 300:
-                                status_text = "✓ Proxy OK"
-                            elif token_age < 540:
-                                ttl = 600 - token_age
-                                status_text = "✓ Proxy (" + \
-                                    str(int(ttl)) + "s)"
-                            else:
-                                status_text = "Proxy (expiring)"
+                            status_text = "✓ {} OK · {} ch".format(
+                                source, channels)
                     else:
                         status_text = "✗ Proxy Error"
                 else:
@@ -2470,16 +2862,19 @@ class MainVavoo(Screen):
         self._closed = False
 
         Screen.__init__(self, session)
+        self.skin, self._themed = load_screen_skin(
+            "list", 'defaultListScreen.xml', cvs=True, clock_24=clock_24())
+        set_notification_theme()
         init_notification_system(session)
         if NOTIFICATION_AVAILABLE:
             print('notify started')
             quick_notify(_("Welcome to Vavoo Proxy with EPG support"), 5)
-
-        skin = join(skin_path, 'defaultListScreen.xml')
-        if isfile('/var/lib/dpkg/status'):
-            skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = apply_selected_background(f.read())
+        # Filled by cat(): the countries, the channels the list adds up
+        # to, and whether a "Reload List" is waiting for its answer.
+        self.countries = []
+        self._channel_total = None
+        self._reloading = False
+        self._search_loading = False
 
         if is_stats_enabled():
             record_anonymous_startup()
@@ -2545,19 +2940,15 @@ class MainVavoo(Screen):
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
         self.menulist = []
-        self['menulist'] = m2list([])
+        self['menulist'] = m2list([], themed=self._themed)
+        # The app's keys. What used to sit on them here (remove all
+        # bouquets, fix the EPG cache, reload bouquets) is in the MENU
+        # key's list now - see open_menu().
         self['red'] = Label(_('Exit'))
-        # Bound to msgdeleteBouquets, which deletes every Vavoo bouquet
-        # (country + category + container, see its own confirmation
-        # text) - not a single favourite. The `vavoo` screen's own
-        # green button is correctly labeled "Remove Fav" for its
-        # genuinely per-item action; reusing that exact caption here
-        # primed a user familiar with one screen to misread the other.
-        self['green'] = Label(_('Remove ALL'))
-        self['yellow'] = Label()
-        if cfg.epg_enabled.value:
-            self['yellow'].setText(_("Fix Cache"))
-        self["blue"] = Label(_('Reload Bouqet'))
+        self['green'] = Label(_('Favourites'))
+        self['yellow'] = Label(_('Search'))
+        self["blue"] = Label(_('Reload List'))
+        add_key_hint_labels(self)
         self['name'] = Label('Loading...')
         self['version'] = Label()
         self['proxy_status'] = Label('Wait...')
@@ -2573,17 +2964,17 @@ class MainVavoo(Screen):
             'up': self.moveUp,
             'down': self.moveDown,
             'ok': self.ok,
-            'mainMenu': self.goConfig,
-            'menu': self.goConfig,
-            'green': self.msgdeleteBouquets,
-            'blue': self.reload_bouquets_with_popup,
+            'mainMenu': self.open_menu,
+            'menu': self.open_menu,
+            'green': self.open_favourites,
+            'yellow': self.search_all,
+            'blue': self.reload_list,
             'cancel': self.closex,
             'red': self.closex,
             'epg': self.manual_epg_update,
-            'info': self.info,
-            'InfoPressed': self.info,
-            'infoLong': self._fix_cache_format,
-            'yellow': self._fix_cache_format,
+            'info': self.info_toast,
+            'InfoPressed': self.info_toast,
+            'infoLong': self.info,
             'text': self.refresh_proxy,
         }
         actions_list = [
@@ -2981,7 +3372,20 @@ class MainVavoo(Screen):
                 exc = e
             if self._closed:
                 return
-            reactor.callFromThread(self._on_countries_response, response, exc)
+            # The main list's extras, worked out here and not on the
+            # GUI thread: channels per country (sources of a channel
+            # counted once, as the country's own list shows them) and
+            # how many favourites there are.
+            counts = {}
+            if response:
+                try:
+                    counts = vavoo_proxy.proxy.country_counts()
+                except Exception as e:
+                    debug("Channel counts not available: {}".format(e))
+            favourite_count = len(vUtils.load_favourites())
+            reactor.callFromThread(
+                self._on_countries_response, response, exc, counts,
+                favourite_count)
 
         t = threading.Thread(target=_task)
         t.daemon = True
@@ -2998,7 +3402,8 @@ class MainVavoo(Screen):
                 self._country_retry_timer.timeout.connect(self.cat)
         self._country_retry_timer.start(500, True)
 
-    def _on_countries_response(self, response, exc):
+    def _on_countries_response(self, response, exc, counts=None,
+                               favourite_count=0):
         if self._closed:
             return
         try:
@@ -3009,10 +3414,47 @@ class MainVavoo(Screen):
                 print(
                     "[MainVavoo] Got {} countries from proxy".format(
                         len(countries)))
-                for country in sorted(countries):
-                    self.cat_list.append(show_list(country, country))
+                # Keep the highlight where it was (back from a country,
+                # the settings, a reload) instead of jumping to the top.
+                selected_link = None
+                try:
+                    current = self['menulist'].getCurrent()
+                    selected_link = current[0][1] if current else None
+                except Exception:
+                    pass
+                counts = counts or {}
+                show_counts = cfg.show_counts.value
+                self.countries = sorted(countries)
+                self.cat_list = []
+                if favourite_count:
+                    # The app's first row: the favourites.
+                    label = _("★ Favourites")
+                    self.cat_list.append(show_list(
+                        label, FAVOURITES_ROW, is_category=True,
+                        display="{} ({})".format(label, favourite_count)
+                        if show_counts else label,
+                        themed=self._themed))
+                for country in self.countries:
+                    count = counts.get(to_text(country).lower())
+                    self.cat_list.append(show_list(
+                        country, country,
+                        display="{} ({})".format(to_string(country), count)
+                        if show_counts and count else None,
+                        themed=self._themed))
+                self._channel_total = sum(counts.values()) if counts else None
                 self._update_ui()
+                if selected_link:
+                    for index, row in enumerate(self.cat_list):
+                        if row[0][1] == selected_link:
+                            self['menulist'].moveToIndex(index)
+                            break
                 self["version"].setText(to_string("V." + __version__))
+                if self._reloading:
+                    self._reloading = False
+                    if NOTIFICATION_AVAILABLE:
+                        quick_notify(_("Channel list updated: {} channels").format(
+                            self._channel_total or 0), 4)
+                    self._update_proxy_status_display()
                 self._country_load_failures = 0
                 # Clear the retry timer if it exists
                 if hasattr(self, '_country_retry_timer'):
@@ -3048,6 +3490,9 @@ class MainVavoo(Screen):
                 return
 
             name = current_item[0][0]  # Country name (e.g., "Italy")
+            if current_item[0][1] == FAVOURITES_ROW:
+                self.open_favourites()
+                return
             print("[MainVavoo] Selected: " + str(name))
 
             _require_parental_pin(
@@ -3072,11 +3517,164 @@ class MainVavoo(Screen):
                     timeout=5)
                 return
 
-            # Pass ONLY the country name to the vavoo class
-            self.session.open(vavoo, name, None)
+            # Pass ONLY the country name to the vavoo class. Filled
+            # again on return: favourites may have been added there.
+            self.session.openWithCallback(
+                self._on_child_closed, vavoo, name, None)
         except Exception as e:
             print("Error opening vavoo screen: " + str(e))
             trace_error()
+
+    def _on_child_closed(self, *args, **kwargs):
+        """Back from a country, the Favourites or a search: the
+        favourites row may have changed."""
+        if not self._closed:
+            self.cat()
+
+    # ---- the app's colour keys and MENU / INFO
+
+    def open_favourites(self):
+        """GREEN / the "★ Favourites" row."""
+        if not vUtils.load_favourites():
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("No favourites yet. Open a country and press "
+                               "GREEN on a channel."), 4)
+            return
+        self.session.openWithCallback(self._on_child_closed, VavooFavourites)
+
+    def search_all(self):
+        """YELLOW: search every country's channels (the app's search
+        from its main screen). The lists are asked of the proxy in the
+        background, then the search opens."""
+        countries = list(self.countries)
+        if not countries:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("The channel list is still loading..."), 3)
+            return
+        if self._search_loading:
+            return
+        self._search_loading = True
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Loading all channels..."), 2)
+
+        def _task():
+            items = []
+            for country in countries:
+                if self._closed:
+                    return
+                try:
+                    content = getUrl(
+                        PROXY_BASE_URL + "/channels?country=" +
+                        url_quote(country), timeout=5, retries=1)
+                    channels = loads(ensure_str(content)) if content else []
+                except Exception as e:
+                    debug("Search: no channels for {}: {}".format(country, e))
+                    continue
+                if not isinstance(channels, list):
+                    continue
+                for channel in channels:
+                    if not isinstance(channel, dict):
+                        continue
+                    name, url = channel.get("name"), channel.get("url")
+                    if name and url:
+                        # VavooSearch's "name###url" plus the country,
+                        # for the PIN and the programme guide.
+                        items.append("###".join((
+                            to_string(name), to_string(url),
+                            to_string(country))))
+            if not self._closed:
+                reactor.callFromThread(self._open_search_all, items)
+
+        worker = threading.Thread(target=_task)
+        worker.daemon = True
+        worker.start()
+
+    def _open_search_all(self, items):
+        self._search_loading = False
+        if self._closed:
+            return
+        if not items:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Could not load channels - proxy not responding"), 4)
+            return
+        self.session.openWithCallback(
+            self._on_search_all_result, VavooSearch, self, items,
+            scope=_("all channels"))
+
+    def _on_search_all_result(self, selected_item=None):
+        if not selected_item or self._closed:
+            return
+        name, url = selected_item[0], selected_item[1]
+        country = selected_item[2] if len(selected_item) > 2 else None
+
+        def _play():
+            self.session.open(
+                Playstream2, name, url, 0, [name, url], [[[name, url]]],
+                country_code=get_country_code(country) if country else None)
+        # A channel of a locked country asks for the PIN, as opening
+        # that country would.
+        _require_parental_pin(self.session, self, country, _play)
+
+    def reload_list(self, answer=None):
+        """BLUE: download the channel list again (the app's Reload List).
+        The proxy loads its catalog once, when it starts - so this
+        restarts it; the list is filled again once it is back."""
+        if answer is None:
+            self.session.openWithCallback(
+                self.reload_list,
+                MessageBox,
+                _("Reload the channel list?") + "\n" +
+                _("The proxy restarts and downloads the list again. A channel "
+                  "playing now stops for a moment."),
+                MessageBox.TYPE_YESNO,
+                default=True)
+            return
+        if not answer or self._closed:
+            return
+        self._reloading = True
+        self['proxy_status'].setText(_("Reloading channel list..."))
+        try:
+            restart_proxy_in_background()
+        except Exception as e:
+            print("[MainVavoo] Reload failed: {}".format(e))
+            self._reloading = False
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Reload failed: {}").format(str(e)), 4)
+            return
+        # cat() waits while the proxy is restarting (is_proxy_booting()).
+        self._retry_cat_later()
+
+    def info_toast(self):
+        """INFO: version, channels and countries (the app's INFO)."""
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(info_text(self._channel_total, len(self.countries)), 5)
+
+    def open_menu(self):
+        """MENU: the settings and the Enigma2 tools that used to be on
+        the colour keys."""
+        entries = [
+            (_("Settings"), "settings"),
+            (_("Reload bouquets"), "reload_bouquets"),
+            (_("Remove all Vavoo bouquets"), "remove_all"),
+            (_("Import EPG now"), "epg_import"),
+            (_("Fix EPG cache"), "fix_cache"),
+            (_("Refresh token"), "refresh_token"),
+            (_("Show Log"), "log"),
+            (_("About"), "about"),
+        ]
+        actions = {
+            "settings": self.goConfig,
+            "reload_bouquets": self.reload_bouquets_with_popup,
+            "remove_all": self.msgdeleteBouquets,
+            "epg_import": self.manual_epg_update,
+            "fix_cache": self._fix_cache_format,
+            "refresh_token": self.refresh_proxy,
+            "log": lambda: open_log_viewer(self.session),
+            "about": self.info,
+        }
+        open_action_menu(
+            self.session, _("Menu"), entries,
+            lambda key: actions[key]() if key in actions else None)
 
     def manual_epg_update(self):
         """Manually trigger EPG update"""
@@ -3400,10 +3998,16 @@ class vavoo(Screen, NowNextPanel):
         Screen.__init__(self, session)
         init_notification_system(session)
         self._load_skin()
+        # Favourites as keys (vUtils._favourite_key()), for the status
+        # line's star and the GREEN key's caption - read again whenever
+        # this screen is back on top.
+        self._favourite_keys = set()
+        self._proxy_down = False
         self._initialize_labels()
         self._initialize_actions()
         self["menulist"].onSelectionChanged.append(self._update_selection_name)
         self["menulist"].onSelectionChanged.append(self._epg_panel_changed)
+        self.onExecBegin.append(self._reload_favourite_keys)
         self.currentList = 'menulist'
 
         # Store country name properly
@@ -3416,7 +4020,6 @@ class vavoo(Screen, NowNextPanel):
         self.name = name
         self.url = url
         self.option_value = option_value
-        self._update_export_button_label()
 
         # (name, url, logo_url) per currently-listed channel, parallel
         # to cat_list - lets _refresh_channel_list_with_picons()
@@ -3439,21 +4042,24 @@ class vavoo(Screen, NowNextPanel):
         self._initialize_proxy_status_timer()
 
     def _initialize_proxy_status_timer(self):
-        """Keep the proxy_status label live while this screen is open.
-
-        Unlike MainVavoo (which refreshes every 10s via
-        proxy_monitor_timer), this screen previously only set the label
-        once in _verify_proxy_ready() and never again, so it went stale
-        the moment the user opened a country.
-        """
+        """Watch the proxy while this screen is open. The status line
+        is the app's position line ("Portugal · 12/174") - only if the
+        proxy goes away does it say so instead. A port check, no HTTP
+        request on the GUI thread every 10 seconds."""
         self.proxy_status_timer = eTimer()
         try:
-            self.proxy_status_timer.timeout.connect(
-                self._update_proxy_status_display)
+            self.proxy_status_timer.timeout.connect(self._check_proxy_alive)
         except BaseException:
-            self.proxy_status_timer.callback.append(
-                self._update_proxy_status_display)
+            self.proxy_status_timer.callback.append(self._check_proxy_alive)
         self.proxy_status_timer.start(10000)
+
+    def _check_proxy_alive(self):
+        if self._closed:
+            return
+        down = not is_proxy_running()
+        if down != self._proxy_down:
+            self._proxy_down = down
+            self._update_status_line()
 
     def _verify_proxy_ready(self):
         """Verify that the proxy is ready without attempting to start it"""
@@ -3464,36 +4070,76 @@ class vavoo(Screen, NowNextPanel):
                     self.country_name)
                 # Do not start the proxy here – let the cat() method handle the
                 # fallback
-            self["proxy_status"].setText(_("Checking proxy..."))
-            try:
-                self._update_proxy_status_display()
-            except Exception as e:
-                debug("_update_proxy_status_display failed, label may "
-                      "stay stuck on 'Checking proxy...': {}".format(e))
+            self._proxy_down = not is_proxy_running()
+            self._update_status_line()
         except Exception as e:
             print("[vavoo] Error checking proxy: %s" % str(e))
 
     def _load_skin(self):
         """Load the skin file."""
-        skin = join(skin_path, 'defaultListScreen.xml')
-        if isfile('/var/lib/dpkg/status'):
-            skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = apply_selected_background(f.read())
+        self.skin, self._themed = load_screen_skin(
+            "list", 'defaultListScreen.xml', cvs=True, clock_24=clock_24())
 
     def _initialize_labels(self):
         """Initialize the labels on the screen."""
         self.menulist = []
-        self['menulist'] = m2list([])
+        self.cat_list = []
+        self['menulist'] = m2list([], themed=self._themed)
+        # The app's keys. Exporting / removing this country's bouquet
+        # and reloading bouquets are in the MENU key's list now.
         self['red'] = Label(_('Back'))
-        self['green'] = Label(_('Export') + ' Fav')
+        self['green'] = Label(_('Add Fav'))
         self['yellow'] = Label(_('Search'))
-        self["blue"] = Label(_('Reload Bouqet'))
+        self["blue"] = Label(_('Full Screen'))
+        add_key_hint_labels(self)
         self['name'] = Label('Loading ...')
         self['version'] = Label()
         self["version"].setText(to_string("V." + __version__))
-        self['proxy_status'] = Label('...')
+        self['proxy_status'] = Label('')
         self._epg_panel_init()
+
+    def _reload_favourite_keys(self):
+        try:
+            self._favourite_keys = set(vUtils.load_favourites().keys())
+        except Exception as e:
+            debug("Favourites not read: {}".format(e))
+            self._favourite_keys = set()
+        self._update_status_line()
+
+    def _selected_row(self):
+        """(index, name, url) of the highlighted channel, or Nones."""
+        try:
+            index = self['menulist'].getSelectedIndex()
+            if index is None or not 0 <= index < len(self.cat_list):
+                return None, None, None
+            item = self.cat_list[index][0]
+            return index, item[0], item[1]
+        except Exception:
+            return None, None, None
+
+    def _update_status_line(self):
+        """The app's status line, "Portugal · 12/174  ★" (the star when
+        the highlighted channel is a favourite), and GREEN's caption:
+        Add Fav or Remove Fav."""
+        if self._closed:
+            return
+        try:
+            if self._proxy_down:
+                self['proxy_status'].setText(_("✗ Proxy Offline"))
+                return
+            index, name, url = self._selected_row()
+            if index is None:
+                self['proxy_status'].setText(to_string(self.country_name))
+                return
+            favourite = "{}###{}".format(name, url) in self._favourite_keys
+            text = "{} · {}/{}".format(
+                to_string(self.country_name), index + 1, len(self.cat_list))
+            if favourite:
+                text += "  ★"
+            self['proxy_status'].setText(text)
+            self['green'].setText(_('Remove Fav') if favourite else _('Add Fav'))
+        except Exception as e:
+            debug("Status line not updated: {}".format(e))
 
     def _epg_panel_selection(self):
         """See NowNextPanel."""
@@ -3524,12 +4170,14 @@ class vavoo(Screen, NowNextPanel):
                 "up": self.moveUp,
                 "down": self.moveDown,
                 "ok": self.ok,
-                "green": self.message1,
+                "green": self.toggle_favourite,
                 "yellow": self.search_vavoo,
-                "blue": self.reload_bouquets_with_popup,
+                # "Full Screen": the highlighted channel in the player,
+                # as OK does (the app's BLUE).
+                "blue": self.ok,
                 "cancel": self.backhome,
-                "menu": self.goConfig,
-                "info": self.toggle_favourite,
+                "menu": self.open_menu,
+                "info": self.info_toast,
                 "red": self.backhome
             },
             -1
@@ -3650,7 +4298,7 @@ class vavoo(Screen, NowNextPanel):
                 self.cat_list.append(
                     show_list(
                         channel_name, channel_url, is_channel=True,
-                        logo_url=logo)
+                        logo_url=logo, themed=self._themed)
                 )
 
         if not self.cat_list:
@@ -3662,8 +4310,10 @@ class vavoo(Screen, NowNextPanel):
         ]
         self.update_menu()
         # Filling the list does not reliably announce a selection
-        # change by itself - make sure the first row gets its panel.
+        # change by itself - make sure the first row gets its panel
+        # (and its status line).
         self._epg_panel_changed()
+        self._update_status_line()
         self._preload_channel_picons()
         debug("List built with " + str(len(self.cat_list)) + " items.")
 
@@ -3735,7 +4385,8 @@ class vavoo(Screen, NowNextPanel):
                 selected_index = None
 
             self.cat_list = [
-                show_list(name, url, is_channel=True, logo_url=logo)
+                show_list(name, url, is_channel=True, logo_url=logo,
+                          themed=self._themed)
                 for name, url, logo in self._channel_entries
             ]
             self.itemlist = [
@@ -3767,10 +4418,6 @@ class vavoo(Screen, NowNextPanel):
             )
         except Exception:
             pass
-
-    def _update_proxy_status_display(self):
-        """Internal method to update proxy status display"""
-        _shared_update_proxy_status_display(self)
 
     def reload_bouquets_with_popup(self):
         """Reload bouquets with confirmation popup"""
@@ -3861,22 +4508,47 @@ class vavoo(Screen, NowNextPanel):
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Could not update favourites"), 3)
             return
+        key = "{}###{}".format(name, url)
+        if now_favourite:
+            self._favourite_keys.add(key)
+        else:
+            self._favourite_keys.discard(key)
+        self._update_status_line()
         if NOTIFICATION_AVAILABLE:
             if now_favourite:
                 quick_notify(_("Added to favourites: {}").format(name), 3)
             else:
                 quick_notify(_("Removed from favourites: {}").format(name), 3)
 
-    def _update_export_button_label(self):
-        """Green button reads 'Remove Fav' if this bouquet is already
-        exported, 'Export Fav' otherwise."""
+    def info_toast(self):
+        """INFO: version and this country's channels (the app's INFO)."""
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(info_text(len(self.cat_list) or None), 5)
+
+    def open_menu(self):
+        """MENU: the settings and the Enigma2 tools that used to be on
+        the colour keys - this country's bouquet above all."""
         try:
-            if is_bouquet_exported(self.name):
-                self['green'].setText(_('Remove') + ' Fav')
-            else:
-                self['green'].setText(_('Export') + ' Fav')
+            exported = is_bouquet_exported(self.name)
         except Exception as e:
-            debug("_update_export_button_label failed: {}".format(e))
+            debug("is_bouquet_exported failed: {}".format(e))
+            exported = False
+        entries = [
+            (_("Settings"), "settings"),
+            (_("Remove this country's bouquet") if exported
+             else _("Export this country as a bouquet"), "bouquet"),
+            (_("Reload bouquets"), "reload_bouquets"),
+            (_("Show Log"), "log"),
+        ]
+        actions = {
+            "settings": self.goConfig,
+            "bouquet": self.message1,
+            "reload_bouquets": self.reload_bouquets_with_popup,
+            "log": lambda: open_log_viewer(self.session),
+        }
+        open_action_menu(
+            self.session, to_string(self.country_name), entries,
+            lambda key: actions[key]() if key in actions else None)
 
     def message1(self, answer=None):
         """Green button: export this bouquet, or offer to remove it if
@@ -3935,7 +4607,6 @@ class vavoo(Screen, NowNextPanel):
                 quick_notify(_("Remove failed: {}").format(str(e)), 4)
         finally:
             export_lock.release()
-        self._update_export_button_label()
 
     def message2(self, name, url, response):
         # threading.Lock.acquire() only accepts blocking as a
@@ -3989,11 +4660,6 @@ class vavoo(Screen, NowNextPanel):
                 if NOTIFICATION_AVAILABLE:
                     quick_notify(
                         _("Bouquet ready with {} channels").format(ch_count), 3)
-                # Notifying is fine even if the user has since left this
-                # screen (quick_notify() is session-global), but touching
-                # this screen's own widgets after close() is not.
-                if not self._closed:
-                    self._update_export_button_label()
                 # Register with Favorite.txt so "Scheduled List" auto-update
                 # (AutoStartTimer) picks this bouquet up going forward -
                 # that feature only ever re-updates bouquets already listed
@@ -4023,27 +4689,30 @@ class vavoo(Screen, NowNextPanel):
                     quick_notify(message, 3)
 
         except Exception as e:
-            # Intentionally swallowed so a UI-touching failure here (e.g.
-            # _update_export_button_label() on a screen the user has
-            # since left) can't crash the export callback - but that
-            # means it's log-only, with no user-visible indication.
+            # Intentionally swallowed so a failure here can't crash the
+            # export callback - but that means it's log-only, with no
+            # user-visible indication.
             print("[Bouquet] Error in _on_export_complete: %s" % e)
 
     def search_vavoo(self):
+        if not getattr(self, 'itemlist', None):
+            return
         self.session.openWithCallback(
-            self.onSearchResult, VavooSearch, self, self.itemlist)
+            self.onSearchResult, VavooSearch, self, self.itemlist,
+            scope=self.country_name)
 
     def onSearchResult(self, selected_item=None):
         """Callback with the channel selected by the search"""
         if selected_item:
-            name, url = selected_item
+            name, url = selected_item[0], selected_item[1]
             self.session.open(
                 Playstream2,
                 name,
                 url,
                 0,
                 [name, url],
-                [[[name, url]]]
+                [[[name, url]]],
+                country_code=get_country_code(self.country_name)
             )
 
     def goConfig(self):
@@ -4088,7 +4757,8 @@ class vavoo(Screen, NowNextPanel):
             if current and len(current) > 0:
                 name = current[0][0]
                 self['name'].setText(to_string(name))
-                print("vavoo _update_selection_name: " + to_string(name))
+                debug("vavoo _update_selection_name: " + to_string(name))
+            self._update_status_line()
         except Exception as e:
             print("Error in vavoo _update_selection_name:", e)
             self['name'].setText("")
@@ -4156,32 +4826,35 @@ class VavooFavourites(Screen, NowNextPanel):
     def __init__(self, session):
         self.session = session
         Screen.__init__(self, session)
-        skin = join(skin_path, 'defaultListScreen.xml')
-        if isfile('/var/lib/dpkg/status'):
-            skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = apply_selected_background(f.read())
+        # Only RED and GREEN here for now (the app's YELLOW / BLUE in
+        # its Favourites - move, folders - come with the lists phase).
+        self.skin, self._themed = load_screen_skin(
+            "list", 'defaultListScreen.xml', cvs=True,
+            keys=("red", "green"), clock_24=clock_24())
 
         init_notification_system(session)
         self._closed = False
         self.onClose.append(self._mark_closed)
 
         self.cat_list = []
-        self['menulist'] = m2list([])
+        self['menulist'] = m2list([], themed=self._themed)
         self['name'] = Label(_('Favourites'))
         self['version'] = Label(to_string("V." + __version__))
         self['proxy_status'] = Label('')
         self['red'] = Label(_('Back'))
-        self['green'] = Label(_('Remove'))
+        self['green'] = Label(_('Remove Fav'))
         self['yellow'] = Label()
         self['blue'] = Label()
+        add_key_hint_labels(self)
         self.favourite_entries = []
         self._epg_panel_init()
         self['menulist'].onSelectionChanged.append(self._epg_panel_changed)
+        self['menulist'].onSelectionChanged.append(self._update_selection)
         self.onClose.append(self._epg_panel_stop)
 
         self['actions'] = ActionMap(
-            ['OkCancelActions', 'ColorActions', 'DirectionActions'],
+            ['OkCancelActions', 'ColorActions', 'DirectionActions',
+             'MenuActions', 'EPGSelectActions'],
             {
                 "up": self.moveUp,
                 "down": self.moveDown,
@@ -4189,6 +4862,8 @@ class VavooFavourites(Screen, NowNextPanel):
                 "green": self.remove_selected,
                 "cancel": self.close,
                 "red": self.close,
+                "menu": self.open_menu,
+                "info": self.info_toast,
             },
             -1
         )
@@ -4207,7 +4882,8 @@ class VavooFavourites(Screen, NowNextPanel):
         self.favourite_entries = sorted(
             favourites.values(), key=lambda e: e.get('name', ''))
         self.cat_list = [
-            show_list(entry['name'], entry['url'], is_channel=True)
+            show_list(entry['name'], entry['url'], is_channel=True,
+                      themed=self._themed)
             for entry in self.favourite_entries
         ]
         if self.cat_list:
@@ -4216,6 +4892,39 @@ class VavooFavourites(Screen, NowNextPanel):
             self['menulist'].l.setList([])
             self['name'].setText(_('No favourites yet'))
         self._epg_panel_changed()
+        self._update_selection()
+
+    def _update_selection(self):
+        """The highlighted favourite's name, and the app's status line:
+        "★ Favourites · 3/12"."""
+        if self._closed:
+            return
+        try:
+            label = _("★ Favourites")
+            if not self.cat_list:
+                self['proxy_status'].setText(label)
+                return
+            i = self['menulist'].getSelectedIndex() or 0
+            if 0 <= i < len(self.cat_list):
+                self['name'].setText(to_string(self.cat_list[i][0][0]))
+            self['proxy_status'].setText("{} · {}/{}".format(
+                label, i + 1, len(self.cat_list)))
+        except Exception as e:
+            debug("Favourites status line not updated: {}".format(e))
+
+    def info_toast(self):
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(info_text(len(self.cat_list) or None), 5)
+
+    def open_menu(self):
+        entries = [(_("Settings"), "settings"), (_("Show Log"), "log")]
+        actions = {
+            "settings": lambda: self.session.open(vavoo_config),
+            "log": lambda: open_log_viewer(self.session),
+        }
+        open_action_menu(
+            self.session, _("★ Favourites"), entries,
+            lambda key: actions[key]() if key in actions else None)
 
     def _epg_panel_selection(self):
         """See NowNextPanel. Favourites mix countries: each entry
@@ -4304,6 +5013,15 @@ class VavooFavourites(Screen, NowNextPanel):
         self._build_list()
 
 
+def open_log_viewer(session):
+    """The last 200 lines of the plugin's log."""
+    session.open(
+        VavooLogViewer,
+        title=_("Vavoo Log"),
+        file_path=LOG_FILE,
+        tail_lines=200)
+
+
 class VavooLogViewer(Screen):
     """Dedicated log-tail viewer with real up/down/page scrolling -
     Console.py (used for this previously) has none at all: its text
@@ -4326,14 +5044,15 @@ class VavooLogViewer(Screen):
 
     def __init__(self, session, title, file_path, tail_lines=200):
         Screen.__init__(self, session)
-        # Same skin, minus the two things that don't apply to a
-        # read-only log view: the static "Command execution..."
-        # header and the green "Restart GUI" caption (no green key
-        # bound here at all - same reasoning as Console.py's own
-        # allow_restart=False path).
-        self.skin = Console.skin.replace(
-            'Command execution...', title
-        ).replace('text="Restart GUI"', 'text=""')
+        # The theme's box (the same 13 lines), or Console's skin minus
+        # the two things that don't apply to a read-only log view: the
+        # static "Command execution..." header and the green "Restart
+        # GUI" caption (no green key bound here at all - same
+        # reasoning as Console.py's own allow_restart=False path).
+        self.skin = build_theme_skin("log", title=to_string(title)) or \
+            Console.skin.replace(
+                'Command execution...', title
+            ).replace('text="Restart GUI"', 'text=""')
         self._closed = False
         self.onClose.append(self._mark_closed)
 
@@ -4399,7 +5118,13 @@ class VavooLogViewer(Screen):
 
 # --- Live search screen ---
 class VavooSearch(Screen):
-    def __init__(self, session, parentScreen, itemlist):
+    """Live search. `itemlist`: "name###url" strings, or
+    "name###url###country" when searching several countries (each row
+    then shows its country, and closing hands it back as a third
+    item). `scope`: what is searched, for the title ("Portugal", "all
+    channels")."""
+
+    def __init__(self, session, parentScreen, itemlist, scope=None):
         self.session = session
         self.parentScreen = parentScreen
         self.itemlist = itemlist
@@ -4407,18 +5132,17 @@ class VavooSearch(Screen):
         self.selectedIndex = 0
         self.search_text = ""
         self.current_input = ""
-        skin = join(skin_path, 'vavoo_search.xml')
-        if isfile('/var/lib/dpkg/status'):
-            skin = skin.replace('.xml', '_cvs.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
+        self.skin, self._themed = load_screen_skin(
+            "search", 'vavoo_search.xml', cvs=True, background=False)
         Screen.__init__(self, session)
-        self["search_label"] = Label(_("Search Channels:"))
+        self["search_label"] = Label(
+            _("Search {}").format(to_string(scope)) if scope
+            else _("Search Channels:"))
         self["search_text"] = Label("")
         self['version'] = Label()
         self["input_info"] = Label(
             _("Press GREEN to type, YELLOW to delete"))
-        self["channel_list"] = m2list([])
+        self["channel_list"] = m2list([], kind="search", themed=self._themed)
         self["status"] = Label(_("Enter text to search..."))
         self["key_red"] = Label(_("Clear All"))
         self["key_green"] = Label(_("Keyboard"))
@@ -4596,10 +5320,15 @@ class VavooSearch(Screen):
         display_list = []
         for item in self.filteredList:
             try:
-                name = item.split('###')[0]
-                url = item.split('###')[1].replace(
+                parts = item.split('###')
+                name = parts[0]
+                url = parts[1].replace(
                     '%0a', '').replace(
                     '%0A', '').strip("\r\n")
+                # Several countries searched: "Channel  · Country", as
+                # the app's search of all channels shows it.
+                display = "{}  · {}".format(name, parts[2]) \
+                    if len(parts) > 2 and parts[2] else None
                 # Without is_channel=True, show_list() takes its
                 # "this is a country name" branch for every search
                 # result - running get_country_code()'s full linear
@@ -4607,7 +5336,9 @@ class VavooSearch(Screen):
                 # the whole country table for each row, on every
                 # single keystroke, and occasionally resolving a
                 # channel name to a bogus flag icon by accident.
-                display_list.append(show_list(name, url, is_channel=True))
+                display_list.append(show_list(
+                    name, url, is_channel=True, display=display,
+                    kind="search", themed=self._themed))
             except Exception:
                 continue
         self["channel_list"].l.setList(display_list)
@@ -4633,10 +5364,14 @@ class VavooSearch(Screen):
         if self.filteredList and 0 <= self.selectedIndex < len(
                 self.filteredList):
             channel_item = self.filteredList[self.selectedIndex]
-            name = channel_item.split('###')[0]
-            url = channel_item.split('###')[1].replace(
+            parts = channel_item.split('###')
+            name = parts[0]
+            url = parts[1].replace(
                 '%0a', '').replace('%0A', '').strip("\r\n")
-            self.close((name, url))
+            if len(parts) > 2:
+                self.close((name, url, parts[2]))
+            else:
+                self.close((name, url))
         else:
             self.close(None)
 
@@ -6343,6 +7078,15 @@ def add_skin_font():
     FNT_Path = join(PLUGIN_PATH, "fonts")
     # addFont(join(FNT_Path, 'Lcdx.ttf'), 'Lcdx', 100, 0)
     addFont(join(FNT_Path, 'MavenPro-Medium.ttf'), 'cvfont', 100, 0)
+    # The themes' fonts (Lexend, Manrope, Sora, Oxanium - the app's,
+    # SIL Open Font License, see fonts/*-OFL.txt). A missing file only
+    # means its theme is not used (build_theme_skin()).
+    for path, name in vavoo_theme.fonts_to_register(PLUGIN_PATH):
+        if isfile(path):
+            try:
+                addFont(path, name, 100, 0)
+            except Exception as e:
+                print("[Theme] Font {} not registered: {}".format(name, e))
 
 
 def cfgmain(menuid, **kwargs):
