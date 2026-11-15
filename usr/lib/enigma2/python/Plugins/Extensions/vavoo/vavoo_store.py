@@ -76,6 +76,10 @@ def parental_file():
     return data_file("vavoo_parental.json")
 
 
+def timers_file():
+    return data_file("vavoo_timers.json")
+
+
 def bouquet_list_file():
     """The exported bouquets that "Scheduled List" re-exports (one
     `name|url|flat or hierarchical|time` per line) - Favorite.txt in
@@ -740,6 +744,157 @@ def migrate_parental(old_pin, old_countries):
         return True
 
 
+# ----------------------------------------------------------------- timers
+#
+# vavoo_timers.json: {"format": "vavoo_timers", "version": 1,
+#   "timers": [{"id", "kind": "remind" (phase 5: "record"), "url",
+#               "name", "country", "country_code", "logo", "title",
+#               "start", "stop"}]}
+# (the app's Timers.kt). A reminder goes off at its programme's start;
+# one missed by more than a minute (the box was off) is dropped.
+
+TIMERS_FORMAT = "vavoo_timers"
+KIND_REMIND = "remind"
+KIND_RECORD = "record"
+# a recording starts this much before the programme (phase 5)
+RECORD_MARGIN = 120
+_timer_lock = threading.RLock()
+_timer_cache = [None, None]
+
+
+def _clean_timer(entry):
+    if not isinstance(entry, dict):
+        return None
+    try:
+        start = int(entry.get("start"))
+        stop = int(entry.get("stop") or start)
+    except Exception:
+        return None
+    kind = to_text(entry.get("kind")) or KIND_REMIND
+    url = to_text(entry.get("url")).strip()
+    if not url or kind not in (KIND_REMIND, KIND_RECORD):
+        return None
+    out = {"id": int(entry.get("id") or 0), "kind": kind, "url": url,
+           "start": start, "stop": max(stop, start)}
+    for key in ("name", "country", "country_code", "logo", "title"):
+        out[key] = to_text(entry.get(key) or u"")
+    return out
+
+
+def _load_timer_entries():
+    path = timers_file()
+    stamp = _file_stamp(path)
+    if stamp is not None and _timer_cache[0] == stamp:
+        return _timer_cache[1]
+    data = _read_json(path, {})
+    raw = data.get("timers") if isinstance(data, dict) else data
+    entries = [t for t in (_clean_timer(e) for e in raw or []) if t]
+    entries.sort(key=lambda t: (t["start"], t["id"]))
+    _timer_cache[0] = stamp
+    _timer_cache[1] = entries
+    return entries
+
+
+def _save_timers(entries):
+    entries = sorted(entries, key=lambda t: (t["start"], t["id"]))
+    path = timers_file()
+    ok = _write_json(path, {"format": TIMERS_FORMAT, "version": 1,
+                            "timers": entries})
+    if ok:
+        _timer_cache[0] = _file_stamp(path)
+        _timer_cache[1] = entries
+    return ok
+
+
+def load_timers(kind=None):
+    """[timer] by start time (copies)."""
+    with _timer_lock:
+        return [dict(t) for t in _load_timer_entries()
+                if kind is None or t["kind"] == kind]
+
+
+def alarm_time(timer):
+    """When a timer goes off: a reminder at its start, a recording a
+    little before."""
+    if timer["kind"] == KIND_RECORD:
+        return timer["start"] - RECORD_MARGIN
+    return timer["start"]
+
+
+def find_timer(url, start, kind=KIND_REMIND):
+    url = to_text(url)
+    with _timer_lock:
+        for t in _load_timer_entries():
+            if t["url"] == url and t["start"] == int(start) and \
+                    t["kind"] == kind:
+                return dict(t)
+    return None
+
+
+def add_timer(kind, url, name, title, start, stop, country=None,
+              country_code=None, logo=None):
+    """A new timer (it replaces one of the same kind, channel and
+    start). Returns it, or None."""
+    entry = _clean_timer({
+        "id": int(time.time() * 1000), "kind": kind, "url": url,
+        "name": name, "title": title, "start": start, "stop": stop,
+        "country": country, "country_code": country_code, "logo": logo})
+    if entry is None:
+        return None
+    with _timer_lock:
+        entries = [t for t in _load_timer_entries()
+                   if not (t["kind"] == entry["kind"] and
+                           t["url"] == entry["url"] and
+                           t["start"] == entry["start"])]
+        if any(t["id"] == entry["id"] for t in entries):
+            entry["id"] = max(t["id"] for t in entries) + 1
+        entries.append(entry)
+        return entry if _save_timers(entries) else None
+
+
+def remove_timer(timer_id):
+    with _timer_lock:
+        entries = _load_timer_entries()
+        kept = [t for t in entries if t["id"] != timer_id]
+        if len(kept) == len(entries):
+            return False
+        return _save_timers(kept)
+
+
+def prune_timers(now=None):
+    """Drops reminders missed by more than a minute and recordings
+    that have ended. Returns how many went."""
+    now = time.time() if now is None else now
+    with _timer_lock:
+        entries = _load_timer_entries()
+        kept = [t for t in entries
+                if (t["kind"] == KIND_REMIND and t["start"] > now - 60) or
+                (t["kind"] == KIND_RECORD and
+                 t["stop"] + RECORD_MARGIN > now)]
+        if len(kept) != len(entries):
+            _save_timers(kept)
+        return len(entries) - len(kept)
+
+
+def due_timers(now=None, kind=None):
+    """The timers that go off now, taken out of the file (the app's
+    take()): each goes off once."""
+    now = time.time() if now is None else now
+    with _timer_lock:
+        entries = _load_timer_entries()
+        due = [t for t in entries if alarm_time(t) <= now and
+               (kind is None or t["kind"] == kind)]
+        if due:
+            ids = set(t["id"] for t in due)
+            _save_timers([t for t in entries if t["id"] not in ids])
+        return [dict(t) for t in due]
+
+
+def next_alarm(kind=None):
+    times = [alarm_time(t) for t in load_timers(kind)]
+    return min(times) if times else None
+
+
 # ----------------------------------------------------------------- backup
 
 BACKUP_FORMAT = "vavoo_e2_backup"
@@ -775,6 +930,7 @@ def build_backup(settings, version=""):
         "recent": recent if isinstance(recent, list) else [],
         "source_prefs": prefs if isinstance(prefs, dict) else {},
         "hidden_countries": sorted(hidden_countries()),
+        "timers": load_timers(),
     }
 
 
@@ -832,6 +988,9 @@ def restore_backup(data):
     prefs = data.get("source_prefs")
     _write_json(source_prefs_file(), prefs if isinstance(prefs, dict) else {})
     set_hidden_countries(data.get("hidden_countries") or [])
+    with _timer_lock:
+        _save_timers([t for t in (_clean_timer(e)
+                                  for e in data.get("timers") or []) if t])
     settings = data.get("settings")
     if not isinstance(settings, dict):
         return {}
@@ -1091,6 +1250,45 @@ def _padlock(width, height):
             return inner <= d <= outer
         return inner <= abs(dx) <= outer
     return inside
+
+
+def _alarm_clock(size):
+    """A small alarm clock filling size x size: a ring with two hands
+    and two bells on top (the app's ⏰ mark on a programme)."""
+    c = size / 2.0
+    cy = size * 0.56
+    outer = size * 0.40
+    inner = size * 0.29
+    bell = size * 0.14
+
+    def inside(x, y):
+        dx, dy = x - c, y - cy
+        d2 = dx * dx + dy * dy
+        if inner * inner <= d2 <= outer * outer:
+            return True
+        # the hands: 12 o'clock and 3 o'clock
+        if abs(dx) <= size * 0.045 and -inner * 0.8 <= dy <= 0:
+            return True
+        if abs(dy) <= size * 0.045 and 0 <= dx <= inner * 0.7:
+            return True
+        for bx in (c - size * 0.30, c + size * 0.30):
+            if (x - bx) ** 2 + (y - size * 0.16) ** 2 <= bell * bell:
+                return True
+        return False
+    return inside
+
+
+def clock_path(height, rgb=(255, 255, 255)):
+    """The alarm clock mark at `height` pixels (square)."""
+    height = max(8, int(height))
+    path = os.path.join(TILE_DIR, "clock_%d_%02x%02x%02x.png" % (
+        (height,) + tuple(rgb)))
+    if os.path.isfile(path):
+        return path
+    key = ("clock", height)
+    if key not in _mask_cache:
+        _mask_cache[key] = _coverage(height, height, _alarm_clock(height))
+    return _write_picture(path, height, height, _mask_cache[key], rgb)
 
 
 def lock_path(height, rgb=(255, 255, 255)):
