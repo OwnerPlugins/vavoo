@@ -1,4 +1,8 @@
 #!/bin/bash
+# =====================================================================
+#  vavoo installer - con log su file
+#  Log: /tmp/vavoo_install.log  (copia anche in /home/root/ a fine run)
+# =====================================================================
 
 version='1.89'
 changelog="- Streams no longer stop every few minutes: a channel now keeps one
@@ -20,272 +24,324 @@ changelog="- Streams no longer stop every few minutes: a channel now keeps one
 - Many EPG and bouquet fixes (scheduled update timing, western
   satellites, reload after export, notification bar on HD screens)"
 
+LOGFILE=/tmp/vavoo_install.log
+RCFILE=/tmp/vavoo_install.rc
+LOGCOPY_DIR=/home/root
 
-echo "$changelog"
 TMPPATH=/tmp/vavoo-install
 FILEPATH=/tmp/vavoo-main.tar.gz
 
-if [ ! -d /usr/lib64 ]; then
-    PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/vavoo
-else
-    PLUGINPATH=/usr/lib64/enigma2/python/Plugins/Extensions/vavoo
-fi
+# ---------------------------------------------------------------------
+# helper di log
+# ---------------------------------------------------------------------
+ts() { date '+%Y-%m-%d %H:%M:%S' 2>/dev/null; }
+log() { echo "[$(ts)] $*"; }
+section() { echo ""; echo "[$(ts)] ===== $* ====="; }
 
-echo "Starting vavoo installation..."
+# esegue un comando, lo scrive nel log e ne riporta l'exit code
+run() {
+    log "\$ $*"
+    "$@"
+    local rc=$?
+    [ $rc -ne 0 ] && log "!! comando fallito (exit $rc): $*"
+    return $rc
+}
+
+fail() {
+    log "ERRORE: $*"
+    cleanup
+    exit 1
+}
 
 cleanup() {
-    echo "Cleaning up temporary files..."
+    log "Cleaning up temporary files..."
     [ -d "$TMPPATH" ] && rm -rf "$TMPPATH"
     [ -f "$FILEPATH" ] && rm -f "$FILEPATH"
 }
 
-detect_os() {
-    # /etc/debian_version is checked before /var/lib/dpkg/status - a
-    # genuine Debian host has both, but so do some Enigma2 images
-    # (DreamOS) that use dpkg-based tooling without being real Debian;
-    # checking the more specific marker first is what actually tells
-    # them apart. Every case branch below still treats "DreamOs"|
-    # "Debian" identically, so this only fixes the printed debug line,
-    # not any install-path behavior.
-    if [ -f /etc/debian_version ]; then
-        OSTYPE="Debian"
-        STATUS="/var/lib/dpkg/status"
-    elif [ -f /var/lib/dpkg/status ]; then
-        OSTYPE="DreamOs"
-        STATUS="/var/lib/dpkg/status"
-    elif [ -f /etc/opkg/opkg.conf ] || [ -f /var/lib/opkg/status ]; then
-        OSTYPE="OE"
-        STATUS="/var/lib/opkg/status"
-    else
-        OSTYPE="Unknown"
-        STATUS=""
-    fi
-    echo "Detected OS type: $OSTYPE"
-}
-
-detect_os
-
-if ! command -v wget >/dev/null 2>&1; then
-    echo "Installing wget..."
-    case "$OSTYPE" in
-        "DreamOs"|"Debian")
-            apt-get update && apt-get install -y wget || { echo "Failed to install wget"; exit 1; }
-            ;;
-        "OE")
-            opkg update && opkg install wget || { echo "Failed to install wget"; exit 1; }
-            ;;
-        *)
-            echo "Unsupported OS type. Cannot install wget."
-            exit 1
-            ;;
-    esac
-fi
-
-# Best-effort curl install - NOT fatal if it fails, unlike wget above.
-# Some images (e.g. OpenPLi) ship a BusyBox wget applet whose HTTPS/TLS
-# support is too limited for GitHub's current requirements ("wget:
-# error getting response: Connection reset by peer" mid-handshake,
-# despite DNS/TCP succeeding) even though the exact same URL downloads
-# fine via curl on the same box. wget stays the fallback either way.
-if ! command -v curl >/dev/null 2>&1; then
-    echo "Installing curl (best-effort, for a more reliable HTTPS download)..."
-    case "$OSTYPE" in
-        "DreamOs"|"Debian")
-            apt-get update && apt-get install -y curl
-            ;;
-        "OE")
-            opkg update && opkg install curl
-            ;;
-    esac
-fi
-
-if command -v python3 >/dev/null 2>&1; then
-    echo "Python3 image detected"
-    PYTHON="PY3"
-    Packagesix="python3-six"
-    Packagerequests="python3-requests"
-elif command -v python >/dev/null 2>&1 && python --version 2>&1 | grep -q '^Python 3\.'; then
-    echo "Python3 image detected (via 'python')"
-    PYTHON="PY3"
-    Packagesix="python3-six"
-    Packagerequests="python3-requests"
-elif command -v python >/dev/null 2>&1; then
-    echo "Python2 image detected"
-    PYTHON="PY2"
-    Packagesix="python-six"
-    Packagerequests="python-requests"
-else
-    echo "No Python interpreter found (neither python3 nor python). Cannot continue."
-    exit 1
-fi
-
-install_pkg() {
-    local pkg=$1
-    if [ -z "$STATUS" ] || ! grep -qs "Package: $pkg" "$STATUS" 2>/dev/null; then
-        echo "Installing $pkg..."
-        case "$OSTYPE" in
-            "DreamOs"|"Debian")
-                apt-get update && apt-get install -y "$pkg" || { echo "Could not install $pkg, continuing anyway..."; }
-                ;;
-            "OE")
-                opkg update && opkg install "$pkg" || { echo "Could not install $pkg, continuing anyway..."; }
-                ;;
-            *)
-                echo "Cannot install $pkg on unknown OS type, continuing..."
-                ;;
-        esac
-    else
-        echo "$pkg already installed"
-    fi
-}
-
-if [ -x /usr/bin/python3 ]; then
-    install_pkg "python3-difflib"
-else
-    install_pkg "python-difflib"
-fi
-
-
-install_pkg "$Packagesix"
-install_pkg "$Packagerequests"
-
-if [ "$OSTYPE" = "OE" ]; then
-    echo "Installing additional dependencies for OpenEmbedded..."
-    for pkg in ffmpeg gstplayer exteplayer3 enigma2-plugin-systemplugins-serviceapp; do
-        install_pkg "$pkg"
+# ---------------------------------------------------------------------
+# diagnostica del sistema (prima di installare)
+# ---------------------------------------------------------------------
+diagnostics() {
+    section "DIAGNOSTICA SISTEMA"
+    log "Installer version: $version"
+    log "Shell: $0  (BASH_VERSION=${BASH_VERSION:-n/a})"
+    log "User: $(id 2>/dev/null)"
+    log "uname: $(uname -a 2>/dev/null)"
+    log "hostname: $(cat /etc/hostname 2>/dev/null)"
+    for f in /etc/image-version /etc/os-release /etc/issue /etc/vtiversion.info; do
+        if [ -r "$f" ]; then
+            echo "--- $f ---"
+            head -n 20 "$f" 2>/dev/null
+        fi
     done
-fi
 
-cleanup
-mkdir -p "$TMPPATH"
+    echo "--- tool disponibili ---"
+    for t in python3 python opkg apt-get dpkg wget curl tar gzip tee; do
+        p=$(command -v $t 2>/dev/null)
+        echo "  $t: ${p:-NON TROVATO}"
+    done
+    command -v python3 >/dev/null 2>&1 && echo "  python3 --version: $(python3 --version 2>&1)"
+    command -v python  >/dev/null 2>&1 && echo "  python --version:  $(python --version 2>&1)"
+    [ -d /usr/lib64 ] && echo "  /usr/lib64 presente" || echo "  /usr/lib64 assente"
 
-echo "Downloading vavoo..."
-DOWNLOAD_URL='https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz'
-DOWNLOAD_OK=1
-if command -v curl >/dev/null 2>&1; then
-    # Real TLS certificate verification - this script runs as root and
-    # the downloaded tarball is copied into place and effectively
-    # executed, so skipping cert validation would be a real MITM
-    # exposure. The original "wget fails on some images" bug (BusyBox
-    # wget's limited HTTPS/TLS+SNI negotiation) was a protocol issue,
-    # not a certificate-validation one - curl running first with
-    # verification on already resolves that without needing to weaken
-    # verification here.
-    curl -fL -o "$FILEPATH" "$DOWNLOAD_URL"
-    DOWNLOAD_OK=$?
-fi
-if [ "$DOWNLOAD_OK" -ne 0 ]; then
-    echo "Falling back to wget for the download..."
-    wget "$DOWNLOAD_URL" -O "$FILEPATH"
-    DOWNLOAD_OK=$?
-fi
-if [ "$DOWNLOAD_OK" -ne 0 ]; then
-    echo "Failed to download vavoo package!"
+    echo "--- spazio disco (causa frequente di installazioni fallite) ---"
+    df -h / /tmp /usr 2>/dev/null || df / /tmp /usr 2>/dev/null
+    echo "--- memoria ---"
+    free 2>/dev/null || cat /proc/meminfo 2>/dev/null | head -n 5
+
+    echo "--- rete ---"
+    if command -v nslookup >/dev/null 2>&1; then
+        nslookup github.com 2>&1 | tail -n 4
+    fi
+    ping -c 1 -W 3 github.com >/dev/null 2>&1 \
+        && echo "  ping github.com: OK" \
+        || echo "  ping github.com: FALLITO (puo' essere solo ICMP bloccato)"
+    echo "  data di sistema: $(date) (se sbagliata, HTTPS/TLS puo' fallire!)"
+
+    echo "--- installazione precedente ---"
+    for p in /usr/lib/enigma2/python/Plugins/Extensions/vavoo \
+             /usr/lib64/enigma2/python/Plugins/Extensions/vavoo; do
+        [ -d "$p" ] && echo "  trovata: $p" && ls -la "$p" 2>/dev/null | head -n 5
+    done
+}
+
+# ---------------------------------------------------------------------
+# installazione
+# ---------------------------------------------------------------------
+main() {
+    echo "$changelog"
+
+    diagnostics
+
+    if [ ! -d /usr/lib64 ]; then
+        PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/vavoo
+    else
+        PLUGINPATH=/usr/lib64/enigma2/python/Plugins/Extensions/vavoo
+    fi
+    log "PLUGINPATH=$PLUGINPATH"
+
+    section "RILEVAMENTO OS"
+    if [ -f /etc/debian_version ]; then
+        OSTYPE="Debian";  STATUS="/var/lib/dpkg/status"
+    elif [ -f /var/lib/dpkg/status ]; then
+        OSTYPE="DreamOs"; STATUS="/var/lib/dpkg/status"
+    elif [ -f /etc/opkg/opkg.conf ] || [ -f /var/lib/opkg/status ]; then
+        OSTYPE="OE";      STATUS="/var/lib/opkg/status"
+    else
+        OSTYPE="Unknown"; STATUS=""
+    fi
+    log "Detected OS type: $OSTYPE (status file: ${STATUS:-none})"
+
+    UPDATED=0
+    pkg_update() {
+        [ "$UPDATED" -eq 1 ] && return 0
+        case "$OSTYPE" in
+            "DreamOs"|"Debian") run apt-get update ;;
+            "OE")               run opkg update ;;
+        esac
+        UPDATED=1
+    }
+
+    section "DIPENDENZE"
+    if ! command -v wget >/dev/null 2>&1; then
+        log "Installing wget..."
+        pkg_update
+        case "$OSTYPE" in
+            "DreamOs"|"Debian") run apt-get install -y wget || fail "Failed to install wget" ;;
+            "OE")               run opkg install wget     || fail "Failed to install wget" ;;
+            *)                  fail "Unsupported OS type. Cannot install wget." ;;
+        esac
+    fi
+
+    if ! command -v curl >/dev/null 2>&1; then
+        log "Installing curl (best-effort)..."
+        pkg_update
+        case "$OSTYPE" in
+            "DreamOs"|"Debian") run apt-get install -y curl ;;
+            "OE")               run opkg install curl ;;
+        esac
+    fi
+
+    if command -v python3 >/dev/null 2>&1; then
+        log "Python3 image detected"
+        PYTHON="PY3"; PYBIN=python3
+        Packagesix="python3-six"; Packagerequests="python3-requests"
+    elif command -v python >/dev/null 2>&1 && python --version 2>&1 | grep -q '^Python 3\.'; then
+        log "Python3 image detected (via 'python')"
+        PYTHON="PY3"; PYBIN=python
+        Packagesix="python3-six"; Packagerequests="python3-requests"
+    elif command -v python >/dev/null 2>&1; then
+        log "Python2 image detected"
+        PYTHON="PY2"; PYBIN=python
+        Packagesix="python-six"; Packagerequests="python-requests"
+    else
+        fail "No Python interpreter found (neither python3 nor python)."
+    fi
+
+    install_pkg() {
+        local pkg=$1
+        # match esatto della riga "Package: nome" (prima matchava anche i prefissi)
+        if [ -z "$STATUS" ] || ! grep -qsx "Package: $pkg" "$STATUS" 2>/dev/null; then
+            log "Installing $pkg..."
+            pkg_update
+            case "$OSTYPE" in
+                "DreamOs"|"Debian") run apt-get install -y "$pkg" || log "Could not install $pkg, continuing anyway..." ;;
+                "OE")               run opkg install "$pkg"     || log "Could not install $pkg, continuing anyway..." ;;
+                *)                  log "Cannot install $pkg on unknown OS type, continuing..." ;;
+            esac
+        else
+            log "$pkg already installed"
+        fi
+    }
+
+    if [ -x /usr/bin/python3 ]; then
+        install_pkg "python3-difflib"
+    else
+        install_pkg "python-difflib"
+    fi
+    install_pkg "$Packagesix"
+    install_pkg "$Packagerequests"
+
+    if [ "$OSTYPE" = "OE" ]; then
+        log "Installing additional dependencies for OpenEmbedded..."
+        for pkg in ffmpeg gstplayer exteplayer3 enigma2-plugin-systemplugins-serviceapp; do
+            install_pkg "$pkg"
+        done
+    fi
+
+    section "DOWNLOAD"
     cleanup
-    exit 1
-fi
+    mkdir -p "$TMPPATH" || fail "Cannot create $TMPPATH"
 
-echo "Extracting package..."
-tar -xzf "$FILEPATH" -C "$TMPPATH"
-if [ $? -ne 0 ]; then
-    echo "Failed to extract vavoo package!"
+    DOWNLOAD_URL='https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz'
+    DOWNLOAD_OK=1
+    if command -v curl >/dev/null 2>&1; then
+        # -sS: niente barra di progresso nel log, ma errori visibili
+        run curl -fsSL --connect-timeout 20 -o "$FILEPATH" "$DOWNLOAD_URL"
+        DOWNLOAD_OK=$?
+    fi
+    if [ "$DOWNLOAD_OK" -ne 0 ]; then
+        log "Falling back to wget for the download..."
+        run wget "$DOWNLOAD_URL" -O "$FILEPATH"
+        DOWNLOAD_OK=$?
+    fi
+    [ "$DOWNLOAD_OK" -ne 0 ] && fail "Failed to download vavoo package!"
+    log "Archivio scaricato: $(ls -la "$FILEPATH" 2>/dev/null)"
+
+    section "ESTRAZIONE"
+    run tar -xzf "$FILEPATH" -C "$TMPPATH" || fail "Failed to extract vavoo package (archivio corrotto o spazio esaurito in /tmp?)"
+    log "Cartelle estratte (primo livello):"
+    ls -la "$TMPPATH" 2>/dev/null
+    ls -la "$TMPPATH"/* 2>/dev/null | head -n 20
+
+    section "COPIA FILE"
+    # File dell'utente da conservare tra un aggiornamento e l'altro
+    USERFILES="Favorite.txt"
+    BACKUPDIR=/tmp/vavoo-userdata
+    rm -rf "$BACKUPDIR"; mkdir -p "$BACKUPDIR"
+    if [ -d "$PLUGINPATH" ]; then
+        for f in $USERFILES; do
+            if [ -f "$PLUGINPATH/$f" ]; then
+                cp -f "$PLUGINPATH/$f" "$BACKUPDIR/" && log "Backup dati utente: $f"
+            fi
+        done
+        log "Removing previous installation at $PLUGINPATH..."
+        rm -rf "$PLUGINPATH"
+    fi
+    mkdir -p "$PLUGINPATH" || fail "Cannot create $PLUGINPATH (filesystem read-only o pieno?)"
+
+    COPY_OK=1
+    if [ -d "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo" ]; then
+        run cp -r "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/"
+        COPY_OK=$?
+        log "Copied from standard plugin directory"
+    elif [ -d "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo" ]; then
+        run cp -r "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/"
+        COPY_OK=$?
+        log "Copied from lib64 plugin directory"
+    elif [ -d "$TMPPATH/vavoo-main/usr" ]; then
+        run cp -r "$TMPPATH/vavoo-main/usr"/* /usr/
+        COPY_OK=$?
+        log "Copied entire usr structure"
+    else
+        log "Could not find plugin files in extracted archive"
+        log "Available directories:"
+        find "$TMPPATH" -type d -name "*vavoo*" | head -10
+        fail "Struttura archivio inattesa"
+    fi
+    [ "$COPY_OK" -ne 0 ] && fail "Failed to copy plugin files (cp exited with $COPY_OK) - controlla lo spazio libero qui sopra"
+
+    for f in $USERFILES; do
+        if [ -f "$BACKUPDIR/$f" ]; then
+            cp -f "$BACKUPDIR/$f" "$PLUGINPATH/$f" && log "Ripristinato dato utente: $f"
+        fi
+    done
+    rm -rf "$BACKUPDIR"
+    sync
+
+    section "VERIFICA"
+    if [ -f "$PLUGINPATH/plugin.py" ] && [ -f "$PLUGINPATH/plugin.png" ]; then
+        log "Plugin files verified: $PLUGINPATH"
+        ls -la "$PLUGINPATH/" | head -20
+        log "Numero file installati: $(find "$PLUGINPATH" -type f | wc -l)"
+    else
+        fail "Plugin installation failed - expected files not found in $PLUGINPATH!"
+    fi
+
+    # Il plugin puo' essere copiato ma non comparire nel menu se Python
+    # non riesce a compilarlo o mancano moduli: lo verifichiamo qui.
+    log "Test compilazione plugin.py con $PYBIN..."
+    if $PYBIN -c "import py_compile,sys; py_compile.compile(sys.argv[1], doraise=True)" "$PLUGINPATH/plugin.py" 2>&1; then
+        log "plugin.py compila correttamente"
+    else
+        log "!! plugin.py NON compila con $PYBIN: il plugin non apparira' nel menu"
+    fi
+    for mod in requests six difflib; do
+        if $PYBIN -c "import $mod" >/dev/null 2>&1; then
+            log "modulo python '$mod': OK"
+        else
+            log "!! modulo python '$mod': MANCANTE ($($PYBIN -c "import $mod" 2>&1 | tail -n 1))"
+        fi
+    done
+
     cleanup
-    exit 1
-fi
+    sync
 
-echo "Installing plugin files..."
+    box_type=$(sed -n '1p' /etc/hostname 2>/dev/null || echo "Unknown")
+    distro_value="Unknown"
+    distro_version="Unknown"
+    if [ -r /etc/image-version ] && grep -q '^distro=' /etc/image-version; then
+        distro_value=$(grep '^distro=' /etc/image-version | head -n 1 | cut -d= -f2)
+        distro_version=$(grep '^imageversion=' /etc/image-version | head -n 1 | cut -d= -f2)
+        [ -z "$distro_version" ] && distro_version=$(grep '^version=' /etc/image-version | head -n 1 | cut -d= -f2)
+    elif [ -r /etc/os-release ]; then
+        distro_value=$(grep '^NAME=' /etc/os-release 2>/dev/null | cut -d'"' -f2)
+        distro_version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d'"' -f2)
+    elif [ -r /etc/issue ]; then
+        distro_value=$(head -n 1 /etc/issue 2>/dev/null | awk '{print $1}')
+        distro_version=$(head -n 1 /etc/issue 2>/dev/null | awk '{print $2}')
+    elif [ -r /etc/vtiversion.info ]; then
+        distro_value=$(head -n 1 /etc/vtiversion.info 2>/dev/null)
+    elif [ -r /etc/issue.net ]; then
+        distro_value=$(head -n 1 /etc/issue.net 2>/dev/null | awk '{print $1}')
+        distro_version=$(head -n 1 /etc/issue.net 2>/dev/null | awk '{print $2}')
+    fi
+    [ -z "$distro_value" ] && distro_value="Unknown"
+    [ -z "$distro_version" ] && distro_version="Unknown"
+    python_vers=$($PYBIN --version 2>&1)
 
-# Remove any previous installation first (mirrors CONTROL/preinst's
-# approach for the ipkg path) - without this, a file removed/renamed in
-# a newer release could survive indefinitely across an upgrade done via
-# this installer, causing stale .py/.pyc/skin XML mismatches.
-if [ -d "$PLUGINPATH" ]; then
-    echo "Removing previous installation at $PLUGINPATH..."
-    rm -rf "$PLUGINPATH"
-fi
-mkdir -p "$PLUGINPATH"
-
-COPY_OK=1
-if [ -d "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo" ]; then
-    cp -r "$TMPPATH/vavoo-main/usr/lib/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/"
-    COPY_OK=$?
-    echo "Copied from standard plugin directory"
-elif [ -d "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo" ]; then
-    cp -r "$TMPPATH/vavoo-main/usr/lib64/enigma2/python/Plugins/Extensions/vavoo"/* "$PLUGINPATH/"
-    COPY_OK=$?
-    echo "Copied from lib64 plugin directory"
-elif [ -d "$TMPPATH/vavoo-main/usr" ]; then
-    cp -r "$TMPPATH/vavoo-main/usr"/* /usr/
-    COPY_OK=$?
-    echo "Copied entire usr structure"
-else
-    echo "Could not find plugin files in extracted archive"
-    echo "Available directories:"
-    find "$TMPPATH" -type d -name "*vavoo*" | head -10
-    cleanup
-    exit 1
-fi
-
-if [ "$COPY_OK" -ne 0 ]; then
-    echo "Failed to copy plugin files (cp exited with $COPY_OK)!"
-    cleanup
-    exit 1
-fi
-
-sync
-
-echo "Verifying installation..."
-if [ -f "$PLUGINPATH/plugin.py" ] && [ -f "$PLUGINPATH/plugin.png" ]; then
-    echo "Plugin files verified: $PLUGINPATH"
-    echo "Contents:"
-    ls -la "$PLUGINPATH/" | head -10
-else
-    echo "Plugin installation failed - expected files not found in $PLUGINPATH!"
-    cleanup
-    exit 1
-fi
-
-cleanup
-sync
-
-FILE="/etc/image-version"
-box_type=$(sed -n '1p' /etc/hostname 2>/dev/null || echo "Unknown")
-# distro_value=$(grep '^distro=' "$FILE" 2>/dev/null | awk -F '=' '{print $2}')
-# distro_version=$(grep '^version=' "$FILE" 2>/dev/null | awk -F '=' '{print $2}')
-distro_value="Unknown"
-distro_version="Unknown"
-if [ -r /etc/os-release ]; then
-    distro_value=$(grep '^NAME=' /etc/os-release 2>/dev/null | cut -d'"' -f2)
-    distro_version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d'"' -f2)
-elif [ -r /etc/issue ]; then
-    distro_value=$(head -n 1 /etc/issue 2>/dev/null | awk '{print $1}')
-    distro_version=$(head -n 1 /etc/issue 2>/dev/null | awk '{print $2}')
-elif [ -r /etc/vtiversion.info ]; then
-    distro_value=$(head -n 1 /etc/vtiversion.info 2>/dev/null)
-    # versione non disponibile, lascia Unknown
-elif [ -r /etc/issue.net ]; then
-    distro_value=$(head -n 1 /etc/issue.net 2>/dev/null | awk '{print $1}')
-    distro_version=$(head -n 1 /etc/issue.net 2>/dev/null | awk '{print $2}')
-fi
-
-[ -z "$distro_value" ] && distro_value="Unknown"
-[ -z "$distro_version" ] && distro_version="Unknown"
-if command -v python3 >/dev/null 2>&1; then
-    python_vers=$(python3 --version 2>&1)
-elif command -v python >/dev/null 2>&1; then
-    python_vers=$(python --version 2>&1)
-else
-    python_vers="not found"
-fi
-
-cat <<EOF
+    cat <<EOF
 
 #########################################################
 #               INSTALLED SUCCESSFULLY                  #
 #                developed by LULULLA                   #
 #               https://corvoboys.org                   #
 #########################################################
-#         Enigma2 GUI will RESTART now (box stays on)   #
+#   >>> PLEASE RESTART THE ENIGMA2 GUI MANUALLY <<<     #
+#   Menu > Standby/Restart > Restart GUI                #
+#   or via telnet:  init 4; sleep 2; init 3             #
+#   The plugin will appear only after the restart.      #
 #########################################################
 ^^^^^^^^^^Debug information:
 BOX MODEL: $box_type
@@ -295,5 +351,37 @@ IMAGE NAME: ${distro_value:-Unknown}
 IMAGE VERSION: ${distro_version:-Unknown}
 PLUGIN VERSION: $version
 EOF
+    exit 0
+}
 
-exit 0
+# ---------------------------------------------------------------------
+# avvio: tutto l'output (stdout + stderr) va a schermo E nel log.
+# Funziona anche con "| /bin/sh" (busybox ash), senza process substitution.
+# ---------------------------------------------------------------------
+: > "$LOGFILE"
+rm -f "$RCFILE"
+{
+    echo "### vavoo installer log - $(ts)"
+    ( main )
+    echo $? > "$RCFILE"
+} 2>&1 | tee -a "$LOGFILE"
+
+RC=$(cat "$RCFILE" 2>/dev/null || echo 1)
+rm -f "$RCFILE"
+echo "[$(ts)] Installer terminato con exit code $RC" >> "$LOGFILE"
+
+if [ -d "$LOGCOPY_DIR" ]; then
+    cp -f "$LOGFILE" "$LOGCOPY_DIR/vavoo_install.log" 2>/dev/null
+fi
+
+echo ""
+echo "Log completo salvato in: $LOGFILE"
+[ -d "$LOGCOPY_DIR" ] && echo "Copia permanente:         $LOGCOPY_DIR/vavoo_install.log"
+if [ "$RC" -ne 0 ]; then
+    echo "INSTALLATION FAILED (exit $RC): please send the log file for support."
+else
+    echo ""
+    echo ">>> Restart the Enigma2 GUI manually to see the plugin <<<"
+fi
+
+exit "$RC"
