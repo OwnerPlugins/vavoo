@@ -274,7 +274,8 @@ the real files (measured, see the comment block above
   `_EPG_GUIDE_AHEAD`, for the guide grid; measured: pl 11 MB, fr 6 MB),
   as tuples. One `EpgGuide` per country, reused for 6 hours
   (`_EPG_GUIDE_TTL`; a box paid 10-30 s of a core every hour before),
-  four countries at most, one download at a time per country.
+  three countries at most (`_EPG_GUIDE_KEEP`), one download at a time
+  per country.
 - Heavy loops in background threads (the guide parse, the matcher's
   Rytec and feed-name scans) call `_Breather().tick()` every turn:
   after 50 ms of work they rest 25 ms, never on the main thread. A
@@ -428,6 +429,16 @@ records and timeshifts only DVB, so the plugin does it itself:
   to 8 MB (`vUtils.trim_picon_cache()`) and leftover pause buffers are
   deleted (`clean_pause_leftovers()`) each time `main()` runs; the
   guide's load line carries `memory_note()`.
+- `MEMORY_WATCH` (`_MemoryWatch`, ticked by `_ReminderService.tick()`,
+  so it runs while the plugin is closed too) reads `/proc/meminfo` once
+  a minute and logs "[MEM] " + `memory_note()` every 30 minutes. Below
+  `MEMORY_LOW_KB` (100 MB available), at most every 10 minutes, it
+  appends `vUtils.memory_report()` (memory, Shmem, Slab, the top 8
+  processes by RSS from `/proc/<pid>/status`) to
+  `/etc/enigma2/vavoo_memory.log` (survives the reboot an OOM ends in;
+  kept to `MEMORY_LOG_MAX` 64 KB, whole lines) and releases the
+  plugin's own memory: `vUtils.release_guides(keep=<the player's
+  country>)`, `_icon_cache`, the logo cache down to 4 MB.
 - Logs: ffmpeg's to `/tmp/vavoo_record.log`, the rest to `vavoo.log`.
   The bar's glyphs are ❚❚ and ◀◀ (⏸ / ⏪ are missing from the fonts
   and from many boxes' fallback font).

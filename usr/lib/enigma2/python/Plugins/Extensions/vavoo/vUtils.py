@@ -1507,6 +1507,70 @@ def trim_picon_cache(cache_dir=PICON_CACHE_DIR, max_bytes=PICON_CACHE_MAX):
     return removed
 
 
+def read_meminfo(path="/proc/meminfo"):
+    """{field: kB} from /proc/meminfo ({} when it cannot be read)."""
+    out = {}
+    try:
+        with open(path) as f:
+            for line in f:
+                name, _sep, rest = line.partition(":")
+                fields = rest.split()
+                if fields:
+                    try:
+                        out[name.strip()] = int(fields[0])
+                    except ValueError:
+                        pass
+    except Exception:
+        pass
+    return out
+
+
+def process_memory(proc="/proc", top=8):
+    """[(rss_kb, pid, name)] of the processes using the most memory,
+    the biggest first (read from /proc/<pid>/status)."""
+    rows = []
+    try:
+        names = listdir(proc)
+    except Exception:
+        return rows
+    for pid in names:
+        if not pid.isdigit():
+            continue
+        name, rss = "?", None
+        try:
+            with open(join(proc, pid, "status")) as f:
+                for line in f:
+                    if line.startswith("Name:"):
+                        name = line.split(None, 1)[1].strip()
+                    elif line.startswith("VmRSS:"):
+                        rss = int(line.split()[1])
+                        break
+        except Exception:
+            continue
+        if rss:
+            rows.append((rss, int(pid), name))
+    rows.sort(reverse=True)
+    return rows[:top]
+
+
+def memory_report(proc="/proc", meminfo="/proc/meminfo"):
+    """What the box's memory looked like, in a few lines: what was left,
+    /tmp's share (Shmem), the kernel's (Slab), and the processes holding
+    the most - so a box that ran out can be explained afterwards."""
+    info = read_meminfo(meminfo)
+
+    def mb(field):
+        value = info.get(field)
+        return "?" if value is None else "%d MB" % (value // 1024)
+
+    lines = ["{}  free {} of {}, Shmem (/tmp) {}, Slab {}".format(
+        strftime("%Y-%m-%d %H:%M:%S", localtime()), mb("MemAvailable"),
+        mb("MemTotal"), mb("Shmem"), mb("Slab"))]
+    for rss, pid, name in process_memory(proc):
+        lines.append("    {:>7} MB  {} ({})".format(rss // 1024, name, pid))
+    return "\n".join(lines) + "\n"
+
+
 def memory_note():
     """"enigma2 148 MB, box 412 MB free" - this process's memory and
     what the box has left (for the log: was the box short of memory,
@@ -3661,8 +3725,9 @@ _EPG_GUIDE_RETRY = 120
 _EPG_GUIDE_BEHIND = 3 * 3600
 _EPG_GUIDE_AHEAD = 24 * 3600
 # Countries kept in memory at once (least recently used goes first) -
-# four, as a page of Favourites or of the guide grid often mixes them.
-_EPG_GUIDE_KEEP = 4
+# three (a large one is ~10 MB; a box with 1 GB was seen running out of
+# memory), still enough for a page of Favourites mixing countries.
+_EPG_GUIDE_KEEP = 3
 # Descriptions are cut to this many characters; they are only ever
 # shown in the player overlay's few lines.
 _EPG_GUIDE_DESC_MAX = 400
@@ -4010,6 +4075,17 @@ def _download_epg_guide(country_code):
 def _usable_epg_guide(guide):
     """A guide that can still answer (fresh, or stale but recent)."""
     return guide is not None and guide.age() < _EPG_GUIDE_STALE_MAX
+
+
+def release_guides(keep=None):
+    """Drop the guides held in memory, but `keep`'s (the country being
+    watched) - the box is short of memory. Returns how many went."""
+    keep = ensure_str(keep or '', errors='ignore').lower()
+    with _epg_guide_lock:
+        gone = [code for code in _epg_guide_cache if code != keep]
+        for code in gone:
+            del _epg_guide_cache[code]
+    return len(gone)
 
 
 def peek_epg_guide(country_code):

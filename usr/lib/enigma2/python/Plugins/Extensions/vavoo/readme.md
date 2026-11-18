@@ -432,7 +432,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - The player fetches EPG via the proxy redirect to GitHub raw files
 - **In-plugin programme info** (the channel list's Now/Next lines and the player's OK overlay) reads the same per-country guide file (`epg_<cc>.xml`), with no EPGImport involved:
   - the file is read while it downloads, compressed (about a tenth of its size on the wire), and only the programmes from 3 hours ago to 24 hours ahead are kept (for the programme guide) - measured with the largest files: 11 MB for Poland, 6 MB for France, where the whole file is 2 to 60 MB
-  - one copy per country is reused for 6 hours (at most four countries in memory); if refreshing it fails, the previous copy keeps being used up to 12 hours
+  - one copy per country is reused for 6 hours (at most three countries in memory); if refreshing it fails, the previous copy keeps being used up to 12 hours
   - reading a large guide costs a set-top box a good part of a core for some seconds: it is done in a background thread that rests a little every 50 ms, so the video and the menus always get their turn
   - every entry's own time zone is applied and times are shown on the box's clock. (Earlier versions ignored the time zone, which showed the wrong programme for guides not written in UTC - Spain by one hour, Turkey by three, Poland by six)
   - a channel is found through the same matching chain as below, then through the guide's own channel names (accents do not matter: "SIC NOTICIAS" finds "SIC Notícias")
@@ -574,6 +574,8 @@ The proxy provides these endpoints:
 
 - **Recording log**: `/tmp/vavoo_record.log` – What `ffmpeg` said while recording (errors only)
 
+- **Memory report**: `/etc/enigma2/vavoo_memory.log` – Written only when the box has less than 100 MB of memory left (at most once every 10 minutes): the time, the memory left, `/tmp`'s share (Shmem), the kernel's (Slab) and the 8 processes using the most. It survives a reboot and is kept to 64 KB (the oldest reports go first)
+
 - **Hidden Countries**: `/etc/enigma2/vavoo_hidden_countries.json` – Settings → Choose countries (`["Albania", "Spain"]`). Delete it to show every country again
 
 - **Parental Control**: `/etc/enigma2/vavoo_parental.json` – The PIN (salted SHA-256, never in clear), the locked countries, the two lock options and the wrong-PIN pause. Not in backups. Delete it to remove the PIN
@@ -614,12 +616,16 @@ curl -s http://127.0.0.1:4323/health
 top -H -b -n 1 | head -25
 grep "\[EPG\]" /tmp/vavoo.log | tail
 
-# Out of memory (before rebooting - a reboot loses this): who held it
+# Out of memory: who held it (the plugin's report survives a reboot)
+cat /etc/enigma2/vavoo_memory.log
+grep "\[MEM\]" /tmp/vavoo.log | tail
 dmesg | grep -iE "out of memory|killed process" | tail -5
 grep -E "MemAvailable|Shmem:|Slab" /proc/meminfo
 ```
 
 In `top -H` the plugin's own threads have names: `vv-guide` (programme guide), `vv-nownext` (Now/Next beside the list), `vv-bar` / `vv-miniguide` (the player's programme lines), `vv-rec` / `vv-pause` (a recording / the pause buffer, with `ffmpeg` beside them at a lower priority), `vv-proxy` / `vv-token` / `vv-proxymain` (the local proxy), `vv-lists`, `vv-search`, `vv-logos`, `vv-export`. `/tmp/vavoo.log` says how long each guide took to read and how much memory Enigma2 used and the box had left at that moment ("[EPG] Guide pl loaded in 23.4s ... (enigma2 148 MB, box 412 MB free)"), and every channel whose guide took over a second to find ("[EPG] slow match"). `/tmp` is the box's RAM: the plugin keeps its logo cache there to 8 MB (`/tmp/vavoo_picons`, the oldest logos go first) and deletes pause buffers left behind each time it opens.
+
+The plugin also keeps an eye on the box's memory, whether it is open or not. Every 30 minutes `/tmp/vavoo.log` gets a line like "[MEM] enigma2 166 MB, box 367 MB free" - over hours or days these show whether Enigma2 keeps growing. When the box has less than 100 MB left, it writes a report to `/etc/enigma2/vavoo_memory.log` (see above: it is still there after the reboot that a full memory usually ends in) and gives back what is its own: the programme guides in memory except the one of the country being watched, its icons, and the logo cache down to 4 MB ("[MEM] Low memory ..." / "[MEM] Released ..." in the log). If the box was slow or rebooted by itself, send that file.
 
 ### Common Issues
 | Problem | Solution |

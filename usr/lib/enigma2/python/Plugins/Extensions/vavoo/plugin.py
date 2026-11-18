@@ -6409,6 +6409,10 @@ class _ReminderService(object):
 
     def tick(self):
         try:
+            MEMORY_WATCH.tick()
+        except Exception as e:
+            debug("Memory watch: {}".format(e))
+        try:
             due = vavoo_store.due_timers(kind=vavoo_store.KIND_REMIND)
             records = vavoo_store.due_timers(kind=vavoo_store.KIND_RECORD)
         except Exception as e:
@@ -6468,6 +6472,87 @@ class _ReminderService(object):
 
 
 REMINDERS = _ReminderService()
+
+
+# ---------------------------------------------------------------------
+# The box's memory (a box was seen with 32 MB left of 926 and the
+# kernel killing processes - the reboot then wiped who held it)
+# ---------------------------------------------------------------------
+MEMORY_LOW_KB = 100 * 1024       # below this much free: report, release
+MEMORY_CHECK_EVERY = 60          # read /proc/meminfo this often
+MEMORY_TREND_EVERY = 1800        # a "[MEM]" line in vavoo.log this often
+MEMORY_REPORT_EVERY = 600        # at most one report this often
+MEMORY_LOG_MAX = 64 * 1024       # the report file's size
+
+
+def memory_log_file():
+    """In /etc/enigma2: it outlives the reboot that usually follows."""
+    return vavoo_store.data_file("vavoo_memory.log")
+
+
+def write_memory_log(text):
+    path = memory_log_file()
+    try:
+        old = ""
+        if os.path.isfile(path):
+            with open(path) as f:
+                old = f.read()
+        data = old + text
+        if len(data) > MEMORY_LOG_MAX:
+            data = data[-(MEMORY_LOG_MAX * 3 // 4):]
+            data = data[data.find("\n") + 1:]
+        with open(path, "w") as f:
+            f.write(data)
+    except Exception as e:
+        debug("Memory report not written: {}".format(e))
+
+
+class _MemoryWatch(object):
+    """Run from the reminder service's tick (always on, plugin open or
+    not): every MEMORY_TREND_EVERY a "[MEM] enigma2 166 MB, box 367 MB
+    free" line in vavoo.log (does Enigma2 grow over days?); when the
+    box has less than MEMORY_LOW_KB left, a report of who holds it in
+    vavoo_memory.log, and the plugin lets go of what it can."""
+
+    def __init__(self):
+        self.checked_at = 0
+        self.trend_at = 0
+        self.reported_at = 0
+
+    def tick(self, now=None):
+        now = time.time() if now is None else now
+        if now - self.checked_at < MEMORY_CHECK_EVERY:
+            return
+        self.checked_at = now
+        if now - self.trend_at >= MEMORY_TREND_EVERY:
+            self.trend_at = now
+            print("[MEM] " + vUtils.memory_note())
+        available = vUtils.read_meminfo().get("MemAvailable")
+        if available is None or available >= MEMORY_LOW_KB:
+            return
+        if now - self.reported_at < MEMORY_REPORT_EVERY:
+            return
+        self.reported_at = now
+        report = vUtils.memory_report()
+        write_memory_log(report)
+        print("[MEM] Low memory - report in {}:\n{}".format(
+            memory_log_file(), report.rstrip()))
+        self.release()
+
+    def release(self):
+        """Let go of the plugin's own memory: the guides but the one
+        being watched, the scaled icons, most of the logo cache."""
+        player = ACTIVE.get("player")
+        keep = getattr(player, "country_code", None) \
+            if player is not None else None
+        guides = vUtils.release_guides(keep)
+        icons = len(_icon_cache)
+        _icon_cache.clear()
+        vUtils.trim_picon_cache(max_bytes=4 * 1024 * 1024)
+        print("[MEM] Released {} guides, {} icons".format(guides, icons))
+
+
+MEMORY_WATCH = _MemoryWatch()
 
 
 # ---------------------------------------------------------------------
