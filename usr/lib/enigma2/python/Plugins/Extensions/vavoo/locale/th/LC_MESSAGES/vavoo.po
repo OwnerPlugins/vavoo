@@ -18,7 +18,7 @@ msgid "(%s files deleted)"
 msgstr "(ลบ %s ไฟล์แล้ว)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(ปัจจุบัน)"
 
 msgid "(you have v{})"
 msgstr "(คุณมี วี{})"
@@ -194,7 +194,7 @@ msgid "Close"
 msgstr ""
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "ชื่อประเทศที่คั่นด้วยเครื่องหมายจุลภาค (เช่น \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "บันทึกการกำหนดค่าสำเร็จแล้ว!"
@@ -224,7 +224,7 @@ msgid "Could not save the installer script."
 msgstr "ไม่สามารถบันทึกสคริปต์การติดตั้งได้"
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "ไม่สามารถอัปเดตรายการโปรดได้"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "ประเทศ: %(สร้าง)d/%(รวม)d"
@@ -320,7 +320,7 @@ msgid "Failed: %(failed)d"
 msgstr "ล้มเหลว: %(ล้มเหลว)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "รายการโปรด"
 
 msgid "Fix Cache"
 msgstr "แก้ไขแคช"
@@ -466,7 +466,7 @@ msgid "Periodically re-match EPG and refresh bouquets for your favorited countri
 msgstr "จับคู่ EPG อีกครั้งและรีเฟรชช่อดอกไม้สำหรับประเทศที่คุณชื่นชอบในเบื้องหลัง"
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "คีย์การเข้าถึงเพลย์ลิสต์ (ไม่บังคับ)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ตำแหน่งของช่อดอกไม้วาวูในรายการหลัก"
@@ -579,7 +579,7 @@ msgid "Set a PIN to lock the countries below. Leave empty to disable parental co
 msgstr ""
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "แสดงบันทึก (ตกลงเพื่อดู)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "แสดงข้อความระดับ DEBUG แบบละเอียดใน vavoo.log (วงจรการใช้งาน UI รายละเอียดตามคำขอ) มีผลทันที - งดเว้นเว้นแต่จะแก้ไขปัญหาได้"
@@ -661,7 +661,7 @@ msgid "Vavoo is already running."
 msgstr "Vavoo กำลังทำงานอยู่แล้ว"
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "วาวู/คูลเท่านั้น"
 
 msgid "Version:"
 msgstr "เวอร์ชัน:"
@@ -670,13 +670,13 @@ msgid "View Favourites (Ok to open)"
 msgstr ""
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "ดู 200 บรรทัดสุดท้ายของ %s"
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ยินดีต้อนรับสู่ Vavoo Proxy พร้อมการสนับสนุน EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "บริการใดที่จะโหลดช่องและสตรีม Auto ลองใช้ Geil ก่อนแล้วจึงกลับไปหา Vavoo หากไม่พร้อมใช้งาน อีกสองตัวเลือกปักหมุดไว้กับแหล่งเดียว มีผลเมื่อบันทึก (รีสตาร์ทพร็อกซีหากทำงานอยู่)"
 
 #, fuzzy
 msgid "Yes, update now"

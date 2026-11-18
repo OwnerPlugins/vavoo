@@ -101,7 +101,7 @@ msgid "? Proxy Unknown"
 msgstr "？代理未知"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "添加到收藏夹：{}"
 
 msgid "All countries (%d)"
 msgstr "所有国家（%d）"
@@ -151,7 +151,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "花束重组成功！"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "浏览并播放您已加星标的频道。浏览时使用 INFO 键加星标/取消星标频道。"
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -192,13 +192,13 @@ msgid "Checking proxy..."
 msgstr "正在检查代理..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "选择码流源"
 
 msgid "Clear All"
 msgstr "全部清除"
 
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
 msgstr ""
@@ -223,7 +223,7 @@ msgid "Continuing, proxy still syncing..."
 msgstr "继续，代理仍在同步..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "无法加载频道 - 代理没有响应"
 
 msgid "Could not load the country list from the proxy"
 msgstr ""
@@ -372,7 +372,7 @@ msgid "Important Notes:"
 msgstr "重要提示："
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "PIN 码不正确"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "如果代理由于 VPN 或连接速度慢而需要很长时间，则增加。"
@@ -463,7 +463,7 @@ msgid "Nothing to remove for: {}"
 msgstr "没有要删除的内容：{}"
 
 msgid "OK"
-msgstr ""
+msgstr "好的"
 
 msgid "Only one source available for this channel"
 msgstr ""

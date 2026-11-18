@@ -474,7 +474,7 @@ msgid "Periodically re-match EPG and refresh bouquets for your favorited countri
 msgstr "Периодически повторно сопоставляйте EPG и обновляйте букеты для ваших любимых стран в фоновом режиме."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "Ключ доступа к плейлисту (необязательно)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Позиция букетов Vavoo в основном списке"
@@ -677,7 +677,7 @@ msgid "Version:"
 msgstr "Версия:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "Просмотр избранного (ОК, чтобы открыть)"
 
 msgid "View the last 200 lines of %s."
 msgstr ""

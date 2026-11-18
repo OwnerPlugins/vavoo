@@ -101,7 +101,7 @@ msgid "? Proxy Unknown"
 msgstr "? Proxy Bilinmiyor"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "Favorilere eklendi: {}"
 
 msgid "All countries (%d)"
 msgstr "Tüm ülkeler (%d)"
@@ -122,7 +122,7 @@ msgid "Author:"
 msgstr "Yazar:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "Araba (Harika, geri dönüş Vavoo)"
 
 msgid "Back"
 msgstr "Geri"
@@ -171,7 +171,7 @@ msgid "Case: {}"
 msgstr "Durum: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "Katalog/Akış Kaynağı"
 
 #, fuzzy
 msgid "Changelog:"
@@ -190,7 +190,7 @@ msgid "Checking proxy..."
 msgstr "Proxy kontrol ediliyor..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "Akış Kaynağını Seçin"
 
 msgid "Clear All"
 msgstr "Tümünü Temizle"
@@ -199,7 +199,7 @@ msgid "Close"
 msgstr ""
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "Virgülle ayrılmış ülke adları (ör. \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Yapılandırma başarıyla kaydedildi!"
@@ -220,16 +220,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "Devam ediyor, proxy hâlâ senkronize ediliyor..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "Kanallar yüklenemedi - proxy yanıt vermiyor"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "Ülke listesi proxy'den yüklenemedi"
 
 msgid "Could not save the installer script."
 msgstr "Yükleyici komut dosyası kaydedilemedi."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "Favoriler güncellenemedi"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "Ülkeler: %(generated)d/%(total)d"
@@ -280,7 +280,7 @@ msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG'yi etkinleştir"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "Ebeveyn kontrolü PIN'ini girin"
 
 msgid "Enter text to search..."
 msgstr "Aranacak metni girin..."
@@ -325,7 +325,7 @@ msgid "Failed: %(failed)d"
 msgstr "Başarısız: %(failed)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "Favoriler"
 
 msgid "Fix Cache"
 msgstr "Önbelleği Düzelt"
@@ -340,7 +340,7 @@ msgid "Found: {} channels"
 msgstr "Bulunan: {} kanal"
 
 msgid "Geil only"
-msgstr ""
+msgstr "Yalnızca Geil"
 
 msgid "Generate .m3u file for:"
 msgstr ".m3u dosyası oluştur:"
@@ -361,13 +361,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Şu andan itibaren EPG'nin ne sıklıkla yeniden eşleştirileceği ve buketlerin yenileneceği."
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "Ayarlanırsa, /playlist.m3u adresindeki canlı oynatma listesi ?key=<bu değer> gerektirir; anahtar yoksa boş bırakın. URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "Önemli Notlar:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "Yanlış PIN"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "VPN veya yavaş bağlantı nedeniyle proxy uzun sürüyorsa artırın."
@@ -438,7 +438,7 @@ msgid "No channels found for: %s"
 msgstr "%s için kanal bulunamadı"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "Henüz favori yok"
 
 msgid "No items available"
 msgstr "Öğe mevcut değil"
@@ -456,22 +456,22 @@ msgid "Nothing to remove for: {}"
 msgstr "Şunun için kaldırılacak bir şey yok: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "TAMAM"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "Bu kanal için yalnızca tek bir kaynak mevcut"
 
 msgid "Only one specific country"
 msgstr "Yalnızca belirli bir ülke"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "Ebeveyn Kontrolü PIN'i"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "EPG'yi periyodik olarak yeniden eşleştirin ve favori ülkeleriniz için buketleri arka planda yenileyin."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "Çalma Listesi Erişim Anahtarı (isteğe bağlı)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Ana listede Vavoo buketlerinin konumu"
@@ -581,10 +581,10 @@ msgid "Send Anonymous Statistics"
 msgstr "Anonim İstatistikleri Gönder"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "Aşağıdaki ülkeleri kilitlemek için bir PIN ayarlayın. Ebeveyn kontrolünü tamamen devre dışı bırakmak için boş bırakın."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "Günlüğü Göster (Görüntülemek için Tamam)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Vavoo.log'da ayrıntılı DEBUG düzeyindeki mesajları gösterin (UI yaşam döngüsü, istek başına ayrıntı). Hemen etkili olur; sorun giderme sürece bırakın."
@@ -605,7 +605,7 @@ msgid "Technical Features:"
 msgstr "Teknik Özellikler:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "Bu kanal oynatılamıyor"
 
 msgid "This will refresh the authentication token."
 msgstr "Bu, kimlik doğrulama tokenini yenileyecektir."
@@ -648,7 +648,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Vavoo EPG kaynağı bulunamadı. Lütfen önce en az bir buket dışa aktarın."
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "Vavoo Günlüğü"
 
 msgid "Vavoo Stream Live"
 msgstr "Vavoo Canlı Yayın"
@@ -666,22 +666,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo zaten çalışıyor."
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "Yalnızca Vavoo/Kool"
 
 msgid "Version:"
 msgstr "Sürüm:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "Favorileri Görüntüle (Açmak için Tamam)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "%s'in son 200 satırını görüntüleyin."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG destekli Vavoo Proxy'ye hoş geldiniz"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "Kanalların ve akışların hangi hizmetten yükleneceğini. Auto önce Geil'i dener ve eğer mevcut değilse Vavoo'ya geri döner; diğer iki seçenek onu tam olarak tek bir kaynağa bağlar. Kaydedildiğinde etkili olur (çalışıyorsa proxy'yi yeniden başlatır)."
 
 #, fuzzy
 msgid "Yes, update now"
