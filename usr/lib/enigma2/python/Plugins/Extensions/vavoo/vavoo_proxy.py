@@ -40,6 +40,7 @@ from . import (
     __version__
 )
 
+from . import vavoo_record
 from .vUtils import (
     _starting_lock,
     debug,
@@ -498,6 +499,11 @@ or:
 # API Endpoints
 TOKEN_ADDON_SIG = 600  # 10 minutes - TOKEN EXPIRES EVERY 10 MINUTES!
 TOKEN_REFRESH_AGE = 480
+# A recording's own token (own_signature()): a forced renewal right
+# after one was made is not done again (the app's FORCE_MIN_INTERVAL),
+# and a failed request is not repeated at once.
+OWN_SIG_FORCE_MIN = 30
+OWN_SIG_RETRY = 20
 GEOIP_URL = "https://www.vavoo.tv/geoip"
 PING_URL = "https://www.vavoo.tv/api/app/ping"
 PING_URL2 = "https://www.vypn.net/api/app/ping"
@@ -932,6 +938,10 @@ class VavooProxy(object):
         self._stream_lock = threading.Lock()  # guards active_streams counter
         self.addon_sig_data = {"sig": None, "ts": 0}
         self.addon_sig_lock = threading.Lock()
+        # Tokens of their own, by slot (one per recording) - see
+        # own_signature().
+        self._own_sigs = {}
+        self._own_sig_lock = threading.Lock()
         self.all_filtered_items = []
         # Keyed by country.lower() (catalog casing varies) - was built
         # but never actually read by anything; now used by /channels
@@ -1132,92 +1142,8 @@ class VavooProxy(object):
                 return self.addon_sig_data["sig"]
 
             try:
-                import uuid
-                unique_id = str(uuid.uuid4())
-                current_timestamp = int(time.time() * 1000)
-
-                # Matches a confirmed-working VYPN ping payload exactly -
-                # the previous version carried extra fields (buildId,
-                # engine, signatures, installer, devMode=True, ...) copied
-                # from an older reverse-engineered client that this
-                # endpoint no longer accepts as a real free-tier client.
-                payload = {
-                    "token": "",
-                    "reason": "app-focus",
-                    "locale": self.current_language,
-                    "theme": "dark",
-                    "metadata": {
-                        "device": {
-                            "type": "phone",
-                            "uniqueId": unique_id},
-                        "os": {
-                            "name": "android",
-                            "version": "14",
-                            "abis": ["arm64-v8a"],
-                            "host": "android"},
-                        "app": {
-                            "platform": "android"},
-                        "version": {
-                            "package": VYPN_PACKAGE,
-                            "binary": VYPN_VERSION,
-                            "js": VYPN_VERSION}},
-                    "appFocusTime": 0,
-                    "playerActive": False,
-                    "playDuration": 0,
-                    "devMode": False,
-                    "hasAddon": True,
-                    "castConnected": False,
-                    "package": VYPN_PACKAGE,
-                    "version": VYPN_VERSION,
-                    "process": "app",
-                    "firstAppStart": current_timestamp - 86400000,
-                    "lastAppStart": current_timestamp,
-                    "ipLocation": None,
-                    "adblockEnabled": True,
-                    "migrationApplied": False,
-                    "migrationTargetInstalled": False,
-                    "proxy": {
-                        "supported": ["ss"],
-                        "engine": "Mu",
-                        "ssVersion": "2022",
-                        "enabled": False,
-                        "autoServer": True,
-                        "id": ""},
-                    "iap": {
-                        "supported": False,
-                        "error": ""}}
-
-                headers = {
-                    "user-agent": "okhttp/4.11.0",
-                    "accept": "application/json",
-                    "content-type": "application/json; charset=utf-8",
-                    "accept-encoding": "gzip",
-                }
-
-                # Try PING_URL (vavoo.tv) first, then PING_URL2 (vypn.net)
-                urls = [PING_URL, PING_URL2]
-                sig = None
-                for url in urls:
-                    try:
-                        r = self.session.post(
-                            url, json=payload, headers=headers, timeout=15)
-                        if r.status_code == 200:
-                            data = r.json()
-                            sig = data.get("addonSig") or data.get("mhub")
-                            if sig:
-                                break
-                            else:
-                                print(
-                                    "[AddonSig] No addonSig received from {}".format(url))
-                    except Exception as e:
-                        print(
-                            "[AddonSig] Request to {} failed: {}".format(
-                                url, e))
-                        continue
+                sig = self._request_addon_sig()
                 if sig:
-                    client_ip = self._get_cached_external_ip()
-                    if client_ip:
-                        sig = _rewrite_addon_sig_ip(sig, client_ip)
                     self.addon_sig_data["sig"] = sig
                     self.addon_sig_data["ts"] = now
                     print("[AddonSig] Token obtained successfully")
@@ -1243,6 +1169,171 @@ class VavooProxy(object):
                             int(time.time() - self.addon_sig_data["ts"])))
                     return self.addon_sig_data["sig"]
                 return None
+
+    def _request_addon_sig(self):
+        """One ping for a new token (the addonSig, its IP rewritten as
+        configured), or None. The shared token
+        (refresh_addon_sig_if_needed()) and the recordings' own ones
+        (own_signature()) are both made here."""
+        import uuid
+        unique_id = str(uuid.uuid4())
+        current_timestamp = int(time.time() * 1000)
+
+        # Matches a confirmed-working VYPN ping payload exactly -
+        # the previous version carried extra fields (buildId,
+        # engine, signatures, installer, devMode=True, ...) copied
+        # from an older reverse-engineered client that this
+        # endpoint no longer accepts as a real free-tier client.
+        payload = {
+            "token": "",
+            "reason": "app-focus",
+            "locale": self.current_language,
+            "theme": "dark",
+            "metadata": {
+                "device": {
+                    "type": "phone",
+                    "uniqueId": unique_id},
+                "os": {
+                    "name": "android",
+                    "version": "14",
+                    "abis": ["arm64-v8a"],
+                    "host": "android"},
+                "app": {
+                    "platform": "android"},
+                "version": {
+                    "package": VYPN_PACKAGE,
+                    "binary": VYPN_VERSION,
+                    "js": VYPN_VERSION}},
+            "appFocusTime": 0,
+            "playerActive": False,
+            "playDuration": 0,
+            "devMode": False,
+            "hasAddon": True,
+            "castConnected": False,
+            "package": VYPN_PACKAGE,
+            "version": VYPN_VERSION,
+            "process": "app",
+            "firstAppStart": current_timestamp - 86400000,
+            "lastAppStart": current_timestamp,
+            "ipLocation": None,
+            "adblockEnabled": True,
+            "migrationApplied": False,
+            "migrationTargetInstalled": False,
+            "proxy": {
+                "supported": ["ss"],
+                "engine": "Mu",
+                "ssVersion": "2022",
+                "enabled": False,
+                "autoServer": True,
+                "id": ""},
+            "iap": {
+                "supported": False,
+                "error": ""}}
+
+        headers = {
+            "user-agent": "okhttp/4.11.0",
+            "accept": "application/json",
+            "content-type": "application/json; charset=utf-8",
+            "accept-encoding": "gzip",
+        }
+
+        # Try PING_URL (vavoo.tv) first, then PING_URL2 (vypn.net)
+        urls = [PING_URL, PING_URL2]
+        sig = None
+        for url in urls:
+            try:
+                r = self.session.post(
+                    url, json=payload, headers=headers, timeout=15)
+                if r.status_code == 200:
+                    data = r.json()
+                    sig = data.get("addonSig") or data.get("mhub")
+                    if sig:
+                        break
+                    else:
+                        print(
+                            "[AddonSig] No addonSig received from {}".format(url))
+            except Exception as e:
+                print(
+                    "[AddonSig] Request to {} failed: {}".format(
+                        url, e))
+                continue
+        if sig:
+            client_ip = self._get_cached_external_ip()
+            if client_ip:
+                sig = _rewrite_addon_sig_ip(sig, client_ip)
+        return sig
+
+    def own_signature(self, slot, force=False):
+        """A token of its own for `slot` (a recording), as the app's
+        VavooApi.OwnToken: Vavoo plays one stream per token, so a
+        recording on the shared token would cut the player's stream
+        (or the player the recording). Kept and renewed like the
+        shared one (at TOKEN_REFRESH_AGE - the recording asks every
+        minute, Recorder's keep_alive); force: a new one, the last was
+        refused (not again within OWN_SIG_FORCE_MIN seconds). A failed
+        request is not repeated for OWN_SIG_RETRY seconds - the old
+        token, while young enough, is given meanwhile."""
+        now = time.time()
+        with self._own_sig_lock:
+            entry = self._own_sigs.setdefault(
+                slot, {"sig": None, "ts": 0, "failed": 0})
+            fresh = bool(entry["sig"]) and now - entry["ts"] < TOKEN_REFRESH_AGE
+            if fresh and (not force or now - entry["ts"] < OWN_SIG_FORCE_MIN):
+                return entry["sig"]
+            if now - entry["failed"] < OWN_SIG_RETRY:
+                return entry["sig"] if fresh else None
+        try:
+            sig = self._request_addon_sig()
+        except Exception as e:
+            print("[AddonSig] {}: no token of its own ({})".format(slot, e))
+            sig = None
+        with self._own_sig_lock:
+            entry = self._own_sigs.setdefault(
+                slot, {"sig": None, "ts": 0, "failed": 0})
+            if sig:
+                entry.update(sig=sig, ts=time.time(), failed=0)
+                print("[AddonSig] {}: a token of its own".format(slot))
+                return sig
+            entry["failed"] = time.time()
+            return entry["sig"] if fresh else None
+
+    def drop_own_signature(self, slot):
+        with self._own_sig_lock:
+            self._own_sigs.pop(slot, None)
+
+    def resolve_own(self, channel_id, slot, force=False):
+        """channel_id's stream address with `slot`'s own token, for a
+        recording - never through the shared resolve cache (the player
+        keeps its address, see resolve_with_retry()) nor the group
+        state (a grouped channel: the source the group plays from
+        first, then the others, in resolve_group_with_retry()'s
+        order). geil.to channels need no token at all."""
+        if not channel_id:
+            return None
+        if channel_id.startswith(GROUP_ID_PREFIX):
+            country, key = parse_group_id(channel_id)
+            members = self._group_members(country, key) if key else []
+            candidates = self._ordered_group_members(channel_id, members)
+        else:
+            channel = self.channels_by_id.get(channel_id)
+            candidates = [channel] if channel else []
+        if not candidates:
+            return None
+        if self.catalog_source == "geil":
+            for member in candidates:
+                stream_url = self._resolve_geil_channel(
+                    member.get("url"), 2, cache=False)
+                if stream_url:
+                    return stream_url
+            return None
+        if not self.own_signature(slot, force=force):
+            return None
+        for member in candidates:
+            stream_url = self._do_resolve_with_retry(
+                member.get("url"), 2, slot=slot)
+            if stream_url:
+                return stream_url
+        return None
 
     def initialize_proxy(self):
         """Initialize the proxy by loading the catalog: geil.to first
@@ -2226,7 +2317,7 @@ class VavooProxy(object):
                             if now - v["ts"] >= self.resolve_cache_ttl]:
                     self.resolve_cache.pop(key, None)
 
-    def _resolve_geil_channel(self, channel_url, max_retries):
+    def _resolve_geil_channel(self, channel_url, max_retries, cache=True):
         """Resolve a geil.to channel's stream address - GET
         {base}/live/resolve?url=<its play address>, no token at all.
         Tries the current geil mirror first, then the others, same
@@ -2259,7 +2350,8 @@ class VavooProxy(object):
                     stream_url = result.get("url") or result.get(
                         "streamUrl")
                 if stream_url:
-                    self._cache_resolved_url(channel_url, stream_url)
+                    if cache:
+                        self._cache_resolved_url(channel_url, stream_url)
                     return stream_url
                 print("[Geil] {0} answered with no stream url".format(site))
             except Exception as e:
@@ -2273,14 +2365,18 @@ class VavooProxy(object):
                 "mirrors: {0}".format(last_exception))
         return None
 
-    def _do_resolve_with_retry(self, channel_url, max_retries):
+    def _do_resolve_with_retry(self, channel_url, max_retries, slot=None):
         """The actual network resolve + retry loop - see
-        resolve_with_retry() for the in-flight dedup wrapping this."""
-        if self.catalog_source == "geil":
+        resolve_with_retry() for the in-flight dedup wrapping this.
+        slot: with that slot's own token (resolve_own()), the answer
+        not cached."""
+        if self.catalog_source == "geil" and slot is None:
             return self._resolve_geil_channel(channel_url, max_retries)
         for attempt in range(max_retries):
             try:
-                if attempt > 0:
+                if slot is not None:
+                    current_sig = self.own_signature(slot, force=attempt > 0)
+                elif attempt > 0:
                     # Not force=True: that unconditionally bypassed the
                     # "already fresh" short-circuit above, so a burst of
                     # concurrently failing streams (e.g. right after
@@ -2292,8 +2388,9 @@ class VavooProxy(object):
                     # avoid.
                     self.refresh_addon_sig_if_needed()
 
-                with self.addon_sig_lock:
-                    current_sig = self.addon_sig_data["sig"]
+                if slot is None:
+                    with self.addon_sig_lock:
+                        current_sig = self.addon_sig_data["sig"]
 
                 resolve_headers = {
                     "content-type": "application/json; charset=utf-8",
@@ -2346,7 +2443,8 @@ class VavooProxy(object):
                     stream_url = result.get("url") or result.get("streamUrl")
 
                 if stream_url:
-                    self._cache_resolved_url(channel_url, stream_url)
+                    if slot is None:
+                        self._cache_resolved_url(channel_url, stream_url)
                     print(" Successfully resolved channel URL")
                     return stream_url
                 print(" Resolve response missing URL")
@@ -2908,6 +3006,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 if not self.safe_write(dumps(response)):
                     return
 
+            elif parsed_path.path == '/file':
+                self._serve_file(p, query_params)
+
             elif parsed_path.path == '/shutdown':
                 # Signal stop to prevent the restart loop from
                 # re-spawning the server: the global flag, and the
@@ -2969,6 +3070,87 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             except (BrokenPipeError, ConnectionResetError):
                 print(" Client gone while sending error")
                 return
+
+    def _serve_file(self, p, query_params):
+        """/file?id=<id>[&offset=<byte>][&follow=1]: a recording or a
+        pause buffer (plugin.py's recorder - vavoo_record.py).
+
+        Only an id registered with vavoo_record.register_file() is
+        served, never a path from the address: the proxy answers the
+        whole network (bouquet exports use the box's own address).
+        offset: where to start (a TS packet boundary, from
+        Recorder.offset_for()); a Range header counts from there.
+        follow=1, while the file is still being recorded: it is sent
+        as it grows until its recorder ends - an endless TS stream to
+        the player, like a live channel. Otherwise the file as it is,
+        with its length (a player can seek in it)."""
+        file_id = (query_params.get('id') or [None])[0]
+        entry = vavoo_record.file_entry(file_id) if file_id else None
+        if not entry or not os.path.isfile(entry[0]):
+            self.send_error(404, "Not Found")
+            return
+        path, recorder = entry
+        try:
+            offset = max(0, int((query_params.get('offset') or ['0'])[0]))
+        except ValueError:
+            offset = 0
+        offset -= offset % vavoo_record.PACKET
+        follow = (query_params.get('follow') or ['0'])[0] == '1' and \
+            recorder is not None and recorder.running
+        size = os.path.getsize(path)
+        start, end = offset, None
+        wanted = self.headers.get('Range') if self.headers else None
+        match = re.match(r'\s*bytes=(\d+)-(\d*)\s*$', wanted or '')
+        if match:
+            start = offset + int(match.group(1))
+            if match.group(2):
+                end = offset + int(match.group(2))
+        if not follow and start >= size:
+            self.send_error(416, "Range Not Satisfiable")
+            return
+        length = None
+        if not self.safe_send_response(206 if match else 200):
+            return
+        self.send_header('Content-Type', 'video/mp2t')
+        if follow:
+            self.send_header('Connection', 'close')
+            self.close_connection = True
+        else:
+            last = size - 1 if end is None else min(end, size - 1)
+            length = last - start + 1
+            self.send_header('Accept-Ranges', 'bytes')
+            self.send_header('Content-Length', str(length))
+            if match:
+                self.send_header('Content-Range', 'bytes %d-%d/%d' % (
+                    start - offset, last - offset, size - offset))
+        self.end_headers()
+        if getattr(self, '_head_only', False):
+            return
+        with open(path, 'rb') as f:
+            f.seek(start)
+            remaining = length
+            while True:
+                want = 65536 if remaining is None else min(65536, remaining)
+                if want <= 0:
+                    break
+                data = f.read(want)
+                if not data:
+                    if not follow:
+                        break
+                    if not recorder.running:
+                        # what it wrote last, then the end
+                        data = f.read()
+                        if data:
+                            self.safe_write(data)
+                        break
+                    if p.is_stopped():
+                        break
+                    select.select([], [], [], 0.25)
+                    continue
+                if not self.safe_write(data):
+                    return
+                if remaining is not None:
+                    remaining -= len(data)
 
     def handle_one_request(self):
         """Handle a single request with guaranteed cleanup"""
