@@ -290,10 +290,10 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | Option | What it does | Default |
 |--------|--------------|---------|
 | **Theme** | Prism, Halo, Orbit (the Android app's themes) or Classic (the plugin's original look). Takes effect when the plugin is opened again | Prism |
+| – **Background** | Only with Classic, right under Theme: Classic's background image, Oktus or Kiddac (each other theme has its own). Takes effect when the plugin is opened again | Oktus |
 | **Text Size** | Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Themes only | Large |
 | **Show Counts** | Channel count per country and number of favourites in the main list | Yes |
 | **Clock Format** | 24 or 12 hours, for the clock and the programme times. Themes only | 24 hours |
-| **Select Background** | Background image of the plugin screens (shown with the Classic theme only - each theme has its own) | oktus |
 | **Generate .m3u files (Ok for Exec)** | Press OK to export `.m3u` playlist files (one country or all), with links for this box only (127.0.0.1) or for other devices on your network | – |
 | **Playlist Access Key (optional)** | If set, the live playlist at `/playlist.m3u` requires `?key=<this value>` | empty (no key) |
 | **Catalog/Stream Source** | Where channels and streams come from: "Auto" (Geil first, Vavoo/Kool if Geil is unavailable), "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |

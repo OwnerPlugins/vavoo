@@ -472,7 +472,9 @@ try:
                 if back_name.startswith("default"):
                     continue
                 back_name = back_name[:-4]
-                BakP.append((back_name, back_name))
+                # (shown "Oktus" / "Kiddac"; the value stays the file's
+                # name, as saved settings and backups have it)
+                BakP.append((back_name, back_name.capitalize()))
 except Exception as e:
     print(e)
 
@@ -571,7 +573,7 @@ cfg.back = ConfigSelection(default='oktus', choices=BakP)
 # The look of the plugin's screens (vavoo_theme.py): Prism, Halo and
 # Orbit are the Android app's own themes, Classic is this plugin's
 # original skin (skin/{hd,fhd,wqhd}/*.xml, unchanged - and what every
-# screen falls back to if a theme cannot be used). "Select Background"
+# screen falls back to if a theme cannot be used). The Background row
 # (cfg.back) only applies to Classic: each theme has its own.
 cfg.theme = ConfigSelection(
     default=vavoo_theme.DEFAULT_THEME,
@@ -1886,6 +1888,14 @@ class vavoo_config(Screen, ConfigListScreen):
               "aurora. Orbit: a teal cockpit display. Classic: the "
               "plugin's original skin, with its backgrounds. Takes "
               "effect when the plugin is opened again.")))
+        # Classic's backgrounds: a sub-option of the theme, only with it
+        self._built_theme = cfg.theme.value
+        if current_theme() == "classic":
+            self.list.append(getConfigListEntry(
+                indent + _("Background"),
+                cfg.back,
+                _("Classic's background (Oktus or Kiddac). Takes effect "
+                  "when the plugin is opened again.")))
         self.list.append(getConfigListEntry(
             _("Text Size"),
             cfg.text_size,
@@ -1902,12 +1912,6 @@ class vavoo_config(Screen, ConfigListScreen):
             cfg.clock_format,
             _("Clock in the top-right corner and programme times. Not "
               "used by Classic's own clock.")))
-        if current_theme() == "classic":
-            self.list.append(
-                getConfigListEntry(
-                    _("Select Background"),
-                    cfg.back,
-                    _("Configure Main Background Image.")))
         self.list.append(
             getConfigListEntry(
                 _("Generate .m3u files (Ok for Exec)"),
@@ -2757,6 +2761,12 @@ class vavoo_config(Screen, ConfigListScreen):
             trace_error()
 
     def changedEntry(self):
+        # The theme changed some other way than LEFT / RIGHT (OK with a
+        # list of choices, on some images): Classic's Background row
+        # comes or goes now too.
+        if getattr(self, "_built_theme", None) is not None and \
+                cfg.theme.value != self._built_theme:
+            self.createSetup()
         for x in self.onChangedEntry:
             x()
         self['green'].instance.setText(
