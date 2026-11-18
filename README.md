@@ -57,11 +57,13 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
 - **Preview Window** – As in the app: OK on a channel plays it in the small window beside the list; OK again on it (or BLUE) opens it full screen with the same stream, no restart. Closing full screen leaves it playing in the window; leaving the plugin brings back the TV channel you were watching before
 - **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use and the clock. OK twice opens the channel list over the video with a **mini guide** (now, the next three, the description); type a channel number to go there; 0 (or RECALL) goes back to the previous channel
-- **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), stream info (resolution, frame rate, codec, source) and IMDb/TMDB
+- **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), record, stream info (resolution, frame rate, codec, source), programme guide and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
 - **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
 - **Programme Guide** – As in the app: INFO (or EPG) in a channel list, Favourites or Recently watched, or MENU → "Programme guide" in the player, shows a grid of those channels with three hours across - a box per programme, the now line, what is on now in its own colour. Look back 3 hours or ahead to the end of the guide (about a day)
 - **Reminders** – OK on a programme still to come → "Remind me": at its start a window offers to watch it, also with the plugin closed
+- **Recordings** – As in the app: record the channel you watch (MENU → Record, or REC) until the programme's end, or set a recording in the guide. It goes on when you zap, close the plugin or put the box in standby, and the box wakes from deep standby for one set in the guide. Recordings go to Enigma2's movie folder (they show in the box's own movie list too) and play from the "Recordings" list
+- **Pause Live TV** – PAUSE in the player records the channel on the disk; PLAY goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)
 - **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed
 - **Search** – As in the app: the words in any order, accents and case do not count, "1" finds "SPORT 1" but not "SPORT 11"; from 3 letters also the channels whose programme on now has the text. Inside a country (YELLOW in the channel list) or in every country at once (YELLOW in the main menu - each result shows its country). The results become the player's list
 - **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them. Put them in your own order (YELLOW Move) and in folders (BLUE Folder), as in the app. Kept in `/etc/enigma2`, so a plugin update keeps them
@@ -135,13 +137,27 @@ The app's keys, in every theme (the Classic theme keeps its own bar and overlays
 | GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
 | 1-9 | Go to that channel number ("12-" and "→ name" show while you type; it goes after 1.5 s, on OK, or at once when no larger number exists) |
 | 0 or RECALL | The channel watched before |
-| MENU | Options: favourite, audio track, subtitles, source (multi-source channels), aspect ratio, sleep timer, stream info, programme guide (over the video), IMDb / TMDB |
+| MENU | Options: favourite, audio track, subtitles, source (multi-source channels), aspect ratio, sleep timer, Record ("Record: ● 12:34" while recording - again: stop), stream info, programme guide (over the video), IMDb / TMDB |
+| REC | Record this channel until the end of the programme on now plus 2 minutes (no guide, or it ends within 10 minutes: until stopped, 4 hours at most); again: stop. "● REC" shows on the bar |
+| PAUSE / PLAY | Pause Live TV (see below). Paused: OK plays on too |
 | INFO | Show / hide the bar |
 | EPG | Look up the current programme in IMDb/TMDB (needs "Enable Vavoo EPG" and an IMDb or TMDB plugin) |
 | AUDIO | Audio track |
-| RED / STOP / EXIT | Close the player (with the preview window on, the channel keeps playing in it) |
+| RED / STOP / EXIT | Close the player (with the preview window on, the channel keeps playing in it). Paused or behind live: RED / EXIT go back to live first |
 
 There is nothing to seek in a live stream, so LEFT / RIGHT are free for the bar's buttons; the highlight goes when the bar hides.
+
+**Pause Live TV** (Settings → "Pause Live TV", as in the app): PAUSE stops the picture and starts recording the channel on the disk ("❚❚ Paused · recording - press play to go on"). PLAY (or OK) goes on from there, behind live ("◀◀ -1:23  LEFT / RIGHT move · EXIT: live" in the bar):
+
+| Key (behind live) | Action |
+|-----|--------|
+| LEFT / RIGHT | 10 seconds back / on (never past live) |
+| << / >> | 30 seconds back / on |
+| PAUSE / PLAY | Pause there / play on |
+| RED / EXIT | Back to live ("Live"); the recorded part is deleted |
+| CH+ / CH- / UP / DOWN | Zap as usual (the recorded part is deleted) |
+
+Each move opens the recorded part again at that place, which takes the box's player a moment (one to three seconds). It keeps up to 2 hours, in Enigma2's timeshift folder (else the recordings folder) on a disk with at least 400 MB free. Without a disk or `ffmpeg`, PAUSE only pauses.
 
 ### Search
 | Key | Action |
@@ -181,7 +197,7 @@ Once a favourite is in a folder, the Favourites open on "All channels (n)", the 
 | RED / EXIT | Back |
 
 ### Programme guide
-The app's grid: the channels of the list it was opened from (numbered, in the same order, from the highlighted one), three hours across, a box per programme with its title - the one on now in its own colour, the highlighted one in the theme's colour, a clock mark where a reminder is set. The ruler shows the half hours (the weekday at midnight) and the now line, which moves every minute. Under the grid: "Channel · 20:00–21:00 Title" and the description; with the preview window on, it keeps playing in the corner. A channel with nothing in those hours says "No programme information" ("Loading…" while its guide comes); a locked channel shows only a padlock.
+The app's grid: the channels of the list it was opened from (numbered, in the same order, from the highlighted one), three hours across, a box per programme with its title - the one on now in its own colour, the highlighted one in the theme's colour, a clock mark where a reminder is set, "● " before the title of one set to be recorded (or being recorded). The ruler shows the half hours (the weekday at midnight) and the now line, which moves every minute. Under the grid: "Channel · 20:00–21:00 Title" and the description; with the preview window on, it keeps playing in the corner. A channel with nothing in those hours says "No programme information" ("Loading…" while its guide comes); a locked channel shows only a padlock.
 
 | Key | Action |
 |-----|--------|
@@ -191,16 +207,39 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 | YELLOW / BLUE | An hour back / on (from 3 hours back to the end of the guide, about a day ahead) |
 | INFO / EPG / 0 | Back to now |
 | 1-9 | Go to that channel (typed within 1.5 s the digits add up) |
-| OK | A programme still to come: Remind me (or Cancel reminder) / Watch. Anything else: watch the channel |
+| OK | A programme still to come: Remind me (or Cancel reminder) / Record (or Cancel recording) / Watch. Anything else: watch the channel |
 | GREEN | Watch the channel (asks for the PIN where needed) |
-| MENU | Settings (over the player: close the guide) |
+| MENU | As in the app: Now, then (for a programme not over yet) Remind me / Record - one on now is recorded at once, "Stop recording" stops it - and Settings (not over the player) |
 | RED / EXIT | Back |
 
 ### Reminders
 - OK on a programme still to come in the guide → **Remind me** ("Reminder set: Title"); the box gets a clock mark. The same menu cancels it
 - At the programme's start (as in the app) a window asks **"Starting now: Title - On Channel. Watch it?"** for 30 seconds, also with the plugin closed or while you watch something else. Yes: the plugin opens on that channel (in the player, if it is open, it zaps there). With the box in standby the reminder passes without a word
-- The row **"Reminders (n)"** in the main list (while there are any) and Settings → **Reminders** list them ("Title · Channel" and the day and time): OK → Cancel reminder, GREEN Delete (press twice)
 - Kept in `/etc/enigma2/vavoo_timers.json`, so a reboot keeps them; one missed by more than a minute (the box was off) is dropped
+
+### Recordings
+- **Record now**: in the player MENU → Record, or the REC key - until the end of the programme on now plus 2 minutes, as a receiver records ("Recording: Title → 21:02"); no guide, or a programme ending within 10 minutes: until stopped (4 hours at most). Again: "Recording stopped"
+- **Record from the guide**: OK on a programme still to come → **Record** ("Recording set: Title", "● " before its title). It starts 2 minutes before the programme and runs until 2 minutes after it, also with the plugin closed or the box in standby; from deep standby the box is woken 5 minutes before. One on now (MENU in the guide → Record) starts at once. A locked channel asks for the PIN. One that cannot start says "Scheduled recording not started: Title"
+- Each recording has a Vavoo token of its own (as in the app: Vavoo plays one stream per token), so you can watch another channel - or the same one - meanwhile. An address that runs out is resolved again and the recording goes on in the same file
+- **Where**: Enigma2's movie folder (usually `/media/hdd/movie/`) or another disk (Settings → "Recordings folder"), as `20261118 2000 - RAI 1 - Title.ts` with Enigma2's `.meta` (so the box's own movie list shows them too) and a `.vavoo.json` record. A disk with less than 400 MB free records nothing ("Can't record (not enough free space?)"); a recording stops by itself below 200 MB. Needs `ffmpeg` (a dependency of the plugin; "Recording needs ffmpeg" when it is missing)
+- **The list**: the row **"Recordings (n)"** in the main list (while there is anything) and Settings → **Recordings**: first the timers (reminders; "● " recordings) with their day and time, then the recordings, newest first, with their start and length ("● REC · 12 min" while recording). Under it: "3 recordings · 2 timers · 41.2 GB free"
+
+| Key (Recordings) | Action |
+|-----|--------|
+| OK | Play the recording (a locked channel's asks for the PIN) / on a timer: Cancel reminder or Cancel recording |
+| GREEN | Delete (press twice; a recording still running stops first) |
+| RED / EXIT | Back |
+
+| Key (playing a recording) | Action |
+|-----|--------|
+| LEFT / RIGHT | 10 seconds back / on |
+| YELLOW / BLUE | 30 seconds back / on |
+| OK / GREEN / PAUSE / PLAY | Pause / play on |
+| MENU | Subtitles |
+| AUDIO | Audio track |
+| RED / STOP / EXIT | Close |
+
+A recording still being recorded can be watched too (from its start; each move opens it again at that place).
 
 ### Settings
 | Key | Action |
@@ -262,6 +301,7 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Enable Vavoo EPG** | Creates the EPG source for EPGImport with Vavoo programme data and enables it there after each export | Off |
 | **Preview Window** | OK on a channel plays it in the small window beside the list; OK again on it opens full screen (BLUE goes straight there). Off: OK opens full screen at once | Yes |
 | **Start with last channel** | Open the last watched channel when the plugin starts | No |
+| **Pause Live TV** | PAUSE in the player records the channel on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours). Off: PAUSE only pauses | Yes |
 | **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for an hour. Switch it off on a slow connection or a weak box | Yes |
 | **Group Sources** | The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row | Yes |
 | **Channel Logos** | The channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), the country's flag in the player, and no logo is downloaded | No |
@@ -277,9 +317,10 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Debug logging** | Verbose messages in `vavoo.log`; takes effect immediately. Leave off unless troubleshooting | No |
 | **Choose countries** | The countries of the main list and of "Search all": OK shows / hides one (✓ / ✗); Back · Save · Show all · Hide all. At least one stays | all shown |
 | **Parental Control** | The PIN and what it locks (see below). Asks for the PIN first when one is set | no PIN |
-| **Reminders** | The reminders set in the programme guide (see "Reminders" above) | – |
-| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries, the reminders - not parental control. Asks for the PIN when one is set | – |
-| **Restore from Backup** | Lists the backups found there, newest first; the chosen one replaces all of the above (no merge) and the proxy restarts. The theme and text size change when the plugin is opened again | – |
+| **Recordings** | The reminders and recordings set in the guide and the recordings on the disk (see "Recordings" above) | – |
+| **Recordings folder: …** | Where recordings go: Enigma2's movie folder or the movie folder of another mounted disk (with its free space). They also show in the box's own movie list | movie folder |
+| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries, the reminders and recording timers (not the recordings themselves) - not parental control. Asks for the PIN when one is set | – |
+| **Restore from Backup** | Lists the backups found there, newest first; the chosen one replaces all of the above (no merge) and the proxy restarts. The theme and text size change when the plugin is opened again. Not while a recording runs ("Not now: a recording is running") | – |
 | **Show Log (Ok to view)** | View the last 200 lines of `/tmp/vavoo.log` | – |
 | **View Favourites (Ok to open)** | Browse and play your starred channels | – |
 | **Clear Favourites** | Remove all favourite channels (asks first) | – |
@@ -352,6 +393,13 @@ The local proxy has no on/off switch: every channel list and stream goes through
   channel list downloads and caches these per-channel (`/tmp/vavoo_picons`,
   same on-box cache-dir convention as the country flag icons), showing
   the real picon instead of the generic channel icon once it lands.
+- **Recordings have a token of their own**: Vavoo plays one stream per
+  token, so each recording asks for its own (renewed like the shared
+  one while it records) and resolves its channel with it, never
+  through the address cache above - the player keeps its address. On
+  the Geil catalog no token is needed at all. Recordings and the pause
+  buffer are written by `ffmpeg` (copied, not re-encoded) and played
+  back through `/file` (see the endpoints below).
 - Manages authentication with Vavoo servers (only needed when running
   on the Vavoo fallback)
 - Automatically renews tokens every 8-9 minutes (TOKEN_ADDON_SIG = 600 seconds)
@@ -443,6 +491,7 @@ The proxy provides these endpoints:
 - `/refresh_token` – Force token refresh
 - `/epg/<country>.xml` – Redirect to GitHub EPG file
 - `/health` – Detailed health check with token age (token is only required/reported when `catalog_source` is "vavoo" - Geil needs none)
+- `/file?id=<id>&offset=<byte>[&follow=1]` – A recording or the pause buffer, for the box's player. Only ids the plugin registered (never a path); `offset` is rounded down to a TS packet, a `Range` header counts from there; `follow=1` sends a file still being recorded as it grows, until the recording ends
 - `/shutdown` – Gracefully stop proxy
 
 ## 🗂 File Management
@@ -517,7 +566,13 @@ The proxy provides these endpoints:
 
 - **Recently Watched**: `/etc/enigma2/vavoo_recent.json` – The last 20 channels watched, newest first (`[{"name", "url", "country_name", "country_code", "logo", "timestamp"}]`). Delete it (or MENU → "Clear recently watched") to empty the list
 
-- **Reminders**: `/etc/enigma2/vavoo_timers.json` – `{"format": "vavoo_timers", "version": 1, "timers": [{"id", "kind": "remind", "url", "name", "country", "country_code", "logo", "title", "start", "stop"}]}` (times as Unix time). In backups too. Delete it to drop every reminder
+- **Reminders and recording timers**: `/etc/enigma2/vavoo_timers.json` – `{"format": "vavoo_timers", "version": 1, "timers": [{"id", "kind": "remind" or "record", "url", "name", "country", "country_code", "logo", "title", "start", "stop"}]}` (times as Unix time; a recording starts 2 minutes before `start` and runs until 2 minutes after `stop`). In backups too. Delete it to drop every timer
+
+- **Recordings**: in the recordings folder (Enigma2's movie folder unless Settings → Recordings folder says another), `YYYYMMDD HHMM - Channel - Title.ts` (MPEG-TS, the stream copied as it came - no re-encoding), its `.ts.meta` (Enigma2's own: service, title, description, time, length, size) and its `.ts.vavoo.json` (`{"format": "vavoo_recording", "name", "title", "url", "country", "country_code", "logo", "start", "stop_at", "duration", "bytes", "finished", "failure"}`). Delete a recording from the plugin's list or from the box's movie list (a record left without its `.ts` is cleaned up)
+
+- **Pause buffer**: `vavoo_pause_<time>.ts` in Enigma2's timeshift folder (else the recordings folder) - deleted when you go back to live, zap or close the player, and leftovers when the plugin starts again
+
+- **Recording log**: `/tmp/vavoo_record.log` – What `ffmpeg` said while recording (errors only)
 
 - **Hidden Countries**: `/etc/enigma2/vavoo_hidden_countries.json` – Settings → Choose countries (`["Albania", "Spain"]`). Delete it to show every country again
 
@@ -571,6 +626,10 @@ curl -s http://127.0.0.1:4323/health
 | Streams not resolving at all | Check `catalog_source` in `/status` - if stuck on "vavoo" with no token, Geil may be unreachable from your network |
 | A channel keeps stopping or buffering | In the player press MENU → Source and pick another source |
 | Duplicate cache entries | Main menu: MENU → "Fix EPG cache" |
+| "Can't record (not enough free space?)" | No disk mounted where recordings go, or under 400 MB free: check Settings → Recordings folder |
+| "Recording needs ffmpeg" | Install it: `opkg install ffmpeg` (a dependency of the plugin, but some images leave it out) |
+| A recording stops early | `/tmp/vavoo.log` says why ("no stream address", "the stream keeps failing", the disk nearly full) and `/tmp/vavoo_record.log` what ffmpeg said |
+| PAUSE only pauses | Settings → Pause Live TV is off, there is no disk with 400 MB free, or no `ffmpeg` |
 
 **"No programme information" beside the channel list**
 - The country's guide file has no entry for that channel (not every channel is covered), or the country has no guide file at all

@@ -38,6 +38,10 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
                           #   folders), hidden countries, parental control (PIN, adult words,
                           #   pause, unlock), backup/restore, initials + colour, search rules,
                           #   a pure-Python PNG writer for the initials tiles / padlock
+  vavoo_record.py        # recordings, no Enigma2 imports: Recorder (ffmpeg -c copy -f mpegts
+                          #   into a pipe, whole TS packets into a .ts, re-resolve and go on in
+                          #   the same file, "seconds -> byte" index), the pause buffer, list /
+                          #   delete recordings, the ids vavoo_proxy's /file may serve
   vavoo_theme.py         # the themes (Prism/Halo/Orbit = the Android app's Look/Geo tables):
                           #   builds every screen's skin XML for hd/fhd/wqhd - no Enigma2 imports
   make_theme_assets.py   # dev-time script: draws skin/themes/<theme>/<hd|fhd|wqhd>/*.png
@@ -144,6 +148,8 @@ LEFT / RIGHT highlight the bar's buttons in `PLAYER_BAR_BUTTONS` order
 (`sel_<button>` widgets, themes only) and OK presses the highlighted
 one; `hide_help_overlay()` clears the highlight;
 `mainMenu()` is overridden so MENU never opens Enigma2's own menu).
+RED / EXIT / BACK go through `back()`: behind live (Pause Live TV,
+below) they return to live first, else `cancel()` closes.
 
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
 started as an in-process daemon thread (`threading.Thread(target=
@@ -172,7 +178,19 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
   Group Sources off. `country_counts(grouped)` follows it.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
   `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (redirects to
-  GitHub-hosted EPG), and `/shutdown`.
+  GitHub-hosted EPG), `/file`, and `/shutdown`.
+- Recordings get a token of their own (`own_signature(slot)`, one slot
+  per recording, renewed at `TOKEN_REFRESH_AGE` by the recorder's
+  keep-alive; `drop_own_signature()` at its end): Vavoo plays one
+  stream per token. `resolve_own(channel_id, slot, force)` never
+  touches the shared resolve cache or the group state (the player
+  keeps its address); geil needs no token. The ping itself is
+  `_request_addon_sig()`, shared with `refresh_addon_sig_if_needed()`.
+- `/file?id=&offset=[&follow=1]` serves only ids registered with
+  `vavoo_record.register_file()` - never a path (the proxy answers the
+  LAN for bouquets). `offset` is rounded down to a 188-byte packet, a
+  `Range` counts from it; `follow=1` streams a file still being
+  recorded until its `Recorder` ends.
 - There is no "proxy disabled" mode: every channel list and stream goes
   through it. `run_proxy_in_background()` never blocks (callers poll
   `is_proxy_ready()`); `restart_proxy_in_background()` is the only
@@ -319,13 +337,75 @@ rules of `EpgGrid`, 3 h across, `GUIDE_BACK` = 3 h, up to the guide's
 end); only visible rows are looked up (peek, then one worker thread).
 Skins: `vavoo_theme.guide_screen()` / `guide_classic()` (no XML),
 `guide_metrics()`, `guide_colors()`, `e2_int()`. Reminders are
-`vavoo_store` timers of kind "remind" (`vavoo_timers.json`, phase 5
-adds "record"); `REMINDERS` is started at session start
+`vavoo_store` timers of kind "remind" (`vavoo_timers.json`; the
+recordings' are kind "record", below); `REMINDERS` is started at session start
 (`autostart()`) and by `MainVavoo`, ticks every 15 s, takes due ones
 (`due_timers()`) and asks with `Tools.Notifications.
 AddNotificationWithCallback`; "watch it" goes through `ACTIVE`
 (player → `play_channel()`, main → `_open_channel()`, else the plugin
-opens with `ACTIVE["pending"]`). `VavooReminders` lists them.
+opens with `ACTIVE["pending"]`). The guide's OK on a programme to
+come offers Remind me / Record / Watch; MENU is the app's key menu
+(Now, `_programme_actions()` while the programme is not over,
+Settings when not over the player). A locked row has no programmes,
+so no actions.
+
+**Recordings and Pause Live TV (`vavoo_record.py`, `plugin.py`'s
+`RECORDINGS`, `Playstream2`, `VavooRecordings`,
+`VavooRecordingPlayer`)** — the app's Recorder / RecordingService /
+RecordingsActivity / RecordingPlayerActivity / timeshift. Enigma2
+records and timeshifts only DVB, so the plugin does it itself:
+- `vavoo_record.Recorder(source, path, ...)`: a thread runs `ffmpeg
+  -nostdin -i <address> -map ... -c copy -f mpegts pipe:1` and writes
+  whole TS packets into the file (no re-encoding). `input_args()`
+  picks a master playlist's best variant (only that one downloads;
+  separate audio renditions: the master with `-map 0:p:<n>:v?/a?`).
+  An ffmpeg that ends, or sends nothing for `STALL_SECONDS`, is
+  restarted with `source(force=True)` (a fresh address) into the same
+  file; the app's rule: 6 failures in a row and it gives up
+  (`failure`). It stops at `stop_at`, `max_seconds` or under
+  `STOP_FREE`. The index (`offset_for()` / `time_at()`) comes from the
+  first video PES time stamp of each block written, one entry a
+  second, continued across restarts and the PTS wrap; offsets are
+  packet boundaries. Recordings keep `<file>.ts.vavoo.json` (atomic)
+  and Enigma2's `.meta`; `list_recordings()` reads the folder (a
+  record whose `.ts` is gone is deleted), `delete_recording()` takes
+  the companions too. No Enigma2 imports.
+- `RECORDINGS` (`_Recordings`) starts one per channel at most
+  (`recording_of(url)`), with its own token (`resolve_own()`), into
+  `recordings_folder()` (`cfg.record_path`, "" = Enigma2's
+  `config.usage.default_path`), only with `ffmpeg` and
+  `vavoo_record.MIN_FREE`; the recorder's thread waits for the proxy
+  (`wait_for_proxy()`: a box woken for a recording). They run whatever
+  the plugin does; Restore refuses while one runs.
+- Timers of kind "record" go off in `_ReminderService.tick()` at
+  `alarm_time()` (start - 2 min), in standby too, until stop + 2 min;
+  `get_next_wakeup()` returns the next one minus `WAKE_BEFORE` (Enigma2
+  wakes the box from deep standby).
+- Pause Live TV (`cfg.timeshift`): `Playstream2` overrides
+  InfoBarSeek's `pauseService` / `unPauseService` /
+  `playpauseService` / `seekFwd` / `seekBack`. States in
+  `_shift_state`: None (live), "paused" (live paused, a `Recorder` of
+  the plain `/vavoo?channel=` address - the shared token - into
+  `pause_folder()`), "behind" / "behind_paused" (the buffer played via
+  `/file?...&follow=1` with `file_stream_sref()`, the same service
+  type as live). Moves (LEFT/RIGHT 10 s, << >> 30 s) change
+  `_shift_pos` at once and reopen after 0.8 s (`_shift_seek`).
+  `_shift_end()` (BACK, zap, close, the buffer's EOF) discards the
+  buffer and replays `self.sref`; the proxy's stream count never
+  changes for it (the buffer is not a stream of the player's). A new
+  service sets `seekstate` back to play (`_seek_state_play()`).
+- `VavooRecordings` (a `VavooPickScreen`, Settings → Recordings and the
+  main list's `REMINDERS_ROW` row "Recordings (n)") lists timers then
+  recordings; a recording of a locked channel needs the PIN
+  (`recording_needs_pin()`). `VavooRecordingPlayer` plays a finished
+  file directly (`eServiceReference(int(cfg.services.value), 0,
+  path)`, Enigma2's own seeking) and one still recording through
+  `/file` like the pause buffer; it lets go of a preview stream
+  (`NOW_PLAYING.release_preview()`) and puts back only a non-plugin
+  service when it closes.
+- Logs: ffmpeg's to `/tmp/vavoo_record.log`, the rest to `vavoo.log`.
+  The bar's glyphs are ❚❚ and ◀◀ (⏸ / ⏪ are missing from the fonts
+  and from many boxes' fallback font).
 
 **Notifications (`notification_system.py`)** — singleton
 `HybridNotificationManager`, thread-safe (lock-protected), with a message
