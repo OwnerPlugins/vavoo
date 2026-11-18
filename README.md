@@ -56,7 +56,7 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Choose Countries** – Hide the countries you never watch from the main list and from search
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
 - **Preview Window** – As in the app: OK on a channel plays it in the small window beside the list; OK again on it (or BLUE) opens it full screen with the same stream, no restart. Closing full screen leaves it playing in the window; leaving the plugin brings back the TV channel you were watching before
-- **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use and the clock. OK twice opens the channel list over the video with a **mini guide** (now, the next three, the description); type a channel number to go there; 0 (or RECALL) goes back to the previous channel
+- **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use, the clock and the keys. BLUE opens the channel list over the video with a **mini guide** (now, the next three, the description), YELLOW the source, EPG the guide; type a channel number to go there; 0 (or RECALL) goes back to the previous channel
 - **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), record, stream info (resolution, frame rate, codec, source), programme guide and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
 - **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
@@ -126,26 +126,25 @@ The list starts with "★ Favourites (n)" once you have favourites, then "Recent
 With "Sub-categories" on, a country whose catalog has two or more categories first lists "All channels (n)", its categories A-Z and "General (n)"; OK opens one ("Italy ➾ Sport"). The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
 ### Player
-The app's keys, in every theme (the Classic theme keeps its own bar and overlays):
+The same keys in every theme, Classic included - each function has a key of its own on the remote (no moving along the bar with the arrows). The themes' bar shows them as captions ("Back · ★ Fav · Source · List", "MENU Options · AUDIO · EPG Guide · 0 Recall"); Classic keeps Enigma2's own bar and lists them in its top line.
 
 | Key | Action |
 |-----|--------|
-| OK | Show the info bar; with the bar showing: the channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds/removes a favourite, RED / EXIT closes it). With a bar button highlighted (LEFT / RIGHT): press that button |
-| LEFT / RIGHT | Go along the bar's buttons, as in the app: Back · ★ Fav · ▼ CH- · CH+ ▲ · Options · Audio · List · Recall (round the ends); the highlighted one gets the theme's selection bar and OK presses it. With the bar hidden, LEFT / RIGHT show it with the last / first button highlighted. Themes only (Classic's bar has no buttons) |
+| OK | Show / hide the bar (Classic: the infobar and the top line). Paused: play on. While typing a channel number: go there |
 | CH+ / CH- or UP / DOWN | Next / previous channel |
-| YELLOW / BLUE | Previous / next channel (the bar's "▼ CH-" / "CH+ ▲") |
+| LEFT / RIGHT | Behind live (Pause Live TV): 10 seconds back / on. Live: nothing to move |
+| RED / EXIT | Back: close the player (with the preview window on, the channel keeps playing in it). Paused or behind live: back to live first |
 | GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
+| YELLOW | Source: pick the source of a channel that has several ("Only one source available for this channel" otherwise) |
+| BLUE | The channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds / removes a favourite, RED / EXIT closes it) |
+| EPG / INFO | The programme guide over the video (as INFO / EPG in the channel lists) |
+| MENU | Options: favourite, audio track, subtitles, source, aspect ratio, sleep timer, Record ("Record: ● 12:34" while recording - again: stop), stream info, programme guide, IMDb / TMDB |
+| AUDIO / SUBTITLE | Audio track / subtitles (Enigma2's own) |
 | 1-9 | Go to that channel number ("12-" and "→ name" show while you type; it goes after 1.5 s, on OK, or at once when no larger number exists) |
 | 0 or RECALL | The channel watched before |
-| MENU | Options: favourite, audio track, subtitles, source (multi-source channels), aspect ratio, sleep timer, Record ("Record: ● 12:34" while recording - again: stop), stream info, programme guide (over the video), IMDb / TMDB |
 | REC | Record this channel until the end of the programme on now plus 2 minutes (no guide, or it ends within 10 minutes: until stopped, 4 hours at most); again: stop. "● REC" shows on the bar |
-| PAUSE / PLAY | Pause Live TV (see below). Paused: OK plays on too |
-| INFO | Show / hide the bar |
-| EPG | Look up the current programme in IMDb/TMDB (needs "Enable Vavoo EPG" and an IMDb or TMDB plugin) |
-| AUDIO | Audio track |
-| RED / STOP / EXIT | Close the player (with the preview window on, the channel keeps playing in it). Paused or behind live: RED / EXIT go back to live first |
-
-There is nothing to seek in a live stream, so LEFT / RIGHT are free for the bar's buttons; the highlight goes when the bar hides.
+| PAUSE / PLAY | Pause Live TV (see below) |
+| STOP | Close the player |
 
 **Pause Live TV** (Settings → "Pause Live TV", as in the app): PAUSE stops the picture and starts recording the channel on the disk ("❚❚ Paused · recording - press play to go on"). PLAY (or OK) goes on from there, behind live ("◀◀ -1:23  LEFT / RIGHT move · EXIT: live" in the bar):
 
@@ -235,7 +234,7 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 | LEFT / RIGHT | 10 seconds back / on |
 | YELLOW / BLUE | 30 seconds back / on |
 | OK / GREEN / PAUSE / PLAY | Pause / play on |
-| MENU | Subtitles |
+| MENU | Options: audio track, subtitles |
 | AUDIO | Audio track |
 | RED / STOP / EXIT | Close |
 

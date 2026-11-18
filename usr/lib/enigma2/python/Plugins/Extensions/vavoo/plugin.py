@@ -8245,8 +8245,6 @@ class VavooRecordingPlayer(
             self["info_box"] = Pixmap()
             self["progress_track"] = Pixmap()
             self["progress"] = ProgressBar()
-            for widget, _action in PLAYER_BAR_BUTTONS:
-                self["sel_" + widget] = Pixmap()
             self.onLayoutFinish.append(self._layout_finished)
         else:
             self.skinName = "MoviePlayer"
@@ -8267,7 +8265,7 @@ class VavooRecordingPlayer(
                 "blue": lambda: self.jump(self.BIG_STEP),
                 "left": lambda: self.jump(-self.STEP),
                 "right": lambda: self.jump(self.STEP),
-                "menu": lambda: self._call("subtitleSelection"),
+                "menu": self.options,
             }, -1)
         self._previous = None
         self._was_preview = False
@@ -8283,12 +8281,20 @@ class VavooRecordingPlayer(
         self.onClose.append(self._on_close)
 
     def _layout_finished(self):
-        for widget in ["info_box", "stream_info", "logo"] + \
-                ["sel_" + w for w, _a in PLAYER_BAR_BUTTONS]:
+        for widget in ("info_box", "stream_info", "logo"):
             try:
                 self[widget].hide()
             except Exception:
                 pass
+
+    def options(self):
+        """MENU: the options, as in the live player."""
+        open_action_menu(
+            self.session, _("Options"),
+            [(_("Audio track"), "audioSelection"),
+             (_("Subtitles"), "subtitleSelection")],
+            lambda key: self._call(key) if key and not self._closed
+            else None, layout="player_menu")
 
     def _call(self, method):
         function = getattr(self, method, None)
@@ -8318,6 +8324,10 @@ class VavooRecordingPlayer(
             self.session.nav.playService(sref)
         self._tick_timer.start(1000, False)
         self._tick()
+        if not self._themed and NOTIFICATION_AVAILABLE:
+            # (Classic's MoviePlayer bar shows no captions of its own)
+            quick_notify(_("LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · "
+                           "OK pause · MENU options · EXIT close"), 5)
 
     def isSeekable(self):
         return not self._growing
@@ -8457,8 +8467,8 @@ class VavooRecordingPlayer(
             else (u"❚❚ " + to_text(_("Pause"))),
             "key_yellow": u"◀◀ 30 s",
             "key_blue": u"30 s ▶▶",
-            "key_options": to_text(_("Subtitles")),
-            "key_audio": to_text(_("Audio")),
+            "key_options": u"MENU " + to_text(_("Options")),
+            "key_audio": u"AUDIO",
             "key_list": u"◀ 10 s",
             "key_recall": u"10 s ▶",
         }
@@ -8957,13 +8967,9 @@ PLAYER_BAR_LABELS = (
     "number", "name", "now", "left", "next", "status", "stream_info",
     "key_options", "key_audio", "key_list", "key_recall",
     "key_red", "key_green", "key_yellow", "key_blue")
-# The bar's buttons in LEFT / RIGHT order (the app's: the colour ones,
-# then the small ones) and the Playstream2 method each one runs.
-PLAYER_BAR_BUTTONS = (
-    ("key_red", "back"), ("key_green", "toggle_favourite"),
-    ("key_yellow", "previousitem"), ("key_blue", "nextitem"),
-    ("key_options", "open_options"), ("key_audio", "_bar_audio"),
-    ("key_list", "_bar_list"), ("key_recall", "recall"))
+# The bar's buttons are captions of the remote's keys, the same in
+# every theme and in Classic (whose top line lists them): no button is
+# ever highlighted or walked to - every function has a key of its own.
 # Enigma2's aspect ratio settings (AVSwitch.setAspectRatio()).
 PLAYER_ASPECTS = (
     (0, "4:3 Letterbox"), (1, "4:3 PanScan"), (2, "16:9"),
@@ -9264,6 +9270,35 @@ def mini_guide_text(name, answer, now=None):
     return u"\n".join(lines)
 
 
+def classic_help_line(problem=u""):
+    """Classic's top line in the player: the keys (the same as the
+    themes' bar captions), then the proxy's state only when it is not
+    right."""
+    keys = to_text(_(
+        "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · "
+        "EPG guide · MENU options · EXIT back"))
+    if problem:
+        keys += u"  |  " + to_text(problem)
+    return to_string(keys)
+
+
+def classic_proxy_problem():
+    """"" while the proxy answers (and, on the Vavoo catalog, its token
+    is fresh), else what is wrong."""
+    try:
+        if not is_proxy_running():
+            return _("✗ Proxy Offline")
+        status = get_proxy_status()
+        if not status:
+            return _("? Proxy Unknown")
+        if status.get("token_required", True) and \
+                status.get("addon_sig_age", 0) >= 420:
+            return _("✗ Proxy Expired")
+    except Exception as e:
+        debug("Proxy state not read: {}".format(e))
+    return u""
+
+
 class TvInfoBarShowHide():
     """
     InfoBar show/hide control – toggles both the standard Enigma2 infobar
@@ -9460,34 +9495,8 @@ class TvInfoBarShowHide():
         """Show custom overlays and start the auto‑hide timer."""
         debug("show_help_overlay START")
         try:
-            # Prepare help overlay text (controls + proxy details)
-            if is_proxy_running():
-                status = get_proxy_status()
-                if status:
-                    token_age = status.get("addon_sig_age", 0)
-                    channels = status.get("channels_count", 0)
-
-                    if token_age < 300:
-                        proxy_msg = _("✓ Proxy OK")
-                    elif token_age < 420:
-                        ttl = 600 - token_age
-                        proxy_msg = _("✓ Proxy ({0}s)").format(int(ttl))
-                    else:
-                        proxy_msg = _("✗ Proxy Expired")
-
-                    channels_text = _("Channels")
-                    proxy_details = "{} | {}: {}".format(
-                        proxy_msg, channels_text, channels)
-                else:
-                    proxy_details = _("? Proxy Unknown")
-            else:
-                proxy_details = _("✗ Proxy Offline")
-
-            controls = _(
-                "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit")
-            credit = "by Lululla & Qu4k3"
-            help_text = "{} | {} | {}".format(controls, proxy_details, credit)
-            self["helpOverlay"].setText(help_text)
+            self["helpOverlay"].setText(
+                classic_help_line(classic_proxy_problem()))
             self["helpOverlay"].show()
             debug("show_help_overlay helpOverlay shown")
 
@@ -9547,39 +9556,11 @@ class TvInfoBarShowHide():
         debug("show_help_overlay END")
 
     def update_proxy_status_overlay(self):
-        """Update the helpOverlay text with current proxy status."""
+        """The top line again, with the proxy's state now."""
         if self["helpOverlay"].visible:
             try:
-                current_text = self["helpOverlay"].getText()
-                parts = current_text.split("|")
-                if len(parts) > 2:
-                    controls_part = parts[0].strip()
-                    credit_part = parts[-1].strip()
-
-                    if is_proxy_running():
-                        status = get_proxy_status()
-                        if status:
-                            token_age = status.get("addon_sig_age", 0)
-                            channels = status.get("channels_count", 0)
-                            if token_age < 300:
-                                proxy_msg = _("✓ Proxy OK")
-                            elif token_age < 420:
-                                ttl = 600 - token_age
-                                proxy_msg = _(
-                                    "✓ Proxy ({0}s)").format(int(ttl))
-                            else:
-                                proxy_msg = _("✗ Proxy Expired")
-                            channels_text = _("Channels")
-                            proxy_details = "{} | {}: {}".format(
-                                proxy_msg, channels_text, channels)
-                        else:
-                            proxy_details = _("? Proxy Unknown")
-                    else:
-                        proxy_details = _("✗ Proxy Offline")
-
-                    new_text = "{} | {} | {}".format(
-                        controls_part, proxy_details, credit_part)
-                    self["helpOverlay"].setText(new_text)
+                self["helpOverlay"].setText(
+                    classic_help_line(classic_proxy_problem()))
             except Exception as e:
                 print("[Update Proxy Overlay] Error: " + str(e))
 
@@ -9803,11 +9784,7 @@ class Playstream2(
             self["info_box"] = Pixmap()
             self["progress_track"] = Pixmap()
             self["progress"] = ProgressBar()
-            for widget, _action in PLAYER_BAR_BUTTONS:
-                self["sel_" + widget] = Pixmap()
             self.onLayoutFinish.append(self._bar_layout_finished)
-        # The bar button highlighted with LEFT / RIGHT (-1: none).
-        self._bar_sel = -1
         # A channel number being typed (0 = none), the channel before
         # the current one (RECALL / 0).
         self._typed = 0
@@ -9910,21 +9887,22 @@ class Playstream2(
                 "down": self.previousitem,
                 "up": self.nextitem,
                 "back": self.back,
-                'epg': self.showIMDB,
-                # The app's keys: INFO shows / hides the bar, RED back,
-                # GREEN favourite, YELLOW / BLUE channel down / up. The
-                # stream source (YELLOW before) is in the options
-                # (MENU - see mainMenu()).
-                "info": self.toggle_bar,
+                # Every function on a key of its own, the same in every
+                # theme (the bar shows these captions, Classic's top
+                # line lists them): EPG / INFO the guide (as in the
+                # lists), RED back, GREEN favourite, YELLOW source, BLUE
+                # the channel list; MENU the options (IMDb, stream
+                # info... - see mainMenu()).
+                "epg": self.open_guide,
+                "info": self.open_guide,
                 "red": self.back,
                 "green": self.toggle_favourite,
-                "yellow": self.previousitem,
-                "blue": self.nextitem,
+                "yellow": self.chooseStreamSource,
+                "blue": self.list_key,
                 "historyBack": self.recall,
-                # LEFT / RIGHT go along the bar's buttons, OK presses
-                # the highlighted one (the app's barButtons)
-                "left": self.bar_left,
-                "right": self.bar_right,
+                # behind live (Pause Live TV): 10 s back / on
+                "left": self.key_left,
+                "right": self.key_right,
                 "1": lambda: self.key_digit(1),
                 "2": lambda: self.key_digit(2),
                 "3": lambda: self.key_digit(3),
@@ -10175,7 +10153,7 @@ class Playstream2(
 
     def _bar_layout_finished(self):
         hidden = ["info_box", "stream_info", "progress_track", "progress",
-                  "logo"] + ["sel_" + widget for widget, _a in PLAYER_BAR_BUTTONS]
+                  "logo"]
         for widget in hidden:
             try:
                 self[widget].hide()
@@ -10191,93 +10169,35 @@ class Playstream2(
             return False
 
     def OkPressed(self):
-        """OK: the bar; OK with the bar showing: the channel list (the
-        app's player). A channel number being typed: go there."""
+        """OK: show / hide the bar (Classic: the infobar and the top
+        line), as everywhere in Enigma2. Paused: play on. A channel
+        number being typed: go there."""
         if self._typed:
             self._commit_digits()
             return
         if self._shift_state in ("paused", "behind_paused") or \
                 getattr(self, "seekstate", None) == self.SEEK_STATE_PAUSE:
-            # (the app: paused, OK goes on)
             self.unPauseService()
             return
-        if self._bar_sel >= 0 and self._bar_visible():
-            self._bar_press()
+        TvInfoBarShowHide.OkPressed(self)
+
+    def key_left(self):
+        """LEFT: behind live, 10 seconds back (live: nothing to move)."""
+        if self._shift_behind():
+            self.shift_seek(-10)
+
+    def key_right(self):
+        if self._shift_behind():
+            self.shift_seek(10)
+
+    def list_key(self):
+        """BLUE: the channel list over the video (with the mini guide)."""
+        if self._closed:
             return
         if self._bar_visible():
             self.hide_help_overlay()
             self.doHide()
-            self.open_channel_list()
-            return
-        TvInfoBarShowHide.OkPressed(self)
-
-    # ---- the bar's buttons with LEFT / RIGHT (the app's selectBarButton)
-
-    def bar_left(self):
-        if self._shift_behind():
-            self.shift_seek(-10)
-            return
-        self._bar_move(-1)
-
-    def bar_right(self):
-        if self._shift_behind():
-            self.shift_seek(10)
-            return
-        self._bar_move(1)
-
-    def _bar_move(self, step):
-        """Highlight the next / previous bar button (round the end);
-        with the bar hidden, show it with the first (RIGHT) or last
-        (LEFT) one highlighted. Classic's bar has no buttons."""
-        if not self._bar_themed or self._closed:
-            return
-        count = len(PLAYER_BAR_BUTTONS)
-        if not self._bar_visible():
-            TvInfoBarShowHide.OkPressed(self)
-            index = 0 if step > 0 else count - 1
-        elif self._bar_sel < 0:
-            index = 0 if step > 0 else count - 1
-        else:
-            index = (self._bar_sel + step) % count
-        self._bar_select(index)
-        self.startHideTimer()
-
-    def _bar_select(self, index):
-        self._bar_clear()
-        try:
-            self["sel_" + PLAYER_BAR_BUTTONS[index][0]].show()
-        except Exception as e:
-            debug("Bar highlight not shown: {}".format(e))
-        self._bar_sel = index
-
-    def _bar_clear(self):
-        if self._bar_sel >= 0:
-            try:
-                self["sel_" + PLAYER_BAR_BUTTONS[self._bar_sel][0]].hide()
-            except Exception:
-                pass
-        self._bar_sel = -1
-
-    def _bar_press(self):
-        """OK on the highlighted button: what it says. The bar stays
-        (CH- / CH+ can be pressed again and again), except for List,
-        which opens the channel list in its place."""
-        widget, action = PLAYER_BAR_BUTTONS[self._bar_sel]
-        if action == "_bar_list":
-            self.hide_help_overlay()
-            self.doHide()
-            self.open_channel_list()
-            return
-        getattr(self, action)()
-        if not self._closed and self._bar_visible():
-            self.startHideTimer()
-
-    def _bar_audio(self):
-        self._call_infobar("audioSelection")
-
-    def toggle_bar(self):
-        """INFO: show / hide the bar."""
-        TvInfoBarShowHide.OkPressed(self)
+        self.open_channel_list()
 
     def _show_bar_now(self):
         if self._bar_visible():
@@ -10292,9 +10212,6 @@ class Playstream2(
 
     def hide_help_overlay(self):
         TvInfoBarShowHide.hide_help_overlay(self)
-        # the bar goes: so does its highlight
-        if self._bar_themed:
-            self._bar_clear()
         if self._bar_themed and self._info_shown:
             self._info_shown = False
             for widget in ("info_box", "stream_info"):
@@ -10327,12 +10244,13 @@ class Playstream2(
                 "key_red": to_text(_("Back")),
                 "key_green": (u"\u2605 " if favourite else u"\u2606 ") +
                 to_text(_("Fav")),
-                "key_yellow": u"\u25bc " + to_text(_("CH-")),
-                "key_blue": to_text(_("CH+")) + u" \u25b2",
-                "key_options": to_text(_("Options")),
-                "key_audio": to_text(_("Audio")),
-                "key_list": to_text(_("List")),
-                "key_recall": to_text(_("Recall")),
+                "key_yellow": to_text(_("Source")),
+                "key_blue": to_text(_("List")),
+                # (the remote's key, then what it does)
+                "key_options": u"MENU " + to_text(_("Options")),
+                "key_audio": u"AUDIO",
+                "key_list": u"EPG " + to_text(_("Guide")),
+                "key_recall": u"0 " + to_text(_("Recall")),
             }
             for widget, text in keys.items():
                 self[widget].setText(to_string(text))
@@ -11340,8 +11258,8 @@ class Playstream2(
             print("[Playstream2] Failed to report stream failure: {}".format(e))
 
     def chooseStreamSource(self):
-        """YELLOW: let the user manually pick which physical source
-        (Vavoo/Geil's ".b"/".c"/".s" convention - see
+        """YELLOW (also MENU -> Source): let the user manually pick
+        which physical source (Vavoo/Geil's ".b"/".c"/".s" convention - see
         vavoo_proxy.py's _group_key()/_strip_source_suffix()) plays a
         channel that has more than one, instead of leaving the choice
         to automatic selection/failure-recovery - the companion

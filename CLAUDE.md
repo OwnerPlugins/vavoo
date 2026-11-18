@@ -141,15 +141,23 @@ never call them twice for one stream. Both play the address from
 "Recently watched" (`remember_recent()` → `vUtils.add_recent()`,
 background thread, `/etc/enigma2/vavoo_recent.json`, 20 max). The
 player's mini guide uses `vUtils.lookup_schedule()` /
-`peek_schedule()` (same rules as `lookup_now_next()`); its keys are the
-app's (OK bar → list, GREEN fav, YELLOW/BLUE CH∓, digits, 0/RECALL,
-MENU options via `open_action_menu(..., layout="player_menu")`;
-LEFT / RIGHT highlight the bar's buttons in `PLAYER_BAR_BUTTONS` order
-(`sel_<button>` widgets, themes only) and OK presses the highlighted
-one; `hide_help_overlay()` clears the highlight;
-`mainMenu()` is overridden so MENU never opens Enigma2's own menu).
-RED / EXIT / BACK go through `back()`: behind live (Pause Live TV,
-below) they return to live first, else `cancel()` closes.
+`peek_schedule()` (same rules as `lookup_now_next()`). The player's
+keys are the same in every theme and in Classic, one key per function
+(no walking a bar with the arrows - that was the app's touch UI): OK
+shows / hides the bar, UP/DOWN and CH± zap, GREEN favourite, YELLOW
+`chooseStreamSource()`, BLUE `list_key()` (the channel list over the
+video), EPG / INFO `open_guide()`, MENU the options via
+`open_action_menu(..., layout="player_menu")` (`mainMenu()` is
+overridden so MENU never opens Enigma2's own menu), AUDIO / SUBTITLE
+Enigma2's own, digits, 0/RECALL; LEFT / RIGHT (`key_left()` /
+`key_right()`) only move behind live. The themes' bar buttons are
+captions of those keys ("MENU Options", "EPG Guide"...), never
+selected; Classic's top line is `classic_help_line()` (the keys, plus
+`classic_proxy_problem()` only when the proxy is not right). Change a
+key → change the ActionMap, `_fill_bar()`'s captions and
+`classic_help_line()` together. RED / EXIT / BACK go through `back()`:
+behind live (Pause Live TV, below) they return to live first, else
+`cancel()` closes.
 
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
 started as an in-process daemon thread (`threading.Thread(target=
