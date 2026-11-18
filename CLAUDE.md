@@ -61,6 +61,8 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   skin/cowntry/*.png, skin/pics/*.png, skin/images*/*.png  # flags/backgrounds
   fonts/*.ttf               # cvfont (MavenPro-Medium = Liberation Sans) + the themes' Lexend,
                             #   Manrope, Sora, Oxanium (SIL OFL, licence texts beside them)
+  keymap.xml             # the players' own keys (context VavooPlayerActions),
+                          #   loaded by plugin.py's load_keymap() - same on every image
   plugin.png             # plugin icon shown in Enigma2 menu
 
 CONTROL/                 # Debian/ipkg package control files (control, postinst, postrm, preinst)
@@ -147,17 +149,51 @@ keys are the same in every theme and in Classic, one key per function
 shows / hides the bar, UP/DOWN and CH± zap, GREEN favourite, YELLOW
 `chooseStreamSource()`, BLUE `list_key()` (the channel list over the
 video), EPG / INFO `open_guide()`, MENU the options via
-`open_action_menu(..., layout="player_menu")` (`mainMenu()` is
-overridden so MENU never opens Enigma2's own menu), AUDIO / SUBTITLE
-Enigma2's own, digits, 0/RECALL; LEFT / RIGHT (`key_left()` /
+`open_action_menu(..., layout="player_menu")` (`mainMenu()` and
+OpenATV 7's `showMainMenu()` are overridden so MENU never opens
+Enigma2's own menu), AUDIO / SUBTITLE Enigma2's own, digits,
+0/RECALL, PAUSE / PLAY / PLAY-PAUSE `playpauseService()`, << >>
+`seekFwd()` / `seekBack()`; LEFT / RIGHT (`key_left()` /
 `key_right()`) only move behind live. The themes' bar buttons are
 captions of those keys ("MENU Options", "EPG Guide"...), never
 selected; Classic's top line is `classic_help_line()` (the keys, plus
 `classic_proxy_problem()` only when the proxy is not right). Change a
-key → change the ActionMap, `_fill_bar()`'s captions and
-`classic_help_line()` together. RED / EXIT / BACK go through `back()`:
-behind live (Pause Live TV, below) they return to live first, else
-`cancel()` closes.
+key → change `keymap.xml` / the screen's `player_keys()` map, the
+fallback ActionMap, `_fill_bar()`'s captions and `classic_help_line()`
+together. RED / EXIT / BACK go through `back()`: behind live (Pause
+Live TV, below) they return to live first, else `cancel()` closes.
+
+**Keys on every image** — images name the same key differently in
+their keymap.xml (OpenATV 7: MENU = `showMenu` in `InfoBarMenuActions`,
+which opened Enigma2's main menu in the player; OpenPLi: PLAY =
+`unPauseService`; OpenViX: no CH± where lists look), and Enigma2 turns
+`InfoBarSeek`'s pause / seek keys off for a stream it cannot seek (live:
+PAUSE did nothing). So:
+- The players (`Playstream2`, `VavooRecordingPlayer`) use the plugin's
+  own `keymap.xml` (context `PLAYER_KEYS`, loaded once at import by
+  `load_keymap()` via `keymapparser.readKeymap`, "Own keys loaded" in
+  vavoo.log), mapped with `player_keys()` at `PLAYER_KEYS_PRIO` (-3),
+  above Enigma2's own handlers (seek / arrow seek -1, menu and audio
+  0, show/hide 0-1). Every key there takes all its events: the action
+  on the press, "ignore" on release / repeat / hold - so nothing below
+  ever acts on the rest of a press. Only flags m b r l (older images'
+  parsers know no others). A key the screen does not want maps to a
+  no-op rather than falling through to Enigma2's.
+- The image-context ActionMaps stay as the fallback (one step lower,
+  still above Enigma2's), with every image's names for MENU / pause.
+- Never put `EPGSelectActions` in one ActionMap with `ColorActions`:
+  OpenATV / OpenViX have RED / YELLOW / BLUE there on the press and
+  ColorActions on the release, so a colour key ran twice (the guide's
+  YELLOW moved 2 h, Move in Favourites went on and off). List screens
+  take INFO / EPG / CH± from `info_page_keys(actions)` (EPGSelectActions
+  + ChannelSelectBaseActions, which has CH± as nextBouquet /
+  prevBouquet on every image), holding only those names. Same for the
+  seek contexts in the players' fallback (their LEFT / RIGHT on the
+  release moved a second time).
+- Enigma2 dispatches a key to the key lists by priority and stops at
+  the first whose action returns non-zero (`eActionMap::keyPressed`);
+  a dialog opened on the press gets the release, but ignores it (it
+  never saw the press).
 
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
 started as an in-process daemon thread (`threading.Thread(target=

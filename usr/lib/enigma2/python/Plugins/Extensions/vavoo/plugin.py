@@ -332,6 +332,75 @@ title_plug = 'Vavoo'
 desc_plugin = ('..:: Vavoo by Lululla & Qu4k3 v.%s ::..' % __version__)
 PLUGIN_PATH = PLUGIN_ROOT
 PLUGLOGO = join(PLUGIN_PATH, 'plugin.png')
+
+# The players' keys (keymap.xml, context PLAYER_KEYS): the image's own
+# names for a key differ (OpenATV 7: MENU = "showMenu" in
+# "InfoBarMenuActions", Enigma2's main menu; OpenPLi: PLAY only resumes)
+# and Enigma2 turns its pause / seek keys off for a stream it cannot seek
+# - a live one. With the plugin's own keymap a key means the same on
+# every image. A screen maps it at PLAYER_KEYS_PRIO, above Enigma2's own
+# handlers (seek -1, menu 0, show/hide 0-1), and keeps its image-context
+# maps one step lower (still above Enigma2's) as the fallback for a box
+# where the keymap cannot be loaded.
+KEYMAP_FILE = join(PLUGIN_PATH, 'keymap.xml')
+PLAYER_KEYS = "VavooPlayerActions"
+PLAYER_KEYS_PRIO = -3
+
+
+def load_keymap(path=KEYMAP_FILE):
+    """Load the plugin's keymap.xml into Enigma2 (once per run: loaded
+    again, it is unloaded first). True when it is in."""
+    try:
+        from keymapparser import readKeymap
+    except ImportError:
+        try:
+            from Components.ActionMap import loadKeymap as readKeymap
+        except ImportError:
+            print("[Vavoo] Own keys not loaded: no keymap parser")
+            return False
+    try:
+        try:
+            from keymapparser import removeKeymap
+            removeKeymap(path)
+        except Exception:
+            pass
+        readKeymap(path)
+        print("[Vavoo] Own keys loaded ({})".format(path))
+        return True
+    except Exception as e:
+        print("[Vavoo] Own keys not loaded: {}".format(e))
+        return False
+
+
+KEYMAP_LOADED = load_keymap()
+
+
+INFO_PAGE_ACTIONS = ("info", "epg", "nextBouquet", "prevBouquet")
+
+
+def info_page_keys(actions, prio=-1):
+    """A list screen's INFO / EPG and CH± page keys, on a key list of
+    their own (EPGSelectActions, ChannelSelectBaseActions) holding only
+    those: OpenATV / OpenViX map RED / YELLOW / BLUE in EPGSelectActions
+    on the press while ColorActions has them on the release, so in one
+    key list a colour key ran twice (the guide's YELLOW moved 2 hours,
+    Move in Favourites went on and off, Reload List reloaded twice);
+    here the colours find no action. ChannelSelectBaseActions has CH±
+    as nextBouquet / prevBouquet on every image (OpenATV / OpenViX have
+    them nowhere else a list screen looks)."""
+    return ActionMap(["EPGSelectActions", "ChannelSelectBaseActions"],
+                     dict((k, v) for k, v in actions.items()
+                          if k in INFO_PAGE_ACTIONS), prio)
+
+
+def player_keys(actions):
+    """The ActionMap of the plugin's own player keys: `actions` (keymap.xml's
+    names) plus "ignore", which takes a key's release / repeat / hold."""
+    keys = dict(actions)
+    keys.setdefault("ignore", lambda: None)
+    return ActionMap([PLAYER_KEYS], keys, PLAYER_KEYS_PRIO)
+
+
 ENIGMA_PATH = get_enigma2_path()
 CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
 
@@ -3557,7 +3626,6 @@ class MainVavoo(Screen, PreviewWindow):
             'up': self.moveUp,
             'down': self.moveDown,
             'ok': self.ok,
-            'mainMenu': self.open_menu,
             'menu': self.open_menu,
             'green': self.open_favourites,
             'yellow': self.search_all,
@@ -3575,11 +3643,11 @@ class MainVavoo(Screen, PreviewWindow):
             'OkCancelActions',
             'ButtonSetupActions',
             'InfobarEPGActions',
-            'EPGSelectActions',
             'ColorActions',
             'DirectionActions'
         ]
         self['actions'] = ActionMap(actions_list, actions, -1)
+        self['epg_keys'] = info_page_keys(actions)
 
     def _fix_cache_format(self, result=None):
         if result is None:
@@ -4829,17 +4897,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
 
     def _initialize_actions(self):
         """Initialize the actions for buttons."""
-        self["actions"] = ActionMap(
-            [
-                'MenuActions',
-                'OkCancelActions',
-                'ButtonSetupActions',
-                'InfobarEPGActions',
-                'EPGSelectActions',
-                'ColorActions',
-                'DirectionActions'
-            ],
-            {
+        actions = {
                 "prevBouquet": self.chDown,
                 "nextBouquet": self.chUp,
                 "up": self.moveUp,
@@ -4857,9 +4915,17 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                 "info": self.info_key,
                 "epg": self.info_key,
                 "red": self.backhome
-            },
-            -1
-        )
+        }
+        self["actions"] = ActionMap(
+            [
+                'MenuActions',
+                'OkCancelActions',
+                'ButtonSetupActions',
+                'InfobarEPGActions',
+                'ColorActions',
+                'DirectionActions'
+            ], actions, -1)
+        self["epg_keys"] = info_page_keys(actions)
         # The number keys go to that row (the app's numbered rows).
         self["number_actions"] = ActionMap(
             ['NumberActions'],
@@ -5768,8 +5834,9 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             actions[str(digit)] = (lambda d: lambda: self.number(d))(digit)
         self['actions'] = ActionMap(
             ['OkCancelActions', 'ColorActions', 'DirectionActions',
-             'MenuActions', 'EPGSelectActions', 'InfobarEPGActions',
-             'NumberActions'], actions, -1)
+             'MenuActions', 'InfobarEPGActions', 'NumberActions'],
+            actions, -1)
+        self['epg_keys'] = info_page_keys(actions)
         self.onLayoutFinish.append(self._build_list)
         self.onExecBegin.append(self._back_on_top)
 
@@ -6949,8 +7016,9 @@ class VavooGuide(Screen):
             actions[str(digit)] = (lambda d: lambda: self.number(d))(digit)
         self['actions'] = ActionMap(
             ['OkCancelActions', 'ColorActions', 'DirectionActions',
-             'MenuActions', 'EPGSelectActions', 'InfobarEPGActions',
-             'NumberActions'], actions, -1)
+             'MenuActions', 'InfobarEPGActions', 'NumberActions'],
+            actions, -1)
+        self['epg_keys'] = info_page_keys(actions)
         self.onLayoutFinish.append(self._start)
         self.onClose.append(self._mark_closed)
 
@@ -7530,8 +7598,9 @@ class VavooPickScreen(Screen):
         }
         actions.update(self.key_actions())
         self['actions'] = ActionMap(
-            ['OkCancelActions', 'ColorActions', 'DirectionActions',
-             'EPGSelectActions'], actions, -1)
+            ['OkCancelActions', 'ColorActions', 'DirectionActions'],
+            actions, -1)
+        self['epg_keys'] = info_page_keys(actions)
         self.rows = []
         self.onLayoutFinish.append(lambda: self.refresh(0))
 
@@ -8385,10 +8454,55 @@ class VavooRecordingPlayer(
                      InfoBarSubtitleSupport, InfoBarNotifications,
                      InfoBarShowHide):
             base.__init__(self)
+
+        def nothing():
+            return None
+
+        # The same keys on every image (keymap.xml); the ones with no
+        # use here do nothing rather than reach Enigma2's own (arrow
+        # seek, seek by digits).
+        own_keys = dict((str(d), nothing) for d in range(10))
+        own_keys.update({
+            "ok": self.play_pause,
+            "green": self.play_pause,
+            "playpause": self.play_pause,
+            "exit": self.leave,
+            "red": self.leave,
+            "stop": self.leave,
+            "left": lambda: self.jump(-self.STEP),
+            "right": lambda: self.jump(self.STEP),
+            "yellow": lambda: self.jump(-self.BIG_STEP),
+            "rewind": lambda: self.jump(-self.BIG_STEP),
+            "blue": lambda: self.jump(self.BIG_STEP),
+            "forward": lambda: self.jump(self.BIG_STEP),
+            "menu": self.options,
+            "audio": lambda: self._call("audioSelection"),
+            "subtitle": lambda: self._call("subtitleSelection"),
+            "up": nothing, "down": nothing,
+            "channelUp": nothing, "channelDown": nothing,
+            "info": nothing, "epg": nothing, "record": nothing,
+        })
+        self["vavoo_keys"] = player_keys(own_keys)
+        # (the image's names: where keymap.xml could not be loaded; the
+        # seek lists' own, so that their arrows do not move again after
+        # DirectionActions moved)
+        self["seek_keys"] = ActionMap(
+            ["InfobarSeekActions", "InfobarArrowSeekActions"],
+            {"pauseService": self.play_pause,
+             "playpauseService": self.play_pause,
+             "unPauseService": self.play_pause,
+             "seekFwd": lambda: self.jump(self.BIG_STEP),
+             "seekBack": lambda: self.jump(-self.BIG_STEP),
+             "left": nothing, "right": nothing,
+             "up": nothing, "down": nothing},
+            PLAYER_KEYS_PRIO + 1)
         self["actions"] = ActionMap(
             ["OkCancelActions", "ColorActions", "DirectionActions",
-             "MoviePlayerActions", "MenuActions"],
+             "MoviePlayerActions", "MenuActions", "InfoBarMenuActions",
+             "InfobarMenuActions"],
             {
+                "showMenu": self.options,
+                "mainMenu": self.options,
                 "ok": self.play_pause,
                 "cancel": self.leave,
                 "leavePlayer": self.leave,
@@ -8399,7 +8513,7 @@ class VavooRecordingPlayer(
                 "left": lambda: self.jump(-self.STEP),
                 "right": lambda: self.jump(self.STEP),
                 "menu": self.options,
-            }, -1)
+            }, PLAYER_KEYS_PRIO + 1)
         self._previous = None
         self._was_preview = False
         self._seek_timer = eTimer()
@@ -9996,23 +10110,50 @@ class Playstream2(
         ):
             x.__init__(self)
 
-        self['actions'] = ActionMap(
-            [
-                'MoviePlayerActions',
-                'MovieSelectionActions',
-                'MediaPlayerActions',
-                'EPGSelectActions',
-                'OkCancelActions',
-                'InfobarShowHideActions',
-                'InfobarActions',
-                'DirectionActions',
-                'InfobarSeekActions',
-                'ColorActions',
-                'NumberActions',
-                'InfobarChannelSelection',
-                'InfobarInstantRecord'
-            ],
-            {
+        # Every function on a key of its own, the same in every theme
+        # and on every image (keymap.xml; the bar shows these captions,
+        # Classic's top line lists them): OK the bar, EXIT / BACK / RED
+        # back (behind live: to live first), UP / DOWN / CH± zap, LEFT /
+        # RIGHT 10 s behind live, GREEN favourite, YELLOW source, BLUE
+        # the channel list, MENU the options, INFO / EPG the guide,
+        # PLAY / PAUSE pause live, << >> 30 s, REC record, digits.
+        own_keys = dict((str(d), (lambda n: lambda: self.key_digit(n))(d))
+                        for d in range(10))
+        own_keys.update({
+            "ok": self.OkPressed,
+            "exit": self.back,
+            "red": self.back,
+            "stop": self.leavePlayer,
+            "up": self.nextitem,
+            "down": self.previousitem,
+            "channelUp": self.nextitem,
+            "channelDown": self.previousitem,
+            "left": self.key_left,
+            "right": self.key_right,
+            "green": self.toggle_favourite,
+            "yellow": self.chooseStreamSource,
+            "blue": self.list_key,
+            "menu": self.mainMenu,
+            "info": self.open_guide,
+            "epg": self.open_guide,
+            "audio": lambda: self._call_infobar("audioSelection"),
+            "subtitle": lambda: self._call_infobar("subtitleSelection"),
+            "record": self.toggle_record,
+            "playpause": self.playpauseService,
+            "forward": self.seekFwd,
+            "rewind": self.seekBack,
+        })
+        self['vavoo_keys'] = player_keys(own_keys)
+
+        # The image's own key names: only used where keymap.xml could
+        # not be loaded, or for a key it does not name. Includes the
+        # names images gave MENU and PAUSE / PLAY (OpenATV 7: showMenu,
+        # playpauseService), which before reached Enigma2's main menu or
+        # its seek keys - off while a live stream plays.
+        fallback = {
+                "showMenu": self.mainMenu,
+                "mainMenu": self.mainMenu,
+                "menu": self.mainMenu,
                 "stop": self.leavePlayer,
                 # REC: record this channel / stop (the app's Record)
                 "instantRecord": self.toggle_record,
@@ -10022,12 +10163,6 @@ class Playstream2(
                 "down": self.previousitem,
                 "up": self.nextitem,
                 "back": self.back,
-                # Every function on a key of its own, the same in every
-                # theme (the bar shows these captions, Classic's top
-                # line lists them): EPG / INFO the guide (as in the
-                # lists), RED back, GREEN favourite, YELLOW source, BLUE
-                # the channel list; MENU the options (IMDb, stream
-                # info... - see mainMenu()).
                 "epg": self.open_guide,
                 "info": self.open_guide,
                 "red": self.back,
@@ -10048,9 +10183,50 @@ class Playstream2(
                 "8": lambda: self.key_digit(8),
                 "9": lambda: self.key_digit(9),
                 "0": lambda: self.key_digit(0),
-            },
-            -1
-        )
+        }
+        self['actions'] = ActionMap(
+            [
+                'ColorActions',
+                'InfoBarMenuActions',
+                'InfobarMenuActions',
+                'MenuActions',
+                'MoviePlayerActions',
+                'MovieSelectionActions',
+                'MediaPlayerActions',
+                'OkCancelActions',
+                'InfobarShowHideActions',
+                'InfobarActions',
+                'DirectionActions',
+                'NumberActions',
+                'InfobarChannelSelection',
+                'InfobarInstantRecord'
+            ], fallback, PLAYER_KEYS_PRIO + 1)
+        # (key lists of their own, so that their colours, arrows and
+        # digits find no action: OpenATV has RED / YELLOW / BLUE on the
+        # press in EPGSelectActions, ColorActions on the release - one
+        # press ran twice; LEFT / RIGHT on the release in the seek
+        # lists moved again after DirectionActions had moved)
+        self['epg_keys'] = info_page_keys(fallback, PLAYER_KEYS_PRIO + 1)
+
+        def nothing():
+            return None
+
+        seek_keys = {
+            "pauseService": self.pauseService,
+            "playpauseService": self.playpauseService,
+            # (OpenPLi's PLAY; OpenATV's OK press too)
+            "unPauseService": self._resume_if_paused,
+            "seekFwd": self.seekFwd,
+            "seekBack": self.seekBack,
+            "left": nothing, "right": nothing,
+            "up": nothing, "down": nothing,
+        }
+        for digit in (1, 3, 4, 6, 7, 9):
+            seek_keys["seekdef:%d" % digit] = \
+                (lambda d: lambda: self.key_digit(d))(digit)
+        self['seek_keys'] = ActionMap(
+            ['InfobarSeekActions', 'InfobarArrowSeekActions'], seek_keys,
+            PLAYER_KEYS_PRIO + 1)
 
         self.__event_tracker = ServiceEventTracker(
             screen=self,
@@ -10532,6 +10708,11 @@ class Playstream2(
         main menu here)."""
         self.open_options()
 
+    def showMainMenu(self):
+        """InfoBarMenu's MENU on OpenATV 7 (mainMenu() elsewhere): the
+        options too, should its key list ever get MENU first."""
+        self.open_options()
+
     def _source_count(self):
         group_id = self._current_group_channel_id()
         if not group_id:
@@ -10850,6 +11031,15 @@ class Playstream2(
         else:
             InfoBarSeek.unPauseService(self)
         self._shift_changed()
+
+    def _resume_if_paused(self):
+        """unPauseService by the image's key names (OpenPLi's PLAY,
+        OpenATV's OK press): plays on what is paused, else nothing (OK
+        shows the bar on its release, as always)."""
+        if self._shift_state in ("paused", "behind_paused") or (
+                self._shift_state is None and
+                getattr(self, "seekstate", None) == self.SEEK_STATE_PAUSE):
+            self.unPauseService()
 
     def playpauseService(self):
         if self._shift_state in ("paused", "behind_paused") or (

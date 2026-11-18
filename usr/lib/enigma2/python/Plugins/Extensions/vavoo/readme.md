@@ -128,12 +128,14 @@ With "Sub-categories" on, a country whose catalog has two or more categories fir
 ### Player
 The same keys in every theme, Classic included - each function has a key of its own on the remote (no moving along the bar with the arrows). The themes' bar shows them as captions ("Back · ★ Fav · Source · List", "MENU Options · AUDIO · EPG Guide · 0 Recall"); Classic keeps Enigma2's own bar and lists them in its top line.
 
+The keys are also the same on every image (OpenATV, OpenPLi, OpenViX, ...): the plugin brings its own key map (`keymap.xml`, loaded when Enigma2 starts), because the images name the same key differently - on OpenATV 7, MENU in a player opened Enigma2's main menu, and PAUSE / PLAY did nothing on a live channel. Each key does one thing, once (pressing, releasing or holding it never sets off something else).
+
 | Key | Action |
 |-----|--------|
 | OK | Show / hide the bar (Classic: the infobar and the top line). Paused: play on. While typing a channel number: go there |
 | CH+ / CH- or UP / DOWN | Next / previous channel |
 | LEFT / RIGHT | Behind live (Pause Live TV): 10 seconds back / on. Live: nothing to move |
-| RED / EXIT | Back: close the player (with the preview window on, the channel keeps playing in it). Paused or behind live: back to live first |
+| RED / EXIT / BACK | Back: close the player (with the preview window on, the channel keeps playing in it). Paused or behind live: back to live first |
 | GREEN | Add / remove the channel as a favourite (★ / ☆ on the bar) |
 | YELLOW | Source: pick the source of a channel that has several ("Only one source available for this channel" otherwise) |
 | BLUE | The channel list over the video, with the mini guide of the highlighted channel (OK plays it, GREEN adds / removes a favourite, RED / EXIT closes it) |
@@ -143,7 +145,8 @@ The same keys in every theme, Classic included - each function has a key of its 
 | 1-9 | Go to that channel number ("12-" and "→ name" show while you type; it goes after 1.5 s, on OK, or at once when no larger number exists) |
 | 0 or RECALL | The channel watched before |
 | REC | Record this channel until the end of the programme on now plus 2 minutes (no guide, or it ends within 10 minutes: until stopped, 4 hours at most); again: stop. "● REC" shows on the bar |
-| PAUSE / PLAY | Pause Live TV (see below) |
+| PAUSE, PLAY or PLAY/PAUSE | Pause Live TV (see below): pause; again: play on |
+| << / >> | Behind live: 30 seconds back / on |
 | STOP | Close the player |
 
 **Pause Live TV** (Settings → "Pause Live TV", as in the app): PAUSE stops the picture and starts recording the channel on the disk ("❚❚ Paused · recording - press play to go on"). PLAY (or OK) goes on from there, behind live ("◀◀ -1:23  LEFT / RIGHT move · EXIT: live" in the bar):
@@ -232,11 +235,11 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 | Key (playing a recording) | Action |
 |-----|--------|
 | LEFT / RIGHT | 10 seconds back / on |
-| YELLOW / BLUE | 30 seconds back / on |
+| YELLOW / BLUE or << / >> | 30 seconds back / on |
 | OK / GREEN / PAUSE / PLAY | Pause / play on |
 | MENU | Options: audio track, subtitles |
-| AUDIO | Audio track |
-| RED / STOP / EXIT | Close |
+| AUDIO / SUBTITLE | Audio track / subtitles |
+| RED / STOP / EXIT / BACK | Close |
 
 A recording still being recorded can be watched too (from its start; each move opens it again at that place).
 
@@ -643,6 +646,7 @@ The plugin also keeps an eye on the box's memory, whether it is open or not. Eve
 | A channel keeps stopping or buffering | In the player press MENU → Source and pick another source |
 | Duplicate cache entries | Main menu: MENU → "Fix EPG cache" |
 | "Can't record: no disk (HDD / USB) found" | Recordings and Pause Live TV need a mounted disk; the box's internal flash is never used |
+| A key in the player does something else (MENU opens Enigma2's menu, PAUSE does nothing) | Restart Enigma2 after an update (the plugin's key map is loaded at start); `grep "Own keys" /tmp/vavoo.log` says whether it was loaded |
 | "Can't record (not enough free space?)" | Under 400 MB free where recordings go: check Settings → Recordings folder |
 | "Recording needs ffmpeg" | Install it: `opkg install ffmpeg` (a dependency of the plugin, but some images leave it out) |
 | A recording stops early | `/tmp/vavoo.log` says why ("no stream address", "the stream keeps failing", the disk nearly full) and `/tmp/vavoo_record.log` what ffmpeg said |
