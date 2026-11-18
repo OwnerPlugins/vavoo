@@ -422,6 +422,12 @@ records and timeshifts only DVB, so the plugin does it itself:
   `/file` like the pause buffer; it lets go of a preview stream
   (`NOW_PLAYING.release_preview()`) and puts back only a non-plugin
   service when it closes.
+- A FAT32 disk cannot hold a 4 GB file: `Recorder(max_bytes=
+  vavoo_record.file_size_limit(folder))` stops a little before
+  (`FAILURE_FAT`). `/tmp` is RAM on a box: the logo cache is trimmed
+  to 8 MB (`vUtils.trim_picon_cache()`) and leftover pause buffers are
+  deleted (`clean_pause_leftovers()`) each time `main()` runs; the
+  guide's load line carries `memory_note()`.
 - Logs: ffmpeg's to `/tmp/vavoo_record.log`, the rest to `vavoo.log`.
   The bar's glyphs are ❚❚ and ◀◀ (⏸ / ⏪ are missing from the fonts
   and from many boxes' fallback font).

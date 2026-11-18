@@ -225,6 +225,18 @@ def mount_of(path):
     return point, fstype
 
 
+# A FAT32 disk (many USB sticks and disks come formatted so) cannot hold
+# a file of 4 GB or more: a recording stops a little before.
+FAT_FS = ("vfat", "msdos", "fat", "umsdos")
+FAT_LIMIT = 4 * 1024 ** 3 - 64 * 1024 ** 2
+FAILURE_FAT = "the disk's 4 GB file limit (FAT32)"
+
+
+def file_size_limit(path):
+    """The largest file `path`'s disk can hold (0: no limit to mind)."""
+    return FAT_LIMIT if mount_of(path)[1] in FAT_FS else 0
+
+
 def on_disk(path):
     """True when `path` is on a mounted disk (HDD, USB, network share)
     - not the box's internal flash (the root file system) nor its
@@ -592,7 +604,7 @@ class Recorder(object):
     def __init__(self, source, path, stop_at=0, max_seconds=MANUAL_MAX,
                  info=None, ffmpeg=None, on_end=None, keep_alive=None,
                  log_path=None, tag="Recording", env=None,
-                 space=free_bytes, thread_name="vv-rec"):
+                 space=free_bytes, thread_name="vv-rec", max_bytes=0):
         self.id = binascii.hexlify(os.urandom(8))
         if not isinstance(self.id, str):
             self.id = self.id.decode("ascii")
@@ -609,6 +621,8 @@ class Recorder(object):
         self.env = env
         self.space = space
         self.thread_name = thread_name
+        # (a FAT32 disk: file_size_limit())
+        self.max_bytes = max_bytes or 0
         self.bytes = 0
         self.duration = 0.0
         self.running = False
@@ -871,6 +885,15 @@ class Recorder(object):
                 whole = len(pending) - len(pending) % PACKET
                 if not whole:
                     continue
+                if self.max_bytes and self.bytes + whole > self.max_bytes:
+                    # the disk cannot hold a bigger file: what was
+                    # recorded stays, whole
+                    if self.failure is None:
+                        self.failure = FAILURE_FAT
+                        _log("{}: stopped at the disk's file size "
+                             "limit".format(self.tag))
+                    self._stop.set()
+                    break
                 if PY2:
                     self._index(pending[:whole], now)
                     out.write(bytes(pending[:whole]))

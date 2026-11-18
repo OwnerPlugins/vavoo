@@ -1466,6 +1466,72 @@ def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
     return join(cache_dir, _picon_cache_filename(logo_url))
 
 
+# The logo cache is in /tmp, which on a box is RAM: kept to this size
+# (the oldest files go first; a logo is downloaded again when needed).
+PICON_CACHE_MAX = 8 * 1024 * 1024
+
+
+def trim_picon_cache(cache_dir=PICON_CACHE_DIR, max_bytes=PICON_CACHE_MAX):
+    """Delete the oldest cached logos until the cache is at most
+    max_bytes. Returns how many were deleted."""
+    try:
+        names = listdir(cache_dir)
+    except Exception:
+        return 0
+    files = []
+    total = 0
+    for name in names:
+        path = join(cache_dir, name)
+        try:
+            if not isfile(path):
+                continue
+            size = getsize(path)
+            files.append((getmtime(path), size, path))
+            total += size
+        except Exception:
+            continue
+    removed = 0
+    files.sort()
+    for _mtime, size, path in files:
+        if total <= max_bytes:
+            break
+        try:
+            remove(path)
+            total -= size
+            removed += 1
+        except Exception:
+            pass
+    if removed:
+        print("[Picons] {} old logos deleted from {} (now {} KB)".format(
+            removed, cache_dir, total // 1024))
+    return removed
+
+
+def memory_note():
+    """"enigma2 148 MB, box 412 MB free" - this process's memory and
+    what the box has left (for the log: was the box short of memory,
+    and was it this process that grew?). "" where it cannot be read."""
+    parts = []
+    try:
+        name = open("/proc/self/comm").read().strip() or "process"
+        for line in open("/proc/self/status"):
+            if line.startswith("VmRSS:"):
+                parts.append("{} {} MB".format(
+                    name, int(line.split()[1]) // 1024))
+                break
+    except Exception:
+        pass
+    try:
+        for line in open("/proc/meminfo"):
+            if line.startswith("MemAvailable:"):
+                parts.append("box {} MB free".format(
+                    int(line.split()[1]) // 1024))
+                break
+    except Exception:
+        pass
+    return ", ".join(parts)
+
+
 def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
     """Download and cache a channel picon from its catalog-provided
     logo URL (geil.to's own picons, or Vavoo's - see vavoo_proxy.py's
@@ -3935,9 +4001,9 @@ def _download_epg_guide(country_code):
         warning("Programme guide for {} is empty".format(country_code))
         return None
     print("[EPG] Guide {} loaded in {:.1f}s: {} channels, {} programmes "
-          "kept, {} KB downloaded".format(
+          "kept, {} KB downloaded ({})".format(
               country_code, time() - started, len(guide.feed_ids),
-              guide.programme_count, received // 1024))
+              guide.programme_count, received // 1024, memory_note()))
     return guide
 
 

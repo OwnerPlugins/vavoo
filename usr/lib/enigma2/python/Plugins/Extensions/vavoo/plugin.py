@@ -6564,6 +6564,30 @@ def pause_folder():
     return None
 
 
+def clean_pause_leftovers():
+    """Pause buffers left behind (the box was switched off, Enigma2
+    restarted while paused) - each can be gigabytes."""
+    keep = []
+    player = ACTIVE.get("player")
+    shift = getattr(player, "_shift", None) if player is not None else None
+    if shift is not None:
+        keep.append(shift.path)
+    folders = [recordings_folder()]
+    try:
+        folders.append(config.usage.timeshift_path.value)
+    except Exception:
+        pass
+    for folder in folders:
+        try:
+            if folder and os.path.isdir(folder):
+                removed = vavoo_record.clean_shift_files(folder, keep)
+                if removed:
+                    print("[vavoo] {} old pause buffers deleted from "
+                          "{}".format(removed, folder))
+        except Exception as e:
+            debug("Pause buffers not cleaned in {}: {}".format(folder, e))
+
+
 def size_text(size):
     if size >= 1e9:
         return "%.1f GB" % (size / 1e9)
@@ -6681,7 +6705,8 @@ class _Recordings(object):
             address, path, stop_at=stop_at, max_seconds=max_seconds,
             info=info, ffmpeg=ffmpeg, on_end=self._ended,
             keep_alive=keep_alive, log_path=RECORD_LOG,
-            tag="Recording " + to_string(name), thread_name="vv-rec")
+            tag="Recording " + to_string(name), thread_name="vv-rec",
+            max_bytes=vavoo_record.file_size_limit(folder))
         recorder.slot = slot
         if not recorder.start():
             return fail(_("Can't record (not enough free space?)"))
@@ -6706,6 +6731,9 @@ class _Recordings(object):
             title = (recorder.info or {}).get("title") or ""
             if recorder.failure == "no space left":
                 quick_notify(_("Recording stopped: the disk is nearly full"), 6)
+            elif recorder.failure == vavoo_record.FAILURE_FAT:
+                quick_notify(_("Recording stopped: the disk's 4 GB file "
+                               "limit (FAT32)"), 6)
             else:
                 quick_notify(_("Recording stopped early: {}").format(
                     to_string(title)), 6)
@@ -10784,7 +10812,8 @@ class Playstream2(
         recorder = vavoo_record.Recorder(
             source, vavoo_record.shift_path(folder),
             max_seconds=vavoo_record.SHIFT_MAX, ffmpeg=ffmpeg,
-            log_path=RECORD_LOG, tag="Pause live", thread_name="vv-pause")
+            log_path=RECORD_LOG, tag="Pause live", thread_name="vv-pause",
+            max_bytes=vavoo_record.file_size_limit(folder))
         if not recorder.start():
             return
         self._shift = recorder
@@ -11952,8 +11981,11 @@ def main(session, **kwargs):
         try:
             initialize_cache_with_local_flags()
             cleanup_old_temp_files()
+            # (in /tmp = RAM: kept small)
+            vUtils.trim_picon_cache()
         except Exception as e:
             print("Cache initialization error: %s" % str(e))
+        clean_pause_leftovers()
         session.open(startVavoo)
     except Exception as e:
         print('error as:', e)
