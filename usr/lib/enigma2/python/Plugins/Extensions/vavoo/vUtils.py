@@ -48,7 +48,7 @@ from shutil import copy2
 from sys import maxsize
 from six import iteritems, unichr
 from six.moves import html_entities, html_parser
-from time import time, strftime, localtime, gmtime
+from time import time, strftime, localtime, gmtime, sleep
 from unicodedata import combining, normalize
 
 from . import (
@@ -303,6 +303,39 @@ else:
 
 
 print = make_print("VUTILS")
+
+
+# Heavy loops (reading a country's guide, comparing a channel's name
+# with thousands of others) run in background threads inside Enigma2's
+# own process, next to the video and the menus. After this much work
+# such a loop rests this long, so it takes at most about two thirds of
+# a core and the box never stalls behind it (the box was seen
+# overloaded while a guide was read).
+_BREATHE_WORK = 0.05
+_BREATHE_REST = 0.025
+
+
+class _Breather(object):
+    """One per heavy loop: call tick() on every turn (cheap - the clock
+    is only read every 64th). Never rests on the GUI (main) thread."""
+
+    __slots__ = ("since", "count", "active")
+
+    def __init__(self):
+        self.since = time()
+        self.count = 0
+        self.active = threading.current_thread().name != "MainThread"
+
+    def tick(self):
+        if not self.active:
+            return
+        self.count += 1
+        if self.count & 63:
+            return
+        now = time()
+        if now - self.since >= _BREATHE_WORK:
+            sleep(_BREATHE_REST)
+            self.since = time()
 log("===== Vavoo session start =====", area="VUTILS")
 
 
@@ -2255,7 +2288,9 @@ class VavooEPGMatcher(object):
         # matters most for countries with large Rytec databases (e.g. Italy).
         source_tokens = _tokenize_for_compat(clean_input)
         sm = SequenceMatcher(None, clean_input)
+        breather = _Breather()
         for clean_entry, orig_name, rytec_id, service_ref, entry_tokens in entries_to_scan:
+            breather.tick()
             # A shared textual prefix with a *different* word at a
             # position both share is a strong signal these are
             # different channels (e.g. "canal motogp" vs "canal plus
@@ -2436,6 +2471,24 @@ class VavooEPGMatcher(object):
             'curated')
 
     def find_match(
+            self, channel_name, country_code=None, servicetype="4097",
+            channel_id=None, allow_curated_promotion=False,
+            epg_guide_id=None):
+        """_find_match_untimed(), with the ones that take long in the
+        log ("[EPG] slow match": what loaded the box)."""
+        started = time()
+        try:
+            return self._find_match_untimed(
+                channel_name, country_code, servicetype, channel_id,
+                allow_curated_promotion, epg_guide_id)
+        finally:
+            took = time() - started
+            if took >= 1.0:
+                print("[EPG] slow match: {} ({}) {:.1f}s".format(
+                    ensure_str(channel_name or '', errors='ignore'),
+                    country_code or '-', took))
+
+    def _find_match_untimed(
             self, channel_name, country_code=None, servicetype="4097",
             channel_id=None, allow_curated_promotion=False,
             epg_guide_id=None):
@@ -3473,6 +3526,7 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     best_id = None
     threshold = matcher.similarity_threshold
     sm = SequenceMatcher(None, clean)
+    breather = _Breather()
     # Only the threshold-or-above outcome is ever used by callers (a
     # below-threshold best_score is never returned), so - same as the
     # equivalent Rytec-scanning loop in _find_match_internal() - a
@@ -3483,6 +3537,7 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     # channel whose Rytec id isn't in this feed's own id set, so this
     # matters for country-wide export time.
     for dn_key, (dn_id, candidate_tokens) in name_index.items():
+        breather.tick()
         if (source_tokens and candidate_tokens and
                 not _tokens_compatible(source_tokens, candidate_tokens)):
             continue
@@ -3521,12 +3576,15 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
 # rest read as UTC, which is only right for "+0000": the programme
 # shown as current was 1 hour off for es, 3 for tr, 6 for pl.
 
-# A loaded guide is reused this long before it is fetched again.
-_EPG_GUIDE_TTL = 3600
+# A loaded guide is reused this long before it is fetched again: it
+# holds programmes from 3 hours before its load to 24 hours after it,
+# so at 6 hours old it still reaches 18 hours ahead. (It was 1 hour:
+# reading a large guide costs a set-top box 10-30 s of a core, and a
+# box playing a channel paid that every hour - seen as overload.)
+_EPG_GUIDE_TTL = 6 * 3600
 # If fetching it again fails, the old copy is still used up to this
-# age (it holds _EPG_GUIDE_AHEAD worth of programmes, so it stays
-# right for hours) before giving up on it.
-_EPG_GUIDE_STALE_MAX = 6 * 3600
+# age (12 hours ahead left) before giving up on it.
+_EPG_GUIDE_STALE_MAX = 12 * 3600
 # After a failed load, wait this long before the next attempt.
 _EPG_GUIDE_RETRY = 120
 # Programmes are kept from this long before load time (the guide grid
@@ -3786,7 +3844,9 @@ def _parse_epg_guide(stream, country_code, now):
     parsed_times = {}
     kept = 0
     root = None
+    breather = _Breather()
     for event, elem in _fast_ET.iterparse(stream, events=('start', 'end')):
+        breather.tick()
         if event == 'start':
             if root is None:
                 root = elem

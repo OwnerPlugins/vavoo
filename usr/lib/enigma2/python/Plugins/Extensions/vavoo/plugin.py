@@ -191,6 +191,8 @@ except ImportError as e:
         pass
 
 print = make_print("PLUGIN")
+# the recorder's messages into vavoo.log too
+vavoo_record.set_logger(print)
 
 
 try:
@@ -377,7 +379,7 @@ def _start_update_check():
             version, len(changelog) if changelog else 0, len(content) if content else 0))
         _update_check_done = True
 
-    _update_thread = threading.Thread(target=_worker)
+    _update_thread = threading.Thread(target=named(_worker, "vv-update"))
     _update_thread.daemon = True
     _update_thread.start()
 
@@ -1453,7 +1455,8 @@ class NowNextPanel(object):
             if start_worker:
                 self._epg_panel_working = True
         if start_worker:
-            worker = threading.Thread(target=self._epg_panel_work)
+            worker = threading.Thread(
+                target=named(self._epg_panel_work, "vv-nownext"))
             worker.daemon = True
             worker.start()
 
@@ -1580,6 +1583,16 @@ def build_stream_sref(name, url):
     sref = eServiceReference(ref)
     sref.setName(safe_name)
     return sref
+
+
+def named(target, name):
+    """`target` for a thread, that first gives the thread its name in
+    the system ("top -H" shows which of the plugin's threads loads the
+    box: vv-guide, vv-nownext, vv-bar, vv-rec...)."""
+    def run(*args, **kwargs):
+        vavoo_record.name_this_thread(name)
+        return target(*args, **kwargs)
+    return run
 
 
 def file_stream_sref(url, name):
@@ -2521,7 +2534,7 @@ class vavoo_config(Screen, ConfigListScreen):
                 self._on_all_m3u_files_done,
                 generated, failed, total_channels, len(countries))
 
-        t = threading.Thread(target=task)
+        t = threading.Thread(target=named(task, "vv-export"))
         t.daemon = True
         t.start()
 
@@ -2681,7 +2694,7 @@ class vavoo_config(Screen, ConfigListScreen):
             if self._closed:
                 return
             reactor.callFromThread(on_done, countries)
-        t = threading.Thread(target=task)
+        t = threading.Thread(target=named(task, "vv-lists"))
         t.daemon = True
         t.start()
 
@@ -2694,7 +2707,7 @@ class vavoo_config(Screen, ConfigListScreen):
             if self._closed:
                 return
             reactor.callFromThread(on_done, channels)
-        t = threading.Thread(target=task)
+        t = threading.Thread(target=named(task, "vv-lists"))
         t.daemon = True
         t.start()
 
@@ -4242,7 +4255,7 @@ class MainVavoo(Screen, PreviewWindow):
             if not self._closed:
                 reactor.callFromThread(self._open_search_all, items)
 
-        worker = threading.Thread(target=_task)
+        worker = threading.Thread(target=named(_task, "vv-search"))
         worker.daemon = True
         worker.start()
 
@@ -5125,7 +5138,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                     reactor.callFromThread(
                         self.picon_refresh_timer.start, 500, True)
 
-        t = threading.Thread(target=_worker)
+        t = threading.Thread(target=named(_worker, "vv-logos"))
         t.daemon = True
         t.start()
 
@@ -6661,7 +6674,7 @@ class _Recordings(object):
             address, path, stop_at=stop_at, max_seconds=max_seconds,
             info=info, ffmpeg=ffmpeg, on_end=self._ended,
             keep_alive=keep_alive, log_path=RECORD_LOG,
-            tag="Recording " + to_string(name))
+            tag="Recording " + to_string(name), thread_name="vv-rec")
         recorder.slot = slot
         if not recorder.start():
             return fail(_("Can't record (not enough free space?)"))
@@ -6905,7 +6918,7 @@ class VavooGuide(Screen):
             if start_worker:
                 self._working = True
         if start_worker:
-            worker = threading.Thread(target=self._work)
+            worker = threading.Thread(target=named(self._work, "vv-guide"))
             worker.daemon = True
             worker.start()
         self._draw_heading()
@@ -9200,7 +9213,8 @@ class VavooPlayerList(Screen):
             if start:
                 self._guide_working = True
         if start:
-            worker = threading.Thread(target=self._guide_work)
+            worker = threading.Thread(
+                target=named(self._guide_work, "vv-miniguide"))
             worker.daemon = True
             worker.start()
 
@@ -9547,7 +9561,8 @@ class TvInfoBarShowHide():
                         debug("Applying EPG overlay text failed: {}".format(e))
                 reactor.callFromThread(_apply_epg_text)
 
-            _epg_fetch_thread = threading.Thread(target=_fetch_epg_async)
+            _epg_fetch_thread = threading.Thread(
+                target=named(_fetch_epg_async, "vv-bar"))
             _epg_fetch_thread.daemon = True
             _epg_fetch_thread.start()
 
@@ -10023,7 +10038,8 @@ class Playstream2(
                 return
             reactor.callFromThread(_openForEpgText, epg_text, fetch_url)
 
-        epg_thread = threading.Thread(target=_fetchEpgThenOpen)
+        epg_thread = threading.Thread(
+            target=named(_fetchEpgThenOpen, "vv-imdb"))
         epg_thread.daemon = True
         epg_thread.start()
 
@@ -10356,7 +10372,7 @@ class Playstream2(
                     self._draw_bar_epg(found)
             reactor.callFromThread(_apply)
 
-        worker = threading.Thread(target=_work)
+        worker = threading.Thread(target=named(_work, "vv-bar"))
         worker.daemon = True
         worker.start()
 
@@ -10761,7 +10777,7 @@ class Playstream2(
         recorder = vavoo_record.Recorder(
             source, vavoo_record.shift_path(folder),
             max_seconds=vavoo_record.SHIFT_MAX, ffmpeg=ffmpeg,
-            log_path=RECORD_LOG, tag="Pause live")
+            log_path=RECORD_LOG, tag="Pause live", thread_name="vv-pause")
         if not recorder.start():
             return
         self._shift = recorder

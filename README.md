@@ -301,7 +301,7 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Preview Window** | OK on a channel plays it in the small window beside the list; OK again on it opens full screen (BLUE goes straight there). Off: OK opens full screen at once | Yes |
 | **Start with last channel** | Open the last watched channel when the plugin starts | No |
 | **Pause Live TV** | PAUSE in the player records the channel on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours). Off: PAUSE only pauses | Yes |
-| **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for an hour. Switch it off on a slow connection or a weak box | Yes |
+| **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for 6 hours. Switch it off on a slow connection or a weak box | Yes |
 | **Group Sources** | The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row | Yes |
 | **Channel Logos** | The channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), the country's flag in the player, and no logo is downloaded | No |
 | **Sub-categories** | A country whose channels come in categories lists "All channels", the categories and "General" first | Yes |
@@ -432,7 +432,8 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - The player fetches EPG via the proxy redirect to GitHub raw files
 - **In-plugin programme info** (the channel list's Now/Next lines and the player's OK overlay) reads the same per-country guide file (`epg_<cc>.xml`), with no EPGImport involved:
   - the file is read while it downloads, compressed (about a tenth of its size on the wire), and only the programmes from 3 hours ago to 24 hours ahead are kept (for the programme guide) - measured with the largest files: 11 MB for Poland, 6 MB for France, where the whole file is 2 to 60 MB
-  - one copy per country is reused for an hour (at most four countries in memory); if refreshing it fails, the previous copy keeps being used
+  - one copy per country is reused for 6 hours (at most four countries in memory); if refreshing it fails, the previous copy keeps being used up to 12 hours
+  - reading a large guide costs a set-top box a good part of a core for some seconds: it is done in a background thread that rests a little every 50 ms, so the video and the menus always get their turn
   - every entry's own time zone is applied and times are shown on the box's clock. (Earlier versions ignored the time zone, which showed the wrong programme for guides not written in UTC - Spain by one hour, Turkey by three, Poland by six)
   - a channel is found through the same matching chain as below, then through the guide's own channel names (accents do not matter: "SIC NOTICIAS" finds "SIC Notícias")
 - **Intelligent Channel Matching** (in priority order):
@@ -608,7 +609,13 @@ cat /etc/enigma2/vavoo_epg_unmatched_cache.json
 
 # Check proxy health
 curl -s http://127.0.0.1:4323/health
+
+# The box is slow / overloaded: which part of the plugin is busy
+top -H -b -n 1 | head -25
+grep "\[EPG\]" /tmp/vavoo.log | tail
 ```
+
+In `top -H` the plugin's own threads have names: `vv-guide` (programme guide), `vv-nownext` (Now/Next beside the list), `vv-bar` / `vv-miniguide` (the player's programme lines), `vv-rec` / `vv-pause` (a recording / the pause buffer, with `ffmpeg` beside them at a lower priority), `vv-proxy` / `vv-token` / `vv-proxymain` (the local proxy), `vv-lists`, `vv-search`, `vv-logos`, `vv-export`. `/tmp/vavoo.log` says how long each guide took to read ("[EPG] Guide pl loaded in 23.4s") and every channel whose guide took over a second to find ("[EPG] slow match").
 
 ### Common Issues
 | Problem | Solution |

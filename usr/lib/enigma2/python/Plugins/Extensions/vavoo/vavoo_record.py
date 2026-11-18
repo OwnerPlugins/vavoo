@@ -75,15 +75,72 @@ STALL_SECONDS = 30
 INFO_EVERY = 30
 SPACE_EVERY = 10
 KEEP_ALIVE_EVERY = 60
-# An index entry for every second of the recording (at most).
+# An index entry for every second of the recording (at most). Every
+# block written is looked at (a short scan): the stream arrives in
+# bursts of whole segments, so looking only now and then would leave
+# one entry per segment.
 INDEX_STEP = 1.0
+# ffmpeg runs below Enigma2's priority (the video and the menus come
+# first; a recording only has to keep up with the stream).
+FFMPEG_NICE = 10
 
 FFMPEG_PATHS = ("/usr/bin/ffmpeg", "/usr/local/bin/ffmpeg", "/bin/ffmpeg",
                 "/opt/bin/ffmpeg")
 
 
+_logger = [None]
+
+
+def set_logger(function):
+    """Where the messages go (plugin.py: its vavoo.log printer)."""
+    _logger[0] = function
+
+
 def _log(message):
-    print("[vavoo_record] " + message)
+    message = "[vavoo_record] " + message
+    if _logger[0] is not None:
+        try:
+            _logger[0](message)
+            return
+        except Exception:
+            pass
+    print(message)
+
+
+_prctl = [None]
+
+
+def name_this_thread(name):
+    """Give the running thread a name the system shows ("top -H",
+    /proc/<pid>/task/*/comm: "vv-guide", "vv-rec"...), so what loads
+    the box can be told apart inside Enigma2's one process. Linux
+    only, 15 characters at most; nothing at all where it cannot.
+    (Here because this module has no Enigma2 imports: every other
+    one can use it.)"""
+    if _prctl[0] is False:
+        return
+    try:
+        import ctypes
+        if _prctl[0] is None:
+            # (the running program's own symbols: libc is in them -
+            # no library search, which can start processes)
+            _prctl[0] = ctypes.CDLL(None).prctl
+        raw = _native(name)
+        if not isinstance(raw, bytes):
+            raw = raw.encode("ascii", "replace")
+        _prctl[0](15, ctypes.c_char_p(raw[:15]), 0, 0, 0)  # PR_SET_NAME
+    except Exception:
+        _prctl[0] = False
+
+
+def find_nice():
+    """The nice program (busybox has it), or None."""
+    for folder in (os.environ.get("PATH") or "").split(os.pathsep) + \
+            ["/bin", "/usr/bin", "/sbin"]:
+        path = os.path.join(folder, "nice") if folder else ""
+        if path and os.path.isfile(path) and os.access(path, os.X_OK):
+            return path
+    return None
 
 
 def _text(value):
@@ -494,7 +551,7 @@ class Recorder(object):
     def __init__(self, source, path, stop_at=0, max_seconds=MANUAL_MAX,
                  info=None, ffmpeg=None, on_end=None, keep_alive=None,
                  log_path=None, tag="Recording", env=None,
-                 space=free_bytes):
+                 space=free_bytes, thread_name="vv-rec"):
         self.id = binascii.hexlify(os.urandom(8))
         if not isinstance(self.id, str):
             self.id = self.id.decode("ascii")
@@ -510,6 +567,7 @@ class Recorder(object):
         self.tag = tag
         self.env = env
         self.space = space
+        self.thread_name = thread_name
         self.bytes = 0
         self.duration = 0.0
         self.running = False
@@ -634,6 +692,7 @@ class Recorder(object):
             self._stop.wait(min(0.5, max(0.01, end - time.time())))
 
     def _run(self):
+        name_this_thread(self.thread_name)
         failures = 0
         out = None
         try:
@@ -720,6 +779,9 @@ class Recorder(object):
     def _command(self, url):
         address, maps = input_args(url)
         cmd = [self.ffmpeg, "-nostdin", "-hide_banner", "-loglevel", "error"]
+        nice = find_nice() if FFMPEG_NICE else None
+        if nice:
+            cmd = [nice, "-n", str(FFMPEG_NICE)] + cmd
         if address.startswith("http"):
             cmd += ["-user_agent", USER_AGENT]
         return cmd + ["-i", address] + maps + \
@@ -768,10 +830,19 @@ class Recorder(object):
                 whole = len(pending) - len(pending) % PACKET
                 if not whole:
                     continue
-                block = pending[:whole]
+                if PY2:
+                    self._index(pending[:whole], now)
+                    out.write(bytes(pending[:whole]))
+                else:
+                    # looked at and written as it is, no copy (the
+                    # views let go before the buffer is shortened)
+                    whole_view = memoryview(pending)
+                    part = whole_view[:whole]
+                    self._index(part, now)
+                    out.write(part)
+                    part.release()
+                    whole_view.release()
                 del pending[:whole]
-                self._index(block, now)
-                out.write(bytes(block))
                 self.bytes += whole
                 self._side_jobs(now)
         finally:

@@ -272,8 +272,16 @@ the real files (measured, see the comment block above
   `_parse_epg_guide()` keeps only the programmes from 3 hours before
   load time to 24 hours after it (`_EPG_GUIDE_BEHIND` /
   `_EPG_GUIDE_AHEAD`, for the guide grid; measured: pl 11 MB, fr 6 MB),
-  as tuples. One `EpgGuide` per country, reused for an hour, four
-  countries at most, one download at a time per country.
+  as tuples. One `EpgGuide` per country, reused for 6 hours
+  (`_EPG_GUIDE_TTL`; a box paid 10-30 s of a core every hour before),
+  four countries at most, one download at a time per country.
+- Heavy loops in background threads (the guide parse, the matcher's
+  Rytec and feed-name scans) call `_Breather().tick()` every turn:
+  after 50 ms of work they rest 25 ms, never on the main thread. A
+  new heavy loop does the same. Every plugin thread gets a system
+  name through `named(target, "vv-...")` / `vavoo_record.
+  name_this_thread()` (seen in `top -H`), and `find_match()` logs any
+  lookup over 1 s ("[EPG] slow match").
   `lookup_programmes()` / `peek_programmes()` give a channel's
   programmes between two times (`EpgGuide.between()`).
 - Every entry carries its own UTC offset and the files mix them

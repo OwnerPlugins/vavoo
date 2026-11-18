@@ -1089,6 +1089,7 @@ class VavooProxy(object):
     def start_token_monitor(self):
         """Monitor token age with minimal background traffic"""
         def token_monitor_loop():
+            vavoo_record.name_this_thread("vv-token")
             while not self._stop_event.is_set():
                 # Check FIRST, then sleep (first check is immediate at startup)
                 try:
@@ -3130,7 +3131,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             f.seek(start)
             remaining = length
             while True:
-                want = 65536 if remaining is None else min(65536, remaining)
+                # (256 KB at a time: fewer turns of this Python loop
+                # for a stream of several Mbit/s)
+                want = 262144 if remaining is None else min(262144, remaining)
                 if want <= 0:
                     break
                 data = f.read(want)
@@ -3174,6 +3177,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
         """Setup with timeout"""
+        # (one thread per request: shown as "vv-proxy" in top -H)
+        vavoo_record.name_this_thread("vv-proxy")
         BaseHTTPRequestHandler.setup(self)
         self.request.settimeout(self.timeout)
         # Streaming writes are flushed per-chunk (see the /stream handler);
@@ -3478,6 +3483,7 @@ def _proxy_thread_main():
     leave the "booting" marker behind (which would make every start
     attempt for the next MAX_BOOT_AGE seconds think one is still in
     progress)."""
+    vavoo_record.name_this_thread("vv-proxymain")
     try:
         start_proxy()
     except Exception as e:
