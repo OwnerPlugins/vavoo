@@ -3,6 +3,7 @@
 from __future__ import absolute_import, print_function
 
 import codecs
+import os
 import re
 import ssl
 import time
@@ -111,6 +112,7 @@ from . import (
 from . import PY2, PY3, vUtils
 from . import vavoo_theme
 from . import vavoo_store
+from . import vavoo_record
 from .bouquet_manager import (
     convert_bouquet,
     _update_favorite_file,
@@ -523,7 +525,8 @@ cfg.show_log = NoSave(ConfigAction())
 cfg.view_favourites = NoSave(ConfigAction())
 cfg.choose_countries = NoSave(ConfigAction())
 cfg.parental = NoSave(ConfigAction())
-cfg.reminders = NoSave(ConfigAction())
+cfg.recordings = NoSave(ConfigAction())
+cfg.record_folder = NoSave(ConfigAction())
 cfg.backup = NoSave(ConfigAction())
 cfg.restore = NoSave(ConfigAction())
 cfg.clear_favourites = NoSave(ConfigAction())
@@ -587,6 +590,10 @@ cfg.clock_format = ConfigSelection(
 # OK on a channel plays it in the list's small window first (OK again:
 # full screen), as in the app - see _NowPlaying.
 cfg.preview_window = ConfigYesNo(default=True)
+# PAUSE records the channel to go on from there (the app's "Pause Live
+# TV"), and where recordings go ("" = Enigma2's movie folder).
+cfg.timeshift = ConfigYesNo(default=True)
+cfg.record_path = ConfigText(default="")
 # Open the last watched channel when the plugin starts (the app's
 # "Start with last channel").
 cfg.start_last = ConfigYesNo(default=False)
@@ -1935,6 +1942,12 @@ class vavoo_config(Screen, ConfigListScreen):
             _("Start with last channel"),
             cfg.start_last,
             _("Open the last watched channel when the plugin starts.")))
+        self.list.append(getConfigListEntry(
+            _("Pause Live TV"),
+            cfg.timeshift,
+            _("While a channel is paused it is recorded on the disk: play "
+              "goes on from where you paused, LEFT / RIGHT move back and "
+              "forth, EXIT returns to live (up to 2 hours).")))
 
         self.list.append(getConfigListEntry(
             _("Now/Next in channel list"),
@@ -2051,10 +2064,17 @@ class vavoo_config(Screen, ConfigListScreen):
               "(optionally) the settings. Once entered, all is open for "
               "15 minutes or until the plugin is left.")))
         self.list.append(getConfigListEntry(
-            _("Reminders"),
-            cfg.reminders,
-            _("The reminders set in the programme guide (OK on a programme "
-              "still to come).")))
+            _("Recordings"),
+            cfg.recordings,
+            _("Reminders and recordings set in the guide, and the "
+              "recordings on the disk. OK: play (or cancel a timer) - "
+              "GREEN: delete.")))
+        self.list.append(getConfigListEntry(
+            to_string(to_text(_("Recordings folder: {}")).format(
+                to_text(recordings_folder()))),
+            cfg.record_folder,
+            _("Where recordings go: Enigma2's movie folder, or another "
+              "disk. They also show in the box's own movie list.")))
         self.list.append(getConfigListEntry(
             _("Backup Settings & Favourites"),
             cfg.backup,
@@ -2099,7 +2119,38 @@ class vavoo_config(Screen, ConfigListScreen):
             quick_notify(_("Saved: {}").format(path) if path
                          else _("The backup could not be saved"), 5)
 
+    def choose_record_folder(self):
+        entries = []
+        for value, folder in record_folder_choices():
+            free = vavoo_record.free_bytes(folder)
+            label = to_text(folder)
+            if value == "":
+                label = to_text(_("Movie folder ({})")).format(label)
+            if free is not None:
+                label += u"  \u00b7  " + to_text(_("{} free")).format(
+                    size_text(free))
+            entries.append((to_string(label), value))
+
+        def chosen(value):
+            if value is None:
+                return
+            cfg.record_path.value = value
+            cfg.record_path.save()
+            configfile.save()
+            try:
+                self.createSetup()
+            except Exception as e:
+                debug("Settings list not rebuilt: {}".format(e))
+
+        open_action_menu(self.session, _("Recordings folder"), entries,
+                         chosen)
+
     def restore(self):
+        if RECORDINGS.running():
+            # (as the app: what a restore replaces is in use)
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Not now: a recording is running"), 4)
+            return
         found = vavoo_store.list_backups()
         if not found:
             if NOTIFICATION_AVAILABLE:
@@ -2152,8 +2203,10 @@ class vavoo_config(Screen, ConfigListScreen):
         elif sel and sel == cfg.parental:
             ask_pin(self.session, self,
                     lambda: self.session.open(VavooParental))
-        elif sel and sel == cfg.reminders:
-            self.session.open(VavooReminders)
+        elif sel and sel == cfg.recordings:
+            self.session.open(VavooRecordings)
+        elif sel and sel == cfg.record_folder:
+            self.choose_record_folder()
         elif sel and sel == cfg.backup:
             ask_pin(self.session, self, self.backup)
         elif sel and sel == cfg.restore:
@@ -6317,11 +6370,35 @@ class _ReminderService(object):
     def tick(self):
         try:
             due = vavoo_store.due_timers(kind=vavoo_store.KIND_REMIND)
+            records = vavoo_store.due_timers(kind=vavoo_store.KIND_RECORD)
         except Exception as e:
             debug("Reminders not read: {}".format(e))
             return
         for timer in due:
             self.fire(timer)
+        for timer in records:
+            self.record(timer)
+
+    def record(self, timer):
+        """A recording set in the guide: starts 2 minutes before its
+        programme (vavoo_store.alarm_time()), also in standby and with
+        the plugin closed, until its end plus the same margin."""
+        stop_at = (timer.get("stop") or 0) + vavoo_store.RECORD_MARGIN
+        if stop_at <= time.time():
+            return
+        channel = {"name": timer.get("name"), "url": timer.get("url"),
+                   "country_name": timer.get("country") or None,
+                   "country_code": timer.get("country_code") or None,
+                   "logo": timer.get("logo") or ""}
+        recorder = RECORDINGS.start(channel, timer.get("title"), stop_at,
+                                    quiet=True)
+        if not NOTIFICATION_AVAILABLE:
+            return
+        if recorder is None:
+            quick_notify(_("Scheduled recording not started: {}").format(
+                to_string(timer.get("title"))), 6)
+        elif not _in_standby():
+            quick_notify(recording_text(timer.get("title"), stop_at), 4)
 
     def fire(self, timer):
         if self.session is None or _in_standby():
@@ -6351,6 +6428,243 @@ class _ReminderService(object):
 
 
 REMINDERS = _ReminderService()
+
+
+# ---------------------------------------------------------------------
+# Recordings (vavoo_record.py; the app's RecordingService)
+# ---------------------------------------------------------------------
+# ffmpeg's own messages (vavoo_record.py's Recorder).
+RECORD_LOG = "/tmp/vavoo_record.log"
+
+
+def default_movie_folder():
+    try:
+        path = config.usage.default_path.value
+        if path:
+            return path
+    except Exception:
+        pass
+    return "/media/hdd/movie/"
+
+
+def recordings_folder():
+    return cfg.record_path.value or default_movie_folder()
+
+
+def record_folder_choices():
+    """[(value, folder)]: Enigma2's movie folder ("") and a movie
+    folder on each disk mounted under /media (and /media/net)."""
+    out = [("", default_movie_folder())]
+    seen = set([out[0][1].rstrip("/")])
+    mounts = []
+    for root in ("/media", "/media/net"):
+        try:
+            mounts.extend(join(root, name) for name in sorted(listdir(root)))
+        except Exception:
+            pass
+    for mount in mounts:
+        try:
+            if not os.path.ismount(mount):
+                continue
+        except Exception:
+            continue
+        folder = join(mount, "movie") + "/"
+        if folder.rstrip("/") not in seen:
+            seen.add(folder.rstrip("/"))
+            out.append((folder, folder))
+    current = cfg.record_path.value
+    if current and current.rstrip("/") not in seen:
+        out.append((current, current))
+    return out
+
+
+def usable_folder(folder, create=True):
+    """`folder` if it can be written to (made on a mounted disk when
+    missing), else None."""
+    if not folder:
+        return None
+    try:
+        if not os.path.isdir(folder):
+            if not create:
+                return None
+            parent = dirname(folder.rstrip("/"))
+            if not os.path.isdir(parent):
+                return None
+            os.makedirs(folder)
+        if os.access(folder, os.W_OK):
+            return folder
+    except Exception as e:
+        debug("Folder {} not usable: {}".format(folder, e))
+    return None
+
+
+def pause_folder():
+    """Where the pause buffer goes: Enigma2's timeshift folder, else
+    the recordings folder - with room to spare (vavoo_record.MIN_FREE),
+    else None (PAUSE only pauses)."""
+    candidates = []
+    try:
+        candidates.append(config.usage.timeshift_path.value)
+    except Exception:
+        pass
+    candidates.append(recordings_folder())
+    for folder in candidates:
+        folder = usable_folder(folder, create=False) or \
+            (usable_folder(folder) if folder == recordings_folder() else None)
+        if not folder:
+            continue
+        free = vavoo_record.free_bytes(folder)
+        if free is None or free >= vavoo_record.MIN_FREE:
+            return folder
+    return None
+
+
+def size_text(size):
+    if size >= 1e9:
+        return "%.1f GB" % (size / 1e9)
+    return "%d MB" % (size // 1048576)
+
+
+def recording_text(title, stop_at=0):
+    """"Recording: Title  →  21:02" (the app's recording_started)."""
+    text = to_text(_("Recording: {}")).format(to_text(title))
+    if stop_at:
+        text += u"  →  " + to_text(clock_text(stop_at))
+    return to_string(text)
+
+
+def wait_for_proxy(seconds=90):
+    """In a background thread: the proxy started if it is not
+    running (a box woken up for a recording), and waited for."""
+    if is_proxy_ready(timeout=2):
+        return True
+    try:
+        run_proxy_in_background()
+    except Exception as e:
+        debug("Proxy not started for a recording: {}".format(e))
+    end = time.time() + seconds
+    while time.time() < end:
+        if is_proxy_ready(timeout=2):
+            return True
+        time.sleep(2)
+    return False
+
+
+class _Recordings(object):
+    """The recordings running now, by id (the app's
+    RecordingService.active): started from the player's options, the
+    REC key, the guide and its timers; they go on whatever the plugin
+    does (zap, close, standby). Each has a Vavoo token of its own
+    (vavoo_proxy's resolve_own(): one stream per token)."""
+
+    def __init__(self):
+        self.active = {}
+        self.lock = threading.Lock()
+
+    def running(self):
+        with self.lock:
+            return [r for r in self.active.values() if r.running]
+
+    def recording_of(self, url):
+        channel_id = stream_channel_id(url) if url else None
+        if not channel_id:
+            return None
+        for recorder in self.running():
+            if stream_channel_id((recorder.info or {}).get("url")) == \
+                    channel_id:
+                return recorder
+        return None
+
+    def active_paths(self):
+        return [r.path for r in self.running()]
+
+    def start(self, channel, title=None, stop_at=0, quiet=False):
+        """Records `channel` ({"name", "url", "country_name",
+        "country_code", "logo"}) from now until stop_at (0: until
+        stopped, 4 hours at most). The Recorder, or None (said why
+        unless quiet)."""
+        url = channel.get("url")
+        channel_id = stream_channel_id(url)
+        name = to_text(channel.get("name"))
+        title = to_text(title or name)
+
+        def fail(message):
+            if not quiet and NOTIFICATION_AVAILABLE:
+                quick_notify(message, 4)
+            return None
+
+        if not channel_id:
+            return fail(_("This channel cannot be played"))
+        running = self.recording_of(url)
+        if running is not None:
+            return running
+        ffmpeg = vavoo_record.find_ffmpeg()
+        if not ffmpeg:
+            return fail(_("Recording needs ffmpeg"))
+        folder = usable_folder(recordings_folder())
+        free = vavoo_record.free_bytes(folder) if folder else 0
+        if not folder or (free is not None and free < vavoo_record.MIN_FREE):
+            return fail(_("Can't record (not enough free space?)"))
+        now = time.time()
+        path = vavoo_record.new_path(folder, name, title, now)
+        info = {
+            "format": vavoo_record.INFO_FORMAT, "version": 1,
+            "name": name, "title": title, "url": to_text(url),
+            "country": to_text(channel.get("country_name") or ""),
+            "country_code": to_text(channel.get("country_code") or ""),
+            "logo": to_text(channel.get("logo") or ""),
+            "start": int(now), "stop_at": int(stop_at or 0),
+            "sref": u"4097:0:1:0:0:0:0:0:0:0::" + name.replace(u":", u"%3a"),
+            "description": name}
+        if stop_at:
+            max_seconds = stop_at - now + vavoo_record.TIMER_EXTRA
+        else:
+            max_seconds = vavoo_record.MANUAL_MAX
+        slot = "recording:" + basename(path)
+
+        def address(force):
+            if not wait_for_proxy():
+                return None
+            return vavoo_proxy.proxy.resolve_own(channel_id, slot, force)
+
+        def keep_alive():
+            vavoo_proxy.proxy.own_signature(slot)
+
+        recorder = vavoo_record.Recorder(
+            address, path, stop_at=stop_at, max_seconds=max_seconds,
+            info=info, ffmpeg=ffmpeg, on_end=self._ended,
+            keep_alive=keep_alive, log_path=RECORD_LOG,
+            tag="Recording " + to_string(name))
+        recorder.slot = slot
+        if not recorder.start():
+            return fail(_("Can't record (not enough free space?)"))
+        with self.lock:
+            self.active[recorder.id] = recorder
+        print("[vavoo] Recording {} -> {}".format(to_string(name), path))
+        return recorder
+
+    def stop(self, recorder):
+        if recorder is not None:
+            recorder.stop()
+
+    def _ended(self, recorder):
+        """(the recorder's thread)"""
+        with self.lock:
+            self.active.pop(recorder.id, None)
+        try:
+            vavoo_proxy.proxy.drop_own_signature(recorder.slot)
+        except Exception:
+            pass
+        if recorder.failure and NOTIFICATION_AVAILABLE:
+            title = (recorder.info or {}).get("title") or ""
+            if recorder.failure == "no space left":
+                quick_notify(_("Recording stopped: the disk is nearly full"), 6)
+            else:
+                quick_notify(_("Recording stopped early: {}").format(
+                    to_string(title)), 6)
+
+
+RECORDINGS = _Recordings()
 
 
 # ---------------------------------------------------------------------
@@ -7417,6 +7731,7 @@ BACKUP_SETTINGS = (
     "group_sources", "logos", "subcategories", "autobouquetupdate",
     "timetype", "updateinterval", "fixedtime", "services",
     "list_position", "stmain", "stats_enabled", "debug_logging",
+    "timeshift", "record_path",
 )
 
 
@@ -7636,6 +7951,10 @@ class VavooReminders(VavooPickScreen):
             return
         self._delete_armed = None
         self._remove(timer)
+
+
+# (until the recordings list joins the reminders')
+VavooRecordings = VavooReminders
 
 
 def open_settings(session, on_closed=None):
@@ -10733,8 +11052,20 @@ def check_configuring():
         return
 
 
+# A recording set in the guide wakes the box from deep standby this
+# long before it starts (Enigma2 asks when it shuts down).
+WAKE_BEFORE = 300
+
+
 def get_next_wakeup():
-    return -1
+    try:
+        alarm = vavoo_store.next_alarm(kind=vavoo_store.KIND_RECORD)
+    except Exception as e:
+        debug("Next recording not read: {}".format(e))
+        alarm = None
+    if not alarm or alarm <= time.time():
+        return -1
+    return int(alarm) - WAKE_BEFORE
 
 
 def add_skin_back(bakk):
