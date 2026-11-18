@@ -390,7 +390,10 @@ records and timeshifts only DVB, so the plugin does it itself:
   (`recording_of(url)`), with its own token (`resolve_own()`), into
   `recordings_folder()` (`cfg.record_path`, "" = Enigma2's
   `config.usage.default_path`), only with `ffmpeg` and
-  `vavoo_record.MIN_FREE`; the recorder's thread waits for the proxy
+  `vavoo_record.MIN_FREE`, and only on a mounted disk
+  (`usable_folder()` → `vavoo_record.on_disk()`: never the root file
+  system - the internal flash, where a `/media/hdd` with no disk is a
+  plain folder - nor tmpfs; the pause buffer too); the recorder's thread waits for the proxy
   (`wait_for_proxy()`: a box woken for a recording). They run whatever
   the plugin does; Restore refuses while one runs.
 - Timers of kind "record" go off in `_ReminderService.tick()` at

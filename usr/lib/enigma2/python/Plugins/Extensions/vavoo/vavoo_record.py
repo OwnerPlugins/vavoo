@@ -192,6 +192,47 @@ def free_bytes(path):
         return None
 
 
+# File systems that are not a disk: the box's memory. (The root file
+# system is refused by its mount point: on most boxes it is the
+# internal flash, which a stream of several Mbit/s wears out and
+# saturates - the whole box then waits on it.)
+_RAM_FS = ("tmpfs", "ramfs", "devtmpfs", "rootfs", "proc", "sysfs")
+
+
+def mount_of(path):
+    """(mount point, file system type) of the disk `path` is on (or
+    would be on: the nearest existing folder above it)."""
+    path = os.path.realpath(_native(path) or "/")
+    while path and not os.path.exists(path):
+        parent = os.path.dirname(path.rstrip("/"))
+        if not parent or parent == path:
+            break
+        path = parent
+    point = path
+    while point not in ("", "/") and not os.path.ismount(point):
+        point = os.path.dirname(point.rstrip("/")) or "/"
+    point = point or "/"
+    fstype = ""
+    try:
+        with open("/proc/mounts") as f:
+            for line in f:
+                fields = line.split()
+                if len(fields) > 2 and \
+                        fields[1].replace("\\040", " ") == point:
+                    fstype = fields[2]
+    except Exception:
+        pass
+    return point, fstype
+
+
+def on_disk(path):
+    """True when `path` is on a mounted disk (HDD, USB, network share)
+    - not the box's internal flash (the root file system) nor its
+    memory (/tmp...). Recordings and the pause buffer only go there."""
+    point, fstype = mount_of(path)
+    return point != "/" and fstype not in _RAM_FS
+
+
 def _clean(text, limit=50):
     """A name fit for a file name (as Enigma2's own recordings)."""
     text = re.sub(u'[\\x00-\\x1f/\\\\:*?"<>|]+', u" ", _text(text))

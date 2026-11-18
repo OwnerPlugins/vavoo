@@ -6519,11 +6519,16 @@ def record_folder_choices():
 
 
 def usable_folder(folder, create=True):
-    """`folder` if it can be written to (made on a mounted disk when
-    missing), else None."""
+    """`folder` if it is on a mounted disk and can be written to (made
+    there when missing), else None. Never the box's internal flash: a
+    /media/hdd with no disk mounted is a plain folder on it, and a
+    recording there saturated the box."""
     if not folder:
         return None
     try:
+        if not vavoo_record.on_disk(folder):
+            debug("Folder {} is not on a disk: not used".format(folder))
+            return None
         if not os.path.isdir(folder):
             if not create:
                 return None
@@ -6643,7 +6648,9 @@ class _Recordings(object):
             return fail(_("Recording needs ffmpeg"))
         folder = usable_folder(recordings_folder())
         free = vavoo_record.free_bytes(folder) if folder else 0
-        if not folder or (free is not None and free < vavoo_record.MIN_FREE):
+        if not folder:
+            return fail(_("Can't record: no disk (HDD / USB) found"))
+        if free is not None and free < vavoo_record.MIN_FREE:
             return fail(_("Can't record (not enough free space?)"))
         now = time.time()
         path = vavoo_record.new_path(folder, name, title, now)
