@@ -1579,6 +1579,19 @@ def build_stream_sref(name, url):
     return sref
 
 
+def file_stream_sref(url, name):
+    """The service reference for a /file address of the proxy (a
+    recording or the pause buffer), with the same player service
+    type as the channels (cfg.services)."""
+    encoded_url = (url + "#User-Agent=VAVOO/2.6").replace(":", "%3a")
+    safe_name = to_string(name)
+    ref = (cfg.services.value + ":0:1:0:0:0:0:0:0:0:" + encoded_url + ":" +
+           safe_name.replace(":", "%3a"))
+    sref = eServiceReference(ref)
+    sref.setName(safe_name)
+    return sref
+
+
 def remember_recent(channel):
     """A channel was just watched: to the top of "Recently watched"
     (a small file write - in the background, never on a zap's way)."""
@@ -8443,7 +8456,7 @@ PLAYER_BAR_LABELS = (
 # The bar's buttons in LEFT / RIGHT order (the app's: the colour ones,
 # then the small ones) and the Playstream2 method each one runs.
 PLAYER_BAR_BUTTONS = (
-    ("key_red", "cancel"), ("key_green", "toggle_favourite"),
+    ("key_red", "back"), ("key_green", "toggle_favourite"),
     ("key_yellow", "previousitem"), ("key_blue", "nextitem"),
     ("key_options", "open_options"), ("key_audio", "_bar_audio"),
     ("key_list", "_bar_list"), ("key_recall", "recall"))
@@ -9303,6 +9316,23 @@ class Playstream2(
         self._info_shown = False
         self._bar_epg_for = None
         self._channel_logo_picload = None
+        # Pause Live TV (the app's timeshift): the buffer being
+        # recorded, the state (None = live, "paused" = live paused and
+        # recording, "behind" / "behind_paused" = playing the buffer)
+        # and where in it (seconds; it moves on from _shift_clock).
+        self._shift = None
+        self._shift_state = None
+        self._shift_pos = 0.0
+        self._shift_clock = None
+        self._shift_waits = 0
+        self._shift_tick = eTimer()
+        self._shift_seek = eTimer()
+        for timer, function in ((self._shift_tick, self._on_shift_tick),
+                                (self._shift_seek, self._shift_seek_now)):
+            try:
+                timer.callback.append(function)
+            except Exception:
+                timer.timeout.connect(function)
 
         self.stream_running = False
         self.is_streaming = False
@@ -9363,23 +9393,26 @@ class Playstream2(
                 'InfobarSeekActions',
                 'ColorActions',
                 'NumberActions',
-                'InfobarChannelSelection'
+                'InfobarChannelSelection',
+                'InfobarInstantRecord'
             ],
             {
                 "stop": self.leavePlayer,
-                "cancel": self.cancel,
+                # REC: record this channel / stop (the app's Record)
+                "instantRecord": self.toggle_record,
+                "cancel": self.back,
                 "channelDown": self.previousitem,
                 "channelUp": self.nextitem,
                 "down": self.previousitem,
                 "up": self.nextitem,
-                "back": self.cancel,
+                "back": self.back,
                 'epg': self.showIMDB,
                 # The app's keys: INFO shows / hides the bar, RED back,
                 # GREEN favourite, YELLOW / BLUE channel down / up. The
                 # stream source (YELLOW before) is in the options
                 # (MENU - see mainMenu()).
                 "info": self.toggle_bar,
-                "red": self.cancel,
+                "red": self.back,
                 "green": self.toggle_favourite,
                 "yellow": self.previousitem,
                 "blue": self.nextitem,
@@ -9572,6 +9605,7 @@ class Playstream2(
             ask_pin(self.session, self, lambda: self.zap_to(i))
             return
         self._previous_index = int(self.currentindex)
+        self._shift_end(replay=False)
         self.stopStream(restore_original=False)
         self.currentindex = i
         item = self.list[i][0]
@@ -9658,6 +9692,11 @@ class Playstream2(
         if self._typed:
             self._commit_digits()
             return
+        if self._shift_state in ("paused", "behind_paused") or \
+                getattr(self, "seekstate", None) == self.SEEK_STATE_PAUSE:
+            # (the app: paused, OK goes on)
+            self.unPauseService()
+            return
         if self._bar_sel >= 0 and self._bar_visible():
             self._bar_press()
             return
@@ -9671,9 +9710,15 @@ class Playstream2(
     # ---- the bar's buttons with LEFT / RIGHT (the app's selectBarButton)
 
     def bar_left(self):
+        if self._shift_behind():
+            self.shift_seek(-10)
+            return
         self._bar_move(-1)
 
     def bar_right(self):
+        if self._shift_behind():
+            self.shift_seek(10)
+            return
         self._bar_move(1)
 
     def _bar_move(self, step):
@@ -9795,6 +9840,11 @@ class Playstream2(
 
     def _status_text(self):
         parts = []
+        if RECORDINGS.recording_of(self.url) is not None:
+            parts.append(u"\u25cf REC")
+        shift = self._shift_text()
+        if shift:
+            parts.append(shift)
         group_id = self._current_group_channel_id()
         if group_id:
             try:
@@ -9949,6 +9999,13 @@ class Playstream2(
             _("Sleep timer") if left is None
             else "{}: {}".format(_("Sleep timer"), _("{} min").format(left)),
             "sleep"))
+        recording = RECORDINGS.recording_of(self.url)
+        if recording is not None:
+            seconds = int(recording.duration)
+            entries.append((to_string(u"{}: \u25cf {}:{:02d}".format(
+                to_text(_("Record")), seconds // 60, seconds % 60)), "record"))
+        else:
+            entries.append((_("Record"), "record"))
         entries.append((_("Stream Info"), "info"))
         entries.append((_("Programme guide"), "guide"))
         # (short: the panel is the channel list's width)
@@ -9977,6 +10034,8 @@ class Playstream2(
             self.showIMDB()
         elif key == "guide":
             self.open_guide()
+        elif key == "record":
+            self.toggle_record()
 
     def open_guide(self):
         """Options → Programme guide: the grid over the video, of this
@@ -10131,6 +10190,275 @@ class Playstream2(
             return
         self.zap_to(index)
 
+    # ---- Record (the app's Opt.RECORD)
+
+    def toggle_record(self):
+        """Records this channel until the end of the programme on now
+        plus 2 minutes (a receiver's instant recording) - or, with no
+        guide or a programme ending within 10 minutes, until stopped (4
+        hours at most). Again: stops it."""
+        if self._closed:
+            return
+        running = RECORDINGS.recording_of(self.url)
+        if running is not None:
+            running.stop()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Recording stopped"), 2)
+            self._refresh_status()
+            return
+        title, stop_at = to_text(self.name), 0
+        try:
+            answer = vUtils.peek_now_next(self.name, self.country_code)
+        except Exception as e:
+            debug("Now/next not read for a recording: {}".format(e))
+            answer = None
+        now = time.time()
+        if answer and answer[0] == "ok" and answer[1]:
+            programme = answer[1]
+            if programme[2]:
+                title = to_text(programme[2])
+            if 600 <= programme[1] - now < 6 * 3600:
+                stop_at = programme[1] + vavoo_store.RECORD_MARGIN
+        if RECORDINGS.start(self._channel_info(), title, stop_at) is not None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(recording_text(title, stop_at), 3)
+        self._refresh_status()
+
+    def _refresh_status(self):
+        if self._bar_themed and not self._closed:
+            try:
+                self["status"].setText(to_string(self._status_text()))
+            except Exception:
+                pass
+
+    # ---- Pause Live TV (the app's pauseLive / startShift / seekShift)
+
+    def _shift_behind(self):
+        return self._shift_state in ("behind", "behind_paused")
+
+    def _shift_position(self):
+        position = self._shift_pos
+        if self._shift_state == "behind" and self._shift_clock is not None:
+            position += time.time() - self._shift_clock
+        if self._shift is not None:
+            position = min(position, self._shift.duration)
+        return max(0.0, position)
+
+    def _shift_text(self):
+        if self._shift_state in ("paused", "behind_paused") or (
+                self._shift_state is None and
+                getattr(self, "seekstate", None) == self.SEEK_STATE_PAUSE):
+            text = u"❚❚ " + to_text(_("Paused"))
+            if self._shift is not None:
+                text += u"  ·  " + to_text(
+                    _("recording - press play to go on"))
+            return text
+        if self._shift_state == "behind":
+            behind = 0
+            if self._shift is not None:
+                behind = int(max(0, self._shift.duration -
+                                 self._shift_position()))
+            return u"◀◀ -{}:{:02d}  {}".format(
+                behind // 60, behind % 60,
+                to_text(_("LEFT / RIGHT move · EXIT: live")))
+        return None
+
+    def pauseService(self):
+        """PAUSE: the picture stops, and (Settings → Pause Live TV) the
+        channel starts being recorded, to go on from here."""
+        if self._closed:
+            return
+        if self._shift_state == "behind":
+            self._shift_pos = self._shift_position()
+            self._shift_clock = None
+            self._shift_seek.stop()
+            self._shift_state = "behind_paused"
+            InfoBarSeek.pauseService(self)
+        elif self._shift_state is None:
+            if getattr(self, "seekstate", None) == self.SEEK_STATE_PAUSE:
+                return
+            InfoBarSeek.pauseService(self)
+            self._start_shift()
+        self._shift_changed()
+
+    def unPauseService(self):
+        """PLAY: on from where it was paused (out of the buffer)."""
+        if self._closed:
+            return
+        if self._shift_state == "paused":
+            self._shift_resume()
+        elif self._shift_state == "behind_paused":
+            self._shift_play_at(self._shift_pos)
+        else:
+            InfoBarSeek.unPauseService(self)
+        self._shift_changed()
+
+    def playpauseService(self):
+        if self._shift_state in ("paused", "behind_paused") or (
+                self._shift_state is None and
+                getattr(self, "seekstate", None) == self.SEEK_STATE_PAUSE):
+            self.unPauseService()
+        else:
+            self.pauseService()
+
+    def seekFwd(self):
+        """>> : 30 seconds on in the buffer (live: nothing to seek)."""
+        if self._shift_behind():
+            self.shift_seek(30)
+        else:
+            InfoBarSeek.seekFwd(self)
+
+    def seekBack(self):
+        if self._shift_behind():
+            self.shift_seek(-30)
+        else:
+            InfoBarSeek.seekBack(self)
+
+    def _start_shift(self):
+        if self._shift is not None or not cfg.timeshift.value:
+            return
+        channel_id = stream_channel_id(self.url)
+        folder = pause_folder()
+        ffmpeg = vavoo_record.find_ffmpeg()
+        if not channel_id or not folder or not ffmpeg:
+            # (no disk, no ffmpeg: PAUSE only pauses)
+            return
+        address = PROXY_BASE_URL + "/vavoo?channel=" + \
+            url_quote(channel_id, safe='')
+
+        def source(force):
+            # the address the player had (the shared token: the player
+            # is paused, and stops once the buffer plays)
+            if force:
+                try:
+                    vavoo_proxy.proxy.report_stream_failure(channel_id)
+                except Exception:
+                    pass
+            return address
+
+        recorder = vavoo_record.Recorder(
+            source, vavoo_record.shift_path(folder),
+            max_seconds=vavoo_record.SHIFT_MAX, ffmpeg=ffmpeg,
+            log_path=RECORD_LOG, tag="Pause live")
+        if not recorder.start():
+            return
+        self._shift = recorder
+        self._shift_state = "paused"
+        self._shift_pos = 0.0
+        self._shift_clock = None
+        self._shift_waits = 0
+        self._shift_tick.start(1000, False)
+        print("[Playstream2] Paused - recording to " + recorder.path)
+
+    def _shift_resume(self):
+        """PLAY after a pause: the buffer from its start (it began a
+        few seconds behind live, where the picture stopped). Its first
+        part is waited for, a few seconds at most."""
+        recorder = self._shift
+        if recorder is None:
+            return
+        if recorder.duration < 2.0:
+            if recorder.running and self._shift_waits < 15:
+                self._shift_waits += 1
+                self._shift_seek.start(1000, True)
+                return
+            # nothing recorded: just live
+            self._shift_end(replay=True)
+            return
+        self._shift_waits = 0
+        self._shift_play_at(0.0)
+
+    def _shift_play_at(self, position):
+        recorder = self._shift
+        if recorder is None or self._closed:
+            return
+        position = max(0.0, min(position, recorder.duration - 2))
+        offset = recorder.offset_for(position)
+        url = "{}/file?id={}&offset={}&follow=1".format(
+            PROXY_BASE_URL, recorder.file_id, offset)
+        self._shift_pos = recorder.time_at(offset)
+        self._shift_clock = time.time()
+        self._shift_state = "behind"
+        try:
+            self.session.nav.stopService()
+            self.session.nav.playService(file_stream_sref(url, self.name))
+        except Exception as e:
+            print("[Playstream2] Pause buffer not played: {}".format(e))
+        self._seek_state_play()
+        self._shift_changed()
+
+    def shift_seek(self, seconds):
+        """LEFT / RIGHT (10 s), << / >> (30 s) behind live: the place
+        moves at once, the buffer is opened there once the keys rest."""
+        if not self._shift_behind() or self._shift is None:
+            return
+        end = max(0.0, self._shift.duration - 2)
+        self._shift_pos = max(0.0, min(self._shift_position() + seconds, end))
+        self._shift_clock = None
+        self._shift_state = "behind"
+        self._shift_seek.start(800, True)
+        self._shift_changed()
+
+    def _shift_seek_now(self):
+        if self._shift_state == "paused":
+            self._shift_resume()
+        elif self._shift_behind():
+            self._shift_play_at(self._shift_pos)
+
+    def _shift_end(self, replay=True, say=False):
+        """Back to live (EXIT, the buffer's end) or leaving the channel
+        (a zap, closing): the buffer stops and is deleted. replay: the
+        live channel played again (the stream's proxy count was never
+        given up - the buffer is not a stream of the player's)."""
+        recorder, state = self._shift, self._shift_state
+        if recorder is None and state is None:
+            return
+        self._shift = None
+        self._shift_state = None
+        self._shift_clock = None
+        self._shift_tick.stop()
+        self._shift_seek.stop()
+        if recorder is not None:
+            recorder.discard()
+        if replay and getattr(self, 'sref', None) is not None:
+            try:
+                self.session.nav.stopService()
+                self.session.nav.playService(self.sref)
+            except Exception as e:
+                print("[Playstream2] Live not played again: {}".format(e))
+            self._seek_state_play()
+        if say and NOTIFICATION_AVAILABLE:
+            quick_notify(_("Live"), 2)
+        self._shift_changed()
+
+    def _seek_state_play(self):
+        """A service just started plays (InfoBarSeek does the same on
+        its start event - set at once, so a PAUSE right after it is
+        not taken for an "already paused")."""
+        play = getattr(self, "SEEK_STATE_PLAY", None)
+        if play is not None:
+            self.seekstate = play
+
+    def _on_shift_tick(self):
+        recorder = self._shift
+        if recorder is not None and not recorder.running and \
+                self._shift_state == "paused":
+            # the buffer gave up (or is full) before PLAY
+            self._shift_end(replay=False)
+            return
+        self._refresh_status()
+
+    def _shift_changed(self):
+        """The bar's status line, or (Classic) a short message."""
+        if self._bar_themed:
+            self._refresh_status()
+            if self._shift_state is not None and not self._closed:
+                self._show_bar_now()
+        elif NOTIFICATION_AVAILABLE and self._shift_state is not None:
+            text = self._shift_text()
+            if text:
+                quick_notify(to_string(text), 3)
+
     def isSeekable(self):
         """Live TV is never seekable - InfoBarSeek (a base class of
         this screen, for its EOF/evUpdatedInfo plumbing, not because
@@ -10170,6 +10498,15 @@ class Playstream2(
     def _handleEofEvent(self, source):
         """Shared EOF bookkeeping/restart logic for doEofInternal() and
         __evEOF(), which both fire for the same underlying event."""
+        if self._shift_state in ("behind", "behind_paused"):
+            # the end of the pause buffer (it stopped growing): live
+            print("[Playstream2] End of the pause buffer - back to live")
+            self._shift_end(replay=True, say=True)
+            return
+        if self._shift_state == "paused":
+            # the paused live stream ran dry meanwhile: PLAY goes on
+            # from the buffer anyway
+            return
         current_time = time.time()
 
         if not hasattr(self, 'eof_count'):
@@ -10607,6 +10944,14 @@ class Playstream2(
         except BaseException as e:
             print("[Playstream2] Failed to stop/restore service: {}".format(e))
 
+    def back(self):
+        """EXIT / BACK / RED: behind live or paused, back to live first
+        (the app's); else close."""
+        if self._shift_state is not None and not self._closed:
+            self._shift_end(replay=True, say=True)
+            return
+        self.cancel()
+
     def cancel(self):
         """Close the player"""
         # Reachable both from the cancel/back action bindings and from
@@ -10644,6 +10989,9 @@ class Playstream2(
             except Exception as e:
                 print("[Playstream2] Error cancelling EOF restart: {}".format(e))
 
+        self._shift_end(replay=self.hand_back and self.stream_running)
+        for timer in (self._shift_tick, self._shift_seek):
+            timer.stop()
         if self.hand_back and self.stream_running and \
                 getattr(self, 'sref', None) is not None:
             # Back to the list: the channel keeps playing in its
