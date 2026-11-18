@@ -86,6 +86,7 @@ from Screens.InfoBarGenerics import (
     InfoBarSeek,
     InfoBarAudioSelection,
     InfoBarNotifications,
+    InfoBarShowHide,
 )
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
@@ -3966,8 +3967,11 @@ class MainVavoo(Screen, PreviewWindow):
             favourite_count = len(vUtils.load_favourites())
             recent = vUtils.load_recent()
             try:
-                reminders = len(vavoo_store.load_timers(
-                    vavoo_store.KIND_REMIND))
+                # the timers and the recordings on the disk (this is a
+                # background thread: the disk may be slow to wake)
+                reminders = len(vavoo_store.load_timers()) + len(
+                    vavoo_record.list_recordings(
+                        recordings_folder(), RECORDINGS.active_paths()))
             except Exception:
                 reminders = 0
             reactor.callFromThread(
@@ -4030,9 +4034,9 @@ class MainVavoo(Screen, PreviewWindow):
                         if show_counts else label,
                         themed=self._themed))
                 if reminders:
-                    # The app's third row (its "Recordings"): the
-                    # reminders set, while there are any.
-                    label = _("Reminders")
+                    # The app's third row: Recordings (timers and
+                    # recordings), while there are any.
+                    label = _("Recordings")
                     self.cat_list.append(show_list(
                         label, REMINDERS_ROW, is_category=True,
                         display="{} ({})".format(label, reminders)
@@ -4117,7 +4121,7 @@ class MainVavoo(Screen, PreviewWindow):
                 return
             if current_item[0][1] == REMINDERS_ROW:
                 self.session.openWithCallback(
-                    self._on_child_closed, VavooReminders)
+                    self._on_child_closed, VavooRecordings)
                 return
             print("[MainVavoo] Selected: " + str(name))
 
@@ -7034,6 +7038,7 @@ class VavooGuide(Screen):
                     else _("No programme information"), c["no_info"]))
             return entry
         chosen = self._selected_programme() if selected else None
+        recording = RECORDINGS.recording_of(channel.get("url")) is not None
         for programme in shown:
             x0 = max(name_w, self._x(programme[0])) + 2
             x1 = min(width, self._x(programme[1])) - 2
@@ -7059,8 +7064,14 @@ class VavooGuide(Screen):
                         pos=(left, (height - side) // 2), size=(side, side),
                         png=png))
                     left += side + pad // 2
+            title = programme[2]
+            if vavoo_store.find_timer(channel.get("url"), programme[0],
+                                      vavoo_store.KIND_RECORD) or (
+                    recording and programme[0] <= now < programme[1]):
+                # a recording set (or running): the app's "● "
+                title = u"● " + to_text(title)
             entry.append(self._text(left, 0, x1 - pad - left, height,
-                                    programme[2], text_color))
+                                    title, text_color))
         return entry
 
     def _draw_details(self):
@@ -7200,27 +7211,110 @@ class VavooGuide(Screen):
     # ---- actions
 
     def ok(self):
-        """A programme still to come: Remind me / Watch; anything else:
-        watch the channel."""
+        """A programme still to come: Remind me / Record / Watch (the
+        app's programmeMenu); one on now, or none: watch the channel."""
         programme = self._selected_programme()
         if programme is None or programme[0] <= time.time():
             self.watch()
             return
         channel = self.channels[self.sel_row]
-        reminder = vavoo_store.find_timer(channel.get("url"), programme[0])
-        entries = [(_("Cancel reminder") if reminder else _("Remind me"),
-                    "remind"), (_("Watch"), "watch")]
+        entries = self._programme_actions(channel, programme) + \
+            [(_("Watch"), "watch")]
+        open_action_menu(
+            self.session, to_string(programme[2]), entries,
+            lambda key: self._on_action(key, channel, programme))
 
-        def chosen(key):
-            if self._closed:
-                return
-            if key == "watch":
-                self.watch()
-            elif key == "remind":
-                self.toggle_reminder(channel, programme)
+    def _programme_actions(self, channel, programme):
+        """What can be done with a programme not over yet (the app's
+        programmeActions): its reminder (one still to come), its
+        recording."""
+        now = time.time()
+        url = channel.get("url")
+        out = []
+        reminder = vavoo_store.find_timer(url, programme[0])
+        if programme[0] > now or reminder:
+            out.append((_("Cancel reminder") if reminder else _("Remind me"),
+                        "remind"))
+        if programme[1] > now:
+            if vavoo_store.find_timer(url, programme[0],
+                                      vavoo_store.KIND_RECORD):
+                out.append((_("Cancel recording"), "record"))
+            elif self._recording_now(channel, programme):
+                out.append((_("Stop recording"), "record"))
+            else:
+                out.append((_("Record"), "record"))
+        return out
 
-        open_action_menu(self.session, to_string(programme[2]), entries,
-                         chosen)
+    def _recording_now(self, channel, programme):
+        now = time.time()
+        return programme[0] <= now < programme[1] and \
+            RECORDINGS.recording_of(channel.get("url")) is not None
+
+    def _on_action(self, key, channel, programme):
+        if self._closed or key is None:
+            return
+        if key in ("remind", "record") and (channel is None or
+                                            programme is None):
+            return
+        if key == "watch":
+            self.watch()
+        elif key == "remind":
+            self.toggle_reminder(channel, programme)
+        elif key == "record":
+            self.toggle_record(channel, programme)
+        elif key == "now":
+            self.go_now()
+        elif key == "settings":
+            open_settings(self.session)
+
+    def toggle_record(self, channel, programme):
+        """Record / Cancel recording / Stop recording."""
+        url = channel.get("url")
+        timer = vavoo_store.find_timer(url, programme[0],
+                                       vavoo_store.KIND_RECORD)
+        if timer:
+            vavoo_store.remove_timer(timer["id"])
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Cancelled"), 2)
+            self.draw()
+            return
+        if self._recording_now(channel, programme):
+            RECORDINGS.recording_of(url).stop()
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Recording stopped"), 2)
+            self.draw()
+            return
+        if vavoo_store.needs_pin_for_channel(
+                channel.get("name"), channel.get("country_name")):
+            # (parental control: a locked channel only with the PIN)
+            ask_pin(self.session, self,
+                    lambda: self._record(channel, programme))
+            return
+        self._record(channel, programme)
+
+    def _record(self, channel, programme):
+        """One on now (or starting within the margin) is recorded at
+        once, until its end plus 2 minutes; one still to come is set
+        (vavoo_store timer "record", started by REMINDERS)."""
+        now = time.time()
+        if self._closed or programme[1] <= now:
+            return
+        if programme[0] - vavoo_store.RECORD_MARGIN <= now:
+            stop_at = programme[1] + vavoo_store.RECORD_MARGIN
+            if RECORDINGS.start(channel, programme[2], stop_at) is not None \
+                    and NOTIFICATION_AVAILABLE:
+                quick_notify(recording_text(programme[2], stop_at), 3)
+        else:
+            vavoo_store.add_timer(
+                vavoo_store.KIND_RECORD, channel.get("url"),
+                channel.get("name"), programme[2], programme[0],
+                programme[1], channel.get("country_name"),
+                channel.get("country_code"), channel.get("logo"))
+            REMINDERS.start(self.session)
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Recording set: {}").format(
+                    to_string(programme[2])), 3)
+        self.draw()
 
     def toggle_reminder(self, channel, programme):
         existing = vavoo_store.find_timer(channel.get("url"), programme[0])
@@ -7245,10 +7339,19 @@ class VavooGuide(Screen):
             self.close(("watch", self.sel_row))
 
     def menu(self):
-        if self.over:
-            self.close(None)
-        else:
-            open_settings(self.session)
+        """MENU: the app's key menu - Now, what can be done with the
+        programme highlighted (not over yet: reminder, recording), and
+        the settings (not over the player)."""
+        channel = self.channels[self.sel_row] if self.channels else None
+        programme = self._selected_programme() if channel else None
+        entries = [(_("Now"), "now")]
+        if programme is not None and programme[1] > time.time():
+            entries += self._programme_actions(channel, programme)
+        if not self.over:
+            entries.append((_("Settings"), "settings"))
+        open_action_menu(
+            self.session, _("Options"), entries,
+            lambda key: self._on_action(key, channel, programme))
 
     def close_guide(self):
         self.close(None)
@@ -7884,90 +7987,481 @@ def timer_when(timestamp):
         to_text(clock_text(timestamp))
 
 
-class VavooReminders(VavooPickScreen):
-    """The reminders set (the app's RecordingsActivity, timers part;
-    phase 5 adds the recordings): "Title  ·  Channel" with the day and
-    time. OK → Cancel reminder; GREEN Delete (press twice); RED Back."""
+class VavooRecordings(VavooPickScreen):
+    """Settings → Recordings and the main list's row (the app's
+    RecordingsActivity): the timers set in the guide ("● " a
+    recording, else a reminder) with their day and time, then the
+    recordings on the disk, the newest first, with their start and
+    length ("● REC · 12 min" while recording). OK: play a recording
+    (the PIN for a locked channel's) / cancel a timer; GREEN Delete
+    (press twice; a running recording stops first); RED Back."""
 
     REFRESH_MS = 30000
+    REFRESH_RECORDING_MS = 5000
 
     def __init__(self, session):
-        self.timers = []
+        self.items = []
         self._delete_armed = None
         VavooPickScreen.__init__(
             self, session,
-            _("Set with OK on a programme still to come in the programme "
-              "guide (INFO in a channel list). At the programme's start a "
-              "window offers to watch it."),
+            _("Reminders and recordings (●) set in the guide, and the "
+              "recordings on the disk. OK: play (or cancel a timer) - "
+              "GREEN: delete."),
             (_("Back"), _("Delete"), "", ""))
         self._timer = eTimer()
         try:
             self._timer.callback.append(self._tick)
         except Exception:
             self._timer.timeout.connect(self._tick)
-        self.onLayoutFinish.append(
-            lambda: self._timer.start(self.REFRESH_MS, True))
-        self.onClose.append(self._timer.stop)
+        self._closed = False
+        self.onClose.append(self._on_close)
+
+    def _on_close(self):
+        self._closed = True
+        self._timer.stop()
 
     def key_actions(self):
         return {"ok": self.ok, "green": self.delete}
 
     def _tick(self):
-        # (one that went off meanwhile has left the file)
-        self.refresh()
-        self._timer.start(self.REFRESH_MS, True)
+        # (a timer that went off meanwhile has left the file, a
+        # recording has grown)
+        if not self._closed:
+            self.refresh()
+
+    @staticmethod
+    def _key(item):
+        if item is None:
+            return None
+        kind, data = item
+        return (kind, data["id"] if kind == "timer" else data["path"])
 
     def refresh(self, select=None):
-        self.timers = vavoo_store.load_timers(vavoo_store.KIND_REMIND)
+        keep = self._key(self._selected()) if select is None else None
+        timers = vavoo_store.load_timers()
+        running = dict((r.path, r) for r in RECORDINGS.running())
+        recordings = vavoo_record.list_recordings(recordings_folder(),
+                                                  list(running))
+        items = [("timer", t) for t in timers] + \
+            [("rec", r) for r in recordings]
         rows = []
-        for timer in self.timers:
+        for kind, data in items:
+            if kind == "timer":
+                sign = u"● " if data["kind"] == vavoo_store.KIND_RECORD \
+                    else u""
+                text = u"{}{}  ·  {}".format(
+                    sign, to_text(data.get("title")),
+                    to_text(data.get("name")))
+                value = timer_when(data["start"])
+                key = "timer:{}".format(data["id"])
+            else:
+                recorder = running.get(data["path"])
+                seconds = recorder.duration if recorder is not None else \
+                    data.get("duration") or 0
+                minutes = int(seconds // 60)
+                if recorder is not None:
+                    value = to_text(_("● REC · {} min")).format(
+                        minutes)
+                else:
+                    start = data.get("start") or 0
+                    value = u"{} {} · {}".format(
+                        to_text(time.strftime("%d/%m",
+                                              time.localtime(start))),
+                        to_text(clock_text(start)),
+                        to_text(_("{} min")).format(minutes))
+                title = to_text(data.get("title"))
+                name = to_text(data.get("name"))
+                text = name if not title or title == name else \
+                    u"{}  ·  {}".format(title, name)
+                key = "rec:" + to_text(basename(data["path"]))
             rows.append(show_list(
-                to_string(u"{}  ·  {}".format(
-                    to_text(timer.get("title")), to_text(timer.get("name")))),
-                str(timer["id"]), is_category=True, kind="big",
-                themed=self._themed, value=timer_when(timer["start"]),
+                to_string(text), to_string(key), is_category=True,
+                kind="big", themed=self._themed, value=to_string(value),
                 no_icon=True))
+        self.items = items
+        if keep is not None:
+            for index, item in enumerate(items):
+                if self._key(item) == keep:
+                    select = index
+                    break
         self._show(rows, select)
-        self['statusbar'].setText(
-            _("{} reminders").format(len(self.timers)) if self.timers
-            else _("No reminders"))
+        if items:
+            free = vavoo_record.free_bytes(recordings_folder())
+            self['statusbar'].setText(to_string(to_text(
+                _("{} recordings · {} timers · {} free")).format(
+                len(recordings), len(timers),
+                size_text(free) if free is not None else "?")))
+        else:
+            self['statusbar'].setText(
+                _("Nothing yet: record from the player's options, or set a "
+                  "recording in the guide."))
+        self._timer.start(self.REFRESH_RECORDING_MS if running
+                          else self.REFRESH_MS, True)
 
     def _selected(self):
         index = self._index()
-        if 0 <= index < len(self.timers):
-            return self.timers[index]
+        if 0 <= index < len(self.items):
+            return self.items[index]
         return None
 
-    def _remove(self, timer):
+    def _remove_timer(self, timer):
         vavoo_store.remove_timer(timer["id"])
         if NOTIFICATION_AVAILABLE:
             quick_notify(_("Cancelled"), 2)
         self.refresh()
 
     def ok(self):
-        timer = self._selected()
-        if timer is None:
+        item = self._selected()
+        if item is None:
             return
-        open_action_menu(
-            self.session, to_string(timer.get("title")),
-            [(_("Cancel reminder"), "cancel")],
-            lambda key: self._remove(timer) if key == "cancel" else None)
+        kind, data = item
+        if kind == "timer":
+            label = _("Cancel recording") \
+                if data["kind"] == vavoo_store.KIND_RECORD \
+                else _("Cancel reminder")
+            open_action_menu(
+                self.session, to_string(data.get("title")),
+                [(label, "cancel")],
+                lambda key: self._remove_timer(data)
+                if key == "cancel" else None)
+            return
+
+        def play():
+            if not self._closed:
+                self.session.openWithCallback(
+                    lambda *a: self.refresh() if not self._closed else None,
+                    VavooRecordingPlayer, data)
+        if recording_needs_pin(data):
+            ask_pin(self.session, self, play)
+        else:
+            play()
 
     def delete(self):
-        timer = self._selected()
-        if timer is None:
+        item = self._selected()
+        if item is None:
             return
-        if self._delete_armed != timer["id"]:
-            self._delete_armed = timer["id"]
+        key = self._key(item)
+        if self._delete_armed != key:
+            self._delete_armed = key
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Press again to delete"), 3)
             return
         self._delete_armed = None
-        self._remove(timer)
+        kind, data = item
+        if kind == "timer":
+            self._remove_timer(data)
+            return
+        recorder = next((r for r in RECORDINGS.running()
+                         if r.path == data["path"]), None)
+
+        def deleted():
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Deleted"), 2)
+            if not self._closed:
+                self.refresh()
+
+        if recorder is None:
+            vavoo_record.delete_recording(data["path"])
+            deleted()
+            return
+
+        def _stop_then_delete():
+            # (deleted once it has really stopped: its last write
+            # would otherwise bring the file back)
+            recorder.join(10)
+            vavoo_record.delete_recording(data["path"])
+            reactor.callFromThread(deleted)
+
+        recorder.stop()
+        worker = threading.Thread(target=_stop_then_delete)
+        worker.daemon = True
+        worker.start()
 
 
-# (until the recordings list joins the reminders')
-VavooRecordings = VavooReminders
+def recording_needs_pin(recording):
+    """A recording of a locked channel plays only with the PIN (an
+    older one without its country: when any country is locked - the
+    app's Recording.needsPin)."""
+    name = recording.get("name")
+    country = recording.get("country") or None
+    if vavoo_store.needs_pin_for_channel(name, country):
+        return True
+    if not country and vavoo_store.locked_countries():
+        return vavoo_store.has_pin() and not vavoo_store.is_unlocked()
+    return False
+
+
+class VavooRecordingPlayer(
+        InfoBarBase,
+        InfoBarSeek,
+        InfoBarAudioSelection,
+        InfoBarSubtitleSupport,
+        InfoBarNotifications,
+        InfoBarShowHide,
+        Screen):
+    """A recording played (the app's RecordingPlayerActivity): LEFT /
+    RIGHT 10 s, YELLOW / BLUE and << / >> 30 s, OK / GREEN / PAUSE /
+    PLAY pause and play on, EXIT / STOP / RED close. A finished one
+    plays straight from its file with Enigma2's own seeking; one still
+    being recorded through the proxy's /file as it grows, a jump
+    opening it again at the byte for that time (as Pause Live TV)."""
+
+    ALLOW_SUSPEND = True
+    STEP = 10
+    BIG_STEP = 30
+
+    def __init__(self, session, recording):
+        Screen.__init__(self, session)
+        self.session = session
+        self.recording = recording
+        self.path = recording["path"]
+        self.recorder = next((r for r in RECORDINGS.running()
+                              if r.path == self.path), None)
+        self._growing = self.recorder is not None
+        self._pos = 0.0
+        self._clock = None
+        self._paused = False
+        self._closed = False
+        self.title = to_text(recording.get("title") or
+                             recording.get("name") or "")
+        skin = build_theme_skin("player", clock_24=clock_24())
+        self._themed = skin is not None
+        if self._themed:
+            self.skin = skin
+            self.skinName = "VavooPlayer"
+            for widget in PLAYER_BAR_LABELS:
+                self[widget] = Label("")
+            self["logo"] = Pixmap()
+            self["info_box"] = Pixmap()
+            self["progress_track"] = Pixmap()
+            self["progress"] = ProgressBar()
+            for widget, _action in PLAYER_BAR_BUTTONS:
+                self["sel_" + widget] = Pixmap()
+            self.onLayoutFinish.append(self._layout_finished)
+        else:
+            self.skinName = "MoviePlayer"
+        for base in (InfoBarBase, InfoBarSeek, InfoBarAudioSelection,
+                     InfoBarSubtitleSupport, InfoBarNotifications,
+                     InfoBarShowHide):
+            base.__init__(self)
+        self["actions"] = ActionMap(
+            ["OkCancelActions", "ColorActions", "DirectionActions",
+             "MoviePlayerActions", "MenuActions"],
+            {
+                "ok": self.play_pause,
+                "cancel": self.leave,
+                "leavePlayer": self.leave,
+                "red": self.leave,
+                "green": self.play_pause,
+                "yellow": lambda: self.jump(-self.BIG_STEP),
+                "blue": lambda: self.jump(self.BIG_STEP),
+                "left": lambda: self.jump(-self.STEP),
+                "right": lambda: self.jump(self.STEP),
+                "menu": lambda: self._call("subtitleSelection"),
+            }, -1)
+        self._previous = None
+        self._was_preview = False
+        self._seek_timer = eTimer()
+        self._tick_timer = eTimer()
+        for timer, function in ((self._seek_timer, self._seek_now),
+                                (self._tick_timer, self._tick)):
+            try:
+                timer.callback.append(function)
+            except Exception:
+                timer.timeout.connect(function)
+        self.onFirstExecBegin.append(self._start)
+        self.onClose.append(self._on_close)
+
+    def _layout_finished(self):
+        for widget in ["info_box", "stream_info", "logo"] + \
+                ["sel_" + w for w, _a in PLAYER_BAR_BUTTONS]:
+            try:
+                self[widget].hide()
+            except Exception:
+                pass
+
+    def _call(self, method):
+        function = getattr(self, method, None)
+        if function is not None:
+            try:
+                function()
+            except Exception as e:
+                debug("{} not opened: {}".format(method, e))
+
+    def _start(self):
+        try:
+            self._previous = \
+                self.session.nav.getCurrentlyPlayingServiceReference()
+        except Exception:
+            self._previous = None
+        # (a channel in the list's preview window: let go of it - the
+        # window stays empty until a channel is chosen again)
+        self._was_preview = NOW_PLAYING.owner == NOW_PLAYING.PREVIEW
+        if self._was_preview:
+            NOW_PLAYING.release_preview()
+        if self._growing:
+            self._play_at(0.0)
+        else:
+            sref = eServiceReference(int(cfg.services.value), 0, self.path)
+            sref.setName(to_string(self.title))
+            self.session.nav.stopService()
+            self.session.nav.playService(sref)
+        self._tick_timer.start(1000, False)
+        self._tick()
+
+    def isSeekable(self):
+        return not self._growing
+
+    def doEofInternal(self, playing):
+        """The end of the recording: the player closes."""
+        if self.execing and not self._closed:
+            self.leave()
+
+    # ---- where it is
+
+    def position(self):
+        if self._growing:
+            position = self._pos
+            if self._clock is not None and not self._paused:
+                position += time.time() - self._clock
+            return max(0.0, min(position, self.recorder.duration))
+        return self._service_seconds("getPlayPosition")
+
+    def length(self):
+        if self._growing:
+            return self.recorder.duration
+        return self._service_seconds("getLength") or \
+            float(self.recording.get("duration") or 0)
+
+    def _service_seconds(self, what):
+        try:
+            seek = self.session.nav.getCurrentService().seek()
+            answer = getattr(seek, what)()
+            if answer and not answer[0]:
+                return answer[1] / 90000.0
+        except Exception:
+            pass
+        return 0.0
+
+    # ---- keys
+
+    def play_pause(self):
+        if self._growing:
+            if self._paused:
+                self._paused = False
+                self._play_at(self._pos)
+            else:
+                self._pos = self.position()
+                self._paused = True
+                self._seek_timer.stop()
+                InfoBarSeek.pauseService(self)
+        else:
+            InfoBarSeek.playpauseService(self)
+            self._paused = getattr(self, "seekstate", None) == \
+                getattr(self, "SEEK_STATE_PAUSE", ())
+        self._shown()
+
+    def jump(self, seconds):
+        if self._growing:
+            end = max(0.0, self.recorder.duration - 2)
+            self._pos = max(0.0, min(self.position() + seconds, end))
+            self._clock = None
+            self._paused = False
+            self._seek_timer.start(800, True)
+        else:
+            try:
+                self.doSeekRelative(int(seconds * 90000))
+            except Exception as e:
+                debug("Recording not moved: {}".format(e))
+        self._shown()
+
+    def _seek_now(self):
+        if self._growing:
+            self._play_at(self._pos)
+
+    def _play_at(self, position):
+        if self._closed:
+            return
+        offset = self.recorder.offset_for(position)
+        url = "{}/file?id={}&offset={}&follow=1".format(
+            PROXY_BASE_URL, self.recorder.file_id, offset)
+        self._pos = self.recorder.time_at(offset)
+        self._clock = time.time()
+        self.session.nav.stopService()
+        self.session.nav.playService(file_stream_sref(url, self.title))
+
+    def leave(self):
+        self.close()
+
+    def _on_close(self):
+        if self._closed:
+            return
+        self._closed = True
+        self._seek_timer.stop()
+        self._tick_timer.stop()
+        try:
+            self.session.nav.stopService()
+            if not self._was_preview and self._previous is not None:
+                self.session.nav.playService(self._previous)
+        except Exception as e:
+            debug("Service not put back: {}".format(e))
+
+    # ---- the bar
+
+    def _shown(self):
+        try:
+            self.doShow()
+        except Exception:
+            pass
+        self._tick()
+
+    def _tick(self):
+        if not self._themed or self._closed:
+            return
+        if self._growing and not self.recorder.running and \
+                self.recorder.finished:
+            # (recorded to the end meanwhile: still played as it was)
+            pass
+        position, length = self.position(), self.length()
+
+        def clock(seconds):
+            seconds = int(seconds)
+            if seconds >= 3600:
+                return u"{}:{:02d}:{:02d}".format(
+                    seconds // 3600, seconds // 60 % 60, seconds % 60)
+            return u"{}:{:02d}".format(seconds // 60, seconds % 60)
+
+        start = self.recording.get("start") or 0
+        texts = {
+            "number": u"● REC" if self._growing and
+            self.recorder.running else u"",
+            "name": self.title,
+            "now": u"{}  ·  {}".format(
+                to_text(self.recording.get("name")), timer_when(start)),
+            "left": u"",
+            "next": u"{} / {}".format(clock(position), clock(length)),
+            "status": to_text(_("LEFT / RIGHT 10 s · YELLOW / BLUE "
+                                "30 s · EXIT: close")),
+            "key_red": to_text(_("Back")),
+            "key_green": (u"▶ " + to_text(_("Play"))) if self._paused
+            else (u"❚❚ " + to_text(_("Pause"))),
+            "key_yellow": u"◀◀ 30 s",
+            "key_blue": u"30 s ▶▶",
+            "key_options": to_text(_("Subtitles")),
+            "key_audio": to_text(_("Audio")),
+            "key_list": u"◀ 10 s",
+            "key_recall": u"10 s ▶",
+        }
+        for widget, text in texts.items():
+            try:
+                self[widget].setText(to_string(text))
+            except Exception:
+                pass
+        try:
+            self["progress"].setValue(
+                int(100 * position / length) if length > 0 else 0)
+        except Exception:
+            pass
 
 
 def open_settings(session, on_closed=None):
