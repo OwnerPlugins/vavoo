@@ -43,7 +43,8 @@ from . import (
     PORT,
     PROXY_HOST,
     ENIGMA_PATH,
-    GROUP_NAME_SEPARATORS,
+    group_separators,
+    literals_for,
 )
 from . import vavoo_store
 
@@ -332,17 +333,9 @@ def remove_bouquets_by_name(name=None):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
                 if name is not None:
-                    name_safe = name.lower().replace(
-                        ' ',
-                        '_').replace(
-                        '➾',
-                        '_').replace(
-                        '⟾',
-                        '_').replace(
-                        '->',
-                        '_').replace(
-                        '→',
-                        '_')
+                    name_safe = name.lower().replace(' ', '_')
+                    for sep in literals_for(name_safe, '➾', '⟾', '->', '→'):
+                        name_safe = name_safe.replace(sep, '_')
                     # Exact match for the flat bouquet
                     # ("userbouquet.vavoo_<name>.tv"/".radio") or a
                     # category sub-bouquet of it
@@ -466,12 +459,9 @@ def is_bouquet_exported(name):
     if not name:
         return False
     try:
-        name_safe = name.lower().replace(
-            ' ', '_').replace(
-            '➾', '_').replace(
-            '⟾', '_').replace(
-            '->', '_').replace(
-            '→', '_')
+        name_safe = name.lower().replace(' ', '_')
+        for sep in literals_for(name_safe, '➾', '⟾', '->', '→'):
+            name_safe = name_safe.replace(sep, '_')
         for fname in listdir(ENIGMA_PATH):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
@@ -988,17 +978,17 @@ def _build_bouquet_filename(name_for_path, export_type):
     being stripped/replaced like the other four.
     """
     is_category = any(
-        sep in name_for_path for sep in GROUP_NAME_SEPARATORS)
+        sep in name_for_path for sep in group_separators(name_for_path))
 
     if export_type == "flat" or not is_category:
         safe_name = name_for_path.lower().replace(' ', '_')
-        for sep in GROUP_NAME_SEPARATORS:
+        for sep in group_separators(safe_name):
             safe_name = safe_name.replace(sep, '')
         return "userbouquet.vavoo_%s.tv" % safe_name
 
     country_part = ""
     category_part = ""
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(name_for_path):
         if sep in name_for_path:
             parts = name_for_path.split(sep)
             country_part = parts[0].strip()
@@ -1007,7 +997,7 @@ def _build_bouquet_filename(name_for_path, export_type):
 
     if not country_part or not category_part:
         safe_name = name_for_path.lower().replace(' ', '_')
-        for sep in GROUP_NAME_SEPARATORS:
+        for sep in group_separators(safe_name):
             safe_name = safe_name.replace(sep, '_')
         return "userbouquet.vavoo_%s.tv" % safe_name
 
@@ -1026,7 +1016,7 @@ def _bouquet_country_prefix(name_for_path):
     bouquet for the same country still exists on disk before deleting
     that country's shared EPG channels.xml file.
     """
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(name_for_path):
         if sep in name_for_path:
             parts = name_for_path.split(sep)
             country_part = parts[0].strip()

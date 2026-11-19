@@ -63,7 +63,7 @@ from . import (
     PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
     PICON_CACHE_DIR,
-    GROUP_NAME_SEPARATORS,
+    group_separators,
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
@@ -1677,7 +1677,7 @@ def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
 def get_country_code_from_bouquet_name(name):
     """Extract country code from a bouquet display name (e.g., 'Italy', 'Italy ➾ Sports')."""
     base_name = name
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(name):
         if sep in name:
             base_name = name.split(sep)[0].strip()
             break
@@ -1721,7 +1721,7 @@ def get_country_code(country_name):
     if any(char in country_name for char in '0123456789.'):
         return ""
 
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(country_name):
         if sep in country_name:
             country_name = country_name.split(sep)[0].strip()
             break

@@ -108,7 +108,7 @@ from . import (
     _, __author__, __version__, __license__, export_lock, PORT,
     PLUGIN_ROOT, PROXY_HOST, PROXY_BASE_URL, PROXY_STATUS_URL,
     PROXY_COUNTRIES_URL, PROXY_REFRESH_URL, FLAG_CACHE_DIR,
-    EPGIMPORT_CONF, LOG_FILE, GROUP_NAME_SEPARATORS
+    EPGIMPORT_CONF, LOG_FILE, group_separators, literals_for
 )
 from . import PY2, PY3, vUtils
 from . import vavoo_theme
@@ -399,6 +399,23 @@ def player_keys(actions):
     keys = dict(actions)
     keys.setdefault("ignore", lambda: None)
     return ActionMap([PLAYER_KEYS], keys, PLAYER_KEYS_PRIO)
+
+
+# The list screens' direct keys (keymap.xml, VavooListActions): FAV,
+# PVR / FILE / VIDEO / LIST, TEXT, HELP, PLAY, STOP, REC, BACK - above the
+# screens' own key lists (-1) and Enigma2's listbox (0).
+LIST_KEYS = "VavooListActions"
+MAIN_KEYS = "VavooMainActions"
+LIST_KEYS_PRIO = -2
+
+
+def list_keys(actions):
+    """The ActionMap of a list screen's direct keys: `actions` (keymap.xml's
+    VavooListActions names) plus "ignore" for their release / repeat /
+    hold. A name the screen leaves out reaches Enigma2 as before."""
+    keys = dict(actions)
+    keys.setdefault("ignore", lambda: None)
+    return ActionMap([LIST_KEYS], keys, LIST_KEYS_PRIO)
 
 
 ENIGMA_PATH = get_enigma2_path()
@@ -1024,8 +1041,10 @@ def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
                 logo_url, e))
 
     if not is_channel and not is_category:
-        country_name = safe_name.split('➾')[0].split(
-            '⟾')[0].split('→')[0].split('->')[0].strip()
+        country_name = safe_name
+        for sep in literals_for(safe_name, '➾', '⟾', '→', '->'):
+            country_name = country_name.split(sep)[0]
+        country_name = country_name.strip()
         if country_name:
             try:
                 country_code = get_country_code(country_name)
@@ -1733,6 +1752,9 @@ class _NowPlaying(object):
         self.original = None
         self.has_original = False
         self._failures = []
+        # STOP stopped the window: the service before the plugin is
+        # still to be put back when it closes
+        self.halted = False
 
     def begin(self, session):
         """The plugin opens: remember what the box was playing."""
@@ -1772,6 +1794,7 @@ class _NowPlaying(object):
         self.channel = dict(channel)
         self.sref = sref
         self._failures = []
+        self.halted = False
         remember_recent(self.channel)
         return True
 
@@ -1816,11 +1839,26 @@ class _NowPlaying(object):
             self.channel = None
             self.sref = None
 
+    def preview_halt(self, session):
+        """STOP in a list: the window's stream stops and the box plays
+        nothing; what played before the plugin opened is still put back
+        when it closes (preview_stop()). False when nothing played."""
+        if self.owner != self.PREVIEW:
+            return False
+        self.release_preview()
+        self.halted = True
+        try:
+            session.nav.stopService()
+        except Exception as e:
+            print("[Preview] Could not stop: {}".format(e))
+        return True
+
     def preview_stop(self, session, restore=True):
         """Stop the preview's stream and put back what the box played
         before the plugin opened (the plugin closes)."""
-        had_stream = self.owner == self.PREVIEW
+        had_stream = self.owner == self.PREVIEW or self.halted
         self.release_preview()
+        self.halted = False
         if had_stream:
             try:
                 session.nav.stopService()
@@ -1942,6 +1980,8 @@ class vavoo_config(Screen, ConfigListScreen):
             "green": self.save,
             "ok": self.gnm3u,
         }, -1)
+        self['list_keys'] = list_keys({"help": self.show_help,
+                                       "back": self.extnok})
         self.update_status()
         ConfigListScreen.__init__(
             self,
@@ -1954,6 +1994,18 @@ class vavoo_config(Screen, ConfigListScreen):
 
     def _mark_closed(self):
         self._closed = True
+
+    def help_rows(self):
+        return [
+            (_("UP / DOWN"), _("Setting")),
+            (_("LEFT / RIGHT"), _("Change it")),
+            ("OK", _("Open (a row that opens a list or does something)")),
+            (_("GREEN"), _("Save")),
+            (_("RED / EXIT"), _("Back (without saving)")),
+        ]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
 
     @staticmethod
     def _look_settings():
@@ -2662,8 +2714,8 @@ class vavoo_config(Screen, ConfigListScreen):
             # Sanitize filename
             safe_name = country_name.lower()
             safe_name = safe_name.replace(' ', '_')
-            safe_name = safe_name.replace('➾', '_').replace('⟾', '_')
-            safe_name = safe_name.replace('->', '_').replace('→', '_')
+            for sep in literals_for(safe_name, '➾', '⟾', '->', '→'):
+                safe_name = safe_name.replace(sep, '_')
 
             m3u_filename = "vavoo_%s.m3u" % safe_name
             m3u_path = join(downloadfree, m3u_filename)
@@ -3644,11 +3696,12 @@ class MainVavoo(Screen, PreviewWindow):
             'blue': self.reload_list,
             'cancel': self.closex,
             'red': self.closex,
-            'epg': self.manual_epg_update,
+            # EPG: the favourites' guide (the EPG import is in MENU)
+            'epg': self.favourites_guide,
+            'EPGPressed': self.favourites_guide,
             'info': self.info_toast,
             'InfoPressed': self.info_toast,
             'infoLong': self.info,
-            'text': self.refresh_proxy,
         }
         actions_list = [
             'MenuActions',
@@ -3660,6 +3713,70 @@ class MainVavoo(Screen, PreviewWindow):
         ]
         self['actions'] = ActionMap(actions_list, actions, -1)
         self['epg_keys'] = info_page_keys(actions)
+        # The direct keys (keymap.xml): FAV, PVR, TEXT, HELP, PLAY /
+        # STOP / REC on the window's channel, 0 the channel watched last
+        self['list_keys'] = list_keys({
+            "favourites": self.open_favourites,
+            "recordings": self.open_recordings,
+            "search": self.search_all,
+            "help": self.show_help,
+            "play": self.play_window,
+            "stop": lambda: stop_preview(self.session),
+            "record": self.record_window,
+            "back": self.closex,
+        })
+        self['main_keys'] = ActionMap(
+            [MAIN_KEYS], {"epg": self.favourites_guide,
+                          "ignore": lambda: None}, LIST_KEYS_PRIO)
+        self['number_keys'] = ActionMap(
+            ['NumberActions'], {"0": lambda: play_last_watched(
+                self.session, self, self._on_child_closed)}, -1)
+
+    def favourites_guide(self):
+        open_favourites_guide(self.session, self, self._on_child_closed)
+
+    def open_recordings(self):
+        """PVR / the "Recordings (n)" row."""
+        self.session.openWithCallback(self._on_child_closed, VavooRecordings)
+
+    def _window_channel(self):
+        if NOW_PLAYING.owner == NOW_PLAYING.PREVIEW and NOW_PLAYING.channel:
+            return NOW_PLAYING.channel
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Nothing is playing in the window"), 2)
+        return None
+
+    def play_window(self):
+        """PLAY: the channel of the preview window full screen."""
+        channel = self._window_channel()
+        if channel:
+            play_entries(self.session, self, [channel], 0,
+                         self._on_child_closed)
+
+    def record_window(self):
+        """REC: record the channel of the preview window."""
+        channel = self._window_channel()
+        if channel:
+            record_channel(channel)
+
+    def help_rows(self):
+        return [
+            ("OK", _("Open the country / list")),
+            (_("RED / EXIT"), _("Exit")),
+            (_("GREEN / FAV"), _("Favourites")),
+            (_("YELLOW / TEXT"), _("Search all channels")),
+            (_("BLUE"), _("Reload List")),
+            ("MENU", _("Settings and tools")),
+            ("INFO", _("Version and channels")),
+            ("EPG", _("Programme guide of the favourites")),
+            (_("PVR / FILE"), _("Recordings")),
+            ("0", _("The channel watched last")),
+            ("PLAY / STOP / REC", _("The window's channel: full screen / stop / record")),
+            ("CH+ / CH-", _("Page up / down")),
+        ]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
 
     def _fix_cache_format(self, result=None):
         if result is None:
@@ -4223,8 +4340,7 @@ class MainVavoo(Screen, PreviewWindow):
                     VavooFavourites.MODE_RECENT)
                 return
             if current_item[0][1] == REMINDERS_ROW:
-                self.session.openWithCallback(
-                    self._on_child_closed, VavooRecordings)
+                self.open_recordings()
                 return
             print("[MainVavoo] Selected: " + str(name))
 
@@ -4938,6 +5054,18 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
                 'DirectionActions'
             ], actions, -1)
         self["epg_keys"] = info_page_keys(actions)
+        # The direct keys (keymap.xml): FAV, PVR, TEXT, HELP, and PLAY /
+        # STOP / REC on the highlighted channel
+        self["list_keys"] = list_keys({
+            "favourites": self.open_favourites,
+            "recordings": lambda: self.session.open(VavooRecordings),
+            "search": self.search_vavoo,
+            "help": self.show_help,
+            "play": self.full_screen,
+            "stop": lambda: stop_preview(self.session),
+            "record": self.record_highlighted,
+            "back": self.backhome,
+        })
         # The number keys go to that row (the app's numbered rows).
         self["number_actions"] = ActionMap(
             ['NumberActions'],
@@ -4946,12 +5074,16 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             -1)
 
     def number(self, digit):
-        """Typed within 1.5 s the digits add up (1, 2 = row 12)."""
-        if not self.cat_list or self.showing_categories:
-            return
+        """Typed within 1.5 s the digits add up (1, 2 = row 12); 0 with
+        no number begun: the channel watched last (as in the player)."""
         now = time.time()
         if now - self._digit_time > 1.5:
             self._digits = ""
+        if digit == 0 and not self._digits:
+            play_last_watched(self.session, self, self._on_player_closed)
+            return
+        if not self.cat_list or self.showing_categories:
+            return
         self._digit_time = now
         self._digits = (self._digits + str(digit))[-4:]
         target = int(self._digits) - 1
@@ -5338,6 +5470,63 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             print('error as:', e)
             trace_error()
 
+    def _highlighted_channel(self):
+        """(the highlighted channel as the preview / recordings keep it,
+        its row) or (None, None) - on a category row too."""
+        if self.showing_categories:
+            return None, None
+        i, name, url = self._selected_row()
+        if i is None:
+            return None, None
+        logo = (self._channel_entries[i][2]
+                if 0 <= i < len(self._channel_entries) else None)
+        return {
+            "name": name, "url": url,
+            "country_name": self.country_name,
+            "country_code": getattr(self, '_epg_country_code', None) or
+            get_country_code(self.country_name),
+            "logo": logo or "",
+        }, i
+
+    def record_highlighted(self):
+        """REC: record the highlighted channel (again: stop) - an adult
+        channel's after the PIN."""
+        channel, i = self._highlighted_channel()
+        if channel is None:
+            return
+        _require_parental_pin(
+            self.session, self, self.country_name,
+            lambda: record_channel(channel),
+            channel_name=channel["name"], group=self._category_at(i))
+
+    def open_favourites(self):
+        """FAV: the favourites."""
+        self.session.open(VavooFavourites)
+
+    def help_rows(self):
+        if self.showing_categories:
+            first = [("OK", _("Open the category"))]
+        else:
+            first = [("OK", _("Play in the window (again: full screen)"))]
+        return first + [
+            (_("RED / EXIT"), _("Back")),
+            (_("GREEN"), _("Add / remove favourite")),
+            (_("YELLOW / TEXT"), _("Search")),
+            (_("BLUE / PLAY"), _("Full screen")),
+            ("INFO / EPG", _("Programme guide")),
+            ("MENU", _("Settings and tools")),
+            ("FAV", _("Favourites")),
+            (_("PVR / FILE"), _("Recordings")),
+            ("REC", _("Record the highlighted channel (again: stop)")),
+            ("STOP", _("Stop the window")),
+            ("1-9", _("Go to that row")),
+            ("0", _("The channel watched last")),
+            ("CH+ / CH-", _("Page up / down")),
+        ]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
+
     def _category_at(self, i):
         """The catalog category of row i (for the adult lock)."""
         try:
@@ -5560,7 +5749,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             return
 
         self._export_type = "hierarchical" if any(
-            sep in name for sep in GROUP_NAME_SEPARATORS) else "flat"
+            sep in name for sep in group_separators(name)) else "flat"
 
         try:
             export_bouquet_async(
@@ -5849,8 +6038,83 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
              'MenuActions', 'InfobarEPGActions', 'NumberActions'],
             actions, -1)
         self['epg_keys'] = info_page_keys(actions)
+        # The direct keys (keymap.xml): PVR, TEXT, HELP, and PLAY / STOP
+        # / REC on the highlighted channel (FAV: here already)
+        self['list_keys'] = list_keys({
+            "favourites": lambda: None,
+            "recordings": lambda: self.session.open(VavooRecordings),
+            "search": self._key_search,
+            "help": self.show_help,
+            "play": self._key_play,
+            "stop": lambda: stop_preview(self.session),
+            "record": self.record_highlighted,
+            "back": self.cancel,
+        })
         self.onLayoutFinish.append(self._build_list)
         self.onExecBegin.append(self._back_on_top)
+
+    def _key_search(self):
+        if not self.moving:
+            self.search_list()
+
+    def _key_play(self):
+        if not self.moving and not self.showing_folders:
+            self.full_screen()
+
+    def record_highlighted(self):
+        """REC: record the highlighted channel (again: stop) - a locked
+        one's after the PIN."""
+        if self.moving:
+            return
+        i, item, name, url = self._current_selection()
+        if name is None:
+            return
+        entry = self.favourite_entries[i]
+        channel = {"name": name, "url": url,
+                   "country_name": entry.get('country_name'),
+                   "country_code": entry.get('country_code'),
+                   "logo": entry.get('logo') or ""}
+        _require_parental_pin(
+            self.session, self, entry.get('country_name'),
+            lambda: record_channel(channel), channel_name=name)
+
+    def help_rows(self):
+        if self.moving:
+            return [
+                (_("UP / DOWN"), _("Move the channel")),
+                ("1-9", _("Move it to that place")),
+                (_("OK / YELLOW"), _("Done")),
+                (_("EXIT"), _("Done")),
+            ]
+        if self.showing_folders:
+            return [
+                ("OK", _("Open the folder")),
+                (_("BLUE"), _("Rename / delete the folder")),
+                (_("RED / EXIT"), _("Back")),
+                ("MENU", _("Settings")),
+                (_("PVR / FILE"), _("Recordings")),
+            ]
+        recent = self.mode == self.MODE_RECENT
+        return [
+            ("OK", _("Play in the window (again: full screen)")),
+            (_("RED / EXIT"), _("Back")),
+            (_("GREEN"), _("Remove from the list") if recent
+             else _("Remove favourite")),
+            (_("YELLOW"), _("Search") if recent else _("Move")),
+            (_("BLUE"), _("Full screen") if recent else _("Folder")),
+            ("TEXT", _("Search")),
+            ("PLAY", _("Full screen")),
+            ("INFO / EPG", _("Programme guide")),
+            ("MENU", _("Settings and tools")),
+            (_("PVR / FILE"), _("Recordings")),
+            ("REC", _("Record the highlighted channel (again: stop)")),
+            ("STOP", _("Stop the window")),
+            ("1-9", _("Go to that row")),
+            ("0", _("The channel watched last")),
+        ]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
 
     def _mark_closed(self):
         self._closed = True
@@ -6091,12 +6355,16 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
 
     def number(self, digit):
         """The number keys go to that row (to that place while
-        moving); typed within 1.5 s they add up (1, 2 = row 12)."""
-        if not self.cat_list or self.showing_folders:
-            return
+        moving); typed within 1.5 s they add up (1, 2 = row 12). 0 with
+        no number begun (not while moving): the channel watched last."""
         now = time.time()
         if now - self._digit_time > 1.5:
             self._digits = ""
+        if digit == 0 and not self._digits and not self.moving:
+            play_last_watched(self.session, self, self._on_player_closed)
+            return
+        if not self.cat_list or self.showing_folders:
+            return
         self._digit_time = now
         self._digits = (self._digits + str(digit))[-4:]
         target = int(self._digits) - 1
@@ -7034,8 +7302,48 @@ class VavooGuide(Screen):
              'MenuActions', 'InfobarEPGActions', 'NumberActions'],
             actions, -1)
         self['epg_keys'] = info_page_keys(actions)
+        # The direct keys (keymap.xml): REC the highlighted programme,
+        # PLAY watch it, PVR the recordings (not over the player), HELP
+        keys = {"record": self.record_selected, "play": self.watch,
+                "help": self.show_help, "back": self.close_guide}
+        if not over_player:
+            keys["recordings"] = lambda: self.session.open(VavooRecordings)
+        self['list_keys'] = list_keys(keys)
         self.onLayoutFinish.append(self._start)
         self.onClose.append(self._mark_closed)
+
+    def record_selected(self):
+        """REC: record the highlighted programme (on now: from now; to
+        come: a timer) - again: cancel / stop. As OK -> Record."""
+        if not self.channels or not 0 <= self.sel_row < len(self.channels):
+            return
+        programme = self._selected_programme()
+        if programme is None or programme[1] <= time.time():
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("No programme to record here"), 2)
+            return
+        self.toggle_record(self.channels[self.sel_row], programme)
+
+    def help_rows(self):
+        rows = [
+            ("OK", _("A programme to come: remind / record / watch")),
+            (_("GREEN / PLAY"), _("Watch the channel")),
+            ("REC", _("Record the programme (again: cancel / stop)")),
+            (_("UP / DOWN"), _("Channel")),
+            (_("LEFT / RIGHT"), _("Programme")),
+            (_("YELLOW / BLUE"), _("An hour back / on")),
+            ("INFO / EPG", _("Now")),
+            ("MENU", _("Now, the programme's actions")),
+            ("CH+ / CH-", _("Page up / down")),
+            ("1-9", _("Go to that channel")),
+            (_("RED / EXIT"), _("Close")),
+        ]
+        if not self.over:
+            rows.insert(9, (_("PVR / FILE"), _("Recordings")))
+        return rows
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
 
     # ---- state
 
@@ -7616,6 +7924,10 @@ class VavooPickScreen(Screen):
             ['OkCancelActions', 'ColorActions', 'DirectionActions'],
             actions, -1)
         self['epg_keys'] = info_page_keys(actions)
+        # The direct keys (keymap.xml): HELP, BACK and the subclass's
+        direct = {"help": self.show_help, "back": self.back}
+        direct.update(self.direct_keys())
+        self['list_keys'] = list_keys(direct)
         self.rows = []
         # (a method: Enigma2 exec()s an onLayoutFinish entry that is
         # not one - a lambda here crashed the box on open)
@@ -7626,6 +7938,16 @@ class VavooPickScreen(Screen):
 
     def key_actions(self):
         return {}
+
+    def direct_keys(self):
+        """keymap.xml's VavooListActions names this screen takes."""
+        return {}
+
+    def help_rows(self):
+        return [(_("RED / EXIT"), _("Back"))]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
 
     def refresh(self, select=None):
         pass
@@ -7693,6 +8015,15 @@ class VavooCountries(VavooPickScreen):
         return {"ok": self.toggle, "left": self.toggle,
                 "right": self.toggle, "green": self.save,
                 "yellow": self.show_all, "blue": self.hide_all}
+
+    def help_rows(self):
+        return [
+            (_("OK / LEFT / RIGHT"), _("Show / hide the country")),
+            (_("GREEN"), _("Save")),
+            (_("YELLOW"), _("Show all")),
+            (_("BLUE"), _("Hide all")),
+            (_("RED / EXIT"), _("Back")),
+        ]
 
     def _welcome(self):
         if NOTIFICATION_AVAILABLE:
@@ -7788,6 +8119,8 @@ class VavooPin(Screen):
         self['actions'] = ActionMap(
             ['OkCancelActions', 'DirectionActions', 'NumberActions',
              'ColorActions'], actions, -1)
+        self['list_keys'] = list_keys({"help": self.show_help,
+                                       "back": self.cancel})
         self._submit_timer = eTimer()
         try:
             self._submit_timer.callback.append(self.submit)
@@ -7800,6 +8133,14 @@ class VavooPin(Screen):
         self['dots'].setText(to_string(u" ".join(
             u"●" if i < len(self.digits) else u"○"
             for i in range(shown))))
+
+    def show_help(self):
+        show_keys(self.session, [
+            ("0-9", _("The PIN")),
+            (_("LEFT"), _("Delete a digit")),
+            ("OK", _("Check it")),
+            (_("RED / EXIT"), _("Cancel")),
+        ])
 
     def key(self, digit):
         if len(self.digits) >= self.length:
@@ -7978,6 +8319,12 @@ class VavooParental(VavooPickScreen):
 
     def key_actions(self):
         return {"ok": self.act, "left": self.act, "right": self.act}
+
+    def help_rows(self):
+        return [
+            (_("OK / LEFT / RIGHT"), _("Change the setting / lock the country")),
+            (_("RED / EXIT"), _("Back")),
+        ]
 
     def refresh(self, select=None):
         has_pin = vavoo_store.has_pin()
@@ -8255,6 +8602,41 @@ class VavooRecordings(VavooPickScreen):
     def key_actions(self):
         return {"ok": self.ok, "green": self.delete}
 
+    def direct_keys(self):
+        return {"play": self.play_selected, "stop": self.stop_selected}
+
+    def help_rows(self):
+        return [
+            ("OK", _("Play the recording / cancel the timer")),
+            ("PLAY", _("Play the recording")),
+            ("STOP", _("Stop a recording that is running")),
+            (_("GREEN"), _("Delete (press twice)")),
+            (_("RED / EXIT"), _("Back")),
+        ]
+
+    def play_selected(self):
+        """PLAY: the highlighted recording (a timer: nothing)."""
+        item = self._selected()
+        if item is not None and item[0] == "rec":
+            self.ok()
+
+    def stop_selected(self):
+        """STOP: the highlighted recording stops, if it is running (it
+        stays on the disk)."""
+        item = self._selected()
+        if item is None or item[0] != "rec":
+            return
+        recorder = next((r for r in RECORDINGS.running()
+                         if r.path == item[1]["path"]), None)
+        if recorder is None:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("This recording is not running"), 2)
+            return
+        recorder.stop()
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Recording stopped"), 2)
+        self.refresh()
+
     def _tick(self):
         # (a timer that went off meanwhile has left the file, a
         # recording has grown)
@@ -8501,6 +8883,7 @@ class VavooRecordingPlayer(
             "up": nothing, "down": nothing,
             "channelUp": nothing, "channelDown": nothing,
             "info": nothing, "epg": nothing, "record": nothing,
+            "favourites": nothing, "help": self.show_help,
         })
         self["vavoo_keys"] = player_keys(own_keys)
         # (the image's names: where keymap.xml could not be loaded; the
@@ -8553,6 +8936,19 @@ class VavooRecordingPlayer(
                 self[widget].hide()
             except Exception:
                 pass
+
+    def help_rows(self):
+        return [
+            (_("OK / GREEN / PAUSE / PLAY"), _("Pause / play on")),
+            (_("LEFT / RIGHT"), _("10 seconds back / on")),
+            (_("YELLOW / BLUE, << / >>"), _("30 seconds back / on")),
+            ("MENU", _("Options")),
+            ("AUDIO / SUBTITLE", _("Audio track / subtitles")),
+            (_("RED / STOP / EXIT / BACK"), _("Close")),
+        ]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
 
     def options(self):
         """MENU: the options, as in the live player."""
@@ -8837,7 +9233,16 @@ class VavooLogViewer(Screen):
             },
             -1
         )
+        self['list_keys'] = list_keys({"help": self.show_help,
+                                       "back": self.close})
         self.onLayoutFinish.append(self._render)
+
+    def show_help(self):
+        show_keys(self.session, [
+            (_("UP / DOWN"), _("Scroll")),
+            (_("LEFT / RIGHT"), _("Page up / down")),
+            (_("OK / RED / EXIT"), _("Close")),
+        ])
 
     def _mark_closed(self):
         self._closed = True
@@ -8901,6 +9306,109 @@ def play_search_result(session, screen, selected, on_closed,
             hand_back=cfg.preview_window.value)
     _require_parental_pin(session, screen, names[index], _play,
                           channel_name=rows[index][0][0])
+
+
+def _no_answer(*args, **kwargs):
+    return None
+
+
+def play_entries(session, screen, entries, index, on_closed=None):
+    """One of the saved channels `entries` ([{name, url, country_name}]:
+    favourites, recently watched) full screen, the others as the
+    player's list (the PIN for a locked one)."""
+    results = [(e.get("name"), e.get("url"), e.get("country_name"))
+               for e in entries if e.get("url")]
+    if not results:
+        return False
+    index = max(0, min(index, len(results) - 1))
+    name, url, country = results[index]
+    play_search_result(session, screen, (name, url, country, results, index),
+                       on_closed or _no_answer)
+    return True
+
+
+def play_last_watched(session, screen, on_closed=None):
+    """0 in a list (as RECALL in the player): the channel watched last,
+    full screen, the recently watched as the player's list."""
+    if not play_entries(session, screen, vUtils.load_recent() or [], 0,
+                        on_closed):
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Nothing watched yet"), 3)
+
+
+def favourite_channels():
+    """The favourites as the guide takes its channels."""
+    return [{"name": e.get("name"), "url": e.get("url"),
+             "logo": e.get("logo"), "country_name": e.get("country_name"),
+             "country_code": e.get("country_code")}
+            for e in (vUtils.load_favourites() or []) if e.get("url")]
+
+
+def open_favourites_guide(session, screen, on_closed=None):
+    """EPG in the main list: the programme guide of the favourites;
+    "Watch" plays the channel, the favourites as the player's list."""
+    channels = favourite_channels()
+    if not channels:
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("No favourites yet. Open a country and press "
+                           "GREEN on a channel."), 4)
+        return
+
+    def watched(result=None):
+        if result and result[0] == "watch" and \
+                not getattr(screen, "_closed", False):
+            play_entries(session, screen, channels, result[1], on_closed)
+    session.openWithCallback(watched, VavooGuide, channels, 0,
+                             _("★ Favourites"))
+
+
+def show_keys(session, rows, title=None):
+    """HELP: a screen's keys and what they do ([(key, what)]), in the
+    theme's popup (ChoiceBox in Classic); picking a row only closes it."""
+    entries = [(to_string(u"{}   ·   {}".format(to_text(key), to_text(what))),
+                "close") for key, what in rows]
+    open_action_menu(session, title or _("Keys"), entries, _no_answer)
+
+
+def record_channel(channel):
+    """REC: records `channel` ({name, url, country_name, country_code,
+    logo}) until the end of the programme on now plus 2 minutes (a
+    receiver's instant recording) - or, with no guide or a programme
+    ending within 10 minutes, until stopped (4 hours at most). Again:
+    stops it. The player's REC and the lists' REC (the highlighted
+    channel)."""
+    url = channel.get("url")
+    if not url:
+        return
+    running = RECORDINGS.recording_of(url)
+    if running is not None:
+        running.stop()
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Recording stopped"), 2)
+        return
+    name = channel.get("name")
+    title, stop_at = to_text(name), 0
+    try:
+        answer = vUtils.peek_now_next(name, channel.get("country_code"))
+    except Exception as e:
+        debug("Now/next not read for a recording: {}".format(e))
+        answer = None
+    now = time.time()
+    if answer and answer[0] == "ok" and answer[1]:
+        programme = answer[1]
+        if programme[2]:
+            title = to_text(programme[2])
+        if 600 <= programme[1] - now < 6 * 3600:
+            stop_at = programme[1] + vavoo_store.RECORD_MARGIN
+    if RECORDINGS.start(dict(channel), title, stop_at) is not None:
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(recording_text(title, stop_at), 3)
+
+
+def stop_preview(session):
+    """STOP in a list: the preview window stops."""
+    if not NOW_PLAYING.preview_halt(session) and NOTIFICATION_AVAILABLE:
+        quick_notify(_("Nothing is playing in the window"), 2)
 
 
 class VavooSearch(Screen):
@@ -8980,6 +9488,9 @@ class VavooSearch(Screen):
                 "9": lambda: self.keyNumber(9),
                 "0": lambda: self.keyNumber(0),
             }, -1)
+        self["list_keys"] = list_keys({"help": self.show_help,
+                                       "search": self.openKeyboard,
+                                       "back": self.onCancel})
 
         self.numericalInput = NumericalTextInput(
             nextFunc=self.searchWithString)
@@ -8990,6 +9501,18 @@ class VavooSearch(Screen):
         self.last_key_time = 0
 
         self.updateFilteredList()
+
+    def show_help(self):
+        show_keys(self.session, [
+            ("0-9", _("Type (as on a phone)")),
+            (_("GREEN / TEXT"), _("The keyboard")),
+            (_("YELLOW"), _("Delete a letter")),
+            (_("BLUE"), _("A space")),
+            (_("RED"), _("Clear")),
+            ("OK", _("Play the channel")),
+            (_("UP / DOWN"), _("Result")),
+            (_("EXIT"), _("Back")),
+        ])
 
     def keyNumber(self, number):
         key_chars = {
@@ -9342,6 +9865,8 @@ class VavooPlayerList(Screen):
                 "left": self.page_up,
                 "right": self.page_down,
             }, -1)
+        self["list_keys"] = list_keys({"help": self.show_help,
+                                       "back": self.cancel})
         self._guide_lock = threading.Lock()
         self._guide_wanted = None
         self._guide_working = False
@@ -9359,6 +9884,15 @@ class VavooPlayerList(Screen):
             self._guide_timer.stop()
         except Exception:
             pass
+
+    def show_help(self):
+        show_keys(self.session, [
+            ("OK", _("Play the channel")),
+            (_("UP / DOWN"), _("Channel")),
+            (_("LEFT / RIGHT"), _("Page up / down")),
+            (_("GREEN"), _("Add / remove favourite")),
+            (_("RED / EXIT"), _("Close")),
+        ])
 
     def _row(self, i):
         name, url = self.channels[i]
@@ -9544,7 +10078,7 @@ def classic_help_line(problem=u""):
     right."""
     keys = to_text(_(
         "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · "
-        "EPG guide · MENU options · EXIT back"))
+        "EPG guide · MENU options · HELP keys"))
     if problem:
         keys += u"  |  " + to_text(problem)
     return to_string(keys)
@@ -10162,6 +10696,8 @@ class Playstream2(
             "playpause": self.playpauseService,
             "forward": self.seekFwd,
             "rewind": self.seekBack,
+            "favourites": self.favourites_key,
+            "help": self.show_help,
         })
         self['vavoo_keys'] = player_keys(own_keys)
 
@@ -10939,6 +11475,57 @@ class Playstream2(
             self._on_channel_list_closed, VavooPlayerList,
             channels, int(self.currentindex), codes, logos, names)
 
+    def favourites_key(self):
+        """FAV: the favourites over the video (as BLUE's channel list);
+        the one chosen plays (added to this player's list)."""
+        if self._closed:
+            return
+        favourites = favourite_channels()
+        if not favourites:
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("No favourites yet"), 3)
+            return
+        if self._bar_visible():
+            self.hide_help_overlay()
+            self.doHide()
+        index = next((i for i, f in enumerate(favourites)
+                      if f["url"] == self.url), 0)
+
+        def chosen(i=None):
+            if not self._closed and i is not None and \
+                    0 <= i < len(favourites):
+                self.play_channel(favourites[i])
+        self.session.openWithCallback(
+            chosen, VavooPlayerList,
+            [(to_string(f["name"]), to_string(f["url"])) for f in favourites],
+            index, [f.get("country_code") for f in favourites],
+            [f.get("logo") or None for f in favourites],
+            [f.get("country_name") for f in favourites])
+
+    def help_rows(self):
+        return [
+            ("OK", _("Show / hide the bar")),
+            (_("UP / DOWN, CH+ / CH-"), _("Next / previous channel")),
+            (_("RED / EXIT / BACK"), _("Back (paused: to live first)")),
+            (_("GREEN"), _("Add / remove favourite")),
+            (_("YELLOW"), _("Source")),
+            (_("BLUE"), _("The channel list")),
+            ("FAV", _("The favourites")),
+            ("INFO / EPG", _("Programme guide")),
+            ("MENU", _("Options")),
+            ("AUDIO / SUBTITLE", _("Audio track / subtitles")),
+            ("PAUSE / PLAY", _("Pause live / play on")),
+            ("<< / >>", _("30 seconds back / on (paused)")),
+            (_("LEFT / RIGHT"), _("10 seconds back / on (paused)")),
+            ("REC", _("Record (again: stop)")),
+            ("STOP", _("Close the player")),
+            ("1-9", _("Go to that channel")),
+            ("0", _("The channel before")),
+        ]
+
+    def show_help(self):
+        show_keys(self.session, self.help_rows())
+
     def _on_channel_list_closed(self, index=None):
         if self._closed or index is None:
             return
@@ -10958,29 +11545,7 @@ class Playstream2(
         hours at most). Again: stops it."""
         if self._closed:
             return
-        running = RECORDINGS.recording_of(self.url)
-        if running is not None:
-            running.stop()
-            if NOTIFICATION_AVAILABLE:
-                quick_notify(_("Recording stopped"), 2)
-            self._refresh_status()
-            return
-        title, stop_at = to_text(self.name), 0
-        try:
-            answer = vUtils.peek_now_next(self.name, self.country_code)
-        except Exception as e:
-            debug("Now/next not read for a recording: {}".format(e))
-            answer = None
-        now = time.time()
-        if answer and answer[0] == "ok" and answer[1]:
-            programme = answer[1]
-            if programme[2]:
-                title = to_text(programme[2])
-            if 600 <= programme[1] - now < 6 * 3600:
-                stop_at = programme[1] + vavoo_store.RECORD_MARGIN
-        if RECORDINGS.start(self._channel_info(), title, stop_at) is not None:
-            if NOTIFICATION_AVAILABLE:
-                quick_notify(recording_text(title, stop_at), 3)
+        record_channel(self._channel_info())
         self._refresh_status()
 
     def _refresh_status(self):

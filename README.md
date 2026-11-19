@@ -94,6 +94,8 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 
 The colour keys are the Android app's, in every theme. The Enigma2 tools that used to sit on them (bouquets, EPG cache) are in the **MENU** key's list.
 
+The remote's own keys go straight to their function, in every list and on every image (the plugin's key map, `keymap.xml`): **FAV** the favourites, **PVR / FILE / VIDEO / LIST** the recordings, **TEXT** search, **PLAY** full screen, **STOP** stops the preview window, **REC** records the highlighted channel, **0** the channel watched last, **BACK** as EXIT. **HELP** shows the keys of the screen you are in and what they do - in every screen of the plugin.
+
 ### Main menu (country list)
 | Key | Action |
 |-----|--------|
@@ -103,10 +105,15 @@ The colour keys are the Android app's, in every theme. The Enigma2 tools that us
 | BLUE | Reload List: download the channel list again (asks first; the proxy restarts, a channel playing stops for a moment) |
 | MENU | Settings, Reload bouquets, Remove all Vavoo bouquets, Import EPG now, Fix EPG cache, Refresh token, Show Log, About |
 | INFO | Version, channels and countries (hold INFO: About) |
-| EPG | Start an EPG import now (needs "Enable Vavoo EPG") |
-| TEXT | Refresh the proxy token |
+| EPG | The programme guide of your favourites (the EPG import is in MENU → Import EPG now) |
+| FAV | Favourites |
+| PVR / FILE | Recordings |
+| TEXT | Search all channels |
+| 0 | The channel watched last, full screen |
+| PLAY / STOP / REC | The channel in the preview window: full screen / stop / record |
+| HELP | The keys of this screen |
 | CH+ / CH- | Page up / down |
-| RED / EXIT | Quit |
+| RED / EXIT / BACK | Quit |
 
 The list starts with "★ Favourites (n)" once you have favourites, then "Recently watched (n)", and shows each country's channel count ("Portugal (174)", setting "Show Counts"). Countries hidden in Settings → Choose countries are left out; a country locked by Parental Control has a padlock. The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch". On the very first start, Choose countries opens by itself once.
 
@@ -120,8 +127,15 @@ The list starts with "★ Favourites (n)" once you have favourites, then "Recent
 | 0-9 | Go to that channel number (typed within 1.5 s the digits add up: 1, 2 = 12) |
 | MENU | Settings, Export this country as a bouquet (or Remove this country's bouquet), Reload bouquets, Show Log |
 | INFO / EPG | The programme guide of this list, from the highlighted channel (on category rows: version and channels) |
+| PLAY | Full screen at once |
+| REC | Record the highlighted channel (again: stop) |
+| STOP | Stop the preview window |
+| TEXT | Search this country |
+| FAV / PVR | Favourites / Recordings |
+| 0 | The channel watched last (as the first number; 1, 0 is row 10) |
+| HELP | The keys of this screen |
 | CH+ / CH- | Page up / down |
-| RED / EXIT | Back |
+| RED / EXIT / BACK | Back |
 
 With "Sub-categories" on, a country whose catalog has two or more categories first lists "All channels (n)", its categories A-Z and "General (n)"; OK opens one ("Italy ➾ Sport"). The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
@@ -147,6 +161,8 @@ The keys are also the same on every image (OpenATV, OpenPLi, OpenViX, ...): the 
 | REC | Record this channel until the end of the programme on now plus 2 minutes (no guide, or it ends within 10 minutes: until stopped, 4 hours at most); again: stop. "● REC" shows on the bar |
 | PAUSE, PLAY or PLAY/PAUSE | Pause Live TV (see below): pause; again: play on |
 | << / >> | Behind live: 30 seconds back / on |
+| FAV | The favourites over the video (as BLUE's list); the one chosen plays |
+| HELP | The keys of the player |
 | STOP | Close the player |
 
 **Pause Live TV** (Settings → "Pause Live TV", as in the app): PAUSE stops the picture and starts recording the channel on the disk ("❚❚ Paused · recording - press play to go on"). PLAY (or OK) goes on from there, behind live ("◀◀ -1:23  LEFT / RIGHT move · EXIT: live" in the bar):
@@ -170,6 +186,8 @@ Each move opens the recorded part again at that place, which takes the box's pla
 | BLUE | Space |
 | RED | Clear all |
 | OK | Play the selected result - the results are the player's list (CH± goes along them) |
+| TEXT | On-screen keyboard |
+| HELP | The keys of this screen |
 
 Every word typed has to be at the start of a word of the name, or (3 letters or more) anywhere in it; accents and case do not count, and a number must be a whole number ("1" finds "SPORT 1" and "SPORT1", not "SPORT 11"). Names starting with the first word come first. From 3 letters the channels whose programme on now has the text follow, marked "▶ title" (only countries whose guide is already loaded). Rows show "★" on favourites and, searching every country, the country.
 
@@ -180,10 +198,14 @@ Every word typed has to be at the start of a word of the name, or (3 letters or 
 | GREEN | Remove Fav (the next channel takes its place) |
 | YELLOW | Move / Done: move the highlighted channel - UP / DOWN one place, LEFT / RIGHT or CH± a page, a number to that place; OK, YELLOW or EXIT finish (saved once, at the end) |
 | BLUE | Folder: on a channel, "Folder for X" (the folders, No folder, New folder…); on a folder row, Rename folder (another folder's name merges the two) / Remove folder (its channels stay favourites) |
-| 0-9 | Go to that row |
+| 1-9 | Go to that row |
+| 0 | The channel watched last |
 | MENU | Settings, Show Log |
 | INFO / EPG | The programme guide of these channels (on folder rows: version and number of channels) |
-| RED / EXIT | Back |
+| PLAY / REC / STOP | Full screen / record the highlighted channel / stop the preview window |
+| TEXT / PVR | Search / Recordings |
+| HELP | The keys of this screen (while moving: the Move keys) |
+| RED / EXIT / BACK | Back |
 
 Once a favourite is in a folder, the Favourites open on "All channels (n)", the folders A-Z and "No folder (n)". A folder with no channels left is gone. Moving inside a folder only swaps that folder's channels.
 
@@ -196,7 +218,8 @@ Once a favourite is in a folder, the Favourites open on "All channels (n)", the 
 | BLUE | Full screen at once |
 | INFO / EPG | The programme guide of this list |
 | MENU | Settings, Clear recently watched, Show Log |
-| RED / EXIT | Back |
+| PLAY / REC / STOP, TEXT, PVR, 0, HELP | As in Favourites |
+| RED / EXIT / BACK | Back |
 
 ### Programme guide
 The app's grid: the channels of the list it was opened from (numbered, in the same order, from the highlighted one), three hours across, a box per programme with its title - the one on now in its own colour, the highlighted one in the theme's colour, a clock mark where a reminder is set, "● " before the title of one set to be recorded (or being recorded). The ruler shows the half hours (the weekday at midnight) and the now line, which moves every minute. Under the grid: "Channel · 20:00–21:00 Title" and the description; with the preview window on, it keeps playing in the corner. A channel with nothing in those hours says "No programme information" ("Loading…" while its guide comes); a locked channel shows only a padlock.
@@ -210,9 +233,12 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 | INFO / EPG / 0 | Back to now |
 | 1-9 | Go to that channel (typed within 1.5 s the digits add up) |
 | OK | A programme still to come: Remind me (or Cancel reminder) / Record (or Cancel recording) / Watch. Anything else: watch the channel |
-| GREEN | Watch the channel (asks for the PIN where needed) |
+| GREEN / PLAY | Watch the channel (asks for the PIN where needed) |
+| REC | Record the highlighted programme (to come: set; on now: at once) - again: cancel / stop |
 | MENU | As in the app: Now, then (for a programme not over yet) Remind me / Record - one on now is recorded at once, "Stop recording" stops it - and Settings (not over the player) |
-| RED / EXIT | Back |
+| PVR | Recordings (not over the player) |
+| HELP | The keys of this screen |
+| RED / EXIT / BACK | Back |
 
 ### Reminders
 - OK on a programme still to come in the guide → **Remind me** ("Reminder set: Title"); the box gets a clock mark. The same menu cancels it
@@ -228,9 +254,11 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 
 | Key (Recordings) | Action |
 |-----|--------|
-| OK | Play the recording (a locked channel's asks for the PIN) / on a timer: Cancel reminder or Cancel recording |
+| OK / PLAY | Play the recording (a locked channel's asks for the PIN) / OK on a timer: Cancel reminder or Cancel recording |
+| STOP | Stop a recording that is running (it stays on the disk) |
 | GREEN | Delete (press twice; a recording still running stops first) |
-| RED / EXIT | Back |
+| HELP | The keys of this screen |
+| RED / EXIT / BACK | Back |
 
 | Key (playing a recording) | Action |
 |-----|--------|
@@ -239,6 +267,7 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 | OK / GREEN / PAUSE / PLAY | Pause / play on |
 | MENU | Options: audio track, subtitles |
 | AUDIO / SUBTITLE | Audio track / subtitles |
+| HELP | The keys of this screen |
 | RED / STOP / EXIT / BACK | Close |
 
 A recording still being recorded can be watched too (from its start; each move opens it again at that place).
@@ -249,7 +278,8 @@ A recording still being recorded can be watched too (from its start; each move o
 | OK | Run the highlighted action ("Ok for Exec", "Ok to view", "Ok to open") or edit a text field |
 | LEFT / RIGHT | Change the highlighted option |
 | GREEN | Save |
-| RED / EXIT | Leave without saving (asks if something changed) |
+| HELP | The keys of this screen |
+| RED / EXIT / BACK | Leave without saving (asks if something changed) |
 
 ## 🔔 Notifications
 A bar at the top of the screen gives feedback while you work:

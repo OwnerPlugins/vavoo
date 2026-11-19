@@ -63,6 +63,25 @@ GEIL_LIVE_PATH = "/live"
 GROUP_NAME_SEPARATORS = ("➾", "⟾", "->", "→", "»", "›")
 PY2 = version_info[0] == 2
 PY3 = version_info[0] == 3
+_TEXT_TYPE = type(u"")
+
+
+def literals_for(text, *literals):
+    """The plain "..." literals in text's own string type. On Python 2 a
+    literal with a non-ASCII character ("➾") is UTF-8 bytes, and `in` /
+    split() / replace() between it and unicode raise UnicodeDecodeError
+    - whatever text holds: the catalog's group names (JSON, so unicode)
+    all failed, and so did get_country_code() on every call."""
+    if PY2 and isinstance(text, _TEXT_TYPE):
+        return tuple(lit if isinstance(lit, _TEXT_TYPE) else lit.decode("utf-8")
+                     for lit in literals)
+    return literals
+
+
+def group_separators(text):
+    """GROUP_NAME_SEPARATORS in text's own string type - loop over this,
+    never over the tuple itself (see literals_for())."""
+    return literals_for(text, *GROUP_NAME_SEPARATORS)
 
 PluginLanguageDomain = PLUGIN_ID
 PluginLanguagePath = 'Extensions/{}/locale'.format(PLUGIN_ID)

@@ -11,6 +11,11 @@
 	Only the flags m, b, r and l: older images know no other.
 	plugin.py's PLAYER_KEYS screens (Playstream2, VavooRecordingPlayer) map
 	these names; a key a screen does not map falls through to Enigma2.
+
+	VavooListActions (LIST_KEYS, list_keys()): the direct keys of the list
+	screens - FAV the favourites, PVR / FILE / VIDEO / LIST the recordings,
+	TEXT search, HELP the keys of the screen, PLAY / STOP / REC, BACK -
+	which no image names the same way in the contexts the lists use.
 -->
 <keymap>
 	<map context="VavooPlayerActions">
@@ -57,6 +62,10 @@
 		<key id="KEY_SUBTITLE" mapto="ignore" flags="brl" />
 		<key id="KEY_RECORD" mapto="record" flags="m" />
 		<key id="KEY_RECORD" mapto="ignore" flags="brl" />
+		<key id="KEY_FAVORITES" mapto="favourites" flags="m" />
+		<key id="KEY_FAVORITES" mapto="ignore" flags="brl" />
+		<key id="KEY_HELP" mapto="help" flags="m" />
+		<key id="KEY_HELP" mapto="ignore" flags="brl" />
 
 		<key id="KEY_PLAY" mapto="playpause" flags="m" />
 		<key id="KEY_PLAY" mapto="ignore" flags="brl" />
@@ -89,5 +98,39 @@
 		<key id="KEY_8" mapto="ignore" flags="brl" />
 		<key id="KEY_9" mapto="9" flags="m" />
 		<key id="KEY_9" mapto="ignore" flags="brl" />
+	</map>
+
+	<map context="VavooListActions">
+		<key id="KEY_FAVORITES" mapto="favourites" flags="m" />
+		<key id="KEY_FAVORITES" mapto="ignore" flags="brl" />
+		<key id="KEY_PVR" mapto="recordings" flags="m" />
+		<key id="KEY_PVR" mapto="ignore" flags="brl" />
+		<key id="KEY_FILE" mapto="recordings" flags="m" />
+		<key id="KEY_FILE" mapto="ignore" flags="brl" />
+		<key id="KEY_VIDEO" mapto="recordings" flags="m" />
+		<key id="KEY_VIDEO" mapto="ignore" flags="brl" />
+		<key id="KEY_LIST" mapto="recordings" flags="m" />
+		<key id="KEY_LIST" mapto="ignore" flags="brl" />
+		<key id="KEY_TEXT" mapto="search" flags="m" />
+		<key id="KEY_TEXT" mapto="ignore" flags="brl" />
+		<key id="KEY_HELP" mapto="help" flags="m" />
+		<key id="KEY_HELP" mapto="ignore" flags="brl" />
+		<key id="KEY_PLAY" mapto="play" flags="m" />
+		<key id="KEY_PLAY" mapto="ignore" flags="brl" />
+		<key id="KEY_PLAYPAUSE" mapto="play" flags="m" />
+		<key id="KEY_PLAYPAUSE" mapto="ignore" flags="brl" />
+		<key id="KEY_STOP" mapto="stop" flags="m" />
+		<key id="KEY_STOP" mapto="ignore" flags="brl" />
+		<key id="KEY_RECORD" mapto="record" flags="m" />
+		<key id="KEY_RECORD" mapto="ignore" flags="brl" />
+		<key id="KEY_BACK" mapto="back" flags="m" />
+		<key id="KEY_BACK" mapto="ignore" flags="brl" />
+	</map>
+
+	<!-- the main list's EPG (the favourites' guide): OpenPLi names EPG
+	     "info" there, which the main list keeps for its info note -->
+	<map context="VavooMainActions">
+		<key id="KEY_EPG" mapto="epg" flags="m" />
+		<key id="KEY_EPG" mapto="ignore" flags="brl" />
 	</map>
 </keymap>

@@ -33,7 +33,7 @@ from . import (
     BASE_SITES,
     GEIL_SITES,
     GEIL_LIVE_PATH,
-    GROUP_NAME_SEPARATORS,
+    group_separators,
     HOST_GIT,
     SOURCE_PREFS_FILE,
     SREF_MAP_FILE,
@@ -709,11 +709,8 @@ _GROUP_MULTI_SPACE_RE = re.compile(r'\s+')
 # "group" label into country/category with one of these - shared by
 # load_catalog() and load_geil_catalog() (see _base_country_from_group()).
 # GROUP_NAME_SEPARATORS (__init__.py) is the one shared copy of this
-# list, imported everywhere a country/category or bouquet name needs
-# splitting the same way, instead of each module keeping its own
-# literal (which had already drifted out of sync - see its own
-# comment).
-_GROUP_SEPARATORS = GROUP_NAME_SEPARATORS
+# list, read through group_separators(text) (the separators in text's
+# own string type: Python 2 cannot mix them with unicode).
 
 
 def _base_country_from_group(group):
@@ -724,7 +721,7 @@ def _base_country_from_group(group):
     (one of which rebuilt the separators tuple on every single catalog
     item instead of once)."""
     base_country = group
-    for sep in _GROUP_SEPARATORS:
+    for sep in group_separators(base_country):
         if sep in base_country:
             base_country = base_country.split(sep)[0].strip()
             break
@@ -736,7 +733,7 @@ def _category_from_group(group):
     ("Italy ➾ Sport" -> "Sport"), or "" when it has none (the app's
     CatalogParser.subCategoryOf)."""
     group = group or ""
-    for sep in _GROUP_SEPARATORS:
+    for sep in group_separators(group):
         if sep in group:
             return group.split(sep, 1)[1].strip()
     return ""

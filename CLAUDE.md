@@ -181,6 +181,22 @@ PAUSE did nothing). So:
   no-op rather than falling through to Enigma2's.
 - The image-context ActionMaps stay as the fallback (one step lower,
   still above Enigma2's), with every image's names for MENU / pause.
+- The list screens take the remote's direct keys the same way:
+  `keymap.xml`'s `VavooListActions` (`LIST_KEYS`, `list_keys(actions)`
+  at `LIST_KEYS_PRIO` -2, above their own maps and Enigma2's listbox):
+  FAV `favourites`, PVR / FILE / VIDEO / LIST `recordings`, TEXT
+  `search`, HELP `help`, PLAY `play`, STOP `stop` (`stop_preview()` →
+  `NOW_PLAYING.preview_halt()`, which keeps the service to put back),
+  REC `record` (`record_channel()`, shared with the player's REC), BACK
+  `back`; the main list's EPG is `VavooMainActions` (the favourites'
+  guide, `open_favourites_guide()`; OpenPLi calls EPG "info" there).
+  0 as the first digit is `play_last_watched()`. Only keys whose
+  release no image uses for something a list needs go in there (its
+  "ignore" takes the release) - EPG does not, in the shared context.
+- HELP: every screen has `show_help()` → `show_keys(session,
+  help_rows())`; `help_rows()` lists each key the screen takes (dynamic:
+  Favourites while moving). Change a key → `keymap.xml`, the screen's
+  maps, its `help_rows()`, README's table and the captions together.
 - Never put `EPGSelectActions` in one ActionMap with `ColorActions`:
   OpenATV / OpenViX have RED / YELLOW / BLUE there on the press and
   ColorActions on the release, so a colour key ran twice (the guide's
@@ -538,6 +554,11 @@ screen crash or a lookup fail there, never on Python 3):
   Python 2; mixed with unicode (`.replace()`, `in`, `.format()`) it
   raises. Use `u''` where the other side is text (vUtils' `ensure_str()`
   returns unicode on Python 2) - `decodeHtml()` failed on every name.
+  The country / category separators (`GROUP_NAME_SEPARATORS`, "➾")
+  are such literals: loop over `group_separators(text)` (or
+  `literals_for(text, "➾", ...)`, both in `__init__.py`), which gives
+  them in the text's own type - looping over the tuple made every
+  catalog group and every `get_country_code()` call fail.
 - Values from JSON files are unicode on Python 2, from `_()` and
   `to_string()` UTF-8 bytes: convert at the edge (`to_text()` in,
   `to_string()` out to widgets).
