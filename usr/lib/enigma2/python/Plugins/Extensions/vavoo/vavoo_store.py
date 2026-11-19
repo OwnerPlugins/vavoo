@@ -501,6 +501,8 @@ def hidden_countries():
 
 
 def set_hidden_countries(names):
+    if not isinstance(names, (list, tuple, set)):
+        names = []
     return _write_json(hidden_countries_file(),
                        sorted(set(to_text(n) for n in names if n),
                               key=lambda n: n.lower()))
@@ -539,6 +541,15 @@ ADULT_RE = re.compile(
 def _parental():
     data = _read_json(parental_file(), {})
     return data if isinstance(data, dict) else {}
+
+
+def _number(value, default=0):
+    """A number from a file that may have been edited by hand or broken:
+    the default when it is not one."""
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def _save_parental(data):
@@ -675,11 +686,11 @@ def pin_wait():
         data = _parental()
         if "blocked_until" not in data:
             return 0
-        left = float(data.get("blocked_until", 0)) - time.time()
+        left = _number(data.get("blocked_until")) - time.time()
         wall = 0 if left > PIN_BLOCK_MAX else max(0, left)
         boot_left = 0
         if data.get("boot") and data.get("boot") == boot_id():
-            up_left = float(data.get("blocked_until_up", 0)) - uptime()
+            up_left = _number(data.get("blocked_until_up")) - uptime()
             if 0 < up_left <= PIN_BLOCK_MAX:
                 boot_left = up_left
         wait = max(wall, boot_left)
@@ -707,9 +718,9 @@ def check_pin(pin):
             _save_parental(data)
             unlock()
             return "ok", 0
-        wrong = int(data.get("wrong", 0)) + 1
+        wrong = int(_number(data.get("wrong"))) + 1
         if wrong >= PIN_TRIES:
-            blocks = int(data.get("blocks", 0))
+            blocks = int(_number(data.get("blocks")))
             seconds = min(PIN_BLOCK_SECONDS << min(2 * blocks, 6),
                           PIN_BLOCK_MAX)
             data["wrong"] = 0
@@ -766,15 +777,20 @@ def _clean_timer(entry):
     if not isinstance(entry, dict):
         return None
     try:
-        start = int(entry.get("start"))
-        stop = int(entry.get("stop") or start)
+        start = int(float(entry.get("start")))
+        stop = int(float(entry.get("stop") or start))
     except Exception:
         return None
+    try:
+        timer_id = int(entry.get("id") or 0)
+    except Exception:
+        # (a hand-edited id: a new one - the timer is kept)
+        timer_id = start * 1000
     kind = to_text(entry.get("kind")) or KIND_REMIND
     url = to_text(entry.get("url")).strip()
     if not url or kind not in (KIND_REMIND, KIND_RECORD):
         return None
-    out = {"id": int(entry.get("id") or 0), "kind": kind, "url": url,
+    out = {"id": timer_id, "kind": kind, "url": url,
            "start": start, "stop": max(stop, start)}
     for key in ("name", "country", "country_code", "logo", "title"):
         out[key] = to_text(entry.get(key) or u"")
@@ -788,7 +804,10 @@ def _load_timer_entries():
         return _timer_cache[1]
     data = _read_json(path, {})
     raw = data.get("timers") if isinstance(data, dict) else data
-    entries = [t for t in (_clean_timer(e) for e in raw or []) if t]
+    if not isinstance(raw, list):
+        # (not a list of timers: a broken or hand-edited file)
+        raw = []
+    entries = [t for t in (_clean_timer(e) for e in raw) if t]
     entries.sort(key=lambda t: (t["start"], t["id"]))
     _timer_cache[0] = stamp
     _timer_cache[1] = entries
@@ -988,9 +1007,11 @@ def restore_backup(data):
     prefs = data.get("source_prefs")
     _write_json(source_prefs_file(), prefs if isinstance(prefs, dict) else {})
     set_hidden_countries(data.get("hidden_countries") or [])
+    timers = data.get("timers")
+    if not isinstance(timers, list):
+        timers = []
     with _timer_lock:
-        _save_timers([t for t in (_clean_timer(e)
-                                  for e in data.get("timers") or []) if t])
+        _save_timers([t for t in (_clean_timer(e) for e in timers) if t])
     settings = data.get("settings")
     if not isinstance(settings, dict):
         return {}

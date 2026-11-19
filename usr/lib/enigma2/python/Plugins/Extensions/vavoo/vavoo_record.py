@@ -23,6 +23,7 @@ from __future__ import absolute_import, division, print_function
 
 import binascii
 import bisect
+import errno
 import json
 import os
 import re
@@ -230,6 +231,23 @@ def mount_of(path):
 FAT_FS = ("vfat", "msdos", "fat", "umsdos")
 FAT_LIMIT = 4 * 1024 ** 3 - 64 * 1024 ** 2
 FAILURE_FAT = "the disk's 4 GB file limit (FAT32)"
+FAILURE_SPACE = "no space left"
+FAILURE_DISK = "the disk could not be written"
+
+
+class _DiskError(Exception):
+    """A write to the recording's file failed (not the stream)."""
+
+    def __init__(self, error):
+        Exception.__init__(self, str(error))
+        self.error = error
+        code = getattr(error, "errno", None)
+        if code == errno.ENOSPC:
+            self.failure = FAILURE_SPACE
+        elif code == errno.EFBIG:
+            self.failure = FAILURE_FAT
+        else:
+            self.failure = FAILURE_DISK
 
 
 def file_size_limit(path):
@@ -310,12 +328,26 @@ def _write_atomically(path, data):
     os.rename(temp, path)
 
 
+def _as_texts(value):
+    """`value` with every bytes in it decoded (UTF-8)."""
+    if isinstance(value, bytes):
+        return _text(value)
+    if isinstance(value, dict):
+        return dict((_as_texts(k), _as_texts(v)) for k, v in value.items())
+    if isinstance(value, (list, tuple)):
+        return [_as_texts(v) for v in value]
+    return value
+
+
 def write_info(path, info):
     """The recording's own record: channel, country, title, start,
     duration... (atomically: a box switched off while it is written
     must not leave an empty file)."""
     try:
-        data = json.dumps(info, ensure_ascii=False, indent=1, sort_keys=True)
+        # (texts as text: on Python 2 a name in UTF-8 bytes next to a
+        # unicode one made json.dumps() fail, and the record was lost)
+        data = json.dumps(_as_texts(info), ensure_ascii=False, indent=1,
+                          sort_keys=True)
         if not isinstance(data, bytes):
             data = data.encode("utf-8")
         _write_atomically(_native(path) + INFO_SUFFIX, data)
@@ -378,6 +410,35 @@ def _from_name(path):
             "start": start or mtime, "duration": 0}
 
 
+_RECORD_NUMBERS = ("start", "duration", "stop_at", "version")
+_RECORD_TEXTS = ("name", "title", "url", "country", "country_code", "logo",
+                 "sref", "description")
+
+
+def _clean_record(info, path):
+    """A recording's record as the lists use it: numbers as numbers and
+    texts as texts, whatever the file held (a hand edit, a broken
+    write); what is missing or wrong comes from the file name. A record
+    with a text where a number goes used to stop the Recordings list
+    from opening (the sort compared a text with a number)."""
+    out = _from_name(path)
+    if isinstance(info, dict):
+        for key, value in info.items():
+            if key in _RECORD_NUMBERS:
+                try:
+                    out[key] = float(value) if key != "version" else int(value)
+                except (TypeError, ValueError):
+                    pass
+            elif key in _RECORD_TEXTS:
+                if isinstance(value, (bytes, text_type)) or \
+                        isinstance(value, (int, float)):
+                    out[key] = _text(value)
+            else:
+                out[key] = value
+    out["format"] = INFO_FORMAT
+    return out
+
+
 def list_recordings(folder, active=()):
     """The recordings in `folder` (the ones this plugin made: with
     their .vavoo.json), the newest first, each a dict with "path" and
@@ -404,8 +465,7 @@ def list_recordings(folder, active=()):
                 except Exception:
                     pass
             continue
-        info = read_info(path) or _from_name(path)
-        recording = dict(info)
+        recording = _clean_record(read_info(path), path)
         recording["path"] = path
         try:
             recording["bytes"] = os.path.getsize(path)
@@ -735,7 +795,7 @@ class Recorder(object):
             free = self.space(self.path) if self.space else None
             if free is not None and free < STOP_FREE:
                 if self.failure is None:
-                    self.failure = "no space left"
+                    self.failure = FAILURE_SPACE
                     _log("{}: stopped, the disk is nearly full".format(
                         self.tag))
                 return True
@@ -770,6 +830,11 @@ class Recorder(object):
                 before = self.bytes
                 try:
                     self._pump(url, out)
+                except _DiskError as e:
+                    self.failure = e.failure
+                    _log("{}: stopped, the file could not be written "
+                         "({})".format(self.tag, e.error))
+                    break
                 except Exception as e:
                     _log("{}: {}".format(self.tag, e))
                 if self._done():
@@ -894,18 +959,25 @@ class Recorder(object):
                              "limit".format(self.tag))
                     self._stop.set()
                     break
-                if PY2:
-                    self._index(pending[:whole], now)
-                    out.write(bytes(pending[:whole]))
-                else:
-                    # looked at and written as it is, no copy (the
-                    # views let go before the buffer is shortened)
-                    whole_view = memoryview(pending)
-                    part = whole_view[:whole]
-                    self._index(part, now)
-                    out.write(part)
-                    part.release()
-                    whole_view.release()
+                try:
+                    if PY2:
+                        self._index(pending[:whole], now)
+                        out.write(bytes(pending[:whole]))
+                    else:
+                        # looked at and written as it is, no copy (the
+                        # views let go before the buffer is shortened)
+                        whole_view = memoryview(pending)
+                        part = whole_view[:whole]
+                        try:
+                            self._index(part, now)
+                            out.write(part)
+                        finally:
+                            part.release()
+                            whole_view.release()
+                except (IOError, OSError) as e:
+                    # the disk, not the stream: a new ffmpeg would not
+                    # help (a USB disk pulled out, full, read-only)
+                    raise _DiskError(e)
                 del pending[:whole]
                 self.bytes += whole
                 self._side_jobs(now)

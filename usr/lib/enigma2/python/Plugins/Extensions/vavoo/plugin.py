@@ -767,6 +767,11 @@ def read_classic_skin(filename, cvs=False, background=True):
         path = path.replace('.xml', '_cvs.xml')
     with codecs.open(path, "r", encoding="utf-8") as f:
         text = f.read()
+    if PY2:
+        # Enigma2's skin parser on Python 2 (cElementTree) takes bytes:
+        # a unicode skin with a non-ASCII character (the splash screen's
+        # "\u00d7", the update popup's "\u2500") made the screen crash
+        text = text.encode("utf-8")
     return apply_selected_background(text) if background else text
 
 
@@ -964,6 +969,13 @@ def list_page_rows(widget, themed):
         return max(1, int(height // widget.item_height))
     except Exception:
         return 10
+
+
+def row_number(number, digits, fill=u" "):
+    """A row's number padded to `digits` ("  7"), as text. (A str padded
+    with a unicode fill is a TypeError on Python 2: the numbered lists
+    did not open there.)"""
+    return to_text(str(number)).rjust(digits, fill)
 
 
 def show_list(name, link, is_category=False, is_channel=False, logo_url=None,
@@ -5149,7 +5161,7 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         return [
             show_list(name, url, is_channel=True, logo_url=logo,
                       display=to_string(u"{}  {}".format(
-                          str(i + 1).rjust(digits, u"\u2007"),
+                          row_number(i + 1, digits, u"\u2007"),
                           to_text(name))),
                       themed=self._themed)
             for i, (name, url, logo) in enumerate(self._channel_entries)]
@@ -5875,7 +5887,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
 
     def _channel_row(self, index, entry, total):
         digits = len(str(total))
-        text = u"{}  {}".format(str(index + 1).rjust(digits, u" "),
+        text = u"{}  {}".format(row_number(index + 1, digits, u" "),
                                 to_text(entry['name']))
         return show_list(entry['name'], entry['url'], is_channel=True,
                          logo_url=entry.get('logo') or None,
@@ -6881,11 +6893,14 @@ class _Recordings(object):
             pass
         if recorder.failure and NOTIFICATION_AVAILABLE:
             title = (recorder.info or {}).get("title") or ""
-            if recorder.failure == "no space left":
+            if recorder.failure == vavoo_record.FAILURE_SPACE:
                 quick_notify(_("Recording stopped: the disk is nearly full"), 6)
             elif recorder.failure == vavoo_record.FAILURE_FAT:
                 quick_notify(_("Recording stopped: the disk's 4 GB file "
                                "limit (FAT32)"), 6)
+            elif recorder.failure == vavoo_record.FAILURE_DISK:
+                quick_notify(_("Recording stopped: the disk could not be "
+                               "written (removed?)"), 6)
             else:
                 quick_notify(_("Recording stopped early: {}").format(
                     to_string(title)), 6)
@@ -7224,7 +7239,7 @@ class VavooGuide(Screen):
                                 c["selected"] if selected else c["grid_name"]))
         entry.append(self._text(
             2 + pad, 0, name_w - 4 - 2 * pad, height,
-            u"{}  {}".format(str(index + 1).rjust(digits, u" "),
+            u"{}  {}".format(row_number(index + 1, digits, u" "),
                              to_text(channel.get("name"))), 0xffffff))
         status, programmes = self._status(index)
         win_end = self.win_start + vavoo_theme.GUIDE_WINDOW
@@ -7602,7 +7617,12 @@ class VavooPickScreen(Screen):
             actions, -1)
         self['epg_keys'] = info_page_keys(actions)
         self.rows = []
-        self.onLayoutFinish.append(lambda: self.refresh(0))
+        # (a method: Enigma2 exec()s an onLayoutFinish entry that is
+        # not one - a lambda here crashed the box on open)
+        self.onLayoutFinish.append(self._first_refresh)
+
+    def _first_refresh(self):
+        self.refresh(0)
 
     def key_actions(self):
         return {}

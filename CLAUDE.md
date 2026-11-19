@@ -461,7 +461,15 @@ records and timeshifts only DVB, so the plugin does it itself:
   service when it closes.
 - A FAT32 disk cannot hold a 4 GB file: `Recorder(max_bytes=
   vavoo_record.file_size_limit(folder))` stops a little before
-  (`FAILURE_FAT`). `/tmp` is RAM on a box: the logo cache is trimmed
+  (`FAILURE_FAT`). A failed write is the disk, not the stream: `_pump()`
+  raises `_DiskError` and the recorder stops at once (no new ffmpeg /
+  address) with `FAILURE_SPACE` (ENOSPC), `FAILURE_FAT` (EFBIG) or
+  `FAILURE_DISK` (EIO, read-only, a USB disk pulled out - `free_bytes()`
+  then climbs to the empty mount folder on the flash, so the space
+  check alone never notices). Records are read through
+  `_clean_record()` (numbers as numbers, texts as texts, the file name
+  for what is wrong) and written through `_as_texts()` (Python 2: UTF-8
+  bytes beside unicode broke `json.dumps`). `/tmp` is RAM on a box: the logo cache is trimmed
   to 8 MB (`vUtils.trim_picon_cache()`) and leftover pause buffers are
   deleted (`clean_pause_leftovers()`) each time `main()` runs; the
   guide's load line carries `memory_note()`.
@@ -518,8 +526,39 @@ and don't introduce f-strings or other Python-3-only syntax into files that
 currently avoid them (check the surrounding file for `.format(...)` vs
 f-strings before choosing).
 
+Python 2 traps found by running the plugin on a real 2.7 (each made a
+screen crash or a lookup fail there, never on Python 3):
+- `str.rjust/ljust/center(n, u"x")`: a unicode fill on a str is a
+  TypeError - pad text (`row_number()`), not `str(n)`.
+- A skin given to Enigma2 must be `str` (UTF-8 bytes) on Python 2: its
+  parser (cElementTree) fails on unicode with a non-ASCII character
+  (`read_classic_skin()` encodes; `vavoo_theme._esc()` keeps the built
+  ones `str`).
+- A plain literal with a non-ASCII character (`'ñ'`, `'→'`) is bytes on
+  Python 2; mixed with unicode (`.replace()`, `in`, `.format()`) it
+  raises. Use `u''` where the other side is text (vUtils' `ensure_str()`
+  returns unicode on Python 2) - `decodeHtml()` failed on every name.
+- Values from JSON files are unicode on Python 2, from `_()` and
+  `to_string()` UTF-8 bytes: convert at the edge (`to_text()` in,
+  `to_string()` out to widgets).
+
 ## Enigma2-specific conventions
 
+- `onLayoutFinish` (and `onContentChanged`) entries must be bound
+  methods (`self.x`): OpenATV and OpenPLi `exec()` any other entry in
+  `Screen.createGUIScreen`, so a lambda / function / partial there
+  crashes the screen as it opens ("exec() arg 1 must be a string,
+  bytes or code object" - the Recordings, Choose countries and Parental
+  Control crash). `onExecBegin` / `onClose` / timers take any callable.
+- Every `<widget name="X">` of a screen's skin must be a component the
+  screen created in `__init__` (else SkinError on open), and every
+  `<widget source="X">` must be `session.*` / `global.*` or one of its
+  own; a component the skin does not name is harmless.
+- Anything read from a file under `/etc/enigma2` (or a recording's
+  record) may be broken or hand-edited: the loaders in `vavoo_store` /
+  `vavoo_record` clean what they read (types checked, a bad entry
+  dropped, a bad number replaced - `_clean_timer()`, `_number()`,
+  `_clean_record()`), so no screen that shows them can fail on it.
 - UI code imports from Enigma2 framework packages that only exist on real
   hardware/emulation (`enigma`, `Components.*`, `Screens.*` is implied via
   `Screen`, `Tools.Directories`, `twisted.internet.reactor`). These cannot

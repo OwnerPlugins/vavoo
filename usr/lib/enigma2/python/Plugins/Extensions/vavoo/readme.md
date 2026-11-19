@@ -648,6 +648,7 @@ The plugin also keeps an eye on the box's memory, whether it is open or not. Eve
 | "Can't record: no disk (HDD / USB) found" | Recordings and Pause Live TV need a mounted disk; the box's internal flash is never used |
 | A key in the player does something else (MENU opens Enigma2's menu, PAUSE does nothing) | Restart Enigma2 after an update (the plugin's key map is loaded at start); `grep "Own keys" /tmp/vavoo.log` says whether it was loaded |
 | "Can't record (not enough free space?)" | Under 400 MB free where recordings go: check Settings → Recordings folder |
+| "Recording stopped: the disk could not be written (removed?)" | The disk went away or became read-only during a recording (a USB disk pulled out, a file system error): what was recorded until then is kept. Check the disk and that it is mounted |
 | "Recording needs ffmpeg" | Install it: `opkg install ffmpeg` (a dependency of the plugin, but some images leave it out) |
 | A recording stops early | `/tmp/vavoo.log` says why ("no stream address", "the stream keeps failing", the disk nearly full) and `/tmp/vavoo_record.log` what ffmpeg said |
 | PAUSE only pauses | Settings → Pause Live TV is off, there is no disk with 400 MB free, or no `ffmpeg` |

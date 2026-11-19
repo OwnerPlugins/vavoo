@@ -1204,14 +1204,18 @@ def decodeHtml(text):
         h = html_parser.HTMLParser()
         text = h.unescape(text)
 
+    # (unicode, as `text` is: on Python 2 the byte "\u00f1" here made
+    # every call fail - names for the guide, bouquets, M3U)
     replacements = {
-        '&amp;': '&', '&apos;': "'", '&lt;': '<', '&gt;': '>', '&ndash;': '-',
-        '&quot;': '"', '&ntilde;': 'ñ', '&rsquo;': "'", '&nbsp;': ' ',
-        '&equals;': '=', '&quest;': '?', '&comma;': ',', '&period;': '.',
-        '&colon;': ':', '&lpar;': '(', '&rpar;': ')', '&excl;': '!',
-        '&dollar;': '$', '&num;': '#', '&ast;': '*', '&lowbar;': '_',
-        '&lsqb;': '[', '&rsqb;': ']', '&half;': '1/2', '&DiacriticalTilde;': '~',
-        '&OpenCurlyDoubleQuote;': '"', '&CloseCurlyDoubleQuote;': '"'
+        u'&amp;': u'&', u'&apos;': u"'", u'&lt;': u'<', u'&gt;': u'>',
+        u'&ndash;': u'-', u'&quot;': u'"', u'&ntilde;': u'\u00f1',
+        u'&rsquo;': u"'", u'&nbsp;': u' ', u'&equals;': u'=',
+        u'&quest;': u'?', u'&comma;': u',', u'&period;': u'.',
+        u'&colon;': u':', u'&lpar;': u'(', u'&rpar;': u')', u'&excl;': u'!',
+        u'&dollar;': u'$', u'&num;': u'#', u'&ast;': u'*', u'&lowbar;': u'_',
+        u'&lsqb;': u'[', u'&rsqb;': u']', u'&half;': u'1/2',
+        u'&DiacriticalTilde;': u'~', u'&OpenCurlyDoubleQuote;': u'"',
+        u'&CloseCurlyDoubleQuote;': u'"'
     }
     for entity, char in replacements.items():
         text = text.replace(entity, char)
@@ -2505,8 +2509,9 @@ class VavooEPGMatcher(object):
 
                 sat_info = " (sat {})".format(orbpos) if orbpos else ""
                 conf_info = " [CONFIGURED]" if orbpos in self._configured_sats else ""
-                print("[Match] CHOSEN: '{}' -> {}{}{} (score:{}→{}, priority:{})".format(
-                    channel_name, rytec_id, sat_info, conf_info,
+                print(u"[Match] CHOSEN: '{}' -> {}{}{} (score:{}\u2192{}, priority:{})".format(
+                    ensure_str(channel_name, errors='ignore'),
+                    ensure_str(rytec_id, errors='ignore'), sat_info, conf_info,
                     orig_score, adj_score, priority
                 ))
 

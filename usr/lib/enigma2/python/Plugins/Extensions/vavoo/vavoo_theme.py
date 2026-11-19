@@ -517,8 +517,22 @@ def background_path(theme, width, plain=False, base_dir=None):
 # ---------------------------------------------------------------------
 # Skin XML
 # ---------------------------------------------------------------------
+try:
+    _unicode = unicode  # noqa: F821 (Python 2)
+except NameError:
+    _unicode = str
+
+
 def _esc(value):
-    return (str(value).replace("&", "&amp;").replace('"', "&quot;")
+    """`value` as skin text: str on both Pythons (Python 2: UTF-8 - a
+    unicode title with an accent made str() fail there)."""
+    if isinstance(value, bytes) and not isinstance(value, str):
+        value = value.decode("utf-8", "replace")
+    elif _unicode is not str and isinstance(value, _unicode):
+        value = value.encode("utf-8")
+    else:
+        value = str(value)
+    return (value.replace("&", "&amp;").replace('"', "&quot;")
             .replace("<", "&lt;").replace(">", "&gt;"))
 
 
