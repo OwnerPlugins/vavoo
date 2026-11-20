@@ -158,8 +158,10 @@ Enigma2's own menu), AUDIO / SUBTITLE Enigma2's own, digits,
 0/RECALL, PAUSE / PLAY / PLAY-PAUSE `playpauseService()`, << >>
 `seekFwd()` / `seekBack()`; LEFT / RIGHT (`key_left()` /
 `key_right()`) only move behind live. The themes' bar buttons are
-captions of those keys ("MENU Options", "EPG Guide"...), never
-selected; Classic's top line is `classic_help_line()` (the keys, plus
+captions of those keys, one row: the colour keys plus "EPG Guide" and
+"MENU Options" (`PLAYER_SMALL_KEYS`; AUDIO / 0 recall are not shown -
+the bar looks like a receiver's - but work and are in HELP), never
+selected, and the date sits under the clock; Classic's top line is `classic_help_line()` (the keys, plus
 `classic_proxy_problem()` only when the proxy is not right). Change a
 key → change `keymap.xml` / the screen's `player_keys()` map, the
 fallback ActionMap, `_fill_bar()`'s captions and `classic_help_line()`
@@ -455,8 +457,10 @@ recordings' are kind "record", below); `REMINDERS` is started at session start
 (`due_timers()`) and asks with `Tools.Notifications.
 AddNotificationWithCallback`; "watch it" goes through `ACTIVE`
 (player → `play_channel()`, main → `_open_channel()`, else the plugin
-opens with `ACTIVE["pending"]`). The guide's OK on a programme to
-come offers Remind me / Record / Watch; MENU is the app's key menu
+opens with `ACTIVE["pending"]`). The guide's RED (and REC) records the
+highlighted programme - again: cancel / stop - its caption following
+it (`_update_record_key()`, from `draw()`); EXIT / BACK close. OK on a
+programme to come offers Remind me / Record / Watch; MENU is the app's key menu
 (Now, `_programme_actions()` while the programme is not over,
 Settings when not over the player). A locked row has no programmes,
 so no actions.

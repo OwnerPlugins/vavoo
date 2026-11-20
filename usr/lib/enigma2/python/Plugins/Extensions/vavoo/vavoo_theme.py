@@ -1039,19 +1039,20 @@ def notify_bar(theme, large, width, base_dir=None):
 # The player
 # ---------------------------------------------------------------------
 PLAYER_SMALL_KEYS = (
-    # (widget, x, y): captions of four more keys of the remote (MENU
-    # options, AUDIO, EPG guide, 0 recall) - shown, never selected
-    ("key_options", 1440, 906), ("key_audio", 1640, 906),
-    ("key_list", 1440, 978), ("key_recall", 1640, 978))
+    # (widget, x, y): captions of two more keys of the remote (EPG
+    # guide, MENU options) - shown, never selected - on the colour
+    # keys' row. (AUDIO and 0 recall were here too: they still work,
+    # HELP lists them - the bar looks like a receiver's without them.)
+    ("key_list", 1440, 978), ("key_options", 1640, 978))
 PLAYER_KEY_X = (110, 410, 710, 1010)
 
 
 def player_bar(theme, large, width, clock_24=True, base_dir=None):
     """The full-screen player's info bar (the app's landscape bar),
     over the video: logo, number, name, programme now with its progress
-    and minutes left, next, status, clock, the small keys and the
-    colour keys; and the stream-info box at the top left (hidden until
-    asked for)."""
+    and minutes left, next, status, clock and date, and one row of
+    keys (the colour keys, EPG, MENU); and the stream-info box at the
+    top left (hidden until asked for)."""
     if not is_modern(theme):
         return None
     skin = _Skin(theme, large, width, base_dir)
@@ -1100,6 +1101,16 @@ def player_bar(theme, large, width, clock_24=True, base_dir=None):
         ("transparent", "1"), ("zPosition", 3)],
         ['<convert type="ClockToText">%s</convert>'
          % ("Format:%H:%M" if clock_24 else "Format:%l:%M")])
+    # the date under the clock, as on a receiver's info bar
+    left, top, w, h = skin.rect(1440, 892, 390, 48)
+    skin.add("widget", [
+        ("source", "global.CurrentTime"), ("render", "Label"),
+        ("position", "%d,%d" % (left, top)), ("size", "%d,%d" % (w, h)),
+        ("font", skin.font(30)), ("halign", "right"), ("valign", "center"),
+        ("foregroundColor", e2_color(look["text_sub"])),
+        ("backgroundColor", solid(back)),
+        ("transparent", "1"), ("zPosition", 3)],
+        ['<convert type="ClockToText">Format:%a %d %b</convert>'])
     for name, x, y in PLAYER_SMALL_KEYS:
         skin.picture("pkey", x, y, z=1)
         # (24: "MENU Options" - the key, then its job - fits the box)

@@ -56,7 +56,7 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 - **Choose Countries** – Hide the countries you never watch from the main list and from search
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
 - **Preview Window** – As in the app: OK on a channel plays it in the small window beside the list; OK again on it (or BLUE) opens it full screen with the same stream, no restart. Closing full screen leaves it playing in the window; leaving the plugin brings back the TV channel you were watching before
-- **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use, the clock and the keys. BLUE opens the channel list over the video with a **mini guide** (now, the next three, the description), YELLOW the source, EPG the guide; type a channel number to go there; 0 (or RECALL) goes back to the previous channel
+- **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use, the clock and date and one row of keys. BLUE opens the channel list over the video with a **mini guide** (now, the next three, the description), YELLOW the source, EPG the guide; type a channel number to go there; 0 (or RECALL) goes back to the previous channel
 - **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), record, stream info (resolution, frame rate, codec, source), programme guide and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
 - **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
@@ -139,7 +139,7 @@ The list starts with "★ Favourites (n)" once you have favourites, then "Recent
 With "Sub-categories" on, a country whose catalog has two or more categories first lists "All channels (n)", its categories A-Z and "General (n)"; OK opens one ("Italy ➾ Sport"). The line under the channel name shows where you are, as in the app: "Portugal · 7/174", with "★" when the highlighted channel is a favourite. Next to the preview window the list shows the highlighted channel's current and next programme. It fills in a moment after the highlight stops moving; the first time in a country it says "Loading programme guide..." for a few seconds.
 
 ### Player
-The same keys in every theme, Classic included - each function has a key of its own on the remote (no moving along the bar with the arrows). The themes' bar shows them as captions ("Back · ★ Fav · Source · List", "MENU Options · AUDIO · EPG Guide · 0 Recall"); Classic keeps Enigma2's own bar and lists them in its top line.
+The same keys in every theme, Classic included - each function has a key of its own on the remote (no moving along the bar with the arrows). The themes' bar is laid out like a receiver's info bar: the information, the clock and the date, and one row of captions ("Back · ★ Fav · Source · List", "EPG Guide · MENU Options" - AUDIO and 0 Recall work as well, HELP lists them); Classic keeps Enigma2's own bar and lists them in its top line.
 
 The keys are also the same on every image (OpenATV, OpenPLi, OpenViX, ...): the plugin brings its own key map (`keymap.xml`, loaded when Enigma2 starts), because the images name the same key differently - on OpenATV 7, MENU in a player opened Enigma2's main menu, and PAUSE / PLAY did nothing on a live channel. Each key does one thing, once (pressing, releasing or holding it never sets off something else).
 
@@ -235,11 +235,11 @@ The app's grid: the channels of the list it was opened from (numbered, in the sa
 | 1-9 | Go to that channel (typed within 1.5 s the digits add up) |
 | OK | A programme still to come: Remind me (or Cancel reminder) / Record (or Cancel recording) / Watch. Anything else: watch the channel |
 | GREEN / PLAY | Watch the channel (asks for the PIN where needed) |
-| REC | Record the highlighted programme (to come: set; on now: at once) - again: cancel / stop |
+| RED / REC | Record the highlighted programme (to come: set; on now: at once) - again: cancel / stop. RED's caption says what it will do: "● Record", "Cancel recording" or "Stop recording" |
 | MENU | As in the app: Now, then (for a programme not over yet) Remind me / Record - one on now is recorded at once, "Stop recording" stops it - and Settings (not over the player) |
 | PVR | Recordings (not over the player) |
 | HELP | The keys of this screen |
-| RED / EXIT / BACK | Back |
+| EXIT / BACK | Close the guide |
 
 ### Reminders
 - OK on a programme still to come in the guide → **Remind me** ("Reminder set: Title"); the box gets a clock mark. The same menu cancels it

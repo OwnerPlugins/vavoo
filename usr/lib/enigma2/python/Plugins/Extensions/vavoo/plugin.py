@@ -7283,7 +7283,9 @@ class VavooGuide(Screen):
                                   max(8, int(self.m["header_h"] * 0.42)))
         self['grid'] = GuideList(self.m["row_h"], colors["font"],
                                  self.m["font_size"])
-        self['red'] = Label(_("Back"))
+        # RED records the highlighted programme (its caption follows it:
+        # _update_record_key()); EXIT / BACK close
+        self['red'] = Label(to_string(u"\u25cf " + to_text(_("Record"))))
         self['green'] = Label(_("Watch"))
         self['yellow'] = Label(u"◀ " + to_text(_("Earlier")))
         self['blue'] = Label(to_text(_("Later")) + u" ▶")
@@ -7318,7 +7320,7 @@ class VavooGuide(Screen):
 
         actions = {
             "ok": self.ok, "cancel": self.close_guide,
-            "red": self.close_guide, "green": self.watch,
+            "red": self.record_selected, "green": self.watch,
             "yellow": lambda: self.shift(-3600),
             "blue": lambda: self.shift(3600),
             "up": lambda: self.move_row(-1, wrap=True),
@@ -7361,8 +7363,8 @@ class VavooGuide(Screen):
     def help_rows(self):
         rows = [
             ("OK", _("A programme to come: remind / record / watch")),
+            (_("RED / REC"), _("Record the programme (again: cancel / stop)")),
             (_("GREEN / PLAY"), _("Watch the channel")),
-            ("REC", _("Record the programme (again: cancel / stop)")),
             (_("UP / DOWN"), _("Channel")),
             (_("LEFT / RIGHT"), _("Programme")),
             (_("YELLOW / BLUE"), _("An hour back / on")),
@@ -7370,7 +7372,7 @@ class VavooGuide(Screen):
             ("MENU", _("Now, the programme's actions")),
             ("CH+ / CH-", _("Page up / down")),
             ("1-9", _("Go to that channel")),
-            (_("RED / EXIT"), _("Close")),
+            (_("EXIT / BACK"), _("Close")),
         ]
         if not self.over:
             rows.insert(9, (_("PVR / FILE"), _("Recordings")))
@@ -7523,6 +7525,25 @@ class VavooGuide(Screen):
         self['grid'].l.setList([self._row_entry(i) for i in self._visible()])
         self._draw_heading()
         self._draw_details()
+        self._update_record_key()
+
+    def _update_record_key(self):
+        """RED's caption for the highlighted programme: what pressing it
+        would do (record_selected() / toggle_record())."""
+        text = u"\u25cf " + to_text(_("Record"))
+        try:
+            programme = self._selected_programme()
+            if programme is not None and programme[1] > time.time() and \
+                    0 <= self.sel_row < len(self.channels):
+                channel = self.channels[self.sel_row]
+                if vavoo_store.find_timer(channel.get("url"), programme[0],
+                                          vavoo_store.KIND_RECORD):
+                    text = to_text(_("Cancel recording"))
+                elif self._recording_now(channel, programme):
+                    text = to_text(_("Stop recording"))
+        except Exception as e:
+            debug("Guide: record key not updated: {}".format(e))
+        self['red'].setText(to_string(text))
 
     def _draw_heading(self):
         if self._closed:
@@ -9165,9 +9186,8 @@ class VavooRecordingPlayer(
             "key_yellow": u"◀◀ 30 s",
             "key_blue": u"30 s ▶▶",
             "key_options": u"MENU " + to_text(_("Options")),
-            "key_audio": u"AUDIO",
-            "key_list": u"◀ 10 s",
-            "key_recall": u"10 s ▶",
+            # (LEFT / RIGHT)
+            "key_list": u"◀ 10 s ▶",
         }
         for widget, text in texts.items():
             try:
@@ -9789,7 +9809,7 @@ class VavooSearch(Screen):
 # The labels of the theme's player bar (vavoo_theme.player_bar()).
 PLAYER_BAR_LABELS = (
     "number", "name", "now", "left", "next", "status", "stream_info",
-    "key_options", "key_audio", "key_list", "key_recall",
+    "key_options", "key_list",
     "key_red", "key_green", "key_yellow", "key_blue")
 # The bar's buttons are captions of the remote's keys, the same in
 # every theme and in Classic (whose top line lists them): no button is
@@ -11151,11 +11171,10 @@ class Playstream2(
                 to_text(_("Fav")),
                 "key_yellow": to_text(_("Source")),
                 "key_blue": to_text(_("List")),
-                # (the remote's key, then what it does)
+                # (the remote's key, then what it does; AUDIO and 0
+                # recall work too - HELP lists them, the bar does not)
                 "key_options": u"MENU " + to_text(_("Options")),
-                "key_audio": u"AUDIO",
                 "key_list": u"EPG " + to_text(_("Guide")),
-                "key_recall": u"0 " + to_text(_("Recall")),
             }
             for widget, text in keys.items():
                 self[widget].setText(to_string(text))
