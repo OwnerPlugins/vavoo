@@ -6923,23 +6923,32 @@ def recordings_folder():
     return cfg.record_path.value or default_movie_folder()
 
 
+def media_mounts(network=False):
+    """The disks mounted under /media (/media/hdd, /media/usb...), and
+    with `network` the shares under /media/net - mount points only (a
+    /media/hdd with no disk is a plain folder on the flash)."""
+    mounts = []
+    for root in ("/media", "/media/net") if network else ("/media",):
+        try:
+            names = sorted(listdir(root))
+        except Exception:
+            continue
+        for name in names:
+            mount = join(root, name)
+            try:
+                if os.path.ismount(mount):
+                    mounts.append(mount)
+            except Exception:
+                pass
+    return mounts
+
+
 def record_folder_choices():
     """[(value, folder)]: Enigma2's movie folder ("") and a movie
     folder on each disk mounted under /media (and /media/net)."""
     out = [("", default_movie_folder())]
     seen = set([out[0][1].rstrip("/")])
-    mounts = []
-    for root in ("/media", "/media/net"):
-        try:
-            mounts.extend(join(root, name) for name in sorted(listdir(root)))
-        except Exception:
-            pass
-    for mount in mounts:
-        try:
-            if not os.path.ismount(mount):
-                continue
-        except Exception:
-            continue
+    for mount in media_mounts(network=True):
         folder = join(mount, "movie") + "/"
         if folder.rstrip("/") not in seen:
             seen.add(folder.rstrip("/"))
@@ -6975,10 +6984,24 @@ def usable_folder(folder, create=True):
     return None
 
 
+# Why a PAUSE is not recorded (Playstream2._shift_why): the text after
+# "Paused" in the bar / message - PLAY then goes on live.
+SHIFT_WHY = {
+    "disk": lambda: _("not recorded (no disk) - PLAY returns to live"),
+    "ffmpeg": lambda: _("not recorded (no ffmpeg) - PLAY returns to live"),
+    "start": lambda: _("not recorded - PLAY returns to live"),
+    "stopped": lambda: _("not recorded (the stream could not be "
+                         "recorded) - PLAY returns to live"),
+}
+
+
 def pause_folder():
     """Where the pause buffer goes: Enigma2's timeshift folder, else
-    the recordings folder - with room to spare (vavoo_record.MIN_FREE),
-    else None (PAUSE only pauses)."""
+    the recordings folder, else the disk under /media with the most
+    room (a USB stick at /media/usb: Enigma2's two folders are both on
+    /media/hdd unless changed) - with room to spare
+    (vavoo_record.MIN_FREE), else None (PAUSE only pauses). Never a
+    network share (written all the time)."""
     candidates = []
     try:
         candidates.append(config.usage.timeshift_path.value)
@@ -6993,7 +7016,15 @@ def pause_folder():
         free = vavoo_record.free_bytes(folder)
         if free is None or free >= vavoo_record.MIN_FREE:
             return folder
-    return None
+    best, most = None, -1
+    for mount in media_mounts():
+        folder = usable_folder(mount, create=False)
+        if not folder:
+            continue
+        free = vavoo_record.free_bytes(folder)
+        if free is not None and free >= vavoo_record.MIN_FREE and free > most:
+            best, most = folder, free
+    return best
 
 
 def clean_pause_leftovers():
@@ -7009,6 +7040,8 @@ def clean_pause_leftovers():
         folders.append(config.usage.timeshift_path.value)
     except Exception:
         pass
+    # (pause_folder() may also have used any disk's own top folder)
+    folders.extend(media_mounts())
     for folder in folders:
         try:
             if folder and os.path.isdir(folder):
@@ -10609,6 +10642,9 @@ class Playstream2(
         self._shift_pos = 0.0
         self._shift_clock = None
         self._shift_waits = 0
+        # Why a PAUSE is not recorded (SHIFT_WHY), None when it is or
+        # Pause Live TV is off: then PLAY goes on live, and it is said.
+        self._shift_why = None
         self._shift_tick = eTimer()
         self._shift_seek = eTimer()
         for timer, function in ((self._shift_tick, self._on_shift_tick),
@@ -11575,7 +11611,10 @@ class Playstream2(
             text = u"❚❚ " + to_text(_("Paused"))
             if self._shift is not None:
                 text += u"  ·  " + to_text(
-                    _("recording - press play to go on"))
+                    _("recording - press play to go on")
+                    if self._shift.running else _("press play to go on"))
+            elif self._shift_why in SHIFT_WHY:
+                text += u"  ·  " + to_text(SHIFT_WHY[self._shift_why]())
             return text
         if self._shift_state == "behind":
             behind = 0
@@ -11614,6 +11653,7 @@ class Playstream2(
         elif self._shift_state == "behind_paused":
             self._shift_play_at(self._shift_pos)
         else:
+            self._shift_why = None
             InfoBarSeek.unPauseService(self)
         self._shift_changed()
 
@@ -11648,13 +11688,19 @@ class Playstream2(
             InfoBarSeek.seekBack(self)
 
     def _start_shift(self):
+        self._shift_why = None
         if self._shift is not None or not cfg.timeshift.value:
             return
         channel_id = stream_channel_id(self.url)
+        if not channel_id:
+            return
         folder = pause_folder()
         ffmpeg = vavoo_record.find_ffmpeg()
-        if not channel_id or not folder or not ffmpeg:
-            # (no disk, no ffmpeg: PAUSE only pauses)
+        if not folder or not ffmpeg:
+            # (no disk, no ffmpeg: PAUSE only pauses, and says so)
+            self._shift_why = "disk" if not folder else "ffmpeg"
+            print("[Pause] not recorded: no {} - PLAY goes on live".format(
+                "disk with room for it" if not folder else "ffmpeg"))
             return
         address = PROXY_BASE_URL + "/vavoo?channel=" + \
             url_quote(channel_id, safe='')
@@ -11675,6 +11721,9 @@ class Playstream2(
             log_path=RECORD_LOG, tag="Pause live", thread_name="vv-pause",
             max_bytes=vavoo_record.file_size_limit(folder))
         if not recorder.start():
+            self._shift_why = "start"
+            print("[Pause] not recorded: the recording did not start "
+                  "({})".format(recorder.failure))
             return
         self._shift = recorder
         self._shift_state = "paused"
@@ -11682,7 +11731,7 @@ class Playstream2(
         self._shift_clock = None
         self._shift_waits = 0
         self._shift_tick.start(1000, False)
-        print("[Playstream2] Paused - recording to " + recorder.path)
+        print("[Pause] recording to " + recorder.path)
 
     def _shift_resume(self):
         """PLAY after a pause: the buffer from its start (it began a
@@ -11697,6 +11746,8 @@ class Playstream2(
                 self._shift_seek.start(1000, True)
                 return
             # nothing recorded: just live
+            print("[Pause] nothing was recorded ({}) - live".format(
+                recorder.failure or "no data"))
             self._shift_end(replay=True)
             return
         self._shift_waits = 0
@@ -11707,12 +11758,18 @@ class Playstream2(
         if recorder is None or self._closed:
             return
         position = max(0.0, min(position, recorder.duration - 2))
-        offset = recorder.offset_for(position)
+        # (its very start from byte 0: the stream's tables come before
+        # the first picture the index points at)
+        offset = recorder.offset_for(position) if position > 0 else 0
         url = "{}/file?id={}&offset={}&follow=1".format(
             PROXY_BASE_URL, recorder.file_id, offset)
         self._shift_pos = recorder.time_at(offset)
         self._shift_clock = time.time()
         self._shift_state = "behind"
+        behind = int(max(0, recorder.duration - self._shift_pos))
+        print("[Pause] playing the buffer from -{}:{:02d}{}".format(
+            behind // 60, behind % 60,
+            "" if recorder.running else " (no longer recording)"))
         try:
             self.session.nav.stopService()
             self.session.nav.playService(file_stream_sref(url, self.name))
@@ -11744,6 +11801,7 @@ class Playstream2(
         (a zap, closing): the buffer stops and is deleted. replay: the
         live channel played again (the stream's proxy count was never
         given up - the buffer is not a stream of the player's)."""
+        self._shift_why = None
         recorder, state = self._shift, self._shift_state
         if recorder is None and state is None:
             return
@@ -11777,8 +11835,17 @@ class Playstream2(
         recorder = self._shift
         if recorder is not None and not recorder.running and \
                 self._shift_state == "paused":
-            # the buffer gave up (or is full) before PLAY
-            self._shift_end(replay=False)
+            # The buffer stopped before PLAY (gave up, the disk full,
+            # its 2 hours): what it holds is kept - PLAY plays it and
+            # its end goes live. Nothing in it: PAUSE only pauses now.
+            self._shift_tick.stop()
+            seconds = int(recorder.duration)
+            print("[Pause] buffer stopped ({}) after {}:{:02d}".format(
+                recorder.failure or "ended", seconds // 60, seconds % 60))
+            if recorder.duration < 2.0:
+                self._shift_end(replay=False)
+                self._shift_why = "stopped"
+            self._shift_changed()
             return
         self._refresh_status()
 
@@ -11786,12 +11853,14 @@ class Playstream2(
         """The bar's status line, or (Classic) a short message."""
         if self._bar_themed:
             self._refresh_status()
-            if self._shift_state is not None and not self._closed:
+            if (self._shift_state is not None or self._shift_why) and \
+                    not self._closed:
                 self._show_bar_now()
-        elif NOTIFICATION_AVAILABLE and self._shift_state is not None:
+        elif NOTIFICATION_AVAILABLE and (
+                self._shift_state is not None or self._shift_why):
             text = self._shift_text()
             if text:
-                quick_notify(to_string(text), 3)
+                quick_notify(to_string(text), 5 if self._shift_why else 3)
 
     def isSeekable(self):
         """Live TV is never seekable - InfoBarSeek (a base class of
@@ -11834,7 +11903,7 @@ class Playstream2(
         __evEOF(), which both fire for the same underlying event."""
         if self._shift_state in ("behind", "behind_paused"):
             # the end of the pause buffer (it stopped growing): live
-            print("[Playstream2] End of the pause buffer - back to live")
+            print("[Pause] end of the buffer - live")
             self._shift_end(replay=True, say=True)
             return
         if self._shift_state == "paused":

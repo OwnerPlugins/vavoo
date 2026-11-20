@@ -502,6 +502,19 @@ records and timeshifts only DVB, so the plugin does it itself:
   buffer and replays `self.sref`; the proxy's stream count never
   changes for it (the buffer is not a stream of the player's). A new
   service sets `seekstate` back to play (`_seek_state_play()`).
+  `pause_folder()`: Enigma2's timeshift folder, the recordings folder,
+  else the local disk under `/media` with the most room
+  (`media_mounts()`; both Enigma2 folders default to `/media/hdd`, a
+  USB stick is `/media/usb`) - never `/media/net`;
+  `clean_pause_leftovers()` looks in the same places. No buffer (no
+  disk / ffmpeg / start): `_shift_why` ("disk", "ffmpeg", "start",
+  "stopped" - `SHIFT_WHY` texts) is said after "Paused" (bar or a
+  message), because PLAY then resumes the live stream itself (after
+  a longer pause, live). A buffer that stops while paused is kept
+  when it holds 2 s or more (PLAY plays it, its EOF goes live), else
+  deleted with "stopped". The start of the buffer plays from byte 0
+  (its tables come before the index's first picture). Each step logs
+  a `[Pause] ...` line.
 - `VavooRecordings` (a `VavooPickScreen`, Settings → Recordings and the
   main list's `REMINDERS_ROW` row "Recordings (n)") lists timers then
   recordings; a recording of a locked channel needs the PIN

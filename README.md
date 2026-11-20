@@ -174,7 +174,9 @@ The keys are also the same on every image (OpenATV, OpenPLi, OpenViX, ...): the 
 | RED / EXIT | Back to live ("Live"); the recorded part is deleted |
 | CH+ / CH- / UP / DOWN | Zap as usual (the recorded part is deleted) |
 
-Each move opens the recorded part again at that place, which takes the box's player a moment (one to three seconds). It keeps up to 2 hours, in Enigma2's timeshift folder (else the recordings folder) on a disk with at least 400 MB free. Without a disk or `ffmpeg`, PAUSE only pauses.
+Each move opens the recorded part again at that place, which takes the box's player a moment (one to three seconds). It keeps up to 2 hours, in Enigma2's timeshift folder, else the recordings folder, else the disk under `/media` with the most room (a USB stick at `/media/usb` too - Enigma2's own folders are both on `/media/hdd` unless changed), with at least 400 MB free; never a network share.
+
+Without a disk or `ffmpeg`, PAUSE only pauses and says so ("❚❚ Paused · not recorded (no disk) - PLAY returns to live"): the box's player then goes on with the live stream, and after a longer pause that is live itself. If the recording stops while paused (the stream refused, the disk full), PLAY still plays what it recorded and then goes back to live; with nothing recorded, "not recorded (the stream could not be recorded)". `/tmp/vavoo.log` has a `[Pause]` line for each step (recording to..., not recorded: ..., buffer stopped..., playing the buffer from -m:ss, end of the buffer - live).
 
 ### Search
 | Key | Action |
@@ -589,7 +591,7 @@ The proxy provides these endpoints:
 
 - **Recordings**: in the recordings folder (Enigma2's movie folder unless Settings → Recordings folder says another), `YYYYMMDD HHMM - Channel - Title.ts` (MPEG-TS, the stream copied as it came - no re-encoding), its `.ts.meta` (Enigma2's own: service, title, description, time, length, size) and its `.ts.vavoo.json` (`{"format": "vavoo_recording", "name", "title", "url", "country", "country_code", "logo", "start", "stop_at", "duration", "bytes", "finished", "failure"}`). Delete a recording from the plugin's list or from the box's movie list (a record left without its `.ts` is cleaned up)
 
-- **Pause buffer**: `vavoo_pause_<time>.ts` in Enigma2's timeshift folder (else the recordings folder) - deleted when you go back to live, zap or close the player, and leftovers when the plugin starts again
+- **Pause buffer**: `vavoo_pause_<time>.ts` in Enigma2's timeshift folder (else the recordings folder, else the top folder of a disk under `/media`) - deleted when you go back to live, zap or close the player, and leftovers when the plugin starts again
 
 - **Recording log**: `/tmp/vavoo_record.log` – What `ffmpeg` said while recording (errors only)
 
@@ -667,7 +669,7 @@ The plugin also keeps an eye on the box's memory, whether it is open or not. Eve
 | "Recording stopped: the disk could not be written (removed?)" | The disk went away or became read-only during a recording (a USB disk pulled out, a file system error): what was recorded until then is kept. Check the disk and that it is mounted |
 | "Recording needs ffmpeg" | Install it: `opkg install ffmpeg` (a dependency of the plugin, but some images leave it out) |
 | A recording stops early | `/tmp/vavoo.log` says why ("no stream address", "the stream keeps failing", the disk nearly full) and `/tmp/vavoo_record.log` what ffmpeg said |
-| PAUSE only pauses | Settings → Pause Live TV is off, there is no disk with 400 MB free, or no `ffmpeg` |
+| PAUSE only pauses ("not recorded (...) - PLAY returns to live") | There is no disk with 400 MB free (HDD or USB, mounted under `/media`), or no `ffmpeg`; without that message, Settings → Pause Live TV is off |
 
 **"No programme information" beside the channel list**
 - The country's guide file has no entry for that channel (not every channel is covered), or the country has no guide file at all
