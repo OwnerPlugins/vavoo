@@ -40,7 +40,7 @@
 </p>
 
 ## 📌 Overview
-Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousands of live TV channels from multiple countries. It features a built-in local proxy that keeps streams stable, a choice of stream source per channel, automatic bouquet updates, EPG integration, real-time notifications, satellite priority matching, and seamless integration with your Enigma2 receiver.
+Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousands of live TV channels from multiple countries. It features a built-in local proxy that keeps streams stable, a choice of stream source per channel, automatic bouquet updates, EPG integration, real-time notifications, and seamless integration with your Enigma2 receiver.
 
 ## 🖼️ Screenshots
 
@@ -73,8 +73,7 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 ### In your Enigma2 channel list
 - **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom
 - **Scheduled Updates** – Re-match EPG and refresh the exported bouquets at an interval or at a fixed time of day
-- **EPG Integration** – Electronic Program Guide for supported channels, through EPGImport, served via GitHub
-- **Satellite Priority Matching** – EPG matching that prefers the satellites configured on your box
+- **EPG Integration** – Electronic Program Guide for supported channels, in the plugin and through EPGImport: epgshare01's daily files, the GitHub copy as a fallback
 - **M3U Playlist Generation** – Create standard M3U playlist files for external players
 - **Live Playlist Server** – `/playlist.m3u` always reflects the current catalog, no manual regeneration needed; optional access key
 
@@ -393,7 +392,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - ✅ **No 10-minute blocks** – Proxy handles authentication tokens
 - ✅ **Streams that stay up** – One address per viewing, automatic recovery when a source fails
 - ✅ **Automatic updates** – Keep bouquets fresh without manual work
-- ✅ **EPG support** – Program guide for many channels with satellite priority
+- ✅ **EPG support** – Program guide for many channels, matched by the source's own guide id first
 - ✅ **Clean system** – Single configuration point
 - ✅ **Real-time monitoring** – Proxy status always visible
 - ✅ **Visual feedback** – Notifications for all operations
@@ -459,39 +458,26 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
 
-### EPG Integration & Satellite Priority Matching
+### EPG Integration
+- **Where the programmes come from** (as the Android app): each country's daily XMLTV files from epgshare01.online first (updated every day, several days ahead; the Balkans from the Bosnian, Croatian and Serbian files together), and the copy on GitHub (`Belfagor2005/vavoo-player/epg_<cc>.xml`) when they fail or are out of date - that copy has gone days without an update. Countries without daily files use the copy.
+  - The proxy's `/epg/<country>.xml` is the one address for all of it: it serves the daily files unpacked as plain XMLTV (several files become one guide, each channel from the first file that has it), or redirects to the GitHub copy
+  - A daily file that fails is left alone for 5 minutes; one not changed for 3 days, or whose programmes are all over, for 6 hours
 - EPG data is generated per country and stored in `/etc/epgimport/vavoo_<country>.channels.xml`
-- A master source file (`vavoo.sources.xml`) is created for EPGImport
-- The player fetches EPG via the proxy redirect to GitHub raw files
-- **In-plugin programme info** (the channel list's Now/Next lines and the player's OK overlay) reads the same per-country guide file (`epg_<cc>.xml`), with no EPGImport involved:
-  - the file is read while it downloads, compressed (about a tenth of its size on the wire), and only the programmes from 3 hours ago to 24 hours ahead are kept (for the programme guide) - measured with the largest files: 11 MB for Poland, 6 MB for France, where the whole file is 2 to 60 MB
+- A master source file (`vavoo.sources.xml`) is created for EPGImport, pointing at the proxy's `/epg/<country>.xml`
+- **In-plugin programme info** (the channel list's Now/Next lines and the player's OK overlay) reads the same per-country guide, with no EPGImport involved:
+  - the file is read while it downloads, and only the programmes from 3 hours ago to 24 hours ahead are kept (for the programme guide) - measured with the largest files: 11 MB for Poland, 6 MB for France, where the whole file is 2 to 60 MB
   - one copy per country is reused for 6 hours (at most three countries in memory); if refreshing it fails, the previous copy keeps being used up to 12 hours
   - reading a large guide costs a set-top box a good part of a core for some seconds: it is done in a background thread that rests a little every 50 ms, so the video and the menus always get their turn
   - every entry's own time zone is applied and times are shown on the box's clock. (Earlier versions ignored the time zone, which showed the wrong programme for guides not written in UTC - Spain by one hour, Turkey by three, Poland by six)
-  - a channel is found through the same matching chain as below, then through the guide's own channel names (accents do not matter: "SIC NOTICIAS" finds "SIC Notícias")
-- **Intelligent Channel Matching** (in priority order):
-  - Local per-box cache
-  - **Curated EPG channel database** (`epg-channel-db/vavoo_channels_<cc>.json`,
-    fetched and cached in-memory for 24h): a pre-solved
-    channel-name → EPG-feed-id mapping, generated offline per country
-    by matching Vavoo's own live channel list against that country's
-    own `epg_<cc>.xml` feed directly - built specifically for
-    countries Rytec covers poorly (e.g. Spain, Poland, Turkey)
-  - **Geil's own guide id** (its catalog's "tvg" field, present when
-    the catalog source is Geil): checked directly against that
-    country's own EPG feed - an exact id match, skipping fuzzy name
-    matching entirely for that channel. No equivalent on the Vavoo
-    catalog fallback, which has no such id to offer.
-  - Live Rytec fuzzy matching, then a live feed-direct fallback
-  - Every matched channel gets a synthetic, per-channel-unique service
-    reference (not a shared Rytec tuple) so unrelated channels across
-    different countries can never collide in Enigma2's EPG cache, even
-    when they share the exact same EPG id
-  - Scans user-configured satellites from Enigma2 NimManager
-  - Prioritizes matches from satellites the user actually has configured
-  - Falls back to Italian satellites (13°E HotBird, 5°W Eutelsat) for Italian channels
-  - Priority levels: Satellite > Terrestrial > Cable > IPTV
-  - **Boost multipliers**: 1.5× for user-configured satellites, 1.3× for Italian satellites
+  - a channel is found through its source's own guide id when the guide has it, else through the matching chain below, then through the guide's own channel names (accents do not matter: "SIC NOTICIAS" finds "SIC Notícias")
+- **Channel matching** (in priority order; every id must be one the country's feed has - an id that differs only in upper/lower case or in its dots is taken in the feed's own spelling):
+  1. **Geil's own guide id** (its catalog's "tvg" field): first, as in the app. The Vavoo catalog fallback has no such id.
+  2. **Alias table** (`channel_alias.py`, about 300 Italian channels)
+  3. **Local per-box cache** (an old entry whose id the feed does not have is matched again)
+  4. **Curated EPG channel database** (`epg-channel-db/vavoo_channels_<cc>.json`, fetched and cached in-memory for 24h): a pre-solved channel-name → EPG-feed-id mapping, generated offline per country by matching Vavoo's own live channel list against that country's own feed
+  5. **The feed's own channel names** (cleaned: no country prefixes, quality tags or source tags)
+  - Every matched channel gets a synthetic, per-channel-unique service reference so unrelated channels across different countries can never collide in Enigma2's EPG cache, even when they share the exact same EPG id
+  - Earlier versions also matched against Rytec's channel list with a satellite priority; that list's ids are mostly not the feeds' and its service references were no longer used, so it is gone (lighter on the box)
 
 ### Notification System Architecture
 - **Singleton Pattern**: Single manager instance across all screens
@@ -522,7 +508,7 @@ The proxy provides these endpoints:
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
 - `/refresh_token` – Force token refresh
-- `/epg/<country>.xml` – Redirect to GitHub EPG file
+- `/epg/<country>.xml` – The country's programme guide: epgshare01's daily files as plain XMLTV, or a redirect to the GitHub copy
 - `/health` – Detailed health check with token age (token is only required/reported when `catalog_source` is "vavoo" - Geil needs none)
 - `/file?id=<id>&offset=<byte>[&follow=1]` – A recording or the pause buffer, for the box's player. Only ids the plugin registered (never a path); `offset` is rounded down to a TS packet, a `Range` header counts from there; `follow=1` sends a file still being recorded as it grows, until the recording ends
 - `/shutdown` – Gracefully stop proxy
@@ -532,7 +518,7 @@ The proxy provides these endpoints:
 ### Bouquet Export
 - Path: Plugin menu → Select country → GREEN button
 - Creates bouquets with proxy URLs: `http://127.0.0.1:4323/vavoo?channel=CHANNEL_ID`
-- Service references are matched against the curated EPG channel database and the Rytec database for EPG compatibility (see "EPG Integration & Satellite Priority Matching" above)
+- Channels are matched to their country's EPG feed (see "EPG Integration" above)
 - EPG mapping files are automatically generated for each country
 - Supports both flat bouquets and hierarchical categories
 
@@ -544,7 +530,7 @@ The proxy provides these endpoints:
 ### EPG Files
 - Location: `/etc/epgimport/vavoo_*.channels.xml`
 - Generated locally on the box at export time (`write_epg_mapping_file()`), not by any GitHub Action
-- Programme data source: `https://raw.githubusercontent.com/Belfagor2005/vavoo-player/master/epg_<country>.xml`
+- Programme data source: the proxy's `/epg/<country>.xml` - epgshare01.online's daily files, or `https://raw.githubusercontent.com/Belfagor2005/vavoo-player/master/epg_<country>.xml` as the fallback
 
 ### Curated EPG Channel Database
 - Location: `epg-channel-db/vavoo_channels_<cc>.json` in this repo, fetched by the plugin at match time and cached in-memory for 24h
@@ -552,11 +538,11 @@ The proxy provides these endpoints:
 - Regenerated by `generate_epg_channel_db.py` (dev-time script, run against a live `vavoo_proxy` instance) - the GitHub Actions workflow `generate_epg_channel_db.yml` runs this weekly (plus on-demand) on a self-hosted runner and commits the result back
 
 ### Cache Files
-- **EPG Cache**: `/etc/enigma2/vavoo_epg_cache.json` – Persistent cache of matched channels with Rytec IDs
+- **EPG Cache**: `/etc/enigma2/vavoo_epg_cache.json` – Persistent cache of matched channels with their EPG feed ids
   ```json
   {
     "channel_name_country": {
-      "id": "rytec_id",
+      "id": "epg_id",
       "sref": "4097:0:1:1773:60E1:217C:5A0000:0:0:0:",
       "name": "channel_name",
       "country": "it",
@@ -723,10 +709,9 @@ Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - **Proxy runs in the background** – Exported bouquets keep working after the plugin is closed (the proxy is started about 30 seconds after boot)
 - **Bouquets exported by very old versions** (before the proxy existed) do not work – export the country again
 - **Your source pick is remembered** – Stored in `/etc/enigma2/vavoo_source_prefs.json`; delete that file to return to automatic selection everywhere
-- **Satellite priority** – The plugin reads your Enigma2 satellite configuration (east and west positions) and prefers those channels when matching EPG
 - **Unmatched channels are persistent** – They survive plugin restarts and are used for future matching attempts
 - **EPG cache includes matched/unmatched status** – Each entry has a `matched: true/false` flag
-- Use **TEXT button** in main menu to manually refresh proxy token
+- Use **MENU → Refresh token** in the main menu to manually refresh the proxy token
 - Use **MENU → "Fix EPG cache"** in the main menu to fix the cache format, and **MENU → Source** in the player to choose the stream source
 - Proxy status is displayed in real-time in the main interface
 - For developers: `quick_notify(message, seconds)` is thread-safe and can be called from any background thread; messages sent before the UI is ready are queued
@@ -738,7 +723,6 @@ Vavoo sends **anonymous** startup notifications to help improve the plugin.
 - **Background images**: @oktus
 - **Contributions**: Qu4k3, @Belfagor2005 (EPG integration), @giorbak
 - **Notification System**: Based on original RaiPlay implementation
-- **Satellite Priority System**: Based on user feedback and Enigma2 integration
 - **Communities**: Linuxsat-support.com & Corvoboys
 
 ## 📄 License

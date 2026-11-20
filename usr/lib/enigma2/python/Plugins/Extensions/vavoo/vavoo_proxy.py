@@ -34,7 +34,6 @@ from . import (
     GEIL_SITES,
     GEIL_LIVE_PATH,
     group_separators,
-    HOST_GIT,
     SOURCE_PREFS_FILE,
     SREF_MAP_FILE,
     __version__
@@ -43,12 +42,19 @@ from . import (
 from . import vavoo_record
 from .vUtils import (
     _starting_lock,
+    EPG_DAILY_FAIL_BACKOFF,
+    EPG_DAILY_STALE_BACKOFF,
+    EpgFeedStale,
+    country_epg_chunks,
     debug,
     decodeHtml,
+    epg_copy_url,
+    epg_daily_urls,
     get_external_ip,
     is_proxy_running,
     log_exception,
     make_print,
+    mark_epg_daily_unusable,
     remove_parentheses,
     strip_control_chars,
     trace_error,
@@ -1564,8 +1570,7 @@ class VavooProxy(object):
                                 # against the country's own EPG feed index
                                 # as a new highest-priority exact match in
                                 # VavooEPGMatcher.find_match(), before the
-                                # existing alias/cache/curated-DB/Rytec
-                                # fuzzy-matching chain.
+                                # alias/cache/curated-DB/feed-name chain.
                                 "epg_id": ids.get("tvg", "")
                             })
                         except Exception as e:
@@ -2888,7 +2893,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 if not self.safe_write(dumps(status)):
                     return
 
-            # Redirect per-country EPG requests to GitHub raw files
+            # A country's programme guide (vUtils' country_epg_chunks())
             elif parsed_path.path.startswith('/epg/') and parsed_path.path.endswith('.xml'):
                 # Lowercase: the actual files on GitHub are lowercase
                 # (epg_it.xml, epg_fr.xml, ...) and raw.githubusercontent.com
@@ -2899,11 +2904,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 # otherwise redirect straight to a 404.
                 country_code = parsed_path.path.split(
                     '/')[-1].replace('.xml', '').lower()
-                github_url = "{}/vavoo-player/master/epg_{}.xml".format(
-                    HOST_GIT, country_code)
-                self.send_response(302)
-                self.send_header('Location', github_url)
-                self.end_headers()
+                self._serve_epg(p, country_code)
 
             elif parsed_path.path == '/health':
                 """Health check endpoint with detailed status"""
@@ -3068,6 +3069,55 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             except (BrokenPipeError, ConnectionResetError):
                 print(" Client gone while sending error")
                 return
+
+    def _serve_epg(self, p, country_code):
+        """/epg/<cc>.xml: the country's daily guide files from
+        epgshare01.online, unpacked and (the Balkans' three) put
+        together, as plain XMLTV (X-Vavoo-EPG: daily) - or a redirect
+        to the copy on GitHub when the country has none, or they fail
+        or are out of date (then the copy for a while: vUtils'
+        mark_epg_daily_unusable()). One address for the plugin's
+        guide, its feed index and EPGImport."""
+        urls = epg_daily_urls(country_code)
+        chunks = first = None
+        if urls and not getattr(self, '_head_only', False):
+            chunks = country_epg_chunks(country_code, urls)
+            try:
+                first = next(chunks)
+            except EpgFeedStale as e:
+                print("[EPG] {}: daily files out of date ({}) - the "
+                      "GitHub copy instead".format(country_code, e))
+                mark_epg_daily_unusable(country_code, EPG_DAILY_STALE_BACKOFF)
+                chunks = None
+            except Exception as e:
+                print("[EPG] {}: daily files not read ({}) - the GitHub "
+                      "copy instead".format(country_code, e))
+                mark_epg_daily_unusable(country_code, EPG_DAILY_FAIL_BACKOFF)
+                chunks = None
+        if not urls or (chunks is None and
+                        not getattr(self, '_head_only', False)):
+            if self.safe_send_response(302):
+                self.send_header('Location', epg_copy_url(country_code))
+                self.end_headers()
+            return
+        try:
+            if not self.safe_send_response(200):
+                return
+            self.send_header('Content-Type', 'application/xml; charset=utf-8')
+            self.send_header('X-Vavoo-EPG', 'daily')
+            self.send_header('Connection', 'close')
+            self.close_connection = True
+            self.end_headers()
+            if chunks is None:
+                return          # HEAD
+            if not self.safe_write(first):
+                return
+            for chunk in chunks:
+                if p.is_stopped() or not self.safe_write(chunk):
+                    return
+        finally:
+            if chunks is not None:
+                chunks.close()
 
     def _serve_file(self, p, query_params):
         """/file?id=<id>[&offset=<byte>][&follow=1]: a recording or a

@@ -2142,7 +2142,7 @@ class vavoo_config(Screen, ConfigListScreen):
         # Grouped with "Enable Vavoo EPG" above rather than left down by
         # the other bouquet-related entries below: this schedule drives
         # EPG refresh timing too, not just bouquet regeneration -
-        # AutoStartTimer._update_bouquets() does Rytec matching, EPG
+        # AutoStartTimer._update_bouquets() does EPG matching, EPG
         # feed downloads, and bouquet file I/O as one combined cycle.
         self.list.append(
             getConfigListEntry(
@@ -12569,7 +12569,7 @@ class AutoStartTimer(object):
 
     def _wait_for_proxy_then_update(self, bouquets_to_update, attempts_left):
         if is_proxy_ready(timeout=3) or attempts_left <= 1:
-            # _update_bouquets() does the real work: Rytec matching, EPG
+            # _update_bouquets() does the real work: EPG matching, EPG
             # feed downloads, and bouquet file I/O for every favorited
             # country, all synchronous - easily minutes for a multi-country
             # update. This method runs via reactor.callLater, i.e. on

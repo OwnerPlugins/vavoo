@@ -62,7 +62,7 @@ RENAME_RULES = [
     # historically different channels; this looked like a copy-paste of
     # the rule above with only the source pattern changed. A raw
     # channel literally named "MEDIASET 1" now falls through to the
-    # normal matching chain (Rytec/curated DB) instead of being
+    # normal matching chain (curated DB / feed names) instead of being
     # silently reassigned to the wrong channel.
     ("MOTORTREND", "MOTOR TREND"),
     # "CANALE 5" -> "CANALE5" removed - ALIAS_MAP's own key is

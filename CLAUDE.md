@@ -29,7 +29,8 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   bouquet_manager.py     # builds/exports Enigma2 bouquets (flat + hierarchical) pointing at the proxy
   channel_alias.py       # channel name normalization/aliasing for EPG matching
   vUtils.py              # grab-bag: logging, HTTP helpers, caching, proxy status/health helpers,
-                          #   EPG download/parse/cache + Rytec/satellite-priority channel matching
+                          #   EPG sources (epgshare01 daily, GitHub copy), download/parse/cache,
+                          #   channel -> feed-id matching (geil id, alias, cache, curated, names)
   epg_name_utils.py      # channel-name normalization/token-compatibility helpers, shared
                           #   as-is by vUtils.py (on-box) and generate_epg_channel_db.py (off-box) -
                           #   has zero Enigma2 imports so both sides can use the exact same code
@@ -237,8 +238,9 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
   called in-process: Search all, sub-categories); `&grouped=0` is
   Group Sources off. `country_counts(grouped)` follows it.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
-  `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (redirects to
-  GitHub-hosted EPG), `/file`, and `/shutdown`.
+  `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (the
+  country's guide: `_serve_epg()`, see "EPG sources" below), `/file`,
+  and `/shutdown`.
 - Recordings get a token of their own (`own_signature(slot)`, one slot
   per recording, renewed at `TOKEN_REFRESH_AGE` by the recorder's
   keep-alive; `drop_own_signature()` at its end): Vavoo plays one
@@ -262,20 +264,54 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
   the core trick that makes streams stable.
 
 **Bouquets (`bouquet_manager.py`)** — writes Enigma2 bouquet files (flat or
-per-category/hierarchical) that reference the proxy, matches services
-against the Rytec database for EPG service-reference compatibility, and can
-reorganize bouquet position (top/bottom of channel list).
+per-category/hierarchical) that reference the proxy, matches each
+channel to its country's EPG feed (`find_match()`, below) for the
+EPGImport channels file, and can reorganize bouquet position
+(top/bottom of channel list). The match result's `rytec_id` key is
+just the EPG id (an old name kept).
 
-**EPG (`vUtils.py`'s `VavooEPGMatcher` + `channel_alias.py`)** — downloads/parses EPG,
-caches matched/unmatched channels to
-`/etc/enigma2/vavoo_epg_cache.json` and `..._unmatched_cache.json`, and
-does satellite-priority matching: it reads the user's configured satellites
-from Enigma2's `NimManager` and boosts matches from those (1.5x) and from
-Italian satellites/13°E HotBird/5°W Eutelsat (1.3x) as a fallback for
-Italian channels. Priority order: Satellite > Terrestrial > Cable > IPTV.
-`find_match()`'s full priority chain: country-gated `channel_alias.ALIAS_MAP`
-→ local per-box cache → **curated channel database** (below) → live
-Rytec fuzzy matching → live own-feed fallback → unmatched. `VavooEPGMatcher` is a per-process singleton
+**EPG sources (`vUtils.py`, `vavoo_proxy.py`'s `_serve_epg()`)** — as
+the Android app (`Epg.kt`): a country's programmes come from its daily
+files at epgshare01.online (`__init__.py`'s `EPG_DAILY_URL` /
+`EPG_DAILY_SOURCES`, the app's table; the Balkans = BA1 + HR1 + RS1)
+first, the GitHub copy (`EPG_COPY_URL`, Belfagor2005/vavoo-player) when
+they fail or are out of date. The proxy's `/epg/<cc>.xml` is the one
+place that chooses, so the plugin's guide, `_get_epg_feed_index()` and
+EPGImport (`update_epg_sources()`) all read the same address:
+- `epg_daily_urls(cc)` gives the files, or [] (no daily files, or
+  `mark_epg_daily_unusable()`: a failure 5 min, out of date 6 h);
+  `country_epg_chunks(cc, urls)` yields plain XMLTV bytes - one file
+  as it is, several as one guide (each channel from the first file
+  that has it, with that file's programmes). The proxy answers 200 +
+  `X-Vavoo-EPG: daily`, or 302 to the copy when the first `next()`
+  raises (`EpgFeedStale` = out of date). Never a .gz to EPGImport.
+- Several files go in two passes: all channels first (each file read
+  up to its first programme), then the programmes (files opened
+  again) - `_read_epg_feed_channels()` stops at the first
+  `<programme>`. `_XmltvPieces` cuts the bytes into elements by
+  regex, no XML tree.
+- `open_url_stream()` unpacks gzip by Content-Encoding or by the first
+  bytes (1f 8b: a .gz file) and exposes `headers`. A daily file with a
+  `Last-Modified` over 3 days old is out of date, and so is a daily
+  guide `_download_epg_guide()` finds with no programme still to end
+  (`_guide_is_current()`): marked, and fetched again (the copy).
+
+**EPG matching (`vUtils.py`'s `VavooEPGMatcher` + `channel_alias.py`)** —
+finds a channel's id in its country's feed, caches matched/unmatched
+channels to `/etc/enigma2/vavoo_epg_cache.json` and
+`..._unmatched_cache.json`. `find_match()`'s chain (as the app): the
+source catalog's own guide id (`epg_guide_id`, geil.to's "tvg") →
+country-gated `channel_alias.ALIAS_MAP` → local per-box cache →
+**curated channel database** (below) → the feed's own display names
+(`_match_feed_name()`) → unmatched. Every id from the first three must
+be one the feed has: `_feed_spelling(id, feed_ids)` gives the feed's
+own spelling (exact, else upper/lower case, else the dots) or None;
+with no feed index (the fetch failed) an alias / cache id counts as
+it is. There is no Rytec matching and no satellite priority any more
+(its srefs were thrown away for `unique_fallback_sref()`, its ids are
+mostly not the feeds', and it was the heaviest part); don't bring them
+back. `_resolve_guide_channel()` takes the guide id straight from the
+loaded guide first (no matcher). `VavooEPGMatcher` is a per-process singleton
 (`get_epg_matcher()`) called concurrently from real usage (a bouquet
 export's background thread vs. a per-channel EPG-overlay daemon thread
 spawned by watching TV) — its `cache`/`normalized_index`/`new_matches`
@@ -283,8 +319,8 @@ mutations are guarded by `self._cache_lock` (an `RLock`), taken by
 `find_match()` and by every external mutator
 (`update_complete_cache()`, `clean_cache_and_unmatched()`).
 
-**Curated EPG channel database** — a Rytec-independent matching path
-added to cover countries Rytec handles poorly (e.g. Spain, Poland,
+**Curated EPG channel database** — a pre-solved matching path for
+names that match the feed poorly (first made for Spain, Poland,
 Turkey). `epg-channel-db/vavoo_channels_<cc>.json` in this repo maps
 `channel name -> EPG feed id`, generated offline by
 `generate_epg_channel_db.py` (dev-time script, run against a live
@@ -298,9 +334,9 @@ remembered too, but only for 60 seconds: `find_match()` asks for this on
 every channel lookup, so not remembering a failure at all cost one
 GitHub request per channel (or a full timeout each when GitHub is
 unreachable), while a short TTL still lets a transient blip clear by the
-next export. Every match this path (and Rytec, and the alias table) produces
-gets a synthetic, per-channel-unique service reference via
-`unique_fallback_sref()` rather than a shared Rytec tuple, so different
+next export. Every match (any step of the chain) gets a synthetic,
+per-channel-unique service reference via
+`unique_fallback_sref()` rather than a shared DVB tuple, so different
 channels/countries can never collide in Enigma2's `eEPGCache` (which
 indexes purely by the DVB tuple, ignoring the embedded stream URL) even
 when they share the same EPG id. `.github/workflows/generate_epg_channel_db.yml`
@@ -310,8 +346,8 @@ since fetching Vavoo's live channel list needs an authenticated
 
 **In-plugin programme info (`vUtils.py`'s `load_epg_guide()` /
 `lookup_now_next()`)** — what is on a channel now and next, read
-straight from the country's `epg_<cc>.xml` (through the proxy's
-`/epg/<cc>.xml` redirect), no EPGImport involved. Two users, one
+straight from the country's guide (through the proxy's
+`/epg/<cc>.xml`, "EPG sources" above), no EPGImport involved. Two users, one
 lookup, so they always agree: the Now/Next panel beside the channel
 list (`NowNextPanel` mixin in `plugin.py`, used by `vavoo` and
 `VavooFavourites`; setting `cfg.list_epg`) and the player's OK overlay
@@ -329,7 +365,7 @@ the real files (measured, see the comment block above
   three countries at most (`_EPG_GUIDE_KEEP`), one download at a time
   per country.
 - Heavy loops in background threads (the guide parse, the matcher's
-  Rytec and feed-name scans) call `_Breather().tick()` every turn:
+  feed-name scan, the proxy's guide streaming) call `_Breather().tick()` every turn:
   after 50 ms of work they rest 25 ms, never on the main thread. A
   new heavy loop does the same. Every plugin thread gets a system
   name through `named(target, "vv-...")` / `vavoo_record.
