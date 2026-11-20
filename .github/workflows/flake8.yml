@@ -17,10 +17,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Run autopep8 on the oldest Python the plugin supports. On Python 3.12+
+      # autopep8 splits long f-strings across lines, which is a SyntaxError on
+      # receivers running Python 3.11 or older.
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"
+          python-version: "3.10"
 
       - name: Install linters
         run: |
@@ -34,6 +37,10 @@ jobs:
       - name: Run autopep8 (aggressive)
         run: |
           autopep8 . --in-place --recursive --aggressive --aggressive
+
+      - name: Check the fixed code still compiles
+        run: |
+          python -m compileall -q .
 
       - name: Configure Git identity
         run: |
