@@ -59,36 +59,14 @@ else
     echo "✓ No previous installation found"
 fi
 
-# This package requires Python 3 (see CONTROL/control's Depends:
-# python3-requests, python3-six - opkg already refuses to install this
-# package on a system without a python3-requests candidate, so there is
-# no supported Python 2 fallback here).
-echo "Installing required dependencies..."
-PY="python3"
-SIXPKG="python3-six"
-REQPKG="python3-requests"
+# The dependencies (python3-requests, python3-six, ffmpeg...) are in
+# CONTROL/control's Depends: - opkg installs them itself. Running
+# "opkg update" / "opkg install" from here, inside opkg's own run,
+# only failed on its lock (or waited on the network).
 if [ -e "/usr/bin/python3" ]; then
     echo "✓ Using Python 3"
 else
     echo "⚠ /usr/bin/python3 not found, but continuing (required by package dependencies)"
-fi
-
-# Update package list and install dependencies
-echo "Updating package repository..."
-opkg update > /dev/null 2>&1
-
-echo "Installing ${SIXPKG}..."
-if opkg install --force-reinstall "${SIXPKG}" > /dev/null 2>&1; then
-    echo "✓ ${SIXPKG} installed successfully"
-else
-    echo "⚠ Could not install ${SIXPKG}, but continuing installation"
-fi
-
-echo "Installing ${REQPKG}..."
-if opkg install --force-reinstall "${REQPKG}" > /dev/null 2>&1; then
-    echo "✓ ${REQPKG} installed successfully"
-else
-    echo "⚠ Could not install ${REQPKG}, but continuing installation"
 fi
 
 # Additional dependency checks

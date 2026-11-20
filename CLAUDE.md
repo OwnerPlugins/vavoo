@@ -22,8 +22,9 @@ License: CC BY-NC-SA 4.0 — non-commercial, attribution required.
 ```
 usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed as-is to the box)
   __init__.py            # constants, paths, PROXY_* URLs, PLUGIN_ROOT, PY2/PY3 flags
-  plugin.py              # ~5000 lines: all Enigma2 Screens (UI), PluginDescriptor, autostart, main()
-  vavoo_proxy.py         # local HTTP proxy (127.0.0.1:4323): auth/token handling, stream resolution, EPG redirects
+  plugin.py              # ~13000 lines: all Enigma2 Screens (UI), PluginDescriptor, autostart, main()
+  vavoo_proxy.py         # local HTTP proxy (port 4323): auth/token handling, stream resolution,
+                          #   the country guides (/epg), recordings (/file)
                           #   started as an in-process daemon thread (see plugin.py's proxy-start helpers,
                           #   not a separate subprocess)
   bouquet_manager.py     # builds/exports Enigma2 bouquets (flat + hierarchical) pointing at the proxy
@@ -62,8 +63,9 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   skin/cowntry/*.png, skin/pics/*.png, skin/images*/*.png  # flags/backgrounds
   fonts/*.ttf               # cvfont (MavenPro-Medium = Liberation Sans) + the themes' Lexend,
                             #   Manrope, Sora, Oxanium (SIL OFL, licence texts beside them)
-  keymap.xml             # the players' own keys (context VavooPlayerActions),
-                          #   loaded by plugin.py's load_keymap() - same on every image
+  keymap.xml             # the plugin's own keys (VavooPlayerActions, VavooListActions,
+                          #   VavooMainActions), loaded by plugin.py's load_keymap() -
+                          #   the same on every image
   plugin.png             # plugin icon shown in Enigma2 menu
 
 CONTROL/                 # Debian/ipkg package control files (control, postinst, postrm, preinst)
@@ -259,6 +261,11 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
   correct way to restart it, and a stopped `VavooProxy` instance is
   never reused (`start_proxy()` creates a fresh one).
 - Falls back from `vavoo.to` to `kool.to` on HTTP 451.
+- It listens on every address (bouquets and `/playlist.m3u` serve other
+  devices), but its controls (`LOCAL_ONLY_PATHS`: `/shutdown`,
+  `/refresh_token`) answer only the box itself (`is_loopback()`, 403
+  otherwise): anything on the network, even a web page with an
+  `<img src>`, could stop every channel. A new control goes there.
 - Bouquets and M3U exports embed proxy URLs
   (`http://127.0.0.1:4323/vavoo?channel=...`), not raw Vavoo URLs — this is
   the core trick that makes streams stable.
@@ -505,8 +512,12 @@ records and timeshifts only DVB, so the plugin does it itself:
   `pause_folder()`: Enigma2's timeshift folder, the recordings folder,
   else the local disk under `/media` with the most room
   (`media_mounts()`; both Enigma2 folders default to `/media/hdd`, a
-  USB stick is `/media/usb`) - never `/media/net`;
-  `clean_pause_leftovers()` looks in the same places. No buffer (no
+  USB stick is `/media/usb`) - never a network share;
+  `clean_pause_leftovers()` looks in the same places. The disks come
+  from `/proc/mounts` (`vavoo_record.mount_points()`), never
+  `listdir` + `os.path.ismount` (False for a link: an autofs
+  `/media/usb`); network shares are told by their file system
+  (`vavoo_record.NETWORK_FS`). No buffer (no
   disk / ffmpeg / start): `_shift_why` ("disk", "ffmpeg", "start",
   "stopped" - `SHIFT_WHY` texts) is said after "Paused" (bar or a
   message), because PLAY then resumes the live stream itself (after

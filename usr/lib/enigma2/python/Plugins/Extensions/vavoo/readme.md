@@ -509,11 +509,11 @@ The proxy provides these endpoints:
 - `/playlist.m3u?country=CountryName&key=AccessKey` – Live, always-current M3U playlist for external players (VLC/Kodi/TiviMate); `country` and `key` are both optional (key only required if "Playlist Access Key" is set in Config)
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
-- `/refresh_token` – Force token refresh
+- `/refresh_token` – Force token refresh (only from the box itself: 403 from the network)
 - `/epg/<country>.xml` – The country's programme guide: epgshare01's daily files as plain XMLTV, or a redirect to the GitHub copy
 - `/health` – Detailed health check with token age (token is only required/reported when `catalog_source` is "vavoo" - Geil needs none)
 - `/file?id=<id>&offset=<byte>[&follow=1]` – A recording or the pause buffer, for the box's player. Only ids the plugin registered (never a path); `offset` is rounded down to a TS packet, a `Range` header counts from there; `follow=1` sends a file still being recorded as it grows, until the recording ends
-- `/shutdown` – Gracefully stop proxy
+- `/shutdown` – Gracefully stop proxy (only from the box itself: 403 from the network)
 
 ## 🗂 File Management
 

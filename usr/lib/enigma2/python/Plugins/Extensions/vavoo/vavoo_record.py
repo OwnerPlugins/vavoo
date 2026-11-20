@@ -200,6 +200,32 @@ def free_bytes(path):
 _RAM_FS = ("tmpfs", "ramfs", "devtmpfs", "rootfs", "proc", "sysfs")
 
 
+# Network file systems (a share: recordings may go there, the pause
+# buffer - written all the time - never).
+NETWORK_FS = ("nfs", "nfs4", "cifs", "smbfs", "smb3", "fuse.sshfs",
+              "fuse.davfs", "davfs")
+
+
+def _unescape_mount(text):
+    """A /proc/mounts field: spaces and such come as \\040 (octal)."""
+    return re.sub(r"\\([0-7]{3})", lambda m: chr(int(m.group(1), 8)), text)
+
+
+def mount_points():
+    """[(mount point, file system type)] from /proc/mounts, [] when it
+    cannot be read."""
+    out = []
+    try:
+        with open("/proc/mounts") as f:
+            for line in f:
+                fields = line.split()
+                if len(fields) > 2:
+                    out.append((_unescape_mount(fields[1]), fields[2]))
+    except Exception:
+        pass
+    return out
+
+
 def mount_of(path):
     """(mount point, file system type) of the disk `path` is on (or
     would be on: the nearest existing folder above it)."""
@@ -214,15 +240,9 @@ def mount_of(path):
         point = os.path.dirname(point.rstrip("/")) or "/"
     point = point or "/"
     fstype = ""
-    try:
-        with open("/proc/mounts") as f:
-            for line in f:
-                fields = line.split()
-                if len(fields) > 2 and \
-                        fields[1].replace("\\040", " ") == point:
-                    fstype = fields[2]
-    except Exception:
-        pass
+    for mounted, kind in mount_points():
+        if mounted == point:
+            fstype = kind
     return point, fstype
 
 

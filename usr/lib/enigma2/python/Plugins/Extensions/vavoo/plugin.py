@@ -8,7 +8,8 @@ import re
 import ssl
 import time
 import threading
-from os import listdir, unlink, remove, system as os_system
+from os import listdir, unlink, remove
+import shutil
 from os.path import basename, dirname, exists as file_exists, join, isfile, getsize
 from json import loads
 from sys import version_info
@@ -6924,23 +6925,23 @@ def recordings_folder():
 
 
 def media_mounts(network=False):
-    """The disks mounted under /media (/media/hdd, /media/usb...), and
-    with `network` the shares under /media/net - mount points only (a
-    /media/hdd with no disk is a plain folder on the flash)."""
-    mounts = []
-    for root in ("/media", "/media/net") if network else ("/media",):
-        try:
-            names = sorted(listdir(root))
-        except Exception:
+    """The disks mounted under /media (/media/hdd, /media/usb, an autofs
+    /media/autofs/sdb1...), from /proc/mounts - mount points only (a
+    /media/hdd with no disk is a plain folder on the flash), and
+    /media/usb as a link to one is its target. With `network` the
+    network shares too (told by their file system, wherever mounted).
+    Never the box's memory."""
+    out = []
+    for point, fstype in vavoo_record.mount_points():
+        if not point.startswith("/media/") or point in out:
             continue
-        for name in names:
-            mount = join(root, name)
-            try:
-                if os.path.ismount(mount):
-                    mounts.append(mount)
-            except Exception:
-                pass
-    return mounts
+        if fstype in vavoo_record._RAM_FS:
+            continue
+        if fstype in vavoo_record.NETWORK_FS and not network:
+            continue
+        if os.path.isdir(point):
+            out.append(point)
+    return sorted(out)
 
 
 def record_folder_choices():
@@ -12820,11 +12821,14 @@ def get_next_wakeup():
 
 
 def add_skin_back(bakk):
-    if isfile(join(BackPath, str(bakk))):
-        baknew = join(BackPath, str(bakk))
-        cmd = 'cp -f ' + str(baknew) + ' ' + BackPath + '/default.png'
-        os_system(cmd)
-        os_system('sync')
+    """The chosen background copied onto default.png (in Python: no
+    shell with an unquoted path, no `sync` holding up the GUI)."""
+    baknew = join(BackPath, str(bakk))
+    if isfile(baknew):
+        try:
+            shutil.copyfile(baknew, join(BackPath, "default.png"))
+        except Exception as e:
+            print("[vavoo] Background not copied: {}".format(e))
 
 
 def apply_selected_background(skin_text):

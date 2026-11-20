@@ -122,6 +122,19 @@ if urllib3 is not None:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+# Paths only the box itself may ask for (the plugin uses 127.0.0.1).
+LOCAL_ONLY_PATHS = ("/shutdown", "/refresh_token")
+
+
+def is_loopback(address):
+    """A request from the box itself (IPv4 127.x, IPv6 ::1, or IPv4
+    as IPv6: ::ffff:127.x)."""
+    address = (address or "").lower()
+    if address.startswith("::ffff:"):
+        address = address[7:]
+    return address.startswith("127.") or address == "::1"
+
+
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True
     allow_reuse_address = True
@@ -2561,6 +2574,18 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             # old instance but the resolve/stream-counting against a
             # brand-new, uninitialized one).
             p = proxy
+
+            # The proxy answers the whole network (bouquets and
+            # /playlist.m3u on other devices), but its controls only
+            # the box itself: anything on the network - even a web page
+            # in a browser there, with an <img src=...> - could stop
+            # every channel, or keep the token ping busy.
+            if parsed_path.path in LOCAL_ONLY_PATHS and \
+                    not is_loopback(self.client_address[0]):
+                print("[Proxy] {} refused from {}".format(
+                    parsed_path.path, self.client_address[0]))
+                self.send_error(403, "Only from the box itself")
+                return
 
             if parsed_path.path == '/vavoo':
                 channel_id = query_params.get('channel', [None])[0]

@@ -20,12 +20,23 @@ print_footer() {
     echo "#                                                          #"
     echo "#  Important: Restart Enigma2 to complete the removal      #"
     echo "#                                                          #"
-    echo "#  All Vavoo files and configurations have been removed    #"
+    echo "#  Plugin, bouquets and caches removed. Kept in            #"
+    echo "#  /etc/enigma2: favourites, parental control, timers,     #"
+    echo "#  settings - and your recordings on the disk.             #"
     echo "#                                                          #"
     echo "#  Thank you for using Vavoo Stream Live!                  #"
     echo "#                                                          #"
     echo "############################################################"
 }
+
+# Only when the package is really removed. dpkg (DreamOS) also runs the
+# old package's postrm on an upgrade ("upgrade", after the new files
+# are in place) and on a failed install ("abort-*"): cleaning up then
+# deleted the version just installed.
+case "$1" in
+    remove|purge|"") ;;
+    *) exit 0 ;;
+esac
 
 print_header
 
