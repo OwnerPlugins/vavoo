@@ -44,7 +44,15 @@ Vavoo Stream Live Plugin is an Enigma2 extension that provides access to thousan
 
 ## 🖼️ Screenshots
 
-| <img src="https://raw.githubusercontent.com/Belfagor2005/vavoo/main/screen/screen9.gif" width="400"> |
+The Full HD skins of this version, drawn with sample channels.
+
+| | |
+|---|---|
+| ![Main menu, Prism theme](/screen/prism_main.jpg)<br>**Main menu** (Prism) – Favourites, Recently watched and Recordings above the countries; the preview window | ![Channel list, Halo theme](/screen/halo_channels.jpg)<br>**Channel list** (Halo) – numbered like a receiver's list, initials tiles, now / next under the preview |
+| ![Player info bar, Prism theme](/screen/prism_player.jpg)<br>**Player** (Prism) – the info bar: programme now and next, time left, source, clock and date, one row of keys | ![Channel list over the video, Halo theme](/screen/halo_player_list.jpg)<br>**Channel list over the video** (Halo, BLUE in the player) – with the mini guide |
+| ![Programme guide, Prism theme](/screen/prism_guide.jpg)<br>**Programme guide** (Prism) – ● recording set, ⏰ reminder; RED records the highlighted programme | ![Recordings, Orbit theme](/screen/orbit_recordings.jpg)<br>**Recordings** (Orbit) – timers set in the guide, a recording in progress, the recordings on the disk |
+| ![Favourites in folders, Orbit theme](/screen/orbit_favourites.jpg)<br>**Favourites** (Orbit) – in your own folders and order | ![Search all channels, Prism theme](/screen/prism_search.jpg)<br>**Search all channels** (Prism) – each result with its country |
+| ![Settings, Halo theme](/screen/halo_settings.jpg)<br>**Settings** (Halo) | ![Classic theme](/screen/classic_main.jpg)<br>**Classic** – the plugin's original look |
 
 ## ✨ Key Features
 

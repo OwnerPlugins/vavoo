@@ -73,7 +73,9 @@ enigma2-plugin-extensions-vavoo.bb   # Yocto/OpenEmbedded bitbake recipe (altern
 installer.sh              # curl|bash-style installer: detects OS/Python version, installs deps, deploys plugin, restarts box
 update_all_plugins.py     # repo-root dev script: finds every plugin's locale dir and runs its update_translations.py
 .github/workflows/         # CI (see below)
-screen/                    # README screenshots
+screen/                    # README screenshots: <theme>_<screen>.jpg = the Full HD skins drawn
+                          #   with sample data (README links them as /screen/..., so the plugin
+                          #   folder's identical readme.md works too); screen1-9 = old (1.61)
 ```
 
 There is exactly one plugin in this repo (`vavoo`); `update_all_plugins.py`
