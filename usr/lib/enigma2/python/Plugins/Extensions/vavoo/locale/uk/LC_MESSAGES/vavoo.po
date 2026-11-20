@@ -194,8 +194,9 @@ msgstr "Очистити все"
 msgid "Close"
 msgstr "Закрити"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Назви країн, розділених комами (наприклад, \\\\\\\\\\\\\\\\"
+msgstr "Назви країн, розділених комами (наприклад, \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Конфігурацію успішно збережено!"
@@ -671,7 +672,7 @@ msgid "View Favourites (Ok to open)"
 msgstr "Переглянути вибране (ОК, щоб відкрити)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "Переглянути останні 200 рядків %s."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Ласкаво просимо до Vavoo Proxy із підтримкою EPG"

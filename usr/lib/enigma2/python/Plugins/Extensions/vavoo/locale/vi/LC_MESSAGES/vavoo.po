@@ -167,7 +167,7 @@ msgid "Case: {}"
 msgstr "Trường hợp: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "Nguồn danh mục/luồng"
 
 #, fuzzy
 msgid "Changelog:"
@@ -194,8 +194,9 @@ msgstr "Xóa tất cả"
 msgid "Close"
 msgstr "Đóng"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Tên quốc gia được phân tách bằng dấu phẩy (ví dụ: \\\\\\\\\\\\\\\\"
+msgstr "Tên quốc gia được phân tách bằng dấu phẩy (ví dụ: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Đã lưu cấu hình thành công!"
@@ -216,7 +217,7 @@ msgid "Continuing, proxy still syncing..."
 msgstr "Tiếp tục, proxy vẫn đang đồng bộ hóa..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "Không thể tải kênh - proxy không phản hồi"
 
 msgid "Could not load the country list from the proxy"
 msgstr "Không thể tải danh sách quốc gia từ proxy"
@@ -363,7 +364,7 @@ msgid "Important Notes:"
 msgstr "Lưu ý quan trọng:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "Mã PIN không chính xác"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Tăng nếu proxy mất nhiều thời gian do VPN hoặc kết nối chậm."
@@ -461,7 +462,7 @@ msgid "Only one specific country"
 msgstr "Chỉ có một quốc gia cụ thể"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "Mã PIN kiểm soát của phụ huynh"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Định kỳ kết hợp lại EPG và làm mới các bó hoa cho các quốc gia bạn yêu thích ở chế độ nền."
@@ -580,7 +581,7 @@ msgid "Set a PIN to lock the countries below. Leave empty to disable parental co
 msgstr "Đặt mã PIN để khóa các quốc gia bên dưới. Để trống để tắt hoàn toàn quyền kiểm soát của phụ huynh."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "Hiển thị nhật ký (Ok để xem)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Hiển thị các thông báo chi tiết ở cấp độ DEBUG trong vavoo.log (vòng đời giao diện người dùng, chi tiết theo yêu cầu). Có hiệu lực ngay lập tức - tắt đi trừ khi khắc phục sự cố."
@@ -668,7 +669,7 @@ msgid "Version:"
 msgstr "Phiên bản:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "Xem mục yêu thích (Ok để mở)"
 
 msgid "View the last 200 lines of %s."
 msgstr "Xem 200 dòng cuối cùng của %s."
@@ -677,7 +678,7 @@ msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Chào mừng bạn đến với Vavoo Proxy với sự hỗ trợ EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "Dịch vụ nào để tải kênh và luồng từ đó. Tự động thử Geil trước và quay lại Vavoo nếu nó không khả dụng; hai tùy chọn còn lại ghim nó vào chính xác một nguồn đó. Có hiệu lực khi lưu (khởi động lại proxy nếu nó đang chạy)."
 
 #, fuzzy
 msgid "Yes, update now"

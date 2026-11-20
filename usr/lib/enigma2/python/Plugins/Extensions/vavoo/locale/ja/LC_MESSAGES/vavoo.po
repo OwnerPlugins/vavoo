@@ -19,7 +19,7 @@ msgid "(%s files deleted)"
 msgstr "(%s ファイルは削除されました)"
 
 msgid "(current)"
-msgstr ""
+msgstr "（現在）"
 
 msgid "(you have v{})"
 msgstr "(v{} を持っています)"
@@ -97,7 +97,7 @@ msgid "? Proxy Unknown"
 msgstr "?プロキシが不明"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "お気に入りに追加されました: {}"
 
 msgid "All countries (%d)"
 msgstr "すべての国 (%d)"
@@ -118,7 +118,7 @@ msgid "Author:"
 msgstr "著者："
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "車 (素晴らしい、フォールバック Vavoo)"
 
 msgid "Back"
 msgstr "戻る"
@@ -145,7 +145,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "ブーケの再編成が成功しました！"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "スター付きチャンネルを参照して再生します。ブラウジング中に INFO キーを使用してチャンネルにスターを付けたり、スターを外したりできます。"
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -167,7 +167,7 @@ msgid "Case: {}"
 msgstr "場合： {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "カタログ/ストリームソース"
 
 #, fuzzy
 msgid "Changelog:"
@@ -186,16 +186,16 @@ msgid "Checking proxy..."
 msgstr "プロキシを確認しています..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "ストリームソースの選択"
 
 msgid "Clear All"
 msgstr "すべてクリア"
 
 msgid "Close"
-msgstr ""
+msgstr "近い"
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "カンマ区切りの国名 (例: \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "設定が正常に保存されました。"
@@ -216,16 +216,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "続行中、プロキシはまだ同期中です..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "チャンネルをロードできませんでした - プロキシが応答していません"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "プロキシから国リストをロードできませんでした"
 
 msgid "Could not save the installer script."
 msgstr "インストーラー スクリプトを保存できませんでした。"
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "お気に入りを更新できませんでした"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "国: %(生成)d/%(合計)d"
@@ -276,7 +276,7 @@ msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG を有効にする"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "ペアレンタルコントロールのPINを入力してください"
 
 msgid "Enter text to search..."
 msgstr "検索するテキストを入力してください..."
@@ -321,7 +321,7 @@ msgid "Failed: %(failed)d"
 msgstr "失敗: %(失敗)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "お気に入り"
 
 msgid "Fix Cache"
 msgstr "キャッシュを修正する"
@@ -336,7 +336,7 @@ msgid "Found: {} channels"
 msgstr "見つかりました: {} チャンネル"
 
 msgid "Geil only"
-msgstr ""
+msgstr "ゲイルのみ"
 
 msgid "Generate .m3u file for:"
 msgstr "以下の .m3u ファイルを生成します。"
@@ -357,13 +357,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "今から数えて、EPG を再照合してブーケを更新する頻度。"
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "設定されている場合、/playlist.m3u のライブ プレイリストには ?key=<この値> が必要です。キーがない場合は空のままにします。 URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "重要な注意事項:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "間違ったPIN"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "VPN や接続速度が遅いためにプロキシに時間がかかる場合は増加します。"
@@ -434,7 +434,7 @@ msgid "No channels found for: %s"
 msgstr "チャンネルが見つかりません: %s"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "まだお気に入りはありません"
 
 msgid "No items available"
 msgstr "利用可能なアイテムはありません"
@@ -452,22 +452,22 @@ msgid "Nothing to remove for: {}"
 msgstr "削除するものはありません: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "わかりました"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "このチャンネルで利用できるソースは 1 つだけです"
 
 msgid "Only one specific country"
 msgstr "特定の国は 1 つだけ"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "ペアレンタルコントロールPIN"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "定期的に EPG を再照合し、バックグラウンドでお気に入りの国の花束を更新します。"
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "プレイリスト アクセス キー (オプション)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "メインリストにおけるVavooブーケの位置"
@@ -577,10 +577,10 @@ msgid "Send Anonymous Statistics"
 msgstr "匿名の統計情報を送信する"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "以下の国をロックするには PIN を設定します。ペアレントコントロールを完全に無効にするには、空のままにします。"
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "ログを表示 (表示OK)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "vavoo.log に詳細な DEBUG レベルのメッセージを表示します (UI ライフサイクル、リクエストごとの詳細)。すぐに有効になります。トラブルシューティングを行う場合を除き、そのままにしておきます。"
@@ -601,7 +601,7 @@ msgid "Technical Features:"
 msgstr "技術的特徴:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "このチャンネルは再生できません"
 
 msgid "This will refresh the authentication token."
 msgstr "これにより、認証トークンが更新されます。"
@@ -644,7 +644,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Vavoo EPG ソースが見つかりません。最初に少なくとも 1 つの花束をエクスポートしてください。"
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "バブーログ"
 
 msgid "Vavoo Stream Live"
 msgstr "Vavoo ストリーム ライブ"
@@ -662,22 +662,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo はすでに実行されています。"
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "Vavoo/Kool のみ"
 
 msgid "Version:"
 msgstr "バージョン:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "お気に入りを表示 (開くことができます)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "%s の最後の 200 行を表示します。"
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG サポートを備えた Vavoo プロキシへようこそ"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "どのサービスからチャンネルとストリームをロードするか。 Auto は最初に Geil を試し、利用できない場合は Vavoo にフォールバックします。他の 2 つのオプションは、その 1 つのソースに正確に固定します。保存時に有効になります (プロキシが実行中の場合は再起動します)。"
 
 #, fuzzy
 msgid "Yes, update now"

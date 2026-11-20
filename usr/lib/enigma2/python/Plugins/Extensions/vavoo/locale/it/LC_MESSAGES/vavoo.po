@@ -21,7 +21,7 @@ msgid "(%s files deleted)"
 msgstr "(%s file rimossi)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(attuale)"
 
 msgid "(you have v{})"
 msgstr "(hai v{})"
@@ -99,7 +99,7 @@ msgid "? Proxy Unknown"
 msgstr "? Proxy sconosciuto"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "Aggiunto ai preferiti: {}"
 
 msgid "All countries (%d)"
 msgstr "Tutti i paesi (%d)"
@@ -120,7 +120,7 @@ msgid "Author:"
 msgstr "Autore:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "Macchina (fantastica, Vavoo di riserva)"
 
 msgid "Back"
 msgstr "Torna"
@@ -147,7 +147,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "Bouquets riorganizzati con successo!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "Sfoglia e riproduci i tuoi canali speciali. Aggiungi/Deseleziona un canale a Speciali con il tasto INFO durante la navigazione."
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -169,7 +169,7 @@ msgid "Case: {}"
 msgstr "Caso: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "Sorgente catalogo/flusso"
 
 #, fuzzy
 msgid "Changelog:"
@@ -188,16 +188,16 @@ msgid "Checking proxy..."
 msgstr "Controllo del proxy..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "Scegli Sorgente streaming"
 
 msgid "Clear All"
 msgstr "Pulisci Tutto"
 
 msgid "Close"
-msgstr ""
+msgstr "Vicino"
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "Nomi dei paesi separati da virgole (ad es. \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Configurazione salvata con successo!"
@@ -218,16 +218,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "Continuando, il proxy è ancora in fase di sincronizzazione..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "Impossibile caricare i canali: il proxy non risponde"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "Impossibile caricare l'elenco dei paesi dal proxy"
 
 msgid "Could not save the installer script."
 msgstr "Impossibile salvare lo script di installazione."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "Impossibile aggiornare i preferiti"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "Paesi: %(generated)d/%(total)d"
@@ -278,7 +278,7 @@ msgid "Enable Vavoo EPG"
 msgstr "Abilita Vavoo EPG"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "Inserisci il PIN del controllo parentale"
 
 msgid "Enter text to search..."
 msgstr "Inserisci testo da cercare..."
@@ -323,7 +323,7 @@ msgid "Failed: %(failed)d"
 msgstr "Fallito: %(failed)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "Preferiti"
 
 msgid "Fix Cache"
 msgstr "Correzione Cache"
@@ -338,7 +338,7 @@ msgid "Found: {} channels"
 msgstr "Trovati: {} canali"
 
 msgid "Geil only"
-msgstr ""
+msgstr "Solo Geil"
 
 msgid "Generate .m3u file for:"
 msgstr "Genera file .m3u per:"
@@ -359,13 +359,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Quante volte riassociare l'EPG e aggiornare i bouquet, contando da ora."
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "Se impostata, la playlist live su /playlist.m3u richiede ?key=<questo valore> - lascia vuoto se non esiste alcuna chiave. URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "Note importanti:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "PIN errato"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Aumentare se il proxy impiega molto tempo a causa della VPN o della connessione lenta."
@@ -436,7 +436,7 @@ msgid "No channels found for: %s"
 msgstr "Nessun canale trovato per: %s"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "Nessun preferito ancora"
 
 msgid "No items available"
 msgstr "Nessun articolo disponibile"
@@ -457,19 +457,19 @@ msgid "OK"
 msgstr ""
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "È disponibile una sola fonte per questo canale"
 
 msgid "Only one specific country"
 msgstr "Solo un paese specifico"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "PIN del controllo parentale"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Riassocia periodicamente l'EPG e aggiorna i bouquet per i tuoi paesi preferiti in background."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "Chiave di accesso alla playlist (opzionale)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posizione dei bouquet Vavoo nell'elenco principale"
@@ -579,10 +579,10 @@ msgid "Send Anonymous Statistics"
 msgstr "Invia statistiche anonime"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "Imposta un PIN per bloccare i paesi seguenti. Lascia vuoto per disabilitare completamente il controllo parentale."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "Mostra registro (OK per visualizzare)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Mostra messaggi dettagliati a livello di DEBUG in vavoo.log (ciclo di vita dell'interfaccia utente, dettagli per richiesta). Ha effetto immediato: lasciarlo disattivato a meno che non si risolva il problema."
@@ -603,7 +603,7 @@ msgid "Technical Features:"
 msgstr "Caratteristiche tecniche:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "Questo canale non può essere riprodotto"
 
 msgid "This will refresh the authentication token."
 msgstr "Questo aggiornerà il token di autenticazione."
@@ -664,22 +664,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo è già in esecuzione."
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "Solo Vavoo/Kool"
 
 msgid "Version:"
 msgstr "Versione:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "Visualizza Preferiti (OK per aprire)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "Visualizza le ultime 200 righe di %s."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Benvenuti su Vavoo Proxy con supporto EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "Da quale servizio caricare canali e stream. Auto prova prima Geil e torna a Vavoo se non è disponibile; le altre due opzioni lo collegano esattamente a quella fonte. Ha effetto al salvataggio (riavvia il proxy se è in esecuzione)."
 
 #, fuzzy
 msgid "Yes, update now"

@@ -18,7 +18,7 @@ msgid "(%s files deleted)"
 msgstr "(%s file dihapus)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(saat ini)"
 
 msgid "(you have v{})"
 msgstr "(kamu punya v{})"
@@ -96,7 +96,7 @@ msgid "? Proxy Unknown"
 msgstr "? Proksi Tidak Diketahui"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "Ditambahkan ke favorit: {}"
 
 msgid "All countries (%d)"
 msgstr "Semua negara (%d)"
@@ -117,7 +117,7 @@ msgid "Author:"
 msgstr "Pengarang:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "Mobil (Luar Biasa, Vavoo mundur)"
 
 msgid "Back"
 msgstr "Kembali"
@@ -144,7 +144,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "Karangan bunga berhasil ditata ulang!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "Telusuri dan putar saluran berbintang Anda. Bintangi/hapus bintang saluran dengan tombol INFO saat menjelajah."
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -166,7 +166,7 @@ msgid "Case: {}"
 msgstr "Kasus: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "Katalog/Sumber Aliran"
 
 #, fuzzy
 msgid "Changelog:"
@@ -185,16 +185,16 @@ msgid "Checking proxy..."
 msgstr "Memeriksa proksi..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "Pilih Sumber Aliran"
 
 msgid "Clear All"
 msgstr "Hapus Semua"
 
 msgid "Close"
-msgstr ""
+msgstr "Menutup"
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "Nama negara yang dipisahkan koma (misalnya \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Konfigurasi berhasil disimpan!"
@@ -215,16 +215,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "Melanjutkan, proxy masih disinkronkan..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "Tidak dapat memuat saluran - proxy tidak merespons"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "Tidak dapat memuat daftar negara dari proxy"
 
 msgid "Could not save the installer script."
 msgstr "Tidak dapat menyimpan skrip penginstal."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "Tidak dapat memperbarui favorit"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "Negara: %(dihasilkan)d/%(total)d"
@@ -275,7 +275,7 @@ msgid "Enable Vavoo EPG"
 msgstr "Aktifkan Vavoo EPG"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "Masukkan PIN kontrol orang tua"
 
 msgid "Enter text to search..."
 msgstr "Masukkan teks untuk mencari..."
@@ -320,7 +320,7 @@ msgid "Failed: %(failed)d"
 msgstr "Gagal: %(gagal)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "Favorit"
 
 msgid "Fix Cache"
 msgstr "Perbaiki Tembolok"
@@ -335,7 +335,7 @@ msgid "Found: {} channels"
 msgstr "Ditemukan: {} saluran"
 
 msgid "Geil only"
-msgstr ""
+msgstr "Hanya Geil"
 
 msgid "Generate .m3u file for:"
 msgstr "Hasilkan file .m3u untuk:"
@@ -356,13 +356,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Seberapa sering mencocokkan ulang EPG dan menyegarkan karangan bunga, dihitung mulai sekarang."
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "Jika disetel, daftar putar langsung di /playlist.m3u memerlukan ?key=<nilai ini> - biarkan kosong jika tidak ada kunci. URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "Catatan Penting:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "PIN salah"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Tingkatkan jika proxy membutuhkan waktu lama karena VPN atau koneksi lambat."
@@ -433,7 +433,7 @@ msgid "No channels found for: %s"
 msgstr "Tidak ada saluran ditemukan untuk: %s"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "Belum ada favorit"
 
 msgid "No items available"
 msgstr "Tidak ada item yang tersedia"
@@ -451,22 +451,22 @@ msgid "Nothing to remove for: {}"
 msgstr "Tidak ada yang perlu dihapus: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "OKE"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "Hanya satu sumber yang tersedia untuk saluran ini"
 
 msgid "Only one specific country"
 msgstr "Hanya satu negara tertentu"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "PIN Kontrol Orang Tua"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Cocokkan ulang EPG secara berkala dan segarkan karangan bunga untuk negara favorit Anda di latar belakang."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "Kunci Akses Daftar Putar (opsional)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Posisi karangan bunga Vavoo di daftar utama"
@@ -576,10 +576,10 @@ msgid "Send Anonymous Statistics"
 msgstr "Kirim Statistik Anonim"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "Tetapkan PIN untuk mengunci negara di bawah ini. Biarkan kosong untuk menonaktifkan kontrol orang tua sepenuhnya."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "Tampilkan Log (Oke untuk melihat)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Tampilkan pesan tingkat DEBUG verbose di vavoo.log (siklus hidup UI, detail per permintaan). Berlaku segera - hentikan kecuali ada pemecahan masalah."
@@ -600,7 +600,7 @@ msgid "Technical Features:"
 msgstr "Fitur Teknis:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "Saluran ini tidak dapat diputar"
 
 msgid "This will refresh the authentication token."
 msgstr "Ini akan menyegarkan token autentikasi."
@@ -643,7 +643,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Sumber Vavoo EPG tidak ditemukan. Harap ekspor setidaknya satu buket terlebih dahulu."
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "Catatan Vavoo"
 
 msgid "Vavoo Stream Live"
 msgstr "Aliran Vavoo Langsung"
@@ -661,22 +661,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo sudah berjalan."
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "Hanya Vavoo/Kool"
 
 msgid "Version:"
 msgstr "Versi:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "Lihat Favorit (Ok untuk membuka)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "Lihat 200 baris terakhir %s."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Selamat datang di Vavoo Proxy dengan dukungan EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "Layanan mana yang memuat saluran dan streaming. Otomatis mencoba Geil terlebih dahulu dan kembali ke Vavoo jika tidak tersedia; dua opsi lainnya menyematkannya ke satu sumber tersebut. Berlaku saat penyimpanan (memulai ulang proksi jika sedang berjalan)."
 
 #, fuzzy
 msgid "Yes, update now"

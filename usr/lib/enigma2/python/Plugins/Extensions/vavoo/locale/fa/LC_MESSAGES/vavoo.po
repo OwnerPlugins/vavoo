@@ -18,7 +18,7 @@ msgid "(%s files deleted)"
 msgstr "(%s فایل حذف شد)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(جاری)"
 
 msgid "(you have v{})"
 msgstr "(شما v{}) دارید"
@@ -96,7 +96,7 @@ msgid "? Proxy Unknown"
 msgstr "? پروکسی ناشناس"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "به موارد دلخواه اضافه شد: {}"
 
 msgid "All countries (%d)"
 msgstr "همه کشورها (%d)"
@@ -117,7 +117,7 @@ msgid "Author:"
 msgstr "نویسنده:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "ماشین (عالی، واوو)"
 
 msgid "Back"
 msgstr "برگشت"
@@ -144,7 +144,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "دسته گل ها با موفقیت دوباره سازماندهی شدند!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "کانال های ستاره دار خود را مرور و پخش کنید. هنگام مرور، کانالی را با کلید INFO ستاره‌دار/لغو ستاره کنید."
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -166,7 +166,7 @@ msgid "Case: {}"
 msgstr "مورد: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "کاتالوگ/منبع جریان"
 
 #, fuzzy
 msgid "Changelog:"
@@ -185,16 +185,16 @@ msgid "Checking proxy..."
 msgstr "در حال بررسی پروکسی..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "منبع جریان را انتخاب کنید"
 
 msgid "Clear All"
 msgstr "پاک کردن همه"
 
 msgid "Close"
-msgstr ""
+msgstr "بستن"
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "نام کشورهای جدا شده با کاما (به عنوان مثال \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "پیکربندی با موفقیت ذخیره شد!"
@@ -215,16 +215,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "در حال ادامه، پراکسی همچنان در حال همگام سازی است..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "بارگیری کانال ها ممکن نیست - پراکسی پاسخ نمی دهد"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "فهرست کشورها از پروکسی بارگیری نشد"
 
 msgid "Could not save the installer script."
 msgstr "اسکریپت نصب کننده ذخیره نشد."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "موارد دلخواه به‌روزرسانی نشد"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "کشورها: %(تولید شده)d/%(کل)d"
@@ -275,7 +275,7 @@ msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG را فعال کنید"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "پین کنترل والدین را وارد کنید"
 
 msgid "Enter text to search..."
 msgstr "متن را برای جستجو وارد کنید..."
@@ -320,7 +320,7 @@ msgid "Failed: %(failed)d"
 msgstr "ناموفق: %(شکست)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "موارد دلخواه"
 
 msgid "Fix Cache"
 msgstr "رفع کش"
@@ -335,7 +335,7 @@ msgid "Found: {} channels"
 msgstr "پیدا شد: {} کانال"
 
 msgid "Geil only"
-msgstr ""
+msgstr "فقط گیل"
 
 msgid "Generate .m3u file for:"
 msgstr "تولید فایل m3u برای:"
@@ -356,13 +356,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "هر چند وقت یک‌بار باید EPG را مجدداً مطابقت داد و دسته‌های گل را تازه کرد، از هم اکنون شمارش می‌شود."
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "اگر تنظیم شود، لیست پخش زنده در /playlist.m3u به ?key=<this value> نیاز دارد - بدون کلید خالی بگذارید. URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "نکات مهم:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "پین نادرست است"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "اگر پروکسی به دلیل VPN یا اتصال کند طولانی شود، افزایش دهید."
@@ -451,22 +451,22 @@ msgid "Nothing to remove for: {}"
 msgstr "چیزی برای حذف وجود ندارد: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "باشه"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "فقط یک منبع برای این کانال موجود است"
 
 msgid "Only one specific country"
 msgstr "فقط یک کشور خاص"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "پین کنترل والدین"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "به صورت دوره‌ای EPG را مجدداً مطابقت دهید و دسته‌های گل را برای کشورهای مورد علاقه خود در پس‌زمینه تازه کنید."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "کلید دسترسی به لیست پخش (اختیاری)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "جایگاه دسته گل های Vavoo در لیست اصلی"
@@ -576,10 +576,10 @@ msgid "Send Anonymous Statistics"
 msgstr "ارسال آمار ناشناس"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "برای قفل کردن کشورهای زیر یک پین تنظیم کنید. خالی بگذارید تا کنترل والدین به طور کامل غیرفعال شود."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "نمایش گزارش (برای مشاهده خوب است)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "نمایش پیام‌های پرمخاطب در سطح DEBUG در vavoo.log (چرخه عمر UI، جزئیات هر درخواست). فوراً اعمال می شود - آن را متوقف کنید مگر اینکه عیب یابی شود."
@@ -600,7 +600,7 @@ msgid "Technical Features:"
 msgstr "ویژگی های فنی:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "این کانال قابل پخش نیست"
 
 msgid "This will refresh the authentication token."
 msgstr "با این کار کد احراز هویت تازه می شود."
@@ -661,22 +661,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo در حال اجرا است."
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "فقط Vavoo/Kool"
 
 msgid "Version:"
 msgstr "نسخه:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "مشاهده موارد دلخواه (Ok to open)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "مشاهده 200 خط آخر %s."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "به Vavoo Proxy با پشتیبانی از EPG خوش آمدید"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "از کدام سرویس می توان کانال ها و جریان ها را بارگیری کرد. Auto ابتدا Geil را امتحان می کند و اگر در دسترس نباشد به Vavoo برمی گردد. دو گزینه دیگر آن را دقیقا به همان منبع پین می کنند. در ذخیره تأثیر می گذارد (پراکسی را در صورت اجرا مجدد راه اندازی می کند)."
 
 #, fuzzy
 msgid "Yes, update now"

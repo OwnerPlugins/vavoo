@@ -120,7 +120,7 @@ msgid "Author:"
 msgstr "Author:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "Car (Awesome, fallback Vavoo)"
 
 msgid "Back"
 msgstr "Back"

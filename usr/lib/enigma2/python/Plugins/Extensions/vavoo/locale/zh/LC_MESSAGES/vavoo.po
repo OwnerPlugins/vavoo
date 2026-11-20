@@ -22,7 +22,7 @@ msgid "(%s files deleted)"
 msgstr "（%s 个文件已删除）"
 
 msgid "(current)"
-msgstr ""
+msgstr "（当前的）"
 
 msgid "(you have v{})"
 msgstr "（你有 v{}）"
@@ -123,7 +123,7 @@ msgid "Author:"
 msgstr "作者："
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "汽车（太棒了，后备Vavoo）"
 
 msgid "Back"
 msgstr "返回"
@@ -173,7 +173,7 @@ msgid "Case: {}"
 msgstr "案件： {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "目录/流源"
 
 #, fuzzy
 msgid "Changelog:"
@@ -201,7 +201,7 @@ msgid "Close"
 msgstr "关闭"
 
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "以逗号分隔的国家/地区名称（例如 \\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "配置保存成功！"
@@ -226,13 +226,13 @@ msgid "Could not load channels - proxy not responding"
 msgstr "无法加载频道 - 代理没有响应"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "无法从代理加载国家/地区列表"
 
 msgid "Could not save the installer script."
 msgstr "无法保存安装程序脚本。"
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "无法更新收藏夹"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "国家：%（生成）d/%（总计）d"
@@ -283,7 +283,7 @@ msgid "Enable Vavoo EPG"
 msgstr "启用 Vavoo EPG"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "输入家长控制 PIN 码"
 
 msgid "Enter text to search..."
 msgstr "输入文字进行搜索..."
@@ -330,7 +330,7 @@ msgid "Failed: %(failed)d"
 msgstr "失败：%（失败）d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "收藏夹"
 
 msgid "Fix Cache"
 msgstr "修复缓存"
@@ -345,7 +345,7 @@ msgid "Found: {} channels"
 msgstr "找到：{} 个频道"
 
 msgid "Geil only"
-msgstr ""
+msgstr "仅盖尔"
 
 msgid "Generate .m3u file for:"
 msgstr "生成 .m3u 文件："
@@ -366,7 +366,7 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "从现在开始计算重新匹配 EPG 和刷新花束的频率。"
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "如果设置，/playlist.m3u 处的实时播放列表需要 ?key=<此值> - 留空表示没有键。网址：http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "重要提示："
@@ -445,7 +445,7 @@ msgid "No channels found for: %s"
 msgstr "搜索中未找到频道！"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "还没有收藏夹"
 
 msgid "No items available"
 msgstr "没有可用的项目"
@@ -466,19 +466,19 @@ msgid "OK"
 msgstr "好的"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "该频道只有一个来源"
 
 msgid "Only one specific country"
 msgstr "只有一个特定国家"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "家长控制 PIN 码"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "定期重新匹配 EPG 并在后台刷新您喜爱的国家/地区的花束。"
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "播放列表访问键（可选）"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Vavoo 花束在主列表中的位置"
@@ -591,10 +591,10 @@ msgid "Send Anonymous Statistics"
 msgstr "发送匿名统计数据"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "设置 PIN 码以锁定以下国家/地区。留空以完全禁用家长控制。"
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "显示日志（可以查看）"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "在 vavoo.log 中显示详细的调试级别消息（UI 生命周期、每个请求的详细信息）。立即生效 - 除非出现故障，否则请不要使用。"
@@ -615,7 +615,7 @@ msgid "Technical Features:"
 msgstr "技术特点："
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "该频道无法播放"
 
 msgid "This will refresh the authentication token."
 msgstr "这将刷新身份验证令牌。"
@@ -658,7 +658,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "未找到 Vavoo EPG 源。请先导出至少一束花。"
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "瓦沃日志"
 
 msgid "Vavoo Stream Live"
 msgstr "Vavoo直播"
@@ -678,22 +678,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo 已经在运行。"
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "仅限 Vavoo/Kool"
 
 msgid "Version:"
 msgstr "版本："
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "查看收藏夹（可以打开）"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "查看 %s 的最后 200 行。"
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "欢迎使用带有 EPG 支持的 Vavoo Proxy"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "从哪个服务加载通道和流。 Auto 首先尝试 Geil，如果不可用则回退到 Vavoo；另外两个选项将其固定到该来源。保存后生效（如果代理正在运行，则重新启动代理）。"
 
 #, fuzzy
 msgid "Yes, update now"

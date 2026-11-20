@@ -23,7 +23,7 @@ msgid "(%s files deleted)"
 msgstr "(%s dosya silindi)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(akım)"
 
 msgid "(you have v{})"
 msgstr "(v{}'niz var)"
@@ -149,7 +149,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "Buketler başarıyla yeniden düzenlendi!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "Yıldızlı kanallarınıza göz atın ve oynatın. Tarama sırasında INFO tuşunu kullanarak bir kanala yıldız ekleyin/yıldızı kaldırın."
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -196,10 +196,11 @@ msgid "Clear All"
 msgstr "Tümünü Temizle"
 
 msgid "Close"
-msgstr ""
+msgstr "Kapalı"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Virgülle ayrılmış ülke adları (ör. \\\\\\\\\\\\\\\\"
+msgstr "Virgülle ayrılmış ülke adları (ör. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Yapılandırma başarıyla kaydedildi!"
