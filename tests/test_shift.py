@@ -329,7 +329,7 @@ print("== a buffer that stops while paused")
 ps = player()
 ps.pauseService()
 buf = ps._shift
-for _ in range(100):
+for _ in range(300):              # (a slow CI machine: up to 30 s)
     if buf.duration >= 3:
         break
     time.sleep(0.1)
@@ -338,7 +338,8 @@ buf.join(10)
 check(not buf.running and buf.duration >= 2, "the buffer stopped with %.1f s in it" % buf.duration)
 ps._on_shift_tick()
 check(ps._shift is buf and ps._shift_state == "paused" and os.path.exists(buf.path),
-      "kept: still paused, the file there")
+      "kept: still paused, the file there (same buffer %s, state %r, file %s, %.1f s, %r)"
+      % (ps._shift is buf, ps._shift_state, os.path.exists(buf.path), buf.duration, buf.failure))
 check(ps._status_text() == u"❚❚ Paused  ·  press play to go on", "status: %r" % ps._status_text())
 ps.playpauseService()
 call = ps.session.nav.calls[-1]
