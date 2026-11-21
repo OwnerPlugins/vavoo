@@ -343,7 +343,7 @@ R_EXPECT = [
 run_table("recording player", cls, rp, R_MAPS, R_EXPECT, showhide=True, menu=False)
 
 src = harness.plugin_source()
-check("def showMainMenu(self):" in src.split("class Playstream2(")[1].split("class AutoStartTimer")[0],
+check("def showMainMenu(self):" in harness.source_of("Playstream2"),
       "the live player answers OpenATV's showMainMenu with its options too")
 check(plugin.KEYMAP_LOADED in (True, False) and plugin.load_keymap("/nonexistent/keymap.xml") in (True, False),
       "loading the keymap never raises")

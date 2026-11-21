@@ -380,7 +380,7 @@ class AM(object):
 
 
 src = e2env.plugin_source()
-block = src.split("class Playstream2(")[1].split("self.__event_tracker")[0]
+block = e2env.source_of("Playstream2").split("class Playstream2(")[1].split("self.__event_tracker")[0]
 for key, method in (('"info": self.open_guide', "INFO: the guide (as in the lists)"),
                     ('"epg": self.open_guide', "EPG: the guide (no more IMDb on EPG)"),
                     ('"red": self.back', "RED back"),
@@ -481,7 +481,7 @@ check(all(int(el.get("position").split(",")[0]) + int(el.get("size").split(",")[
 labels = set(plugin.PLAYER_BAR_LABELS) | {"logo", "info_box", "progress_track", "progress"}
 bar_names = set(el.get("name") for el in ET.fromstring(vt.player_bar("prism", True, 1920)) if el.get("name"))
 check(bar_names == labels, "the player creates exactly the bar's widgets %r" % sorted(bar_names ^ labels))
-check("MoviePlayer" in src.split("class Playstream2(")[1].split("def showIMDB")[0], "Classic keeps the MoviePlayer bar")
+check("MoviePlayer" in e2env.source_of("Playstream2").split("class Playstream2(")[1].split("def showIMDB")[0], "Classic keeps the MoviePlayer bar")
 
 # ---------------------------------------------------------------- 6
 print("6. Direct keys: the bar only shows captions (no LEFT / RIGHT walking)")

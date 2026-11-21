@@ -23,10 +23,19 @@ License: CC BY-NC-SA 4.0 — non-commercial, attribution required.
 ```
 usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed as-is to the box)
   __init__.py            # constants, paths, PROXY_* URLs, PLUGIN_ROOT, PY2/PY3 flags
-  plugin.py              # ~13000 lines: all Enigma2 Screens (UI), PluginDescriptor, autostart, main()
+  plugin.py              # the entry (Plugins(), main(), autostart) + startVavoo, UpdatePopup,
+                          #   MainVavoo, vavoo (channel list), VavooFavourites, VavooSearch
+  ui_base.py             # the screens' shared ground: cfg (every setting), keys, skins/themes,
+                          #   list rows (m2list/show_list), VavooMenu, NowNextPanel, NOW_PLAYING,
+                          #   PreviewWindow, show_keys, the log viewer, ACTIVE, small helpers
+  ui_pick.py             # VavooPickScreen, Choose countries, Parental Control, the PIN pad (ask_pin)
+  ui_record.py           # memory watch, RECORDINGS, folders / disks, Recordings list + its player
+  ui_settings.py         # vavoo_config (Settings), backup / restore, licences, About, open_settings
+  ui_guide.py            # VavooGuide (the EPG grid), the reminders service (REMINDERS)
+  ui_player.py           # Playstream2, its channel list over the video, sleep timer, info bar
   vavoo_proxy.py         # local HTTP proxy (port 4323): auth/token handling, stream resolution,
                           #   the country guides (/epg), recordings (/file)
-                          #   started as an in-process daemon thread (see plugin.py's proxy-start helpers,
+                          #   started as an in-process daemon thread (see the proxy-start helpers,
                           #   not a separate subprocess)
   bouquet_manager.py     # builds/exports Enigma2 bouquets (flat + hierarchical) pointing at the proxy
   channel_alias.py       # channel name normalization/aliasing for EPG matching
@@ -65,7 +74,7 @@ usr/lib/enigma2/python/Plugins/Extensions/vavoo/   # the actual plugin (deployed
   fonts/*.ttf               # cvfont (MavenPro-Medium = Liberation Sans) + the themes' Lexend,
                             #   Manrope, Sora, Oxanium (SIL OFL, licence texts beside them)
   keymap.xml             # the plugin's own keys (VavooPlayerActions, VavooListActions,
-                          #   VavooMainActions), loaded by plugin.py's load_keymap() -
+                          #   VavooMainActions), loaded by ui_base.py's load_keymap() -
                           #   the same on every image
   plugin.png             # plugin icon shown in Enigma2 menu
 
@@ -86,13 +95,34 @@ only ever discovers this one.
 
 ## Architecture
 
-**Plugin process (`plugin.py`)** — runs inside Enigma2's own Python
-interpreter. Defines `Screen` subclasses (Enigma2's UI framework, similar in
-spirit to a single-activity mobile app) for the main menu (`MainVavoo`),
-config (`vavoo_config`), channel/category browsing (`vavoo`), search
-(`VavooSearch`), player overlay (`Playstream2`), and startup (`startVavoo`).
-`Plugins(**kwargs)` at the bottom is the Enigma2 entry point returning
-`PluginDescriptor`s for the menu, plugin-menu, and autostart hooks.
+**Plugin process (`plugin.py` + `ui_*.py`)** — runs inside Enigma2's own
+Python interpreter. The `Screen` subclasses (Enigma2's UI framework, similar
+in spirit to a single-activity mobile app) live in layers, each importing
+only the ones below it: `ui_base` → `ui_pick` → `ui_record` →
+`ui_settings` → `ui_guide` → `ui_player` → `plugin`. plugin.py has the
+main menu (`MainVavoo`), channel/category browsing (`vavoo`),
+`VavooFavourites`, search (`VavooSearch`), startup (`startVavoo`) and
+`Plugins(**kwargs)`, the Enigma2 entry point returning `PluginDescriptor`s
+for the menu, plugin-menu, and autostart hooks (Enigma2 loads
+`Plugins.Extensions.vavoo.plugin`, so that stays its name). Rules:
+- A module never imports a higher one at its top (Python 2 fails on
+  an import cycle there): the three upward calls import inside the
+  function (`vavoo_config` → `VavooFavourites` / `check_configuring`,
+  `play_reminder` → `main`). A new upward need does the same.
+- Imports are relative and explicit (`from .ui_base import (...)`, no
+  `*`); each module has the credit header, its own `print =
+  make_print("PLUGIN")` and the notification fallbacks it uses.
+- Names rebound with `global` at run time (`_session`, `first`,
+  `_update_check_*`, `auto_start_timer`...) live in plugin.py, which no
+  module imports from at its top: a `from x import NAME` copy would
+  keep the old value. Shared state elsewhere is an object changed in
+  place (`cfg`, `ACTIVE`, `NOW_PLAYING`, `RECORDINGS`, `REMINDERS`,
+  caches).
+- Side effects at import run once, in their module: the config
+  declarations, `load_keymap()`, the data migrations
+  (`_move_data_out_of_plugin_folder()` in ui_base,
+  `_move_parental_out_of_settings()` in ui_pick),
+  `vavoo_record.set_logger(print)`.
 
 **Themes (`vavoo_theme.py`)** — the plugin follows the companion Android
 app (`pQu4k3r/vavoo_android`): its `Look` (colours, radii, fonts per
@@ -100,7 +130,7 @@ theme) and `Geo` (widget positions, in this plugin's own FHD skin
 coordinates) tables are carried over and every screen's skin is built
 from them for the box's resolution. Rules:
 - Classic (`cfg.theme == "classic"`) is never built: builders return
-  None and the screen loads its XML file as always. `plugin.py`'s
+  None and the screen loads its XML file as always. `ui_base.py`'s
   `load_screen_skin(kind, classic_file, ...)` returns `(text, themed)`;
   `build_theme_skin()` is all or nothing (if the list skin cannot be
   built, or a referenced picture / theme font is missing, no screen
@@ -134,7 +164,7 @@ from them for the box's resolution. Rules:
   `/channels`, computed once per catalog). "Reload List" =
   `restart_proxy_in_background()` (the catalog is only loaded at start).
 
-**Preview window and player (`plugin.py`)** — as in the app, OK on a
+**Preview window and player (`ui_base.py`'s `NOW_PLAYING`, `ui_player.py`)** — as in the app, OK on a
 channel plays it in the list's preview window and OK again (or BLUE)
 opens `Playstream2` full screen on the same stream. One stream at a
 time, owned by `NOW_PLAYING` (`_NowPlaying`): `preview_play()` /
@@ -363,7 +393,7 @@ since fetching Vavoo's live channel list needs an authenticated
 straight from the country's guide (through the proxy's
 `/epg/<cc>.xml`, "EPG sources" above), no EPGImport involved. Two users, one
 lookup, so they always agree: the Now/Next panel beside the channel
-list (`NowNextPanel` mixin in `plugin.py`, used by `vavoo` and
+list (`NowNextPanel` mixin in `ui_base.py`, used by `vavoo` and
 `VavooFavourites`; setting `cfg.list_epg`) and the player's OK overlay
 (`Playstream2.get_current_epg()`, a thin wrapper). Rules that come from
 the real files (measured, see the comment block above
@@ -424,13 +454,13 @@ Parental / Backup / Monogram / SearchText, all under `ENIGMA_PATH`
   format is read as it is.
 - Parental control: `vavoo_parental.json` (salted SHA-256 PIN, locked
   countries, `adult` / `settings` options, the wrong-PIN pause). Only
-  `plugin.py`'s `ask_pin()` / `_require_parental_pin(...,
+  `ui_pick.py`'s `ask_pin()` / `_require_parental_pin(...,
   channel_name=)` ask for it (the `VavooPin` pad); once entered all is
   open for 15 minutes (`is_unlocked()`, `/proc/uptime`) or until
   `MainVavoo.closex()` calls `relock()`. Adult = `ADULT_RE` on the
   name or category. Never in a backup, never touched by a restore.
 - Backup: `VavooStream-backup-*.json` (`"format": "vavoo_e2_backup"`):
-  `plugin.py`'s `BACKUP_SETTINGS` plus the lists; restore replaces.
+  `ui_settings.py`'s `BACKUP_SETTINGS` plus the lists; restore replaces.
 - `tile_path()` / `lock_path()` draw small PNGs into `/tmp/vavoo_tiles`
   at run time (no Pillow on a box), so they are not theme assets.
 
@@ -446,7 +476,7 @@ with `category=` and the country's `channels=` (no second request).
 `VavooSearch` closes with `(name, url, country, results, index)` -
 callers use `play_search_result()`.
 
-**Programme guide and reminders (`plugin.py`'s `VavooGuide`,
+**Programme guide and reminders (`ui_guide.py`'s `VavooGuide`,
 `_ReminderService`)** — the app's EpgGuideActivity: opened with INFO /
 EPG in `vavoo` / `VavooFavourites` (closes with `("watch", index)`)
 and from the player's options (`over_player=True`, `on_zap`). The grid
@@ -470,9 +500,9 @@ programme to come offers Remind me / Record / Watch; MENU is the app's key menu
 Settings when not over the player). A locked row has no programmes,
 so no actions.
 
-**Recordings and Pause Live TV (`vavoo_record.py`, `plugin.py`'s
-`RECORDINGS`, `Playstream2`, `VavooRecordings`,
-`VavooRecordingPlayer`)** — the app's Recorder / RecordingService /
+**Recordings and Pause Live TV (`vavoo_record.py`, `ui_record.py`'s
+`RECORDINGS`, `VavooRecordings`, `VavooRecordingPlayer`, `ui_player.py`'s
+`Playstream2`)** — the app's Recorder / RecordingService /
 RecordingsActivity / RecordingPlayerActivity / timeshift. Enigma2
 records and timeshifts only DVB, so the plugin does it itself:
 - `vavoo_record.Recorder(source, path, ...)`: a thread runs `ffmpeg
@@ -662,10 +692,10 @@ screen crash or a lookup fail there, never on Python 3):
   be wrapped in `_()`.
 - Config options are declared via `Components.config` (`ConfigSelection`,
   `ConfigYesNo`, `ConfigSubsection`, etc.) — follow the existing pattern in
-  `plugin.py`/`vavoo_config` rather than inventing a separate config
+  `ui_base.py` (`cfg`) / `vavoo_config` rather than inventing a separate config
   mechanism.
 - Skins are resolution-specific XML under `skin/{hd,fhd,wqhd}/`. If you
-  change a screen's layout/widgets in `plugin.py`, check whether the
+  change a screen's layout/widgets in `plugin.py` / `ui_*.py`, check whether the
   corresponding skin XML(s) need matching updates across all three
   resolutions.
 - `defaultListScreen.xml` (and its `_cvs` DreamOS twin) is one skin
@@ -683,7 +713,7 @@ screen crash or a lookup fail there, never on Python 3):
 ## Translations
 
 - Source of truth for translatable strings: Python `_()` calls in
-  `plugin.py` (and other modules) plus strings extracted from skin XML.
+  `plugin.py`, `ui_*.py` (and other modules) plus strings extracted from skin XML.
 - `update_translations.py` (in the plugin dir) is the per-plugin updater:
   extracts strings, updates `locale/<lang>/LC_MESSAGES/vavoo.po` and the
   master `.pot`, auto-translates missing entries (with an on-disk cache),
@@ -804,7 +834,7 @@ equivalent) — don't restructure that path without updating all three.
   `Belfagor2005/vavoo`); work on the assigned feature branch and push there.
 - Run `tests/run_tests.py` (Python 3 and 2.7) before committing. Beyond
   the tests, prioritize: (a) not breaking Python 2/3 import
-  compatibility, (b) keeping `plugin.py` Screens and their skin XML in
+  compatibility, (b) keeping the Screens and their skin XML in
   sync, (c) running `ruff check .` /
   `flake8 --select=E9,F63,F7,F82` mentally or via the CLI (Python itself is
   available in this environment even though `enigma`/`Components.*` are
