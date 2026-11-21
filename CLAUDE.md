@@ -8,8 +8,9 @@ Enigma2 set-top-box plugin ("Vavoo Stream Live") that streams live TV
 channels from Vavoo/Kool.to. It is **not** a standard installable Python
 package — it's a filesystem tree that gets copied verbatim onto an Enigma2
 receiver (a Linux-based satellite/IPTV STB running the Enigma2 middleware,
-e.g. OpenATV, OpenPLi, Dreambox OS). There is no local dev server, test
-suite, or way to "run" this repo outside actual Enigma2 hardware/emulation.
+e.g. OpenATV, OpenPLi, Dreambox OS). There is no local dev server or way
+to "run" it outside actual Enigma2 hardware/emulation - but `tests/` runs
+the real plugin code against a faked Enigma2 (see "Tests" below).
 
 Current version: see `__version__` in
 `usr/lib/enigma2/python/Plugins/Extensions/vavoo/__init__.py` (also mirrored
@@ -73,6 +74,7 @@ enigma2-plugin-extensions-vavoo.bb   # Yocto/OpenEmbedded bitbake recipe (altern
 installer.sh              # curl|bash-style installer: detects OS/Python version, installs deps, deploys plugin, restarts box
 update_all_plugins.py     # repo-root dev script: finds every plugin's locale dir and runs its update_translations.py
 .github/workflows/         # CI (see below)
+tests/                     # the tests: Enigma2 faked, the real plugin code run (see "Tests")
 screen/                    # README screenshots: <theme>_<screen>.jpg = the Full HD skins drawn
                           #   with sample data (README links them as /screen/..., so the plugin
                           #   folder's identical readme.md works too); screen1-9 = old (1.61)
@@ -649,9 +651,11 @@ screen crash or a lookup fail there, never on Python 3):
 - UI code imports from Enigma2 framework packages that only exist on real
   hardware/emulation (`enigma`, `Components.*`, `Screens.*` is implied via
   `Screen`, `Tools.Directories`, `twisted.internet.reactor`). These cannot
-  be imported or unit-tested on a normal dev machine — there is no mock
-  layer in this repo. Static review (read the code, run linters) is the
-  practical verification method available in this environment.
+  be imported on a normal dev machine as they are: `tests/e2stub.py`
+  fakes every one of them (any module / class / constant made up on
+  demand), so the tests run the real plugin code. Static review (read the
+  code, run linters) is still needed for what a fake cannot show (the
+  look on a real box, real streams, the image's own behaviour).
 - Translatable strings use gettext `_()`, domain `PluginLanguageDomain =
   "vavoo"`, path `Extensions/vavoo/locale`. New user-facing strings should
   be wrapped in `_()`.
@@ -714,6 +718,46 @@ Filenames don't always match their content — check behavior, not just the name
 - `skin_consistency.yml` — runs `check_skin_consistency.py` on push/PR,
   failing the build if a widget's `name=` is missing from one
   resolution's skin XML but present in another.
+- `tests.yml` — runs `tests/run_tests.py` on push to `develop` / `main`
+  and on PRs: Python 3.10 and 3.13 (with ffmpeg) and Python 2.7 (the
+  `python:2.7` container, the Python 2 list).
+
+## Tests (`tests/`)
+
+Every test is a plain script run in its own process (exit 1 when a
+check fails): `python3 tests/run_tests.py` (all, about 2.5 min;
+`--quick` without the ffmpeg ones), `python2.7 tests/run_tests.py` (the
+`PYTHON2` list in it), or one file (`python3 tests/test_guide.py`).
+Needs `six` and `requests`; the recording tests need `ffmpeg` /
+`ffprobe` (skipped without them).
+- `e2env.py`: the plugin package on `sys.path`, Enigma2 faked
+  (`e2stub.py`), a throw-away data folder (`vavoo_store.set_paths`),
+  the anonymous statistics off (`STATS_DISABLE_FILE` pointed at a file
+  that exists - building `MainVavoo` would send the real ping), and
+  `load_plugin()`, which returns a **view** of the screen modules:
+  `plugin.X` finds X in plugin.py or a `ui_*.py`, `plugin.X = fake`
+  replaces it in every one of them that has it (`patch()`). Tests never
+  `import vavoo.plugin` themselves, so moving a function between those
+  files breaks no test. Source-text checks use `plugin_source()` /
+  `source_of()`.
+- `harness.py` (most screen tests): fake `Label` / `ActionMap` /
+  `eTimer` / `MultiContentEntry*` put into Enigma2's faked modules before
+  the import, fake lists, `make(cls, ...)` (a screen built by its real
+  `__init__`, widgets in a dict, Enigma2's `onLayoutFinish` rule
+  checked), `run_layout()`, `Session` (records what opens), `MENUS`,
+  `NOTES`, `check()` / `finish()`.
+- `test_every_key.py`: every action of every screen (Classic and a
+  theme, lists filled and empty), every menu entry and every dialog's
+  answers, from a fresh screen each time; on Python 2 also "widgets only
+  get bytes". A new screen goes into its `SCREENS`.
+- `test_keys_lib.py` simulates Enigma2's key dispatch with the images'
+  own keymaps (`data/keymaps/`, GPL, copies - see its README).
+- `fakehls.py` serves a fake live HLS channel (segments made once with
+  ffmpeg in the temp folder) for the recording / pause tests.
+- Two checks need the real fr / pl guides (14 MB, not committed):
+  `tests/epgdl/` or `$VAVOO_EPG_SAMPLES`; without them they are skipped.
+- A change in behaviour → change or add the test that covers it, and run
+  the whole suite on both Pythons before committing.
 
 There's no `requirements.txt`, `pyproject.toml`, or lint config file
 (ruff/flake8 run with defaults) — don't add one speculatively.
@@ -757,8 +801,8 @@ equivalent) — don't restructure that path without updating all three.
 
 - This is a single-branch-per-fork style repo (upstream:
   `Belfagor2005/vavoo`); work on the assigned feature branch and push there.
-- Because there's no automated test suite or way to exercise Enigma2 UI
-  code locally, prioritize: (a) not breaking Python 2/3 import
+- Run `tests/run_tests.py` (Python 3 and 2.7) before committing. Beyond
+  the tests, prioritize: (a) not breaking Python 2/3 import
   compatibility, (b) keeping `plugin.py` Screens and their skin XML in
   sync, (c) running `ruff check .` /
   `flake8 --select=E9,F63,F7,F82` mentally or via the CLI (Python itself is
