@@ -223,7 +223,8 @@ PAUSE did nothing). So:
 **Local proxy (`vavoo_proxy.py`)** — a long-running background HTTP server
 started as an in-process daemon thread (`threading.Thread(target=
 start_proxy)`, spawned from `run_proxy_in_background()`), monitored/restarted
-by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
+by `plugin.py` (`MainVavoo`'s watchdog: a port check every 60 s), listening
+on `127.0.0.1:4323`. It:
 - Obtains/renews the Vavoo auth signature/token (`TOKEN_ADDON_SIG`, renewed
   every ~8-9 min) so bouquets never hit Vavoo's 10-minute anonymous block.
 - Resolves `/vavoo?channel=<id>` to a real stream URL via 302 redirect.
@@ -280,8 +281,8 @@ by `plugin.py` and `ProxyHealthMonitor`, listening on `127.0.0.1:4323`. It:
 per-category/hierarchical) that reference the proxy, matches each
 channel to its country's EPG feed (`find_match()`, below) for the
 EPGImport channels file, and can reorganize bouquet position
-(top/bottom of channel list). The match result's `rytec_id` key is
-just the EPG id (an old name kept).
+(top/bottom of channel list). The match result's `feed_id` key is the
+channel's id in the country's EPG feed.
 
 **EPG sources (`vUtils.py`, `vavoo_proxy.py`'s `_serve_epg()`)** — as
 the Android app (`Epg.kt`): a country's programmes come from its daily

@@ -71,7 +71,7 @@ CASES = [
     ("/playlist.m3u?country=%00", (200, 403, 404)), ("/catalog", (200,)), ("/countries", (200,)),
     ("/status", (200,)), ("/health", (200,)), ("/file", (404,)), ("/file?id=zzz", (404,)),
     ("/file?id=../../etc/passwd", (404,)), ("/file?path=/etc/passwd", (404,)),
-    ("/stream", (400,)), ("/stream?ref=garbage", (404,)),
+    ("/stream", (404,)), ("/stream?ref=garbage", (404,)),   # (gone: never worked)
     ("/epg/.xml", (302, 200)), ("/epg/..%2f..%2fetc%2fpasswd.xml", (302,)),
     ("/epg/../../etc/passwd.xml", (302,)),
 ]

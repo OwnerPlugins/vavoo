@@ -28,7 +28,6 @@ g = vu._parse_epg_guide(io.BytesIO(xml), "it", NOW)
 entries = g.programmes["RAI1.it"]
 check(entries[0][2] == "P-3" and entries[-1][2] == "P23",
       "kept from 3 h before load to 24 h after: %s .. %s" % (entries[0][2], entries[-1][2]))
-check(g.horizon() == NOW + 24 * 3600, "horizon = load + 24 h")
 win = g.between("RAI1.it", NOW + 1800, NOW + 1800 + 3 * 3600)
 check([e[2] for e in win] == ["P0", "P1", "P2", "P3"], "between(): what is on in the window %r" % [e[2] for e in win])
 check(g.now_next("RAI1.it", NOW + 60)[0][2] == "P0", "now_next() unchanged with the past kept")
@@ -58,7 +57,6 @@ check(st_ == "ok" and [e[2] for e in p_] == ["P0", "P1"] and seen["epg_id"] == "
       "lookup: resolves (passing the catalog's guide id) and answers")
 vu._resolve_guide_channel = real_resolve
 vu.load_epg_guide = real_load
-check(vu.guide_horizon("it") == g.horizon() and vu.guide_horizon("xx") is None, "guide_horizon()")
 del vu._epg_guide_cache["it"]
 
 print("2. The guide skin and measures (the app's)")

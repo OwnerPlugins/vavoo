@@ -17,8 +17,6 @@ import threading
 # Lock to serialize exports (prevents concurrent executions)
 export_lock = threading.Lock()
 
-EXPORT_IN_PROGRESS = False
-PROXY_ACTIVE = False
 PORT = 4323
 PLUGIN_ID = 'vavoo'
 PLUGIN_ROOT = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format(PLUGIN_ID))
@@ -26,10 +24,8 @@ PLUGIN_ROOT = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format(PLUGIN_ID))
 PROXY_HOST = "127.0.0.1"
 PROXY_BASE_URL = "http://{}:{}".format(PROXY_HOST, PORT)
 PROXY_STATUS_URL = PROXY_BASE_URL + "/status"
-PROXY_HEALTH_URL = PROXY_BASE_URL + "/health"
 PROXY_COUNTRIES_URL = PROXY_BASE_URL + "/countries"
 PROXY_REFRESH_URL = PROXY_BASE_URL + "/refresh_token"
-PROXY_SHUTDOWN_URL = PROXY_BASE_URL + "/shutdown"
 
 HOST_MAIN = 'https://raw.githubusercontent.com/Belfagor2005/vavoo/main'
 HOST_GIT = "https://raw.githubusercontent.com/Belfagor2005"
@@ -121,7 +117,6 @@ def get_enigma2_path():
 ENIGMA_PATH = get_enigma2_path()
 CACHE_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_cache.json")
 UNMATCHED_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_unmatched_cache.json")
-SREF_MAP_FILE = os.path.join(ENIGMA_PATH, "vavoo_sref_map.json")
 # The stream source the user picked (YELLOW in the player) for each
 # multi-source channel: {"grp:<country>:<key>": "<catalog id>"} - see
 # vavoo_proxy.py's VavooProxy.set_group_source().

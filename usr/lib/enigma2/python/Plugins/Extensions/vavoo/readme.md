@@ -513,7 +513,6 @@ The proxy provides these endpoints:
   one of the group's sources and stays on it. Takes no other parameters
 - `/group_sources?group=GroupID` – List a grouped channel's individual
   sources and which one is in use (read-only)
-- `/stream?ref=ServiceReference` – Resolve by Enigma2 service reference (via `vavoo_sref_map.json`) and proxy the stream content directly
 - `/playlist.m3u?country=CountryName&key=AccessKey` – Live, always-current M3U playlist for external players (VLC/Kodi/TiviMate); `country` and `key` are both optional (key only required if "Playlist Access Key" is set in Config)
 - `/catalog` – Full channel catalog
 - `/countries` – List all countries
@@ -581,8 +580,6 @@ The proxy provides these endpoints:
   - Auto-converts old format entries
   - Persistent across plugin restarts
   - Used for future matching improvements
-
-- **SREF Map**: `/etc/enigma2/vavoo_sref_map.json` – Maps service references to channel IDs for the proxy
 
 - **Favourites**: `/etc/enigma2/vavoo_favourites.json` – In your order, each with its folder (missing = in none):
   ```json

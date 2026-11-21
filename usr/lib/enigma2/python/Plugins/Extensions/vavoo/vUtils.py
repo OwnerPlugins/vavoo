@@ -1,11 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
-import base64
 import calendar
 import glob
 import hashlib
-import io
 try:
     import six
 except ImportError:
@@ -59,7 +57,6 @@ from . import (
     PORT,
     PLUGIN_ROOT,
     PROXY_HOST,
-    PROXY_BASE_URL,
     PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
     PICON_CACHE_DIR,
@@ -505,30 +502,6 @@ def _convert_entity(m):
     return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))
 
 
-def b64decoder(data):
-    """Robust base64 decoding with padding correction"""
-    if not data:
-        return ""
-
-    try:
-        data = ensure_str(data, errors='ignore').strip()
-        pad = len(data) % 4
-        if pad == 1:
-            return ""
-        if pad:
-            data += "=" * (4 - pad)
-
-        decoded = base64.b64decode(data.encode('ascii'))
-        try:
-            return decoded.decode('utf-8')
-        except UnicodeDecodeError:
-            return decoded
-
-    except Exception as e:
-        print("Base64 decoding error: %s" % e)
-        return ""
-
-
 def _urlopen_unverified(request, timeout):
     """urlopen() the way getUrl() has always done it (certificate
     checks off), on whichever Python this box runs. Shared by getUrl()
@@ -847,34 +820,6 @@ def get_external_ip():
     return None
 
 
-def set_cache(key, data, timeout):
-    file_path = join(PLUGIN_PATH, key + '.json')
-    try:
-        if not isinstance(data, dict):
-            data = {"value": data}
-        # _is_cache_valid() requires both of these to consider a cache
-        # entry valid - previously never written here, so timeout had no
-        # effect and get_cache() would always treat this entry as expired.
-        data['sigValidUntil'] = int(time()) + timeout
-        data['ip'] = get_external_ip()
-        temp_path = file_path + ".tmp"
-        if PY2:
-            converted_data = convert_to_unicode(data)
-            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
-                dump(
-                    converted_data,
-                    cache_file,
-                    indent=4,
-                    ensure_ascii=False)
-        else:
-            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
-                dump(data, cache_file, indent=4, ensure_ascii=False)
-        rename(temp_path, file_path)
-    except Exception as e:
-        print("Error saving cache:", e)
-        trace_error()
-
-
 def convert_to_unicode(data):
     if isinstance(data, dict):
         return {convert_to_unicode(key): convert_to_unicode(value)
@@ -893,19 +838,6 @@ def convert_to_unicode(data):
 # ============================================================================
 # FUNCTIONS FOR VAVOO PROXY
 # ============================================================================
-
-def get_proxy_catalog_url():
-    """
-    Get the proxy catalog URL
-    """
-    return PROXY_BASE_URL + "/catalog"
-
-
-def get_proxy_playlist_url():
-    """
-    Get the proxy playlist URL
-    """
-    return PROXY_BASE_URL + "/playlist.m3u"
 
 
 def get_proxy_status():
@@ -968,34 +900,6 @@ def is_proxy_ready(timeout=2):
 
 
 # ===================================
-
-def fetch_vec_list():
-    """Fetch vector list from GitHub"""
-    try:
-        url = "{}/data.json".format(HOST_MAIN)
-
-        if requests is not None:
-            # Use requests if available
-            response = requests.get(url, timeout=10)
-            vec_list = response.json()
-        else:
-            # Fallback to urllib
-            req = Request(url)
-            response = urlopen(req, timeout=10)
-            data = response.read()
-            if isinstance(data, bytes):
-                data = data.decode('utf-8', 'ignore')
-            vec_list = loads(data)
-
-        set_cache("vec_list", vec_list, 3600)
-        print(
-            "[Fetch] Vector list loaded: {} entries".format(
-                len(vec_list) if vec_list else 0))
-        return vec_list
-
-    except Exception as e:
-        print("[Fetch] Vector list error: {}".format(str(e)))
-        return None
 
 
 def _version_tuple(version_str):
@@ -1061,14 +965,6 @@ def remove_parentheses(text):
         ensure_str(
             text,
             errors='ignore')).strip()
-
-
-def purge(directory, pattern):
-    """Delete files matching pattern in directory"""
-    for f in listdir(directory):
-        file_path = join(directory, f)
-        if isfile(file_path) and search(pattern, f):
-            remove(file_path)
 
 
 """
@@ -1271,26 +1167,6 @@ def decodeHtml(text):
         text = text.replace(entity, char)
 
     return text.strip()
-
-
-def remove_line(filename, pattern):
-    """Remove lines containing pattern from file"""
-    if not isfile(filename):
-        return
-    with open(filename, 'r') as f:
-        lines = [line for line in f if pattern not in line]
-    with open(filename, 'w') as f:
-        f.writelines(lines)
-
-
-def getserviceinfo(service_ref):
-    """Get service name and URL from service reference"""
-    try:
-        from ServiceReference import ServiceReference
-        ref = ServiceReference(service_ref)
-        return ref.getServiceName(), ref.getPath()
-    except Exception:
-        return None, None
 
 
 # ============================================================================
@@ -1813,36 +1689,6 @@ def get_country_code(country_name):
     return ""
 
 
-def cleanup_flag_cache(max_age_days=7):
-    """
-    Remove old cached flag files from cache directory.
-    Only files older than max_age_days are deleted.
-    """
-    cache_dir = FLAG_CACHE_DIR
-
-    if not exists(cache_dir):
-        return
-
-    now = time()
-    max_age = max_age_days * 86400
-
-    try:
-        for filename in listdir(cache_dir):
-            filepath = join(cache_dir, filename)
-            if isfile(filepath):
-                try:
-                    file_age = now - getmtime(filepath)
-                    if file_age > max_age:
-                        unlink(filepath)
-                        print("Removed old flag: %s" % filename)
-                except Exception as e:
-                    print(
-                        "Error removing %s: %s" %
-                        (filename, str(e)))
-    except Exception as e:
-        print("Error cleaning flag cache: %s" % str(e))
-
-
 def cleanup_old_temp_files(max_age_hours=1):
     """
     Remove old temporary files in /tmp matching specific patterns.
@@ -1895,46 +1741,6 @@ def cleanup_old_temp_files(max_age_hours=1):
         return 0
 
 
-def preload_country_flags(country_list, cache_dir=FLAG_CACHE_DIR):
-    """
-    Preload flags for a list of countries.
-    Each chunk of countries is downloaded in a separate daemon thread.
-    Compatible with Python 2 and 3.
-    """
-
-    def download_flags_worker(countries):
-        for country in countries:
-            try:
-                success, _ = download_flag_online(country, cache_dir)
-                if success:
-                    print("Preloaded flag for: %s" % country)
-            except Exception as e:
-                print(
-                    "Error preloading flag for %s: %s" %
-                    (country, str(e)))
-
-    # Split list into chunks to avoid overloading
-    chunk_size = 10
-    threads = []
-
-    if not country_list:
-        return threads
-
-    total = len(country_list)
-
-    for i in range(0, total, chunk_size):
-        chunk = country_list[i:i + chunk_size]
-        t = threading.Thread(
-            target=download_flags_worker,
-            args=(chunk,)
-        )
-        t.setDaemon(True)
-        t.start()
-        threads.append(t)
-
-    return threads
-
-
 # ==================== START EPG ====================
 _epg_matcher = None
 _epg_matcher_lock = threading.Lock()
@@ -1957,14 +1763,6 @@ def get_epg_matcher(similarity_threshold=None):
                 return _epg_matcher
     _epg_matcher.similarity_threshold = similarity_threshold
     return _epg_matcher
-
-
-def calculate_similarity(a, b):
-    """
-    Calculate similarity ratio between two strings using SequenceMatcher.
-    Returns a float between 0.0 and 1.0.
-    """
-    return SequenceMatcher(None, a, b).ratio()
 
 
 # get_country_code() returns real ISO 3166-1 codes (needed for flag
@@ -2726,7 +2524,7 @@ def update_complete_cache(
         for m in matched_channels:
             key = matcher._normalize_key(m['name'], country_code)
             complete_cache[key] = {
-                'id': m['rytec_id'],
+                'id': m['feed_id'],
                 'sref': ensure_sref_trailing_colon(m['dvb_ref']),
                 'name': m['name'],
                 'country': country_code,
@@ -2740,7 +2538,7 @@ def update_complete_cache(
                 'source': m.get('source', 'live'),
                 'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
             }
-            print("[Cache] Added matched: %s -> %s" % (key, m['rytec_id']))
+            print("[Cache] Added matched: %s -> %s" % (key, m['feed_id']))
 
         # Save main cache
         complete_cache = _prune_cache_if_needed(complete_cache)
@@ -2883,18 +2681,6 @@ def _load_unmatched_cache_locked():
                 read_error)
             data = {}
     _unmatched_cache_data = data
-
-
-def invalidate_unmatched_cache():
-    """Force the next save_unmatched()/flush_unmatched_cache() call to
-    reload from disk. Call this after anything writes UNMATCHED_FILE
-    directly instead of through save_unmatched() (e.g. a cache-repair
-    routine), so a later flush doesn't overwrite that write with a
-    stale in-memory copy."""
-    global _unmatched_cache_data, _unmatched_cache_dirty
-    with _unmatched_lock:
-        _unmatched_cache_data = None
-        _unmatched_cache_dirty = False
 
 
 def flush_unmatched_cache():
@@ -3604,10 +3390,6 @@ class EpgGuide(object):
                 current = entry
         return current, following
 
-    def horizon(self):
-        """The end of the hours this guide holds."""
-        return self.loaded_at + _EPG_GUIDE_AHEAD
-
     def between(self, key, start, stop):
         """The programmes of one id that are on at any moment between
         `start` and `stop` (the guide grid's window), by start time."""
@@ -4065,12 +3847,6 @@ def peek_programmes(channel_name, country_code, start, stop):
         return "no_match", []
     programmes = guide.between(key, start, stop)
     return ("ok" if programmes else "no_programme"), programmes
-
-
-def guide_horizon(country_code):
-    """The end of the hours a loaded guide holds, or None."""
-    guide = peek_epg_guide(country_code) if country_code else None
-    return guide.horizon() if guide is not None else None
 
 
 def _build_epg_channels_xml(unique):

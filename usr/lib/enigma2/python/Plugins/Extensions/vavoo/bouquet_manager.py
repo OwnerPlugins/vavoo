@@ -544,8 +544,8 @@ def convert_bouquet_sync(
             # channel ref without an embedded URL (see the comment in
             # create_bouquet_file() above where full_service_ref is
             # built).
-            epg_entries = [(m['rytec_id'], m['full_service_ref'], m['name'])
-                           for m in matched if m['rytec_id']]
+            epg_entries = [(m['feed_id'], m['full_service_ref'], m['name'])
+                           for m in matched if m['feed_id']]
             if epg_entries:
                 try:
                     write_epg_mapping_file(epg_entries, country_code)
@@ -773,7 +773,7 @@ def process_epg_matching_background(
                     "original_name in ch: {}".format(
                         repr(ch['original_name'])))
 
-                rytec_id, dvb_ref, match_source = matcher.find_match(
+                feed_id, dvb_ref, match_source = matcher.find_match(
                     ch['original_name'], country_code, servicetype,
                     channel_id=ch['channel_id'],
                     allow_curated_promotion=True,
@@ -798,7 +798,7 @@ def process_epg_matching_background(
                         'channel_id': ch['channel_id'],
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
-                        'rytec_id': rytec_id,
+                        'feed_id': feed_id,
                         'original_url': ch['url'],
                         'source': match_source
                     })
@@ -899,8 +899,8 @@ def process_epg_matching_background(
             # full_service_ref (dvb_ref + stream URL) - see the comment
             # where it's built above; a bare dvb_ref gets silently
             # dropped by EPGImport's channelFilter().
-            epg_entries = [(m['rytec_id'], m['full_service_ref'], m['name'])
-                           for m in matched if m['rytec_id']]
+            epg_entries = [(m['feed_id'], m['full_service_ref'], m['name'])
+                           for m in matched if m['feed_id']]
             if epg_entries:
                 write_epg_mapping_file(epg_entries, country_code)
                 print(
@@ -1182,7 +1182,7 @@ def create_bouquet_file(
     """
     Create bouquet file, performing matching once.
     Returns (channel_count, bouquet_filename, matched_channels, unmatched_channels)
-    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'rytec_id', 'source'
+    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'feed_id', 'source'
     and unmatched_channels is a list of dicts with 'name', 'channel_id'.
     """
     try:
@@ -1198,7 +1198,7 @@ def create_bouquet_file(
         # Store items for background processing
         # background_items = []
         # each item: {'name': name, 'channel_id': id, 'dvb_ref': ref,
-        # 'rytec_id': rytec_id}
+        # 'feed_id': feed_id}
         matched = []
         unmatched = []    # each item: {'name': name, 'channel_id': id}
         tv_lines = ["#NAME %s" % _strip_control_chars(name)]
@@ -1229,7 +1229,7 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                rytec_id, dvb_ref, match_source = matcher.find_match(
+                feed_id, dvb_ref, match_source = matcher.find_match(
                     channel_name, country_code, servicetype,
                     channel_id=channel_id, allow_curated_promotion=True,
                     epg_guide_id=channel.get('epg_id'))
@@ -1245,7 +1245,7 @@ def create_bouquet_file(
                         'channel_id': channel_id,
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
-                        'rytec_id': rytec_id,
+                        'feed_id': feed_id,
                         'source': match_source
                     })
                 else:

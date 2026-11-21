@@ -5,34 +5,14 @@ from __future__ import absolute_import, print_function
 import codecs
 import os
 import re
-import ssl
 import time
 import threading
 from os import listdir, unlink, remove
 import shutil
 from os.path import basename, dirname, exists as file_exists, join, isfile, getsize
 from json import loads
-from sys import version_info
 from enigma import eDVBDB
 from twisted.internet import reactor
-
-try:
-    import requests
-except Exception:
-    requests = None
-
-try:
-    from requests.adapters import HTTPAdapter
-except Exception:
-    HTTPAdapter = None
-
-try:
-    from urllib3.util.retry import Retry
-except Exception:
-    try:
-        from requests.packages.urllib3.util.retry import Retry
-    except Exception:
-        Retry = None
 
 try:
     from Components.AVSwitch import AVSwitch
@@ -92,7 +72,7 @@ from Screens.InfoBarGenerics import (
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.VirtualKeyBoard import VirtualKeyBoard
-from Tools.Directories import SCOPE_PLUGINS, SCOPE_CONFIG, resolveFilename
+from Tools.Directories import SCOPE_PLUGINS, resolveFilename
 from Tools.NumericalTextInput import NumericalTextInput
 from Plugins.Plugin import PluginDescriptor
 
@@ -209,12 +189,6 @@ try:
 except NameError:
     text_type = str
     binary_type = bytes
-
-if version_info >= (2, 7, 9):
-    try:
-        ssl_context = ssl._create_unverified_context()
-    except BaseException:
-        ssl_context = None
 
 
 def to_text(value, encoding="utf-8", errors="ignore"):
@@ -420,7 +394,6 @@ def list_keys(actions):
 
 
 ENIGMA_PATH = get_enigma2_path()
-CONFIG_FILE = resolveFilename(SCOPE_CONFIG, "settings")
 
 _session = None
 # Guards autostart() itself against re-scheduling delayed_boot_tasks() on
@@ -737,28 +710,6 @@ PROXY_WATCHDOG_INTERVAL_MS = 60000
 # How many times vavoo.cat() asks the proxy for a country's channel
 # list before reporting failure - see its own docstring.
 CHANNEL_FETCH_ATTEMPTS = 3
-
-
-def normalize_language_code(language):
-    """Normalize Enigma2 language identifiers to a comparable short code."""
-    if not language:
-        return "en"
-
-    language = to_text(language).strip().lower()
-    if "_" in language:
-        language = language.split("_", 1)[0]
-    elif "-" in language:
-        language = language.split("-", 1)[0]
-
-    return language or "en"
-
-
-try:
-    from Components.config import config
-    lng = normalize_language_code(config.osd.language.value)
-except BaseException:
-    lng = 'en'
-    pass
 
 
 # ---------------------------------------------------------------------
@@ -3937,23 +3888,12 @@ class MainVavoo(Screen, PreviewWindow):
     def _check_and_update_proxy_status(self):
         """Check and update the proxy status periodically"""
         try:
-            if not is_proxy_ready(timeout=2):
-                self.proxy_needs_attention = True
-                print("[MainVavoo] Proxy needs attention")
-            else:
-                self.proxy_needs_attention = False
-
             self._update_proxy_status_display()
-            # self.update_proxy_status_display()
         except Exception as e:
             print(
                 "[MainVavoo][_check_and_update_proxy_status] Error in proxy monitor: " +
                 str(e))
             self['proxy_status'].setText(_("✗ Proxy Error"))
-
-    def update_proxy_status(self):
-        """Public method to update proxy status (can be called manually)"""
-        self._update_proxy_status_display()
 
     def _update_proxy_status_display(self):
         """Internal method to update proxy status display"""
@@ -4128,15 +4068,6 @@ class MainVavoo(Screen, PreviewWindow):
             self._update_proxy_status_display()
         else:
             reactor.callLater(0.5, lambda: self._wait_for_proxy(attempts + 1))
-
-    def _restart_proxy(self):
-        """Restart the proxy without blocking the GUI - stopping the
-        old one, waiting for its port and starting the new one all
-        happen in vavoo_proxy's own helper thread."""
-        try:
-            restart_proxy_in_background()
-        except Exception as e:
-            print("[Restart] Error: {0}".format(e))
 
     def cat(self):
         """
@@ -8302,12 +8233,6 @@ def ask_new_pin(session, on_done):
                 quick_notify(_("The two PINs differ - not changed"), 3)
         session.openWithCallback(check, VavooPin, _("The same PIN again"), 4)
     session.openWithCallback(second, VavooPin, _("New PIN (4 digits)"), 4)
-
-
-def _is_country_locked(country_name):
-    """True if `country_name` is a locked country and a PIN is set
-    (vavoo_store)."""
-    return vavoo_store.is_country_locked(country_name)
 
 
 def _require_parental_pin(session, screen, country_name, on_success,

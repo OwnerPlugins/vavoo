@@ -21,7 +21,6 @@ try:
     import urllib3
 except ImportError:
     urllib3 = None
-import atexit
 import os
 import re
 from json import loads, load, dumps
@@ -35,7 +34,6 @@ from . import (
     GEIL_LIVE_PATH,
     group_separators,
     SOURCE_PREFS_FILE,
-    SREF_MAP_FILE,
     __version__
 )
 
@@ -52,7 +50,6 @@ from .vUtils import (
     epg_daily_urls,
     get_external_ip,
     is_proxy_running,
-    log_exception,
     make_print,
     mark_epg_daily_unusable,
     remove_parentheses,
@@ -76,9 +73,9 @@ print = make_print("PROXY")
 
 
 try:
-    from urllib.parse import unquote, quote, urlparse, parse_qs
+    from urllib.parse import quote, urlparse, parse_qs
 except ImportError:
-    from urllib import unquote, quote
+    from urllib import quote
     from urlparse import urlparse, parse_qs
 
 # Python 2/3 compatibility for exception names used in handlers
@@ -389,41 +386,7 @@ Example Response:
 
 
 ====================================================================
-7. /stream?ref=ServiceReference - Direct Stream Proxy
-====================================================================
-
-URL:
-    http://127.0.0.1:4323/stream?ref=1%3A0%3A1%3A...
-
-Description:
-    Streams MPEG-TS content directly through the proxy
-    instead of redirecting the client.
-
-Features:
-    - upstream buffering
-    - keep-alive
-    - timeout monitoring
-    - chunked streaming
-    - disabled caching
-
-Workflow:
-    1. Decode service reference
-    2. Map reference to channel ID
-    3. Resolve upstream stream
-    4. Proxy TS stream to client
-
-Recommended for:
-    - Enigma2 service references
-    - local TS proxying
-    - IPTV middleware
-    - transcoding pipelines
-
-Example:
-    ffplay "http://127.0.0.1:4323/stream?ref=1%3A0%3A1%3A..."
-
-
-====================================================================
-8. /refresh_token - Refresh addonSig
+7. /refresh_token - Refresh addonSig
 ====================================================================
 
 URL:
@@ -447,7 +410,7 @@ Example Response:
 
 
 ====================================================================
-9. /epg/<country>.xml - EPG Redirect
+8. /epg/<country>.xml - EPG Redirect
 ====================================================================
 
 URL:
@@ -469,7 +432,7 @@ Example:
 
 
 ====================================================================
-10. /shutdown - Graceful Shutdown
+9. /shutdown - Graceful Shutdown
 ====================================================================
 
 URL:
@@ -523,21 +486,19 @@ TOKEN_REFRESH_AGE = 480
 # and a failed request is not repeated at once.
 OWN_SIG_FORCE_MIN = 30
 OWN_SIG_RETRY = 20
-GEOIP_URL = "https://www.vavoo.tv/geoip"
 PING_URL = "https://www.vavoo.tv/api/app/ping"
 PING_URL2 = "https://www.vypn.net/api/app/ping"
 # Real VYPN app identity (package/version from its APK metadata),
 # matching a confirmed-working ping payload for this endpoint.
 VYPN_PACKAGE = "net.vypn.app"
 VYPN_VERSION = "1.4.1"
-PID_FILE = "/tmp/vavoo_proxy.pid"
 BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
 # Primary + mirror. Some regions get HTTP 451 from the primary.
 
 # NOTE: do NOT set "Connection": "close" here - self.session.headers is
 # applied to every request through this session (catalog pages, resolve
-# calls, and the /stream handler's upstream GET), so it would force a
+# calls, the file and EPG fetches), so it would force a
 # fresh TCP/TLS handshake on all of them instead of reusing a pooled
 # connection from the HTTPAdapter configured below.
 HEADERS = {
@@ -891,44 +852,6 @@ def _rewrite_addon_sig_ip(sig, client_ip):
         return sig
 
 
-def is_proxy_already_running():
-    """Check if another proxy instance is running via PID file"""
-    try:
-        with open(PID_FILE, 'r') as f:
-            pid = int(f.read().strip())
-            # Check if process exists
-            os.kill(pid, 0)
-            return True
-    except (IOError, OSError, ValueError):
-        return False
-    except Exception as e:
-        print(str(e))
-        log_exception("is_proxy_already_running error", area="PROXY")
-        return False
-
-
-def write_pid_file():
-    """Write current PID to file"""
-    try:
-        with open(PID_FILE, 'w') as f:
-            f.write(str(os.getpid()))
-        return True
-    except Exception:
-        return False
-
-
-def remove_pid_file():
-    """Remove PID file on exit"""
-    try:
-        if os.path.exists(PID_FILE):
-            os.unlink(PID_FILE)
-    except Exception:
-        pass
-
-
-atexit.register(remove_pid_file)
-
-
 class VavooProxy(object):
     def __init__(self):
         self.session = requests.Session()
@@ -978,7 +901,6 @@ class VavooProxy(object):
         self.external_ip = None
         self.initialized = False
         self.last_heartbeat = time.time()
-        self.local_ip = None
         # channel_url -> {"url": resolved stream address, "ts": when
         # it was last asked for} - see resolve_with_retry().
         self.resolve_cache = {}
@@ -1443,7 +1365,6 @@ class VavooProxy(object):
                 if country and country != "default":
                     countries.add(country)
             self.countries_list = sorted(list(countries))
-            self.local_ip = self.get_local_ip(force_refresh=True)
             self.initialized = True
 
             # Analysis
@@ -1848,11 +1769,7 @@ class VavooProxy(object):
 
             return None
 
-    def resolve_with_retry(
-            self,
-            channel_url,
-            max_retries=2,
-            force_refresh=False):
+    def resolve_with_retry(self, channel_url, max_retries=2):
         """Resolve a channel's stream address, kept for as long as it
         keeps being asked for.
 
@@ -1871,18 +1788,14 @@ class VavooProxy(object):
 
         A stream that actually failed is dropped explicitly instead -
         see invalidate_resolved() and report_stream_failure().
-
-        force_refresh=True skips the cache read (still updates it with
-        the fresh result below).
         """
         if not channel_url:
             print(" No channel URL provided")
             return None
 
-        if not force_refresh:
-            cached_url = self._get_cached_url(channel_url)
-            if cached_url:
-                return cached_url
+        cached_url = self._get_cached_url(channel_url)
+        if cached_url:
+            return cached_url
 
         # Dedup concurrent resolves of the same channel_url on a cache
         # miss/expiry - two requests for the same popular channel (e.g.
@@ -2487,7 +2400,7 @@ class VavooProxy(object):
         print(" Failed to resolve channel URL after all retries")
         return None
 
-    def get_local_ip(self, force_refresh=False):
+    def get_local_ip(self):
         # Deliberately always 127.0.0.1, not the box's real LAN IP: the
         # /channels endpoint embeds this directly into the proxy URLs
         # returned for bouquet export (http://<local_ip>:PORT/vavoo?...),
@@ -2629,120 +2542,6 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 except Exception as e:
                     print("[Proxy] /vavoo error: " + str(e))
                     self.send_error(500, "Internal proxy error")
-
-            elif parsed_path.path == '/stream':
-                # Get the 'ref' parameter (the converted service reference)
-                ref_encoded = query_params.get('ref', [None])[0]
-                if not ref_encoded:
-                    self.send_error(400, "Missing ref parameter")
-                    return
-
-                # Decode the ref (replace %3a back to :)
-                ref = unquote(ref_encoded)
-
-                # Load the sref map
-                try:
-                    with open(SREF_MAP_FILE, 'r') as f:
-                        sref_map = load(f)
-                except BaseException:
-                    sref_map = {}
-
-                channel_id = sref_map.get(ref)
-                if not channel_id:
-                    self.send_error(404, "Channel not found in map")
-                    return
-
-                # Now get the channel object from p.channels_by_id
-                channel = p.channels_by_id.get(channel_id) if hasattr(
-                    p, 'channels_by_id') else None
-                if not channel:
-                    self.send_error(404, "Channel not found")
-                    return
-
-                try:
-                    # 1. Get stream URL. force=1 skips the resolve
-                    # cache, for a client that knows the address it
-                    # was just given is broken.
-                    force_refresh = query_params.get(
-                        'force', ['0'])[0] == '1'
-                    stream_url = p.resolve_with_retry(
-                        channel["url"], force_refresh=force_refresh)
-                    if not stream_url:
-                        self.send_error(404, "Stream not resolved")
-                        return
-
-                    # 2-4 all live under one try/finally so upstream is
-                    # always closed, including if raise_for_status() raises
-                    # or the client disconnects before headers are sent -
-                    # previously the connection/response was only closed if
-                    # the forwarding loop below was actually reached.
-                    upstream = None
-                    counted_stream = False
-                    try:
-                        # 2. Connect to upstream with streaming (timeout
-                        # aumentato)
-                        upstream = p.session.get(
-                            stream_url, stream=True, timeout=(
-                                10, 90))  # (connect, read) 10s/90s
-                        upstream.raise_for_status()
-
-                        # 3. Send headers to player
-                        if not self.safe_send_response(200):
-                            return
-                        self.send_header(
-                            'Content-Type',
-                            upstream.headers.get(
-                                'Content-Type',
-                                'video/mp2t'))
-                        self.send_header('Connection', 'keep-alive')
-                        # Add headers to prevent caching
-                        self.send_header(
-                            'Cache-Control', 'no-cache, no-store')
-                        self.end_headers()
-
-                        # HEAD requests get headers only - the caller
-                        # (do_HEAD) wants to know the stream is reachable
-                        # without paying for the actual video transfer.
-                        if getattr(self, '_head_only', False):
-                            return
-
-                        # 4. Forward data with timeout monitoring (chunk
-                        # size increased)
-                        p.stream_started()
-                        counted_stream = True
-                        last_data_time = time.time()
-                        try:
-                            # Increase chunk size from 65536 to 262144 (256KB)
-                            for chunk in upstream.iter_content(
-                                    chunk_size=262144):
-                                if chunk:
-                                    self.wfile.write(chunk)
-                                    self.wfile.flush()
-                                    last_data_time = time.time()
-                                else:
-                                    if time.time() - last_data_time > 15:
-                                        print(
-                                            "[Proxy Stream] Upstream stalled for: " + channel_id)
-                                        break
-                                    select.select([], [], [], 0.1)
-                        except (socket.timeout, ConnectionError, BrokenPipeError) as e:
-                            print("[Proxy Stream] Network error: " + str(e))
-                        except Exception as e:
-                            print("[Proxy Stream] Unexpected error: " + str(e))
-                    finally:
-                        if upstream is not None:
-                            try:
-                                upstream.close()
-                            except Exception:
-                                pass
-                        if counted_stream:
-                            p.stream_ended()
-                        print(
-                            "[Proxy Stream] Finished for channel: " +
-                            channel_id)
-                except Exception as e:
-                    print("[Proxy Stream] Error: " + str(e))
-                    self.send_error(500, "Streaming error")
 
             elif parsed_path.path == '/channels':
                 # p is already bound once at the top of do_GET()
@@ -3253,7 +3052,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
         vavoo_record.name_this_thread("vv-proxy")
         BaseHTTPRequestHandler.setup(self)
         self.request.settimeout(self.timeout)
-        # Streaming writes are flushed per-chunk (see the /stream handler);
+        # Streaming writes (/file, /epg) are flushed per chunk;
         # without this, Nagle's algorithm can hold small/odd-sized writes
         # briefly waiting to coalesce them, adding needless latency.
         try:
@@ -3347,8 +3146,7 @@ def restart_proxy_in_background():
 def start_proxy():
     """Start the proxy server with restart on failure"""
     global proxy
-    # IMPORTANT: allow restart only if the current process is not running
-    # (the PID file may be stale if the process has died)
+    # IMPORTANT: allow a restart only if nothing answers on the port
     if is_proxy_running():
         print("[PROXY] Proxy is already running, checking if it's responsive...")
         try:
@@ -3393,9 +3191,6 @@ def start_proxy():
     # failed with an expired one.
     if proxy.is_stopped():
         proxy = VavooProxy()
-
-    # Write the PID file for this instance
-    write_pid_file()
 
     # Indicate that we are booting
     write_booting_file()
@@ -3604,12 +3399,6 @@ def _spawn_proxy_thread():
     """Mark a boot as in progress and start the proxy thread. Caller
     holds _starting_lock and has already made sure nothing is
     listening on the port."""
-    # A PID file without a listening port is just left over from an
-    # earlier proxy thread of this same Enigma2 process (the proxy
-    # never runs as a separate process, so the PID in it is always
-    # Enigma2's own - there is nothing to kill).
-    remove_pid_file()
-
     try:
         write_booting_file()
     except Exception as e:
