@@ -145,5 +145,17 @@ harness.REAL_ADD_SKIN_BACK("missing.png")
 check(True, "a missing one: nothing, no error")
 plugin.BackPath = real_back
 
+print("== no screen attribute hides a dict method (Enigma2's Screen is a dict)")
+import re                                       # noqa: E402
+hiding = []
+for module in harness.ui_modules():
+    path = module.__file__[:-1] if module.__file__.endswith(".pyc") else module.__file__
+    for number, line in enumerate(open(path).read().splitlines(), 1):
+        if re.search(r"\bself\.(%s)\s*=[^=]" % "|".join(harness.DICT_NAMES), line):
+            hiding.append("%s:%d: %s" % (os.path.basename(module.__file__), number, line.strip()))
+for line in hiding:
+    print("  " + line)
+check(not hiding, "self.items / self.keys / self.get ... = never set (%d)" % len(hiding))
+
 shutil.rmtree(TMP, ignore_errors=True)
 finish()

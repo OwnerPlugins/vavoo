@@ -24,7 +24,9 @@ Python 3 and 2.7 (`.github/workflows/tests.yml`).
   plugin's screen modules (`plugin.X` finds X in plugin.py or a ui_*.py;
   `plugin.X = fake` replaces it in each of them).
 - `harness.py` - fake widgets, `make()` (a screen built by its real
-  `__init__`), `check()` / `finish()`.
+  `__init__`), `enigma2_close()` (closed as Enigma2's `doClose()` does:
+  every attribute gone), `Pending` (the threads and reactor calls a
+  screen leaves, run after it closed), `check()` / `finish()`.
 - `fakehls.py` - a fake live HLS channel (segments made once with
   ffmpeg in the temp folder).
 - `test_keys_lib.py` - Enigma2's key dispatch, with the images' own

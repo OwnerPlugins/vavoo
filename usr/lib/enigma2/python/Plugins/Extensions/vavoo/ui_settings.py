@@ -122,7 +122,14 @@ def basic_rows():
 
 
 class vavoo_config(Screen, ConfigListScreen):
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
+
     def __init__(self, session):
+        # So background M3U-fetch threads (_fetch_countries_async/
+        # _fetch_channels_async) can notice this screen was left and
+        # stop trying to pop dialogs on top of whatever the user has
+        # since navigated to.
+        self._closed = False
         Screen.__init__(self, session)
         self.session = session
         self.skin, self._themed = load_screen_skin(
@@ -135,12 +142,6 @@ class vavoo_config(Screen, ConfigListScreen):
         self.old_look = self._look_settings()
         self.old_list_position = cfg.list_position.value
         self.old_catalog_source = cfg.catalog_source.value
-
-        # So background M3U-fetch threads (_fetch_countries_async/
-        # _fetch_channels_async) can notice this screen was left and
-        # stop trying to pop dialogs on top of whatever the user has
-        # since navigated to.
-        self._closed = False
         self.onClose.append(self._mark_closed)
 
         self.list = []
@@ -903,7 +904,7 @@ class vavoo_config(Screen, ConfigListScreen):
             self, generated, failed, total_channels, total_countries):
         """Runs back on the GUI thread once generate_all_m3u_files()'s
         background loop finishes."""
-        if getattr(self, "_closed", False):
+        if self._closed:
             return
 
         try:

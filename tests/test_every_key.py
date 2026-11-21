@@ -273,6 +273,71 @@ for theme, filled in PASSES:
 
 print("== %d actions, %d menu entries, %d dialogs cancelled, %d confirmations answered (Python %d)"
       % (count["actions"], count["menus"], count["dialogs"], count["answers"], sys.version_info[0]))
+
+# ---- closed as on the box: Enigma2's doClose() clears the screen's
+# __dict__; what the screen left to come back later (reactor calls, its
+# threads) then runs against a closed screen - and must touch nothing
+pending = harness.Pending()
+closed = 0
+# (no network for what runs after the close)
+real_get_url = plugin.getUrl
+
+
+def _no_network(*a, **k):
+    raise IOError("no network in the closed-screen pass")
+
+
+plugin.getUrl = _no_network
+
+
+def close_and_run(where, build, fill, action=None):
+    """A fresh screen (its key `action` pressed first), closed as on the
+    box, then what it left running: no exception."""
+    pending.hold()
+    pending.clear()
+    try:
+        try:
+            scr = fresh(build, fill)
+        except Exception as e:
+            FAILS.append("%s: could not be built: %s\n%s" % (where, e, traceback.format_exc(limit=6)))
+            return False
+        if action is not None:
+            widget, name = action
+            del MENUS[:]
+            if not attempt(where, scr.widgets[widget].actions[name]):
+                return False
+        if not (attempt(where + " own close", harness.own_close, scr) and
+                attempt(where + " Enigma2's doClose()", harness.enigma2_close, scr)):
+            return False
+        for failure in pending.run():
+            FAILS.append("%s: after the close: %s" % (where, failure))
+        return True
+    finally:
+        pending.release()
+
+
+for theme in ("classic", "prism"):
+    plugin.cfg.theme = V(theme)
+    plugin._theme_skin_cache.clear()
+    for title, build, fill in SCREENS:
+        if theme == "classic" and title in ("menu",):
+            continue
+        where = "%s %s (closed)" % (theme, title)
+        if not close_and_run(where, build, fill):
+            continue
+        closed += 1
+        try:
+            probe = fresh(build, fill)
+        except Exception:
+            continue
+        for widget, action in actions_of(probe):
+            if action != "ignore":
+                if close_and_run("%s [%s.%s] (then closed)" % (where[:-9], widget, action),
+                                 build, fill, (widget, action)):
+                    closed += 1
+plugin.getUrl = real_get_url
+print("== %d screens closed as Enigma2 does (fresh, and after each key), then their pending work run"
+      % closed)
 seen = set()
 for fail in FAILS:
     head = fail.splitlines()[0]

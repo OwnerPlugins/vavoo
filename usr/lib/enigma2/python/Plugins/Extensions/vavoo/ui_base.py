@@ -1256,6 +1256,22 @@ def _epg_channel_id(url):
     return channel_id or None
 
 
+# CLOSED_UNTIL_OPEN - Enigma2's Screen.doClose() ends with
+# `self.__dict__.clear()`: every attribute of a closed screen is gone. A
+# thread or a reactor.callFromThread() / callLater() of the screen that
+# comes back afterwards (a download, a lookup) then reads attributes that
+# are not there - in a thread an error in the log, on the GUI thread one
+# that can take Enigma2 down (OpenATV 8). So every screen with such work
+# has `_closed = True` as a CLASS attribute and sets `self._closed =
+# False` first thing in __init__: after the close, self._closed reads
+# the class's True. That work checks self._closed before anything else
+# of the screen (and keeps what it needs in locals).
+# Also: Screen is a dict and doClose() calls self.items() - no attribute
+# of a screen is named like a dict method (items, keys, values, get,
+# update, pop, clear, copy...): "'list' object is not callable" there
+# was the Recordings crash.
+
+
 class NowNextPanel(object):
     """Mixed into a list screen: shows what is on the highlighted
     channel now and what follows, in the EPG_PANEL_WIDGETS labels.
@@ -1275,6 +1291,9 @@ class NowNextPanel(object):
     cannot pile up threads or downloads. An answer is only drawn if
     its row is still the highlighted one.
     """
+
+    # (see CLOSED_UNTIL_OPEN)
+    _closed = True
 
     def _epg_panel_init(self):
         add_epg_panel_labels(self)
@@ -1307,7 +1326,7 @@ class NowNextPanel(object):
 
     def _epg_panel_changed(self):
         """The highlighted row may have changed."""
-        if getattr(self, '_closed', False):
+        if self._closed:
             return
         request = None
         if cfg.list_epg.value:
@@ -1346,7 +1365,7 @@ class NowNextPanel(object):
     def _epg_panel_resume(self):
         """This screen is on top again (first shown, or back from the
         player, the settings or a message box)."""
-        if getattr(self, '_closed', False):
+        if self._closed:
             return
         if self._epg_panel_row is None:
             # e.g. the setting was just switched on in the settings.
@@ -1365,7 +1384,7 @@ class NowNextPanel(object):
         """The highlight has rested long enough on a row that still
         needs looking up - or it is time to look again at a row
         already shown."""
-        if getattr(self, '_closed', False):
+        if self._closed:
             return
         request = self._epg_panel_row
         if request is None:
@@ -1405,11 +1424,16 @@ class NowNextPanel(object):
     def _epg_panel_work(self):
         """Background thread: answer the latest row asked for, until
         there is none left."""
+        if self._closed:
+            return
+        lock = self._epg_panel_lock
         while True:
-            with self._epg_panel_lock:
+            with lock:
+                if self._closed:
+                    return
                 request = self._epg_panel_wanted
                 self._epg_panel_wanted = None
-                if request is None or getattr(self, '_closed', False):
+                if request is None:
                     self._epg_panel_working = False
                     return
             try:
@@ -1419,13 +1443,13 @@ class NowNextPanel(object):
             except Exception as e:
                 debug("Now/Next: lookup failed: {}".format(e))
                 answer = ("no_guide", None, None)
-            if not getattr(self, '_closed', False):
+            if not self._closed:
                 reactor.callFromThread(
                     self._epg_panel_arrived, request, answer)
 
     def _epg_panel_arrived(self, request, answer):
         """Back on the GUI thread with the background thread's answer."""
-        if getattr(self, '_closed', False) or request != self._epg_panel_row:
+        if self._closed or request != self._epg_panel_row:
             # Closed meanwhile, or the highlight has moved on (that
             # row has its own lookup under way).
             return
@@ -1753,12 +1777,15 @@ class PreviewWindow(object):
     (_NowPlaying.preview_failed()). The screen calls
     _preview_init() while building itself."""
 
+    # (see CLOSED_UNTIL_OPEN)
+    _closed = True
+
     def _preview_init(self):
         self._preview_tracker = ServiceEventTracker(
             screen=self, eventmap={iPlayableService.evEOF: self._preview_eof})
 
     def _preview_eof(self):
-        if getattr(self, '_closed', False) or not getattr(self, 'execing', True):
+        if self._closed or not getattr(self, 'execing', True):
             return
         if NOW_PLAYING.owner != NOW_PLAYING.PREVIEW:
             return
@@ -1766,7 +1793,7 @@ class PreviewWindow(object):
         reactor.callLater(1, self._preview_retry)
 
     def _preview_retry(self):
-        if getattr(self, '_closed', False):
+        if self._closed:
             return
         if not NOW_PLAYING.preview_failed(self.session):
             if NOTIFICATION_AVAILABLE:
@@ -1849,8 +1876,10 @@ class VavooLogViewer(Screen):
     WizardActions/"exit", which nothing else here relies on."""
 
     VISIBLE_LINES = Console.VISIBLE_LINES
+    _closed = True          # (see CLOSED_UNTIL_OPEN)
 
     def __init__(self, session, title, file_path, tail_lines=200):
+        self._closed = False
         Screen.__init__(self, session)
         # The theme's box (the same 13 lines), or Console's skin minus
         # the two things that don't apply to a read-only log view: the
@@ -1861,7 +1890,6 @@ class VavooLogViewer(Screen):
             Console.skin.replace(
                 'Command execution...', title
             ).replace('text="Restart GUI"', 'text=""')
-        self._closed = False
         self.onClose.append(self._mark_closed)
 
         try:

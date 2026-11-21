@@ -624,15 +624,16 @@ def guide_countries():
 
 
 class MainVavoo(Screen, PreviewWindow):
-    def __init__(self, session):
-        self.session = session
-        global _session
-        _session = session
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
+    def __init__(self, session):
         # So a background flag-download thread still in flight when the
         # user exits (closex()) can notice and skip re-arming timers /
         # touching UI on a screen that's no longer executing.
         self._closed = False
+        self.session = session
+        global _session
+        _session = session
         ACTIVE["main"] = self
         REMINDERS.start(session)
 
@@ -1894,9 +1895,15 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
 
     CATEGORY_ALL = "\x00all"
     CATEGORY_GENERAL = "\x00general"
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
     def __init__(self, session, name, url, option_value=None,
                  category=None, channels=None):
+        # So a bouquet-export background thread still running when the
+        # user exits this screen (Screen.close() doesn't clear
+        # self.session, so that alone can't be used to detect this) can
+        # notice and skip touching this screen's UI/state afterward.
+        self._closed = False
         self.session = session
         self.category = category
         self._preloaded = channels
@@ -1909,12 +1916,6 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         self._digit_time = 0
         global _session
         _session = session
-
-        # So a bouquet-export background thread still running when the
-        # user exits this screen (Screen.close() doesn't clear
-        # self.session, so that alone can't be used to detect this) can
-        # notice and skip touching this screen's UI/state afterward.
-        self._closed = False
 
         Screen.__init__(self, session)
         init_notification_system(session)
@@ -2425,8 +2426,10 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
         """Rebuild the channel list from the already-fetched channel
         data (no new network fetch) so rows whose picon finished
         downloading since the list was first built pick it up."""
+        if self._closed:
+            return
         self.picon_refresh_timer.stop()
-        if self._closed or not self._channel_entries:
+        if not self._channel_entries:
             return
         try:
             # setList() below replaces the whole list - preserve
@@ -3037,8 +3040,10 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
     # Folder rows' keys (a folder's own name otherwise)
     FOLDER_ALL = "\x00all"
     FOLDER_NONE = "\x00none"
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
     def __init__(self, session, mode="favourites", folder=None):
+        self._closed = False
         self.session = session
         self.mode = mode
         self.folder = folder
@@ -3047,7 +3052,6 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             "list", 'defaultListScreen.xml', cvs=True, clock_24=clock_24())
 
         init_notification_system(session)
-        self._closed = False
         self.onClose.append(self._mark_closed)
 
         self.cat_list = []

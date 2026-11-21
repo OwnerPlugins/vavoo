@@ -195,9 +195,11 @@ class VavooPlayerList(Screen):
     the chosen index, or None. GREEN adds / removes a favourite."""
 
     GUIDE_SETTLE_MS = 300
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
     def __init__(self, session, channels, index, country_codes, logos,
                  country_names=None):
+        self._closed = False
         Screen.__init__(self, session)
         skin = build_theme_skin("player_list")
         self._themed = skin is not None
@@ -209,7 +211,6 @@ class VavooPlayerList(Screen):
         self.country_names = country_names or []
         self.logos = logos
         self.start_index = index
-        self._closed = False
         self.onClose.append(self._mark_closed)
         self._favourite_keys = set()
         self["menulist"] = m2list([], themed=self._themed)
@@ -477,6 +478,7 @@ class TvInfoBarShowHide():
     STATE_HIDING = 1
     STATE_SHOWING = 2
     STATE_SHOWN = 3
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
     # FLAG_CENTER_DVB_SUBS = 2048
     skipToggleShow = False
 
@@ -909,6 +911,7 @@ class Playstream2(
     ENABLE_RESUME_SUPPORT = True
     ALLOW_SUSPEND = True
     screen_timeout = 5000
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
     def __init__(
             self,
@@ -925,6 +928,12 @@ class Playstream2(
             country_name=None,
             country_names=None,
             hand_back=False):
+        # Set until cancel() starts closing this screen, so a background
+        # EPG fetch already in flight from a channel the user has since
+        # left (show_help_overlay's _fetch_epg_async) can notice and
+        # stop touching self instead of running against a torn-down
+        # screen. First, before the InfoBar parts below run.
+        self._closed = False
         Screen.__init__(self, session)
         self.session = session
         init_notification_system(session)
@@ -988,12 +997,6 @@ class Playstream2(
 
         self.stream_running = False
         self.is_streaming = False
-        # Set once cancel() starts closing this screen, so a background
-        # EPG fetch already in flight from a channel the user has since
-        # left (show_help_overlay's _fetch_epg_async) can notice and
-        # stop touching self instead of running against a torn-down
-        # screen.
-        self._closed = False
         ACTIVE["player"] = self
         self.currentindex = index
         self.item = item
@@ -1356,7 +1359,7 @@ class Playstream2(
         timer.start(self.PREFETCH_AFTER_MS, True)
 
     def _prefetch_next(self):
-        if getattr(self, "_closed", False) or not self.itemscount or \
+        if self._closed or not self.itemscount or \
                 getattr(self, "_shift_state", None) is not None:
             return
         index = (int(self.currentindex) + getattr(self, "_prefetch_dir", 1)) % self.itemscount

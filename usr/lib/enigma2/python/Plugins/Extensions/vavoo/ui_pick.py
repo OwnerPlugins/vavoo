@@ -69,7 +69,10 @@ class VavooPickScreen(Screen):
     status line and the four colour keys. Subclasses fill the rows
     (refresh()) and say what the keys do (key_actions())."""
 
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
+
     def __init__(self, session, description, keys):
+        self._closed = False
         self.session = session
         Screen.__init__(self, session)
         used = tuple(name for name, label in
@@ -103,9 +106,14 @@ class VavooPickScreen(Screen):
         # (a method: Enigma2 exec()s an onLayoutFinish entry that is
         # not one - a lambda here crashed the box on open)
         self.onLayoutFinish.append(self._first_refresh)
+        self.onClose.append(self._mark_closed)
+
+    def _mark_closed(self):
+        self._closed = True
 
     def _first_refresh(self):
-        self.refresh(0)
+        if not self._closed:
+            self.refresh(0)
 
     def key_actions(self):
         return {}
@@ -270,8 +278,10 @@ class VavooPin(Screen):
     (an older PIN of another length)."""
 
     SUBMIT_MS = 150
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
     def __init__(self, session, title, length=4, checker=None):
+        self._closed = False
         Screen.__init__(self, session)
         self.skin, self._themed = load_screen_skin(
             "pin", 'vavoo_pin.xml', background=False)
@@ -297,7 +307,11 @@ class VavooPin(Screen):
             self._submit_timer.callback.append(self.submit)
         except Exception:
             self._submit_timer.timeout.connect(self.submit)
+        self.onClose.append(self._mark_closed)
         self._draw()
+
+    def _mark_closed(self):
+        self._closed = True
 
     def _draw(self):
         shown = max(self.length, len(self.digits))
@@ -328,6 +342,8 @@ class VavooPin(Screen):
         self._draw()
 
     def submit(self):
+        if self._closed:
+            return
         self._submit_timer.stop()
         if not self.digits:
             return
@@ -482,7 +498,8 @@ class VavooParental(VavooPickScreen):
         self.countries = sorted(countries if countries is not None
                                 else proxy_countries(),
                                 key=lambda c: to_text(c).lower())
-        self.keys = []
+        # (not self.keys: a Screen is a dict - CLOSED_UNTIL_OPEN)
+        self._row_keys = []
         self._remove_armed = False
         VavooPickScreen.__init__(
             self, session,
@@ -529,7 +546,7 @@ class VavooParental(VavooPickScreen):
                 country, country, kind="big", themed=self._themed,
                 value=u"" if is_locked else u"—",
                 value_icon=is_locked))
-        self.keys = keys
+        self._row_keys = keys
         self._show(rows, select)
         if has_pin:
             self['statusbar'].setText(_("PIN set · {} countries locked").format(
@@ -539,9 +556,9 @@ class VavooParental(VavooPickScreen):
                 _("No PIN yet: nothing is locked until one is set."))
 
     def act(self):
-        if not self.keys:
+        if not self._row_keys:
             return
-        key = self.keys[self._index()]
+        key = self._row_keys[self._index()]
         if key != self.ROW_REMOVE:
             self._remove_armed = False
         if key == self.ROW_PIN:
@@ -584,7 +601,7 @@ class VavooParental(VavooPickScreen):
         self.refresh()
 
     def _closed_flag(self):
-        return getattr(self, '_closed', False)
+        return self._closed
 
 
 # ---------------------------------------------------------------------

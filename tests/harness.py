@@ -229,7 +229,185 @@ def make(cls, *args, **kw):
     obj.execing = True
     cls.__init__(obj, *args, **kw)
     check_layout_entries(obj)
+    check_dict_names(obj)
     return obj
+
+
+# Enigma2's Screen is a dict: its doClose() / deleteGUIScreen() call
+# self.items(), skin code self.keys() - an attribute of the screen with
+# one of these names hides the dict's method ("'list' object is not
+# callable" as the screen closes - the Recordings crash on OpenATV 8.1).
+DICT_NAMES = ("clear", "copy", "fromkeys", "get", "has_key", "items", "iteritems",
+              "iterkeys", "itervalues", "keys", "pop", "popitem", "setdefault",
+              "update", "values", "viewitems", "viewkeys", "viewvalues")
+
+
+def dict_shadows(screen):
+    """The screen's own attributes that hide a dict method."""
+    return sorted(name for name in vars(screen) if name in DICT_NAMES)
+
+
+def check_dict_names(screen):
+    hidden = dict_shadows(screen)
+    if hidden:
+        raise TypeError("%s: attribute(s) %s hide the dict methods Enigma2's "
+                        "Screen.doClose() calls ('list' object is not callable)"
+                        % (type(screen).__name__, ", ".join(hidden)))
+
+
+def _gone(self, name):
+    raise AttributeError("'%s' object has no attribute '%s'" % (type(self).__name__, name))
+
+
+_CLOSED_CLASSES = {}
+
+
+def enigma2_close(screen):
+    """What Enigma2's Screen.doClose() does: the onClose entries, then
+    deleteGUIScreen() (self.items() - fails as on the box when an
+    attribute hides it), then every component and attribute gone
+    (`self.__dict__.clear()`). From then on a missing attribute raises,
+    as on the box - not the fake Enigma2's made-up value."""
+    for entry in list(getattr(screen, "onClose", [])):
+        entry()
+    check_dict_names(screen)
+    cls = type(screen)
+    closed = _CLOSED_CLASSES.get(cls)
+    if closed is None:
+        closed = _CLOSED_CLASSES[cls] = type(cls.__name__, (cls,), {"__getattr__": _gone})
+    screen.__dict__.clear()
+    screen.__class__ = closed
+
+
+class _Delayed(object):
+    def cancel(self):
+        pass
+
+    def active(self):
+        return False
+
+
+class _HeldThread(object):
+    """A screen module's threading.Thread: kept, not started."""
+    def __init__(self, pending, target=None, args=(), kwargs=None, name=None, **_k):
+        self._pending = pending
+        self.target, self.args, self.kwargs = target, tuple(args), dict(kwargs or {})
+        self.daemon = False
+        self.name = name
+
+    def setDaemon(self, flag):
+        self.daemon = flag
+
+    def start(self):
+        self._pending.threads.append(self)
+
+    def is_alive(self):
+        return False
+
+    isAlive = is_alive
+
+    def join(self, *a):
+        pass
+
+
+class _ThreadingShim(object):
+    def __init__(self, pending):
+        self._pending = pending
+
+    def Thread(self, *a, **k):
+        if a:
+            k.setdefault("target", a[1] if len(a) > 1 else None)
+        return _HeldThread(self._pending, **k)
+
+    def __getattr__(self, name):
+        import threading
+        return getattr(threading, name)
+
+
+class Pending(object):
+    """What a screen leaves to run later - reactor.callFromThread() /
+    callLater() and the threads its modules start - kept while
+    `hold()` is on, run by `run()` (the closed-screen checks: on the box
+    these come after the screen has closed)."""
+    def __init__(self):
+        self.calls = []
+        self.threads = []
+        self._saved = None
+
+    # the reactor's calls the plugin uses
+    def callFromThread(self, fn, *a, **k):
+        self.calls.append((fn, a, k))
+
+    def callLater(self, _delay, fn, *a, **k):
+        self.calls.append((fn, a, k))
+        return _Delayed()
+
+    def hold(self):
+        import threading
+        self._saved = (plugin.reactor, threading)
+        patch("reactor", self)
+        patch("threading", _ThreadingShim(self))
+        return self
+
+    def release(self):
+        if self._saved is not None:
+            patch("reactor", self._saved[0])
+            patch("threading", self._saved[1])
+            self._saved = None
+
+    def clear(self):
+        del self.calls[:]
+        del self.threads[:]
+
+    def run(self, timeout=10, rounds=5):
+        """Every call and thread kept (and what they leave in turn):
+        the failures, as text."""
+        import threading
+        import traceback
+        failures = []
+        for _round in range(rounds):
+            calls, threads = list(self.calls), list(self.threads)
+            self.clear()
+            if not calls and not threads:
+                break
+            for fn, a, k in calls:
+                try:
+                    fn(*a, **k)
+                except Exception as e:
+                    failures.append("call %s: %s: %s\n%s" % (
+                        getattr(fn, "__name__", fn), e.__class__.__name__, e,
+                        traceback.format_exc(limit=5)))
+            for held in threads:
+                box = []
+
+                def body(held=held, box=box):
+                    try:
+                        held.target(*held.args, **held.kwargs)
+                    except Exception as e:
+                        box.append("thread %s: %s: %s\n%s" % (
+                            getattr(held.target, "__name__", held.target), e.__class__.__name__,
+                            e, traceback.format_exc(limit=5)))
+                worker = threading.Thread(target=body)
+                worker.daemon = True
+                worker.start()
+                worker.join(timeout)
+                if worker.is_alive():
+                    failures.append("thread %s: still running after %ds" % (
+                        getattr(held.target, "__name__", held.target), timeout))
+                failures.extend(box)
+        return failures
+
+
+def own_close(screen):
+    """The screen's own way out (MainVavoo.closex(), a close() of its
+    own), as its EXIT would call it - before Enigma2's doClose()."""
+    for klass in type(screen).__mro__:
+        if klass.__module__.startswith(("vavoo", "Plugins")):
+            for name in ("closex", "close"):
+                if name in vars(klass):
+                    getattr(klass, name)(screen)
+                    return name
+    return None
 
 
 def check_layout_entries(screen):

@@ -532,7 +532,11 @@ class VavooRecordings(VavooPickScreen):
     REFRESH_RECORDING_MS = 5000
 
     def __init__(self, session):
-        self.items = []
+        self._closed = False
+        # the rows' (kind, data) - not self.items: a Screen is a dict and
+        # Enigma2's doClose() calls self.items() (the Recordings crash,
+        # ui_base's CLOSED_UNTIL_OPEN)
+        self._entries = []
         self._delete_armed = None
         VavooPickScreen.__init__(
             self, session,
@@ -545,7 +549,6 @@ class VavooRecordings(VavooPickScreen):
             self._timer.callback.append(self._tick)
         except Exception:
             self._timer.timeout.connect(self._tick)
-        self._closed = False
         self.onClose.append(self._on_close)
 
     def _on_close(self):
@@ -645,7 +648,7 @@ class VavooRecordings(VavooPickScreen):
                 to_string(text), to_string(key), is_category=True,
                 kind="big", themed=self._themed, value=to_string(value),
                 no_icon=True))
-        self.items = items
+        self._entries = items
         if keep is not None:
             for index, item in enumerate(items):
                 if self._key(item) == keep:
@@ -667,8 +670,8 @@ class VavooRecordings(VavooPickScreen):
 
     def _selected(self):
         index = self._index()
-        if 0 <= index < len(self.items):
-            return self.items[index]
+        if 0 <= index < len(self._entries):
+            return self._entries[index]
         return None
 
     def _remove_timer(self, timer):
@@ -776,8 +779,10 @@ class VavooRecordingPlayer(
     ALLOW_SUSPEND = True
     STEP = 10
     BIG_STEP = 30
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
 
     def __init__(self, session, recording):
+        self._closed = False
         Screen.__init__(self, session)
         self.session = session
         self.recording = recording
@@ -788,7 +793,6 @@ class VavooRecordingPlayer(
         self._pos = 0.0
         self._clock = None
         self._paused = False
-        self._closed = False
         self.title = to_text(recording.get("title") or
                              recording.get("name") or "")
         skin = build_theme_skin("player", clock_24=clock_24())

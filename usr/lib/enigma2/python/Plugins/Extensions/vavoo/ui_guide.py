@@ -234,8 +234,11 @@ class VavooGuide(Screen):
     video (MENU closes it, CH± zaps the player through on_zap(delta),
     which returns the index now playing)."""
 
+    _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
+
     def __init__(self, session, channels, start_index=0, title="",
                  over_player=False, on_zap=None):
+        self._closed = False
         self.session = session
         Screen.__init__(self, session)
         self.channels = list(channels)
@@ -283,7 +286,6 @@ class VavooGuide(Screen):
         self.data = {}
         self._digits = ""
         self._digit_time = 0
-        self._closed = False
         self._lock = threading.Lock()
         self._wanted = []
         self._working = False
@@ -449,14 +451,21 @@ class VavooGuide(Screen):
         self._draw_heading()
 
     def _work(self):
+        # (what it needs kept here: the screen's attributes are gone
+        # once it has closed - CLOSED_UNTIL_OPEN)
+        if self._closed:
+            return
         start, stop = self._range()
+        lock, channels = self._lock, self.channels
         while True:
-            with self._lock:
-                if not self._wanted or self._closed:
+            with lock:
+                if self._closed:
+                    return
+                if not self._wanted:
                     self._working = False
                     break
                 index = self._wanted.pop(0)
-            channel = self.channels[index]
+            channel = channels[index]
             try:
                 answer = vUtils.lookup_programmes(
                     channel.get("name"), channel.get("country_code"),

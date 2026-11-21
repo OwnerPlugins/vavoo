@@ -750,6 +750,27 @@ screen crash or a lookup fail there, never on Python 3):
   crashes the screen as it opens ("exec() arg 1 must be a string,
   bytes or code object" - the Recordings, Choose countries and Parental
   Control crash). `onExecBegin` / `onClose` / timers take any callable.
+- A `Screen` is a `dict`, and `Screen.doClose()` / `deleteGUIScreen()`
+  call `self.items()`: no attribute of a screen may be named like a
+  dict method (`items`, `keys`, `values`, `get`, `update`, `pop`,
+  `clear`, `copy`...) - `self.items = [...]` in Recordings made every
+  EXIT a "'list' object is not callable" crash on OpenATV 8.1.
+  `test_audit.py` scans for it; `harness.make()` / `enigma2_close()`
+  refuse it.
+- `Screen.doClose()` ends with `self.__dict__.clear()`: every attribute
+  of a closed screen is gone. So (ui_base's `CLOSED_UNTIL_OPEN`) a
+  screen with work that comes back later - a thread, a
+  `reactor.callFromThread()` / `callLater()` - has `_closed = True` as
+  a CLASS attribute (mixins too) and sets `self._closed = False` first
+  thing in `__init__`; `onClose` sets it True. That work reads
+  `self._closed` before anything else of the screen (never
+  `getattr(self, "_closed", False)` - False is wrong after the close)
+  and keeps what it needs in locals. In a thread a miss was an error in
+  the log ("'vavoo' object has no attribute '_closed'", the logo
+  download); on the GUI thread one can take Enigma2 down.
+  `test_closed.py` checks the class attribute on every class that uses
+  `_closed`; `test_every_key.py` closes every screen as Enigma2 does
+  (fresh and after each key) and runs what it left behind.
 - Every `<widget name="X">` of a screen's skin must be a component the
   screen created in `__init__` (else SkinError on open), and every
   `<widget source="X">` must be `session.*` / `global.*` or one of its
@@ -856,11 +877,18 @@ Needs `six` and `requests`; the recording tests need `ffmpeg` /
   the import, fake lists, `make(cls, ...)` (a screen built by its real
   `__init__`, widgets in a dict, Enigma2's `onLayoutFinish` rule
   checked), `run_layout()`, `Session` (records what opens), `MENUS`,
-  `NOTES`, `check()` / `finish()`.
+  `NOTES`, `check()` / `finish()`. `enigma2_close(screen)` closes as
+  Enigma2's `doClose()` does (the `onClose` entries, the dict-name
+  check, `__dict__` cleared - a missing attribute then raises, not the
+  fake's made-up value); `own_close()` is the screen's own close /
+  closex; `Pending().hold()` keeps the screen modules' reactor calls
+  and threads to `run()` later.
 - `test_every_key.py`: every action of every screen (Classic and a
   theme, lists filled and empty), every menu entry and every dialog's
   answers, from a fresh screen each time; on Python 2 also "widgets only
-  get bytes". A new screen goes into its `SCREENS`.
+  get bytes". Then every screen closed as on the box (fresh, and after
+  each key) and what it left running run against the closed screen. A
+  new screen goes into its `SCREENS`.
 - `test_keys_lib.py` simulates Enigma2's key dispatch with the images'
   own keymaps (`data/keymaps/`, GPL, copies - see its README).
 - `fakehls.py` serves a fake live HLS channel (segments made once with
