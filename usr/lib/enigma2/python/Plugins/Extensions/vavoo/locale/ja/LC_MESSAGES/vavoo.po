@@ -194,8 +194,9 @@ msgstr "すべてクリア"
 msgid "Close"
 msgstr "近い"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "カンマ区切りの国名 (例: \\\\\\\\\\\\\\\\"
+msgstr "カンマ区切りの国名 (例: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "設定が正常に保存されました。"

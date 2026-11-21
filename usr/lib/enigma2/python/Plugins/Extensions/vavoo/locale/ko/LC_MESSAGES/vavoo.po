@@ -194,8 +194,9 @@ msgstr "모두 지우기"
 msgid "Close"
 msgstr "닫다"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "쉼표로 구분된 국가 이름(예: \\\\\\\\\\\\\\\\)"
+msgstr "쉼표로 구분된 국가 이름(예: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\)"
 
 msgid "Configuration saved successfully!"
 msgstr "구성이 성공적으로 저장되었습니다!"

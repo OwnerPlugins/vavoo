@@ -198,8 +198,9 @@ msgstr "Limpar tudo"
 msgid "Close"
 msgstr "Fechar"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Nomes de países separados por vírgula (por exemplo, \\\\\\\\\\\\\\\\"
+msgstr "Nomes de países separados por vírgula (por exemplo, \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Configuração salva com sucesso!"

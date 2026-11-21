@@ -200,8 +200,9 @@ msgstr "全部清除"
 msgid "Close"
 msgstr "关闭"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "以逗号分隔的国家/地区名称（例如 \\\\\\\\\\\\\\\\"
+msgstr "以逗号分隔的国家/地区名称（例如 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "配置保存成功！"

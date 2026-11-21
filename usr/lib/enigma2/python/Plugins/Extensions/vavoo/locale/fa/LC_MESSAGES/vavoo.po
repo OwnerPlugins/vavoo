@@ -193,8 +193,9 @@ msgstr "پاک کردن همه"
 msgid "Close"
 msgstr "بستن"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "نام کشورهای جدا شده با کاما (به عنوان مثال \\\\\\\\\\\\\\\\"
+msgstr "نام کشورهای جدا شده با کاما (به عنوان مثال \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "پیکربندی با موفقیت ذخیره شد!"
@@ -433,7 +434,7 @@ msgid "No channels found for: %s"
 msgstr "هیچ کانالی برای: %s یافت نشد"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "هنوز موارد دلخواه وجود ندارد"
 
 msgid "No items available"
 msgstr "هیچ موردی در دسترس نیست"

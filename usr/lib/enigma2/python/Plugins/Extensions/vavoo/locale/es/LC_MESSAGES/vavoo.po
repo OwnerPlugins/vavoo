@@ -207,8 +207,9 @@ msgstr "Limpiar todo"
 msgid "Close"
 msgstr "Cerca"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Nombres de países separados por comas (por ejemplo, \\\\\\\\\\\\\\\\"
+msgstr "Nombres de países separados por comas (por ejemplo, \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "¡Configuración guardada con éxito!"

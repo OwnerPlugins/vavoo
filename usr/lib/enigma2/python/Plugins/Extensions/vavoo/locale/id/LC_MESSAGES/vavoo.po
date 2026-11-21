@@ -193,8 +193,9 @@ msgstr "Hapus Semua"
 msgid "Close"
 msgstr "Menutup"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Nama negara yang dipisahkan koma (misalnya \\\\\\\\\\\\\\\\"
+msgstr "Nama negara yang dipisahkan koma (misalnya \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Konfigurasi berhasil disimpan!"

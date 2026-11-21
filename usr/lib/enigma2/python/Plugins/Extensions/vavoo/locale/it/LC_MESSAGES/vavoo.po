@@ -196,8 +196,9 @@ msgstr "Pulisci Tutto"
 msgid "Close"
 msgstr "Vicino"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Nomi dei paesi separati da virgole (ad es. \\\\\\\\\\\\\\\\"
+msgstr "Nomi dei paesi separati da virgole (ad es. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Configurazione salvata con successo!"
