@@ -39,6 +39,9 @@ jobs:
           autopep8 . --in-place --recursive --aggressive --aggressive
 
       - name: Check the fixed code still compiles
+        # Write the bytecode outside the repo, so no __pycache__ gets committed
+        env:
+          PYTHONPYCACHEPREFIX: ${{ runner.temp }}/pycache
         run: |
           python -m compileall -q .
 
