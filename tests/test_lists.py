@@ -362,16 +362,9 @@ obj.widgets["name"] = plugin.Label()
 obj._on_countries_response('["Albania", "Italy", "Spain"]', None, {"italy": 3}, 0, [])
 check([r[0][0] for r in obj.widgets["menulist"].rows] == ["Italy", "Spain"], "Albania hidden from the main list")
 check(obj.countries == ["Albania", "Italy", "Spain"], "...but kept for Choose countries")
-check(plugin.cfg.countries_asked.value and not any(o[0] is plugin.VavooCountries for o in s.opened[-1:]),
-      "a country hidden already: no first-start screen, never asked again")
-plugin.cfg.countries_asked.value = False
+check(not any(o[0] is plugin.VavooCountries for o in s.opened[-1:]),
+      "no Choose countries over the main list (a new install's welcome asks before it)")
 store.set_hidden_countries([])
-obj._on_countries_response('["Albania", "Italy"]', None, {}, 0, [])
-cls, args, kw, cb = s.opened[-1]
-check(cls is plugin.VavooCountries and kw.get("first_run") is True, "first start: Choose countries opens by itself")
-before = len(s.opened)
-obj._on_countries_response('["Albania", "Italy"]', None, {}, 0, [])
-check(len(s.opened) == before, "...once")
 
 print("13. Settings rows")
 plugin.cfg.choose_countries = object()
@@ -667,6 +660,8 @@ plugin.vavoo_config.__getitem__ = lambda self, k: self.widgets[k]
 cs.setInfo = lambda: None
 real_current_theme = plugin.current_theme
 plugin.current_theme = lambda: "prism"
+cs.show_all = True                  # (all the rows: "All settings")
+cs._rows_seen = {}
 cs.createSetup()
 labels = [e[0] for e in cs.list]
 order = ["Group Sources", "Channel Logos", "Sub-categories", "Choose countries", "Parental Control",

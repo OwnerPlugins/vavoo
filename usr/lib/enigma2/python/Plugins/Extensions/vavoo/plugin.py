@@ -14,7 +14,6 @@ from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.Pixmap import Pixmap
 from Components.ProgressBar import ProgressBar
-from Components.config import configfile
 from enigma import ePicLoad, eTimer
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
@@ -128,7 +127,7 @@ from .ui_base import (
     show_keys, show_list, stop_preview, title_plug, to_string, to_text,
     url_quote)
 from .ui_pick import (
-    VavooCountries, _require_parental_pin)
+    _require_parental_pin, run_welcome, welcome_needed)
 from .ui_record import (
     RECORDINGS, VavooRecordings, clean_pause_leftovers, logo_folder, record_channel,
     recordings_folder)
@@ -439,7 +438,16 @@ class startVavoo(Screen):
             pass
         if first is True:
             first = False
+            if welcome_needed():
+                # a new install: the look, the countries, a PIN - then
+                # the main list (in the chosen look)
+                run_welcome(self.session, self._open_main)
+                return
             self.session.open(MainVavoo)
+        self.close()
+
+    def _open_main(self):
+        self.session.open(MainVavoo)
         self.close()
 
 
@@ -1378,7 +1386,6 @@ class MainVavoo(Screen, PreviewWindow):
                     # a reminder's "watch it" opened the plugin
                     ACTIVE["pending"] = None
                     self._open_channel(pending)
-                self._maybe_first_run(favourite_count, recent)
                 self._schedule_guide_preload()
                 self._country_load_failures = 0
                 # Clear the retry timer if it exists
@@ -1457,29 +1464,6 @@ class MainVavoo(Screen, PreviewWindow):
         except Exception as e:
             print("Error opening vavoo screen: " + str(e))
             trace_error()
-
-    def _maybe_first_run(self, favourite_count, recent):
-        """On the very first start (no favourites, nothing watched, no
-        country hidden, more than one country) Choose countries opens
-        by itself, once, as in the app."""
-        if cfg.countries_asked.value:
-            return
-        cfg.countries_asked.value = True
-        cfg.countries_asked.save()
-        try:
-            configfile.save()
-        except Exception:
-            pass
-        if favourite_count or recent or vavoo_store.hidden_countries() or \
-                len(self.countries) < 2:
-            return
-        self.session.openWithCallback(
-            self._on_countries_chosen, VavooCountries, self.countries,
-            first_run=True)
-
-    def _on_countries_chosen(self, saved=False):
-        if saved and not self._closed:
-            self.cat()
 
     def _on_child_closed(self, *args, **kwargs):
         """Back from a country, the Favourites or a search: the

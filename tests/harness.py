@@ -114,8 +114,21 @@ def finish():
 
 
 class V(object):
+    """A setting (Components.config) with a fixed value."""
     def __init__(self, value):
         self.value = value
+
+    def save(self):
+        pass
+
+    def cancel(self):
+        pass
+
+    def isChanged(self):
+        return False
+
+    def getValue(self):
+        return self.value
 
 
 class FakeList(object):
@@ -172,8 +185,15 @@ NOTES = []
 plugin.quick_notify = lambda msg, sec=3: NOTES.append(msg)
 plugin.NOTIFICATION_AVAILABLE = True
 MENUS = []
-plugin.open_action_menu = lambda session, title, entries, on_choice, layout="menu": \
+MENU_CANCELS = []        # on_cancel of each menu in MENUS (or None)
+
+
+def _fake_menu(session, title, entries, on_choice, layout="menu", on_cancel=None):
     MENUS.append((title, entries, on_choice))
+    MENU_CANCELS.append(on_cancel)
+
+
+plugin.open_action_menu = _fake_menu
 plugin.MultiContentEntryText = Entry
 plugin.MultiContentEntryPixmapAlphaTest = Entry
 plugin.MultiContentEntryPixmapAlphaBlend = Entry

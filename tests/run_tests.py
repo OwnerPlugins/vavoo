@@ -28,7 +28,8 @@ FFMPEG = ("test_memory", "test_proxy_rec", "test_record", "test_record_disk",
 PYTHON2 = ("test_audit", "test_bad_files", "test_direct_keys", "test_epg_match",
            "test_catalog_cache", "test_epg_sources", "test_every_key", "test_keys", "test_list_keys",
            "test_log", "test_proxy_start", "test_proxy_state",
-           "test_py2_separators", "test_screens_open", "test_screens_rows", "test_speedups",
+           "test_py2_separators", "test_screens_open", "test_screens_rows", "test_settings_welcome",
+           "test_speedups",
            "test_store")
 TIMEOUT = 600
 

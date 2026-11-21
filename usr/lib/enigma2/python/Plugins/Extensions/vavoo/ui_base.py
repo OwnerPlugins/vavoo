@@ -480,6 +480,11 @@ cfg.restore = NoSave(ConfigAction())
 cfg.clear_favourites = NoSave(ConfigAction())
 cfg.licences = NoSave(ConfigAction())
 cfg.about = NoSave(ConfigAction())
+# Settings: the last row, "All settings (n more)" / "Fewer settings"
+cfg.more_settings = NoSave(ConfigAction())
+# A new install's welcome (ui_pick.run_welcome()) has run, or was not
+# needed (an install in use)
+cfg.welcome_done = ConfigYesNo(default=False)
 # Which catalog/stream source vavoo_proxy.py's initialize_proxy()
 # tries - "auto" keeps its default Geil-first/Vavoo-fallback
 # order; "geil"/"vavoo" pin it to exactly one source, with no
@@ -1174,14 +1179,16 @@ class VavooMenu(Screen):
         self["menulist"].pageDown()
 
 
-def open_action_menu(session, title, entries, on_choice, layout="menu"):
+def open_action_menu(session, title, entries, on_choice, layout="menu", on_cancel=None):
     """The MENU key's actions: `entries` = [(label, key)], on_choice(key)
-    once one is picked. The theme's own popup in a modern theme
-    (`layout` "player_menu": the player's left panel), Enigma2's
-    ChoiceBox in Classic."""
+    once one is picked (on_cancel() on EXIT, when given). The theme's
+    own popup in a modern theme (`layout` "player_menu": the player's
+    left panel), Enigma2's ChoiceBox in Classic."""
     def _picked(key):
         if key is not None:
             on_choice(key)
+        elif on_cancel is not None:
+            on_cancel()
 
     if build_theme_skin("menu") is not None:
         session.openWithCallback(_picked, VavooMenu, title, entries, layout)

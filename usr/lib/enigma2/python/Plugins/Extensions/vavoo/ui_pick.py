@@ -8,6 +8,7 @@ from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.config import configfile
 from enigma import eTimer
+from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.VirtualKeyBoard import VirtualKeyBoard
 from . import _, __version__
@@ -57,8 +58,8 @@ print = make_print("PLUGIN")
 
 from .ui_base import (
     cfg, clock_24, info_page_keys, list_keys, list_page_rows,
-    load_screen_skin, m2list, proxy_countries, show_keys, show_list,
-    to_string, to_text)
+    load_screen_skin, m2list, open_action_menu, proxy_countries, show_keys,
+    show_list, to_string, to_text)
 
 
 class VavooPickScreen(Screen):
@@ -402,19 +403,28 @@ def ask_pin(session, screen, on_success, on_cancel=None):
                              vavoo_store.pin_length(), checker)
 
 
-def ask_new_pin(session, on_done):
-    """A new PIN, typed twice (4 digits)."""
+def ask_new_pin(session, on_done, on_cancel=None):
+    """A new PIN, typed twice (4 digits): on_done(pin), else (EXIT, or
+    the two differ) on_cancel() when given."""
+    def _cancelled():
+        if on_cancel is not None:
+            on_cancel()
+
     def second(first):
         if first is None:
+            _cancelled()
             return
 
         def check(again=None):
             if again is None:
+                _cancelled()
                 return
             if again == first:
                 on_done(first)
-            elif NOTIFICATION_AVAILABLE:
+                return
+            if NOTIFICATION_AVAILABLE:
                 quick_notify(_("The two PINs differ - not changed"), 3)
+            _cancelled()
         session.openWithCallback(check, VavooPin, _("The same PIN again"), 4)
     session.openWithCallback(second, VavooPin, _("New PIN (4 digits)"), 4)
 
@@ -575,3 +585,102 @@ class VavooParental(VavooPickScreen):
 
     def _closed_flag(self):
         return getattr(self, '_closed', False)
+
+
+# ---------------------------------------------------------------------
+# Welcome (a new install's first opening)
+# ---------------------------------------------------------------------
+WELCOME_THEMES = (
+    ("prism", "Prism - Vavoo's violet"),
+    ("halo", "Halo - frosted glass over a blue aurora"),
+    ("orbit", "Orbit - a teal cockpit display"),
+    ("classic", "Classic - the plugin's original look"),
+)
+
+
+def existing_install():
+    """True when the plugin has been used on this box: countries asked
+    before, favourites, recently watched, hidden countries or a PIN."""
+    try:
+        from . import vUtils
+        return bool(cfg.countries_asked.value or vUtils.load_favourites() or
+                    vUtils.load_recent() or vavoo_store.hidden_countries() or
+                    vavoo_store.has_pin())
+    except Exception as e:
+        debug("Welcome: install not read: {}".format(e))
+        return True
+
+
+def welcome_needed():
+    """The welcome runs once, on a new install only; an install already
+    in use is marked as welcomed without it."""
+    if cfg.welcome_done.value:
+        return False
+    if existing_install():
+        _welcome_done()
+        return False
+    return True
+
+
+def _welcome_done():
+    cfg.welcome_done.value = True
+    cfg.welcome_done.save()
+    cfg.countries_asked.value = True
+    cfg.countries_asked.save()
+    try:
+        configfile.save()
+    except Exception as e:
+        debug("Welcome: settings not saved: {}".format(e))
+
+
+def run_welcome(session, on_done):
+    """A new install's first opening, before the main list: the look
+    (Prism / Halo / Orbit / Classic - in use at once, the main list is
+    not open yet), the countries (Choose countries: Save or Back both
+    go on), then a PIN for the adult channels if wanted (No by
+    default). EXIT on the look skips the rest. It never comes back.
+    on_done() at the end."""
+    def finish(*_args):
+        _welcome_done()
+        on_done()
+
+    def ask_pin_step(*_args):
+        def answered(yes):
+            if not yes:
+                finish()
+                return
+
+            def pin_set(pin):
+                vavoo_store.set_pin(pin)
+                if NOTIFICATION_AVAILABLE:
+                    quick_notify(_("PIN set: adult channels are locked"), 4)
+                finish()
+            ask_new_pin(session, pin_set, on_cancel=finish)
+        session.openWithCallback(
+            answered, MessageBox,
+            _("Lock the adult channels with a PIN?\n(Settings → Parental Control "
+              "can change it later.)"), MessageBox.TYPE_YESNO, default=False)
+
+    def countries_step(key):
+        cfg.theme.value = key
+        cfg.theme.save()
+        try:
+            configfile.save()
+        except Exception as e:
+            debug("Welcome: theme not saved: {}".format(e))
+        if len(proxy_countries() or []) < 2:
+            ask_pin_step()
+            return
+
+        def chosen(saved=None):
+            if saved is None:
+                finish()
+            else:
+                ask_pin_step()
+        session.openWithCallback(chosen, VavooCountries, None, True)
+
+    current = cfg.theme.value
+    entries = [((u"\u2713 " if key == current else u"   ") + to_text(_(label)), key)
+               for key, label in WELCOME_THEMES]
+    open_action_menu(session, _("Welcome! Choose a look"), entries, countries_step,
+                     on_cancel=finish)

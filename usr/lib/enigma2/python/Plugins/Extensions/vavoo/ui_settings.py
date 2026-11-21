@@ -111,6 +111,16 @@ from .ui_record import (
     size_text)
 
 
+def basic_rows():
+    """The settings shown first (the rest behind "All settings"): the
+    ones people change - the look, the player, the lists, the
+    countries, the PIN, recordings, backup and About."""
+    return (cfg.theme, cfg.back, cfg.text_size, cfg.clock_format,
+            cfg.preview_window, cfg.start_last, cfg.timeshift, cfg.list_epg,
+            cfg.logos, cfg.choose_countries, cfg.parental, cfg.recordings,
+            cfg.backup, cfg.restore, cfg.about)
+
+
 class vavoo_config(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -153,6 +163,10 @@ class vavoo_config(Screen, ConfigListScreen):
         self['list_keys'] = list_keys({"help": self.show_help,
                                        "back": self.extnok})
         self.update_status()
+        # Basic first: the rows people change (BASIC_ROWS); the last row
+        # shows all of them
+        self.show_all = False
+        self._rows_seen = {}
         ConfigListScreen.__init__(
             self,
             self.list,
@@ -170,6 +184,7 @@ class vavoo_config(Screen, ConfigListScreen):
             (_("UP / DOWN"), _("Setting")),
             (_("LEFT / RIGHT"), _("Change it")),
             ("OK", _("Open (a row that opens a list or does something)")),
+            ("OK", _("On the last row: all settings / fewer")),
             (_("GREEN"), _("Save")),
             (_("RED / EXIT"), _("Back (without saving)")),
         ]
@@ -443,6 +458,22 @@ class vavoo_config(Screen, ConfigListScreen):
             cfg.about,
             _("Vavoo Stream Live %s by Lululla & Qu4k3 - License CC "
               "BY-NC-SA 4.0.") % __version__))
+        # every row ever shown is saved / cancelled (Enigma2 only does
+        # the ones in the list - a change made in "All settings" and
+        # then hidden again would be lost)
+        for row in self.list:
+            self._rows_seen[id(row[1])] = row[1]
+        basic = basic_rows()
+        hidden = [row for row in self.list if not any(row[1] is b for b in basic)]
+        if not self.show_all:
+            self.list = [row for row in self.list if any(row[1] is b for b in basic)]
+            label = to_text(_("All settings ({} more)")).format(len(hidden)) + u" \u25b6"
+            info = _("Show every setting: the channel sources, the proxy, EPG import, "
+                     "bouquets, playlists, the log...")
+        else:
+            label = u"\u25c0 " + to_text(_("Fewer settings"))
+            info = _("Back to the settings most people change.")
+        self.list.append(getConfigListEntry(to_string(label), cfg.more_settings, info))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -519,8 +550,34 @@ class vavoo_config(Screen, ConfigListScreen):
             if NOTIFICATION_AVAILABLE:
                 quick_notify(_("Favourites cleared"), 3)
 
+    def toggle_all_settings(self):
+        """The last row: every setting / only the basic ones. Opening
+        all goes to the first row that was hidden."""
+        before = len(self.list)
+        self.show_all = not self.show_all
+        self.createSetup()
+        try:
+            self["config"].setCurrentIndex(before - 1 if self.show_all else len(self.list) - 1)
+        except Exception as e:
+            debug("Settings: selection not moved: {}".format(e))
+
+    def _all_entries(self):
+        return list(self._rows_seen.values())
+
+    def _settings_changed(self):
+        for entry in self._all_entries():
+            try:
+                if entry.isChanged():
+                    return True
+            except Exception:
+                pass
+        return False
+
     def gnm3u(self):
         sel = self["config"].getCurrent()[1]
+        if sel is cfg.more_settings:
+            self.toggle_all_settings()
+            return
         if sel and sel == cfg.genm3u:
             self.session.openWithCallback(
                 self.generate_m3u,
@@ -1087,7 +1144,7 @@ class vavoo_config(Screen, ConfigListScreen):
         for x in self.onChangedEntry:
             x()
         self['green'].instance.setText(
-            _('Save') if self['config'].isChanged() else '- - - -')
+            _('Save') if self._settings_changed() else '- - - -')
 
     def getCurrentEntry(self):
         return self["config"].getCurrent()[0]
@@ -1157,9 +1214,9 @@ class vavoo_config(Screen, ConfigListScreen):
             print("[Vavoo] Error scheduling EPG update:", str(e))
 
     def save(self):
-        if self["config"].isChanged():
-            for x in self["config"].list:
-                x[1].save()
+        if self._settings_changed():
+            for entry in self._all_entries():
+                entry.save()
 
             # Tracks whether this save() has already restarted the
             # proxy, so the "Manage EPG source" block further down
@@ -1298,14 +1355,14 @@ class vavoo_config(Screen, ConfigListScreen):
 
     def extnok(self, answer=None):
         if answer is None:
-            if self['config'].isChanged():
+            if self._settings_changed():
                 self.session.openWithCallback(
                     self.extnok, MessageBox, _("Really close without saving settings?"))
             else:
                 self.close()
         elif answer:
-            for x in self["config"].list:
-                x[1].cancel()
+            for entry in self._all_entries():
+                entry.cancel()
             self.close()
         else:
             return
