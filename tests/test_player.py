@@ -544,8 +544,7 @@ plugin.TvInfoBarShowHide.OkPressed = real_ok
 plugin.TvInfoBarShowHide.hide_help_overlay = real_hide
 
 print("7. Classic's top line: the same keys")
-plugin.is_proxy_running = lambda: True
-plugin.get_proxy_status = lambda: {"token_required": False, "addon_sig_age": 99999}
+plugin.get_proxy_status = lambda: {"listening": True, "token_required": False, "addon_sig_age": 99999}
 line = plugin.classic_help_line(plugin.classic_proxy_problem())
 check(line == u"OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys",
       "the keys, nothing else while the proxy is fine: %r" % line)
@@ -553,12 +552,15 @@ check("YELLOW=Source" not in line and "INFO=IMDb" not in line and "Lululla" not 
 plugin.get_proxy_status = lambda: {"token_required": True, "addon_sig_age": 500}
 check(plugin.classic_help_line(plugin.classic_proxy_problem()).endswith(u"|  ✗ Proxy Expired"),
       "the Vavoo catalog with an old token: said")
-plugin.is_proxy_running = lambda: False
+plugin.get_proxy_status = lambda: {"listening": False, "booting": False}
 check(plugin.classic_help_line(plugin.classic_proxy_problem()).endswith(u"✗ Proxy Offline"), "proxy down: said")
+plugin.get_proxy_status = lambda: {"listening": False, "booting": True}
+check(plugin.classic_help_line(plugin.classic_proxy_problem()).endswith(u"Loading channels..."),
+      "proxy starting: 'Loading channels...', not 'Offline'")
 check(len(plugin.classic_help_line()) <= 100, "fits one line (%d characters)" % len(plugin.classic_help_line()))
 src = e2env.plugin_source()
 check('"left": self.key_left' in src and '"right": self.key_right' in src, "LEFT / RIGHT reach the player")
 
 plugin.threading.Thread = real_thread
 print("\n%d checks, %d failed" % (CHECKS, FAILS))
-sys.exit(1 if FAILS else 0)
+e2env.exit_now(1 if FAILS else 0)

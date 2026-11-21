@@ -367,4 +367,5 @@ shutil.rmtree(root)
 print("\n%d checks, %d failed" % (COUNT[0], len(FAILS)))
 for f in FAILS:
     print("  - " + f)
-sys.exit(1 if FAILS else 0)
+sys.stdout.flush()
+os._exit(1 if FAILS else 0)

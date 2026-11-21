@@ -101,4 +101,5 @@ check("vavoo_record.FAILURE_DISK" in src and "the disk could not be" in src,
 channel.close()
 shutil.rmtree(TMP, ignore_errors=True)
 print("\n%d checks, %d failed" % (STATE["checks"], STATE["fails"]))
-sys.exit(1 if STATE["fails"] else 0)
+sys.stdout.flush()
+os._exit(1 if STATE["fails"] else 0)

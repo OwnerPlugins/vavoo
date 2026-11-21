@@ -51,7 +51,6 @@ from .vUtils import (
     make_print,
     get_proxy_status,
     get_picon_cache_path,
-    is_proxy_running,
     returnIMDB,
     trace_error
 )
@@ -449,13 +448,16 @@ def classic_help_line(problem=u""):
 
 def classic_proxy_problem():
     """"" while the proxy answers (and, on the Vavoo catalog, its token
-    is fresh), else what is wrong."""
+    is fresh), else what is wrong - read in this process
+    (get_proxy_status(), no HTTP)."""
     try:
-        if not is_proxy_running():
-            return _("✗ Proxy Offline")
         status = get_proxy_status()
         if not status:
             return _("? Proxy Unknown")
+        if not status.get("listening", True):
+            if status.get("booting"):
+                return _("Loading channels...")
+            return _("✗ Proxy Offline")
         if status.get("token_required", True) and \
                 status.get("addon_sig_age", 0) >= 420:
             return _("✗ Proxy Expired")

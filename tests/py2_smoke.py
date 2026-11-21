@@ -220,4 +220,5 @@ check(True, "name helpers take UTF-8 bytes and unicode")
 
 shutil.rmtree(TMP, ignore_errors=True)
 print("\n%d checks, %d failed" % (STATE["checks"], STATE["fails"]))
-sys.exit(1 if STATE["fails"] else 0)
+sys.stdout.flush()
+os._exit(1 if STATE["fails"] else 0)

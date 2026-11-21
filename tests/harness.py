@@ -38,6 +38,16 @@ class FakeActionMap(object):
         self.contexts, self.actions = contexts, actions
 
 
+class _TimerSignal(object):
+    """eTimer.timeout (DreamOS): connect() adds to the callbacks."""
+    def __init__(self, timer):
+        self.timer = timer
+
+    def connect(self, fn):
+        self.timer.callback.append(fn)
+        return fn
+
+
 class FakeTimer(object):
     def __init__(self):
         self.callback = []
@@ -50,6 +60,10 @@ class FakeTimer(object):
 
     def isActive(self):
         return False
+
+    @property
+    def timeout(self):
+        return _TimerSignal(self)
 
 
 class Entry(object):
@@ -71,6 +85,15 @@ _multicontent.MultiContentEntryPixmapAlphaBlend = Entry
 
 plugin = e2env.load_plugin()
 plugin.vUtils.RECENT_FILE = store.recent_file()
+# No real proxy from the screens: opening MainVavoo / the settings would
+# start one (a server and a catalog download in the test process).
+# The proxy's own tests start it themselves (test_proxy_start.py).
+plugin.run_proxy_in_background = lambda *a, **k: True
+plugin.restart_proxy_in_background = lambda *a, **k: True
+import vavoo.bouquet_manager as _bm             # noqa: E402
+for _name in ("run_proxy_in_background", "restart_proxy_in_background"):
+    if hasattr(_bm, _name):
+        setattr(_bm, _name, lambda *a, **k: True)
 
 STATE = {"fails": 0, "checks": 0}
 
@@ -87,7 +110,7 @@ def check(cond, what):
 def finish():
     shutil.rmtree(DATA, ignore_errors=True)
     print("\n%d checks, %d failed" % (STATE["checks"], STATE["fails"]))
-    sys.exit(1 if STATE["fails"] else 0)
+    e2env.exit_now(1 if STATE["fails"] else 0)
 
 
 class V(object):

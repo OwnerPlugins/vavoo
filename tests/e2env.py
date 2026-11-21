@@ -103,7 +103,24 @@ def load_plugin():
         _plugin_module.append(module)
         store.set_paths(DATA, None, os.path.join(DATA, "tiles"))
         patch("STATS_DISABLE_FILE", STATS_OFF)
+        # (the proxy's saved catalog in the throw-away folder, never
+        # /etc/enigma2)
+        module.vavoo_proxy.CATALOG_FILE = os.path.join(DATA, "vavoo_catalog.json.gz")
     return plugin
+
+
+def exit_now(code):
+    """End the test process at once, its output flushed. A plain
+    sys.exit() runs Python's shutdown while the plugin's daemon threads
+    (proxy request handlers, the update check, a recorder) may still be
+    writing to stdout - which crashes Python 3 now and then
+    ("could not acquire lock for <stdout> at interpreter shutdown", or
+    a segfault). The plugin itself never ends that way on a box."""
+    try:
+        sys.stdout.flush()
+        sys.stderr.flush()
+    finally:
+        os._exit(code)
 
 
 def module_of(name):

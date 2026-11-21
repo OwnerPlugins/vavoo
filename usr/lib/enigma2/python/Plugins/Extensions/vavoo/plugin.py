@@ -35,7 +35,6 @@ from . import (
     __version__,
     export_lock,
     PROXY_BASE_URL,
-    PROXY_STATUS_URL,
     PROXY_COUNTRIES_URL,
     PROXY_REFRESH_URL,
     EPGIMPORT_CONF,
@@ -62,6 +61,7 @@ from .vUtils import (
     ensure_str,
     fix_cache_format,
     getUrl,
+    get_proxy_status,
     get_country_code,
     initialize_cache_with_local_flags,
     is_proxy_ready,
@@ -328,22 +328,11 @@ class startVavoo(Screen):
     def _check_ready(self):
         self._elapsed_ms += self.POLL_MS
 
-        # The proxy's HTTP port only opens once the whole catalog has
-        # loaded, so every connection is refused until then. Check the
-        # port cheaply first (near-instant) and only pay for the HTTP
-        # round trip - with a single attempt, no retry/backoff - once it
-        # is actually listening. Skipping this would make every poll
-        # block for seconds at a time via getUrl()'s retry logic, on the
-        # reactor thread, for the entire catalog-load duration.
-        data = None
-        if is_proxy_running():
-            try:
-                response = getUrl(PROXY_STATUS_URL, timeout=0.5, retries=1)
-                data = loads(ensure_str(response)) if response else None
-            except Exception:
-                data = None
+        # Read in this process (no HTTP): ready = listening with its
+        # catalog.
+        data = get_proxy_status()
 
-        if data and data.get("initialized"):
+        if data and data.get("ready"):
             self._channels_count = data.get("channels_count", 0) or 0
             self._finish()
             return
@@ -530,65 +519,37 @@ class UpdatePopup(Screen):
         self.close(False)
 
 
+def proxy_status_text(state, channel_total=None):
+    """The app's status line for the proxy's state (vUtils.
+    get_proxy_status(), read in this process): "✓ Geil OK · 9818 ch",
+    "Loading channels..." while it starts, else what is wrong.
+    channel_total: the number the main list adds up to (sources of a
+    channel counted once), else the proxy's own count."""
+    if not state:
+        return _("? Proxy Unknown")
+    if not state.get("ready"):
+        if state.get("booting") or (state.get("listening") and not state.get("initialized")):
+            return _("Loading channels...")
+        return _("✗ Proxy Offline")
+    # Geil (the default catalog source) needs no addonSig token at all,
+    # so addon_sig_valid is always False on it - not a problem there.
+    token_required = state.get("token_required", True)
+    source = "Vavoo" if token_required else "Geil"
+    channels = channel_total or state.get("channels_count", 0)
+    if token_required and not state.get("addon_sig_valid", False):
+        return _("✗ Proxy Error")
+    if token_required and state.get("addon_sig_age", 0) >= 540:
+        return "{} {} · {} ch".format(source, _("(token expiring)"), channels)
+    return "✓ {} OK · {} ch".format(source, channels)
+
+
 def _shared_update_proxy_status_display(screen):
-    """Update the 'proxy_status' widget on screen (MainVavoo/vavoo share
-    this verbatim - kept in one place instead of two independently
-    maintained copies, which already drifted out of sync once before
-    for a sibling pair of constants, see PROXY_MONITOR_INTERVAL_MS
-    above)."""
+    """Update the 'proxy_status' widget on screen (MainVavoo / vavoo
+    share it). Reads the proxy in this process - no HTTP request, so
+    the GUI thread never waits on it (it runs every 10 s)."""
     try:
-        if is_proxy_running():
-            try:
-                # retries=1: this runs synchronously on the GUI/reactor
-                # thread from a repeating 10s eTimer (MainVavoo and
-                # vavoo both have one) - getUrl()'s default retries=3
-                # with backoff could block the ENTIRE UI for up to
-                # ~18s on a slow/unresponsive proxy, out of every 10s
-                # window. is_proxy_ready() right next to this call's
-                # own callers already caps itself at a single attempt
-                # for exactly this reason - this call just hadn't
-                # matched it.
-                response = getUrl(
-                    PROXY_STATUS_URL, timeout=5, retries=1)
-                if response:
-                    status_data = loads(ensure_str(response))
-
-                    # Geil (the default catalog source - see
-                    # vavoo_proxy.py's catalog_source) needs no
-                    # addonSig token at all, so addon_sig_valid is
-                    # always False while running on it - requiring it
-                    # unconditionally here showed "Proxy Error" on an
-                    # otherwise perfectly healthy Geil proxy.
-                    token_required = status_data.get(
-                        "catalog_source", "vavoo") != "geil"
-                    # The app's status line: "✓ Vavoo OK · 1234 ch" -
-                    # the number the main list adds up to when it
-                    # knows it (sources of a channel counted once),
-                    # else the proxy's own count.
-                    source = "Vavoo" if token_required else "Geil"
-                    channels = getattr(screen, '_channel_total', None) or \
-                        status_data.get("channels_count", 0)
-                    if status_data.get("initialized", False) and (
-                            not token_required or status_data.get(
-                                "addon_sig_valid", False)):
-                        token_age = status_data.get("addon_sig_age", 0)
-                        if token_required and token_age >= 540:
-                            status_text = "{} {} · {} ch".format(
-                                source, _("(token expiring)"), channels)
-                        else:
-                            status_text = "✓ {} OK · {} ch".format(
-                                source, channels)
-                    else:
-                        status_text = "✗ Proxy Error"
-                else:
-                    status_text = "? Proxy Unknown"
-            except Exception:
-                status_text = "✓ Proxy Running"
-        else:
-            status_text = "✗ Proxy Offline"
-
-        screen['proxy_status'].setText(status_text)
-
+        screen['proxy_status'].setText(to_string(proxy_status_text(
+            get_proxy_status(), getattr(screen, '_channel_total', None))))
     except Exception as e:
         print("[ProxyStatus] Error updating proxy status: " + str(e))
         screen['proxy_status'].setText(_("✗ Error"))
@@ -981,16 +942,17 @@ class MainVavoo(Screen, PreviewWindow):
     def _proxy_watchdog_check(self):
         """Watchdog to check if the proxy is still alive"""
         try:
+            # (the port itself: the real proof that the server answers)
             if not is_proxy_running():
+                if is_proxy_booting():
+                    # starting: nothing to restart, it opens when its
+                    # catalog is in
+                    self['proxy_status'].setText(_("Loading channels..."))
+                    return
                 print("[Watchdog] Proxy not running, attempting restart...")
-                self['proxy_status'].setText(_(" Restarting..."))
-
-                # Try restart
-                success = run_proxy_in_background()
-
-                if success:
-                    print("[Watchdog] Proxy restarted successfully")
-                    self['proxy_status'].setText(_("✓ Restarted"))
+                if run_proxy_in_background():
+                    print("[Watchdog] Proxy start requested")
+                    self['proxy_status'].setText(_("Starting the proxy..."))
                 else:
                     print("[Watchdog] Proxy restart failed")
                     self['proxy_status'].setText(_("✗ Restart Failed"))
@@ -1002,6 +964,7 @@ class MainVavoo(Screen, PreviewWindow):
         """Check and update the proxy status periodically"""
         try:
             self._update_proxy_status_display()
+            self._follow_catalog()
         except Exception as e:
             print(
                 "[MainVavoo][_check_and_update_proxy_status] Error in proxy monitor: " +
@@ -1011,6 +974,21 @@ class MainVavoo(Screen, PreviewWindow):
     def _update_proxy_status_display(self):
         """Internal method to update proxy status display"""
         _shared_update_proxy_status_display(self)
+
+    def _follow_catalog(self):
+        """The list was made from the saved catalog and the new one has
+        come in behind it (the proxy's catalog_version moved): the
+        countries and counts again, quietly - _on_countries_response()
+        keeps the highlighted row."""
+        state = get_proxy_status() or {}
+        version = state.get("catalog_version")
+        seen = getattr(self, "_catalog_seen", None)
+        if not state.get("ready") or version is None or seen is None or version == seen:
+            return
+        if getattr(self, "_reloading", False) or not getattr(self, "cat_list", None):
+            return
+        print("[MainVavoo] New catalog in (version %s): list updated" % version)
+        self.cat()
 
     def refresh_proxy(self):
         """Force proxy refresh"""
@@ -1199,6 +1177,8 @@ class MainVavoo(Screen, PreviewWindow):
             print("[MainVavoo] Proxy not ready, will retry shortly")
             self._retry_cat_later()
             return
+        # the catalog these counts come from (_follow_catalog())
+        self._catalog_seen = (get_proxy_status() or {}).get("catalog_version")
 
         # getUrl() below can block for tens of seconds (default
         # retries=3 with backoff) on a slow/unresponsive proxy -
@@ -1557,7 +1537,8 @@ class MainVavoo(Screen, PreviewWindow):
         self._reloading = True
         self['proxy_status'].setText(_("Reloading channel list..."))
         try:
-            restart_proxy_in_background()
+            # a new catalog from the network, not the saved one
+            restart_proxy_in_background(fresh=True)
         except Exception as e:
             print("[MainVavoo] Reload failed: {}".format(e))
             self._reloading = False

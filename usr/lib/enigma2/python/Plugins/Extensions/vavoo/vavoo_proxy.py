@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 
 import base64
 import gzip
+import hashlib
 try:
     import requests
 except ImportError:
@@ -34,6 +35,7 @@ from . import (
     GEIL_LIVE_PATH,
     group_separators,
     SOURCE_PREFS_FILE,
+    CATALOG_FILE,
     __version__
 )
 
@@ -525,6 +527,175 @@ HEADERS = {
 MAX_BOOT_AGE = 300
 
 
+# The saved catalog (CATALOG_FILE): started with when younger than this,
+# the new one fetched behind it; a failed fetch tried again this often.
+CATALOG_MAX_AGE = 3 * 86400
+CATALOG_RETRY = 15 * 60
+CATALOG_FORMAT = "vavoo_catalog"
+_CATALOG_TEXT = ("id", "name", "url", "country")
+_CATALOG_OPTIONAL = ("logo", "group", "epg_id")
+# the next start_proxy() loads from the network (restart(fresh=True))
+_fresh_start = [False]
+# the saved file's hash, once known: an unchanged catalog is not written
+# again (the flash)
+_catalog_digest = [None]
+
+
+def catalog_setting():
+    """config.plugins.vavoo.catalog_source: "auto", "geil" or "vavoo"."""
+    try:
+        return e2_config.plugins.vavoo.catalog_source.value
+    except Exception as e:
+        print(" Could not read catalog_source config: {}".format(e))
+        return "auto"
+
+
+def _text_value(value):
+    if value is None:
+        return u""
+    if isinstance(value, (str, type(u""))):
+        return value
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return u"%s" % value
+    return None
+
+
+def _clean_catalog_entry(entry):
+    """A saved channel as the catalog loaders make them, or None: a
+    hand-edited or broken file must not reach the indexes."""
+    if not isinstance(entry, dict):
+        return None
+    out = dict(entry)
+    for key in _CATALOG_TEXT + _CATALOG_OPTIONAL:
+        value = _text_value(entry.get(key))
+        if value is None:
+            return None
+        out[key] = value
+    if not all(out[key] for key in _CATALOG_TEXT):
+        return None
+    return out
+
+
+def load_saved_catalog(setting, path=None, now=None):
+    """(channels, source) of the catalog saved at the last load, or
+    None: no file, a broken one, another format, saved for another
+    catalog_source setting, older than CATALOG_MAX_AGE (a box whose
+    clock is not set yet - before its first time sync - takes it), or
+    almost empty."""
+    path = path or CATALOG_FILE
+    now = time.time() if now is None else now
+    try:
+        with gzip.open(path, "rb") as f:
+            data = loads(f.read().decode("utf-8"))
+    except Exception:
+        return None
+    try:
+        if not isinstance(data, dict) or data.get("format") != CATALOG_FORMAT or \
+                data.get("version") != 1 or data.get("setting") != setting:
+            return None
+        source = data.get("source")
+        saved = data.get("saved")
+        if source not in ("geil", "vavoo") or not isinstance(saved, (int, float)):
+            return None
+        if now - saved > CATALOG_MAX_AGE:
+            return None
+        raw = data.get("channels")
+        if not isinstance(raw, list):
+            return None
+        channels = [c for c in (_clean_catalog_entry(e) for e in raw) if c is not None]
+        if len(channels) < 100:
+            return None
+        _catalog_digest[0] = data.get("hash")
+        # (a plain str: JSON gives unicode on Python 2, and the log
+        # lines it goes into are byte strings with a "✓" there)
+        return channels, str(source)
+    except Exception as e:
+        print("[Catalog] Saved catalog not read: {}".format(e))
+        return None
+
+
+def _saved_digest(path):
+    if _catalog_digest[0] is None:
+        try:
+            with gzip.open(path, "rb") as f:
+                _catalog_digest[0] = loads(f.read().decode("utf-8")).get("hash") or ""
+        except Exception:
+            _catalog_digest[0] = ""
+    return _catalog_digest[0]
+
+
+def save_catalog(channels, source, setting, path=None):
+    """Keep the catalog for the next start (atomic: a temp file renamed
+    over it). Not written when it is the same as the saved one - the
+    flash is written as little as possible. True when written."""
+    path = path or CATALOG_FILE
+    try:
+        body = dumps(channels, sort_keys=True, separators=(",", ":"))
+        if not isinstance(body, bytes):
+            body = body.encode("utf-8")
+        digest = hashlib.md5(body).hexdigest()
+        if digest == _saved_digest(path):
+            return False
+        head = dumps({"format": CATALOG_FORMAT, "version": 1, "setting": setting,
+                      "source": source, "saved": int(time.time()), "hash": digest},
+                     sort_keys=True, separators=(",", ":"))
+        if not isinstance(head, bytes):
+            head = head.encode("utf-8")
+        doc = head[:-1] + b',"channels":' + body + b"}"
+        tmp = path + ".tmp"
+        with gzip.open(tmp, "wb") as f:
+            f.write(doc)
+        os.rename(tmp, path)
+        _catalog_digest[0] = digest
+        print("[Catalog] Saved for the next start: %d channels" % len(channels))
+        return True
+    except Exception as e:
+        print("[Catalog] Not saved: {}".format(e))
+        return False
+
+
+def status_of(p):
+    """What /status answers for a VavooProxy instance - the plugin reads
+    the same in-process (proxy_state()), never over HTTP."""
+    # Locked read - the writer (refresh_addon_sig_if_needed()) updates
+    # "sig" and "ts" as two separate statements under this same lock,
+    # so an unlocked read here could observe a freshly-updated sig
+    # paired with the old ts.
+    with p.addon_sig_lock:
+        addon_sig = dict(p.addon_sig_data)
+    return {
+        "initialized": p.initialized,
+        "channels_count": len(p.all_filtered_items),
+        "catalog_source": p.catalog_source,
+        # geil.to needs no token at all, so addon_sig_valid is
+        # permanently false and addon_sig_age a huge nonsense number on
+        # that source - this flag tells a consumer not to treat either
+        # as a problem, same disambiguation /health's "status" field
+        # already makes internally.
+        "token_required": p.catalog_source != "geil",
+        "addon_sig_valid": addon_sig["sig"] is not None,
+        "addon_sig_age": int(time.time() - addon_sig["ts"]),
+        "local_ip": p.get_local_ip(),
+        "port": PORT}
+
+
+def proxy_state():
+    """The proxy's state, read in this process (the proxy is a thread of
+    Enigma2's own Python, so no HTTP request is needed - the screens ask
+    this on the GUI thread every few seconds): status_of() plus
+    "booting" (a start in progress), "listening" (the server is up and
+    not stopped) and "ready" (listening with its catalog). Always reads
+    the module's `proxy`, which a restart replaces."""
+    p = proxy
+    state = status_of(p)
+    state["booting"] = is_proxy_booting()
+    state["listening"] = p.server is not None and not p.is_stopped()
+    state["ready"] = bool(state["initialized"] and state["listening"])
+    state["catalog_version"] = getattr(p, "catalog_version", 0)
+    state["refreshing"] = bool(getattr(p, "catalog_refreshing", False))
+    return state
+
+
 def is_proxy_booting():
     """Check if another proxy instance is currently starting up.
 
@@ -896,6 +1067,13 @@ class VavooProxy(object):
         # for the life of the process.
         self._group_members_cache = {}
         self.countries_list = []
+        # +1 each time a catalog is put in use (_install_catalog()): the
+        # main list redraws its counts when it changes
+        self.catalog_version = 0
+        # started with the saved catalog (or an empty one): fetch the
+        # new one once serving (start_catalog_refresh())
+        self.catalog_needs_refresh = False
+        self.catalog_refreshing = False
         self.current_language = "en"
         self.current_region = "US"
         self.external_ip = None
@@ -1274,118 +1452,148 @@ class VavooProxy(object):
                 return stream_url
         return None
 
-    def initialize_proxy(self):
-        """Initialize the proxy by loading the catalog: geil.to first
-        (no addonSig/token step needed at all), Vavoo's sites
-        (vavoo.to/kool.to) as the fallback catalog source when
-        geil.to's whole catalog can't be loaded - same default/
-        fallback order the companion Android app uses.
+    def initialize_proxy(self, use_saved=True):
+        """Load the catalog: the one saved at the last load first
+        (load_saved_catalog() - the proxy then answers at once, and
+        start_proxy() fetches the new one behind it with
+        start_catalog_refresh()), else from the network
+        (_download_catalog()). use_saved=False ("Reload List"): the
+        network only, waited for.
 
-        This default/fallback order is itself overridable via
-        config.plugins.vavoo.catalog_source ("auto" by default, or
-        pinned to "geil"/"vavoo") - same config-read convention
-        playlist_key already uses elsewhere in this module (see its
-        own e2_config import comment). A pinned choice is respected
-        as-is, with no fallback to the other source if it fails - an
-        explicit preference shouldn't be silently overridden the same
-        way "auto"'s best-effort fallback is.
-        """
+        Always True: with nothing loaded the proxy starts with an empty
+        catalog (and catalog_needs_refresh, so it keeps trying)."""
         try:
             print(" Initializing...")
-
-            source_preference = "auto"
-            try:
-                source_preference = e2_config.plugins.vavoo.catalog_source.value
-            except Exception as e:
-                print(" Could not read catalog_source config: {}".format(e))
-
-            if source_preference == "vavoo":
-                print(" Catalog source pinned to Vavoo - skipping Geil")
-                self.catalog_source = "vavoo"
-                sig = self.refresh_addon_sig_if_needed()
-                if not sig:
-                    print(
-                        " Warning: Could not get a valid token, but continuing anyway")
-                print(" Attempting to load catalog...")
-                all_channels = self.load_catalog(sig)
+            setting = catalog_setting()
+            if use_saved:
+                saved = load_saved_catalog(setting)
+                if saved is not None:
+                    items, source = saved
+                    self._install_catalog(items, source)
+                    self.catalog_needs_refresh = True
+                    print(" ✓ Started with the saved catalog: %d channels, %d countries (%s) - "
+                          "the new one loads behind it" % (len(items), len(self.countries_list), source))
+                    return True
+            items, source = self._download_catalog(setting)
+            self._install_catalog(items or [], source)
+            if items:
+                save_catalog(items, source, setting)
+                print(" ✓ Initialized: %d channels, %d countries" % (len(items), len(self.countries_list)))
             else:
-                print(" Attempting to load catalog from Geil (no token needed)...")
-                all_channels = self.load_geil_catalog()
-                if all_channels:
-                    self.catalog_source = "geil"
-                elif source_preference == "geil":
-                    print(
-                        " Catalog source pinned to Geil - not falling back to Vavoo")
-                    self.catalog_source = "geil"
-                else:
-                    print(" Geil catalog unavailable, falling back to Vavoo")
-                    self.catalog_source = "vavoo"
-
-                    # First, obtain a valid token
-                    sig = self.refresh_addon_sig_if_needed()
-                    if not sig:
-                        print(
-                            " Warning: Could not get a valid token, but continuing anyway")
-                        # We may continue with an old token or no token at all
-
-                    # Load the catalog
-                    print(" Attempting to load catalog...")
-                    all_channels = self.load_catalog(sig)
-
-            if not all_channels or len(all_channels) == 0:
-                print(" Warning: Catalog is empty or failed to load")
-                # Create an empty list but mark as initialized
-                self.all_filtered_items = []
-                self.channels_by_id = {}
-                self.channels_by_country = {}
-                self._group_members_cache = {}
-                self.countries_list = []
-                self.initialized = True
-                print(" Initialized with empty catalog")
-                return True
-
-            self.all_filtered_items = all_channels
-            self.channels_by_id = {}
-            self.channels_by_country = {}
-            self._group_members_cache = {}
-            countries = set()
-            for channel in all_channels:
-                channel_id = channel.get("id")
-                if channel_id:
-                    self.channels_by_id[channel_id] = channel
-                country = channel.get("country")
-                if country:
-                    country_lower = country.lower()
-                    self.channels_by_country.setdefault(
-                        country_lower, []).append(channel)
-                    group_key = _group_key(channel.get("name", ""))
-                    if group_key:
-                        self._group_members_cache.setdefault(
-                            (country_lower, group_key), []).append(channel)
-                if country and country != "default":
-                    countries.add(country)
-            self.countries_list = sorted(list(countries))
-            self.initialized = True
-
-            # Analysis
-
-            print(
-                " ✓ Initialized: %d channels, %d countries" %
-                (len(all_channels), len(countries))
-            )
+                print(" Warning: Catalog is empty or failed to load - started empty, trying again later")
+                self.catalog_needs_refresh = True
             return True
-
         except Exception as e:
             print(" Initialization error: %s" % str(e))
-            # Even in case of error, try to continue with an empty catalog
+            # Even in case of error, continue with an empty catalog
             print(" Continuing with empty catalog")
-            self.all_filtered_items = []
-            self.channels_by_id = {}
-            self.channels_by_country = {}
-            self._group_members_cache = {}
-            self.countries_list = []
-            self.initialized = True
+            self._install_catalog([], getattr(self, "catalog_source", "vavoo"))
+            self.catalog_needs_refresh = True
             return True  # Always return True; the proxy can work even without a catalog
+
+    def _download_catalog(self, setting):
+        """(channels, source) from the network: geil.to first (no
+        addonSig/token step needed at all), Vavoo's sites (vavoo.to /
+        kool.to) as the fallback when geil.to's whole catalog can't be
+        loaded - the companion Android app's order. `setting` is
+        config.plugins.vavoo.catalog_source: "auto", or pinned to
+        "geil" / "vavoo" - a pinned choice is respected as it is, with
+        no fallback to the other source (an explicit preference is not
+        silently overridden the way "auto"'s best-effort fallback is).
+        Never touches the catalog in use (a refresh runs while it
+        serves)."""
+        if setting == "vavoo":
+            print(" Catalog source pinned to Vavoo - skipping Geil")
+            sig = self.refresh_addon_sig_if_needed()
+            if not sig:
+                print(" Warning: Could not get a valid token, but continuing anyway")
+            print(" Attempting to load catalog...")
+            return self.load_catalog(sig), "vavoo"
+        print(" Attempting to load catalog from Geil (no token needed)...")
+        channels = self.load_geil_catalog()
+        if channels:
+            return channels, "geil"
+        if setting == "geil":
+            print(" Catalog source pinned to Geil - not falling back to Vavoo")
+            return [], "geil"
+        print(" Geil catalog unavailable, falling back to Vavoo")
+        sig = self.refresh_addon_sig_if_needed()
+        if not sig:
+            # We may continue with an old token or no token at all
+            print(" Warning: Could not get a valid token, but continuing anyway")
+        print(" Attempting to load catalog...")
+        return self.load_catalog(sig), "vavoo"
+
+    def _install_catalog(self, channels, source):
+        """Put a catalog in use. Every index is built aside first and
+        then assigned, so a reader (a request thread, the plugin's
+        GUI) always sees whole dicts - a dict in use is never changed,
+        which the indexes' users rely on (country_counts() even goes by
+        the identity of channels_by_country)."""
+        by_id = {}
+        by_country = {}
+        groups = {}
+        countries = set()
+        for channel in channels:
+            channel_id = channel.get("id")
+            if channel_id:
+                by_id[channel_id] = channel
+            country = channel.get("country")
+            if country:
+                country_lower = country.lower()
+                by_country.setdefault(country_lower, []).append(channel)
+                group_key = _group_key(channel.get("name", ""))
+                if group_key:
+                    groups.setdefault((country_lower, group_key), []).append(channel)
+            if country and country != "default":
+                countries.add(country)
+        self.catalog_source = source
+        self.all_filtered_items = channels
+        self.channels_by_id = by_id
+        self._group_members_cache = groups
+        self.countries_list = sorted(countries)
+        self.channels_by_country = by_country
+        self.catalog_version += 1
+        self.initialized = True
+
+    def start_catalog_refresh(self):
+        """Fetch the new catalog behind the one in use (the saved one,
+        or an empty start) - thread "vv-catalog". A failure keeps what
+        is in use and tries again every CATALOG_RETRY seconds while
+        this instance lives."""
+        if self.catalog_refreshing or not self.catalog_needs_refresh:
+            return False
+        self.catalog_refreshing = True
+
+        def _task():
+            vavoo_record.name_this_thread("vv-catalog")
+            try:
+                while not self.is_stopped():
+                    setting = catalog_setting()
+                    try:
+                        items, source = self._download_catalog(setting)
+                    except Exception as e:
+                        print("[Catalog] Refresh failed: {}".format(e))
+                        items, source = [], None
+                    if self.is_stopped():
+                        return
+                    if items:
+                        self._install_catalog(items, source)
+                        self.catalog_needs_refresh = False
+                        save_catalog(items, source, setting)
+                        print("[Catalog] ✓ The new catalog is in: %d channels, %d countries (%s)"
+                              % (len(items), len(self.countries_list), source))
+                        return
+                    print("[Catalog] No new catalog - keeping the one in use, again in %d min"
+                          % (CATALOG_RETRY // 60))
+                    self._stop_event.wait(CATALOG_RETRY)
+            finally:
+                self.catalog_refreshing = False
+
+        worker = threading.Thread(target=_task)
+        worker.daemon = True
+        worker.start()
+        return True
 
     def _parse_geil_group(self, item):
         """geil.to's group comes as a tags array (first tag), not a
@@ -2686,30 +2894,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
             elif parsed_path.path == '/status':
                 # p is already bound once at the top of do_GET()
-                # Locked read - the writer (refresh_addon_sig_if_needed())
-                # updates "sig" and "ts" as two separate statements under
-                # this same lock, so an unlocked read here could observe
-                # a freshly-updated sig paired with the old ts.
-                with p.addon_sig_lock:
-                    addon_sig = dict(p.addon_sig_data)
-                status = {
-                    "initialized": p.initialized,
-                    "channels_count": len(
-                        p.all_filtered_items),
-                    "catalog_source": p.catalog_source,
-                    # geil.to needs no token at all, so addon_sig_valid
-                    # is permanently false and addon_sig_age a huge
-                    # nonsense number on that source - this flag tells
-                    # a consumer not to treat either as a problem, same
-                    # disambiguation /health's "status" field already
-                    # makes internally.
-                    "token_required": p.catalog_source != "geil",
-                    "addon_sig_valid": addon_sig["sig"] is not None,
-                    "addon_sig_age": int(
-                        time.time() -
-                        addon_sig["ts"]),
-                    "local_ip": p.get_local_ip(),
-                    "port": PORT}
+                status = status_of(p)
                 if not self.safe_send_response(200):
                     return
                 self.send_header('Content-Type', 'application/json')
@@ -3106,10 +3291,12 @@ def shutdown_proxy():
     return True
 
 
-def restart_proxy_in_background():
+def restart_proxy_in_background(fresh=False):
     """Stop the running proxy (if any) and start a fresh one, without
     blocking the caller - stopping waits for the old server to wind
-    down, and callers are on Enigma2's GUI thread.
+    down, and callers are on Enigma2's GUI thread. fresh=True ("Reload
+    List"): the new one loads the catalog from the network and does not
+    start with the saved one.
 
     is_proxy_booting() is True from the moment this returns until the
     new server is up: the old one keeps answering for a moment while
@@ -3120,6 +3307,8 @@ def restart_proxy_in_background():
             write_booting_file()
         except Exception as e:
             print("[Proxy] Could not write booting marker: {}".format(e))
+        if fresh:
+            _fresh_start[0] = True
 
     def _task():
         try:
@@ -3194,6 +3383,9 @@ def start_proxy():
 
     # Indicate that we are booting
     write_booting_file()
+    # "Reload List" asked for a new catalog, not the saved one
+    use_saved = not _fresh_start[0]
+    _fresh_start[0] = False
 
     STOP_EVENT.clear()
     max_restarts = 3
@@ -3206,7 +3398,7 @@ def start_proxy():
                   str(restart_count + 1) + "/" + str(max_restarts) + ")")
             print("=" * 50)
 
-            if not proxy.initialize_proxy():
+            if not proxy.initialize_proxy(use_saved=use_saved):
                 print("[✗] Failed to initialize proxy")
                 restart_count += 1
                 if restart_count < max_restarts:
@@ -3245,6 +3437,8 @@ def start_proxy():
             print("[✓] IP: " + str(local_ip) + ":" + str(PORT))
             print("[✓] Ready")
             print("=" * 50)
+            # started with the saved (or no) catalog: the new one now
+            serving_proxy.start_catalog_refresh()
 
             # Reset restart counter on success
             restart_count = 0

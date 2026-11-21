@@ -57,7 +57,6 @@ from . import (
     PORT,
     PLUGIN_ROOT,
     PROXY_HOST,
-    PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
     PICON_CACHE_DIR,
     group_separators,
@@ -191,13 +190,23 @@ def _safe_console_write(line):
 def _append_to_log(line):
     try:
         _rotate_log_if_needed()
-        with open(LOG_FILE, "a") as log_file:
-            log_file.write(line + "\n")
+        if PY2:
+            with open(LOG_FILE, "a") as log_file:
+                log_file.write(line + "\n")
+        else:
+            # (UTF-8 whatever the box's locale is)
+            with open(LOG_FILE, "a", encoding="utf-8", errors="replace") as log_file:
+                log_file.write(line + "\n")
     except Exception:
         pass
 
 
 def log(msg, level="INFO", area="VUTILS"):
+    """One line into vavoo.log (and the console). Never raises: on
+    Python 2 the line is built as unicode and written as UTF-8 bytes -
+    a byte-string template with a non-ASCII message (every "✓" / "✗"
+    line, an accented channel name) used to raise UnicodeEncodeError
+    out of print(), which stopped the proxy at its own "[✓] Ready"."""
     try:
         msg = ensure_str(msg, errors='ignore')
     except Exception:
@@ -205,12 +214,13 @@ def log(msg, level="INFO", area="VUTILS"):
             msg = str(msg)
         except Exception:
             msg = '<unprintable message>'
-    line = "[{0}] [{1}] [{2}] {3}".format(
-        _datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        level,
-        area,
-        msg
-    )
+    stamp = _datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        line = u"[{0}] [{1}] [{2}] {3}".format(stamp, level, area, msg)
+    except Exception:
+        line = u"[{0}] [{1}] [{2}] <unprintable message>".format(stamp, level, area)
+    if PY2:
+        line = line.encode("utf-8", "replace")
     _safe_console_write(line)
     _append_to_log(line)
     return line
@@ -841,20 +851,17 @@ def convert_to_unicode(data):
 
 
 def get_proxy_status():
-    """Get detailed proxy status"""
+    """The proxy's status (what /status answers, plus "booting",
+    "listening" and "ready"), read in this process: the proxy is a
+    thread of Enigma2's own Python (vavoo_proxy.proxy_state()), so
+    asking it over HTTP - from the GUI thread, every few seconds - only
+    cost time. None if it cannot be read."""
     try:
-        if requests is not None:
-            response = requests.get(PROXY_STATUS_URL, timeout=3)
-            if response.status_code == 200:
-                return response.json()
-        else:
-            req = Request(PROXY_STATUS_URL)
-            response = urlopen(req, timeout=3)
-            if response.getcode() == 200:
-                return loads(response.read().decode('utf-8', 'ignore'))
-    except BaseException:
+        from . import vavoo_proxy   # (here: vavoo_proxy imports this module)
+        return vavoo_proxy.proxy_state()
+    except Exception as e:
+        debug("get_proxy_status: {}".format(e))
         return None
-    return None
 
 
 def is_proxy_running():
@@ -875,28 +882,11 @@ def is_proxy_running():
 
 
 def is_proxy_ready(timeout=2):
-    """Check if the proxy is ready to receive requests.
-
-    The proxy's HTTP server only binds its port after the full channel
-    catalog has loaded, so while that is in progress every connection is
-    refused. getUrl() retries refused connections with exponential
-    backoff (seconds of blocking per call) which is fine for a one-off
-    fetch but far too slow for a readiness poll called every few hundred
-    ms from the UI/reactor thread. Check the port cheaply first (a plain
-    connect_ex, effectively instant) and only pay for the HTTP round trip
-    - with a single attempt, since we already know the port is open -
-    once it is actually listening.
-    """
-    try:
-        if not is_proxy_running():
-            return False
-        response = getUrl(PROXY_STATUS_URL, timeout=timeout, retries=1)
-        if response:
-            data = loads(response)
-            return data.get("initialized", False)
-        return False
-    except BaseException:
-        return False
+    """True once the proxy has its catalog and is listening - read in
+    this process (get_proxy_status()), so it never blocks: `timeout` is
+    only kept for the callers that pass one."""
+    state = get_proxy_status()
+    return bool(state and state.get("ready"))
 
 
 # ===================================

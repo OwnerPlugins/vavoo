@@ -560,4 +560,4 @@ for word in ('_("Theme")', '_("Text Size")', '_("Show Counts")', '_("Clock Forma
     check(word in src or word.replace('"', "'") in src, "translatable: " + word)
 
 print("\n%d checks, %d failed" % (CHECKS, FAILS))
-sys.exit(1 if FAILS else 0)
+e2env.exit_now(1 if FAILS else 0)

@@ -121,6 +121,9 @@ UNMATCHED_FILE = os.path.join(ENIGMA_PATH, "vavoo_epg_unmatched_cache.json")
 # multi-source channel: {"grp:<country>:<key>": "<catalog id>"} - see
 # vavoo_proxy.py's VavooProxy.set_group_source().
 SOURCE_PREFS_FILE = os.path.join(ENIGMA_PATH, "vavoo_source_prefs.json")
+# The last channel catalog that loaded (vavoo_proxy.save_catalog()): the
+# proxy starts with it at once and fetches the new one behind it.
+CATALOG_FILE = os.path.join(ENIGMA_PATH, "vavoo_catalog.json.gz")
 EPGIMPORT_CONF = os.path.join(ENIGMA_PATH, "epgimport.conf")
 ALIAS_FILE = os.path.join(ENIGMA_PATH, "channel_alias.json")
 
