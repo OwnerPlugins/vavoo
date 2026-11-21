@@ -52,14 +52,17 @@ The Full HD skins of this version, drawn with sample channels.
 | ![Player info bar, Prism theme](/screen/prism_player.jpg)<br>**Player** (Prism) – the info bar: programme now and next, time left, source, clock and date, one row of keys | ![Channel list over the video, Halo theme](/screen/halo_player_list.jpg)<br>**Channel list over the video** (Halo, BLUE in the player) – with the mini guide |
 | ![Programme guide, Prism theme](/screen/prism_guide.jpg)<br>**Programme guide** (Prism) – ● recording set, ⏰ reminder; RED records the highlighted programme | ![Recordings, Orbit theme](/screen/orbit_recordings.jpg)<br>**Recordings** (Orbit) – timers set in the guide, a recording in progress, the recordings on the disk |
 | ![Favourites in folders, Orbit theme](/screen/orbit_favourites.jpg)<br>**Favourites** (Orbit) – in your own folders and order | ![Search all channels, Prism theme](/screen/prism_search.jpg)<br>**Search all channels** (Prism) – each result with its country |
-| ![Settings, Halo theme](/screen/halo_settings.jpg)<br>**Settings** (Halo) | ![Classic theme](/screen/classic_main.jpg)<br>**Classic** – the plugin's original look |
+| ![Settings, Halo theme](/screen/halo_settings.jpg)<br>**Settings** (Halo) – the options most people change; "All settings ▶" shows the rest | ![Welcome, Prism theme](/screen/prism_welcome.jpg)<br>**Welcome** (Prism) – a new install's first opening: the look, then your countries and a PIN |
+| ![Classic theme](/screen/classic_main.jpg)<br>**Classic** – the plugin's original look | |
 
 ## ✨ Key Features
 
 ### Watching
 - **Looks Like the Android App** – The themes of the companion Android app: **Prism** (Vavoo's violet, the default), **Halo** (frosted glass over a blue aurora) and **Orbit** (a teal cockpit display), each with its own background, fonts, rounded panels, colour keys and preview frame, in large or normal text. **Classic** keeps the plugin's original look and backgrounds (see "Themes" below)
 - **Live TV Streaming** – Thousands of live channels, browsed by country, with country flags; channels numbered like a receiver's list (the number keys go to that row)
-- **Channel Logos or Initials** – As in the app: each channel's initials on a tile of its own colour ("RAI 1" → "R1"), or its logo with the setting "Channel Logos"
+- **Opens at Once** – The plugin starts with the channel list it loaded last time (kept in `/etc/enigma2`, up to 3 days old) and fetches the new one behind it: no waiting for the catalog after a reboot. The counts update by themselves when the new list is in
+- **Fast Zapping** – 3 seconds after you change channel, the next one in the same direction is already prepared, so the next CH+ / CH- starts sooner (Geil source)
+- **Channel Logos or Initials** – As in the app: each channel's initials on a tile of its own colour ("RAI 1" → "R1"), or its logo with the setting "Channel Logos". Logos are kept on a USB stick, SD card or SSD when the box has one (they stay after a reboot and use no memory), else in memory, kept small
 - **Sub-categories** – A country whose channels come in categories (Sport, News...) lists "All channels", the categories and "General" first
 - **Choose Countries** – Hide the countries you never watch from the main list and from search
 - **Stable Streams** – The local proxy keeps one stream address for the whole viewing. When a stream fails it is retried with a fresh address, and if it fails again the plugin moves to another source of the same channel by itself
@@ -72,11 +75,13 @@ The Full HD skins of this version, drawn with sample channels.
 - **Reminders** – OK on a programme still to come → "Remind me": at its start a window offers to watch it, also with the plugin closed
 - **Recordings** – As in the app: record the channel you watch (MENU → Record, or REC) until the programme's end, or set a recording in the guide. It goes on when you zap, close the plugin or put the box in standby, and the box wakes from deep standby for one set in the guide. Recordings go to Enigma2's movie folder (they show in the box's own movie list too) and play from the "Recordings" list
 - **Pause Live TV** – PAUSE in the player records the channel on the disk; PLAY goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)
-- **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed
+- **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed. The guides of your favourites' countries are loaded in the background shortly after the plugin opens, so they show at once
 - **Search** – As in the app: the words in any order, accents and case do not count, "1" finds "SPORT 1" but not "SPORT 11"; from 3 letters also the channels whose programme on now has the text. Inside a country (YELLOW in the channel list) or in every country at once (YELLOW in the main menu - each result shows its country). The results become the player's list
 - **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them. Put them in your own order (YELLOW Move) and in folders (BLUE Folder), as in the app. Kept in `/etc/enigma2`, so a plugin update keeps them
 - **Parental Control** – A 4-digit PIN for adult channels, chosen countries and (optionally) the settings; once entered, all is open for 15 minutes
 - **Backup / Restore** – The settings, favourites (with folders and order), recently watched, sources and countries in one file on your disk
+- **Simple Settings** – Settings open with the 14 options most people change; "All settings ▶" at the end shows the rest
+- **Welcome** – On a new install, the first opening asks for the look, your countries and (if you want) a PIN for adult channels
 
 ### In your Enigma2 channel list
 - **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom
@@ -86,7 +91,7 @@ The Full HD skins of this version, drawn with sample channels.
 - **Live Playlist Server** – `/playlist.m3u` always reflects the current catalog, no manual regeneration needed; optional access key
 
 ### Under the hood
-- **Local Proxy** – Always on, handles the authentication tokens (no 10-minute blocks), with its status shown in the main screens
+- **Local Proxy** – Always on, handles the authentication tokens (no 10-minute blocks), with its status shown in the main screens ("✓ Geil OK · 9818 ch"; "Loading channels..." while it starts). The screens read it directly - it runs inside the plugin - so they never wait on it
 - **Two Catalog Sources** – Geil (default, needs no token) with automatic fallback to Vavoo/Kool, or pin one of them in the settings
 - **Mirror Fallback** – Automatic switch to a mirror when a site answers HTTP 451 or is unreachable
 - **Real-time Notifications** – A bar at the top of the screen for exports, EPG processing and errors, on any screen resolution
@@ -109,7 +114,7 @@ The remote's own keys go straight to their function, in every list and on every 
 | OK | Open the selected country (or the "★ Favourites" row) |
 | GREEN | Favourites |
 | YELLOW | Search all channels, in every country |
-| BLUE | Reload List: download the channel list again (asks first; the proxy restarts, a channel playing stops for a moment) |
+| BLUE | Reload List: download the channel list again (asks first; the proxy restarts and waits for the new list, a channel playing stops for a moment) |
 | MENU | Settings, Reload bouquets, Remove all Vavoo bouquets, Import EPG now, Fix EPG cache, Refresh token, Show Log, About |
 | INFO | Version, channels and countries (hold INFO: About) |
 | EPG | The programme guide of your favourites (the EPG import is in MENU → Import EPG now) |
@@ -122,7 +127,7 @@ The remote's own keys go straight to their function, in every list and on every 
 | CH+ / CH- | Page up / down |
 | RED / EXIT / BACK | Quit |
 
-The list starts with "★ Favourites (n)" once you have favourites, then "Recently watched (n)", and shows each country's channel count ("Portugal (174)", setting "Show Counts"). Countries hidden in Settings → Choose countries are left out; a country locked by Parental Control has a padlock. The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch". On the very first start, Choose countries opens by itself once.
+The list starts with "★ Favourites (n)" once you have favourites, then "Recently watched (n)", and shows each country's channel count ("Portugal (174)", setting "Show Counts"). Countries hidden in Settings → Choose countries are left out; a country locked by Parental Control has a padlock. The line under the name shows the source and the channels, as in the app: "✓ Geil OK · 9818 ch". On a new install the welcome (the look, your countries, a PIN) comes before the list, once.
 
 ### Channel list
 | Key | Action |
@@ -285,6 +290,7 @@ A recording still being recorded can be watched too (from its start; each move o
 | Key | Action |
 |-----|--------|
 | OK | Run the highlighted action ("Ok for Exec", "Ok to view", "Ok to open") or edit a text field |
+| OK on the last row | "All settings (n more) ▶": every option; "◀ Fewer settings": the basic ones again |
 | LEFT / RIGHT | Change the highlighted option |
 | GREEN | Save |
 | HELP | The keys of this screen |
@@ -302,11 +308,12 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 ## 🚀 Quick Start Guide
 
 ### First-Time Setup
-1. **Open the Vavoo Plugin** – The proxy starts automatically (a start screen shows its progress)
-2. **Select a Country** – Choose your desired country (e.g., "Italy") and press OK
-3. **Watch** – Press OK on a channel to play it
-4. **Export (optional)** – In the channel list press MENU → "Export this country as a bouquet" to put the country in your Enigma2 channel list (notifications show progress). On an exported country the same entry offers to remove it
-5. **Return to TV** – Your channels appear in the channel list
+1. **Open the Vavoo Plugin** – The proxy starts automatically (a start screen shows its progress; from the second time on it starts with the last channel list, at once)
+2. **Welcome** – On a new install: choose the look (Prism, Halo, Orbit or Classic - in use straight away), your countries, and whether to lock adult channels with a PIN. EXIT on the look skips it; it does not come back
+3. **Select a Country** – Choose your desired country (e.g., "Italy") and press OK
+4. **Watch** – Press OK on a channel to play it
+5. **Export (optional)** – In the channel list press MENU → "Export this country as a bouquet" to put the country in your Enigma2 channel list (notifications show progress). On an exported country the same entry offers to remove it
+6. **Return to TV** – Your channels appear in the channel list
 
 ### Automatic Updates (Recommended)
 - Go to **MENU (Config)** → set **"Scheduled EPG/Bouquet Update:"** to on
@@ -326,47 +333,47 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 - A notification will show the result
 
 ## 🔧 User Configuration
-Press **MENU** → **Settings** in the main menu, the channel list or Favourites. Options appear in this order:
+Press **MENU** → **Settings** in the main menu, the channel list or Favourites. Settings open with the basic options (✓ below); the last row, **"All settings (n more) ▶"**, shows every option, in this order (**"◀ Fewer settings"** goes back). A change is kept even when its row is hidden again:
 
-| Option | What it does | Default |
-|--------|--------------|---------|
-| **Theme** | Prism, Halo, Orbit (the Android app's themes) or Classic (the plugin's original look). Takes effect when the plugin is opened again | Prism |
-| – **Background** | Only with Classic, right under Theme: Classic's background image, Oktus or Kiddac (each other theme has its own). Takes effect when the plugin is opened again | Oktus |
-| **Text Size** | Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Themes only | Large |
-| **Show Counts** | Channel count per country and number of favourites in the main list | Yes |
-| **Clock Format** | 24 or 12 hours, for the clock and the programme times. Themes only | 24 hours |
-| **Generate .m3u files (Ok for Exec)** | Press OK to export `.m3u` playlist files (one country or all), with links for this box only (127.0.0.1) or for other devices on your network | – |
-| **Playlist Access Key (optional)** | If set, the live playlist at `/playlist.m3u` requires `?key=<this value>` | empty (no key) |
-| **Catalog/Stream Source** | Where channels and streams come from: "Auto" (Geil first, Vavoo/Kool if Geil is unavailable), "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |
-| **Proxy startup timeout (seconds)** | How long the start screen waits for the proxy. Raise it on a slow connection or VPN | 120 (15-300) |
-| **Enable Vavoo EPG** | Creates the EPG source for EPGImport with Vavoo programme data and enables it there after each export | Off |
-| **Preview Window** | OK on a channel plays it in the small window beside the list; OK again on it opens full screen (BLUE goes straight there). Off: OK opens full screen at once | Yes |
-| **Start with last channel** | Open the last watched channel when the plugin starts | No |
-| **Pause Live TV** | PAUSE in the player records the channel on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours). Off: PAUSE only pauses | Yes |
-| **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for 6 hours. Switch it off on a slow connection or a weak box | Yes |
-| **Group Sources** | The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row | Yes |
-| **Channel Logos** | The channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), the country's flag in the player, and no logo is downloaded | No |
-| **Sub-categories** | A country whose channels come in categories lists "All channels", the categories and "General" first | Yes |
-| **Scheduled EPG/Bouquet Update:** | Periodically re-matches EPG and refreshes the bouquets of your exported countries in the background | Off |
-| – **Schedule type:** | "interval" or "fixed time" (shown when the schedule is on) | interval |
-| – **EPG/Bouquet update interval (minutes):** | How often, counting from now | 360 (5-3600) |
-| – **Time to start EPG/bouquet update:** | Time of day, for "fixed time" | – |
-| **Movie Services Reference** | The Enigma2 player used for streams: 4097 always; 5001 when gstplayer is installed; 5002 when exteplayer3 is installed; 8193 on DreamOS images | 4097 |
-| **Bouquet Position in List** | Put the Vavoo bouquets at the top or the bottom of the channel list | Bottom |
-| **Link in Main Menu** | Show the plugin in the main Enigma2 menu | Yes |
-| **Send Anonymous Statistics** | Anonymous startup/heartbeat ping (see Privacy below) | Yes |
-| **Debug logging** | Verbose messages in `vavoo.log`; takes effect immediately. Leave off unless troubleshooting | No |
-| **Choose countries** | The countries of the main list and of "Search all": OK shows / hides one (✓ / ✗); Back · Save · Show all · Hide all. At least one stays | all shown |
-| **Parental Control** | The PIN and what it locks (see below). Asks for the PIN first when one is set | no PIN |
-| **Recordings** | The reminders and recordings set in the guide and the recordings on the disk (see "Recordings" above) | – |
-| **Recordings folder: …** | Where recordings go: Enigma2's movie folder or the movie folder of another mounted disk (with its free space). They also show in the box's own movie list | movie folder |
-| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries, the reminders and recording timers (not the recordings themselves) - not parental control. Asks for the PIN when one is set | – |
-| **Restore from Backup** | Lists the backups found there, newest first; the chosen one replaces all of the above (no merge) and the proxy restarts. The theme and text size change when the plugin is opened again. Not while a recording runs ("Not now: a recording is running") | – |
-| **Show Log (Ok to view)** | View the last 200 lines of `/tmp/vavoo.log` | – |
-| **View Favourites (Ok to open)** | Browse and play your starred channels | – |
-| **Clear Favourites** | Remove all favourite channels (asks first) | – |
-| **Licences** | The plugin's licence and the fonts' (SIL OFL) | – |
-| **About** | Version, authors, licence | – |
+| Option | What it does | Default | Basic |
+|--------|--------------|---------|:-----:|
+| **Theme** | Prism, Halo, Orbit (the Android app's themes) or Classic (the plugin's original look). Takes effect when the plugin is opened again | Prism | ✓ |
+| – **Background** | Only with Classic, right under Theme: Classic's background image, Oktus or Kiddac (each other theme has its own). Takes effect when the plugin is opened again | Oktus | ✓ |
+| **Text Size** | Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Themes only | Large | ✓ |
+| **Show Counts** | Channel count per country and number of favourites in the main list | Yes |  |
+| **Clock Format** | 24 or 12 hours, for the clock and the programme times. Themes only | 24 hours | ✓ |
+| **Generate .m3u files (Ok for Exec)** | Press OK to export `.m3u` playlist files (one country or all), with links for this box only (127.0.0.1) or for other devices on your network | – |  |
+| **Playlist Access Key (optional)** | If set, the live playlist at `/playlist.m3u` requires `?key=<this value>` | empty (no key) |  |
+| **Catalog/Stream Source** | Where channels and streams come from: "Auto" (Geil first, Vavoo/Kool if Geil is unavailable), "Geil only" or "Vavoo/Kool only". Saving a change restarts the proxy | Auto |  |
+| **Proxy startup timeout (seconds)** | How long the start screen waits for the proxy. Raise it on a slow connection or VPN | 120 (15-300) |  |
+| **Enable Vavoo EPG** | Creates the EPG source for EPGImport with Vavoo programme data and enables it there after each export | Off |  |
+| **Preview Window** | OK on a channel plays it in the small window beside the list; OK again on it opens full screen (BLUE goes straight there). Off: OK opens full screen at once | Yes | ✓ |
+| **Start with last channel** | Open the last watched channel when the plugin starts | No | ✓ |
+| **Pause Live TV** | PAUSE in the player records the channel on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours). Off: PAUSE only pauses | Yes | ✓ |
+| **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for 6 hours. Switch it off on a slow connection or a weak box | Yes | ✓ |
+| **Group Sources** | The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row | Yes |  |
+| **Channel Logos** | The channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), the country's flag in the player, and no logo is downloaded | No | ✓ |
+| **Sub-categories** | A country whose channels come in categories lists "All channels", the categories and "General" first | Yes |  |
+| **Scheduled EPG/Bouquet Update:** | Periodically re-matches EPG and refreshes the bouquets of your exported countries in the background | Off |  |
+| – **Schedule type:** | "interval" or "fixed time" (shown when the schedule is on) | interval |  |
+| – **EPG/Bouquet update interval (minutes):** | How often, counting from now | 360 (5-3600) |  |
+| – **Time to start EPG/bouquet update:** | Time of day, for "fixed time" | – |  |
+| **Movie Services Reference** | The Enigma2 player used for streams: 4097 always; 5001 when gstplayer is installed; 5002 when exteplayer3 is installed; 8193 on DreamOS images | 4097 |  |
+| **Bouquet Position in List** | Put the Vavoo bouquets at the top or the bottom of the channel list | Bottom |  |
+| **Link in Main Menu** | Show the plugin in the main Enigma2 menu | Yes |  |
+| **Send Anonymous Statistics** | Anonymous startup/heartbeat ping (see Privacy below) | Yes |  |
+| **Debug logging** | Verbose messages in `vavoo.log`; takes effect immediately. Leave off unless troubleshooting | No |  |
+| **Choose countries** | The countries of the main list and of "Search all": OK shows / hides one (✓ / ✗); Back · Save · Show all · Hide all. At least one stays | all shown | ✓ |
+| **Parental Control** | The PIN and what it locks (see below). Asks for the PIN first when one is set | no PIN | ✓ |
+| **Recordings** | The reminders and recordings set in the guide and the recordings on the disk (see "Recordings" above) | – | ✓ |
+| **Recordings folder: …** | Where recordings go: Enigma2's movie folder or the movie folder of another mounted disk (with its free space). They also show in the box's own movie list | movie folder |  |
+| **Backup Settings & Favourites** | Writes `VavooStream-backup-YYYYMMDD-HHMM.json` to `/media/hdd`, `/media/usb` or `/media/mmc` (the first that can be written; else `/etc/enigma2`): these settings, the favourites with folders and order, recently watched, the chosen sources and countries, the reminders and recording timers (not the recordings themselves) - not parental control. Asks for the PIN when one is set | – | ✓ |
+| **Restore from Backup** | Lists the backups found there, newest first; the chosen one replaces all of the above (no merge) and the proxy restarts. The theme and text size change when the plugin is opened again. Not while a recording runs ("Not now: a recording is running") | – | ✓ |
+| **Show Log (Ok to view)** | View the last 200 lines of `/tmp/vavoo.log` | – |  |
+| **View Favourites (Ok to open)** | Browse and play your starred channels | – |  |
+| **Clear Favourites** | Remove all favourite channels (asks first) | – |  |
+| **Licences** | The plugin's licence and the fonts' (SIL OFL) | – |  |
+| **About** | Version, authors, licence | – | ✓ |
 
 The local proxy has no on/off switch: every channel list and stream goes through it, and it is started and monitored automatically.
 
@@ -431,9 +438,11 @@ The local proxy has no on/off switch: every channel list and stream goes through
   path. Both are normalized to the host that actually serves them
   (`vavoo.to/live2/logo/<n>.png`) before reaching `/channels` or any
   export, regardless of which catalog is active. The plugin's own
-  channel list downloads and caches these per-channel (`/tmp/vavoo_picons`,
-  same on-box cache-dir convention as the country flag icons), showing
-  the real picon instead of the generic channel icon once it lands.
+  channel list downloads and caches these per-channel (on a USB stick,
+  SD card or SSD in `<disk>/.vavoo_logos`, else in `/tmp/vavoo_picons`),
+  showing the real picon instead of the generic channel icon once it
+  lands. A hard disk is never used for them: waking it would hold the
+  list while the logos are drawn.
 - **Recordings have a token of their own**: Vavoo plays one stream per
   token, so each recording asks for its own (renewed like the shared
   one while it records) and resolves its channel with it, never
@@ -612,6 +621,10 @@ The proxy provides these endpoints:
 
 - **Initials Tiles**: `/tmp/vavoo_tiles/` – The channel tiles and padlocks drawn by the plugin (one per colour and size), made again after a reboot
 
+- **Saved Channel List**: `/etc/enigma2/vavoo_catalog.json.gz` – The last channel catalog that loaded (gzip JSON: `{"format": "vavoo_catalog", "version": 1, "setting", "source", "saved", "hash", "channels"}`), written only when it changes. The proxy starts with it when it is under 3 days old and from the same "Catalog/Stream Source" setting, then loads the new one behind it. Delete it to make the next start wait for the network
+
+- **Channel Logos**: `<disk>/.vavoo_logos/` on a USB stick, SD card or SSD (64 MB at most), else `/tmp/vavoo_picons/` (8 MB) – The downloaded logos, the oldest deleted first
+
 - **Source Picks**: `/etc/enigma2/vavoo_source_prefs.json` – The stream source chosen in the player (MENU → Source), per multi-source channel (`{"grp:<country>:<name>": "<source id>"}`). Delete it to go back to automatic selection everywhere
 
 - **Curated Channel DB Cache** (in-memory only, not a file on disk): each country's downloaded `epg-channel-db/vavoo_channels_<cc>.json` is kept in memory for 24h per process so repeated exports/lookups don't re-download it every time (a failed download is retried after a minute) - cleared on plugin/proxy restart
@@ -649,7 +662,7 @@ dmesg | grep -iE "out of memory|killed process" | tail -5
 grep -E "MemAvailable|Shmem:|Slab" /proc/meminfo
 ```
 
-In `top -H` the plugin's own threads have names: `vv-guide` (programme guide), `vv-nownext` (Now/Next beside the list), `vv-bar` / `vv-miniguide` (the player's programme lines), `vv-rec` / `vv-pause` (a recording / the pause buffer, with `ffmpeg` beside them at a lower priority), `vv-proxy` / `vv-token` / `vv-proxymain` (the local proxy), `vv-lists`, `vv-search`, `vv-logos`, `vv-export`. `/tmp/vavoo.log` says how long each guide took to read and how much memory Enigma2 used and the box had left at that moment ("[EPG] Guide pl loaded in 23.4s ... (enigma2 148 MB, box 412 MB free)"), and every channel whose guide took over a second to find ("[EPG] slow match"). `/tmp` is the box's RAM: the plugin keeps its logo cache there to 8 MB (`/tmp/vavoo_picons`, the oldest logos go first) and deletes pause buffers left behind each time it opens.
+In `top -H` the plugin's own threads have names: `vv-guide` (programme guide), `vv-nownext` (Now/Next beside the list), `vv-bar` / `vv-miniguide` (the player's programme lines), `vv-rec` / `vv-pause` (a recording / the pause buffer, with `ffmpeg` beside them at a lower priority), `vv-proxy` / `vv-token` / `vv-proxymain` / `vv-catalog` (the local proxy and its catalog fetched behind the saved one), `vv-prefetch` (the next channel prepared), `vv-preload` (the favourites' guides loaded ahead), `vv-lists`, `vv-search`, `vv-logos`, `vv-export`. `/tmp/vavoo.log` says how long each guide took to read and how much memory Enigma2 used and the box had left at that moment ("[EPG] Guide pl loaded in 23.4s ... (enigma2 148 MB, box 412 MB free)"), and every channel whose guide took over a second to find ("[EPG] slow match"). `/tmp` is the box's RAM: without a USB stick, SD card or SSD the plugin keeps its logo cache there to 8 MB (`/tmp/vavoo_picons`, the oldest logos go first), and it deletes pause buffers left behind each time it opens.
 
 The plugin also keeps an eye on the box's memory, whether it is open or not. Every 30 minutes `/tmp/vavoo.log` gets a line like "[MEM] enigma2 166 MB, box 367 MB free" - over hours or days these show whether Enigma2 keeps growing. When the box has less than 100 MB left, it writes a report to `/etc/enigma2/vavoo_memory.log` (see above: it is still there after the reboot that a full memory usually ends in) and gives back what is its own: the programme guides in memory except the one of the country being watched, its icons, and the logo cache down to 4 MB ("[MEM] Low memory ..." / "[MEM] Released ..." in the log). If the box was slow or rebooted by itself, send that file.
 

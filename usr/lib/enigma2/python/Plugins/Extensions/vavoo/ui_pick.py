@@ -590,11 +590,12 @@ class VavooParental(VavooPickScreen):
 # ---------------------------------------------------------------------
 # Welcome (a new install's first opening)
 # ---------------------------------------------------------------------
+# (short: the popup's rows are not wide)
 WELCOME_THEMES = (
     ("prism", "Prism - Vavoo's violet"),
-    ("halo", "Halo - frosted glass over a blue aurora"),
-    ("orbit", "Orbit - a teal cockpit display"),
-    ("classic", "Classic - the plugin's original look"),
+    ("halo", "Halo - frosted glass"),
+    ("orbit", "Orbit - teal cockpit"),
+    ("classic", "Classic - the original look"),
 )
 
 

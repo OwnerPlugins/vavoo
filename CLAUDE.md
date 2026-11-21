@@ -161,8 +161,35 @@ from them for the box's resolution. Rules:
   progress_track / progress) when the theme skin is used.
 - Main-list counts come from `vavoo_proxy.proxy.country_counts()`
   (in-process, from `cat()`'s background thread; grouped like
-  `/channels`, computed once per catalog). "Reload List" =
-  `restart_proxy_in_background()` (the catalog is only loaded at start).
+  `/channels`, computed once per catalog). `cat()` notes the catalog's
+  `catalog_version`; `MainVavoo._follow_catalog()` (from the 10 s
+  monitor) runs `cat()` again when a new catalog came in behind the
+  saved one (highlight kept). "Reload List" =
+  `restart_proxy_in_background(fresh=True)` (waits for a new catalog
+  from the network, see "Saved catalog" below).
+- The status line is `proxy_status_text(get_proxy_status(), total)`
+  (plugin.py), read in-process: "✓ Geil OK · 9818 ch", "Loading
+  channels..." while it starts (booting, or listening without a
+  catalog), else what is wrong. The 60 s watchdog checks the port (the
+  real proof the server answers) and never restarts a proxy that is
+  only booting.
+- Settings (`vavoo_config`) open with `basic_rows()` (14: look, player,
+  lists, countries, PIN, recordings, backup / restore, About); the last
+  row, `cfg.more_settings` ("All settings (n more) ▶" / "◀ Fewer
+  settings"), is `toggle_all_settings()` from `gnm3u()`. Enigma2 only
+  saves / cancels the rows in its list, so `createSetup()` remembers
+  every row it built (`_rows_seen`) and save / extnok / the GREEN
+  caption use `_all_entries()` / `_settings_changed()` - never
+  `self["config"].list` / `.isChanged()` (a change made in "All
+  settings" and hidden again would be lost).
+- A new install's welcome (`ui_pick.run_welcome()`, from
+  `startVavoo.clsgo()` when `welcome_needed()`, then `_open_main()`):
+  the look (applied at once - MainVavoo is not open yet and
+  `build_theme_skin()` caches per theme), Choose countries, a PIN for
+  adult channels. `cfg.welcome_done`; `existing_install()` (countries
+  asked, favourites, recents, hidden countries, a PIN) marks an install
+  in use as welcomed without it. `open_action_menu()` and
+  `ask_new_pin()` take `on_cancel` so a flow can go on after EXIT.
 
 **Preview window and player (`ui_base.py`'s `NOW_PLAYING`, `ui_player.py`)** — as in the app, OK on a
 channel plays it in the list's preview window and OK again (or BLUE)
@@ -297,6 +324,37 @@ on `127.0.0.1:4323`. It:
   `is_proxy_ready()`); `restart_proxy_in_background()` is the only
   correct way to restart it, and a stopped `VavooProxy` instance is
   never reused (`start_proxy()` creates a fresh one).
+- The plugin reads the proxy's state in-process, never over HTTP:
+  `vavoo_proxy.proxy_state()` = `status_of(p)` (what `/status`
+  answers) + `booting` / `listening` (server set, not stopped) / `ready`
+  / `catalog_version` / `refreshing`, always through the module's
+  `proxy` (a restart replaces it). `vUtils.get_proxy_status()` /
+  `is_proxy_ready()` wrap it (import inside the function: vavoo_proxy
+  imports vUtils). `is_proxy_running()` (a port probe) is only for the
+  watchdog.
+- Saved catalog: every catalog that loads is kept in `CATALOG_FILE`
+  (`/etc/enigma2/vavoo_catalog.json.gz`, `save_catalog()`, atomic,
+  not written when its hash is the same - the flash).
+  `initialize_proxy(use_saved=True)` starts with it
+  (`load_saved_catalog(setting)`: format / version / the same
+  `catalog_source` setting / under `CATALOG_MAX_AGE` 3 days - a box
+  whose clock is not set yet takes it - / entries cleaned, at least 100)
+  so the port opens at once, and `start_proxy()` then calls
+  `start_catalog_refresh()` (thread "vv-catalog": `_download_catalog()`
+  - which never touches the catalog in use - then `_install_catalog()`,
+  else again every `CATALOG_RETRY` 15 min while the instance lives; an
+  empty start does the same). `_install_catalog()` builds every index
+  aside and then assigns them (a dict in use is never changed; readers
+  in other threads see whole dicts) and bumps `catalog_version`.
+  `restart_proxy_in_background(fresh=True)` sets `_fresh_start`, read
+  once by the next `start_proxy()`: the network only.
+- `prefetch(channel_id)`: the player (`Playstream2._schedule_prefetch()`,
+  3 s after `zap_to()`, the next channel in the zap's direction - CH+
+  +1, CH- -1, the rest +1) has the address resolved ahead, into the
+  resolve cache. Geil only (Vavoo plays one stream per token: no
+  resolve on the shared one); a group's first source by
+  `_ordered_group_members()` (read-only: no `_group_state`); no stream
+  count; one at a time (`_prefetch_lock`).
 - Falls back from `vavoo.to` to `kool.to` on HTTP 451.
 - It listens on every address (bouquets and `/playlist.m3u` serve other
   devices), but its controls (`LOCAL_ONLY_PATHS`: `/shutdown`,
@@ -428,6 +486,12 @@ the real files (measured, see the comment block above
 - Names: the feed writes accents, Vavoo's lists often do not
   (`_fold_accents()`); some titles arrive with character codes instead
   of characters (`_repair_guide_text()`).
+- `preload_epg_guides(codes, go_on)`: `MainVavoo._schedule_guide_preload()`,
+  once per opening, 15 s after the list is up, thread "vv-preload",
+  `guide_countries()` (favourites' countries, most first, then the
+  recently watched): at most 2, never one that would push another
+  guide out (`_EPG_GUIDE_KEEP - 1`), never under `PRELOAD_MIN_FREE_KB`
+  (200 MB available), stopped by `go_on()` when the player opens.
 - `lookup_now_next()` can block (download, matcher): background
   threads only. On the GUI thread use `peek_now_next()`, which answers
   from memory or returns None. `NowNextPanel` waits for the highlight
@@ -584,10 +648,17 @@ records and timeshifts only DVB, so the plugin does it itself:
   check alone never notices). Records are read through
   `_clean_record()` (numbers as numbers, texts as texts, the file name
   for what is wrong) and written through `_as_texts()` (Python 2: UTF-8
-  bytes beside unicode broke `json.dumps`). `/tmp` is RAM on a box: the logo cache is trimmed
-  to 8 MB (`vUtils.trim_picon_cache()`) and leftover pause buffers are
-  deleted (`clean_pause_leftovers()`) each time `main()` runs; the
-  guide's load line carries `memory_note()`.
+  bytes beside unicode broke `json.dumps`). The logos go to a flash disk
+  when there is one: `main()` runs `vUtils.set_picon_cache_dir(
+  ui_record.logo_folder())` - the recordings' disk, else a
+  `media_mounts()` one, that is local (not `NETWORK_FS`), on a disk,
+  non-rotational (`vavoo_record.non_rotational()`: `/sys/block/<disk>/
+  queue/rotational` is 0; unknown = no), writable, with `LOGO_MIN_FREE`
+  200 MB: `<disk>/.vavoo_logos`, `PICON_CACHE_MAX_DISK` 64 MB. Never a
+  hard disk (waking it holds the list while rows draw logos on the GUI
+  thread); else `/tmp/vavoo_picons` (RAM) trimmed to 8 MB. Leftover
+  pause buffers are deleted (`clean_pause_leftovers()`) each time
+  `main()` runs; the guide's load line carries `memory_note()`.
 - `MEMORY_WATCH` (`_MemoryWatch`, ticked by `_ReminderService.tick()`,
   so it runs while the plugin is closed too) reads `/proc/meminfo` once
   a minute and logs "[MEM] " + `memory_note()` every 30 minutes. Below
@@ -597,7 +668,8 @@ records and timeshifts only DVB, so the plugin does it itself:
   `/etc/enigma2/vavoo_memory.log` (survives the reboot an OOM ends in;
   kept to `MEMORY_LOG_MAX` 64 KB, whole lines) and releases the
   plugin's own memory: `vUtils.release_guides(keep=<the player's
-  country>)`, `_icon_cache`, the logo cache down to 4 MB.
+  country>)`, `_icon_cache`, the logo cache down to 4 MB (only while
+  it is in /tmp: `vUtils.picon_cache_in_ram()`).
 - Logs: ffmpeg's to `/tmp/vavoo_record.log`, the rest to `vavoo.log`.
   The bar's glyphs are ❚❚ and ◀◀ (⏸ / ⏪ are missing from the fonts
   and from many boxes' fallback font).
@@ -660,7 +732,15 @@ screen crash or a lookup fail there, never on Python 3):
   catalog group and every `get_country_code()` call fail.
 - Values from JSON files are unicode on Python 2, from `_()` and
   `to_string()` UTF-8 bytes: convert at the edge (`to_text()` in,
-  `to_string()` out to widgets).
+  `to_string()` out to widgets). A short ASCII value from a file that
+  goes into byte-string text (a log line with "✓") is made a plain
+  `str()` (`load_saved_catalog()`'s source).
+- `vUtils.log()` builds its line as unicode (`u"[{0}] ..."`) and
+  writes it as UTF-8 bytes on Python 2: a byte-string template with a
+  non-ASCII message raised UnicodeEncodeError out of every module's
+  `print()` - on images that keep Python's ASCII default codec the
+  proxy stopped at its own "[✓] Ready" (`tests/test_log.py`,
+  `tests/test_proxy_start.py` guard it).
 
 ## Enigma2-specific conventions
 
@@ -787,6 +867,16 @@ Needs `six` and `requests`; the recording tests need `ffmpeg` /
   ffmpeg in the temp folder) for the recording / pause tests.
 - Two checks need the real fr / pl guides (14 MB, not committed):
   `tests/epgdl/` or `$VAVOO_EPG_SAMPLES`; without them they are skipped.
+- The harness keeps tests away from the real world: no real proxy from
+  the screens (`run_proxy_in_background` / `restart_proxy_in_background`
+  replaced in the screen modules and bouquet_manager; the proxy's own
+  tests start it themselves - `test_proxy_start.py`, on a free port),
+  no write to the plugin's skin (`add_skin_back` replaced;
+  `REAL_ADD_SKIN_BACK` for `test_audit`), the saved catalog in the
+  temp folder. `run_tests.py` fails when the tests leave any file of
+  the checkout changed. Tests end with `e2env.exit_now()` (no Python
+  shutdown: daemon threads writing to stdout made it crash now and
+  then).
 - A change in behaviour → change or add the test that covers it, and run
   the whole suite on both Pythons before committing.
 
