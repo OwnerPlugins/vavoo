@@ -139,9 +139,9 @@ os.makedirs(back)
 open(os.path.join(back, "my back.png"), "wb").write(b"PNG")
 real_back = plugin.BackPath
 plugin.BackPath = back
-plugin.add_skin_back("my back.png")
+harness.REAL_ADD_SKIN_BACK("my back.png")
 check(open(os.path.join(back, "default.png"), "rb").read() == b"PNG", "a name with a space: copied")
-plugin.add_skin_back("missing.png")
+harness.REAL_ADD_SKIN_BACK("missing.png")
 check(True, "a missing one: nothing, no error")
 plugin.BackPath = real_back
 

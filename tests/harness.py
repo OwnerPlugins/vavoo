@@ -90,6 +90,11 @@ plugin.vUtils.RECENT_FILE = store.recent_file()
 # The proxy's own tests start it themselves (test_proxy_start.py).
 plugin.run_proxy_in_background = lambda *a, **k: True
 plugin.restart_proxy_in_background = lambda *a, **k: True
+# Saving the settings copies the chosen background onto the plugin's own
+# skin/images/default.png - never from a test (it is in the repository).
+REAL_ADD_SKIN_BACK = plugin.add_skin_back
+SKIN_BACKS = []
+plugin.add_skin_back = lambda bakk: SKIN_BACKS.append(bakk)
 import vavoo.bouquet_manager as _bm             # noqa: E402
 for _name in ("run_proxy_in_background", "restart_proxy_in_background"):
     if hasattr(_bm, _name):

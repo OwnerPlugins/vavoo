@@ -42,6 +42,19 @@ def which(name):
     return None
 
 
+def repo_state():
+    """`git status --porcelain` of the checkout (None without git): a
+    test must never change a file of the repository."""
+    try:
+        process = subprocess.Popen(["git", "status", "--porcelain", "--untracked-files=no"],
+                                   cwd=os.path.dirname(HERE), stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        out = process.communicate()[0]
+        return out.decode("utf-8", "replace") if process.returncode == 0 else None
+    except Exception:
+        return None
+
+
 def last_line(text):
     lines = [line for line in text.strip().splitlines() if line.strip()]
     return lines[-1] if lines else ""
@@ -57,6 +70,7 @@ def main(argv):
     elif PY2:
         names = [n for n in names if n in PYTHON2]
     has_ffmpeg = which("ffmpeg") is not None and which("ffprobe") is not None
+    before = repo_state()
     results = []
     started = time.time()
     for name in names:
@@ -94,6 +108,11 @@ def main(argv):
         results.append((name, status, note, took))
         print("%-22s %-8s %6.1f s  %s" % (name, status, took, note))
         sys.stdout.flush()
+    after = repo_state()
+    if before is not None and after != before:
+        changed = sorted(set(after.splitlines()) ^ set(before.splitlines()))
+        results.append(("(repository)", "FAILED", "files changed by the tests: %s" % ", ".join(changed), 0.0))
+        print("(repository)           FAILED  the tests changed files in the checkout:\n  " + "\n  ".join(changed))
     failed = [r for r in results if r[1] == "FAILED"]
     skipped = [r for r in results if r[1] == "skipped"]
     print("-" * 70)
