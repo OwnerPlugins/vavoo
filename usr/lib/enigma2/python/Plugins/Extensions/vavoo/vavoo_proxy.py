@@ -1074,6 +1074,8 @@ class VavooProxy(object):
         # new one once serving (start_catalog_refresh())
         self.catalog_needs_refresh = False
         self.catalog_refreshing = False
+        # one prefetch() at a time
+        self._prefetch_lock = threading.Lock()
         self.current_language = "en"
         self.current_region = "US"
         self.external_ip = None
@@ -2104,6 +2106,41 @@ class VavooProxy(object):
 
         return [member for _index, member in sorted(
             enumerate(members), key=sort_key)]
+
+    def prefetch(self, channel_id):
+        """Resolve a channel's address ahead of the zap to it (the
+        player asks for the next one in its direction), so /vavoo then
+        answers from the resolve cache at once. Only on the Geil
+        catalog: it needs no token, while Vavoo plays one stream per
+        token and a resolve on the shared one could cut the stream being
+        watched. Never touches what the player does: no stream count,
+        no group state (a group's source is the one it would try first,
+        read with _ordered_group_members(), which only reads). Unused,
+        the address is forgotten after RESOLVE_IDLE_TTL. One at a time.
+        True when an address is ready."""
+        if self.catalog_source != "geil" or not channel_id:
+            return False
+        if not self._prefetch_lock.acquire(False):
+            return False
+        try:
+            if channel_id.startswith(GROUP_ID_PREFIX):
+                country, key = parse_group_id(channel_id)
+                members = self._group_members(country, key) if key else []
+                ordered = self._ordered_group_members(channel_id, members)
+                channel = ordered[0] if ordered else None
+            else:
+                channel = self.channels_by_id.get(channel_id)
+            url = channel.get("url") if channel else None
+            if not url:
+                return False
+            if self._get_cached_url(url):
+                return True
+            return bool(self.resolve_with_retry(url, max_retries=1))
+        except Exception as e:
+            debug("Prefetch of {} failed: {}".format(channel_id, e))
+            return False
+        finally:
+            self._prefetch_lock.release()
 
     def resolve_group_with_retry(self, group_id):
         """Resolve a grouped channel (a "grp:<country>:<key>" id - see

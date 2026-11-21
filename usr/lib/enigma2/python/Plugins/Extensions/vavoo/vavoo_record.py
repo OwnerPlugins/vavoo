@@ -226,6 +226,45 @@ def mount_points():
     return out
 
 
+def mount_device(point, mounts_file="/proc/mounts"):
+    """The device mounted at `point` ("/dev/sda1"), or None."""
+    try:
+        with open(mounts_file) as f:
+            for line in f:
+                fields = line.split()
+                if len(fields) > 2 and _unescape_mount(fields[1]) == point:
+                    return fields[0]
+    except Exception:
+        pass
+    return None
+
+
+def _block_name(device):
+    """The whole disk of a partition's device: "sda" for /dev/sda1,
+    "mmcblk0" for /dev/mmcblk0p1, "nvme0n1" for /dev/nvme0n1p2."""
+    name = os.path.basename(device or "")
+    match = re.match(r"^((?:mmcblk|nvme\d+n)\d+)(?:p\d+)?$", name)
+    if match:
+        return match.group(1)
+    match = re.match(r"^([a-z]+?)\d*$", name)
+    return match.group(1) if match else name
+
+
+def non_rotational(point, sys_block="/sys/block", mounts_file="/proc/mounts"):
+    """True when the disk mounted at `point` is flash (a USB stick, an
+    SD card, an SSD: /sys/block/<disk>/queue/rotational is 0) - one
+    that answers at once, never a hard disk that must spin up first.
+    False when it cannot be told."""
+    device = mount_device(point, mounts_file)
+    if not device or not device.startswith("/dev/"):
+        return False
+    try:
+        with open(os.path.join(sys_block, _block_name(device), "queue", "rotational")) as f:
+            return f.read().strip() == "0"
+    except Exception:
+        return False
+
+
 def mount_of(path):
     """(mount point, file system type) of the disk `path` is on (or
     would be on: the nearest existing folder above it)."""

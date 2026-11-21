@@ -1276,11 +1276,13 @@ class Playstream2(
     def nextitem(self):
         """Switch to next channel"""
         if self.itemscount:
+            self._zap_dir = 1
             self.zap_to((int(self.currentindex) + 1) % self.itemscount)
 
     def previousitem(self):
         """Switch to previous channel"""
         if self.itemscount:
+            self._zap_dir = -1
             self.zap_to((int(self.currentindex) - 1) % self.itemscount)
 
     def _country_name_at(self, i):
@@ -1332,6 +1334,45 @@ class Playstream2(
         self._update_country_code_for_index(i)
         self._update_logo_url_for_index(i)
         self.startStream()
+        self._schedule_prefetch(getattr(self, "_zap_dir", 1))
+        self._zap_dir = 1                 # (numbers, RECALL, the lists: +1)
+
+    PREFETCH_AFTER_MS = 3000
+
+    def _schedule_prefetch(self, direction):
+        """3 s after a zap (the viewer has stopped on this channel for a
+        moment), the proxy resolves the next channel in the same
+        direction (VavooProxy.prefetch(): Geil only), so CH+ / CH-
+        again starts it without waiting for the network."""
+        self._prefetch_dir = direction
+        timer = getattr(self, "_prefetch_timer", None)
+        if timer is None:
+            timer = self._prefetch_timer = eTimer()
+            try:
+                timer.callback.append(self._prefetch_next)
+            except Exception:
+                timer.timeout.connect(self._prefetch_next)
+        timer.stop()
+        timer.start(self.PREFETCH_AFTER_MS, True)
+
+    def _prefetch_next(self):
+        if getattr(self, "_closed", False) or not self.itemscount or \
+                getattr(self, "_shift_state", None) is not None:
+            return
+        index = (int(self.currentindex) + getattr(self, "_prefetch_dir", 1)) % self.itemscount
+        channel_id = stream_channel_id(self.list[index][0][1])
+        if not channel_id:
+            return
+
+        def _work():
+            try:
+                vavoo_proxy.proxy.prefetch(channel_id)
+            except Exception as e:
+                debug("Prefetch not done: {}".format(e))
+
+        worker = threading.Thread(target=named(_work, "vv-prefetch"))
+        worker.daemon = True
+        worker.start()
 
     def recall(self):
         """RECALL / 0: back to the channel before (the app's Recall)."""
@@ -2703,7 +2744,7 @@ class Playstream2(
         # that could leave one re-arming itself against a torn-down instance.
         for timer_name in ("proxy_update_timer", "hideTimer",
                            "delayed_start_timer", "retry_start_timer",
-                           "eof_recovery_timer"):
+                           "eof_recovery_timer", "_prefetch_timer"):
             timer = getattr(self, timer_name, None)
             if timer is not None:
                 try:

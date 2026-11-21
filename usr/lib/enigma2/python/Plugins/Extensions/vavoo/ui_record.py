@@ -156,7 +156,9 @@ class _MemoryWatch(object):
         guides = vUtils.release_guides(keep)
         icons = len(_icon_cache)
         _icon_cache.clear()
-        vUtils.trim_picon_cache(max_bytes=4 * 1024 * 1024)
+        if vUtils.picon_cache_in_ram():
+            # (on a flash disk the logos take no memory)
+            vUtils.trim_picon_cache(max_bytes=4 * 1024 * 1024)
         print("[MEM] Released {} guides, {} icons".format(guides, icons))
 
 
@@ -242,6 +244,45 @@ def usable_folder(folder, create=True):
             return folder
     except Exception as e:
         debug("Folder {} not usable: {}".format(folder, e))
+    return None
+
+
+# The channel logos' folder on a flash disk (logo_folder()).
+LOGO_FOLDER_NAME = ".vavoo_logos"
+LOGO_MIN_FREE = 200 * 1024 * 1024
+
+
+def logo_folder():
+    """Where the channel logos are kept, when not in /tmp (RAM on a
+    box): a flash disk - a USB stick, an SD card, an SSD
+    (vavoo_record.non_rotational()) - that is local (no share), can be
+    written and has LOGO_MIN_FREE: the recordings' disk first, else one
+    under /media. None: /tmp, as before. Never a hard disk: waking one
+    holds the channel list for seconds (logos are read as rows are
+    drawn)."""
+    candidates = []
+    try:
+        candidates.append(vavoo_record.mount_of(recordings_folder())[0])
+    except Exception as e:
+        debug("Recordings disk not read: {}".format(e))
+    candidates.extend(media_mounts())
+    seen = set()
+    for point in candidates:
+        if not point or point == "/" or point in seen:
+            continue
+        seen.add(point)
+        try:
+            if vavoo_record.mount_of(point)[1] in vavoo_record.NETWORK_FS:
+                continue
+            if not vavoo_record.on_disk(point) or not vavoo_record.non_rotational(point):
+                continue
+            if vavoo_record.free_bytes(point) < LOGO_MIN_FREE:
+                continue
+            folder = usable_folder(os.path.join(point, LOGO_FOLDER_NAME))
+            if folder:
+                return folder
+        except Exception as e:
+            debug("Logo folder on {} not usable: {}".format(point, e))
     return None
 
 

@@ -1374,7 +1374,7 @@ def _picon_cache_filename(logo_url):
     return hashlib.md5(logo_url.encode('utf-8')).hexdigest() + '.png'
 
 
-def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
+def get_picon_cache_path(logo_url, cache_dir=None):
     """Local path a picon for this logo URL would be cached at,
     whether or not it has actually been downloaded yet - the one
     place this filename is computed, shared by download_picon_online()
@@ -1383,17 +1383,45 @@ def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
     """
     if not logo_url:
         return None
-    return join(cache_dir, _picon_cache_filename(logo_url))
+    return join(cache_dir or _picon_cache[0], _picon_cache_filename(logo_url))
 
 
 # The logo cache is in /tmp, which on a box is RAM: kept to this size
 # (the oldest files go first; a logo is downloaded again when needed).
 PICON_CACHE_MAX = 8 * 1024 * 1024
+# ...unless the plugin found a flash disk for it (set_picon_cache_dir()):
+# there it keeps more, and it survives a reboot.
+PICON_CACHE_MAX_DISK = 64 * 1024 * 1024
+_picon_cache = [PICON_CACHE_DIR, PICON_CACHE_MAX]
 
 
-def trim_picon_cache(cache_dir=PICON_CACHE_DIR, max_bytes=PICON_CACHE_MAX):
+def set_picon_cache_dir(folder, max_bytes=None):
+    """Keep the logos in `folder` (a flash disk the plugin chose,
+    ui_record.logo_folder()), or in /tmp again with None."""
+    if folder:
+        _picon_cache[0] = folder
+        _picon_cache[1] = PICON_CACHE_MAX_DISK if max_bytes is None else max_bytes
+    else:
+        _picon_cache[0] = PICON_CACHE_DIR
+        _picon_cache[1] = PICON_CACHE_MAX
+    return _picon_cache[0]
+
+
+def picon_cache_dir():
+    return _picon_cache[0]
+
+
+def picon_cache_in_ram():
+    """True while the logos are in /tmp (RAM on a box)."""
+    return _picon_cache[0] == PICON_CACHE_DIR
+
+
+def trim_picon_cache(cache_dir=None, max_bytes=None):
     """Delete the oldest cached logos until the cache is at most
-    max_bytes. Returns how many were deleted."""
+    max_bytes (the folder in use and its limit by default). Returns how
+    many were deleted."""
+    cache_dir = cache_dir or _picon_cache[0]
+    max_bytes = _picon_cache[1] if max_bytes is None else max_bytes
     try:
         names = listdir(cache_dir)
     except Exception:
@@ -1516,7 +1544,7 @@ def memory_note():
     return ", ".join(parts)
 
 
-def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
+def download_picon_online(logo_url, cache_dir=None):
     """Download and cache a channel picon from its catalog-provided
     logo URL (geil.to's own picons, or Vavoo's - see vavoo_proxy.py's
     fix_logo_url()). Mirrors download_flag_online()'s mechanics
@@ -1530,6 +1558,7 @@ def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
     """
     if not logo_url:
         return False, "No logo URL"
+    cache_dir = cache_dir or _picon_cache[0]
 
     try:
         if not exists(cache_dir):
@@ -3639,6 +3668,50 @@ def load_epg_guide(country_code):
                     key=lambda other: _epg_guide_cache[other].last_used)
                 del _epg_guide_cache[oldest]
             return fresh
+
+
+# preload_epg_guides() loads nothing while the box has less than this
+# available (MemAvailable)
+PRELOAD_MIN_FREE_KB = 200 * 1024
+
+
+def preload_epg_guides(country_codes, go_on=None, max_new=2,
+                       min_free_kb=PRELOAD_MIN_FREE_KB, meminfo=None):
+    """Load these countries' guides ahead of use (the favourites'
+    countries, when the main list has settled), one at a time - each
+    is a download and a parse that rests for other threads (_Breather).
+    Blocks: a background thread only. Skips a guide already in memory
+    or one that failed a moment ago; stops after `max_new`, when one
+    more would push another guide out (one place under
+    _EPG_GUIDE_KEEP stays free), when the box has less than
+    `min_free_kb` available, or when go_on() says no (the player
+    opened - no download while a stream plays). The codes loaded."""
+    meminfo = meminfo or read_meminfo
+    loaded = []
+    for code in country_codes:
+        code = ensure_str(code or '', errors='ignore').lower()
+        if not code or code in loaded:
+            continue
+        if len(loaded) >= max_new or (go_on is not None and not go_on()):
+            break
+        with _epg_guide_lock:
+            guide = _epg_guide_cache.get(code)
+            if guide is not None and guide.age() < _EPG_GUIDE_TTL:
+                continue
+            failed_at = _epg_guide_failed.get(code)
+            if failed_at is not None and time() - failed_at < _EPG_GUIDE_RETRY:
+                continue
+            if len(_epg_guide_cache) >= _EPG_GUIDE_KEEP - 1:
+                break
+        available = meminfo().get("MemAvailable")
+        if available is not None and available < min_free_kb:
+            print("[EPG] Guides not loaded ahead: {} MB available".format(available // 1024))
+            break
+        if load_epg_guide(code) is not None:
+            loaded.append(code)
+    if loaded:
+        print("[EPG] Guides ready ahead: {}".format(", ".join(loaded)))
+    return loaded
 
 
 def _guide_channel_name(channel_name):

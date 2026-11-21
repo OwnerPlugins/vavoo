@@ -130,7 +130,7 @@ from .ui_base import (
 from .ui_pick import (
     VavooCountries, _require_parental_pin)
 from .ui_record import (
-    RECORDINGS, VavooRecordings, clean_pause_leftovers, record_channel,
+    RECORDINGS, VavooRecordings, clean_pause_leftovers, logo_folder, record_channel,
     recordings_folder)
 from .ui_settings import (
     open_settings, show_about)
@@ -595,6 +595,26 @@ def _shared_confirm_reload_bouquets(screen, result):
         debug("User cancelled reload")
 
 
+def guide_countries():
+    """The countries whose guides are worth having ready: the
+    favourites' (most favourites first), then the recently watched
+    ones'. Country codes, as the favourites keep them."""
+    counts = {}
+    order = []
+    for entry in (vUtils.load_favourites() or []):
+        code = (entry.get("country_code") or "").lower()
+        if code:
+            if code not in counts:
+                order.append(code)
+            counts[code] = counts.get(code, 0) + 1
+    out = sorted(order, key=lambda code: -counts[code])
+    for entry in (vUtils.load_recent() or []):
+        code = (entry.get("country_code") or "").lower()
+        if code and code not in out:
+            out.append(code)
+    return out
+
+
 class MainVavoo(Screen, PreviewWindow):
     def __init__(self, session):
         self.session = session
@@ -911,6 +931,8 @@ class MainVavoo(Screen, PreviewWindow):
                 self._update_popup_timer.stop()
             if hasattr(self, '_country_retry_timer'):
                 self._country_retry_timer.stop()
+            if hasattr(self, '_guide_preload_timer'):
+                self._guide_preload_timer.stop()
         except Exception as e:
             print("[Close] Error stopping timers: %s" % str(e))
 
@@ -974,6 +996,42 @@ class MainVavoo(Screen, PreviewWindow):
     def _update_proxy_status_display(self):
         """Internal method to update proxy status display"""
         _shared_update_proxy_status_display(self)
+
+    GUIDE_PRELOAD_AFTER_MS = 15000
+
+    def _schedule_guide_preload(self):
+        """Once per opening, 15 s after the list is up: the guides of the
+        favourites' countries (then the recently watched ones) loaded
+        in the background, so their Now / Next and the guide open at
+        once (vUtils.preload_epg_guides(): at most 2, never with little
+        memory, never while the player is open)."""
+        if getattr(self, "_guide_preload_done", False) or not cfg.list_epg.value:
+            return
+        self._guide_preload_done = True
+        timer = self._guide_preload_timer = eTimer()
+        try:
+            timer.callback.append(self._preload_guides)
+        except Exception:
+            timer.timeout.connect(self._preload_guides)
+        timer.start(self.GUIDE_PRELOAD_AFTER_MS, True)
+
+    def _preload_go_on(self):
+        return not self._closed and NOW_PLAYING.owner != NOW_PLAYING.PLAYER \
+            and ACTIVE.get("player") is None
+
+    def _preload_guides(self):
+        if not self._preload_go_on():
+            return
+
+        def _work():
+            try:
+                vUtils.preload_epg_guides(guide_countries(), go_on=self._preload_go_on)
+            except Exception as e:
+                print("[MainVavoo] Guides not loaded ahead: {}".format(e))
+
+        worker = threading.Thread(target=named(_work, "vv-preload"))
+        worker.daemon = True
+        worker.start()
 
     def _follow_catalog(self):
         """The list was made from the saved catalog and the new one has
@@ -1321,6 +1379,7 @@ class MainVavoo(Screen, PreviewWindow):
                     ACTIVE["pending"] = None
                     self._open_channel(pending)
                 self._maybe_first_run(favourite_count, recent)
+                self._schedule_guide_preload()
                 self._country_load_failures = 0
                 # Clear the retry timer if it exists
                 retry_timer = self.__dict__.pop('_country_retry_timer', None)
@@ -4552,7 +4611,10 @@ def main(session, **kwargs):
         try:
             initialize_cache_with_local_flags()
             cleanup_old_temp_files()
-            # (in /tmp = RAM: kept small)
+            # the logos on a flash disk when there is one, else in /tmp
+            # (RAM: kept small)
+            folder = vUtils.set_picon_cache_dir(logo_folder())
+            print("[Picons] Logos in {}".format(folder))
             vUtils.trim_picon_cache()
         except Exception as e:
             print("Cache initialization error: %s" % str(e))
