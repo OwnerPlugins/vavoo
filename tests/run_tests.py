@@ -31,6 +31,7 @@ PYTHON2 = (
     "test_direct_keys",
     "test_epg_match",
     "test_catalog_cache",
+    "test_catalog_source",
     "test_closed",
     "test_epg_sources",
     "test_every_key",
@@ -45,7 +46,8 @@ PYTHON2 = (
     "test_screens_rows",
     "test_settings_welcome",
     "test_speedups",
-    "test_store")
+    "test_store",
+    "test_two_copies")
 TIMEOUT = 600
 
 

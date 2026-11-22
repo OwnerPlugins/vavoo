@@ -4,20 +4,14 @@
 #  Log: /tmp/vavoo_install.log  (copia anche in /home/root/ a fine run)
 # =====================================================================
 
-version='1.90'
-changelog="- New look from the Android app: Prism, Halo and Orbit themes (or
-  Classic), with a preview window in the channel lists
-- Programme guide (EPG grid) with reminders; Now/Next beside the list
-- Recordings and Pause Live TV on a USB disk or HDD, timers from the guide
-- Favourites with folders and your own order, Recently watched, Search all
-- Parental Control with a PIN pad, Choose countries, Backup / Restore
-- Opens at once with the last channel list; faster zapping; logos kept
-  on a USB stick or SD card
-- A welcome for new installs; simpler Settings (the rest behind one row)
-- MENU -> Factory reset: start again from zero (recordings and backups stay)
-- The same keys on every image; HELP on every screen
-- EPG from the epgshare01 daily guides
-- Fixed crashes on OpenATV 8 when leaving Recordings or a channel list"
+version='1.91'
+changelog="- No more empty list when the catalog source does not answer (Vavoo/Kool
+  only with vavoo.to down): kool.to is tried too, and the saved list (or
+  Geil's) is used meanwhile - the status line says why
+- The main list says why it has no channels; OK there opens the settings
+- The plugin takes the proxy back when another copy of it held the port
+  (the list stayed on Proxy not ready)
+- Installer: the compile check works on every image (no false NON compila)"
 
 LOGFILE=/tmp/vavoo_install.log
 

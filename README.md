@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/Belfagor2005/vavoo">
-    <img src="https://img.shields.io/badge/Version-1.90-blue.svg" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.91-blue.svg" alt="Version">
   </a>
 
   <a href="https://www.enigma2.net">
@@ -431,6 +431,22 @@ The local proxy has no on/off switch: every channel list and stream goes through
   if Geil's whole catalog can't be loaded. Check which one is
   active via `catalog_source` in `/status`/`/health`. Same default/
   fallback order the companion Android app uses.
+- **Catalog/Stream Source pinned** ("Geil only" / "Vavoo/Kool only"):
+  only that service's list is loaded. When it gives none (a box saw
+  vavoo.to answer HTTP 500 for an hour) and there is no list in use,
+  the saved list - or the other service's - is used meanwhile, the
+  status line says so ("Geil (Vavoo not answering) · 9612 ch"), and the
+  chosen service is asked again after 1, 2, 5 and then every 15
+  minutes; its own list replaces the lent one as soon as it answers.
+  A server error (HTTP 5xx) or a lost connection on vavoo.to tries
+  kool.to too (before, only an HTTP 451 did).
+- **One proxy per box**: `/status` says which copy of the plugin serves
+  (`instance`, `pid`, `module`, `version`). If the plugin's modules are
+  loaded twice in one Enigma2 (seen on a box: the second copy held the
+  port and the main list stayed on "Proxy not ready"), the copy whose
+  screens are used asks the other to stop (`/shutdown`) and starts its
+  own; vavoo.log names the second copy and what loaded it ("Second copy
+  of the plugin: ...").
 - **One stream address per viewing**: Enigma2's players come back to
   the proxy on every playlist refresh (about every 10 seconds while a
   channel is watched), so the proxy keeps answering with the same
@@ -514,7 +530,11 @@ The local proxy has no on/off switch: every channel list and stream goes through
 
 ## 📋 API Endpoints
 The proxy provides these endpoints:
-- `/status` – Check proxy status (includes `catalog_source`: "geil" or "vavoo")
+- `/status` – Check proxy status (includes `catalog_source`: "geil" or "vavoo";
+  `catalog_error`: why the catalog source gave no list, e.g. "Vavoo: HTTP 500",
+  "" when nothing failed; `catalog_fallback`: the source waited for while
+  another one's list is lent, else null; `instance` / `pid` / `module` /
+  `version`: which copy of the plugin serves)
 - `/channels?country=CountryName` – Get channels by country (sources of
   the same channel grouped into one row - see Grouped sources above;
   its `id` is then a synthetic `grp:<country>:<key>` handle rather
@@ -676,6 +696,8 @@ The plugin also keeps an eye on the box's memory, whether it is open or not. Eve
 | Problem | Solution |
 |---------|----------|
 | "No channels found" | Check the internet connection; press TEXT in the main menu to refresh the proxy, or restart the plugin |
+| The main list has no countries, only "No channels: Vavoo: HTTP 500 ..." (status line "✗ No channels") | The catalog source does not answer. With Settings → Catalog/Stream Source on "Vavoo/Kool only" or "Geil only", OK on that row opens the settings: choose **Auto**. On Auto both services failed: OK reloads the list |
+| The main list stays on "Proxy not ready" while the port answers | Another copy of the plugin held the port; since 1.91 the plugin takes it over by itself. `grep "Second copy\|held by another copy" /tmp/vavoo.log` shows what happened |
 | "Could not load channels - proxy not responding" | The proxy did not answer after three tries: wait for the proxy status to show OK, then open the country again |
 | Bouquets don't open | Ensure proxy is running (check with curl) |
 | Stream doesn't start | Check the proxy status line; on the Vavoo source press TEXT to refresh the token |

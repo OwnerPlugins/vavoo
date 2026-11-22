@@ -269,7 +269,9 @@ class vavoo_config(Screen, ConfigListScreen):
                 _("Which service to load channels and streams from. "
                   "Auto tries Geil first and falls back to Vavoo "
                   "if it's unavailable; the other two options pin it "
-                  "to exactly that one source. Takes effect on save "
+                  "to exactly that one source - while it gives no "
+                  "list, the saved one (or the other service's) is "
+                  "used meanwhile. Takes effect on save "
                   "(restarts the proxy if it's running).")
             )
         )

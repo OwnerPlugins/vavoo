@@ -18,7 +18,8 @@ from .ui_pick import (
     _require_parental_pin, run_welcome, welcome_needed)
 from .ui_base import (
     ACTIVE, CHANNEL_FETCH_ATTEMPTS, FAVOURITES_ROW, LIST_KEYS_PRIO,
-    MAIN_KEYS, NOW_PLAYING, NowNextPanel, PLUGIN_PATH, PLUGLOGO,
+    MAIN_KEYS, NO_CHANNELS_ROW, NOW_PLAYING, NowNextPanel, PLUGIN_PATH,
+    PLUGLOGO,
     PROXY_MONITOR_INTERVAL_MS, PROXY_WATCHDOG_INTERVAL_MS, PreviewWindow,
     RECENT_ROW, REMINDERS_ROW, _no_answer, add_epg_panel_labels,
     add_key_hint_labels, cfg, clock_24, favourite_channels, info_page_keys,
@@ -53,7 +54,9 @@ from .vavoo_stats import (
     stop_heartbeat
 )
 from . import vavoo_proxy
-from .vavoo_proxy import run_proxy_in_background, restart_proxy_in_background, is_proxy_booting
+from .vavoo_proxy import (
+    is_proxy_booting, restart_proxy_in_background, run_proxy_in_background,
+    serving_here)
 from . import (
     _,
     __version__,
@@ -535,7 +538,10 @@ def proxy_status_text(state, channel_total=None):
     get_proxy_status(), read in this process): "✓ Geil OK · 9818 ch",
     "Loading channels..." while it starts, else what is wrong.
     channel_total: the number the main list adds up to (sources of a
-    channel counted once), else the proxy's own count."""
+    channel counted once), else the proxy's own count. Never "OK" with
+    no channels: then why ("✗ No channels - Vavoo: HTTP 500"); another
+    source's list lent while the chosen one does not answer says so
+    ("Geil (Vavoo not answering) · 9612 ch")."""
     if not state:
         return _("? Proxy Unknown")
     if not state.get("ready"):
@@ -543,6 +549,11 @@ def proxy_status_text(state, channel_total=None):
                                     and not state.get("initialized")):
             return _("Loading channels...")
         return _("✗ Proxy Offline")
+    if not state.get("channels_count"):
+        why = state.get("catalog_error")
+        if why:
+            return _("✗ No channels") + " - " + to_string(why)
+        return _("✗ No channels")
     # Geil (the default catalog source) needs no addonSig token at all,
     # so addon_sig_valid is always False on it - not a problem there.
     token_required = state.get("token_required", True)
@@ -550,9 +561,29 @@ def proxy_status_text(state, channel_total=None):
     channels = channel_total or state.get("channels_count", 0)
     if token_required and not state.get("addon_sig_valid", False):
         return _("✗ Proxy Error")
+    waited = state.get("catalog_fallback")
+    if waited:
+        return "{} ({}) · {} ch".format(
+            source, _("{} not answering").format(
+                vavoo_proxy.SOURCE_NAMES.get(waited, waited)), channels)
     if token_required and state.get("addon_sig_age", 0) >= 540:
         return "{} {} · {} ch".format(source, _("(token expiring)"), channels)
     return "✓ {} OK · {} ch".format(source, channels)
+
+
+def no_channels_text(state, setting):
+    """The main list's row when there are no countries at all: why, and
+    what OK does there - the settings when the catalog source is pinned
+    to one service (Auto then tries the other), else Reload List."""
+    why = (state or {}).get("catalog_error") or ""
+    if why:
+        head = _("No channels: {}").format(to_string(why))
+    else:
+        head = _("No channels")
+    if setting in ("geil", "vavoo"):
+        return head + " - " + _(
+            "OK: Settings (Catalog/Stream Source: Auto)")
+    return head + " - " + _("OK: Reload List")
 
 
 def _shared_update_proxy_status_display(screen):
@@ -672,6 +703,10 @@ class MainVavoo(Screen, PreviewWindow):
         # How many times in a row the country list came back empty -
         # see _on_countries_response().
         self._country_load_failures = 0
+        # cat() waiting for the proxy: since when, last log line, last
+        # start asked (_note_proxy_wait())
+        self._wait_since = None
+        self._wait_logged = self._wait_kicked = 0
 
         self.start_vavoo_proxy()
 
@@ -977,6 +1012,16 @@ class MainVavoo(Screen, PreviewWindow):
     def _proxy_watchdog_check(self):
         """Watchdog to check if the proxy is still alive"""
         try:
+            if is_proxy_running() and not serving_here() and \
+                    not is_proxy_booting():
+                # the port answers, but another copy's proxy (the list
+                # reads this copy's): run_proxy_in_background() takes
+                # the port over
+                print("[Watchdog] The port answers, but not this copy's "
+                      "proxy - taking over")
+                self['proxy_status'].setText(_("Starting the proxy..."))
+                run_proxy_in_background()
+                return
             # (the port itself: the real proof that the server answers)
             if not is_proxy_running():
                 if is_proxy_booting():
@@ -1215,8 +1260,10 @@ class MainVavoo(Screen, PreviewWindow):
             self._update_proxy_status_display()
             return True
 
-        # If it is running but not ready, let it stabilize
-        if is_proxy_running():
+        # If it is running but not ready, let it stabilize - this
+        # copy's own proxy, or a start in progress (another copy's on
+        # the port is taken over below: the list reads this one's)
+        if is_proxy_running() and (serving_here() or is_proxy_booting()):
             print("[MainVavoo] Proxy running but not ready, waiting...")
             self._wait_for_proxy()
             return True
@@ -1265,9 +1312,10 @@ class MainVavoo(Screen, PreviewWindow):
         # in the settings), the old proxy keeps serving its old
         # catalog for a moment before it goes down.
         if is_proxy_booting() or not is_proxy_ready(timeout=0.5):
-            print("[MainVavoo] Proxy not ready, will retry shortly")
+            self._note_proxy_wait()
             self._retry_cat_later()
             return
+        self._wait_since = None
         # the catalog these counts come from (_follow_catalog())
         self._catalog_seen = (get_proxy_status() or {}).get("catalog_version")
 
@@ -1317,6 +1365,38 @@ class MainVavoo(Screen, PreviewWindow):
         t = threading.Thread(target=_task)
         t.daemon = True
         t.start()
+
+    def _note_proxy_wait(self):
+        """cat() waits for the proxy (every 0.5 s): one log line when it
+        starts waiting and one every 30 s with why, not two a second;
+        every 15 s run_proxy_in_background() (nothing when a start is in
+        progress or this copy's proxy serves - it starts one that
+        died, and takes the port over from another copy's)."""
+        now = time.time()
+        if self._wait_since is None:
+            self._wait_since = self._wait_logged = self._wait_kicked = now
+            print("[MainVavoo] Proxy not ready, waiting ({})".format(
+                self._proxy_wait_reason()))
+            return
+        if now - self._wait_logged >= 30:
+            self._wait_logged = now
+            print("[MainVavoo] Still waiting for the proxy ({} s, {})".format(
+                int(now - self._wait_since), self._proxy_wait_reason()))
+        if now - self._wait_kicked >= 15:
+            self._wait_kicked = now
+            try:
+                run_proxy_in_background()
+            except Exception as e:
+                print("[MainVavoo] Proxy start failed: {}".format(e))
+
+    def _proxy_wait_reason(self):
+        if is_proxy_booting():
+            return "starting"
+        if not is_proxy_running():
+            return "no proxy on the port"
+        if not serving_here():
+            return "the port is another copy's proxy"
+        return "no catalog yet"
 
     def _retry_cat_later(self):
         """Run cat() again in 500ms (single shot)."""
@@ -1388,6 +1468,14 @@ class MainVavoo(Screen, PreviewWindow):
                         themed=self._themed,
                         # a padlock on a locked country (the app's 🔒)
                         value_icon=vavoo_store.is_country_locked(country)))
+                if not self.countries:
+                    # no list at all (the catalog source not answering):
+                    # say why, and OK does something about it
+                    self.cat_list.append(show_list(
+                        no_channels_text(get_proxy_status(),
+                                         cfg.catalog_source.value),
+                        NO_CHANNELS_ROW, is_category=True,
+                        themed=self._themed))
                 self._channel_total = sum(counts.values()) if counts else None
                 self._update_ui()
                 if selected_link:
@@ -1398,10 +1486,14 @@ class MainVavoo(Screen, PreviewWindow):
                 self["version"].setText(to_string("V." + __version__))
                 if self._reloading:
                     self._reloading = False
-                    if NOTIFICATION_AVAILABLE:
+                    if NOTIFICATION_AVAILABLE and self._channel_total:
                         quick_notify(
                             _("Channel list updated: {} channels").format(
-                                self._channel_total or 0), 4)
+                                self._channel_total), 4)
+                    elif NOTIFICATION_AVAILABLE:
+                        # (why: "✗ No channels - Vavoo: HTTP 500")
+                        quick_notify(to_string(proxy_status_text(
+                            get_proxy_status())), 6)
                     self._update_proxy_status_display()
                 if not self._start_last_done:
                     self._start_last_done = True
@@ -1458,6 +1550,9 @@ class MainVavoo(Screen, PreviewWindow):
                 return
             if current_item[0][1] == REMINDERS_ROW:
                 self.open_recordings()
+                return
+            if current_item[0][1] == NO_CHANNELS_ROW:
+                self._no_channels_ok()
                 return
             print("[MainVavoo] Selected: " + str(name))
 
@@ -1586,6 +1681,15 @@ class MainVavoo(Screen, PreviewWindow):
         _require_parental_pin(
             self.session, self, channel.get('country_name'), _play,
             channel_name=name)
+
+    def _no_channels_ok(self):
+        """OK on the "No channels" row: the settings when the catalog
+        source is pinned to one service (Auto then tries the other),
+        else Reload List at once (the row said so - no question)."""
+        if cfg.catalog_source.value in ("geil", "vavoo"):
+            self.goConfig()
+        else:
+            self.reload_list(True)
 
     def reload_list(self, answer=None):
         """BLUE: download the channel list again (the app's Reload List).
@@ -4514,11 +4618,13 @@ def delayed_boot_tasks():
         if _session is not None:
             print("[Vavoo] Plugin already opened, boot tasks skipped")
             return
-        if not is_proxy_running():
+        if serving_here():
+            print("[Vavoo] Proxy already running at boot")
+        else:
+            # nothing on the port, a start in progress, or another
+            # copy's proxy on it: run_proxy_in_background() sorts it out
             print("[Vavoo] Starting proxy at boot...")
             run_proxy_in_background()
-        else:
-            print("[Vavoo] Proxy already running at boot")
 
         if cfg.autobouquetupdate.value:
             if auto_start_timer is None:

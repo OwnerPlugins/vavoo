@@ -65,9 +65,19 @@ check(set(vp.status_of(p)) == set(("initialized",
                                    "token_required",
                                    "addon_sig_valid",
                                    "addon_sig_age",
+                                   "catalog_error",
+                                   "catalog_fallback",
+                                   "instance",
+                                   "pid",
+                                   "module",
+                                   "version",
                                    "local_ip",
                                    "port")),
       "status_of(): what /status answers, unchanged")
+check(vp.status_of(p)["instance"] == vp.INSTANCE_ID and
+      vp.status_of(p)["catalog_error"] == "" and
+      vp.status_of(p)["catalog_fallback"] is None,
+      "status_of(): this copy, no catalog error, nothing lent")
 p.stop()
 check(not vp.proxy_state()["listening"] and vu.is_proxy_ready(
 ) is False, "stopped: not listening, not ready")

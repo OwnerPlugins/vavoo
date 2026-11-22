@@ -332,18 +332,52 @@ on `127.0.0.1:4323`. It:
   `is_proxy_ready()` wrap it (import inside the function: vavoo_proxy
   imports vUtils). `is_proxy_running()` (a port probe) is only for the
   watchdog.
+- One owner of the port: the port answering is not this copy's proxy
+  serving. A box loaded the plugin's modules twice in one Enigma2 (the
+  same files under a second module name, from outside the plugin - its
+  own imports are all relative): the second copy's proxy held 4323 and
+  the screens, reading the first copy's `proxy`, waited for ever.
+  `INSTANCE_ID` (pid + random) is in `/status` (`instance`, `pid`,
+  `module`, `version`); `serving_here()` = this copy's server up, not
+  stopped. `run_proxy_in_background()` skips the start only when
+  `serving_here()`; with the port held by another copy it starts the
+  thread anyway and `start_proxy()` (`port_holder()`, then
+  `free_port_from_other_copy()`: `/shutdown`, the port free within
+  5 s) takes it over - never an HTTP request on the GUI thread. A port
+  held by something that is not a proxy: "taken by another program",
+  the booting marker removed, no 3 bind attempts. `delayed_boot_tasks()`,
+  the watchdog, `start_vavoo_proxy()` and `cat()` (its wait logged once
+  and every 30 s, `run_proxy_in_background()` every 15 s) decide with
+  `serving_here()`. vUtils marks each copy (`VAVOO_COPY`) and at import
+  logs "Second copy of the plugin: ..." with the import's stack
+  (`tests/test_two_copies.py` loads the package twice).
 - Saved catalog: every catalog that loads is kept in `CATALOG_FILE`
   (`/etc/enigma2/vavoo_catalog.json.gz`, `save_catalog()`, atomic,
   not written when its hash is the same - the flash).
   `initialize_proxy(use_saved=True)` starts with it
   (`load_saved_catalog(setting)`: format / version / the same
-  `catalog_source` setting / under `CATALOG_MAX_AGE` 3 days - a box
-  whose clock is not set yet takes it - / entries cleaned, at least 100)
+  `catalog_source` setting, or the list of the source the setting is
+  pinned to / under `CATALOG_MAX_AGE` 3 days - a box whose clock is not
+  set yet takes it - / entries cleaned, at least 100)
   so the port opens at once, and `start_proxy()` then calls
   `start_catalog_refresh()` (thread "vv-catalog": `_download_catalog()`
   - which never touches the catalog in use - then `_install_catalog()`,
-  else again every `CATALOG_RETRY` 15 min while the instance lives; an
-  empty start does the same). `_install_catalog()` builds every index
+  else again while the instance lives: `catalog_retry_wait()`, 1 / 2 /
+  5 min (`CATALOG_RETRY_SOON`) while there is no list of the source in
+  use, then every `CATALOG_RETRY` 15 min). A source that gives nothing
+  with nothing in use (a box: "Vavoo/Kool only", vavoo.to HTTP 500 for
+  an hour, 0 countries) does not leave the list empty: `_lend_catalog()`
+  puts the saved list (`load_saved_catalog(..., any_setting=True)`) or
+  the other source's from the network in use, never saved, with
+  `catalog_fallback` = the source waited for; its own list replaces it
+  when it answers. Why a source gave nothing is `catalog_errors`
+  (`{source: "site words, ..."}`, replaced whole) -
+  `catalog_error_text()` "Vavoo: HTTP 500" in `/status`
+  (`catalog_error`), on the status line (`proxy_status_text()`: never
+  "OK" with 0 channels; a lent list "Geil (Vavoo not answering) ·
+  n ch") and on the main list's `NO_CHANNELS_ROW` (`no_channels_text()`;
+  OK: the settings when pinned, else Reload List).
+  `tests/test_catalog_source.py` has fake sites. `_install_catalog()` builds every index
   aside and then assigns them (a dict in use is never changed; readers
   in other threads see whole dicts) and bumps `catalog_version`.
   `restart_proxy_in_background(fresh=True)` sets `_fresh_start`, read
@@ -355,7 +389,10 @@ on `127.0.0.1:4323`. It:
   resolve on the shared one); a group's first source by
   `_ordered_group_members()` (read-only: no `_group_state`); no stream
   count; one at a time (`_prefetch_lock`).
-- Falls back from `vavoo.to` to `kool.to` on HTTP 451.
+- Falls back from `vavoo.to` to `kool.to` on HTTP 451, and (`load_catalog()`
+  over `_load_catalog_site()`) for the catalog on any first-page
+  failure: an HTTP 5xx (asked once more first), no connection, a broken
+  answer.
 - It listens on every address (bouquets and `/playlist.m3u` serve other
   devices), but its controls (`LOCAL_ONLY_PATHS`: `/shutdown`,
   `/refresh_token`) answer only the box itself (`is_loopback()`, 403
