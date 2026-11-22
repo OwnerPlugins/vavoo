@@ -25,6 +25,9 @@ msgstr "(%s dosya silindi)"
 msgid "(current)"
 msgstr "(akım)"
 
+msgid "(token expiring)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(v{}'niz var)"
 
@@ -97,14 +100,73 @@ msgstr "- {} yinelenen giriş kaldırıldı"
 msgid "- {} entries updated"
 msgstr "- {} giriş güncellendi"
 
+msgid "0-9: the PIN  ·  ◄ delete  ·  EXIT cancel"
+msgstr ""
+
+msgid "10 seconds back / on"
+msgstr ""
+
+msgid "10 seconds back / on (paused)"
+msgstr ""
+
+msgid "12 hours"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "30 seconds back / on"
+msgstr ""
+
+msgid "30 seconds back / on (paused)"
+msgstr ""
+
 msgid "? Proxy Unknown"
 msgstr "? Proxy Bilinmiyor"
+
+msgid "A 4-digit PIN for adult channels, chosen countries and (optionally) the settings. Once entered, all is open for 15 minutes or until the plugin is left."
+msgstr ""
+
+msgid "A country whose channels come in categories (Sport, News...) lists them first: All channels, the categories, General."
+msgstr ""
+
+msgid "A programme to come: remind / record / watch"
+msgstr ""
+
+#, fuzzy
+msgid "A space"
+msgstr "Boşluk"
+
+msgid "About"
+msgstr ""
+
+#, fuzzy
+msgid "Add / remove favourite"
+msgstr "Favorilere eklendi: {}"
+
+msgid "Add Fav"
+msgstr ""
+
+#, fuzzy
+msgid "Add to favourites"
+msgstr "Favorilere eklendi: {}"
+
+#, fuzzy
+msgid "Added to favourites"
+msgstr "Favorilere eklendi: {}"
 
 msgid "Added to favourites: {}"
 msgstr "Favorilere eklendi: {}"
 
+#, fuzzy
+msgid "All channels"
+msgstr "Kanallar"
+
 msgid "All countries (%d)"
 msgstr "Tüm ülkeler (%d)"
+
+msgid "All settings ({} more)"
+msgstr ""
 
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Başka bir ülke için dışa aktarma zaten devam ediyor. Lütfen bekleyin."
@@ -112,23 +174,57 @@ msgstr "Başka bir ülke için dışa aktarma zaten devam ediyor. Lütfen bekley
 msgid "An export is in progress. Please wait before fixing the cache."
 msgstr "Bir ihracat yapılıyor. Önbelleği düzeltmeden önce lütfen bekleyin."
 
+msgid "An hour back / on"
+msgstr ""
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Yalnızca anonim başlangıç/kalp atışı pingi (oturum kimliği, sürüm, zaman damgası - kişisel veri yok). Devre dışı bırakmak için devre dışı bırakın."
+
+msgid "Aspect ratio"
+msgstr ""
 
 msgid "At an interval hours or fixed time"
 msgstr "Saat aralığı veya sabit zamanda"
 
+msgid "Audio track"
+msgstr ""
+
+msgid "Audio track / subtitles"
+msgstr ""
+
 msgid "Author:"
 msgstr "Yazar:"
 
-msgid "Auto (Geil, fallback Vavoo)"
-msgstr "Araba (Harika, geri dönüş Vavoo)"
+msgid "Auto"
+msgstr ""
+
+msgid "BLUE"
+msgstr ""
+
+msgid "BLUE / PLAY"
+msgstr ""
 
 msgid "Back"
 msgstr "Geri"
 
+msgid "Back (paused: to live first)"
+msgstr ""
+
+msgid "Back (without saving)"
+msgstr ""
+
+msgid "Back to the settings most people change."
+msgstr ""
+
+#, fuzzy
+msgid "Background"
+msgstr "Arkaplan Seç"
+
 msgid "Backspace"
 msgstr "Silme tuşu"
+
+msgid "Backup Settings & Favourites"
+msgstr ""
 
 msgid "Bottom"
 msgstr "Alt"
@@ -148,12 +244,9 @@ msgstr "Buketlerin yeniden yüklenmesi planlandı."
 msgid "Bouquets reorganized successfully!"
 msgstr "Buketler başarıyla yeniden düzenlendi!"
 
-msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr "Yıldızlı kanallarınıza göz atın ve oynatın. Tarama sırasında INFO tuşunu kullanarak bir kanala yıldız ekleyin/yıldızı kaldırın."
-
 #, fuzzy
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
-msgstr "CH±=Değiştir | OK=Aç/Kapat | INFO=IMDb | STOP=Çıkış"
+msgid "Browse and play your starred channels. Add or remove a channel with the GREEN key while browsing."
+msgstr "Yıldızlı kanallarınıza göz atın ve oynatın. Tarama sırasında INFO tuşunu kullanarak bir kanala yıldız ekleyin/yıldızı kaldırın."
 
 msgid "Cache format fix completed:"
 msgstr "Önbellek formatı düzeltmesi tamamlandı:"
@@ -161,11 +254,29 @@ msgstr "Önbellek formatı düzeltmesi tamamlandı:"
 msgid "Cache is already in correct format. No changes needed."
 msgstr "Önbellek zaten doğru formatta. Değişiklik gerekmiyor."
 
+msgid "Can't record (not enough free space?)"
+msgstr ""
+
+msgid "Can't record: no disk (HDD / USB) found"
+msgstr ""
+
 msgid "Cancel"
 msgstr "İptal"
 
 msgid "Cancel execution?"
 msgstr "Çalıştırma iptal edilsin mi?"
+
+#, fuzzy
+msgid "Cancel recording"
+msgstr "Çalıştırma iptal edilsin mi?"
+
+#, fuzzy
+msgid "Cancel reminder"
+msgstr "Çalıştırma iptal edilsin mi?"
+
+#, fuzzy
+msgid "Cancelled"
+msgstr "İptal"
 
 msgid "Case: {}"
 msgstr "Durum: {}"
@@ -174,39 +285,89 @@ msgid "Catalog/Stream Source"
 msgstr "Katalog/Akış Kaynağı"
 
 #, fuzzy
+msgid "Change it"
+msgstr "Kanallar"
+
+msgid "Change the PIN"
+msgstr ""
+
+msgid "Change the setting / lock the country"
+msgstr ""
+
+#, fuzzy
 msgid "Changelog:"
 msgstr "Kanallar"
 
 msgid "Changelog: ({}/{}, use up/down)"
 msgstr "Değişiklik günlüğü: ({}/{}, yukarı/aşağı kullanın)"
 
-msgid "Channels"
+msgid "Changes not saved: GREEN saves, press again to leave without saving"
+msgstr ""
+
+#, fuzzy
+msgid "Channel"
 msgstr "Kanallar"
+
+#, fuzzy
+msgid "Channel Logos"
+msgstr "Kanallar"
+
+msgid "Channel list updated: {} channels"
+msgstr ""
 
 msgid "Channels: %d"
 msgstr "Kanallar: %d"
 
+msgid "Check it"
+msgstr ""
+
 msgid "Checking proxy..."
 msgstr "Proxy kontrol ediliyor..."
 
-msgid "Choose Stream Source"
-msgstr "Akış Kaynağını Seçin"
+msgid "Choose a backup: its settings and favourites replace the ones here."
+msgstr ""
+
+#, fuzzy
+msgid "Choose countries"
+msgstr "Ülkeler"
+
+msgid "Classic"
+msgstr ""
+
+msgid "Classic - the original look"
+msgstr ""
+
+msgid "Classic's background (Oktus or Kiddac). Takes effect when the plugin is opened again."
+msgstr ""
+
+#, fuzzy
+msgid "Clear"
+msgstr "Tümünü Temizle"
 
 msgid "Clear All"
 msgstr "Tümünü Temizle"
 
+#, fuzzy
+msgid "Clear Favourites"
+msgstr "Favoriler"
+
+msgid "Clear recently watched"
+msgstr ""
+
+msgid "Clock Format"
+msgstr ""
+
+msgid "Clock in the top-right corner and programme times. Not used by Classic's own clock."
+msgstr ""
+
 msgid "Close"
 msgstr "Kapalı"
 
-#, fuzzy
-msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Virgülle ayrılmış ülke adları (ör. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+msgid "Close the player"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "Yapılandırma başarıyla kaydedildi!"
-
-msgid "Configure Main Background Image."
-msgstr "Ana Arkaplan Resmini Yapılandır."
 
 msgid "Configure at a fixed time"
 msgstr "Sabit bir zamanda yapılandır"
@@ -248,11 +409,29 @@ msgstr "Katkıda bulunanlar:"
 msgid "Debug logging"
 msgstr "Hata ayıklama günlüğü"
 
+msgid "Delete"
+msgstr ""
+
+msgid "Delete (press twice)"
+msgstr ""
+
+msgid "Delete a digit"
+msgstr ""
+
+msgid "Delete a letter"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
 msgid "Do you want to export this bouquet?"
 msgstr "Bu buketi dışa aktarmak istiyor musunuz?"
 
 msgid "Do you want to fix the cache format?"
 msgstr "Önbellek formatını düzeltmek istiyor musunuz?"
+
+msgid "Done"
+msgstr ""
 
 #, fuzzy
 msgid "EPG import already running"
@@ -277,14 +456,23 @@ msgstr "Güncelleme aralığı (dakika):"
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport eklentisi bulunamadı: {}"
 
+msgid "EXIT"
+msgstr ""
+
+msgid "EXIT / BACK"
+msgstr ""
+
+msgid "Earlier"
+msgstr ""
+
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG'yi etkinleştir"
 
-msgid "Enter parental control PIN"
-msgstr "Ebeveyn kontrolü PIN'ini girin"
-
 msgid "Enter text to search..."
 msgstr "Aranacak metni girin..."
+
+msgid "Enter the PIN"
+msgstr ""
 
 msgid "Error"
 msgstr "Hata"
@@ -307,14 +495,31 @@ msgstr "Çıkış"
 msgid "Exit and reopen the plugin to see the new background."
 msgstr "Yeni arka planı görmek için eklentiden çıkın ve yeniden açın."
 
-msgid "Export"
-msgstr "Dışa Aktar"
+#, fuzzy
+msgid "Exit and reopen the plugin to see the new look."
+msgstr "Yeni arka planı görmek için eklentiden çıkın ve yeniden açın."
 
 msgid "Export failed: {}"
 msgstr "Dışa aktarma başarısız: {}"
 
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Dışa aktarma başladı. Buket kısa sürede hazır olacak."
+
+#, fuzzy
+msgid "Export this country as a bouquet"
+msgstr "- Ülke buketleri"
+
+msgid "Factory reset"
+msgstr ""
+
+msgid "Factory reset done"
+msgstr ""
+
+msgid "Factory reset done - starting again"
+msgstr ""
+
+msgid "Factory reset..."
+msgstr ""
 
 msgid "Failed to refresh proxy token"
 msgstr "Proxy token yenilenemedi"
@@ -325,14 +530,40 @@ msgstr "Proxy yenilenemedi:"
 msgid "Failed: %(failed)d"
 msgstr "Başarısız: %(failed)d"
 
+msgid "Fav"
+msgstr ""
+
 msgid "Favourites"
 msgstr "Favoriler"
 
-msgid "Fix Cache"
+#, fuzzy
+msgid "Favourites cleared"
+msgstr "Favoriler"
+
+msgid "Fewer settings"
+msgstr ""
+
+#, fuzzy
+msgid "Fix EPG cache"
 msgstr "Önbelleği Düzelt"
 
 msgid "Fixing cache format..."
 msgstr "Önbellek formatı düzeltiliyor..."
+
+msgid "Folder"
+msgstr ""
+
+msgid "Folder for {}"
+msgstr ""
+
+msgid "Folder name (e.g. Sport)"
+msgstr ""
+
+msgid "Folder renamed to {}"
+msgstr ""
+
+msgid "Folder {} removed - its channels stay in the favourites"
+msgstr ""
 
 msgid "Force proxy refresh?"
 msgstr "Proxy yenileme zorlansın mı?"
@@ -340,8 +571,29 @@ msgstr "Proxy yenileme zorlansın mı?"
 msgid "Found: {} channels"
 msgstr "Bulunan: {} kanal"
 
+msgid "Full Screen"
+msgstr ""
+
+msgid "Full screen"
+msgstr ""
+
+msgid "GREEN"
+msgstr ""
+
+msgid "GREEN / FAV"
+msgstr ""
+
+msgid "GREEN / PLAY"
+msgstr ""
+
+msgid "GREEN / TEXT"
+msgstr ""
+
 msgid "Geil only"
 msgstr "Yalnızca Geil"
+
+msgid "General"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr ".m3u dosyası oluştur:"
@@ -358,26 +610,85 @@ msgstr ".m3u dosyaları oluşturulup %s cihazına kaydedilsin mi?"
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "TÜM %d ülke için .m3u dosyaları oluşturulsun mu?"
 
+#, fuzzy
+msgid "Go to that channel"
+msgstr "Kanal başlatma hatası"
+
+msgid "Go to that row"
+msgstr ""
+
+msgid "Group Sources"
+msgstr ""
+
+msgid "Guide"
+msgstr ""
+
+msgid "Halo - frosted glass"
+msgstr ""
+
+msgid "Hide all"
+msgstr ""
+
+msgid "Hide the countries you never watch from the main list and from search."
+msgstr ""
+
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Şu andan itibaren EPG'nin ne sıklıkla yeniden eşleştirileceği ve buketlerin yenileneceği."
+
+msgid "IMDb / TMDB"
+msgstr ""
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
 msgstr "Ayarlanırsa, /playlist.m3u adresindeki canlı oynatma listesi ?key=<bu değer> gerektirir; anahtar yoksa boş bırakın. URL: http://%s:%d/playlist.m3u"
 
+msgid "Import EPG now"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "Önemli Notlar:"
-
-msgid "Incorrect PIN"
-msgstr "Yanlış PIN"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "VPN veya yavaş bağlantı nedeniyle proxy uzun sürüyorsa artırın."
 
+msgid "Keep at least one country"
+msgstr ""
+
 msgid "Keyboard"
 msgstr "Klavye"
 
+msgid "Keys"
+msgstr ""
+
+msgid "LEFT"
+msgstr ""
+
+msgid "LEFT / RIGHT"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · EXIT: close"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · OK pause · MENU options · EXIT close"
+msgstr ""
+
+msgid "LEFT / RIGHT move · EXIT: live"
+msgstr ""
+
+msgid "Large"
+msgstr ""
+
+msgid "Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Not used by Classic."
+msgstr ""
+
 msgid "Last channel update: %s"
 msgstr "Son kanal güncellemesi: %s"
+
+msgid "Later"
+msgstr ""
+
+#, fuzzy
+msgid "Licences"
+msgstr "Lisans:"
 
 msgid "License:"
 msgstr "Lisans:"
@@ -388,16 +699,42 @@ msgstr "Lisans: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Ana Menüde Bağlantı"
 
+msgid "List"
+msgstr ""
+
+msgid "Live"
+msgstr ""
+
 #, fuzzy
 msgid "Loading EPG..."
 msgstr "EPG güncelleniyor..."
+
+#, fuzzy
+msgid "Loading channels..."
+msgstr "EPG güncelleniyor..."
+
+msgid "Loading programme guide..."
+msgstr ""
+
+#, fuzzy
+msgid "Loading..."
+msgstr "EPG güncelleniyor..."
+
+msgid "Loading…"
+msgstr ""
 
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "Yalnızca yerel (127.0.0.1) - yalnızca bu cihaz"
 
 #, fuzzy
-msgid "Locked Countries"
-msgstr "Ülkeler"
+msgid "Lock adult channels"
+msgstr "(%d kanal)?"
+
+msgid "Lock the settings"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
 
 msgid "M3U file generated successfully!"
 msgstr "M3U dosyası başarıyla oluşturuldu!"
@@ -408,15 +745,49 @@ msgstr "M3U oluşturma tamamlandı!"
 msgid "M3U generation error: %s"
 msgstr "M3U oluşturma hatası: %s"
 
+msgid "Menu"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+msgid "Move it to that place"
+msgstr ""
+
+#, fuzzy
+msgid "Move the channel"
+msgstr "Lütfen başka bir kanal deneyin."
+
 msgid "Movie Services Reference"
 msgstr "Film Servis Referansı"
+
+msgid "Movie folder ({})"
+msgstr ""
+
+msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
 msgstr "Ağ (%s) - LAN üzerindeki diğer cihazlar"
 
+msgid "New PIN (4 digits)"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
 #, fuzzy
 msgid "New version available: v{}"
 msgstr "Öğe mevcut değil"
+
+msgid "Next"
+msgstr ""
+
+msgid "Next / previous channel"
+msgstr ""
+
+msgid "No"
+msgstr ""
 
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB eklentisi bulunamadı"
@@ -424,9 +795,16 @@ msgstr "IMDb/TMDB eklentisi bulunamadı"
 msgid "No Internet connection detected. Please check your network."
 msgstr "İnternet bağlantısı algılanamadı. Lütfen ağınızı kontrol edin."
 
+msgid "No PIN yet: nothing is locked until one is set."
+msgstr ""
+
 #, fuzzy
 msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
 msgstr "Vavoo EPG kaynağı EPGImport'ta etkin değil. Lütfen EPGImport ayarlarından etkinleştirin."
+
+#, fuzzy
+msgid "No backup found"
+msgstr "Kanal bulunamadı"
 
 #, fuzzy
 msgid "No changelog provided."
@@ -438,8 +816,22 @@ msgstr "Kanal bulunamadı"
 msgid "No channels found for: %s"
 msgstr "%s için kanal bulunamadı"
 
+#, fuzzy
+msgid "No channels watched yet"
+msgstr "Kanal bulunamadı"
+
+#, fuzzy
+msgid "No favourites"
+msgstr "Henüz favori yok"
+
 msgid "No favourites yet"
 msgstr "Henüz favori yok"
+
+msgid "No favourites yet. Open a country and press GREEN on a channel."
+msgstr ""
+
+msgid "No folder"
+msgstr ""
 
 msgid "No items available"
 msgstr "Öğe mevcut değil"
@@ -447,17 +839,83 @@ msgstr "Öğe mevcut değil"
 msgid "No programme info available"
 msgstr "Program bilgisi mevcut değil"
 
+#, fuzzy
+msgid "No programme information"
+msgstr "Program bilgisi mevcut değil"
+
+msgid "No programme to record here"
+msgstr ""
+
 msgid "No selection"
 msgstr "Seçim yok"
 
 msgid "No valid channels for: %s"
 msgstr "%s için geçerli kanal yok"
 
+msgid "Non-commercial use only, with attribution; changes shared under the same licence."
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Not available on this receiver"
+msgstr ""
+
+msgid "Not now: a recording is running"
+msgstr ""
+
+msgid "Nothing is playing in the window"
+msgstr ""
+
 msgid "Nothing to remove for: {}"
 msgstr "Şunun için kaldırılacak bir şey yok: {}"
 
+msgid "Nothing watched yet"
+msgstr ""
+
+msgid "Nothing yet: record from the player's options, or set a recording in the guide."
+msgstr ""
+
+#, fuzzy
+msgid "Now"
+msgstr "Şimdi %s"
+
+msgid "Now, the programme's actions"
+msgstr ""
+
+#, fuzzy
+msgid "Now/Next in channel list"
+msgstr "Kanal listesine geri dönülüyor."
+
 msgid "OK"
 msgstr "TAMAM"
+
+msgid "OK / GREEN / PAUSE / PLAY"
+msgstr ""
+
+msgid "OK / LEFT / RIGHT"
+msgstr ""
+
+msgid "OK / RED / EXIT"
+msgstr ""
+
+msgid "OK / YELLOW"
+msgstr ""
+
+msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys"
+msgstr ""
+
+msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "On the last row: all settings / fewer"
+msgstr ""
+
+msgid "On {} - watch it?"
+msgstr ""
 
 msgid "Only one source available for this channel"
 msgstr "Bu kanal için yalnızca tek bir kaynak mevcut"
@@ -465,11 +923,85 @@ msgstr "Bu kanal için yalnızca tek bir kaynak mevcut"
 msgid "Only one specific country"
 msgstr "Yalnızca belirli bir ülke"
 
-msgid "Parental Control PIN"
+msgid "Open (a row that opens a list or does something)"
+msgstr ""
+
+msgid "Open the category"
+msgstr ""
+
+msgid "Open the country / list"
+msgstr ""
+
+msgid "Open the folder"
+msgstr ""
+
+msgid "Open the last watched channel when the plugin starts."
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "PIN removed"
+msgstr ""
+
+msgid "PIN saved"
+msgstr ""
+
+msgid "PIN set · {} countries locked"
+msgstr ""
+
+msgid "PIN set: adult channels are locked"
+msgstr ""
+
+msgid "PVR / FILE"
+msgstr ""
+
+msgid "Page up / down"
+msgstr ""
+
+#, fuzzy
+msgid "Parental Control"
 msgstr "Ebeveyn Kontrolü PIN'i"
+
+msgid "Pause"
+msgstr ""
+
+msgid "Pause / play on"
+msgstr ""
+
+msgid "Pause Live TV"
+msgstr ""
+
+msgid "Pause live / play on"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "EPG'yi periyodik olarak yeniden eşleştirin ve favori ülkeleriniz için buketleri arka planda yenileyin."
+
+msgid "Picture: not known yet"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Play in the window (again: full screen)"
+msgstr ""
+
+#, fuzzy
+msgid "Play the channel"
+msgstr "Lütfen başka bir kanal deneyin."
+
+msgid "Play the recording"
+msgstr ""
+
+msgid "Play the recording / cancel the timer"
+msgstr ""
 
 msgid "Playlist Access Key (optional)"
 msgstr "Çalma Listesi Erişim Anahtarı (isteğe bağlı)"
@@ -480,6 +1012,31 @@ msgstr "Ana listede Vavoo buketlerinin konumu"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "Yazmak için TEXT tuşuna, silmek için BACKSPACE tuşuna basın"
+
+msgid "Press again to confirm"
+msgstr ""
+
+msgid "Press again to delete"
+msgstr ""
+
+msgid "Preview Window"
+msgstr ""
+
+msgid "Prism - Vavoo's violet"
+msgstr ""
+
+msgid "Prism: Vavoo's violet. Halo: frosted glass over a blue aurora. Orbit: a teal cockpit display. Classic: the plugin's original skin, with its backgrounds. Takes effect when the plugin is opened again."
+msgstr ""
+
+msgid "Programme"
+msgstr ""
+
+msgid "Programme guide"
+msgstr ""
+
+#, fuzzy
+msgid "Programme guide of the favourites"
+msgstr "Favoriler güncellenemedi"
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "Proxy çalışmıyor. Lütfen önce proxy'yi başlatın."
@@ -496,41 +1053,184 @@ msgstr "Proxy başlangıç zaman aşımı (saniye)"
 msgid "Proxy token refreshed successfully"
 msgstr "Proxy token başarıyla yenilendi"
 
+msgid "RED"
+msgstr ""
+
+msgid "RED / EXIT"
+msgstr ""
+
+msgid "RED / EXIT / BACK"
+msgstr ""
+
+msgid "RED / REC"
+msgstr ""
+
+msgid "RED / STOP / EXIT / BACK"
+msgstr ""
+
 msgid "Really close without saving settings?"
 msgstr "Ayarları kaydetmeden gerçekten kapatılsın mı?"
 
-msgid "Reload Bouqet"
+msgid "Recently watched"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Record (again: stop)"
+msgstr ""
+
+msgid "Record the highlighted channel (again: stop)"
+msgstr ""
+
+msgid "Record the programme (again: cancel / stop)"
+msgstr ""
+
+msgid "Recording needs ffmpeg"
+msgstr ""
+
+msgid "Recording set: {}"
+msgstr ""
+
+msgid "Recording stopped"
+msgstr ""
+
+msgid "Recording stopped early: {}"
+msgstr ""
+
+msgid "Recording stopped: the disk could not be written (removed?)"
+msgstr ""
+
+msgid "Recording stopped: the disk is nearly full"
+msgstr ""
+
+msgid "Recording stopped: the disk's 4 GB file limit (FAT32)"
+msgstr ""
+
+msgid "Recording: {}"
+msgstr ""
+
+msgid "Recordings"
+msgstr ""
+
+msgid "Recordings folder"
+msgstr ""
+
+msgid "Recordings folder: {}"
+msgstr ""
+
+msgid "Refresh token"
+msgstr ""
+
+#, fuzzy
+msgid "Reload List"
+msgstr "Buketi Yeniden Yükle"
+
+#, fuzzy
+msgid "Reload bouquets"
 msgstr "Buketi Yeniden Yükle"
 
 msgid "Reload bouquets and service list?"
 msgstr "Buketler ve servis listesi yeniden yüklensin mi?"
 
-msgid "Remove"
-msgstr "Kaldır"
+#, fuzzy
+msgid "Reload failed: {}"
+msgstr "Dışa aktarma başarısız: {}"
 
 #, fuzzy
-msgid "Remove ALL"
-msgstr "Kaldır"
+msgid "Reload the channel list?"
+msgstr "Kanal listesine geri dönülüyor."
+
+#, fuzzy
+msgid "Reloading channel list..."
+msgstr "Kanal listesine geri dönülüyor."
+
+msgid "Remind me"
+msgstr ""
+
+#, fuzzy
+msgid "Reminder set: {}"
+msgstr "Dışa aktarma başarısız: {}"
+
+msgid "Reminders and recordings (●) set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
+
+msgid "Reminders and recordings set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "TÜM Vavoo buketleri kaldırılsın mı?"
 
 #, fuzzy
+msgid "Remove Fav"
+msgstr "Kaldır"
+
+#, fuzzy
+msgid "Remove all Vavoo bouquets"
+msgstr "TÜM Vavoo buketleri kaldırılsın mı?"
+
+msgid "Remove all favourite channels (asks to confirm)."
+msgstr ""
+
+#, fuzzy
+msgid "Remove all favourite channels?"
+msgstr "Dışa aktarma başarısız: {}"
+
+#, fuzzy
 msgid "Remove failed: {}"
 msgstr "Dışa aktarma başarısız: {}"
 
+#, fuzzy
+msgid "Remove favourite"
+msgstr "Dışa aktarma başarısız: {}"
+
+#, fuzzy
+msgid "Remove folder"
+msgstr "Dışa aktarma başarısız: {}"
+
+#, fuzzy
+msgid "Remove from favourites"
+msgstr "Dışa aktarma başarısız: {}"
+
+#, fuzzy
+msgid "Remove from the list"
+msgstr "Dışa aktarma başarısız: {}"
+
+msgid "Remove the PIN (unlock everything)"
+msgstr ""
+
 msgid "Remove the exported bouquet for this country/category?"
 msgstr "Bu ülke/kategori için dışa aktarılan buket kaldırılsın mı?"
+
+#, fuzzy
+msgid "Remove this country's bouquet"
+msgstr "- Ülke buketleri"
 
 msgid "Removed exported bouquet: {}"
 msgstr "Dışa aktarılan buket kaldırıldı: {}"
 
 #, fuzzy
+msgid "Removed from favourites"
+msgstr "Dışa aktarma başarısız: {}"
+
+#, fuzzy
 msgid "Removed from favourites: {}"
 msgstr "Dışa aktarma başarısız: {}"
 
-msgid "Restarting..."
-msgstr "Yeniden başlatılıyor..."
+msgid "Rename / delete the folder"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
+
+msgid "Restore from Backup"
+msgstr ""
+
+msgid "Restored - the theme and text size change when the plugin is opened again"
+msgstr ""
+
+msgid "Result"
+msgstr ""
 
 msgid "Returning to channel list."
 msgstr "Kanal listesine geri dönülüyor."
@@ -547,6 +1247,13 @@ msgstr "Kaydedildi: %(path)s"
 msgid "Saved in: %s"
 msgstr "Kaydedildi: %s"
 
+#, fuzzy
+msgid "Saved: {}"
+msgstr "Durum: {}"
+
+msgid "Saves the settings, the favourites (with folders and order), recently watched, the chosen sources and countries in /media/hdd, /media/usb or /media/mmc (else %s) - not parental control."
+msgstr ""
+
 msgid "Schedule type:"
 msgstr "Zamanlama türü:"
 
@@ -554,20 +1261,31 @@ msgstr "Zamanlama türü:"
 msgid "Scheduled EPG/Bouquet Update:"
 msgstr "Zamanlama türü:"
 
+msgid "Scheduled recording not started: {}"
+msgstr ""
+
+msgid "Scroll"
+msgstr ""
+
 msgid "Search"
 msgstr "Ara"
 
 msgid "Search Channels:"
 msgstr "Kanalları Ara:"
 
+#, fuzzy
+msgid "Search all channels"
+msgstr "Kanalları Ara:"
+
+#, fuzzy
+msgid "Search {}"
+msgstr "Ara"
+
 msgid "Search..."
 msgstr "Ara..."
 
 msgid "Search:"
 msgstr "Arama:"
-
-msgid "Select Background"
-msgstr "Arkaplan Seç"
 
 msgid "Select M3U export mode:"
 msgstr "M3U dışa aktarma modunu seçin:"
@@ -581,11 +1299,48 @@ msgstr "M3U bağlantılarında kullanılacak IP adresini seçin:"
 msgid "Send Anonymous Statistics"
 msgstr "Anonim İstatistikleri Gönder"
 
-msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr "Aşağıdaki ülkeleri kilitlemek için bir PIN ayarlayın. Ebeveyn kontrolünü tamamen devre dışı bırakmak için boş bırakın."
+msgid "Set a PIN"
+msgstr ""
+
+#, fuzzy
+msgid "Setting"
+msgstr "Yeniden başlatılıyor..."
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings and tools"
+msgstr ""
+
+msgid "Show / hide the bar"
+msgstr ""
+
+msgid "Show / hide the country"
+msgstr ""
+
+msgid "Show Counts"
+msgstr ""
+
+msgid "Show Log"
+msgstr ""
 
 msgid "Show Log (Ok to view)"
 msgstr "Günlüğü Göster (Görüntülemek için Tamam)"
+
+msgid "Show all"
+msgstr ""
+
+msgid "Show every setting: the channel sources, the proxy, EPG import, bouquets, playlists, the log..."
+msgstr ""
+
+msgid "Show how many channels each country has, and how many favourites, in the main list."
+msgstr ""
+
+msgid "Show the channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), and no logo is downloaded."
+msgstr ""
+
+msgid "Show the current and the next programme beside the channel list. The country's programme guide is downloaded when you open a country."
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Vavoo.log'da ayrıntılı DEBUG düzeyindeki mesajları gösterin (UI yaşam döngüsü, istek başına ayrıntı). Hemen etkili olur; sorun giderme sürece bırakın."
@@ -593,20 +1348,127 @@ msgstr "Vavoo.log'da ayrıntılı DEBUG düzeyindeki mesajları gösterin (UI ya
 msgid "Showing all channels: {}"
 msgstr "Tüm kanallar gösteriliyor: {}"
 
+msgid "Sleep timer"
+msgstr ""
+
+msgid "Sleep timer off"
+msgstr ""
+
+msgid "Sleep timer: standby in 1 minute"
+msgstr ""
+
+msgid "Sleep timer: {} min"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+#, fuzzy
+msgid "Source: {}"
+msgstr "Hata: {}"
+
 msgid "Space"
 msgstr "Boşluk"
 
 msgid "Start EPG update now?"
 msgstr "EPG güncellemesi şimdi başlatılsın mı?"
 
+#, fuzzy
+msgid "Start with last channel"
+msgstr "Buket {} kanalla hazır"
+
+msgid "Starting now: {}"
+msgstr ""
+
+#, fuzzy
+msgid "Starting the proxy..."
+msgstr "Proxy bekleniyor..."
+
+msgid "Stop a recording that is running"
+msgstr ""
+
+msgid "Stop recording"
+msgstr ""
+
+msgid "Stop the window"
+msgstr ""
+
+msgid "Stream Info"
+msgstr ""
+
 msgid "Stream ended. Too many connection issues."
 msgstr "Yayın sonlandı. Çok fazla bağlantı sorunu."
+
+msgid "Sub-categories"
+msgstr ""
+
+msgid "Subtitles"
+msgstr ""
 
 msgid "Technical Features:"
 msgstr "Teknik Özellikler:"
 
+msgid "Text Size"
+msgstr ""
+
+msgid "That file is not a Vavoo Stream backup"
+msgstr ""
+
+msgid "The PIN"
+msgstr ""
+
+msgid "The backup could not be saved"
+msgstr ""
+
+#, fuzzy
+msgid "The channel before"
+msgstr "Kanal bulunamadı"
+
+#, fuzzy
+msgid "The channel list"
+msgstr "Kanal listesine geri dönülüyor."
+
+msgid "The channel list is still loading..."
+msgstr ""
+
+#, fuzzy
+msgid "The channel watched last"
+msgstr "Bu kanal oynatılamıyor"
+
+#, fuzzy
+msgid "The favourites"
+msgstr "Favoriler"
+
+#, fuzzy
+msgid "The keyboard"
+msgstr "Klavye"
+
+msgid "The plugin's licence and the fonts' (SIL OFL)."
+msgstr ""
+
+msgid "The proxy restarts and downloads the list again. A channel playing now stops for a moment."
+msgstr ""
+
+msgid "The same PIN again"
+msgstr ""
+
+msgid "The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row."
+msgstr ""
+
+msgid "The two PINs differ - not changed"
+msgstr ""
+
+msgid "The window's channel: full screen / stop / record"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
 msgid "This channel cannot be played"
 msgstr "Bu kanal oynatılamıyor"
+
+msgid "This recording is not running"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "Bu, kimlik doğrulama tokenini yenileyecektir."
@@ -621,11 +1483,23 @@ msgstr "Bu şunları yapacak:"
 msgid "Time to start EPG/bouquet update:"
 msgstr "Güncelleme başlangıç zamanı:"
 
+msgid "Too many wrong PINs - try again in {} s"
+msgstr ""
+
 msgid "Top"
 msgstr "Üst"
 
 msgid "Total channels: %(total_channels)d"
 msgstr "Toplam kanal: %(total_channels)d"
+
+msgid "Type (as on a phone)"
+msgstr ""
+
+msgid "UP / DOWN"
+msgstr ""
+
+msgid "UP / DOWN, CH+ / CH-"
+msgstr ""
 
 msgid "UPPERCASE"
 msgstr "BÜYÜK HARF"
@@ -654,6 +1528,9 @@ msgstr "Vavoo Günlüğü"
 msgid "Vavoo Stream Live"
 msgstr "Vavoo Canlı Yayın"
 
+msgid "Vavoo Stream Live %s by Lululla & Qu4k3 - License CC BY-NC-SA 4.0."
+msgstr ""
+
 msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Canlı Yayın - Bilgi"
 
@@ -669,6 +1546,10 @@ msgstr "Vavoo zaten çalışıyor."
 msgid "Vavoo/Kool only"
 msgstr "Yalnızca Vavoo/Kool"
 
+#, fuzzy
+msgid "Version and channels"
+msgstr "Bulunan: {} kanal"
+
 msgid "Version:"
 msgstr "Sürüm:"
 
@@ -678,11 +1559,48 @@ msgstr "Favorileri Görüntüle (Açmak için Tamam)"
 msgid "View the last 200 lines of %s."
 msgstr "%s'in son 200 satırını görüntüleyin."
 
+msgid "Watch"
+msgstr ""
+
+#, fuzzy
+msgid "Watch the channel"
+msgstr "Lütfen başka bir kanal deneyin."
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG destekli Vavoo Proxy'ye hoş geldiniz"
 
+msgid "Welcome! Choose a look"
+msgstr ""
+
+msgid "Welcome! Choose the countries for the main list (OK shows or hides one), then GREEN saves. Settings → Choose countries changes it later."
+msgstr ""
+
+msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
+msgstr ""
+
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
 msgstr "Kanalların ve akışların hangi hizmetten yükleneceğini. Auto önce Geil'i dener ve eğer mevcut değilse Vavoo'ya geri döner; diğer iki seçenek onu tam olarak tek bir kaynağa bağlar. Kaydedildiğinde etkili olur (çalışıyorsa proxy'yi yeniden başlatır)."
+
+msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
+msgstr ""
+
+msgid "Wrong PIN - try again"
+msgstr ""
+
+msgid "YELLOW"
+msgstr ""
+
+msgid "YELLOW / BLUE"
+msgstr ""
+
+msgid "YELLOW / BLUE, << / >>"
+msgstr ""
+
+msgid "YELLOW / TEXT"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -690,6 +1608,10 @@ msgstr "EPG güncellemesi şimdi başlatılsın mı?"
 
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Menüden veya TEXT tuşuna basarak başlatabilirsiniz."
+
+#, fuzzy
+msgid "all channels"
+msgstr "Kanallar"
 
 msgid "fixed time"
 msgstr "sabit zaman"
@@ -700,17 +1622,62 @@ msgstr "aralık"
 msgid "lowercase"
 msgstr "küçük harf"
 
+msgid "not recorded (no disk) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (no ffmpeg) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (the stream could not be recorded) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded - PLAY returns to live"
+msgstr ""
+
+msgid "press play to go on"
+msgstr ""
+
+msgid "recording - press play to go on"
+msgstr ""
+
 msgid "v{} -> v{}"
 msgstr ""
 
-msgid "✓ Proxy ({0}s)"
-msgstr "✓ Proxy ({0}s)"
+#, fuzzy
+msgid "{} channels"
+msgstr "Bulunan: {} kanal"
 
-msgid "✓ Proxy OK"
-msgstr "✓ Proxy OK"
+#, fuzzy
+msgid "{} countries"
+msgstr "Tüm ülkeler (%d)"
 
-msgid "✓ Restarted"
-msgstr "✓ Yeniden başlatıldı"
+msgid "{} found"
+msgstr ""
+
+msgid "{} free"
+msgstr ""
+
+msgid "{} min"
+msgstr ""
+
+msgid "{} min left"
+msgstr ""
+
+msgid "{} of {} countries shown"
+msgstr ""
+
+msgid "{} recordings · {} timers · {} free"
+msgstr ""
+
+msgid "{} sources"
+msgstr ""
+
+msgid "● REC · {} min"
+msgstr ""
+
+#, fuzzy
+msgid "★ Favourites"
+msgstr "Favoriler"
 
 msgid "✗ Error"
 msgstr "✗ Hata"
@@ -726,6 +1693,48 @@ msgstr "✗ Proxy çevrimdışı"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Yeniden başlatma başarısız"
+
+#~ msgid "Auto (Geil, fallback Vavoo)"
+#~ msgstr "Araba (Harika, geri dönüş Vavoo)"
+
+#, fuzzy
+#~ msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
+#~ msgstr "CH±=Değiştir | OK=Aç/Kapat | INFO=IMDb | STOP=Çıkış"
+
+#~ msgid "Choose Stream Source"
+#~ msgstr "Akış Kaynağını Seçin"
+
+#, fuzzy
+#~ msgid "Comma-separated country names (e.g. \\\\\\\\\\\\\\\\"
+#~ msgstr "Virgülle ayrılmış ülke adları (ör. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+
+#~ msgid "Configure Main Background Image."
+#~ msgstr "Ana Arkaplan Resmini Yapılandır."
+
+#~ msgid "Enter parental control PIN"
+#~ msgstr "Ebeveyn kontrolü PIN'ini girin"
+
+#~ msgid "Export"
+#~ msgstr "Dışa Aktar"
+
+#~ msgid "Incorrect PIN"
+#~ msgstr "Yanlış PIN"
+
+#, fuzzy
+#~ msgid "Remove ALL"
+#~ msgstr "Kaldır"
+
+#~ msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+#~ msgstr "Aşağıdaki ülkeleri kilitlemek için bir PIN ayarlayın. Ebeveyn kontrolünü tamamen devre dışı bırakmak için boş bırakın."
+
+#~ msgid "✓ Proxy ({0}s)"
+#~ msgstr "✓ Proxy ({0}s)"
+
+#~ msgid "✓ Proxy OK"
+#~ msgstr "✓ Proxy OK"
+
+#~ msgid "✓ Restarted"
+#~ msgstr "✓ Yeniden başlatıldı"
 
 #~ msgid "Auto-update EPG"
 #~ msgstr "EPG'yi otomatik güncelle"
@@ -753,9 +1762,6 @@ msgstr "✗ Yeniden başlatma başarısız"
 
 #~ msgid "Minimum similarity for matching channels (higher = stricter)."
 #~ msgstr "Eşleşen kanallar için minimum benzerlik (yüksek = daha katı)."
-
-#~ msgid "Now %s"
-#~ msgstr "Şimdi %s"
 
 #~ msgid "Proxy Disabled"
 #~ msgstr "Proxy Devre Dışı"
@@ -814,17 +1820,11 @@ msgstr "✗ Yeniden başlatma başarısız"
 #~ msgid "EPG update started successfully"
 #~ msgstr "EPG güncellemesi başarıyla başladı"
 
-#~ msgid "Error: {}"
-#~ msgstr "Hata: {}"
-
 #~ msgid "Ready"
 #~ msgstr "Hazır"
 
 #~ msgid "Updating EPG..."
 #~ msgstr "EPG güncelleniyor..."
-
-#~ msgid "Please try another channel."
-#~ msgstr "Lütfen başka bir kanal deneyin."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Aramada kanal bulunamadı!!!"
@@ -837,9 +1837,6 @@ msgstr "✗ Yeniden başlatma başarısız"
 
 #~ msgid "Proxy restarting... Please wait"
 #~ msgstr "Proxy yeniden başlatılıyor... Lütfen bekleyin"
-
-#~ msgid "Waiting for proxy..."
-#~ msgstr "Proxy bekleniyor..."
 
 #~ msgid "seconds"
 #~ msgstr "saniye"

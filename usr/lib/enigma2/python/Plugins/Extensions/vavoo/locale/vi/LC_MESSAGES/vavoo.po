@@ -21,6 +21,9 @@ msgstr "(%s tập tin đã bị xóa)"
 msgid "(current)"
 msgstr "(hiện hành)"
 
+msgid "(token expiring)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(bạn có v{})"
 
@@ -93,14 +96,73 @@ msgstr "- Đã xóa {} mục trùng lặp"
 msgid "- {} entries updated"
 msgstr "- Đã cập nhật {} mục"
 
+msgid "0-9: the PIN  ·  ◄ delete  ·  EXIT cancel"
+msgstr ""
+
+msgid "10 seconds back / on"
+msgstr ""
+
+msgid "10 seconds back / on (paused)"
+msgstr ""
+
+msgid "12 hours"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "30 seconds back / on"
+msgstr ""
+
+msgid "30 seconds back / on (paused)"
+msgstr ""
+
 msgid "? Proxy Unknown"
 msgstr "? Proxy không xác định"
+
+msgid "A 4-digit PIN for adult channels, chosen countries and (optionally) the settings. Once entered, all is open for 15 minutes or until the plugin is left."
+msgstr ""
+
+msgid "A country whose channels come in categories (Sport, News...) lists them first: All channels, the categories, General."
+msgstr ""
+
+msgid "A programme to come: remind / record / watch"
+msgstr ""
+
+#, fuzzy
+msgid "A space"
+msgstr "Không gian"
+
+msgid "About"
+msgstr ""
+
+#, fuzzy
+msgid "Add / remove favourite"
+msgstr "Đã thêm vào mục yêu thích: {}"
+
+msgid "Add Fav"
+msgstr ""
+
+#, fuzzy
+msgid "Add to favourites"
+msgstr "Đã thêm vào mục yêu thích: {}"
+
+#, fuzzy
+msgid "Added to favourites"
+msgstr "Đã thêm vào mục yêu thích: {}"
 
 msgid "Added to favourites: {}"
 msgstr "Đã thêm vào mục yêu thích: {}"
 
+#, fuzzy
+msgid "All channels"
+msgstr "Kênh"
+
 msgid "All countries (%d)"
 msgstr "Tất cả các quốc gia (%d)"
+
+msgid "All settings ({} more)"
+msgstr ""
 
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Quá trình xuất khẩu sang một quốc gia khác đang được tiến hành. Vui lòng chờ."
@@ -108,23 +170,57 @@ msgstr "Quá trình xuất khẩu sang một quốc gia khác đang được ti�
 msgid "An export is in progress. Please wait before fixing the cache."
 msgstr "Quá trình xuất khẩu đang được tiến hành. Vui lòng đợi trước khi sửa bộ đệm."
 
+msgid "An hour back / on"
+msgstr ""
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Chỉ ping khởi động/nhịp tim ẩn danh (id phiên, phiên bản, dấu thời gian - không có dữ liệu cá nhân). Tắt để chọn không tham gia."
+
+msgid "Aspect ratio"
+msgstr ""
 
 msgid "At an interval hours or fixed time"
 msgstr "Vào một khoảng thời gian hoặc thời gian cố định"
 
+msgid "Audio track"
+msgstr ""
+
+msgid "Audio track / subtitles"
+msgstr ""
+
 msgid "Author:"
 msgstr "Tác giả:"
 
-msgid "Auto (Geil, fallback Vavoo)"
-msgstr "Xe hơi (Tuyệt vời, dự phòng Vavoo)"
+msgid "Auto"
+msgstr ""
+
+msgid "BLUE"
+msgstr ""
+
+msgid "BLUE / PLAY"
+msgstr ""
 
 msgid "Back"
 msgstr "Mặt sau"
 
+msgid "Back (paused: to live first)"
+msgstr ""
+
+msgid "Back (without saving)"
+msgstr ""
+
+msgid "Back to the settings most people change."
+msgstr ""
+
+#, fuzzy
+msgid "Background"
+msgstr "Chọn nền"
+
 msgid "Backspace"
 msgstr "Phím lùi"
+
+msgid "Backup Settings & Favourites"
+msgstr ""
 
 msgid "Bottom"
 msgstr "Đáy"
@@ -144,12 +240,9 @@ msgstr "Bó hoa tải lại theo lịch trình."
 msgid "Bouquets reorganized successfully!"
 msgstr "Bó hoa được tổ chức lại thành công!"
 
-msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr "Duyệt và phát các kênh được gắn dấu sao của bạn. Gắn dấu sao/bỏ gắn dấu sao cho một kênh bằng phím INFO trong khi duyệt."
-
 #, fuzzy
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
-msgstr "CH±=Thay đổi | OK=Chuyển đổi | THÔNG TIN=IMDb | DỪNG=Thoát"
+msgid "Browse and play your starred channels. Add or remove a channel with the GREEN key while browsing."
+msgstr "Duyệt và phát các kênh được gắn dấu sao của bạn. Gắn dấu sao/bỏ gắn dấu sao cho một kênh bằng phím INFO trong khi duyệt."
 
 msgid "Cache format fix completed:"
 msgstr "Đã hoàn tất sửa lỗi định dạng bộ đệm:"
@@ -157,11 +250,29 @@ msgstr "Đã hoàn tất sửa lỗi định dạng bộ đệm:"
 msgid "Cache is already in correct format. No changes needed."
 msgstr "Bộ nhớ đệm đã có định dạng đúng. Không cần thay đổi."
 
+msgid "Can't record (not enough free space?)"
+msgstr ""
+
+msgid "Can't record: no disk (HDD / USB) found"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
 msgid "Cancel execution?"
 msgstr "Hủy thực thi?"
+
+#, fuzzy
+msgid "Cancel recording"
+msgstr "Hủy thực thi?"
+
+#, fuzzy
+msgid "Cancel reminder"
+msgstr "Hủy thực thi?"
+
+#, fuzzy
+msgid "Cancelled"
+msgstr "Hủy bỏ"
 
 msgid "Case: {}"
 msgstr "Trường hợp: {}"
@@ -170,39 +281,89 @@ msgid "Catalog/Stream Source"
 msgstr "Nguồn danh mục/luồng"
 
 #, fuzzy
+msgid "Change it"
+msgstr "Kênh"
+
+msgid "Change the PIN"
+msgstr ""
+
+msgid "Change the setting / lock the country"
+msgstr ""
+
+#, fuzzy
 msgid "Changelog:"
 msgstr "Kênh"
 
 msgid "Changelog: ({}/{}, use up/down)"
 msgstr "Nhật ký thay đổi: ({}/{}, sử dụng lên/xuống)"
 
-msgid "Channels"
+msgid "Changes not saved: GREEN saves, press again to leave without saving"
+msgstr ""
+
+#, fuzzy
+msgid "Channel"
 msgstr "Kênh"
+
+#, fuzzy
+msgid "Channel Logos"
+msgstr "Kênh"
+
+msgid "Channel list updated: {} channels"
+msgstr ""
 
 msgid "Channels: %d"
 msgstr "Kênh: %d"
 
+msgid "Check it"
+msgstr ""
+
 msgid "Checking proxy..."
 msgstr "Đang kiểm tra proxy..."
 
-msgid "Choose Stream Source"
-msgstr "Chọn nguồn luồng"
+msgid "Choose a backup: its settings and favourites replace the ones here."
+msgstr ""
+
+#, fuzzy
+msgid "Choose countries"
+msgstr "Quốc gia"
+
+msgid "Classic"
+msgstr ""
+
+msgid "Classic - the original look"
+msgstr ""
+
+msgid "Classic's background (Oktus or Kiddac). Takes effect when the plugin is opened again."
+msgstr ""
+
+#, fuzzy
+msgid "Clear"
+msgstr "Xóa tất cả"
 
 msgid "Clear All"
 msgstr "Xóa tất cả"
 
+#, fuzzy
+msgid "Clear Favourites"
+msgstr "Yêu thích"
+
+msgid "Clear recently watched"
+msgstr ""
+
+msgid "Clock Format"
+msgstr ""
+
+msgid "Clock in the top-right corner and programme times. Not used by Classic's own clock."
+msgstr ""
+
 msgid "Close"
 msgstr "Đóng"
 
-#, fuzzy
-msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "Tên quốc gia được phân tách bằng dấu phẩy (ví dụ: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+msgid "Close the player"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "Đã lưu cấu hình thành công!"
-
-msgid "Configure Main Background Image."
-msgstr "Định cấu hình hình nền chính."
 
 msgid "Configure at a fixed time"
 msgstr "Định cấu hình vào một thời điểm cố định"
@@ -244,11 +405,29 @@ msgstr "Tín dụng:"
 msgid "Debug logging"
 msgstr "Ghi nhật ký gỡ lỗi"
 
+msgid "Delete"
+msgstr ""
+
+msgid "Delete (press twice)"
+msgstr ""
+
+msgid "Delete a digit"
+msgstr ""
+
+msgid "Delete a letter"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
 msgid "Do you want to export this bouquet?"
 msgstr "Bạn có muốn xuất bó hoa này không?"
 
 msgid "Do you want to fix the cache format?"
 msgstr "Bạn có muốn sửa định dạng bộ đệm không?"
+
+msgid "Done"
+msgstr ""
 
 #, fuzzy
 msgid "EPG import already running"
@@ -273,14 +452,23 @@ msgstr "Khoảng thời gian cập nhật (phút):"
 msgid "EPGImport plugin not found: {}"
 msgstr "Không tìm thấy plugin EPGImport: {}"
 
+msgid "EXIT"
+msgstr ""
+
+msgid "EXIT / BACK"
+msgstr ""
+
+msgid "Earlier"
+msgstr ""
+
 msgid "Enable Vavoo EPG"
 msgstr "Kích hoạt Vavoo EPG"
 
-msgid "Enter parental control PIN"
-msgstr "Nhập mã PIN kiểm soát của phụ huynh"
-
 msgid "Enter text to search..."
 msgstr "Nhập văn bản để tìm kiếm..."
+
+msgid "Enter the PIN"
+msgstr ""
 
 msgid "Error"
 msgstr "Lỗi"
@@ -303,14 +491,31 @@ msgstr "Ra"
 msgid "Exit and reopen the plugin to see the new background."
 msgstr "Thoát và mở lại plugin để xem nền mới."
 
-msgid "Export"
-msgstr "Xuất khẩu"
+#, fuzzy
+msgid "Exit and reopen the plugin to see the new look."
+msgstr "Thoát và mở lại plugin để xem nền mới."
 
 msgid "Export failed: {}"
 msgstr "Xuất không thành công: {}"
 
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Xuất khẩu bắt đầu. Bó hoa sẽ sớm có mặt."
+
+#, fuzzy
+msgid "Export this country as a bouquet"
+msgstr "- Bó hoa đồng quê"
+
+msgid "Factory reset"
+msgstr ""
+
+msgid "Factory reset done"
+msgstr ""
+
+msgid "Factory reset done - starting again"
+msgstr ""
+
+msgid "Factory reset..."
+msgstr ""
 
 msgid "Failed to refresh proxy token"
 msgstr "Không làm mới được mã thông báo proxy"
@@ -321,14 +526,40 @@ msgstr "Không thể làm mới proxy:"
 msgid "Failed: %(failed)d"
 msgstr "Thất bại: %(thất bại)d"
 
+msgid "Fav"
+msgstr ""
+
 msgid "Favourites"
 msgstr "Yêu thích"
 
-msgid "Fix Cache"
+#, fuzzy
+msgid "Favourites cleared"
+msgstr "Yêu thích"
+
+msgid "Fewer settings"
+msgstr ""
+
+#, fuzzy
+msgid "Fix EPG cache"
 msgstr "Sửa bộ đệm"
 
 msgid "Fixing cache format..."
 msgstr "Đang sửa định dạng bộ đệm..."
+
+msgid "Folder"
+msgstr ""
+
+msgid "Folder for {}"
+msgstr ""
+
+msgid "Folder name (e.g. Sport)"
+msgstr ""
+
+msgid "Folder renamed to {}"
+msgstr ""
+
+msgid "Folder {} removed - its channels stay in the favourites"
+msgstr ""
 
 msgid "Force proxy refresh?"
 msgstr "Buộc làm mới proxy?"
@@ -336,8 +567,29 @@ msgstr "Buộc làm mới proxy?"
 msgid "Found: {} channels"
 msgstr "Đã tìm thấy: {} kênh"
 
+msgid "Full Screen"
+msgstr ""
+
+msgid "Full screen"
+msgstr ""
+
+msgid "GREEN"
+msgstr ""
+
+msgid "GREEN / FAV"
+msgstr ""
+
+msgid "GREEN / PLAY"
+msgstr ""
+
+msgid "GREEN / TEXT"
+msgstr ""
+
 msgid "Geil only"
 msgstr "chỉ có Geil"
+
+msgid "General"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "Tạo tệp .m3u cho:"
@@ -354,26 +606,85 @@ msgstr "Tạo tệp .m3u và lưu vào thiết bị %s?"
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "Tạo tệp .m3u cho TẤT CẢ các quốc gia %d?"
 
+#, fuzzy
+msgid "Go to that channel"
+msgstr "Lỗi bắt đầu kênh"
+
+msgid "Go to that row"
+msgstr ""
+
+msgid "Group Sources"
+msgstr ""
+
+msgid "Guide"
+msgstr ""
+
+msgid "Halo - frosted glass"
+msgstr ""
+
+msgid "Hide all"
+msgstr ""
+
+msgid "Hide the countries you never watch from the main list and from search."
+msgstr ""
+
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Tần suất kết hợp lại EPG và làm mới bó hoa, tính từ bây giờ."
+
+msgid "IMDb / TMDB"
+msgstr ""
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
 msgstr "Nếu được đặt, danh sách phát trực tiếp tại /playlist.m3u yêu cầu ?key=<this value> - để trống nếu không có khóa. URL: http://%s:%d/playlist.m3u"
 
+msgid "Import EPG now"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "Lưu ý quan trọng:"
-
-msgid "Incorrect PIN"
-msgstr "Mã PIN không chính xác"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Tăng nếu proxy mất nhiều thời gian do VPN hoặc kết nối chậm."
 
+msgid "Keep at least one country"
+msgstr ""
+
 msgid "Keyboard"
 msgstr "Bàn phím"
 
+msgid "Keys"
+msgstr ""
+
+msgid "LEFT"
+msgstr ""
+
+msgid "LEFT / RIGHT"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · EXIT: close"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · OK pause · MENU options · EXIT close"
+msgstr ""
+
+msgid "LEFT / RIGHT move · EXIT: live"
+msgstr ""
+
+msgid "Large"
+msgstr ""
+
+msgid "Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Not used by Classic."
+msgstr ""
+
 msgid "Last channel update: %s"
 msgstr "Cập nhật kênh cuối cùng: %s"
+
+msgid "Later"
+msgstr ""
+
+#, fuzzy
+msgid "Licences"
+msgstr "Giấy phép:"
 
 msgid "License:"
 msgstr "Giấy phép:"
@@ -384,16 +695,42 @@ msgstr "Giấy phép: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "Liên kết trong Menu chính"
 
+msgid "List"
+msgstr ""
+
+msgid "Live"
+msgstr ""
+
 #, fuzzy
 msgid "Loading EPG..."
 msgstr "Đang cập nhật EPG..."
+
+#, fuzzy
+msgid "Loading channels..."
+msgstr "Đang cập nhật EPG..."
+
+msgid "Loading programme guide..."
+msgstr ""
+
+#, fuzzy
+msgid "Loading..."
+msgstr "Đang cập nhật EPG..."
+
+msgid "Loading…"
+msgstr ""
 
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "Chỉ cục bộ (127.0.0.1) - chỉ thiết bị này"
 
 #, fuzzy
-msgid "Locked Countries"
-msgstr "Quốc gia"
+msgid "Lock adult channels"
+msgstr "(%d kênh)?"
+
+msgid "Lock the settings"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
 
 msgid "M3U file generated successfully!"
 msgstr "Tệp M3U được tạo thành công!"
@@ -404,15 +741,49 @@ msgstr "Thế hệ M3U đã hoàn thành!"
 msgid "M3U generation error: %s"
 msgstr "Lỗi tạo M3U: %s"
 
+msgid "Menu"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+msgid "Move it to that place"
+msgstr ""
+
+#, fuzzy
+msgid "Move the channel"
+msgstr "Vui lòng thử kênh khác."
+
 msgid "Movie Services Reference"
 msgstr "Tham khảo dịch vụ phim"
+
+msgid "Movie folder ({})"
+msgstr ""
+
+msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
 msgstr "Mạng (%s) - các thiết bị khác trong mạng LAN"
 
+msgid "New PIN (4 digits)"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
 #, fuzzy
 msgid "New version available: v{}"
 msgstr "Không có mặt hàng nào"
+
+msgid "Next"
+msgstr ""
+
+msgid "Next / previous channel"
+msgstr ""
+
+msgid "No"
+msgstr ""
 
 msgid "No IMDb/TMDB plugin found"
 msgstr "Không tìm thấy plugin IMDb/TMDB"
@@ -420,9 +791,16 @@ msgstr "Không tìm thấy plugin IMDb/TMDB"
 msgid "No Internet connection detected. Please check your network."
 msgstr "Không có kết nối Internet được phát hiện. Vui lòng kiểm tra mạng của bạn."
 
+msgid "No PIN yet: nothing is locked until one is set."
+msgstr ""
+
 #, fuzzy
 msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
 msgstr "Nguồn Vavoo EPG không được bật trong EPGImport. Vui lòng kích hoạt nó trong cài đặt EPGImport."
+
+#, fuzzy
+msgid "No backup found"
+msgstr "Không tìm thấy kênh nào"
 
 #, fuzzy
 msgid "No changelog provided."
@@ -434,8 +812,22 @@ msgstr "Không tìm thấy kênh nào"
 msgid "No channels found for: %s"
 msgstr "Không tìm thấy kênh nào cho: %s"
 
+#, fuzzy
+msgid "No channels watched yet"
+msgstr "Không tìm thấy kênh nào"
+
+#, fuzzy
+msgid "No favourites"
+msgstr "Chưa có mục yêu thích nào"
+
 msgid "No favourites yet"
 msgstr "Chưa có mục yêu thích nào"
+
+msgid "No favourites yet. Open a country and press GREEN on a channel."
+msgstr ""
+
+msgid "No folder"
+msgstr ""
 
 msgid "No items available"
 msgstr "Không có mặt hàng nào"
@@ -443,17 +835,83 @@ msgstr "Không có mặt hàng nào"
 msgid "No programme info available"
 msgstr "Không có thông tin chương trình"
 
+#, fuzzy
+msgid "No programme information"
+msgstr "Không có thông tin chương trình"
+
+msgid "No programme to record here"
+msgstr ""
+
 msgid "No selection"
 msgstr "Không có lựa chọn"
 
 msgid "No valid channels for: %s"
 msgstr "Không có kênh hợp lệ cho: %s"
 
+msgid "Non-commercial use only, with attribution; changes shared under the same licence."
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Not available on this receiver"
+msgstr ""
+
+msgid "Not now: a recording is running"
+msgstr ""
+
+msgid "Nothing is playing in the window"
+msgstr ""
+
 msgid "Nothing to remove for: {}"
 msgstr "Không có gì cần xóa đối với: {}"
 
+msgid "Nothing watched yet"
+msgstr ""
+
+msgid "Nothing yet: record from the player's options, or set a recording in the guide."
+msgstr ""
+
+#, fuzzy
+msgid "Now"
+msgstr "Bây giờ %s"
+
+msgid "Now, the programme's actions"
+msgstr ""
+
+#, fuzzy
+msgid "Now/Next in channel list"
+msgstr "Quay lại danh sách kênh."
+
 msgid "OK"
 msgstr "ĐƯỢC RỒI"
+
+msgid "OK / GREEN / PAUSE / PLAY"
+msgstr ""
+
+msgid "OK / LEFT / RIGHT"
+msgstr ""
+
+msgid "OK / RED / EXIT"
+msgstr ""
+
+msgid "OK / YELLOW"
+msgstr ""
+
+msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys"
+msgstr ""
+
+msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "On the last row: all settings / fewer"
+msgstr ""
+
+msgid "On {} - watch it?"
+msgstr ""
 
 msgid "Only one source available for this channel"
 msgstr "Chỉ có một nguồn có sẵn cho kênh này"
@@ -461,11 +919,85 @@ msgstr "Chỉ có một nguồn có sẵn cho kênh này"
 msgid "Only one specific country"
 msgstr "Chỉ có một quốc gia cụ thể"
 
-msgid "Parental Control PIN"
+msgid "Open (a row that opens a list or does something)"
+msgstr ""
+
+msgid "Open the category"
+msgstr ""
+
+msgid "Open the country / list"
+msgstr ""
+
+msgid "Open the folder"
+msgstr ""
+
+msgid "Open the last watched channel when the plugin starts."
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "PIN removed"
+msgstr ""
+
+msgid "PIN saved"
+msgstr ""
+
+msgid "PIN set · {} countries locked"
+msgstr ""
+
+msgid "PIN set: adult channels are locked"
+msgstr ""
+
+msgid "PVR / FILE"
+msgstr ""
+
+msgid "Page up / down"
+msgstr ""
+
+#, fuzzy
+msgid "Parental Control"
 msgstr "Mã PIN kiểm soát của phụ huynh"
+
+msgid "Pause"
+msgstr ""
+
+msgid "Pause / play on"
+msgstr ""
+
+msgid "Pause Live TV"
+msgstr ""
+
+msgid "Pause live / play on"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Định kỳ kết hợp lại EPG và làm mới các bó hoa cho các quốc gia bạn yêu thích ở chế độ nền."
+
+msgid "Picture: not known yet"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Play in the window (again: full screen)"
+msgstr ""
+
+#, fuzzy
+msgid "Play the channel"
+msgstr "Vui lòng thử kênh khác."
+
+msgid "Play the recording"
+msgstr ""
+
+msgid "Play the recording / cancel the timer"
+msgstr ""
 
 msgid "Playlist Access Key (optional)"
 msgstr "Khóa truy cập danh sách phát (tùy chọn)"
@@ -476,6 +1008,31 @@ msgstr "Vị trí của bó hoa Vavoo trong danh sách chính"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "Nhấn nút TEXT để gõ, BACKSPACE để xóa"
+
+msgid "Press again to confirm"
+msgstr ""
+
+msgid "Press again to delete"
+msgstr ""
+
+msgid "Preview Window"
+msgstr ""
+
+msgid "Prism - Vavoo's violet"
+msgstr ""
+
+msgid "Prism: Vavoo's violet. Halo: frosted glass over a blue aurora. Orbit: a teal cockpit display. Classic: the plugin's original skin, with its backgrounds. Takes effect when the plugin is opened again."
+msgstr ""
+
+msgid "Programme"
+msgstr ""
+
+msgid "Programme guide"
+msgstr ""
+
+#, fuzzy
+msgid "Programme guide of the favourites"
+msgstr "Không thể cập nhật mục yêu thích"
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "Proxy không chạy. Vui lòng khởi động proxy trước."
@@ -492,41 +1049,184 @@ msgstr "Thời gian chờ khởi động proxy (giây)"
 msgid "Proxy token refreshed successfully"
 msgstr "Mã thông báo proxy được làm mới thành công"
 
+msgid "RED"
+msgstr ""
+
+msgid "RED / EXIT"
+msgstr ""
+
+msgid "RED / EXIT / BACK"
+msgstr ""
+
+msgid "RED / REC"
+msgstr ""
+
+msgid "RED / STOP / EXIT / BACK"
+msgstr ""
+
 msgid "Really close without saving settings?"
 msgstr "Thực sự đóng mà không lưu cài đặt?"
 
-msgid "Reload Bouqet"
+msgid "Recently watched"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Record (again: stop)"
+msgstr ""
+
+msgid "Record the highlighted channel (again: stop)"
+msgstr ""
+
+msgid "Record the programme (again: cancel / stop)"
+msgstr ""
+
+msgid "Recording needs ffmpeg"
+msgstr ""
+
+msgid "Recording set: {}"
+msgstr ""
+
+msgid "Recording stopped"
+msgstr ""
+
+msgid "Recording stopped early: {}"
+msgstr ""
+
+msgid "Recording stopped: the disk could not be written (removed?)"
+msgstr ""
+
+msgid "Recording stopped: the disk is nearly full"
+msgstr ""
+
+msgid "Recording stopped: the disk's 4 GB file limit (FAT32)"
+msgstr ""
+
+msgid "Recording: {}"
+msgstr ""
+
+msgid "Recordings"
+msgstr ""
+
+msgid "Recordings folder"
+msgstr ""
+
+msgid "Recordings folder: {}"
+msgstr ""
+
+msgid "Refresh token"
+msgstr ""
+
+#, fuzzy
+msgid "Reload List"
+msgstr "Tải lại bó hoa"
+
+#, fuzzy
+msgid "Reload bouquets"
 msgstr "Tải lại bó hoa"
 
 msgid "Reload bouquets and service list?"
 msgstr "Tải lại bó hoa và danh sách dịch vụ?"
 
-msgid "Remove"
-msgstr "Di dời"
+#, fuzzy
+msgid "Reload failed: {}"
+msgstr "Xuất không thành công: {}"
 
 #, fuzzy
-msgid "Remove ALL"
-msgstr "Di dời"
+msgid "Reload the channel list?"
+msgstr "Quay lại danh sách kênh."
+
+#, fuzzy
+msgid "Reloading channel list..."
+msgstr "Quay lại danh sách kênh."
+
+msgid "Remind me"
+msgstr ""
+
+#, fuzzy
+msgid "Reminder set: {}"
+msgstr "Xuất không thành công: {}"
+
+msgid "Reminders and recordings (●) set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
+
+msgid "Reminders and recordings set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Xóa TẤT CẢ bó hoa Vavoo?"
 
 #, fuzzy
+msgid "Remove Fav"
+msgstr "Di dời"
+
+#, fuzzy
+msgid "Remove all Vavoo bouquets"
+msgstr "Xóa TẤT CẢ bó hoa Vavoo?"
+
+msgid "Remove all favourite channels (asks to confirm)."
+msgstr ""
+
+#, fuzzy
+msgid "Remove all favourite channels?"
+msgstr "Xuất không thành công: {}"
+
+#, fuzzy
 msgid "Remove failed: {}"
 msgstr "Xuất không thành công: {}"
 
+#, fuzzy
+msgid "Remove favourite"
+msgstr "Xuất không thành công: {}"
+
+#, fuzzy
+msgid "Remove folder"
+msgstr "Xuất không thành công: {}"
+
+#, fuzzy
+msgid "Remove from favourites"
+msgstr "Xuất không thành công: {}"
+
+#, fuzzy
+msgid "Remove from the list"
+msgstr "Xuất không thành công: {}"
+
+msgid "Remove the PIN (unlock everything)"
+msgstr ""
+
 msgid "Remove the exported bouquet for this country/category?"
 msgstr "Xóa bó hoa đã xuất cho quốc gia/danh mục này?"
+
+#, fuzzy
+msgid "Remove this country's bouquet"
+msgstr "- Bó hoa đồng quê"
 
 msgid "Removed exported bouquet: {}"
 msgstr "Đã xóa bó hoa đã xuất: {}"
 
 #, fuzzy
+msgid "Removed from favourites"
+msgstr "Xuất không thành công: {}"
+
+#, fuzzy
 msgid "Removed from favourites: {}"
 msgstr "Xuất không thành công: {}"
 
-msgid "Restarting..."
-msgstr "Đang khởi động lại..."
+msgid "Rename / delete the folder"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
+
+msgid "Restore from Backup"
+msgstr ""
+
+msgid "Restored - the theme and text size change when the plugin is opened again"
+msgstr ""
+
+msgid "Result"
+msgstr ""
 
 msgid "Returning to channel list."
 msgstr "Quay lại danh sách kênh."
@@ -543,6 +1243,13 @@ msgstr "Đã lưu trong: %(path)s"
 msgid "Saved in: %s"
 msgstr "Đã lưu trong: %s"
 
+#, fuzzy
+msgid "Saved: {}"
+msgstr "Trường hợp: {}"
+
+msgid "Saves the settings, the favourites (with folders and order), recently watched, the chosen sources and countries in /media/hdd, /media/usb or /media/mmc (else %s) - not parental control."
+msgstr ""
+
 msgid "Schedule type:"
 msgstr "Loại lịch trình:"
 
@@ -550,20 +1257,31 @@ msgstr "Loại lịch trình:"
 msgid "Scheduled EPG/Bouquet Update:"
 msgstr "Loại lịch trình:"
 
+msgid "Scheduled recording not started: {}"
+msgstr ""
+
+msgid "Scroll"
+msgstr ""
+
 msgid "Search"
 msgstr "Tìm kiếm"
 
 msgid "Search Channels:"
 msgstr "Tìm kiếm kênh:"
 
+#, fuzzy
+msgid "Search all channels"
+msgstr "Tìm kiếm kênh:"
+
+#, fuzzy
+msgid "Search {}"
+msgstr "Tìm kiếm"
+
 msgid "Search..."
 msgstr "Tìm kiếm..."
 
 msgid "Search:"
 msgstr "Tìm kiếm:"
-
-msgid "Select Background"
-msgstr "Chọn nền"
 
 msgid "Select M3U export mode:"
 msgstr "Chọn chế độ xuất M3U:"
@@ -577,11 +1295,48 @@ msgstr "Chọn địa chỉ IP sử dụng trong link M3U:"
 msgid "Send Anonymous Statistics"
 msgstr "Gửi số liệu thống kê ẩn danh"
 
-msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr "Đặt mã PIN để khóa các quốc gia bên dưới. Để trống để tắt hoàn toàn quyền kiểm soát của phụ huynh."
+msgid "Set a PIN"
+msgstr ""
+
+#, fuzzy
+msgid "Setting"
+msgstr "Đang khởi động lại..."
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings and tools"
+msgstr ""
+
+msgid "Show / hide the bar"
+msgstr ""
+
+msgid "Show / hide the country"
+msgstr ""
+
+msgid "Show Counts"
+msgstr ""
+
+msgid "Show Log"
+msgstr ""
 
 msgid "Show Log (Ok to view)"
 msgstr "Hiển thị nhật ký (Ok để xem)"
+
+msgid "Show all"
+msgstr ""
+
+msgid "Show every setting: the channel sources, the proxy, EPG import, bouquets, playlists, the log..."
+msgstr ""
+
+msgid "Show how many channels each country has, and how many favourites, in the main list."
+msgstr ""
+
+msgid "Show the channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), and no logo is downloaded."
+msgstr ""
+
+msgid "Show the current and the next programme beside the channel list. The country's programme guide is downloaded when you open a country."
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Hiển thị các thông báo chi tiết ở cấp độ DEBUG trong vavoo.log (vòng đời giao diện người dùng, chi tiết theo yêu cầu). Có hiệu lực ngay lập tức - tắt đi trừ khi khắc phục sự cố."
@@ -589,20 +1344,127 @@ msgstr "Hiển thị các thông báo chi tiết ở cấp độ DEBUG trong vav
 msgid "Showing all channels: {}"
 msgstr "Hiển thị tất cả các kênh: {}"
 
+msgid "Sleep timer"
+msgstr ""
+
+msgid "Sleep timer off"
+msgstr ""
+
+msgid "Sleep timer: standby in 1 minute"
+msgstr ""
+
+msgid "Sleep timer: {} min"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+#, fuzzy
+msgid "Source: {}"
+msgstr "Lỗi: {}"
+
 msgid "Space"
 msgstr "Không gian"
 
 msgid "Start EPG update now?"
 msgstr "Bắt đầu cập nhật EPG ngay bây giờ?"
 
+#, fuzzy
+msgid "Start with last channel"
+msgstr "Bó hoa đã sẵn sàng với {} kênh"
+
+msgid "Starting now: {}"
+msgstr ""
+
+#, fuzzy
+msgid "Starting the proxy..."
+msgstr "Đang chờ proxy..."
+
+msgid "Stop a recording that is running"
+msgstr ""
+
+msgid "Stop recording"
+msgstr ""
+
+msgid "Stop the window"
+msgstr ""
+
+msgid "Stream Info"
+msgstr ""
+
 msgid "Stream ended. Too many connection issues."
 msgstr "Luồng đã kết thúc. Quá nhiều vấn đề kết nối."
+
+msgid "Sub-categories"
+msgstr ""
+
+msgid "Subtitles"
+msgstr ""
 
 msgid "Technical Features:"
 msgstr "Tính năng kỹ thuật:"
 
+msgid "Text Size"
+msgstr ""
+
+msgid "That file is not a Vavoo Stream backup"
+msgstr ""
+
+msgid "The PIN"
+msgstr ""
+
+msgid "The backup could not be saved"
+msgstr ""
+
+#, fuzzy
+msgid "The channel before"
+msgstr "Không tìm thấy kênh nào"
+
+#, fuzzy
+msgid "The channel list"
+msgstr "Quay lại danh sách kênh."
+
+msgid "The channel list is still loading..."
+msgstr ""
+
+#, fuzzy
+msgid "The channel watched last"
+msgstr "Kênh này không thể phát được"
+
+#, fuzzy
+msgid "The favourites"
+msgstr "Yêu thích"
+
+#, fuzzy
+msgid "The keyboard"
+msgstr "Bàn phím"
+
+msgid "The plugin's licence and the fonts' (SIL OFL)."
+msgstr ""
+
+msgid "The proxy restarts and downloads the list again. A channel playing now stops for a moment."
+msgstr ""
+
+msgid "The same PIN again"
+msgstr ""
+
+msgid "The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row."
+msgstr ""
+
+msgid "The two PINs differ - not changed"
+msgstr ""
+
+msgid "The window's channel: full screen / stop / record"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
 msgid "This channel cannot be played"
 msgstr "Kênh này không thể phát được"
+
+msgid "This recording is not running"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "Điều này sẽ làm mới mã thông báo xác thực."
@@ -617,11 +1479,23 @@ msgstr "Điều này sẽ:"
 msgid "Time to start EPG/bouquet update:"
 msgstr "Thời gian bắt đầu cập nhật:"
 
+msgid "Too many wrong PINs - try again in {} s"
+msgstr ""
+
 msgid "Top"
 msgstr "Đứng đầu"
 
 msgid "Total channels: %(total_channels)d"
 msgstr "Tổng số kênh: %(total_channels)d"
+
+msgid "Type (as on a phone)"
+msgstr ""
+
+msgid "UP / DOWN"
+msgstr ""
+
+msgid "UP / DOWN, CH+ / CH-"
+msgstr ""
 
 msgid "UPPERCASE"
 msgstr "CHỮ HOA"
@@ -650,6 +1524,9 @@ msgstr "Nhật ký Vavoo"
 msgid "Vavoo Stream Live"
 msgstr "Vavoo Stream trực tiếp"
 
+msgid "Vavoo Stream Live %s by Lululla & Qu4k3 - License CC BY-NC-SA 4.0."
+msgstr ""
+
 msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Stream Live - Thông tin"
 
@@ -665,6 +1542,10 @@ msgstr "Vavoo đã chạy."
 msgid "Vavoo/Kool only"
 msgstr "Chỉ Vavoo/Kool"
 
+#, fuzzy
+msgid "Version and channels"
+msgstr "Đã tìm thấy: {} kênh"
+
 msgid "Version:"
 msgstr "Phiên bản:"
 
@@ -674,11 +1555,48 @@ msgstr "Xem mục yêu thích (Ok để mở)"
 msgid "View the last 200 lines of %s."
 msgstr "Xem 200 dòng cuối cùng của %s."
 
+msgid "Watch"
+msgstr ""
+
+#, fuzzy
+msgid "Watch the channel"
+msgstr "Vui lòng thử kênh khác."
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Chào mừng bạn đến với Vavoo Proxy với sự hỗ trợ EPG"
 
+msgid "Welcome! Choose a look"
+msgstr ""
+
+msgid "Welcome! Choose the countries for the main list (OK shows or hides one), then GREEN saves. Settings → Choose countries changes it later."
+msgstr ""
+
+msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
+msgstr ""
+
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
 msgstr "Dịch vụ nào để tải kênh và luồng từ đó. Tự động thử Geil trước và quay lại Vavoo nếu nó không khả dụng; hai tùy chọn còn lại ghim nó vào chính xác một nguồn đó. Có hiệu lực khi lưu (khởi động lại proxy nếu nó đang chạy)."
+
+msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
+msgstr ""
+
+msgid "Wrong PIN - try again"
+msgstr ""
+
+msgid "YELLOW"
+msgstr ""
+
+msgid "YELLOW / BLUE"
+msgstr ""
+
+msgid "YELLOW / BLUE, << / >>"
+msgstr ""
+
+msgid "YELLOW / TEXT"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -686,6 +1604,10 @@ msgstr "Bắt đầu cập nhật EPG ngay bây giờ?"
 
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "Bạn có thể bắt đầu nó từ menu hoặc bằng cách nhấn nút TEXT."
+
+#, fuzzy
+msgid "all channels"
+msgstr "Kênh"
 
 msgid "fixed time"
 msgstr "thời gian cố định"
@@ -696,17 +1618,62 @@ msgstr "khoảng thời gian"
 msgid "lowercase"
 msgstr "chữ thường"
 
+msgid "not recorded (no disk) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (no ffmpeg) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (the stream could not be recorded) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded - PLAY returns to live"
+msgstr ""
+
+msgid "press play to go on"
+msgstr ""
+
+msgid "recording - press play to go on"
+msgstr ""
+
 msgid "v{} -> v{}"
 msgstr ""
 
-msgid "✓ Proxy ({0}s)"
-msgstr "✓ Proxy ({0})"
+#, fuzzy
+msgid "{} channels"
+msgstr "Đã tìm thấy: {} kênh"
 
-msgid "✓ Proxy OK"
-msgstr "✓ Proxy được rồi"
+#, fuzzy
+msgid "{} countries"
+msgstr "Tất cả các quốc gia (%d)"
 
-msgid "✓ Restarted"
-msgstr "✓ Đã khởi động lại"
+msgid "{} found"
+msgstr ""
+
+msgid "{} free"
+msgstr ""
+
+msgid "{} min"
+msgstr ""
+
+msgid "{} min left"
+msgstr ""
+
+msgid "{} of {} countries shown"
+msgstr ""
+
+msgid "{} recordings · {} timers · {} free"
+msgstr ""
+
+msgid "{} sources"
+msgstr ""
+
+msgid "● REC · {} min"
+msgstr ""
+
+#, fuzzy
+msgid "★ Favourites"
+msgstr "Yêu thích"
 
 msgid "✗ Error"
 msgstr "✗ Lỗi"
@@ -722,6 +1689,48 @@ msgstr "✗ Proxy ngoại tuyến"
 
 msgid "✗ Restart Failed"
 msgstr "✗ Khởi động lại không thành công"
+
+#~ msgid "Auto (Geil, fallback Vavoo)"
+#~ msgstr "Xe hơi (Tuyệt vời, dự phòng Vavoo)"
+
+#, fuzzy
+#~ msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
+#~ msgstr "CH±=Thay đổi | OK=Chuyển đổi | THÔNG TIN=IMDb | DỪNG=Thoát"
+
+#~ msgid "Choose Stream Source"
+#~ msgstr "Chọn nguồn luồng"
+
+#, fuzzy
+#~ msgid "Comma-separated country names (e.g. \\\\\\\\\\\\\\\\"
+#~ msgstr "Tên quốc gia được phân tách bằng dấu phẩy (ví dụ: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+
+#~ msgid "Configure Main Background Image."
+#~ msgstr "Định cấu hình hình nền chính."
+
+#~ msgid "Enter parental control PIN"
+#~ msgstr "Nhập mã PIN kiểm soát của phụ huynh"
+
+#~ msgid "Export"
+#~ msgstr "Xuất khẩu"
+
+#~ msgid "Incorrect PIN"
+#~ msgstr "Mã PIN không chính xác"
+
+#, fuzzy
+#~ msgid "Remove ALL"
+#~ msgstr "Di dời"
+
+#~ msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+#~ msgstr "Đặt mã PIN để khóa các quốc gia bên dưới. Để trống để tắt hoàn toàn quyền kiểm soát của phụ huynh."
+
+#~ msgid "✓ Proxy ({0}s)"
+#~ msgstr "✓ Proxy ({0})"
+
+#~ msgid "✓ Proxy OK"
+#~ msgstr "✓ Proxy được rồi"
+
+#~ msgid "✓ Restarted"
+#~ msgstr "✓ Đã khởi động lại"
 
 #~ msgid "Auto-update EPG"
 #~ msgstr "Tự động cập nhật EPG"
@@ -749,9 +1758,6 @@ msgstr "✗ Khởi động lại không thành công"
 
 #~ msgid "Minimum similarity for matching channels (higher = stricter)."
 #~ msgstr "Độ tương tự tối thiểu đối với các kênh phù hợp (cao hơn = chặt chẽ hơn)."
-
-#~ msgid "Now %s"
-#~ msgstr "Bây giờ %s"
 
 #~ msgid "Proxy Disabled"
 #~ msgstr "Proxy bị vô hiệu hóa"
@@ -810,17 +1816,11 @@ msgstr "✗ Khởi động lại không thành công"
 #~ msgid "EPG update started successfully"
 #~ msgstr "Cập nhật EPG đã bắt đầu thành công"
 
-#~ msgid "Error: {}"
-#~ msgstr "Lỗi: {}"
-
 #~ msgid "Ready"
 #~ msgstr "Sẵn sàng"
 
 #~ msgid "Updating EPG..."
 #~ msgstr "Đang cập nhật EPG..."
-
-#~ msgid "Please try another channel."
-#~ msgstr "Vui lòng thử kênh khác."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "Không tìm thấy kênh nào trong tìm kiếm!!!"
@@ -833,9 +1833,6 @@ msgstr "✗ Khởi động lại không thành công"
 
 #~ msgid "Proxy restarting... Please wait"
 #~ msgstr "Đang khởi động lại proxy... Vui lòng đợi"
-
-#~ msgid "Waiting for proxy..."
-#~ msgstr "Đang chờ proxy..."
 
 #~ msgid "seconds"
 #~ msgstr "giây"

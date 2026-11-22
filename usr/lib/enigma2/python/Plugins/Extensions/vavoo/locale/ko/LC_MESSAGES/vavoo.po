@@ -21,6 +21,9 @@ msgstr "(%s개 파일이 삭제됨)"
 msgid "(current)"
 msgstr "(현재의)"
 
+msgid "(token expiring)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(당신은 v{}를 가지고 있습니다)"
 
@@ -93,14 +96,73 @@ msgstr "- {}개의 중복 항목이 제거되었습니다."
 msgid "- {} entries updated"
 msgstr "- {}개 항목이 업데이트되었습니다."
 
+msgid "0-9: the PIN  ·  ◄ delete  ·  EXIT cancel"
+msgstr ""
+
+msgid "10 seconds back / on"
+msgstr ""
+
+msgid "10 seconds back / on (paused)"
+msgstr ""
+
+msgid "12 hours"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "30 seconds back / on"
+msgstr ""
+
+msgid "30 seconds back / on (paused)"
+msgstr ""
+
 msgid "? Proxy Unknown"
 msgstr "? 프록시 알 수 없음"
+
+msgid "A 4-digit PIN for adult channels, chosen countries and (optionally) the settings. Once entered, all is open for 15 minutes or until the plugin is left."
+msgstr ""
+
+msgid "A country whose channels come in categories (Sport, News...) lists them first: All channels, the categories, General."
+msgstr ""
+
+msgid "A programme to come: remind / record / watch"
+msgstr ""
+
+#, fuzzy
+msgid "A space"
+msgstr "공간"
+
+msgid "About"
+msgstr ""
+
+#, fuzzy
+msgid "Add / remove favourite"
+msgstr "즐겨찾기에 추가됨: {}"
+
+msgid "Add Fav"
+msgstr ""
+
+#, fuzzy
+msgid "Add to favourites"
+msgstr "즐겨찾기에 추가됨: {}"
+
+#, fuzzy
+msgid "Added to favourites"
+msgstr "즐겨찾기에 추가됨: {}"
 
 msgid "Added to favourites: {}"
 msgstr "즐겨찾기에 추가됨: {}"
 
+#, fuzzy
+msgid "All channels"
+msgstr "채널"
+
 msgid "All countries (%d)"
 msgstr "모든 국가(%d)"
+
+msgid "All settings ({} more)"
+msgstr ""
 
 msgid "An export for another country is already in progress. Please wait."
 msgstr "이미 다른 국가로의 수출이 진행 중입니다. 기다리세요."
@@ -108,23 +170,57 @@ msgstr "이미 다른 국가로의 수출이 진행 중입니다. 기다리세�
 msgid "An export is in progress. Please wait before fixing the cache."
 msgstr "내보내기가 진행 중입니다. 캐시를 수정하기 전에 잠시 기다려 주세요."
 
+msgid "An hour back / on"
+msgstr ""
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "익명 시작/하트비트 핑만 가능합니다(세션 ID, 버전, 타임스탬프 - 개인 데이터 없음). 선택 해제하려면 비활성화하세요."
+
+msgid "Aspect ratio"
+msgstr ""
 
 msgid "At an interval hours or fixed time"
 msgstr "시간 간격이나 정해진 시간에"
 
+msgid "Audio track"
+msgstr ""
+
+msgid "Audio track / subtitles"
+msgstr ""
+
 msgid "Author:"
 msgstr "작가:"
 
-msgid "Auto (Geil, fallback Vavoo)"
-msgstr "자동차(Awesome, 폴백 Vavoo)"
+msgid "Auto"
+msgstr ""
+
+msgid "BLUE"
+msgstr ""
+
+msgid "BLUE / PLAY"
+msgstr ""
 
 msgid "Back"
 msgstr "뒤쪽에"
 
+msgid "Back (paused: to live first)"
+msgstr ""
+
+msgid "Back (without saving)"
+msgstr ""
+
+msgid "Back to the settings most people change."
+msgstr ""
+
+#, fuzzy
+msgid "Background"
+msgstr "배경 선택"
+
 msgid "Backspace"
 msgstr "역행 키이"
+
+msgid "Backup Settings & Favourites"
+msgstr ""
 
 msgid "Bottom"
 msgstr "맨 아래"
@@ -144,12 +240,9 @@ msgstr "부케 리로드가 예정되어 있습니다."
 msgid "Bouquets reorganized successfully!"
 msgstr "꽃다발이 성공적으로 개편되었습니다!"
 
-msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr "별표 표시된 채널을 탐색하고 재생하세요. 탐색하는 동안 INFO 키를 사용하여 채널에 별표 표시/별표 해제를 수행하세요."
-
 #, fuzzy
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
-msgstr "CH±=변화 | 확인=토글 | 정보=IMDb | 중지=나가기"
+msgid "Browse and play your starred channels. Add or remove a channel with the GREEN key while browsing."
+msgstr "별표 표시된 채널을 탐색하고 재생하세요. 탐색하는 동안 INFO 키를 사용하여 채널에 별표 표시/별표 해제를 수행하세요."
 
 msgid "Cache format fix completed:"
 msgstr "캐시 형식 수정 완료:"
@@ -157,11 +250,29 @@ msgstr "캐시 형식 수정 완료:"
 msgid "Cache is already in correct format. No changes needed."
 msgstr "캐시가 이미 올바른 형식입니다. 변경이 필요하지 않습니다."
 
+msgid "Can't record (not enough free space?)"
+msgstr ""
+
+msgid "Can't record: no disk (HDD / USB) found"
+msgstr ""
+
 msgid "Cancel"
 msgstr "취소"
 
 msgid "Cancel execution?"
 msgstr "실행을 취소하시겠습니까?"
+
+#, fuzzy
+msgid "Cancel recording"
+msgstr "실행을 취소하시겠습니까?"
+
+#, fuzzy
+msgid "Cancel reminder"
+msgstr "실행을 취소하시겠습니까?"
+
+#, fuzzy
+msgid "Cancelled"
+msgstr "취소"
 
 msgid "Case: {}"
 msgstr "사례: {}"
@@ -170,39 +281,89 @@ msgid "Catalog/Stream Source"
 msgstr "카탈로그/스트림 소스"
 
 #, fuzzy
+msgid "Change it"
+msgstr "채널"
+
+msgid "Change the PIN"
+msgstr ""
+
+msgid "Change the setting / lock the country"
+msgstr ""
+
+#, fuzzy
 msgid "Changelog:"
 msgstr "채널"
 
 msgid "Changelog: ({}/{}, use up/down)"
 msgstr "변경 로그: ({}/{}, 위/아래 사용)"
 
-msgid "Channels"
+msgid "Changes not saved: GREEN saves, press again to leave without saving"
+msgstr ""
+
+#, fuzzy
+msgid "Channel"
 msgstr "채널"
+
+#, fuzzy
+msgid "Channel Logos"
+msgstr "채널"
+
+msgid "Channel list updated: {} channels"
+msgstr ""
 
 msgid "Channels: %d"
 msgstr "채널: %d"
 
+msgid "Check it"
+msgstr ""
+
 msgid "Checking proxy..."
 msgstr "프록시 확인 중..."
 
-msgid "Choose Stream Source"
-msgstr "스트림 소스 선택"
+msgid "Choose a backup: its settings and favourites replace the ones here."
+msgstr ""
+
+#, fuzzy
+msgid "Choose countries"
+msgstr "국가"
+
+msgid "Classic"
+msgstr ""
+
+msgid "Classic - the original look"
+msgstr ""
+
+msgid "Classic's background (Oktus or Kiddac). Takes effect when the plugin is opened again."
+msgstr ""
+
+#, fuzzy
+msgid "Clear"
+msgstr "모두 지우기"
 
 msgid "Clear All"
 msgstr "모두 지우기"
 
+#, fuzzy
+msgid "Clear Favourites"
+msgstr "즐겨찾기"
+
+msgid "Clear recently watched"
+msgstr ""
+
+msgid "Clock Format"
+msgstr ""
+
+msgid "Clock in the top-right corner and programme times. Not used by Classic's own clock."
+msgstr ""
+
 msgid "Close"
 msgstr "닫다"
 
-#, fuzzy
-msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "쉼표로 구분된 국가 이름(예: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\)"
+msgid "Close the player"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "구성이 성공적으로 저장되었습니다!"
-
-msgid "Configure Main Background Image."
-msgstr "기본 배경 이미지를 구성합니다."
 
 msgid "Configure at a fixed time"
 msgstr "고정된 시간에 구성"
@@ -244,11 +405,29 @@ msgstr "크레딧:"
 msgid "Debug logging"
 msgstr "디버그 로깅"
 
+msgid "Delete"
+msgstr ""
+
+msgid "Delete (press twice)"
+msgstr ""
+
+msgid "Delete a digit"
+msgstr ""
+
+msgid "Delete a letter"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
 msgid "Do you want to export this bouquet?"
 msgstr "이 꽃다발을 내보내시겠어요?"
 
 msgid "Do you want to fix the cache format?"
 msgstr "캐시 형식을 수정하시겠습니까?"
+
+msgid "Done"
+msgstr ""
 
 #, fuzzy
 msgid "EPG import already running"
@@ -273,14 +452,23 @@ msgstr "업데이트 간격(분):"
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport 플러그인을 찾을 수 없습니다: {}"
 
+msgid "EXIT"
+msgstr ""
+
+msgid "EXIT / BACK"
+msgstr ""
+
+msgid "Earlier"
+msgstr ""
+
 msgid "Enable Vavoo EPG"
 msgstr "Vavoo EPG 활성화"
 
-msgid "Enter parental control PIN"
-msgstr "자녀 보호 PIN 입력"
-
 msgid "Enter text to search..."
 msgstr "검색할 텍스트를 입력하세요..."
+
+msgid "Enter the PIN"
+msgstr ""
 
 msgid "Error"
 msgstr "오류"
@@ -303,14 +491,31 @@ msgstr "출구"
 msgid "Exit and reopen the plugin to see the new background."
 msgstr "새 배경을 보려면 플러그인을 종료했다가 다시 엽니다."
 
-msgid "Export"
-msgstr "내보내다"
+#, fuzzy
+msgid "Exit and reopen the plugin to see the new look."
+msgstr "새 배경을 보려면 플러그인을 종료했다가 다시 엽니다."
 
 msgid "Export failed: {}"
 msgstr "내보내기 실패: {}"
 
 msgid "Export started. Bouquet will be available shortly."
 msgstr "내보내기가 시작되었습니다. 꽃다발은 곧 준비될 예정입니다."
+
+#, fuzzy
+msgid "Export this country as a bouquet"
+msgstr "- 컨트리 부케"
+
+msgid "Factory reset"
+msgstr ""
+
+msgid "Factory reset done"
+msgstr ""
+
+msgid "Factory reset done - starting again"
+msgstr ""
+
+msgid "Factory reset..."
+msgstr ""
 
 msgid "Failed to refresh proxy token"
 msgstr "프록시 토큰을 새로 고치지 못했습니다."
@@ -321,14 +526,40 @@ msgstr "프록시를 새로 고치지 못했습니다."
 msgid "Failed: %(failed)d"
 msgstr "실패: %(실패)d"
 
+msgid "Fav"
+msgstr ""
+
 msgid "Favourites"
 msgstr "즐겨찾기"
 
-msgid "Fix Cache"
+#, fuzzy
+msgid "Favourites cleared"
+msgstr "즐겨찾기"
+
+msgid "Fewer settings"
+msgstr ""
+
+#, fuzzy
+msgid "Fix EPG cache"
 msgstr "캐시 수정"
 
 msgid "Fixing cache format..."
 msgstr "캐시 형식 수정 중..."
+
+msgid "Folder"
+msgstr ""
+
+msgid "Folder for {}"
+msgstr ""
+
+msgid "Folder name (e.g. Sport)"
+msgstr ""
+
+msgid "Folder renamed to {}"
+msgstr ""
+
+msgid "Folder {} removed - its channels stay in the favourites"
+msgstr ""
 
 msgid "Force proxy refresh?"
 msgstr "강제로 프록시를 새로 고치시겠습니까?"
@@ -336,8 +567,29 @@ msgstr "강제로 프록시를 새로 고치시겠습니까?"
 msgid "Found: {} channels"
 msgstr "발견됨: {}개 채널"
 
+msgid "Full Screen"
+msgstr ""
+
+msgid "Full screen"
+msgstr ""
+
+msgid "GREEN"
+msgstr ""
+
+msgid "GREEN / FAV"
+msgstr ""
+
+msgid "GREEN / PLAY"
+msgstr ""
+
+msgid "GREEN / TEXT"
+msgstr ""
+
 msgid "Geil only"
 msgstr "게일 전용"
+
+msgid "General"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "다음에 대한 .m3u 파일 생성:"
@@ -354,26 +606,85 @@ msgstr ".m3u 파일을 생성하고 %s 장치에 저장하시겠습니까?"
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "모든 %d개 국가에 대한 .m3u 파일을 생성하시겠습니까?"
 
+#, fuzzy
+msgid "Go to that channel"
+msgstr "채널을 시작하는 중에 오류가 발생했습니다."
+
+msgid "Go to that row"
+msgstr ""
+
+msgid "Group Sources"
+msgstr ""
+
+msgid "Guide"
+msgstr ""
+
+msgid "Halo - frosted glass"
+msgstr ""
+
+msgid "Hide all"
+msgstr ""
+
+msgid "Hide the countries you never watch from the main list and from search."
+msgstr ""
+
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "지금부터 계산하여 EPG를 다시 일치시키고 부케를 새로 고치는 빈도입니다."
+
+msgid "IMDb / TMDB"
+msgstr ""
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
 msgstr "설정된 경우 /playlist.m3u의 라이브 재생 목록에는 ?key=<이 값>이 필요합니다. 키가 없으면 비워 두세요. URL: http://%s:%d/playlist.m3u"
 
+msgid "Import EPG now"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "중요 사항:"
-
-msgid "Incorrect PIN"
-msgstr "잘못된 PIN"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "VPN 또는 느린 연결로 인해 프록시가 오래 걸리는 경우 증가합니다."
 
+msgid "Keep at least one country"
+msgstr ""
+
 msgid "Keyboard"
 msgstr "건반"
 
+msgid "Keys"
+msgstr ""
+
+msgid "LEFT"
+msgstr ""
+
+msgid "LEFT / RIGHT"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · EXIT: close"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · OK pause · MENU options · EXIT close"
+msgstr ""
+
+msgid "LEFT / RIGHT move · EXIT: live"
+msgstr ""
+
+msgid "Large"
+msgstr ""
+
+msgid "Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Not used by Classic."
+msgstr ""
+
 msgid "Last channel update: %s"
 msgstr "마지막 채널 업데이트: %s"
+
+msgid "Later"
+msgstr ""
+
+#, fuzzy
+msgid "Licences"
+msgstr "특허:"
 
 msgid "License:"
 msgstr "특허:"
@@ -384,16 +695,42 @@ msgstr "라이센스: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "메인 메뉴의 링크"
 
+msgid "List"
+msgstr ""
+
+msgid "Live"
+msgstr ""
+
 #, fuzzy
 msgid "Loading EPG..."
 msgstr "EPG 업데이트 중..."
+
+#, fuzzy
+msgid "Loading channels..."
+msgstr "EPG 업데이트 중..."
+
+msgid "Loading programme guide..."
+msgstr ""
+
+#, fuzzy
+msgid "Loading..."
+msgstr "EPG 업데이트 중..."
+
+msgid "Loading…"
+msgstr ""
 
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "로컬 전용(127.0.0.1) - 이 장치에만 해당"
 
 #, fuzzy
-msgid "Locked Countries"
-msgstr "국가"
+msgid "Lock adult channels"
+msgstr "(%d개 채널)?"
+
+msgid "Lock the settings"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
 
 msgid "M3U file generated successfully!"
 msgstr "M3U 파일이 성공적으로 생성되었습니다!"
@@ -404,15 +741,49 @@ msgstr "M3U 세대 완성!"
 msgid "M3U generation error: %s"
 msgstr "M3U 생성 오류: %s"
 
+msgid "Menu"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+msgid "Move it to that place"
+msgstr ""
+
+#, fuzzy
+msgid "Move the channel"
+msgstr "다른 채널을 사용해 보세요."
+
 msgid "Movie Services Reference"
 msgstr "영화 서비스 참조"
+
+msgid "Movie folder ({})"
+msgstr ""
+
+msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
 msgstr "네트워크(%s) - LAN의 다른 장치"
 
+msgid "New PIN (4 digits)"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
 #, fuzzy
 msgid "New version available: v{}"
 msgstr "사용 가능한 항목이 없습니다."
+
+msgid "Next"
+msgstr ""
+
+msgid "Next / previous channel"
+msgstr ""
+
+msgid "No"
+msgstr ""
 
 msgid "No IMDb/TMDB plugin found"
 msgstr "IMDb/TMDB 플러그인을 찾을 수 없습니다."
@@ -420,9 +791,16 @@ msgstr "IMDb/TMDB 플러그인을 찾을 수 없습니다."
 msgid "No Internet connection detected. Please check your network."
 msgstr "인터넷 연결이 감지되지 않았습니다. 네트워크를 확인하세요."
 
+msgid "No PIN yet: nothing is locked until one is set."
+msgstr ""
+
 #, fuzzy
 msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
 msgstr "Vavoo EPG 소스는 EPGImport에서 활성화되지 않습니다. EPGImport 설정에서 활성화하세요."
+
+#, fuzzy
+msgid "No backup found"
+msgstr "채널을 찾을 수 없습니다"
 
 #, fuzzy
 msgid "No changelog provided."
@@ -434,8 +812,22 @@ msgstr "채널을 찾을 수 없습니다"
 msgid "No channels found for: %s"
 msgstr "%s에 대한 채널을 찾을 수 없습니다."
 
+#, fuzzy
+msgid "No channels watched yet"
+msgstr "채널을 찾을 수 없습니다"
+
+#, fuzzy
+msgid "No favourites"
+msgstr "아직 즐겨찾기가 없습니다."
+
 msgid "No favourites yet"
 msgstr "아직 즐겨찾기가 없습니다."
+
+msgid "No favourites yet. Open a country and press GREEN on a channel."
+msgstr ""
+
+msgid "No folder"
+msgstr ""
 
 msgid "No items available"
 msgstr "사용 가능한 항목이 없습니다."
@@ -443,17 +835,83 @@ msgstr "사용 가능한 항목이 없습니다."
 msgid "No programme info available"
 msgstr "프로그램 정보가 없습니다."
 
+#, fuzzy
+msgid "No programme information"
+msgstr "프로그램 정보가 없습니다."
+
+msgid "No programme to record here"
+msgstr ""
+
 msgid "No selection"
 msgstr "선택사항 없음"
 
 msgid "No valid channels for: %s"
 msgstr "다음에 대한 유효한 채널이 없습니다: %s"
 
+msgid "Non-commercial use only, with attribution; changes shared under the same licence."
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Not available on this receiver"
+msgstr ""
+
+msgid "Not now: a recording is running"
+msgstr ""
+
+msgid "Nothing is playing in the window"
+msgstr ""
+
 msgid "Nothing to remove for: {}"
 msgstr "제거할 항목 없음: {}"
 
+msgid "Nothing watched yet"
+msgstr ""
+
+msgid "Nothing yet: record from the player's options, or set a recording in the guide."
+msgstr ""
+
+#, fuzzy
+msgid "Now"
+msgstr "지금 %s"
+
+msgid "Now, the programme's actions"
+msgstr ""
+
+#, fuzzy
+msgid "Now/Next in channel list"
+msgstr "채널 목록으로 돌아가는 중입니다."
+
 msgid "OK"
 msgstr "좋아요"
+
+msgid "OK / GREEN / PAUSE / PLAY"
+msgstr ""
+
+msgid "OK / LEFT / RIGHT"
+msgstr ""
+
+msgid "OK / RED / EXIT"
+msgstr ""
+
+msgid "OK / YELLOW"
+msgstr ""
+
+msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys"
+msgstr ""
+
+msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "On the last row: all settings / fewer"
+msgstr ""
+
+msgid "On {} - watch it?"
+msgstr ""
 
 msgid "Only one source available for this channel"
 msgstr "이 채널에는 하나의 소스만 사용할 수 있습니다."
@@ -461,11 +919,85 @@ msgstr "이 채널에는 하나의 소스만 사용할 수 있습니다."
 msgid "Only one specific country"
 msgstr "특정 국가 하나만"
 
-msgid "Parental Control PIN"
+msgid "Open (a row that opens a list or does something)"
+msgstr ""
+
+msgid "Open the category"
+msgstr ""
+
+msgid "Open the country / list"
+msgstr ""
+
+msgid "Open the folder"
+msgstr ""
+
+msgid "Open the last watched channel when the plugin starts."
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "PIN removed"
+msgstr ""
+
+msgid "PIN saved"
+msgstr ""
+
+msgid "PIN set · {} countries locked"
+msgstr ""
+
+msgid "PIN set: adult channels are locked"
+msgstr ""
+
+msgid "PVR / FILE"
+msgstr ""
+
+msgid "Page up / down"
+msgstr ""
+
+#, fuzzy
+msgid "Parental Control"
 msgstr "자녀 보호 PIN"
+
+msgid "Pause"
+msgstr ""
+
+msgid "Pause / play on"
+msgstr ""
+
+msgid "Pause Live TV"
+msgstr ""
+
+msgid "Pause live / play on"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "주기적으로 EPG를 다시 일치시키고 백그라운드에서 좋아하는 국가에 대한 꽃다발을 새로 고칩니다."
+
+msgid "Picture: not known yet"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Play in the window (again: full screen)"
+msgstr ""
+
+#, fuzzy
+msgid "Play the channel"
+msgstr "다른 채널을 사용해 보세요."
+
+msgid "Play the recording"
+msgstr ""
+
+msgid "Play the recording / cancel the timer"
+msgstr ""
 
 msgid "Playlist Access Key (optional)"
 msgstr "재생목록 액세스 키(선택사항)"
@@ -476,6 +1008,31 @@ msgstr "메인 목록에서 Vavoo 부케의 위치"
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "입력하려면 TEXT 버튼을 누르고, 삭제하려면 BACKSPACE를 누르세요."
+
+msgid "Press again to confirm"
+msgstr ""
+
+msgid "Press again to delete"
+msgstr ""
+
+msgid "Preview Window"
+msgstr ""
+
+msgid "Prism - Vavoo's violet"
+msgstr ""
+
+msgid "Prism: Vavoo's violet. Halo: frosted glass over a blue aurora. Orbit: a teal cockpit display. Classic: the plugin's original skin, with its backgrounds. Takes effect when the plugin is opened again."
+msgstr ""
+
+msgid "Programme"
+msgstr ""
+
+msgid "Programme guide"
+msgstr ""
+
+#, fuzzy
+msgid "Programme guide of the favourites"
+msgstr "즐겨찾기를 업데이트할 수 없습니다."
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "프록시가 실행되고 있지 않습니다. 먼저 프록시를 시작하십시오."
@@ -492,41 +1049,184 @@ msgstr "프록시 시작 시간 초과(초)"
 msgid "Proxy token refreshed successfully"
 msgstr "프록시 토큰이 새로 고쳐졌습니다."
 
+msgid "RED"
+msgstr ""
+
+msgid "RED / EXIT"
+msgstr ""
+
+msgid "RED / EXIT / BACK"
+msgstr ""
+
+msgid "RED / REC"
+msgstr ""
+
+msgid "RED / STOP / EXIT / BACK"
+msgstr ""
+
 msgid "Really close without saving settings?"
 msgstr "설정을 저장하지 않고 닫으시겠습니까?"
 
-msgid "Reload Bouqet"
+msgid "Recently watched"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Record (again: stop)"
+msgstr ""
+
+msgid "Record the highlighted channel (again: stop)"
+msgstr ""
+
+msgid "Record the programme (again: cancel / stop)"
+msgstr ""
+
+msgid "Recording needs ffmpeg"
+msgstr ""
+
+msgid "Recording set: {}"
+msgstr ""
+
+msgid "Recording stopped"
+msgstr ""
+
+msgid "Recording stopped early: {}"
+msgstr ""
+
+msgid "Recording stopped: the disk could not be written (removed?)"
+msgstr ""
+
+msgid "Recording stopped: the disk is nearly full"
+msgstr ""
+
+msgid "Recording stopped: the disk's 4 GB file limit (FAT32)"
+msgstr ""
+
+msgid "Recording: {}"
+msgstr ""
+
+msgid "Recordings"
+msgstr ""
+
+msgid "Recordings folder"
+msgstr ""
+
+msgid "Recordings folder: {}"
+msgstr ""
+
+msgid "Refresh token"
+msgstr ""
+
+#, fuzzy
+msgid "Reload List"
+msgstr "부케를 다시 로드하세요"
+
+#, fuzzy
+msgid "Reload bouquets"
 msgstr "부케를 다시 로드하세요"
 
 msgid "Reload bouquets and service list?"
 msgstr "꽃다발과 서비스 목록을 다시 로드하시겠습니까?"
 
-msgid "Remove"
-msgstr "제거하다"
+#, fuzzy
+msgid "Reload failed: {}"
+msgstr "내보내기 실패: {}"
 
 #, fuzzy
-msgid "Remove ALL"
-msgstr "제거하다"
+msgid "Reload the channel list?"
+msgstr "채널 목록으로 돌아가는 중입니다."
+
+#, fuzzy
+msgid "Reloading channel list..."
+msgstr "채널 목록으로 돌아가는 중입니다."
+
+msgid "Remind me"
+msgstr ""
+
+#, fuzzy
+msgid "Reminder set: {}"
+msgstr "내보내기 실패: {}"
+
+msgid "Reminders and recordings (●) set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
+
+msgid "Reminders and recordings set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "모든 Vavoo 부케를 제거하시겠습니까?"
 
 #, fuzzy
+msgid "Remove Fav"
+msgstr "제거하다"
+
+#, fuzzy
+msgid "Remove all Vavoo bouquets"
+msgstr "모든 Vavoo 부케를 제거하시겠습니까?"
+
+msgid "Remove all favourite channels (asks to confirm)."
+msgstr ""
+
+#, fuzzy
+msgid "Remove all favourite channels?"
+msgstr "내보내기 실패: {}"
+
+#, fuzzy
 msgid "Remove failed: {}"
 msgstr "내보내기 실패: {}"
 
+#, fuzzy
+msgid "Remove favourite"
+msgstr "내보내기 실패: {}"
+
+#, fuzzy
+msgid "Remove folder"
+msgstr "내보내기 실패: {}"
+
+#, fuzzy
+msgid "Remove from favourites"
+msgstr "내보내기 실패: {}"
+
+#, fuzzy
+msgid "Remove from the list"
+msgstr "내보내기 실패: {}"
+
+msgid "Remove the PIN (unlock everything)"
+msgstr ""
+
 msgid "Remove the exported bouquet for this country/category?"
 msgstr "이 국가/카테고리에 대해 내보낸 꽃다발을 삭제하시겠습니까?"
+
+#, fuzzy
+msgid "Remove this country's bouquet"
+msgstr "- 컨트리 부케"
 
 msgid "Removed exported bouquet: {}"
 msgstr "내보낸 꽃다발 제거됨: {}"
 
 #, fuzzy
+msgid "Removed from favourites"
+msgstr "내보내기 실패: {}"
+
+#, fuzzy
 msgid "Removed from favourites: {}"
 msgstr "내보내기 실패: {}"
 
-msgid "Restarting..."
-msgstr "다시 시작하는 중..."
+msgid "Rename / delete the folder"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
+
+msgid "Restore from Backup"
+msgstr ""
+
+msgid "Restored - the theme and text size change when the plugin is opened again"
+msgstr ""
+
+msgid "Result"
+msgstr ""
 
 msgid "Returning to channel list."
 msgstr "채널 목록으로 돌아가는 중입니다."
@@ -543,6 +1243,13 @@ msgstr "저장 위치: %(path)s"
 msgid "Saved in: %s"
 msgstr "저장 위치: %s"
 
+#, fuzzy
+msgid "Saved: {}"
+msgstr "사례: {}"
+
+msgid "Saves the settings, the favourites (with folders and order), recently watched, the chosen sources and countries in /media/hdd, /media/usb or /media/mmc (else %s) - not parental control."
+msgstr ""
+
 msgid "Schedule type:"
 msgstr "일정 유형:"
 
@@ -550,20 +1257,31 @@ msgstr "일정 유형:"
 msgid "Scheduled EPG/Bouquet Update:"
 msgstr "일정 유형:"
 
+msgid "Scheduled recording not started: {}"
+msgstr ""
+
+msgid "Scroll"
+msgstr ""
+
 msgid "Search"
 msgstr "찾다"
 
 msgid "Search Channels:"
 msgstr "검색 채널:"
 
+#, fuzzy
+msgid "Search all channels"
+msgstr "검색 채널:"
+
+#, fuzzy
+msgid "Search {}"
+msgstr "찾다"
+
 msgid "Search..."
 msgstr "찾다..."
 
 msgid "Search:"
 msgstr "찾다:"
-
-msgid "Select Background"
-msgstr "배경 선택"
 
 msgid "Select M3U export mode:"
 msgstr "M3U 내보내기 모드 선택:"
@@ -577,11 +1295,48 @@ msgstr "M3U 링크에 사용할 IP 주소를 선택하세요."
 msgid "Send Anonymous Statistics"
 msgstr "익명 통계 보내기"
 
-msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr "아래 국가를 잠그려면 PIN을 설정하세요. 자녀 보호 기능을 완전히 비활성화하려면 비워 두세요."
+msgid "Set a PIN"
+msgstr ""
+
+#, fuzzy
+msgid "Setting"
+msgstr "다시 시작하는 중..."
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings and tools"
+msgstr ""
+
+msgid "Show / hide the bar"
+msgstr ""
+
+msgid "Show / hide the country"
+msgstr ""
+
+msgid "Show Counts"
+msgstr ""
+
+msgid "Show Log"
+msgstr ""
 
 msgid "Show Log (Ok to view)"
 msgstr "로그 표시(보기 가능)"
+
+msgid "Show all"
+msgstr ""
+
+msgid "Show every setting: the channel sources, the proxy, EPG import, bouquets, playlists, the log..."
+msgstr ""
+
+msgid "Show how many channels each country has, and how many favourites, in the main list."
+msgstr ""
+
+msgid "Show the channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), and no logo is downloaded."
+msgstr ""
+
+msgid "Show the current and the next programme beside the channel list. The country's programme guide is downloaded when you open a country."
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "vavoo.log에 자세한 DEBUG 수준 메시지를 표시합니다(UI 수명 주기, 요청별 세부 정보). 즉시 적용됩니다. 문제가 해결되지 않는 한 중단하세요."
@@ -589,20 +1344,127 @@ msgstr "vavoo.log에 자세한 DEBUG 수준 메시지를 표시합니다(UI 수�
 msgid "Showing all channels: {}"
 msgstr "모든 채널 표시: {}"
 
+msgid "Sleep timer"
+msgstr ""
+
+msgid "Sleep timer off"
+msgstr ""
+
+msgid "Sleep timer: standby in 1 minute"
+msgstr ""
+
+msgid "Sleep timer: {} min"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+#, fuzzy
+msgid "Source: {}"
+msgstr "오류: {}"
+
 msgid "Space"
 msgstr "공간"
 
 msgid "Start EPG update now?"
 msgstr "지금 EPG 업데이트를 시작하시겠습니까?"
 
+#, fuzzy
+msgid "Start with last channel"
+msgstr "{} 채널로 꽃다발 준비"
+
+msgid "Starting now: {}"
+msgstr ""
+
+#, fuzzy
+msgid "Starting the proxy..."
+msgstr "프록시를 기다리는 중..."
+
+msgid "Stop a recording that is running"
+msgstr ""
+
+msgid "Stop recording"
+msgstr ""
+
+msgid "Stop the window"
+msgstr ""
+
+msgid "Stream Info"
+msgstr ""
+
 msgid "Stream ended. Too many connection issues."
 msgstr "스트림이 종료되었습니다. 연결 문제가 너무 많습니다."
+
+msgid "Sub-categories"
+msgstr ""
+
+msgid "Subtitles"
+msgstr ""
 
 msgid "Technical Features:"
 msgstr "기술적인 특징:"
 
+msgid "Text Size"
+msgstr ""
+
+msgid "That file is not a Vavoo Stream backup"
+msgstr ""
+
+msgid "The PIN"
+msgstr ""
+
+msgid "The backup could not be saved"
+msgstr ""
+
+#, fuzzy
+msgid "The channel before"
+msgstr "채널을 찾을 수 없습니다"
+
+#, fuzzy
+msgid "The channel list"
+msgstr "채널 목록으로 돌아가는 중입니다."
+
+msgid "The channel list is still loading..."
+msgstr ""
+
+#, fuzzy
+msgid "The channel watched last"
+msgstr "이 채널을 재생할 수 없습니다"
+
+#, fuzzy
+msgid "The favourites"
+msgstr "즐겨찾기"
+
+#, fuzzy
+msgid "The keyboard"
+msgstr "건반"
+
+msgid "The plugin's licence and the fonts' (SIL OFL)."
+msgstr ""
+
+msgid "The proxy restarts and downloads the list again. A channel playing now stops for a moment."
+msgstr ""
+
+msgid "The same PIN again"
+msgstr ""
+
+msgid "The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row."
+msgstr ""
+
+msgid "The two PINs differ - not changed"
+msgstr ""
+
+msgid "The window's channel: full screen / stop / record"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
 msgid "This channel cannot be played"
 msgstr "이 채널을 재생할 수 없습니다"
+
+msgid "This recording is not running"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "그러면 인증 토큰이 새로 고쳐집니다."
@@ -617,11 +1479,23 @@ msgstr "이는 다음을 수행합니다."
 msgid "Time to start EPG/bouquet update:"
 msgstr "업데이트 시작 시간:"
 
+msgid "Too many wrong PINs - try again in {} s"
+msgstr ""
+
 msgid "Top"
 msgstr "맨 위"
 
 msgid "Total channels: %(total_channels)d"
 msgstr "총 채널: %(total_channels)d"
+
+msgid "Type (as on a phone)"
+msgstr ""
+
+msgid "UP / DOWN"
+msgstr ""
+
+msgid "UP / DOWN, CH+ / CH-"
+msgstr ""
 
 msgid "UPPERCASE"
 msgstr "대문자"
@@ -650,6 +1524,9 @@ msgstr "바부 로그"
 msgid "Vavoo Stream Live"
 msgstr "Vavoo 스트림 라이브"
 
+msgid "Vavoo Stream Live %s by Lululla & Qu4k3 - License CC BY-NC-SA 4.0."
+msgstr ""
+
 msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Stream Live - 정보"
 
@@ -665,6 +1542,10 @@ msgstr "Vavoo가 이미 실행 중입니다."
 msgid "Vavoo/Kool only"
 msgstr "Vavoo/Kool 전용"
 
+#, fuzzy
+msgid "Version and channels"
+msgstr "발견됨: {}개 채널"
+
 msgid "Version:"
 msgstr "버전:"
 
@@ -674,11 +1555,48 @@ msgstr "즐겨찾기 보기(열어도 좋음)"
 msgid "View the last 200 lines of %s."
 msgstr "%s의 마지막 200줄을 봅니다."
 
+msgid "Watch"
+msgstr ""
+
+#, fuzzy
+msgid "Watch the channel"
+msgstr "다른 채널을 사용해 보세요."
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "EPG를 지원하는 Vavoo Proxy에 오신 것을 환영합니다."
 
+msgid "Welcome! Choose a look"
+msgstr ""
+
+msgid "Welcome! Choose the countries for the main list (OK shows or hides one), then GREEN saves. Settings → Choose countries changes it later."
+msgstr ""
+
+msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
+msgstr ""
+
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
 msgstr "채널과 스트림을 로드할 서비스입니다. Auto는 먼저 Geil을 시도하고 사용할 수 없는 경우 Vavoo로 대체합니다. 다른 두 가지 옵션은 정확히 하나의 소스에 고정합니다. 저장 시 적용됩니다(프록시가 실행 중인 경우 다시 시작)."
+
+msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
+msgstr ""
+
+msgid "Wrong PIN - try again"
+msgstr ""
+
+msgid "YELLOW"
+msgstr ""
+
+msgid "YELLOW / BLUE"
+msgstr ""
+
+msgid "YELLOW / BLUE, << / >>"
+msgstr ""
+
+msgid "YELLOW / TEXT"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -686,6 +1604,10 @@ msgstr "지금 EPG 업데이트를 시작하시겠습니까?"
 
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "메뉴에서 시작하거나 TEXT 버튼을 눌러 시작할 수 있습니다."
+
+#, fuzzy
+msgid "all channels"
+msgstr "채널"
 
 msgid "fixed time"
 msgstr "정기"
@@ -696,17 +1618,62 @@ msgstr "간격"
 msgid "lowercase"
 msgstr "소문자"
 
+msgid "not recorded (no disk) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (no ffmpeg) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (the stream could not be recorded) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded - PLAY returns to live"
+msgstr ""
+
+msgid "press play to go on"
+msgstr ""
+
+msgid "recording - press play to go on"
+msgstr ""
+
 msgid "v{} -> v{}"
 msgstr ""
 
-msgid "✓ Proxy ({0}s)"
-msgstr "✓ 프록시({0}s)"
+#, fuzzy
+msgid "{} channels"
+msgstr "발견됨: {}개 채널"
 
-msgid "✓ Proxy OK"
-msgstr "✓ 프록시 OK"
+#, fuzzy
+msgid "{} countries"
+msgstr "모든 국가(%d)"
 
-msgid "✓ Restarted"
-msgstr "✓ 다시 시작됨"
+msgid "{} found"
+msgstr ""
+
+msgid "{} free"
+msgstr ""
+
+msgid "{} min"
+msgstr ""
+
+msgid "{} min left"
+msgstr ""
+
+msgid "{} of {} countries shown"
+msgstr ""
+
+msgid "{} recordings · {} timers · {} free"
+msgstr ""
+
+msgid "{} sources"
+msgstr ""
+
+msgid "● REC · {} min"
+msgstr ""
+
+#, fuzzy
+msgid "★ Favourites"
+msgstr "즐겨찾기"
 
 msgid "✗ Error"
 msgstr "✗ 오류"
@@ -722,6 +1689,48 @@ msgstr "✗ 오프라인 프록시"
 
 msgid "✗ Restart Failed"
 msgstr "✗ 다시 시작 실패"
+
+#~ msgid "Auto (Geil, fallback Vavoo)"
+#~ msgstr "자동차(Awesome, 폴백 Vavoo)"
+
+#, fuzzy
+#~ msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
+#~ msgstr "CH±=변화 | 확인=토글 | 정보=IMDb | 중지=나가기"
+
+#~ msgid "Choose Stream Source"
+#~ msgstr "스트림 소스 선택"
+
+#, fuzzy
+#~ msgid "Comma-separated country names (e.g. \\\\\\\\\\\\\\\\"
+#~ msgstr "쉼표로 구분된 국가 이름(예: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\)"
+
+#~ msgid "Configure Main Background Image."
+#~ msgstr "기본 배경 이미지를 구성합니다."
+
+#~ msgid "Enter parental control PIN"
+#~ msgstr "자녀 보호 PIN 입력"
+
+#~ msgid "Export"
+#~ msgstr "내보내다"
+
+#~ msgid "Incorrect PIN"
+#~ msgstr "잘못된 PIN"
+
+#, fuzzy
+#~ msgid "Remove ALL"
+#~ msgstr "제거하다"
+
+#~ msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+#~ msgstr "아래 국가를 잠그려면 PIN을 설정하세요. 자녀 보호 기능을 완전히 비활성화하려면 비워 두세요."
+
+#~ msgid "✓ Proxy ({0}s)"
+#~ msgstr "✓ 프록시({0}s)"
+
+#~ msgid "✓ Proxy OK"
+#~ msgstr "✓ 프록시 OK"
+
+#~ msgid "✓ Restarted"
+#~ msgstr "✓ 다시 시작됨"
 
 #~ msgid "Auto-update EPG"
 #~ msgstr "EPG 자동 업데이트"
@@ -749,9 +1758,6 @@ msgstr "✗ 다시 시작 실패"
 
 #~ msgid "Minimum similarity for matching channels (higher = stricter)."
 #~ msgstr "일치하는 채널에 대한 최소 유사성(높을수록 더 엄격함)"
-
-#~ msgid "Now %s"
-#~ msgstr "지금 %s"
 
 #~ msgid "Proxy Disabled"
 #~ msgstr "프록시 비활성화됨"
@@ -810,17 +1816,11 @@ msgstr "✗ 다시 시작 실패"
 #~ msgid "EPG update started successfully"
 #~ msgstr "EPG 업데이트가 성공적으로 시작되었습니다."
 
-#~ msgid "Error: {}"
-#~ msgstr "오류: {}"
-
 #~ msgid "Ready"
 #~ msgstr "준비가 된"
 
 #~ msgid "Updating EPG..."
 #~ msgstr "EPG 업데이트 중..."
-
-#~ msgid "Please try another channel."
-#~ msgstr "다른 채널을 사용해 보세요."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "검색된 채널이 없습니다!!!"
@@ -833,9 +1833,6 @@ msgstr "✗ 다시 시작 실패"
 
 #~ msgid "Proxy restarting... Please wait"
 #~ msgstr "프록시를 다시 시작하는 중... 잠시 기다려 주세요."
-
-#~ msgid "Waiting for proxy..."
-#~ msgstr "프록시를 기다리는 중..."
 
 #~ msgid "seconds"
 #~ msgstr "초"
