@@ -94,7 +94,9 @@ settings = {
     "welcome_done": Setting(True, False),
     "countries_asked": Setting(True, False),
     "stats_enabled": Setting(False, True),
+    "back": Setting("blue", "oktus"),
 }
+settings["back"].getValue = lambda: settings["back"].value
 real_settings = {}
 for name, element in settings.items():
     real_settings[name] = getattr(plugin.cfg, name, None)
@@ -162,6 +164,8 @@ check(settings["theme"].value == "prism" and settings["text_size"].value == "nor
 check(settings["welcome_done"].value is False and settings["countries_asked"].value is False,
       "welcome_done / countries_asked back to False")
 check(settings["stats_enabled"].value is False, "the statistics choice kept (stays off)")
+check(harness.SKIN_BACKS and harness.SKIN_BACKS[-1] == "oktus.png",
+      "the default background put back (%s)" % harness.SKIN_BACKS[-1:])
 check(not store.has_pin() and not store.hidden_countries(), "no PIN, no hidden country")
 check(calls["proxy"] and calls["proxy"][-1].get("fresh") is True, "the proxy restarted fresh (a new catalog)")
 check(plugin.welcome_needed(), "the welcome runs again")

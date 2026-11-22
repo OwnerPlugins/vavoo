@@ -1516,6 +1516,11 @@ def _finish_factory_reset(removed, on_done):
     bouquets reloaded, a fresh proxy (a new catalog from the network,
     the default sources), then `on_done()`."""
     count = reset_settings()
+    try:
+        # the Classic background is a copy of the chosen picture
+        add_skin_back(str(cfg.back.getValue()) + '.png')
+    except Exception as e:
+        debug("Background not put back: {}".format(e))
     _theme_skin_cache.clear()
     _icon_cache.clear()
     vUtils.ReloadBouquets(500)
