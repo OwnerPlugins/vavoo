@@ -16,9 +16,9 @@ inherit allarch gitpkgv python3-compileall
 # CONTROL/control's Version:, and installer.sh's version= - none of
 # these are auto-synced (see CLAUDE.md), and this file previously
 # stayed at the placeholder "1.0" indefinitely.
-PV = "1.90+git${SRCPV}"
-PKGV = "1.90+git${GITPKGV}"
-VER = "1.90"
+PV = "1.91+git${SRCPV}"
+PKGV = "1.91+git${GITPKGV}"
+VER = "1.91"
 PR = "r0"
 
 SRC_URI = "git://github.com/OwnerPlugins/vavoo.git;protocol=https;branch=main"

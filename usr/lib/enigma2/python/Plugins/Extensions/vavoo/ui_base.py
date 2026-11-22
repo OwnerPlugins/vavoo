@@ -487,9 +487,10 @@ cfg.more_settings = NoSave(ConfigAction())
 cfg.welcome_done = ConfigYesNo(default=False)
 # Which catalog/stream source vavoo_proxy.py's initialize_proxy()
 # tries - "auto" keeps its default Geil-first/Vavoo-fallback
-# order; "geil"/"vavoo" pin it to exactly one source, with no
-# fallback to the other if it fails (an explicit choice is respected
-# as-is). Read directly by vavoo_proxy.py via its own e2_config
+# order; "geil"/"vavoo" pin it to exactly one source (an explicit
+# choice is respected: only its list is loaded and saved - while it
+# gives none and none is in use, another list is lent meanwhile,
+# vavoo_proxy's _lend_catalog()). Read directly by vavoo_proxy.py via its own e2_config
 # import, not this cfg reference (that would be a circular import).
 cfg.catalog_source = ConfigSelection(
     default="auto",
@@ -763,6 +764,9 @@ def programme_time(timestamp):
 FAVOURITES_ROW = "__vavoo_favourites__"
 RECENT_ROW = "__vavoo_recent__"
 REMINDERS_ROW = "__vavoo_reminders__"
+# the row that says why there are no countries at all (OK: the settings
+# or Reload List - MainVavoo._no_channels_ok())
+NO_CHANNELS_ROW = "__vavoo_no_channels__"
 
 
 def info_text(channels=None, countries=None):

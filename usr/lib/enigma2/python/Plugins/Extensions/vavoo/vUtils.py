@@ -390,6 +390,39 @@ def _log_dns_info_async():
 
 
 print("Vavoo Version: ", __version__)
+
+# Marks this copy of the plugin's modules. A box loaded them twice in
+# one Enigma2 (the same files under a second module name - from outside
+# the plugin, whose own imports are all relative): the second copy's
+# proxy held the port and the screens of the first waited for their
+# own for ever. vavoo_proxy now takes the port over; this says in the
+# log which copy came second and what loaded it.
+VAVOO_COPY = __name__
+
+
+def _note_second_copy():
+    import sys
+    import traceback
+    first = [name for name, module in list(sys.modules.items())
+             if name != __name__ and module is not None and
+             getattr(module, "VAVOO_COPY", None) == name]
+    if not first:
+        return False
+    other = sys.modules[first[0]]
+    print("Second copy of the plugin: {0} ({1}); first: {2} "
+          "({3}) - loaded from:".format(
+              __name__, __file__, first[0],
+              getattr(other, "__file__", "?")))
+    for frame in traceback.extract_stack()[:-1][-20:]:
+        print("  {0}:{1} {2}".format(frame[0], frame[1], frame[2]))
+    return True
+
+
+try:
+    _note_second_copy()
+except Exception as e:
+    print("Copy check failed: {}".format(e))
+
 _dns_info_thread = threading.Thread(target=_log_dns_info_async)
 _dns_info_thread.setDaemon(True)
 _dns_info_thread.start()

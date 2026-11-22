@@ -23,13 +23,13 @@ try:
 except ImportError:
     urllib3 = None
 import os
+import random
 import re
 from json import loads, load, dumps
 
 from . import (
     PORT,
     PROXY_HOST,
-    PROXY_STATUS_URL,
     BASE_SITES,
     GEIL_SITES,
     GEIL_LIVE_PATH,
@@ -96,6 +96,13 @@ except NameError:  # Python 2
 
 # Global stop flag used for clean shutdown (prevents restart loop)
 STOP_EVENT = threading.Event()
+# This copy of the module ("<pid>:<random>"). /status says it, so a copy
+# tells its own proxy on the port from another one's: the plugin's
+# modules loaded a second time under another name (a box did: the
+# second copy held the port and the screens waited for their own proxy
+# for ever), another process, an older version - see port_holder() /
+# free_port_from_other_copy().
+INSTANCE_ID = "%d:%08x" % (os.getpid(), random.getrandbits(32))
 # NOTE: do NOT call socket.setdefaulttimeout() globally – it poisons
 # streaming sockets and all other network ops in the same process.
 
@@ -531,7 +538,13 @@ MAX_BOOT_AGE = 300
 # the new one fetched behind it; a failed fetch tried again this often.
 CATALOG_MAX_AGE = 3 * 86400
 CATALOG_RETRY = 15 * 60
+# ... but sooner while there is no list of the catalog source in use
+# (an empty one, or another source's lent meanwhile): 1, 2, 5 minutes,
+# then every CATALOG_RETRY
+CATALOG_RETRY_SOON = (60, 120, 300)
 CATALOG_FORMAT = "vavoo_catalog"
+# the catalog sources' names in the log and on the status line
+SOURCE_NAMES = {"geil": "Geil", "vavoo": "Vavoo"}
 _CATALOG_TEXT = ("id", "name", "url", "country")
 _CATALOG_OPTIONAL = ("logo", "group", "epg_id")
 # the next start_proxy() loads from the network (restart(fresh=True))
@@ -548,6 +561,54 @@ def catalog_setting():
     except Exception as e:
         print(" Could not read catalog_source config: {}".format(e))
         return "auto"
+
+
+def short_error(exc):
+    """A failed catalog request in a few words, for the log and the
+    status line: "HTTP 500", "timeout", "no connection", else the
+    error's own text (cut short)."""
+    if exc is None:
+        return "no answer"
+    response = getattr(exc, "response", None)
+    code = getattr(response, "status_code", None)
+    if code:
+        return "HTTP %d" % code
+    try:
+        if isinstance(exc, requests.exceptions.Timeout):
+            return "timeout"
+        if isinstance(exc, requests.exceptions.ConnectionError):
+            return "no connection"
+    except AttributeError:
+        pass
+    if isinstance(exc, ValueError):
+        # (the answer was not JSON)
+        return "bad answer"
+    text = str(exc) or exc.__class__.__name__
+    return text[:60]
+
+
+def site_name(url):
+    """"https://vavoo.to/" -> "vavoo.to"."""
+    name = str(url or "")
+    if "://" in name:
+        name = name.split("://", 1)[1]
+    return name.split("/", 1)[0]
+
+
+def catalog_error_text(errors):
+    """{"vavoo": "vavoo.to HTTP 500, kool.to HTTP 500"} -> "Vavoo:
+    HTTP 500" (one site's words when every site said the same), sources
+    in a fixed order. "" when nothing failed."""
+    parts = []
+    for source in ("geil", "vavoo"):
+        text = (errors or {}).get(source)
+        if not text:
+            continue
+        said = [piece.split(" ", 1)[-1] for piece in text.split(", ")]
+        if len(set(said)) == 1:
+            text = said[0]
+        parts.append("%s: %s" % (SOURCE_NAMES[source], text))
+    return "; ".join(parts)
 
 
 def _text_value(value):
@@ -576,12 +637,14 @@ def _clean_catalog_entry(entry):
     return out
 
 
-def load_saved_catalog(setting, path=None, now=None):
+def load_saved_catalog(setting, path=None, now=None, any_setting=False):
     """(channels, source) of the catalog saved at the last load, or
     None: no file, a broken one, another format, saved for another
-    catalog_source setting, older than CATALOG_MAX_AGE (a box whose
-    clock is not set yet - before its first time sync - takes it), or
-    almost empty."""
+    catalog_source setting (unless it is the list of the source the
+    setting is pinned to, or any_setting: a list to lend while the
+    source gives none), older than CATALOG_MAX_AGE (a box whose clock
+    is not set yet - before its first time sync - takes it), or almost
+    empty."""
     path = path or CATALOG_FILE
     now = time.time() if now is None else now
     try:
@@ -590,14 +653,17 @@ def load_saved_catalog(setting, path=None, now=None):
     except Exception:
         return None
     try:
-        if not isinstance(data, dict) or data.get("format") != CATALOG_FORMAT or \
-                data.get("version") != 1 or data.get("setting") != setting:
+        if not isinstance(data, dict) or data.get(
+                "format") != CATALOG_FORMAT or data.get("version") != 1:
             return None
         source = data.get("source")
         saved = data.get("saved")
         if source not in (
                 "geil", "vavoo") or not isinstance(
                 saved, (int, float)):
+            return None
+        if data.get("setting") != setting and source != setting and \
+                not any_setting:
             return None
         if now - saved > CATALOG_MAX_AGE:
             return None
@@ -687,6 +753,17 @@ def status_of(p):
         "token_required": p.catalog_source != "geil",
         "addon_sig_valid": addon_sig["sig"] is not None,
         "addon_sig_age": int(time.time() - addon_sig["ts"]),
+        # why there is no list of the catalog source ("Vavoo: HTTP
+        # 500"), "" when nothing failed; the source waited for while
+        # another one's list is lent, else None
+        "catalog_error": catalog_error_text(
+            getattr(p, "catalog_errors", None)),
+        "catalog_fallback": getattr(p, "catalog_fallback", None),
+        # which copy of the plugin serves (see INSTANCE_ID)
+        "instance": INSTANCE_ID,
+        "pid": os.getpid(),
+        "module": __name__,
+        "version": __version__,
         "local_ip": p.get_local_ip(),
         "port": PORT}
 
@@ -706,6 +783,64 @@ def proxy_state():
     state["catalog_version"] = getattr(p, "catalog_version", 0)
     state["refreshing"] = bool(getattr(p, "catalog_refreshing", False))
     return state
+
+
+def serving_here():
+    """True when this copy's own proxy is the one serving (its server
+    up and not stopped) - what proxy_state() calls "listening". Only
+    the port answering is not enough: another copy of the plugin's
+    modules may hold it (INSTANCE_ID), and the screens read this
+    copy's proxy."""
+    p = proxy
+    return p.server is not None and not p.is_stopped()
+
+
+def _local_session():
+    """A requests session for the box's own port: no proxy from the
+    environment."""
+    session = requests.Session()
+    session.trust_env = False
+    return session
+
+
+def port_holder():
+    """What answers /status on the proxy's port (a dict, with
+    "instance" since 1.91), or None: nothing, or not a proxy.
+    A request: background threads only."""
+    try:
+        resp = _local_session().get(
+            "http://%s:%d/status" % (PROXY_HOST, PORT), timeout=2)
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        return data if isinstance(data, dict) else None
+    except Exception:
+        return None
+
+
+def free_port_from_other_copy(holder):
+    """The port is answered by another copy of the plugin's proxy (the
+    same files loaded under another module name, another process, an
+    older version - holder: its /status): ask it to stop (/shutdown,
+    which answers the box itself) and wait for the port, at most 5 s.
+    True when it is free. Background threads only."""
+    holder = holder or {}
+    print("[Proxy] Port %d held by another copy (pid %s, module %s, v%s) - "
+          "this one: pid %d, module %s - stopping it" %
+          (PORT, holder.get("pid", "?"), holder.get("module", "?"),
+           holder.get("version", "?"), os.getpid(), __name__))
+    try:
+        _local_session().get(
+            "http://%s:%d/shutdown" % (PROXY_HOST, PORT), timeout=3)
+    except Exception as e:
+        print("[Proxy] /shutdown not answered: {}".format(e))
+    for _attempt in range(50):
+        if not is_proxy_port_listening():
+            print("[Proxy] Port %d free" % PORT)
+            return True
+        select.select([], [], [], 0.1)
+    print("[Proxy] Port %d is still taken - not started" % PORT)
+    return False
 
 
 def is_proxy_booting():
@@ -1086,6 +1221,15 @@ class VavooProxy(object):
         # new one once serving (start_catalog_refresh())
         self.catalog_needs_refresh = False
         self.catalog_refreshing = False
+        # why the last catalog download gave nothing, per source
+        # ({"vavoo": "vavoo.to HTTP 500, kool.to HTTP 500"}; replaced,
+        # never changed in place - read by the GUI) - see
+        # catalog_error_text()
+        self.catalog_errors = {}
+        # the source the setting is pinned to while another source's
+        # list is lent in its place ("vavoo" / "geil"), else None -
+        # see _lend_catalog()
+        self.catalog_fallback = None
         # one prefetch() at a time
         self._prefetch_lock = threading.Lock()
         self.current_language = "en"
@@ -1493,15 +1637,22 @@ class VavooProxy(object):
                             self.countries_list), source))
                     return True
             items, source = self._download_catalog(setting)
-            self._install_catalog(items or [], source)
             if items:
+                self._install_catalog(items, source)
                 save_catalog(items, source, setting)
                 print(" ✓ Initialized: %d channels, %d countries" %
                       (len(items), len(self.countries_list)))
-            else:
-                print(
-                    " Warning: Catalog is empty or failed to load - started empty, trying again later")
-                self.catalog_needs_refresh = True
+                return True
+            self.catalog_needs_refresh = True
+            if self._lend_catalog(setting):
+                return True
+            self._install_catalog([], source)
+            print(
+                " Warning: Catalog is empty or failed to load - started empty, trying again in %d min (%s)" %
+                (CATALOG_RETRY_SOON[0] //
+                 60,
+                 catalog_error_text(
+                    self.catalog_errors) or "no channels"))
             return True
         except Exception as e:
             print(" Initialization error: %s" % str(e))
@@ -1521,35 +1672,93 @@ class VavooProxy(object):
         no fallback to the other source (an explicit preference is not
         silently overridden the way "auto"'s best-effort fallback is).
         Never touches the catalog in use (a refresh runs while it
-        serves)."""
-        if setting == "vavoo":
-            print(" Catalog source pinned to Vavoo - skipping Geil")
-            sig = self.refresh_addon_sig_if_needed()
-            if not sig:
-                print(" Warning: Could not get a valid token, but continuing anyway")
-            print(" Attempting to load catalog...")
-            return self.load_catalog(sig), "vavoo"
-        print(" Attempting to load catalog from Geil (no token needed)...")
-        channels = self.load_geil_catalog()
-        if channels:
-            return channels, "geil"
-        if setting == "geil":
-            print(" Catalog source pinned to Geil - not falling back to Vavoo")
-            return [], "geil"
-        print(" Geil catalog unavailable, falling back to Vavoo")
+        serves). Why a source gave nothing goes into catalog_errors
+        (replaced as a whole: the GUI reads it)."""
+        errors = {}
+        try:
+            if setting == "vavoo":
+                print(" Catalog source pinned to Vavoo - skipping Geil")
+                return self._download_vavoo(errors), "vavoo"
+            print(" Attempting to load catalog from Geil (no token needed)...")
+            channels = self.load_geil_catalog()
+            if channels:
+                return channels, "geil"
+            errors["geil"] = getattr(self, "_geil_error", "") or \
+                "no channels"
+            if setting == "geil":
+                print(" Catalog source pinned to Geil - not falling back to Vavoo")
+                return [], "geil"
+            print(" Geil catalog unavailable, falling back to Vavoo")
+            return self._download_vavoo(errors), "vavoo"
+        finally:
+            self.catalog_errors = errors
+
+    def _download_vavoo(self, errors):
+        """Vavoo's catalog (its token first); a failure noted in
+        errors["vavoo"]."""
         sig = self.refresh_addon_sig_if_needed()
         if not sig:
             # We may continue with an old token or no token at all
             print(" Warning: Could not get a valid token, but continuing anyway")
         print(" Attempting to load catalog...")
-        return self.load_catalog(sig), "vavoo"
+        channels = self.load_catalog(sig) or []
+        if not channels:
+            errors["vavoo"] = getattr(self, "_vavoo_error", "") or \
+                "no channels"
+        return channels
 
-    def _install_catalog(self, channels, source):
+    def _lend_catalog(self, setting):
+        """The catalog source gave no list and none is in use: put
+        another list in use meanwhile - the saved one whatever setting
+        it was saved for, else the other source's from the network (a
+        setting pinned to Vavoo lends Geil's, one pinned to Geil
+        Vavoo's; "auto" has tried both already). Never saved: the saved
+        file stays the source's own. While the lent list is another
+        source's, catalog_fallback names the one waited for (the status
+        line says so) and the refresh keeps asking it. True when a list
+        is in use."""
+        lent = load_saved_catalog(setting, any_setting=True)
+        origin = "the saved"
+        if lent is None and setting in ("geil", "vavoo"):
+            other = "geil" if setting == "vavoo" else "vavoo"
+            print(" %s gave no list - trying %s meanwhile" %
+                  (SOURCE_NAMES[setting], SOURCE_NAMES[other]))
+            errors = dict(self.catalog_errors)
+            if other == "geil":
+                channels = self.load_geil_catalog()
+                if not channels:
+                    errors["geil"] = getattr(self, "_geil_error", "") or \
+                        "no channels"
+            else:
+                channels = self._download_vavoo(errors)
+            self.catalog_errors = errors
+            if channels:
+                lent = (channels, other)
+                origin = "the"
+        if lent is None:
+            return False
+        channels, source = lent
+        fallback = setting if setting in ("geil", "vavoo") and \
+            source != setting else None
+        self._install_catalog(channels, source, fallback=fallback)
+        print("[Catalog] %s gave no list (%s) - %s %s list meanwhile: "
+              "%d channels, %d countries; %s again in %d min" %
+              (SOURCE_NAMES.get(setting, "Geil or Vavoo"),
+               catalog_error_text(self.catalog_errors) or "no channels",
+               origin, SOURCE_NAMES.get(source, source), len(channels),
+               len(self.countries_list),
+               SOURCE_NAMES.get(setting, "the catalog"),
+               CATALOG_RETRY_SOON[0] // 60))
+        return True
+
+    def _install_catalog(self, channels, source, fallback=None):
         """Put a catalog in use. Every index is built aside first and
         then assigned, so a reader (a request thread, the plugin's
         GUI) always sees whole dicts - a dict in use is never changed,
         which the indexes' users rely on (country_counts() even goes by
-        the identity of channels_by_country)."""
+        the identity of channels_by_country). fallback: the source the
+        setting is pinned to, when this is another source's list lent
+        meanwhile (_lend_catalog())."""
         by_id = {}
         by_country = {}
         groups = {}
@@ -1569,6 +1778,7 @@ class VavooProxy(object):
             if country and country != "default":
                 countries.add(country)
         self.catalog_source = source
+        self.catalog_fallback = fallback
         self.all_filtered_items = channels
         self.channels_by_id = by_id
         self._group_members_cache = groups
@@ -1579,15 +1789,18 @@ class VavooProxy(object):
 
     def start_catalog_refresh(self):
         """Fetch the new catalog behind the one in use (the saved one,
-        or an empty start) - thread "vv-catalog". A failure keeps what
-        is in use and tries again every CATALOG_RETRY seconds while
-        this instance lives."""
+        an empty start, or another source's lent meanwhile) - thread
+        "vv-catalog". A failure keeps what is in use (with nothing in
+        use, another list is lent: _lend_catalog()) and tries again
+        while this instance lives: after CATALOG_RETRY_SOON while there
+        is no list of the source in use, else every CATALOG_RETRY."""
         if self.catalog_refreshing or not self.catalog_needs_refresh:
             return False
         self.catalog_refreshing = True
 
         def _task():
             vavoo_record.name_this_thread("vv-catalog")
+            failures = 0
             try:
                 while not self.is_stopped():
                     setting = catalog_setting()
@@ -1607,10 +1820,20 @@ class VavooProxy(object):
                             (len(items), len(
                                 self.countries_list), source))
                         return
+                    if not self.all_filtered_items:
+                        try:
+                            self._lend_catalog(setting)
+                        except Exception as e:
+                            print("[Catalog] No list to lend: {}".format(e))
+                        if self.is_stopped():
+                            return
+                    wait = self.catalog_retry_wait(failures)
+                    failures += 1
                     print(
-                        "[Catalog] No new catalog - keeping the one in use, again in %d min" %
-                        (CATALOG_RETRY // 60))
-                    self._stop_event.wait(CATALOG_RETRY)
+                        "[Catalog] No new catalog (%s) - keeping the one in use, again in %d min" %
+                        (catalog_error_text(
+                            self.catalog_errors) or "no channels", wait // 60))
+                    self._stop_event.wait(wait)
             finally:
                 self.catalog_refreshing = False
 
@@ -1618,6 +1841,16 @@ class VavooProxy(object):
         worker.daemon = True
         worker.start()
         return True
+
+    def catalog_retry_wait(self, failures):
+        """Seconds before the next catalog download after `failures`
+        failed ones in a row: CATALOG_RETRY_SOON while there is no list
+        of the source in use (none at all, or another source's lent),
+        else CATALOG_RETRY."""
+        if (not self.all_filtered_items or self.catalog_fallback) and \
+                failures < len(CATALOG_RETRY_SOON):
+            return CATALOG_RETRY_SOON[failures]
+        return CATALOG_RETRY
 
     def _parse_geil_group(self, item):
         """geil.to's group comes as a tags array (first tag), not a
@@ -1644,6 +1877,8 @@ class VavooProxy(object):
         }
         max_pages = 200
         max_retries = 3
+        # each mirror's failure, for the status line (catalog_errors)
+        errors = []
 
         for _mirror_attempt in range(len(self.geil_sites)):
             base = self.geil_base().rstrip('/')
@@ -1763,17 +1998,47 @@ class VavooProxy(object):
                 print(
                     "[Geil] Catalog loaded from {0}: {1} channels "
                     "({2} pages)".format(base, len(all_channels), page))
+                self._geil_error = ""
                 return all_channels
 
             except Exception as e:
                 print("[Geil] {0} failed: {1}".format(base, e))
+                errors.append("%s %s" % (site_name(base), short_error(e)))
                 self._switch_to_next_geil("({0})".format(e))
 
         print("[Geil] All mirrors failed, no catalog")
+        self._geil_error = ", ".join(errors)
         return None
 
     def load_catalog(self, sig):
-        """Load the complete catalog with improved error handling including JSON decode errors."""
+        """Vavoo's catalog from its sites (BASE_SITES: vavoo.to, then
+        kool.to): a site whose first page fails (an HTTP 5xx, no
+        connection, a broken answer...) hands over to the next one -
+        before, only an HTTP 451 did, and an HTTP 500 from vavoo.to
+        ended there with no list. Each site's failure is kept in
+        self._vavoo_error ("vavoo.to HTTP 500, kool.to HTTP 500") for
+        catalog_errors. [] when no site gave a list."""
+        errors = []
+        tries = max(1, len(self.base_sites))
+        for attempt in range(tries):
+            self._site_error = None
+            channels = self._load_catalog_site(sig)
+            if channels:
+                self._vavoo_error = ""
+                return channels
+            failed = self._site_error or "no channels"
+            site = site_name(self.base_sites[self.base_site_index]) \
+                if self.base_sites else "vavoo"
+            errors.append("%s %s" % (site, failed))
+            if attempt < tries - 1:
+                self._switch_to_next_base("(catalog: %s)" % failed)
+        self._vavoo_error = ", ".join(errors)
+        return []
+
+    def _load_catalog_site(self, sig):
+        """The complete catalog from the current site, with improved
+        error handling including JSON decode errors. Why its first page
+        failed goes into self._site_error."""
         try:
             catalog_headers = {
                 "content-type": "application/json; charset=utf-8",
@@ -1866,6 +2131,8 @@ class VavooProxy(object):
                                 print(
                                     "Giving up on page {0} after {1} attempts".format(
                                         page, max_retries))
+                                last_exception = requests.exceptions.HTTPError(
+                                    "502 Bad Gateway", response=r_catalog)
                                 break
 
                         r_catalog.raise_for_status()
@@ -1880,6 +2147,7 @@ class VavooProxy(object):
 
                             if attempt == max_retries - 1:
                                 # last attempt -> switch base and retry page
+                                last_exception = json_err
                                 self._switch_to_next_base(
                                     "(JSON decode error)")
                                 break
@@ -1901,11 +2169,17 @@ class VavooProxy(object):
                             if attempt < max_retries - 1:
                                 continue
 
-                        if e.response is not None and e.response.status_code == 502 and attempt < max_retries - 1:
+                        code = e.response.status_code \
+                            if e.response is not None else None
+                        if code == 502 and attempt < max_retries - 1:
                             select.select([], [], [], 2 ** attempt)
                             continue
-                        else:
-                            break
+                        if code is not None and code >= 500 and attempt == 0:
+                            # (a server error: once more, then the next
+                            # site - load_catalog())
+                            select.select([], [], [], 1)
+                            continue
+                        break
 
                     except Exception as e:
                         last_exception = e
@@ -1922,6 +2196,8 @@ class VavooProxy(object):
                         "Failed to load page {0}, stopping catalog download".format(page))
                     if last_exception:
                         print("Last error: {0}".format(last_exception))
+                    if page == 1:
+                        self._site_error = short_error(last_exception)
                     break
 
                 items = catalog_data.get("items", [])
@@ -1992,6 +2268,7 @@ class VavooProxy(object):
         except Exception as e:
             print("Catalog load error: %s" % str(e))
             trace_error()
+            self._site_error = short_error(e)
 
             if all_channels:
                 print(
@@ -3397,18 +3674,21 @@ def start_proxy():
     # IMPORTANT: allow a restart only if nothing answers on the port
     if is_proxy_running():
         print("[PROXY] Proxy is already running, checking if it's responsive...")
-        try:
-            resp = requests.get(PROXY_STATUS_URL, timeout=2)
-            if resp.status_code == 200:
-                print("[PROXY] Proxy is responsive, not starting another instance")
-                # run_proxy_in_background() set the "booting" marker
-                # before starting this thread - nothing is booting
-                # after all.
+        holder = port_holder()
+        if holder is not None and holder.get("instance") == INSTANCE_ID:
+            print("[PROXY] Proxy is responsive, not starting another instance")
+            # run_proxy_in_background() set the "booting" marker
+            # before starting this thread - nothing is booting
+            # after all.
+            remove_booting_file()
+            return True
+        if holder is not None:
+            # another copy's proxy: the screens of this one read this
+            # module's `proxy`, so this one must serve
+            if not free_port_from_other_copy(holder):
                 remove_booting_file()
-                return True
-            else:
-                print("[PROXY] Proxy is running but not responsive, will restart")
-        except Exception:
+                return False
+        else:
             print("[PROXY] Proxy running but not responding, restarting...")
             # The proxy only ever runs as an in-process daemon thread of
             # Enigma2 itself - there is no separate process for pkill to
@@ -3432,6 +3712,12 @@ def start_proxy():
                 select.select([], [], [], 2)
             except Exception as e:
                 debug("Stopping unresponsive proxy failed: {}".format(e))
+            if is_proxy_port_listening():
+                # not a proxy at all: binding would only fail, 3 times
+                print("[Proxy] Port %d is taken by another program - "
+                      "not started" % PORT)
+                remove_booting_file()
+                return False
 
     # A stopped instance is never reused: stop() ends its token
     # monitor for good, so starting the server on it again would
@@ -3639,8 +3925,14 @@ def run_proxy_in_background():
             return True
 
         if is_proxy_port_listening():
-            print("[Proxy] Already running and listening, skipping start")
-            return True
+            if serving_here():
+                print("[Proxy] Already running and listening, skipping start")
+                return True
+            # another copy's proxy holds the port, and this copy's
+            # screens read this module's (start_proxy() asks it to
+            # stop, in the thread - no request on the GUI thread)
+            print("[Proxy] The port answers, but not this copy's proxy - "
+                  "taking over")
 
         if not _spawn_proxy_thread():
             remove_booting_file()
