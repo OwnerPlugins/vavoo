@@ -504,11 +504,27 @@ the real files (measured, see the comment block above
   three countries at most (`_EPG_GUIDE_KEEP`), one download at a time
   per country.
 - Heavy loops in background threads (the guide parse, the matcher's
-  feed-name scan, the proxy's guide streaming) call `_Breather().tick()` every turn:
+  feed-name scan, the proxy's guide streaming, `_install_catalog()`,
+  `country_counts()`) call `_Breather().tick()` every turn:
   after 50 ms of work they rest 25 ms, never on the main thread. A
-  new heavy loop does the same. Every plugin thread gets a system
+  new heavy loop does the same. While a stream plays they give way
+  far more - 10 ms of work, 40 ms of rest (`_BREATHE_*_PLAYING`): a
+  box's channels stuttered and its menus dragged after 1.90 (the 1.89
+  had no guide inside the plugin). "A stream plays" =
+  `vUtils.stream_playing()`: a `note_stream()` within `STREAM_WINDOW`
+  30 s, from the proxy's `/vavoo` and `/file` (the player is back
+  every ~10 s, bouquet channels outside the plugin too) and from
+  `NOW_PLAYING` (`preview_play()`, `player_take()`,
+  `player_give_back()`). Then the guides are not loaded ahead
+  (`MainVavoo._preload_go_on()`), and the player bar fetches a guide
+  that is not in memory only once the channel has played
+  `Playstream2.BAR_EPG_WAIT` 10 s (`_bar_epg()` / `_bar_epg_due()`,
+  the country meanwhile; zapping through starts no download) - what
+  the user asks for (the OK overlay, the guide) is fetched at once.
+  Every plugin thread gets a system
   name through `named(target, "vv-...")` / `vavoo_record.
-  name_this_thread()` (seen in `top -H`), and `find_match()` logs any
+  name_this_thread()` (seen in `top -H`; the proxy's request threads
+  are "vv-http"), and `find_match()` logs any
   lookup over 1 s ("[EPG] slow match").
   `lookup_programmes()` / `peek_programmes()` give a channel's
   programmes between two times (`EpgGuide.between()`).
@@ -713,7 +729,14 @@ records and timeshifts only DVB, so the plugin does it itself:
   `main()` runs; the guide's load line carries `memory_note()`.
 - `MEMORY_WATCH` (`_MemoryWatch`, ticked by `_ReminderService.tick()`,
   so it runs while the plugin is closed too) reads `/proc/meminfo` once
-  a minute and logs "[MEM] " + `memory_note()` every 30 minutes. Below
+  a minute and logs "[MEM] " + `memory_note()` every 30 minutes, with
+  "[CPU] 14 % of a core (30 min) - vv-guide 48.0 s, enigma2 200.0 s"
+  beside it (`cpu_note()`: `vUtils.thread_cpu()` - `/proc/self/task/*/
+  stat`, name and CPU seconds per thread - `cpu_by_name()`,
+  `cpu_report()`). `LAG_WATCH` (`_LagWatch`, a 1 s eTimer started by
+  `_ReminderService.start()`) logs "[PERF] GUI held up 1.8 s - busy:
+  vv-guide 1.2 s, ..." when a tick comes `LAG_LATE` 1 s late, at most
+  once a minute. Below
   `MEMORY_LOW_KB` (100 MB available), at most every 10 minutes, it
   appends `vUtils.memory_report()` (memory, Shmem, Slab, the top 8
   processes by RSS from `/proc/<pid>/status`) to

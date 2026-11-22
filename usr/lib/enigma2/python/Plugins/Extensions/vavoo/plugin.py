@@ -1077,8 +1077,13 @@ class MainVavoo(Screen, PreviewWindow):
         timer.start(self.GUIDE_PRELOAD_AFTER_MS, True)
 
     def _preload_go_on(self):
-        return not self._closed and NOW_PLAYING.owner != NOW_PLAYING.PLAYER \
-            and ACTIVE.get("player") is None
+        # never while a stream plays - the preview, the player, or a
+        # bouquet channel outside the plugin (vUtils.stream_playing():
+        # the proxy was asked for one lately): the guides then load
+        # when they are needed, and give way to it (_Breather)
+        return not self._closed and not vUtils.stream_playing() and \
+            NOW_PLAYING.owner != NOW_PLAYING.PLAYER and \
+            ACTIVE.get("player") is None
 
     def _preload_guides(self):
         if not self._preload_go_on():

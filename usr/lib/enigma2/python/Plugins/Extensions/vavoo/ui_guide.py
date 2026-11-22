@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function
 from .ui_settings import (
     open_settings)
 from .ui_record import (
-    MEMORY_WATCH, RECORDINGS, VavooRecordings, recording_text)
+    LAG_WATCH, MEMORY_WATCH, RECORDINGS, VavooRecordings, recording_text)
 from .ui_pick import (
     ask_pin)
 from .ui_base import (
@@ -133,6 +133,11 @@ class _ReminderService(object):
             debug("Reminders not pruned: {}".format(e))
         if not self.timer.isActive():
             self.timer.start(self.TICK_MS, False)
+        try:
+            # "[PERF] GUI held up ..." lines (ui_record's _LagWatch)
+            LAG_WATCH.start()
+        except Exception as e:
+            debug("Lag watch not started: {}".format(e))
 
     def tick(self):
         try:

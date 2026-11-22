@@ -697,6 +697,7 @@ The plugin also keeps an eye on the box's memory, whether it is open or not. Eve
 |---------|----------|
 | "No channels found" | Check the internet connection; press TEXT in the main menu to refresh the proxy, or restart the plugin |
 | The main list has no countries, only "No channels: Vavoo: HTTP 500 ..." (status line "✗ No channels") | The catalog source does not answer. With Settings → Catalog/Stream Source on "Vavoo/Kool only" or "Geil only", OK on that row opens the settings: choose **Auto**. On Auto both services failed: OK reloads the list |
+| Channels stutter or freeze, the box feels slow | While a stream plays the plugin's background work (reading a country's programme guide, 13 to 47 MB) gives way to it, and guides are not loaded ahead. To see what loads the box: `grep "\[PERF\]\|\[CPU\]" /tmp/vavoo.log` - "[CPU]" every 30 minutes says how much of a core Enigma2 used and in which threads (vv-guide, vv-http, vv-catalog...), "[PERF] GUI held up" when the menus were stuck and who was busy. To compare, try Settings → Look: Classic and Settings → "Now/Next in channel list": No |
 | The main list stays on "Proxy not ready" while the port answers | Another copy of the plugin held the port; since 1.91 the plugin takes it over by itself. `grep "Second copy\|held by another copy" /tmp/vavoo.log` shows what happened |
 | "Could not load channels - proxy not responding" | The proxy did not answer after three tries: wait for the proxy status to show OK, then open the country again |
 | Bouquets don't open | Ensure proxy is running (check with curl) |

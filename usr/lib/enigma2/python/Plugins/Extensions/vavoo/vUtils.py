@@ -324,11 +324,38 @@ print = make_print("VUTILS")
 # overloaded while a guide was read).
 _BREATHE_WORK = 0.05
 _BREATHE_REST = 0.025
+# While a stream plays such a loop gives way far more: a fifth of a
+# core, Python's lock free four fifths of the time for the menus and
+# for the proxy's answers to the player's playlist refresh (a box's
+# channels stuttered and its menus dragged after 1.90, which reads the
+# countries' guides - 13 to 47 MB each - inside Enigma2's process).
+_BREATHE_WORK_PLAYING = 0.01
+_BREATHE_REST_PLAYING = 0.04
+# "A stream plays": the proxy was asked for one within this many
+# seconds (the player comes back to /vavoo every ~10 s, bouquet
+# channels watched outside the plugin too), or the plugin started one.
+STREAM_WINDOW = 30
+_stream_seen = [0.0]
+
+
+def note_stream():
+    """A stream is playing right now (the proxy's /vavoo and /file, the
+    plugin's preview and player): heavy loops give way for a while -
+    see _Breather and stream_playing()."""
+    _stream_seen[0] = time()
+
+
+def stream_playing(window=STREAM_WINDOW, now=None):
+    """True while a stream plays: note_stream() within `window`
+    seconds."""
+    now = time() if now is None else now
+    return now - _stream_seen[0] < window
 
 
 class _Breather(object):
     """One per heavy loop: call tick() on every turn (cheap - the clock
-    is only read every 64th). Never rests on the GUI (main) thread."""
+    is only read every 64th). Never rests on the GUI (main) thread.
+    Rests more while a stream plays (stream_playing())."""
 
     __slots__ = ("since", "count", "active")
 
@@ -344,8 +371,12 @@ class _Breather(object):
         if self.count & 63:
             return
         now = time()
-        if now - self.since >= _BREATHE_WORK:
-            sleep(_BREATHE_REST)
+        if now - _stream_seen[0] < STREAM_WINDOW:
+            work, rest = _BREATHE_WORK_PLAYING, _BREATHE_REST_PLAYING
+        else:
+            work, rest = _BREATHE_WORK, _BREATHE_REST
+        if now - self.since >= work:
+            sleep(rest)
             self.since = time()
 
 
@@ -1578,6 +1609,70 @@ def memory_note():
     except Exception:
         pass
     return ", ".join(parts)
+
+
+def thread_cpu(task_dir="/proc/self/task"):
+    """{thread id: (name, seconds of CPU so far)} for every thread of
+    this process (Enigma2's: the GUI, the proxy's "vv-http", the
+    plugin's "vv-guide" / "vv-catalog"... - name_this_thread()). {}
+    where /proc cannot be read. Cheap: one small file per thread."""
+    import os
+    try:
+        tick = float(os.sysconf("SC_CLK_TCK"))
+    except (AttributeError, ValueError, OSError):
+        tick = 100.0
+    out = {}
+    try:
+        tids = listdir(task_dir)
+    except OSError:
+        return out
+    for tid in tids:
+        try:
+            with open(join(task_dir, tid, "stat")) as f:
+                data = f.read()
+            end = data.rindex(")")
+            name = data[data.index("(") + 1:end]
+            fields = data[end + 2:].split()
+            # utime + stime: fields 14 and 15 of stat
+            out[tid] = (name, (int(fields[11]) + int(fields[12])) / tick)
+        except (IOError, OSError, ValueError, IndexError):
+            continue
+    return out
+
+
+def cpu_by_name(before, after):
+    """Seconds of CPU per thread name between two thread_cpu() samples
+    (a thread that started in between counts from 0), largest first:
+    [(name, seconds)]."""
+    used = {}
+    for tid, (name, seconds) in after.items():
+        prev = before.get(tid)
+        spent = seconds - prev[1] if prev is not None else seconds
+        if spent > 0:
+            used[name] = used.get(name, 0.0) + spent
+    return sorted(used.items(), key=lambda item: -item[1])
+
+
+def busy_text(used, least=0.05, most=5):
+    """ "vv-guide 1.2 s, enigma2 0.4 s" - the threads that used at least
+    `least` seconds, the `most` busiest."""
+    return ", ".join("{} {:.1f} s".format(name, seconds)
+                     for name, seconds in used[:most] if seconds >= least)
+
+
+def cpu_report(before, after, elapsed):
+    """The "[CPU]" line's text: "enigma2 14 % of a core (30 min) -
+    vv-guide 48.0 s, enigma2 200.0 s, vv-http 3.0 s" (what this process
+    spent between two thread_cpu() samples, `elapsed` seconds apart,
+    and who spent it). "" when there is nothing to say."""
+    if not after or elapsed <= 0:
+        return ""
+    used = cpu_by_name(before, after)
+    total = sum(seconds for _name, seconds in used)
+    busy = busy_text(used, least=0.5, most=6)
+    text = "{} % of a core ({} min)".format(
+        int(round(100.0 * total / elapsed)), int(round(elapsed / 60.0)))
+    return text + (" - " + busy if busy else "")
 
 
 def download_picon_online(logo_url, cache_dir=None):

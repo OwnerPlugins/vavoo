@@ -39,6 +39,7 @@ PYTHON2 = (
     "test_keys",
     "test_list_keys",
     "test_log",
+    "test_perf",
     "test_proxy_start",
     "test_proxy_state",
     "test_py2_separators",
