@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
-import base64
+import calendar
 import glob
 import hashlib
-import io
 try:
     import six
 except ImportError:
@@ -24,24 +23,31 @@ try:
 except ImportError:
     urllib3 = None
 import xml.etree.ElementTree as ET
+try:
+    # Python 2: the C parser lives here (plain ElementTree is the
+    # slow pure-Python one there). Gone in Python 3.9+, where
+    # ElementTree itself already is the C parser.
+    import xml.etree.cElementTree as _fast_ET
+except ImportError:
+    _fast_ET = ET
 import zlib
 from datetime import datetime as _datetime
 from collections import OrderedDict
 from difflib import SequenceMatcher
 from json import dump, load, loads
 from Components.config import config
-from Components.NimManager import nimmanager
 from os import listdir, makedirs, remove, unlink, rename
 from os.path import basename, exists, getmtime, getsize, isfile, join, splitext
 from enigma import eTimer
 from random import choice
-from re import DOTALL, IGNORECASE, compile, findall, search, sub
+from re import DOTALL, IGNORECASE, compile, search, sub
 from shutil import copy2
 from sys import maxsize
 from six import iteritems, unichr
 from six.moves import html_entities, html_parser
-from time import time, strftime, localtime
-from unicodedata import normalize
+from time import time, strftime, localtime, gmtime, sleep
+from unicodedata import combining, normalize
+from email.utils import parsedate_tz, mktime_tz
 
 from . import (
     __version__,
@@ -51,19 +57,22 @@ from . import (
     PORT,
     PLUGIN_ROOT,
     PROXY_HOST,
-    PROXY_BASE_URL,
-    PROXY_STATUS_URL,
     FLAG_CACHE_DIR,
     PICON_CACHE_DIR,
-    GROUP_NAME_SEPARATORS,
+    group_separators,
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
     HOST_MAIN,
+    EPG_COPY_URL,
+    EPG_DAILY_SOURCES,
+    EPG_DAILY_URL,
     ALIAS_FILE,
     INSTALLER_URL,
+    ENIGMA_PATH,
     export_lock,
 )
+from . import vavoo_store
 from .epg_name_utils import (
     clean_name_for_similarity,
     tokenize_for_compat,
@@ -181,13 +190,23 @@ def _safe_console_write(line):
 def _append_to_log(line):
     try:
         _rotate_log_if_needed()
-        with open(LOG_FILE, "a") as log_file:
-            log_file.write(line + "\n")
+        if PY2:
+            with open(LOG_FILE, "a") as log_file:
+                log_file.write(line + "\n")
+        else:
+            # (UTF-8 whatever the box's locale is)
+            with open(LOG_FILE, "a", encoding="utf-8", errors="replace") as log_file:
+                log_file.write(line + "\n")
     except Exception:
         pass
 
 
 def log(msg, level="INFO", area="VUTILS"):
+    """One line into vavoo.log (and the console). Never raises: on
+    Python 2 the line is built as unicode and written as UTF-8 bytes -
+    a byte-string template with a non-ASCII message (every "✓" / "✗"
+    line, an accented channel name) used to raise UnicodeEncodeError
+    out of print(), which stopped the proxy at its own "[✓] Ready"."""
     try:
         msg = ensure_str(msg, errors='ignore')
     except Exception:
@@ -195,12 +214,13 @@ def log(msg, level="INFO", area="VUTILS"):
             msg = str(msg)
         except Exception:
             msg = '<unprintable message>'
-    line = "[{0}] [{1}] [{2}] {3}".format(
-        _datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        level,
-        area,
-        msg
-    )
+    stamp = _datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        line = u"[{0}] [{1}] [{2}] {3}".format(stamp, level, area, msg)
+    except Exception:
+        line = u"[{0}] [{1}] [{2}] <unprintable message>".format(stamp, level, area)
+    if PY2:
+        line = line.encode("utf-8", "replace")
     _safe_console_write(line)
     _append_to_log(line)
     return line
@@ -266,10 +286,12 @@ def make_print(area, level="INFO"):
 
 PLUGIN_PATH = PLUGIN_ROOT
 
-# Plugin-local bookkeeping, same category/directory as Favorite.txt
-# (bouquet_manager.py) - not receiver-wide EPG state, so it follows the
-# PLUGIN_PATH convention rather than ENIGMA_PATH's.
-FAVOURITES_FILE = join(PLUGIN_PATH, 'vavoo_favourites.json')
+# The favourites (with their folders and order), hidden countries,
+# parental control and backups: vavoo_store.py, under ENIGMA_PATH - a
+# plugin update deletes the plugin folder, where the favourites used
+# to be (moved out by vavoo_store.migrate_old_files()).
+vavoo_store.set_paths(ENIGMA_PATH, PLUGIN_PATH)
+FAVOURITES_FILE = vavoo_store.favourites_file()
 
 
 if PY3:
@@ -291,6 +313,39 @@ else:
 
 
 print = make_print("VUTILS")
+
+
+# Heavy loops (reading a country's guide, comparing a channel's name
+# with thousands of others) run in background threads inside Enigma2's
+# own process, next to the video and the menus. After this much work
+# such a loop rests this long, so it takes at most about two thirds of
+# a core and the box never stalls behind it (the box was seen
+# overloaded while a guide was read).
+_BREATHE_WORK = 0.05
+_BREATHE_REST = 0.025
+
+
+class _Breather(object):
+    """One per heavy loop: call tick() on every turn (cheap - the clock
+    is only read every 64th). Never rests on the GUI (main) thread."""
+
+    __slots__ = ("since", "count", "active")
+
+    def __init__(self):
+        self.since = time()
+        self.count = 0
+        self.active = threading.current_thread().name != "MainThread"
+
+    def tick(self):
+        if not self.active:
+            return
+        self.count += 1
+        if self.count & 63:
+            return
+        now = time()
+        if now - self.since >= _BREATHE_WORK:
+            sleep(_BREATHE_REST)
+            self.since = time()
 log("===== Vavoo session start =====", area="VUTILS")
 
 
@@ -457,28 +512,165 @@ def _convert_entity(m):
     return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))
 
 
-def b64decoder(data):
-    """Robust base64 decoding with padding correction"""
-    if not data:
-        return ""
-
+def _urlopen_unverified(request, timeout):
+    """urlopen() the way getUrl() has always done it (certificate
+    checks off), on whichever Python this box runs. Shared by getUrl()
+    and open_url_stream() so the two cannot drift apart."""
+    if PY3:
+        import ssl
+        unverified_context = ssl.create_default_context()
+        unverified_context.check_hostname = False
+        unverified_context.verify_mode = ssl.CERT_NONE
+        return urlopen(
+            request,
+            timeout=timeout,
+            context=unverified_context)
+    # Python 2: use ssl if it is there, plain urlopen() otherwise
     try:
-        data = ensure_str(data, errors='ignore').strip()
-        pad = len(data) % 4
-        if pad == 1:
-            return ""
-        if pad:
-            data += "=" * (4 - pad)
+        import ssl
+    except ImportError:
+        return urlopen(request, timeout=timeout)
+    # Python 2.7.9+ has ssl._create_unverified_context
+    unverified_context = ssl._create_unverified_context() if hasattr(
+        ssl, '_create_unverified_context') else None
+    if unverified_context:
+        return urlopen(
+            request, timeout=timeout, context=unverified_context)
+    return urlopen(request, timeout=timeout)
 
-        decoded = base64.b64decode(data.encode('ascii'))
+
+class _Inflated(object):
+    """read(size) over another reader's gzip data, unpacked as it is
+    read. Not gzip.GzipFile: on Python 2 that needs a seekable file,
+    which a socket is not. zlib's own streaming decompressor has no
+    such need and behaves the same on Python 2 and 3. `max_length`
+    keeps each read() at about the size asked for, so a small
+    compressed chunk that unpacks to megabytes never lands in memory
+    all at once."""
+
+    def __init__(self, read, pending=b''):
+        self._read = read
+        self._inflater = zlib.decompressobj(16 + zlib.MAX_WBITS)
+        self._pending = pending
+        self._eof = False
+
+    def read(self, size):
+        while True:
+            if self._pending:
+                data = self._inflater.decompress(self._pending, size)
+                self._pending = self._inflater.unconsumed_tail
+                if data:
+                    return data
+            if self._eof:
+                # Whatever the decompressor still holds, then b''
+                # forever after (flush() of a drained one is empty).
+                return self._inflater.flush()
+            chunk = self._read(16384)
+            if chunk:
+                self._pending = chunk
+            else:
+                self._eof = True
+
+
+class _HttpStream(object):
+    """File-like read()/close() over an HTTP response body, unpacking
+    it on the fly when it is gzip: sent compressed (Content-Encoding),
+    or a .gz file itself - told by its first two bytes, as the app
+    does (the daily programme guides are .xml.gz files: a server sends
+    those as they are, not as an encoding). `headers`: the response's.
+    """
+
+    def __init__(self, response, compressed):
+        self._response = response
         try:
-            return decoded.decode('utf-8')
-        except UnicodeDecodeError:
-            return decoded
+            self.headers = response.info()
+        except Exception:
+            self.headers = {}
+        # Bytes that actually came over the network.
+        self.bytes_received = 0
+        source = self._network_read
+        if compressed:
+            source = _Inflated(source).read
+        self._source = source
+        self._sniffed = False
 
-    except Exception as e:
-        print("Base64 decoding error: %s" % e)
-        return ""
+    def _network_read(self, size):
+        data = self._response.read(size)
+        self.bytes_received += len(data)
+        return data
+
+    def _sniff(self, size):
+        """The first bytes: a gzip file's (1f 8b) -> read it unpacked."""
+        self._sniffed = True
+        head = b''
+        while len(head) < 2:
+            data = self._source(max(size, 2) - len(head))
+            if not data:
+                break
+            head += data
+        if head[:2] == b'\x1f\x8b':
+            self._source = _Inflated(self._source, head).read
+            return b''
+        return head
+
+    def read(self, size=-1):
+        if size is None or size < 0:
+            chunks = []
+            while True:
+                chunk = self.read(65536)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+            return b''.join(chunks)
+        if size == 0:
+            return b''
+        if not self._sniffed:
+            head = self._sniff(size)
+            if head:
+                return head
+        return self._source(size)
+
+    def close(self):
+        try:
+            self._response.close()
+        except Exception:
+            pass
+
+
+def response_header(stream, name):
+    """A header of an open_url_stream() answer, "" when it has none."""
+    try:
+        return ensure_str(stream.headers.get(name) or '', errors='ignore')
+    except Exception:
+        return ''
+
+
+def open_url_stream(url, timeout=20):
+    """Open `url` for reading piece by piece instead of loading the
+    whole answer into memory the way getUrl() does. Returns a
+    file-like object (read(n), close(), bytes_received, headers);
+    raises on any failure - the caller decides what a failure means.
+
+    Asks for a gzip-compressed answer. The programme-guide files this
+    exists for are 2 to 60 MB of XML and GitHub serves them at roughly
+    a tenth of that when asked (16.7 MB -> 1.55 MB for Portugal, 63 MB
+    -> 9.1 MB for Poland, measured). `timeout` is per network read,
+    not for the whole download.
+    """
+    url = ensure_str(url, errors='ignore').strip()
+    if not url.startswith(("http://", "https://")):
+        raise ValueError("Invalid URL (missing scheme): %s" % url)
+    request = Request(url, headers={
+        'User-Agent': RequestAgent(),
+        'Accept-Encoding': 'gzip',
+    })
+    response = _urlopen_unverified(request, timeout)
+    encoding = ''
+    try:
+        encoding = response.info().get('Content-Encoding') or ''
+    except Exception:
+        pass
+    return _HttpStream(response, 'gzip' in encoding.lower())
 
 
 def getUrl(url, timeout=30, retries=3, backoff=2):
@@ -502,32 +694,7 @@ def getUrl(url, timeout=30, retries=3, backoff=2):
             # elsewhere warn that mutating the global default poisons
             # unrelated sockets (e.g. streaming) that don't set their own.
             request = Request(url, headers=headers)
-
-            if PY3:
-                import ssl
-                unverified_context = ssl.create_default_context()
-                unverified_context.check_hostname = False
-                unverified_context.verify_mode = ssl.CERT_NONE
-                response = urlopen(
-                    request,
-                    timeout=timeout,
-                    context=unverified_context)
-            else:
-                # Python 2: prova a usare ssl se disponibile, altrimenti
-                # fallback
-                try:
-                    import ssl
-                    # Python 2.7.9+ supporta ssl._create_unverified_context
-                    unverified_context = ssl._create_unverified_context() if hasattr(
-                        ssl, '_create_unverified_context') else None
-                    if unverified_context:
-                        response = urlopen(
-                            request, timeout=timeout, context=unverified_context)
-                    else:
-                        response = urlopen(request, timeout=timeout)
-                except ImportError:
-                    response = urlopen(request, timeout=timeout)
-
+            response = _urlopen_unverified(request, timeout)
             data = response.read()
             return data
 
@@ -663,34 +830,6 @@ def get_external_ip():
     return None
 
 
-def set_cache(key, data, timeout):
-    file_path = join(PLUGIN_PATH, key + '.json')
-    try:
-        if not isinstance(data, dict):
-            data = {"value": data}
-        # _is_cache_valid() requires both of these to consider a cache
-        # entry valid - previously never written here, so timeout had no
-        # effect and get_cache() would always treat this entry as expired.
-        data['sigValidUntil'] = int(time()) + timeout
-        data['ip'] = get_external_ip()
-        temp_path = file_path + ".tmp"
-        if PY2:
-            converted_data = convert_to_unicode(data)
-            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
-                dump(
-                    converted_data,
-                    cache_file,
-                    indent=4,
-                    ensure_ascii=False)
-        else:
-            with io.open(temp_path, 'w', encoding='utf-8') as cache_file:
-                dump(data, cache_file, indent=4, ensure_ascii=False)
-        rename(temp_path, file_path)
-    except Exception as e:
-        print("Error saving cache:", e)
-        trace_error()
-
-
 def convert_to_unicode(data):
     if isinstance(data, dict):
         return {convert_to_unicode(key): convert_to_unicode(value)
@@ -710,35 +849,19 @@ def convert_to_unicode(data):
 # FUNCTIONS FOR VAVOO PROXY
 # ============================================================================
 
-def get_proxy_catalog_url():
-    """
-    Get the proxy catalog URL
-    """
-    return PROXY_BASE_URL + "/catalog"
-
-
-def get_proxy_playlist_url():
-    """
-    Get the proxy playlist URL
-    """
-    return PROXY_BASE_URL + "/playlist.m3u"
-
 
 def get_proxy_status():
-    """Get detailed proxy status"""
+    """The proxy's status (what /status answers, plus "booting",
+    "listening" and "ready"), read in this process: the proxy is a
+    thread of Enigma2's own Python (vavoo_proxy.proxy_state()), so
+    asking it over HTTP - from the GUI thread, every few seconds - only
+    cost time. None if it cannot be read."""
     try:
-        if requests is not None:
-            response = requests.get(PROXY_STATUS_URL, timeout=3)
-            if response.status_code == 200:
-                return response.json()
-        else:
-            req = Request(PROXY_STATUS_URL)
-            response = urlopen(req, timeout=3)
-            if response.getcode() == 200:
-                return loads(response.read().decode('utf-8', 'ignore'))
-    except BaseException:
+        from . import vavoo_proxy   # (here: vavoo_proxy imports this module)
+        return vavoo_proxy.proxy_state()
+    except Exception as e:
+        debug("get_proxy_status: {}".format(e))
         return None
-    return None
 
 
 def is_proxy_running():
@@ -759,59 +882,14 @@ def is_proxy_running():
 
 
 def is_proxy_ready(timeout=2):
-    """Check if the proxy is ready to receive requests.
-
-    The proxy's HTTP server only binds its port after the full channel
-    catalog has loaded, so while that is in progress every connection is
-    refused. getUrl() retries refused connections with exponential
-    backoff (seconds of blocking per call) which is fine for a one-off
-    fetch but far too slow for a readiness poll called every few hundred
-    ms from the UI/reactor thread. Check the port cheaply first (a plain
-    connect_ex, effectively instant) and only pay for the HTTP round trip
-    - with a single attempt, since we already know the port is open -
-    once it is actually listening.
-    """
-    try:
-        if not is_proxy_running():
-            return False
-        response = getUrl(PROXY_STATUS_URL, timeout=timeout, retries=1)
-        if response:
-            data = loads(response)
-            return data.get("initialized", False)
-        return False
-    except BaseException:
-        return False
+    """True once the proxy has its catalog and is listening - read in
+    this process (get_proxy_status()), so it never blocks: `timeout` is
+    only kept for the callers that pass one."""
+    state = get_proxy_status()
+    return bool(state and state.get("ready"))
 
 
 # ===================================
-
-def fetch_vec_list():
-    """Fetch vector list from GitHub"""
-    try:
-        url = "{}/data.json".format(HOST_MAIN)
-
-        if requests is not None:
-            # Use requests if available
-            response = requests.get(url, timeout=10)
-            vec_list = response.json()
-        else:
-            # Fallback to urllib
-            req = Request(url)
-            response = urlopen(req, timeout=10)
-            data = response.read()
-            if isinstance(data, bytes):
-                data = data.decode('utf-8', 'ignore')
-            vec_list = loads(data)
-
-        set_cache("vec_list", vec_list, 3600)
-        print(
-            "[Fetch] Vector list loaded: {} entries".format(
-                len(vec_list) if vec_list else 0))
-        return vec_list
-
-    except Exception as e:
-        print("[Fetch] Vector list error: {}".format(str(e)))
-        return None
 
 
 def _version_tuple(version_str):
@@ -877,14 +955,6 @@ def remove_parentheses(text):
         ensure_str(
             text,
             errors='ignore')).strip()
-
-
-def purge(directory, pattern):
-    """Delete files matching pattern in directory"""
-    for f in listdir(directory):
-        file_path = join(directory, f)
-        if isfile(file_path) and search(pattern, f):
-            remove(file_path)
 
 
 """
@@ -982,7 +1052,7 @@ def ensure_sref_trailing_colon(sref):
 
 
 def unique_fallback_sref(servicetype, channel_id):
-    """Build a fallback (no Rytec/EPG match) service reference whose
+    """Build a synthetic service reference whose
     sid:tsid pair is unique per Vavoo channel_id, instead of the old
     literal "servicetype:0:0:0:0:0:0:0:0:0:" used for every unmatched
     channel.
@@ -997,8 +1067,8 @@ def unique_fallback_sref(servicetype, channel_id):
     "13EME RUE", "A LA CARTE 1-11", "20 MINUTES TV" - all displaying one
     other channel's guide data).
 
-    onid/namespace are deliberately left at 0: every real Rytec-sourced
-    sref uses a non-zero namespace (the known satellite/terrestrial/
+    onid/namespace are deliberately left at 0: every real DVB service
+    reference uses a non-zero namespace (the known satellite/terrestrial/
     cable ranges), so a synthetic entry here can never collide with an
     actual matched channel - only sid/tsid need to vary to keep
     unmatched channels apart from each other.
@@ -1070,39 +1140,23 @@ def decodeHtml(text):
         h = html_parser.HTMLParser()
         text = h.unescape(text)
 
+    # (unicode, as `text` is: on Python 2 the byte "\u00f1" here made
+    # every call fail - names for the guide, bouquets, M3U)
     replacements = {
-        '&amp;': '&', '&apos;': "'", '&lt;': '<', '&gt;': '>', '&ndash;': '-',
-        '&quot;': '"', '&ntilde;': 'ñ', '&rsquo;': "'", '&nbsp;': ' ',
-        '&equals;': '=', '&quest;': '?', '&comma;': ',', '&period;': '.',
-        '&colon;': ':', '&lpar;': '(', '&rpar;': ')', '&excl;': '!',
-        '&dollar;': '$', '&num;': '#', '&ast;': '*', '&lowbar;': '_',
-        '&lsqb;': '[', '&rsqb;': ']', '&half;': '1/2', '&DiacriticalTilde;': '~',
-        '&OpenCurlyDoubleQuote;': '"', '&CloseCurlyDoubleQuote;': '"'
+        u'&amp;': u'&', u'&apos;': u"'", u'&lt;': u'<', u'&gt;': u'>',
+        u'&ndash;': u'-', u'&quot;': u'"', u'&ntilde;': u'\u00f1',
+        u'&rsquo;': u"'", u'&nbsp;': u' ', u'&equals;': u'=',
+        u'&quest;': u'?', u'&comma;': u',', u'&period;': u'.',
+        u'&colon;': u':', u'&lpar;': u'(', u'&rpar;': u')', u'&excl;': u'!',
+        u'&dollar;': u'$', u'&num;': u'#', u'&ast;': u'*', u'&lowbar;': u'_',
+        u'&lsqb;': u'[', u'&rsqb;': u']', u'&half;': u'1/2',
+        u'&DiacriticalTilde;': u'~', u'&OpenCurlyDoubleQuote;': u'"',
+        u'&CloseCurlyDoubleQuote;': u'"'
     }
     for entity, char in replacements.items():
         text = text.replace(entity, char)
 
     return text.strip()
-
-
-def remove_line(filename, pattern):
-    """Remove lines containing pattern from file"""
-    if not isfile(filename):
-        return
-    with open(filename, 'r') as f:
-        lines = [line for line in f if pattern not in line]
-    with open(filename, 'w') as f:
-        f.writelines(lines)
-
-
-def getserviceinfo(service_ref):
-    """Get service name and URL from service reference"""
-    try:
-        from ServiceReference import ServiceReference
-        ref = ServiceReference(service_ref)
-        return ref.getServiceName(), ref.getPath()
-    except Exception:
-        return None, None
 
 
 # ============================================================================
@@ -1320,7 +1374,7 @@ def _picon_cache_filename(logo_url):
     return hashlib.md5(logo_url.encode('utf-8')).hexdigest() + '.png'
 
 
-def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
+def get_picon_cache_path(logo_url, cache_dir=None):
     """Local path a picon for this logo URL would be cached at,
     whether or not it has actually been downloaded yet - the one
     place this filename is computed, shared by download_picon_online()
@@ -1329,10 +1383,168 @@ def get_picon_cache_path(logo_url, cache_dir=PICON_CACHE_DIR):
     """
     if not logo_url:
         return None
-    return join(cache_dir, _picon_cache_filename(logo_url))
+    return join(cache_dir or _picon_cache[0], _picon_cache_filename(logo_url))
 
 
-def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
+# The logo cache is in /tmp, which on a box is RAM: kept to this size
+# (the oldest files go first; a logo is downloaded again when needed).
+PICON_CACHE_MAX = 8 * 1024 * 1024
+# ...unless the plugin found a flash disk for it (set_picon_cache_dir()):
+# there it keeps more, and it survives a reboot.
+PICON_CACHE_MAX_DISK = 64 * 1024 * 1024
+_picon_cache = [PICON_CACHE_DIR, PICON_CACHE_MAX]
+
+
+def set_picon_cache_dir(folder, max_bytes=None):
+    """Keep the logos in `folder` (a flash disk the plugin chose,
+    ui_record.logo_folder()), or in /tmp again with None."""
+    if folder:
+        _picon_cache[0] = folder
+        _picon_cache[1] = PICON_CACHE_MAX_DISK if max_bytes is None else max_bytes
+    else:
+        _picon_cache[0] = PICON_CACHE_DIR
+        _picon_cache[1] = PICON_CACHE_MAX
+    return _picon_cache[0]
+
+
+def picon_cache_dir():
+    return _picon_cache[0]
+
+
+def picon_cache_in_ram():
+    """True while the logos are in /tmp (RAM on a box)."""
+    return _picon_cache[0] == PICON_CACHE_DIR
+
+
+def trim_picon_cache(cache_dir=None, max_bytes=None):
+    """Delete the oldest cached logos until the cache is at most
+    max_bytes (the folder in use and its limit by default). Returns how
+    many were deleted."""
+    cache_dir = cache_dir or _picon_cache[0]
+    max_bytes = _picon_cache[1] if max_bytes is None else max_bytes
+    try:
+        names = listdir(cache_dir)
+    except Exception:
+        return 0
+    files = []
+    total = 0
+    for name in names:
+        path = join(cache_dir, name)
+        try:
+            if not isfile(path):
+                continue
+            size = getsize(path)
+            files.append((getmtime(path), size, path))
+            total += size
+        except Exception:
+            continue
+    removed = 0
+    files.sort()
+    for _mtime, size, path in files:
+        if total <= max_bytes:
+            break
+        try:
+            remove(path)
+            total -= size
+            removed += 1
+        except Exception:
+            pass
+    if removed:
+        print("[Picons] {} old logos deleted from {} (now {} KB)".format(
+            removed, cache_dir, total // 1024))
+    return removed
+
+
+def read_meminfo(path="/proc/meminfo"):
+    """{field: kB} from /proc/meminfo ({} when it cannot be read)."""
+    out = {}
+    try:
+        with open(path) as f:
+            for line in f:
+                name, _sep, rest = line.partition(":")
+                fields = rest.split()
+                if fields:
+                    try:
+                        out[name.strip()] = int(fields[0])
+                    except ValueError:
+                        pass
+    except Exception:
+        pass
+    return out
+
+
+def process_memory(proc="/proc", top=8):
+    """[(rss_kb, pid, name)] of the processes using the most memory,
+    the biggest first (read from /proc/<pid>/status)."""
+    rows = []
+    try:
+        names = listdir(proc)
+    except Exception:
+        return rows
+    for pid in names:
+        if not pid.isdigit():
+            continue
+        name, rss = "?", None
+        try:
+            with open(join(proc, pid, "status")) as f:
+                for line in f:
+                    if line.startswith("Name:"):
+                        name = line.split(None, 1)[1].strip()
+                    elif line.startswith("VmRSS:"):
+                        rss = int(line.split()[1])
+                        break
+        except Exception:
+            continue
+        if rss:
+            rows.append((rss, int(pid), name))
+    rows.sort(reverse=True)
+    return rows[:top]
+
+
+def memory_report(proc="/proc", meminfo="/proc/meminfo"):
+    """What the box's memory looked like, in a few lines: what was left,
+    /tmp's share (Shmem), the kernel's (Slab), and the processes holding
+    the most - so a box that ran out can be explained afterwards."""
+    info = read_meminfo(meminfo)
+
+    def mb(field):
+        value = info.get(field)
+        return "?" if value is None else "%d MB" % (value // 1024)
+
+    lines = ["{}  free {} of {}, Shmem (/tmp) {}, Slab {}".format(
+        strftime("%Y-%m-%d %H:%M:%S", localtime()), mb("MemAvailable"),
+        mb("MemTotal"), mb("Shmem"), mb("Slab"))]
+    for rss, pid, name in process_memory(proc):
+        lines.append("    {:>7} MB  {} ({})".format(rss // 1024, name, pid))
+    return "\n".join(lines) + "\n"
+
+
+def memory_note():
+    """"enigma2 148 MB, box 412 MB free" - this process's memory and
+    what the box has left (for the log: was the box short of memory,
+    and was it this process that grew?). "" where it cannot be read."""
+    parts = []
+    try:
+        name = open("/proc/self/comm").read().strip() or "process"
+        for line in open("/proc/self/status"):
+            if line.startswith("VmRSS:"):
+                parts.append("{} {} MB".format(
+                    name, int(line.split()[1]) // 1024))
+                break
+    except Exception:
+        pass
+    try:
+        for line in open("/proc/meminfo"):
+            if line.startswith("MemAvailable:"):
+                parts.append("box {} MB free".format(
+                    int(line.split()[1]) // 1024))
+                break
+    except Exception:
+        pass
+    return ", ".join(parts)
+
+
+def download_picon_online(logo_url, cache_dir=None):
     """Download and cache a channel picon from its catalog-provided
     logo URL (geil.to's own picons, or Vavoo's - see vavoo_proxy.py's
     fix_logo_url()). Mirrors download_flag_online()'s mechanics
@@ -1346,6 +1558,7 @@ def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
     """
     if not logo_url:
         return False, "No logo URL"
+    cache_dir = cache_dir or _picon_cache[0]
 
     try:
         if not exists(cache_dir):
@@ -1409,7 +1622,7 @@ def download_picon_online(logo_url, cache_dir=PICON_CACHE_DIR):
 def get_country_code_from_bouquet_name(name):
     """Extract country code from a bouquet display name (e.g., 'Italy', 'Italy ➾ Sports')."""
     base_name = name
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(name):
         if sep in name:
             base_name = name.split(sep)[0].strip()
             break
@@ -1453,7 +1666,7 @@ def get_country_code(country_name):
     if any(char in country_name for char in '0123456789.'):
         return ""
 
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(country_name):
         if sep in country_name:
             country_name = country_name.split(sep)[0].strip()
             break
@@ -1493,36 +1706,6 @@ def get_country_code(country_name):
         return country_codes[best]
 
     return ""
-
-
-def cleanup_flag_cache(max_age_days=7):
-    """
-    Remove old cached flag files from cache directory.
-    Only files older than max_age_days are deleted.
-    """
-    cache_dir = FLAG_CACHE_DIR
-
-    if not exists(cache_dir):
-        return
-
-    now = time()
-    max_age = max_age_days * 86400
-
-    try:
-        for filename in listdir(cache_dir):
-            filepath = join(cache_dir, filename)
-            if isfile(filepath):
-                try:
-                    file_age = now - getmtime(filepath)
-                    if file_age > max_age:
-                        unlink(filepath)
-                        print("Removed old flag: %s" % filename)
-                except Exception as e:
-                    print(
-                        "Error removing %s: %s" %
-                        (filename, str(e)))
-    except Exception as e:
-        print("Error cleaning flag cache: %s" % str(e))
 
 
 def cleanup_old_temp_files(max_age_hours=1):
@@ -1577,46 +1760,6 @@ def cleanup_old_temp_files(max_age_hours=1):
         return 0
 
 
-def preload_country_flags(country_list, cache_dir=FLAG_CACHE_DIR):
-    """
-    Preload flags for a list of countries.
-    Each chunk of countries is downloaded in a separate daemon thread.
-    Compatible with Python 2 and 3.
-    """
-
-    def download_flags_worker(countries):
-        for country in countries:
-            try:
-                success, _ = download_flag_online(country, cache_dir)
-                if success:
-                    print("Preloaded flag for: %s" % country)
-            except Exception as e:
-                print(
-                    "Error preloading flag for %s: %s" %
-                    (country, str(e)))
-
-    # Split list into chunks to avoid overloading
-    chunk_size = 10
-    threads = []
-
-    if not country_list:
-        return threads
-
-    total = len(country_list)
-
-    for i in range(0, total, chunk_size):
-        chunk = country_list[i:i + chunk_size]
-        t = threading.Thread(
-            target=download_flags_worker,
-            args=(chunk,)
-        )
-        t.setDaemon(True)
-        t.start()
-        threads.append(t)
-
-    return threads
-
-
 # ==================== START EPG ====================
 _epg_matcher = None
 _epg_matcher_lock = threading.Lock()
@@ -1641,226 +1784,93 @@ def get_epg_matcher(similarity_threshold=None):
     return _epg_matcher
 
 
-def calculate_similarity(a, b):
-    """
-    Calculate similarity ratio between two strings using SequenceMatcher.
-    Returns a float between 0.0 and 1.0.
-    """
-    return SequenceMatcher(None, a, b).ratio()
-
-
-def get_orbital_position(service_ref):
-    """
-    Extract orbital position from service reference namespace.
-    Returns orbital position in tenths of a degree (e.g., 130 = 13.0°E, -50 = 5.0°W)
-    """
-    # sref format: type:flags:servicetype:sid:tsid:onid:namespace:... -
-    # namespace (what actually encodes orbital position) is field 6,
-    # not field 3 (that's the sid) - see _get_signal_priority()'s own
-    # identical parsing a bit further down this file, which already
-    # gets this right and warns about this exact mix-up in its own
-    # comment. Getting this wrong here meant namespace was actually
-    # the sid, which is always < 0x10000 - so "is it an exact multiple
-    # of 0x10000" was false for every nonzero sid, and the masked
-    # fallback (parts[3]'s value & 0xFFFF0000) was always 0, so this
-    # function always returned 0 regardless of the real satellite.
-    # Downstream in _find_match_internal(), orbpos being always 0
-    # silently disabled the user-configured-satellite (1.5x) and
-    # Italy-specific 13°E/5°W (1.3x) EPG-match boosts documented in
-    # CLAUDE.md as this feature's whole point - every satellite match
-    # fell through to the generic "other satellite" 1.2x boost
-    # instead, with ties broken arbitrarily by score banding.
-    parts = service_ref.split(':')
-    if len(parts) < 7:
-        return 0
-
-    try:
-        namespace_str = parts[6] if parts[6] else '0'
-        namespace = int(namespace_str, 16)
-
-        # Case 1: Default - Position * 65536
-        # The namespace is a multiple of 65536 (0x10000)
-        if namespace % 0x10000 == 0:
-            pos = namespace // 0x10000
-            # Determine East/West from sign (Enigma convention)
-            if pos < 1800:  # East
-                return pos
-            else:  # West (pos > 1800, e.g., 3600-50=3550 for 5°W)
-                return -(3600 - pos)
-
-        # Case 2: Exception - also contains frequency and polarization
-        # Extract the base part (Position * 65536)
-        base = namespace & 0xFFFF0000
-        pos = base // 0x10000
-
-        if pos < 1800:
-            return pos
-        else:
-            return -(3600 - pos)
-
-    except (ValueError, TypeError):
-        return 0
-
-
-def _signed_orbital_position(orbpos):
-    """Enigma2's own form of an orbital position (tenths of a degree,
-    west stored as 3600 - position: 5.0W = 3550) converted to the
-    signed form get_orbital_position() returns (5.0W = -50)."""
-    try:
-        orbpos = int(orbpos)
-    except (TypeError, ValueError):
-        return orbpos
-    return orbpos - 3600 if orbpos >= 1800 else orbpos
-
-
-def get_configured_satellites():
-    """
-    Get list of satellites configured by user in Enigma2.
-    Returns orbital positions in tenths of a degree, west negative -
-    the same form get_orbital_position() returns (e.g. [130, 192, -50]),
-    since _find_match_internal() compares the two directly. They used
-    to be returned in Enigma2's own 0-3600 form, so a western satellite
-    (5.0W = 3550 there, -50 from get_orbital_position()) never compared
-    equal and never got the configured-satellite boost.
-    """
-    try:
-        configured_sats = []
-
-        # Method 1: Direct from NimManager
-        if hasattr(nimmanager, 'getConfiguredSats'):
-            sats = nimmanager.getConfiguredSats()
-            if sats:
-                configured_sats = [
-                    _signed_orbital_position(s) for s in sats]
-                print(
-                    "[SatConfig] Found {} configured satellites via NimManager".format(
-                        len(configured_sats)))
-                return configured_sats
-
-        # Method 2: Parse from config
-        for slot in nimmanager.nim_slots:
-            if slot.isCompatible(
-                    "DVB-S") and slot.config.dvbs.configMode.value != "nothing":
-                # Simple mode - check diseqc settings
-                if slot.config.dvbs.configMode.value == "simple":
-                    for port in ['diseqcA', 'diseqcB', 'diseqcC', 'diseqcD']:
-                        orbpos = getattr(slot.config.dvbs, port).value
-                        if orbpos and orbpos not in configured_sats and orbpos < 3600:
-                            configured_sats.append(orbpos)
-                            print(
-                                "[SatConfig] Found configured sat: {} (port {})".format(
-                                    orbpos, port))
-
-                # Advanced mode - check each configured satellite
-                elif hasattr(slot.config.dvbs, 'advanced') and slot.config.dvbs.advanced:
-                    for sat_config in slot.config.dvbs.advanced.sat.values():
-                        if sat_config.enabled.value:
-                            orbpos = sat_config.sat.value.orbital_position
-                            if orbpos and orbpos not in configured_sats:
-                                configured_sats.append(orbpos)
-                                print(
-                                    "[SatConfig] Found configured sat: {}".format(orbpos))
-
-        configured_sats = [
-            _signed_orbital_position(s) for s in configured_sats]
-        print("[SatConfig] Total configured satellites: {}".format(configured_sats))
-        return configured_sats
-
-    except Exception as e:
-        print("[SatConfig] Error getting configured satellites: {}".format(e))
-        return []
-
-
-def get_satellite_priority(orbpos, configured_sats):
-    """
-    Returns priority boost for a satellite based on user configuration.
-    1.0 = same as configured
-    0.5 = other satellite
-    """
-    if orbpos in configured_sats:
-        return 1.0
-    return 0.5
-
-
-# Known satellite namespaces, masked to their top 16 bits (see
-# _get_signal_priority()'s own comment on the 0xFFFF0000 mask/encoding
-# convention) - a frozenset, not a list rebuilt on every call: this is
-# checked once per candidate inside _find_match_internal()'s hot loop
-# (run once per channel against what can be thousands of Rytec
-# entries), and a set membership test is also O(1) instead of this
-# list's O(19) linear scan.
-_SATELLITE_NAMESPACES = frozenset((
-    0x820000,   # 13.0°E HotBird (Italy)
-    0xC00000,   # 19.2°E Astra
-    0xEB0000,   # 23.5°E Astra 3
-    0x11A0000,  # 28.2°E Astra 2
-    0xA00000,   # 16.0°E Eutelsat 16A
-    0x5A0000,   # 9.0°E Eutelsat 9B
-    0x460000,   # 7.0°E Eutelsat 7E
-    0xDDE0000,  # 5.0°W Eutelsat 5WA (Italy)
-    0xCE40000,  # 30.0°W Hispasat
-    0x1A40000,  # 42.0°E Türksat
-    0x300000,   # 4.8°E Astra 4A / Sirius
-    0x13B0000,  # 31.5°E Astra 5B
-    0x14A0000,  # 33.0°E Eutelsat 33E
-    0xFF0000,   # 25.5°E Es'hail / Arabsat
-    0x1C20000,  # 45.0°E AzerSpace
-    0x1860000,  # 39.0°E Hellas Sat
-    0x1680000,  # 36.0°E Eutelsat 36B
-    0x1040000,  # 26.0°E Badr
-    0x130000,   # 1.9°E BulgariaSat
-))
+def forget_epg_matches():
+    """A factory reset: the matcher (its cache files are deleted
+    already) and the curated databases are made again on next use."""
+    global _epg_matcher
+    with _epg_matcher_lock:
+        _epg_matcher = None
+    with _curated_channel_db_lock:
+        _curated_channel_db_cache.clear()
 
 
 # get_country_code() returns real ISO 3166-1 codes (needed for flag
-# downloads, e.g. "gb" for United Kingdom), but the Rytec database groups
-# channels by its own historical suffix convention, which doesn't always
-# match ISO - e.g. UK channels are "BBCOne.uk", not "BBCOne.gb". Without
-# this translation, every channel from a mismatched country would find
-# zero candidates in rytec_by_country and always report "ID not found".
-RYTEC_COUNTRY_CODE_OVERRIDES = {
+# downloads, e.g. "gb" for United Kingdom), but channel_alias.ALIAS_MAP's
+# ids keep the EPG world's own suffix convention, which doesn't always
+# match ISO - UK channels are "BBCOne.uk", not "BBCOne.gb". Used by the
+# alias step's country check below.
+ALIAS_COUNTRY_OVERRIDES = {
     'gb': 'uk',
 }
 
 # channel_alias.ALIAS_MAP is curated for Italian channels specifically
 # (see its own module docstring) - used by find_match()'s country-gate
 # below to always trust an alias hit when matching for Italy itself,
-# even for the handful of entries pinned to a non-".it" Rytec id.
+# even for the handful of entries pinned to a non-".it" id.
 _ALIAS_MAP_HOME_COUNTRY = "it"
+
+# id(feed_ids) -> (feed_ids, {lower case id: id}, {lower case id without
+# its dots: id}) - see _feed_spelling(). A few sets: one per country's
+# feed index or loaded guide.
+_feed_spellings = {}
+_feed_spellings_lock = threading.Lock()
+_FEED_SPELLINGS_KEEP = 8
+
+
+def _feed_spelling(epg_id, feed_ids):
+    """epg_id as the country's EPG feed itself writes it, or None when
+    the feed has no such channel: the same id, else the same but for
+    upper / lower case (the app: a source's guide ids differ in case at
+    times), else the same but for the dots (as EpgGuide.channel_for():
+    of several such ids, the shortest)."""
+    if not epg_id or not feed_ids:
+        return None
+    if epg_id in feed_ids:
+        return epg_id
+    with _feed_spellings_lock:
+        entry = _feed_spellings.get(id(feed_ids))
+        if entry is None or entry[0] is not feed_ids:
+            lower = {}
+            dotless = {}
+            for feed_id in feed_ids:
+                lower.setdefault(feed_id.lower(), feed_id)
+                key = feed_id.replace('.', '').lower()
+                other = dotless.get(key)
+                if other is None or len(feed_id) < len(other):
+                    dotless[key] = feed_id
+            if len(_feed_spellings) >= _FEED_SPELLINGS_KEEP:
+                _feed_spellings.clear()
+            entry = (feed_ids, lower, dotless)
+            _feed_spellings[id(feed_ids)] = entry
+    text = epg_id.lower()
+    return entry[1].get(text) or entry[2].get(text.replace('.', ''))
+
+
+_NO_SREF = "4097:0:0:0:0:0:0:0:0:0:"
 
 
 class VavooEPGMatcher(object):
+    """Finds the id a channel has in its country's EPG feed - the order
+    in _find_match_locked(): the source catalog's own guide id, the
+    alias table, this box's cache, the curated channel database, the
+    feed's own channel names."""
+
     def __init__(self, similarity_threshold=0.70):
         self.similarity_threshold = similarity_threshold
-        # Guards the lazy-init block below (_configured_sats) against a
-        # TOCTOU race if find_match() is ever called concurrently on
-        # this same matcher instance from two threads.
-        self._lazy_init_lock = threading.Lock()
         # Guards self.cache/self.normalized_index/self.new_matches -
-        # see find_match()'s docstring. RLock: _find_match_internal()
-        # (called from inside find_match()'s locked section) does its
-        # own lazy-init re-entrancy on this same thread.
+        # see find_match()'s docstring.
         self._cache_lock = threading.RLock()
-        # (clean_name, original_name, service_ref)
-        self.rytec_entries = []
-        # Same entries grouped by country code (from the id's suffix, e.g.
-        # "Rai1.it" -> "it"), so matching against a specific country
-        # doesn't have to linearly scan every other country's entries too.
-        self.rytec_by_country = {}
-        self.rytec_by_id = {}           # (original_id, service_ref)
-        self.rytec_names = {}
         self.cache = load_cache()       # persistent cache
         self.new_matches = {}           # matches found in this session
         self.normalized_index = {}      # map normalized_key -> original_key
         self._build_normalized_index()  # build index at startup
         self.alias_map = {}
         self._load_alias_map()
-        if not self.rytec_entries:
-            self._load_rytec_database()
 
     @staticmethod
-    def is_valid_rytec_id(id_val):
-        """Returns True if id_val appears to be a valid Rytec ID (e.g. 'Rai1.it')."""
+    def is_valid_epg_id(id_val):
+        """Returns True if id_val looks like an EPG channel id (e.g.
+        'Rai.1.it': a country suffix)."""
         # isinstance(id_val, str) alone rejects every value on Python 2,
         # where json.load()/XML parsing produce `unicode` (not a `str`
         # subclass there) - use text_type (six.text_type) too so this
@@ -1874,19 +1884,6 @@ class VavooEPGMatcher(object):
             return False
         suffix = parts[-1]
         return len(suffix) in (2, 3) and suffix.isalpha()
-
-    @staticmethod
-    def _normalize_rytec_sref(raw_sref):
-        """Apply the same "1:" -> "4097:" type conversion
-        _find_match_internal() applies to a freshly-matched Rytec sref,
-        plus trailing-colon normalization, so a raw self.rytec_by_id[...]
-        value can be compared against a cached sref on equal terms."""
-        if not raw_sref:
-            return None
-        parts = raw_sref.split(':')
-        if parts and parts[0] == '1':
-            parts[0] = '4097'
-        return ensure_sref_trailing_colon(':'.join(parts))
 
     def _cleanup_stale_unmatched(
             self,
@@ -1927,81 +1924,6 @@ class VavooEPGMatcher(object):
             except Exception:
                 self.alias_map = {}
                 pass
-
-    def _load_rytec_database(self):
-        rytec_paths = [
-            "/etc/epgimport/rytec.channels.xml",
-            "/usr/lib/enigma2/python/Plugins/Extensions/EPGImport/rytec.channels.xml"]
-        rytec_file = None
-        for path in rytec_paths:
-            if exists(path):
-                rytec_file = path
-                break
-        if not rytec_file:
-            print("[VavooEPGMatcher] Rytec database not found.")
-            return
-
-        try:
-            with io.open(rytec_file, 'r', encoding='utf-8') as f:
-                content = f.read()
-
-            pattern = r'<channel\s+id="([^"]+)">([^<]+)</channel>\s*(?:<!--\s*([^>]+)\s*-->)?'
-            matches = findall(pattern, content, IGNORECASE)
-
-            for match in matches:
-                original_id = match[0].strip()
-                service_ref = match[1].strip()
-                comment = match[2].strip() if len(
-                    match) > 2 and match[2] else None
-
-                if comment:
-                    # Rytec's comment text is HTML-escaped XML content
-                    # (e.g. "AT&amp;T Sports") - left un-decoded, the
-                    # "&" that clean_name_for_similarity() would
-                    # otherwise just strip survives as the literal
-                    # letters "amp" glued into the name instead,
-                    # garbling every Rytec channel whose real name
-                    # contains an escaped "&".
-                    channel_name = decodeHtml(comment)
-                else:
-                    # original_id's own country suffix (e.g. ".uk",
-                    # ".es") is stripped generically here - the
-                    # previous version only handled .it/.de/.fr, so
-                    # every OTHER country's comment-less entries (e.g.
-                    # "BBCOne.uk") kept their suffix glued onto the
-                    # name with no separating space, which
-                    # clean_name_for_similarity() can't segment back
-                    # out - producing a garbled key ("bbconeuk") that
-                    # can never similarity-match a real channel name.
-                    channel_name = original_id
-                    if '.' in channel_name:
-                        channel_name = channel_name.rsplit('.', 1)[0]
-                    channel_name = channel_name.replace(
-                        '-', ' ').replace('_', ' ')
-
-                # clean_name = self._clean_name(channel_name)
-                clean_name = self._clean_name_for_similarity(channel_name)
-                # Precomputed once here instead of on every _find_match_internal()
-                # call (which re-tokenized every candidate's clean_name on
-                # every single channel match, against what can be
-                # thousands of entries per country - this list never
-                # changes after load).
-                entry_tokens = _tokenize_for_compat(clean_name)
-                entry = (
-                    clean_name, channel_name, original_id, service_ref,
-                    entry_tokens)
-                self.rytec_entries.append(entry)
-                entry_country = original_id.split(
-                    '.')[-1] if '.' in original_id else ""
-                self.rytec_by_country.setdefault(
-                    entry_country, []).append(entry)
-                self.rytec_names[original_id] = clean_name
-                self.rytec_by_id[original_id] = service_ref
-
-            print("[VavooEPGMatcher] Loaded {} Rytec channels".format(
-                len(self.rytec_entries)))
-        except Exception as e:
-            print("[VavooEPGMatcher] Error loading database: {}".format(e))
 
     def _clean_name_for_key(self, name):
         """Pulisce il nome per generare la chiave: mantiene suffissi .c, .s, .b."""
@@ -2044,260 +1966,28 @@ class VavooEPGMatcher(object):
         norm_key = self._normalize_key(name_part, country_part)
         self.normalized_index[norm_key] = key
 
-    def _get_signal_priority(self, service_ref):
-        """
-        Determine signal priority based on service reference type.
-
-        Priority levels:
-        1 = Satellite (best) - Italian-satellite bonus is applied by the
-            caller separately, via orbital position + a boost multiplier
-        2 = Terrestrial DVB-T
-        3 = Cable
-        4 = Other / IPTV or unknown
-        """
-        parts = service_ref.split(':')
-        if len(parts) < 7:
-            return 4  # Unknown / other
-
-        try:
-            # sref format: type:flags:servicetype:sid:tsid:onid:namespace:...
-            # - namespace (what encodes orbital position / terrestrial /
-            # cable, checked below) is field 6, not field 3 (that's the
-            # sid).
-            namespace_str = parts[6] if parts[6] else '0'
-            namespace = int(namespace_str, 16)
-
-            # Known satellite namespaces (_SATELLITE_NAMESPACES, module
-            # level - see its own comment). Enigma2 encodes orbital
-            # position as (tenths_of_a_degree << 16) for east, or
-            # ((3600 - tenths_of_a_degree) << 16) for west - verified
-            # against the terrestrial/cable checks below, which use the
-            # same top-16-bits convention (0xFFFF0000).
-            #
-            # Mask must be 0xFFFF0000 (top 16 bits, matching how those
-            # values were built) - the previous 0xFFF00000 zeroed out
-            # part of the orbital-position field itself, so it could
-            # only ever match a namespace by coincidence, not because
-            # it was actually that satellite.
-            if namespace & 0xFFFF0000 in _SATELLITE_NAMESPACES:
-                # Italian satellite bonus is applied by the caller via
-                # priority + a boost multiplier, not by this priority
-                # level - satellite is always priority 1.
-                return 1
-
-            # Terrestrial DVB-T
-            if namespace & 0xFFFF0000 == 0xEEEE0000:
-                return 2  # Terrestrial
-
-            # Cable
-            if namespace & 0xFFFF0000 == 0xFFFF0000:
-                return 3  # Cable
-
-            # Default fallback
-            return 4  # Other / IPTV / unknown
-
-        except (ValueError, TypeError):
-            return 4
-
-    def _find_match_internal(
+    def _match_feed_name(
             self, channel_name, country_code, channel_id=None,
             servicetype="4097", feed_index=None):
-        """
-        Search for a match in ALL Rytec channels, then apply boost based on user configuration.
-        """
-        if not channel_name:
+        """The last step: the channel's name against the display names
+        of its country's own EPG feed (feed_index, pre-fetched by
+        find_match() before self._cache_lock was taken -
+        _get_epg_feed_index() can block on a cold network fetch).
+        (id, sref) or (None, None). The feed gives an id, not a DVB
+        service ref, so the sref is the channel's own synthetic one."""
+        if not channel_name or not country_code:
             return None, None
-
-        # Clean the input channel name
-        clean_input = self._clean_name_for_similarity(channel_name)
-
-        # Load user-configured satellites (e.g., [130] for 13°E)
-        if not hasattr(self, '_configured_sats'):
-            with self._lazy_init_lock:
-                if not hasattr(self, '_configured_sats'):
-                    self._configured_sats = get_configured_satellites()
-                    print("[Match] User has {} configured satellites: {}".format(
-                        len(self._configured_sats), self._configured_sats))
-
-        candidates = []
-
-        # Restrict the scan to the requested country's entries up front
-        # (pre-grouped in rytec_by_country at load time) instead of
-        # walking every entry for every country and discarding most of
-        # them - this is the hot loop of EPG matching, run once per
-        # channel against what can be thousands of Rytec entries.
-        if not country_code:
-            entries_to_scan = self.rytec_entries
-        elif country_code == "bk":
-            balkan_codes = [
-                "ba", "hr", "rs", "si", "me", "mk", "al", "bg", "ro"]
-            entries_to_scan = [
-                entry
-                for code in balkan_codes
-                for entry in self.rytec_by_country.get(code, [])
-            ]
-        elif RYTEC_COUNTRY_CODE_OVERRIDES.get(country_code):
-            entries_to_scan = self.rytec_by_country.get(
-                RYTEC_COUNTRY_CODE_OVERRIDES[country_code], [])
-        else:
-            entries_to_scan = self.rytec_by_country.get(country_code, [])
-
-        # Pass 1: search all matches by similarity (ignore priority for now)
-        # Reuse one SequenceMatcher with seq1 fixed to clean_input instead
-        # of building a new one per candidate (set_seq2() lets it skip
-        # re-analyzing seq1 every time), and check the cheap upper-bound
-        # estimates (real_quick_ratio(), then quick_ratio()) before paying
-        # for the full ratio() computation - both are always >= the real
-        # ratio, so this only skips candidates that could never reach the
-        # threshold anyway, never a false negative. This loop runs against
-        # every Rytec entry for the country on every uncached match, so it
-        # matters most for countries with large Rytec databases (e.g. Italy).
-        source_tokens = _tokenize_for_compat(clean_input)
-        sm = SequenceMatcher(None, clean_input)
-        for clean_entry, orig_name, rytec_id, service_ref, entry_tokens in entries_to_scan:
-            # A shared textual prefix with a *different* word at a
-            # position both share is a strong signal these are
-            # different channels (e.g. "canal motogp" vs "canal plus
-            # foot") - raw character similarity alone can clear even a
-            # fairly high threshold for such pairs since most of the
-            # string still overlaps. A longer entry may still add
-            # trailing descriptive words - only a genuine word-for-word
-            # prefix mismatch is rejected.
-            if source_tokens:
-                if entry_tokens and not _tokens_compatible(
-                        source_tokens, entry_tokens):
-                    continue
-            sm.set_seq2(clean_entry)
-            if sm.real_quick_ratio() < self.similarity_threshold:
-                continue
-            if sm.quick_ratio() < self.similarity_threshold:
-                continue
-            score = sm.ratio()
-            if score < self.similarity_threshold:
-                continue
-
-            # Extract additional info
-            signal_priority = self._get_signal_priority(service_ref)
-            orbpos = 0
-            if signal_priority == 1:
-                orbpos = get_orbital_position(service_ref)
-
-            # Calculate boost
-            boost = 1.0
-
-            # 1. User-configured satellite → max boost
-            if orbpos and self._configured_sats and orbpos in self._configured_sats:
-                boost = 1.5
-                print(
-                    "[Match] FOUND! Satellite {} is user-configured!".format(orbpos))
-
-            # 2. Italian satellite (important) but not configured
-            elif country_code == 'it' and orbpos in [130, -50]:  # 13°E or 5°W
-                boost = 1.3
-
-            # 3. Other satellites
-            elif signal_priority == 1:
-                boost = 1.2
-
-            # 4. Terrestrial
-            elif signal_priority == 2:
-                boost = 1.1
-
-            # 5. Cable/IPTV
-            else:
-                boost = 1.0
-
-            adjusted_score = score * boost
-
-            candidates.append((
-                adjusted_score, score, signal_priority, orbpos,
-                clean_entry, orig_name, rytec_id, service_ref
-            ))
-
-        # Sort primarily by raw textual score, using the satellite/signal
-        # boost only as a tie-breaker among near-equal matches. Every
-        # candidate here already cleared similarity_threshold, so using
-        # `adjusted_score = score * boost` as the sort key let a marginal
-        # boosted candidate (e.g. score 0.71 * 1.5 = 1.065) always beat a
-        # near-perfect unboosted one (max possible 1.0 * 1.0) regardless of
-        # how much better the textual match actually was. Bucketing raw
-        # score into 0.05-wide bands means boost can only decide between
-        # candidates that are already comparably good matches.
-        _PRIORITY_TIE_BAND = 0.05
-        candidates.sort(
-            key=lambda x: (round(x[1] / _PRIORITY_TIE_BAND), x[0]),
-            reverse=True)
-
-        for adj_score, orig_score, priority, orbpos, clean_entry, orig_name, rytec_id, service_ref in candidates:
-            # Pick the first candidate above base similarity threshold
-            if orig_score >= self.similarity_threshold:
-                parts = service_ref.split(':')
-                if parts and parts[0] == '1':
-                    # Conversion for Enigma2 service reference
-                    parts[0] = '4097'
-                converted = ':'.join(parts)
-
-                sat_info = " (sat {})".format(orbpos) if orbpos else ""
-                conf_info = " [CONFIGURED]" if orbpos in self._configured_sats else ""
-                print("[Match] CHOSEN: '{}' -> {}{}{} (score:{}→{}, priority:{})".format(
-                    channel_name, rytec_id, sat_info, conf_info,
-                    orig_score, adj_score, priority
-                ))
-
-                # Many Rytec entries (pan-European channels like
-                # Eurosport, Nickelodeon, Discovery, DMAX...) genuinely
-                # broadcast via one shared satellite transponder
-                # serving multiple countries, so Rytec correctly has
-                # separate per-country ids that all point at the exact
-                # same real DVB tuple. Every country whose Vavoo
-                # catalog matches to one of those would otherwise
-                # collide on that identical tuple in Enigma2's EPG
-                # cache (which keys purely on the tuple, not the
-                # embedded stream URL), showing one country's
-                # programme data for all of them. Give this Vavoo
-                # channel its own unique reference instead - the
-                # correct id above still goes into channels.xml, and
-                # EPGImport's own parser already supports one id
-                # fanning out to multiple different service refs.
-                if channel_id:
-                    return rytec_id, unique_fallback_sref(
-                        servicetype, channel_id)
-                return rytec_id, converted
-
-        # No Rytec candidate matched. Before giving up, try this
-        # country's own EPG programme feed directly - some countries
-        # (confirmed for es/pl/tr and others) have far richer channel
-        # coverage in their own epg_<cc>.xml than Rytec does; Rytec may
-        # simply never have catalogued this channel at all. Reuses the
-        # same feed-index/name-matching machinery write_epg_mapping_file()
-        # already uses as a same-purpose fallback for the opposite case
-        # (Rytec matched, but under an id the feed itself doesn't use).
-        # The feed only gives an id, not a real DVB service ref (it's
-        # programme-guide metadata, not satellite broadcast data), so a
-        # synthesized, collision-free sref is generated the same way an
-        # otherwise-unmatched channel already gets one.
-        #
-        # feed_index is pre-fetched by find_match() before self._cache_lock
-        # is taken (same reasoning as curated_db - _get_epg_feed_index()
-        # can block on a cold, multi-MB network fetch, which must never
-        # happen while holding the lock the concurrent EPG-overlay thread
-        # also needs for its own find_match() calls).
-        if channel_id and country_code:
-            _feed_ids, name_index = feed_index if feed_index else (None, None)
-            if name_index:
-                feed_match_id = _find_feed_id_by_name(
-                    channel_name, self, name_index)
-                if feed_match_id:
-                    fallback_sref = unique_fallback_sref(
-                        servicetype, channel_id)
-                    print(
-                        "[Match] FEED-DIRECT MATCH: '{}' -> {} "
-                        "(own EPG feed, no Rytec entry)".format(
-                            channel_name, feed_match_id))
-                    return feed_match_id, fallback_sref
-
-        print("[Match] No match found for '{}'".format(channel_name))
-        return None, "4097:0:0:0:0:0:0:0:0:0:"
+        _feed_ids, name_index = feed_index if feed_index else (None, None)
+        feed_match_id = _find_feed_id_by_name(
+            channel_name, self, name_index) if name_index else None
+        if not feed_match_id:
+            print("[Match] No match found for '{}'".format(channel_name))
+            return None, None
+        print("[Match] FEED NAME MATCH: '{}' -> {}".format(
+            channel_name, feed_match_id))
+        if channel_id:
+            return feed_match_id, unique_fallback_sref(servicetype, channel_id)
+        return feed_match_id, _NO_SREF
 
     def _try_promote_to_curated(
             self, channel_name, country_code, servicetype, channel_id,
@@ -2306,9 +1996,8 @@ class VavooEPGMatcher(object):
         A cache entry written before the curated channel database
         existed for this country (or before this specific channel was
         added to it) is stuck on whatever it originally matched
-        (usually live Rytec fuzzy-matching) forever, since step 1's
-        cache hit returns early and step 2's curated-DB check is never
-        reached again. When allow_curated_promotion is set (bouquet
+        (a name match) forever, since the cache step returns early
+        and the curated-DB step after it is never reached again. When allow_curated_promotion is set (bouquet
         export only, never the live overlay lookup), give a non-curated
         cache entry one more chance to upgrade to the curated result.
         curated_db is pre-fetched by find_match() before the cache
@@ -2338,6 +2027,24 @@ class VavooEPGMatcher(object):
             self, channel_name, country_code=None, servicetype="4097",
             channel_id=None, allow_curated_promotion=False,
             epg_guide_id=None):
+        """_find_match_untimed(), with the ones that take long in the
+        log ("[EPG] slow match": what loaded the box)."""
+        started = time()
+        try:
+            return self._find_match_untimed(
+                channel_name, country_code, servicetype, channel_id,
+                allow_curated_promotion, epg_guide_id)
+        finally:
+            took = time() - started
+            if took >= 1.0:
+                print("[EPG] slow match: {} ({}) {:.1f}s".format(
+                    ensure_str(channel_name or '', errors='ignore'),
+                    country_code or '-', took))
+
+    def _find_match_untimed(
+            self, channel_name, country_code=None, servicetype="4097",
+            channel_id=None, allow_curated_promotion=False,
+            epg_guide_id=None):
         """Public entry point - serializes the whole lookup (including
         every self.cache/self.normalized_index/self.new_matches read
         and write below) behind self._cache_lock. This matcher is a
@@ -2353,8 +2060,8 @@ class VavooEPGMatcher(object):
         raise "dictionary changed size during iteration" and abort EPG
         matching for a whole country's remaining channels, or silently
         drop a concurrent thread's cache write. An RLock (not a plain
-        Lock) since _find_match_internal() below can itself re-enter
-        lazy-init code paths on this same instance/thread.
+        Lock), as the lookup may re-enter locked code paths on this
+        same instance/thread.
 
         allow_curated_promotion: when True, a local-cache hit that
         wasn't originally sourced from the curated channel database
@@ -2368,11 +2075,10 @@ class VavooEPGMatcher(object):
         epg_guide_id: the source catalog's own guide id for this
         channel, if it has one (geil.to's "tvg" field - Vavoo's own
         catalog has none, so this is always None on that path). When
-        set, checked directly against this country's own EPG feed
-        index before falling through to the existing curated-DB/live
-        Rytec fuzzy-matching chain - see the "2.5" step below.
+        the country's EPG feed has it, it is the answer - step 1 of
+        _find_match_locked().
 
-        Returns a (rytec_id, sref, source) 3-tuple; source is one of
+        Returns an (epg_id, sref, source) 3-tuple; source is one of
         "alias", "curated", "live" or None (no match).
 
         Deliberately fetches the curated DB, and this country's own EPG
@@ -2424,304 +2130,139 @@ class VavooEPGMatcher(object):
             pending_save=None):
         if not channel_name:
             return None, None, None
+        feed_ids = feed_index[0] if feed_index else None
 
-        # 0. Apply alias normalization (if available)
+        def hit(epg_id, source, sref=None):
+            """A match: every channel with an id gets its own synthetic
+            service reference (unique_fallback_sref()), so channels and
+            countries sharing an EPG id never collide in eEPGCache."""
+            self._cleanup_stale_unmatched(
+                channel_name, country_code, servicetype)
+            if channel_id:
+                sref = unique_fallback_sref(servicetype, channel_id)
+            return epg_id, sref or _NO_SREF, source
+
+        # 1. The source catalog's own guide id (geil.to's "tvg" -
+        # Vavoo's own catalog has none), as the feed writes it: first,
+        # as in the app - the source knows its channel better than any
+        # name match.
+        if epg_guide_id and country_code:
+            feed_id = _feed_spelling(epg_guide_id, feed_ids)
+            if feed_id:
+                print(
+                    "[Match] GUIDE ID HIT (source catalog): {} -> {}".format(
+                        channel_name, feed_id))
+                return hit(feed_id, 'live')
+
+        # 2. The alias table. self.alias_map (loaded from the on-disk
+        # channel_alias.json, if present) can override/add to the
+        # curated channel_alias.ALIAS_MAP (~300 hand-mapped Italian
+        # channels). It counts when the feed has that channel (when the
+        # feed's channel list is not known, as it is).
         if alias_available:
-            # Clean the channel name using the same rules as playlist_generator
             norm_name = channel_alias.normalize_channel_name(channel_name)
-            if norm_name:
-                # If we have an EPG ID for this canonical name, use it
-                # directly. self.alias_map (loaded from the on-disk
-                # channel_alias.json, if present) can override/add to the
-                # curated channel_alias.ALIAS_MAP, which is the actual
-                # source of the ~300 hand-mapped Italian channel aliases.
-                alias_id = self.alias_map.get(
-                    norm_name) or channel_alias.ALIAS_MAP.get(norm_name)
-                if alias_id:
-                    # ALIAS_MAP is curated for Italian channels
-                    # specifically (~300 hand-mapped entries, see
-                    # channel_alias.py's own header), but this lookup
-                    # had no country check - it fired identically for
-                    # every country whose channel list happened to
-                    # share a name with one of those entries (e.g.
-                    # generic pan-European brands like "Eurosport 1" or
-                    # "Nickelodeon"), so Poland's and Spain's own
-                    # exports both got Italy's Rytec sref and collided
-                    # in eEPGCache, since they became the same physical
-                    # DVB tuple. Only trust the hit when the alias id's
-                    # own country suffix agrees with the country
-                    # actually being matched (same convention
-                    # _load_rytec_database() uses to bucket entries) -
-                    # or no country was specified at all (e.g. the
-                    # in-player "now playing" overlay).
-                    alias_country = (
-                        alias_id.rsplit('.', 1)[-1].lower()
-                        if '.' in alias_id else "")
-                    effective_country = RYTEC_COUNTRY_CODE_OVERRIDES.get(
-                        country_code, country_code) if country_code else None
-                    # ALIAS_MAP's home country (see its own docstring) -
-                    # always trust a hit when matching for Italy itself,
-                    # even if the curator pinned a specific entry to a
-                    # non-".it" Rytec id (e.g. "DISNEY CHANNEL"/"DISNEY
-                    # JUNIOR" -> a ".ch" id, because Italy's own Rytec
-                    # catalog has no native entry for them). The suffix
-                    # check below still guards every OTHER country
-                    # against reusing one of these curated Italian
-                    # picks for an unrelated channel of the same name.
-                    if (not effective_country or not alias_country or
-                            effective_country.lower() ==
-                            _ALIAS_MAP_HOME_COUNTRY or
-                            alias_country == effective_country.lower()):
-                        alias_sref = self.rytec_by_id.get(alias_id)
-                        if alias_sref:
-                            if alias_sref.startswith('1:'):
-                                alias_sref = '4097' + alias_sref[1:]
-                            print(
-                                "[Match] ALIAS HIT: {} -> {}".format(norm_name, alias_id))
-                            self._cleanup_stale_unmatched(
-                                channel_name, country_code, servicetype)
-                            # Rytec's raw tuple can be (correctly)
-                            # shared by several countries' entries for
-                            # the same pan-European channel brand - see
-                            # the synthetic-sref note on the Rytec
-                            # candidate match below. Same fix here:
-                            # give this Vavoo channel its own unique
-                            # reference instead of reusing the shared
-                            # one directly, when we have a channel_id
-                            # to key it off.
-                            if channel_id:
-                                return alias_id, unique_fallback_sref(
-                                    servicetype, channel_id), 'alias'
-                            return alias_id, alias_sref, 'alias'
+            alias_id = (self.alias_map.get(norm_name) or
+                        channel_alias.ALIAS_MAP.get(norm_name)) if norm_name else None
+            if alias_id:
+                # ALIAS_MAP is curated for Italian channels: for another
+                # country only an id with that country's own suffix
+                # counts (generic pan-European names like "Eurosport 1"
+                # or "Nickelodeon" would otherwise get Italy's id), or
+                # when no country was given at all. Italy itself trusts
+                # every entry, even one pinned to a non-".it" id
+                # (e.g. "DISNEY CHANNEL" -> a ".ch" id).
+                alias_country = (
+                    alias_id.rsplit('.', 1)[-1].lower()
+                    if '.' in alias_id else "")
+                effective_country = ALIAS_COUNTRY_OVERRIDES.get(
+                    country_code, country_code) if country_code else None
+                if (not effective_country or not alias_country or
+                        effective_country.lower() ==
+                        _ALIAS_MAP_HOME_COUNTRY or
+                        alias_country == effective_country.lower()):
+                    feed_id = (_feed_spelling(alias_id, feed_ids)
+                               if feed_ids else alias_id)
+                    if feed_id:
+                        print("[Match] ALIAS HIT: {} -> {}".format(
+                            norm_name, feed_id))
+                        return hit(feed_id, 'alias')
 
-        # Normalize the original name for key generation
         search_key = self._normalize_key(channel_name, country_code or "")
 
-        # 1. Local cache via normalized index
+        # 3. This box's own cache: its id counts while the feed has it
+        # (an entry from an older matcher - Rytec's ids - often is not
+        # one of the feed's, and is matched again).
         if search_key in self.normalized_index:
             cached_key = self.normalized_index[search_key]
-            cached = self.cache[cached_key]
+            cached = self.cache.get(cached_key) or {}
             id_val = cached.get('id')
-            if self.is_valid_rytec_id(id_val):
-                # Check if the channel name matches the Rytec name associated
-                # with that ID
-                channel_clean = self._clean_name_for_similarity(channel_name)
-                rytec_clean = self.rytec_names.get(id_val, '')
-                if rytec_clean:
-                    current_rytec_sref = self._normalize_rytec_sref(
-                        self.rytec_by_id.get(id_val))
-                    cached_sref = ensure_sref_trailing_colon(
-                        cached.get('sref'))
-                    if channel_clean == rytec_clean and (
-                            not current_rytec_sref or
-                            cached_sref == current_rytec_sref):
-                        promoted = self._try_promote_to_curated(
-                            channel_name, country_code, servicetype,
-                            channel_id, cached, allow_curated_promotion,
-                            curated_db)
-                        if promoted:
-                            return promoted
-                        print(
-                            "[Match] Local cache HIT (valid ID & name match): {}".format(cached_key))
-                        self._cleanup_stale_unmatched(
-                            channel_name, country_code, servicetype)
-                        return (
-                            cached.get('id'), cached.get('sref'),
-                            cached.get('source') or 'live')
-                    elif channel_clean != rytec_clean:
-                        print(
-                            "[Match] Cache ID '{}' name mismatch (channel='{}', rytec='{}'), will re-match".format(
-                                id_val, channel_clean, rytec_clean))
-                        # Do not return, proceed with live matching
-                    else:
-                        # Name still matches, but the cached sref no
-                        # longer matches what Rytec has for this id -
-                        # leftover from a stale/mismatched match (see
-                        # find_match()'s live-rematch branch below).
-                        # Re-match instead of trusting a sref that
-                        # actually belongs to a different real channel.
-                        print(
-                            "[Match] Cache ID '{}' sref stale for '{}' (cached={}, rytec={}), will re-match".format(
-                                id_val, channel_name, cached_sref, current_rytec_sref))
-                else:
-                    # We don't have the Rytec name, accept the cache
+            if self.is_valid_epg_id(id_val):
+                feed_id = (_feed_spelling(id_val, feed_ids)
+                           if feed_ids else id_val)
+                if feed_id:
                     promoted = self._try_promote_to_curated(
                         channel_name, country_code, servicetype,
                         channel_id, cached, allow_curated_promotion,
                         curated_db)
                     if promoted:
                         return promoted
-                    print(
-                        "[Match] Local cache HIT (valid ID, no Rytec name): {}".format(cached_key))
-                    self._cleanup_stale_unmatched(
-                        channel_name, country_code, servicetype)
-                    return (
-                        cached.get('id'), cached.get('sref'),
-                        cached.get('source') or 'live')
+                    print("[Match] Local cache HIT: {}".format(cached_key))
+                    return hit(feed_id, cached.get('source') or 'live',
+                               cached.get('sref'))
+                print("[Match] Cache id '{}' is not in the {} feed, "
+                      "will re-match".format(id_val, country_code))
             else:
-                # Invalid ID, proceed with live matching
                 print("[Match] Local cache has invalid ID, will try to re-match.")
 
-        # 2. Community-curated channel database (see
-        # generate_epg_channel_db.py): a pre-solved name -> this
-        # country's own EPG feed id mapping, built and reviewed offline
-        # instead of guessed live by fuzzy-matching against Rytec.
-        # Country-scoped by construction (one file per country), so no
-        # collision risk from unrelated countries sharing a name.
-        if country_code:
-            # curated_db is the one find_match() pre-fetched before
-            # taking self._cache_lock (see its docstring) - not
-            # re-fetched here.
-            if curated_db:
-                curated_key = self._clean_name_for_similarity(channel_name)
-                curated_id = curated_db.get(curated_key)
-                if curated_id and channel_id:
-                    print(
-                        "[Match] CURATED DB HIT: {} -> {}".format(
-                            channel_name, curated_id))
-                    self._cleanup_stale_unmatched(
-                        channel_name, country_code, servicetype)
-                    return curated_id, unique_fallback_sref(
-                        servicetype, channel_id), 'curated'
+        # 4. The curated channel database. curated_db is the one
+        # find_match() pre-fetched before taking self._cache_lock (see
+        # its docstring) - not re-fetched here.
+        if country_code and curated_db and channel_id:
+            curated_id = curated_db.get(
+                self._clean_name_for_similarity(channel_name))
+            if curated_id:
+                print("[Match] CURATED DB HIT: {} -> {}".format(
+                    channel_name, curated_id))
+                return hit(curated_id, 'curated')
 
-        # 2.5. The source catalog's own guide id (geil.to's "tvg" field,
-        # threaded through as epg_guide_id - Vavoo's own catalog has no
-        # equivalent, so this is always a no-op on that path). A more
-        # direct variant of the name-based "own feed" fallback inside
-        # _find_match_internal() below - same per-country EPG feed
-        # index (feed_index, pre-fetched by find_match() before
-        # self._cache_lock was taken - see its docstring), just checked
-        # by the id the source already gave us instead of guessed from
-        # a fuzzy name match. Deliberately placed after the curated DB
-        # (human-reviewed) rather than before it - an automatically-
-        # supplied id shouldn't override a curator's own mapping for
-        # the same channel.
-        if epg_guide_id and country_code and channel_id:
-            feed_ids, _name_index = feed_index if feed_index else (None, None)
-            if feed_ids and epg_guide_id in feed_ids:
-                print(
-                    "[Match] GUIDE ID HIT (source catalog): {} -> {}".format(
-                        channel_name, epg_guide_id))
-                self._cleanup_stale_unmatched(
-                    channel_name, country_code, servicetype)
-                return epg_guide_id, unique_fallback_sref(
-                    servicetype, channel_id), 'live'
-
-        # 3. Live matching
+        # 5. The feed's own channel names.
         print("[Match] Doing local matching for: {}".format(channel_name))
         if search_key in self.new_matches:
             m = self.new_matches[search_key]
             return m['id'], m['sref'], m.get('source', 'live')
-
-        result_id, result_sref = self._find_match_internal(
+        result_id, result_sref = self._match_feed_name(
             channel_name, country_code, channel_id=channel_id,
             servicetype=servicetype, feed_index=feed_index)
-
-        # Is there already an entry in the cache (even with invalid ID)?
-        # Resolve via normalized_index first: the raw key an entry is
-        # stored under can differ from search_key (e.g. name-cleaning
-        # rules changed since it was written, same drift as the
-        # _clean_name_for_key '&' case). Step 1 above already proves such
-        # an entry is reachable via normalized_index - looking it up with
-        # self.cache.get(search_key) directly would miss it and silently
-        # discard a valid existing match every time this branch runs.
-        existing_key = self.normalized_index.get(search_key, search_key)
-        existing_entry = self.cache.get(existing_key)
-
-        if result_id and result_sref:
-            # Decide which sref to keep
-            final_sref = result_sref
-            if existing_entry and existing_entry.get('id') == result_id:
-                # Only reuse the previously cached sref when it's for the
-                # SAME matched id - this keeps re-matches of an unchanged
-                # channel stable. When the freshly matched id differs
-                # from what's cached, the old sref belongs to whatever
-                # channel the cache used to (possibly wrongly) point at;
-                # blindly keeping it here is exactly how an id gets
-                # updated to the right channel while its sref silently
-                # keeps pointing at a different one.
-                existing_sref = existing_entry.get('sref')
-                current_rytec_sref = self._normalize_rytec_sref(
-                    self.rytec_by_id.get(result_id))
-                # If the existing one has a valid sref (not fallback) that
-                # still agrees with what Rytec currently has for this id,
-                # preserve it - this is a no-op in the common case
-                # (result_sref should already match) and only matters for
-                # candidate-selection ties. If it disagrees, it's stale
-                # (e.g. left over from before this id was matched
-                # correctly) - fall through to the freshly matched
-                # result_sref instead of re-entrenching it.
-                if (existing_sref and
-                        existing_sref != "4097:0:0:0:0:0:0:0:0:0:" and
-                        (not current_rytec_sref or
-                         ensure_sref_trailing_colon(existing_sref) ==
-                         current_rytec_sref)):
-                    final_sref = existing_sref
-                    print(
-                        "[Match] Preserving existing sref: {}".format(existing_sref))
-            # self.new_matches[search_key] = {'id': result_id, 'sref': final_sref}
+        if result_id:
             self.new_matches[search_key] = {
                 'id': result_id,
-                'sref': final_sref,
+                'sref': result_sref,
                 'name': channel_name,
                 'source': 'live'
             }
             save_unmatched(
-                channel_name,
-                country_code,
-                servicetype,
-                matched=True)
-            return result_id, final_sref, 'live'
-        else:
-            # If no live match, but there is an existing entry with a valid
-            # sref, use it (with matched=False)
-            if existing_entry:
-                # Compare against the normalized form: some legacy entries
-                # were written without the trailing colon, which made this
-                # equality check silently treat an actual fallback sref as
-                # "valid" and skip the downgrade below.
-                existing_sref = existing_entry.get('sref')
-                normalized_sref = ensure_sref_trailing_colon(existing_sref)
-                if normalized_sref and normalized_sref != "4097:0:0:0:0:0:0:0:0:0:":
-                    print("[Match] No live match, using existing sref (invalid ID)")
-                    # Update cache with matched=False if needed
-                    if existing_entry.get('matched', True) is not False:
-                        existing_entry['matched'] = False
-                        self.cache[existing_key] = existing_entry
-                        self._index_cache_key(existing_key)
-                        # Not deferred to new_matches/update_complete_cache():
-                        # that path always writes matched=True, which would
-                        # be wrong here. This branch is rare (only when a
-                        # previously-matched channel stops live-matching),
-                        # so an eager write is an acceptable tradeoff - the
-                        # actual save_cache() call happens in find_match(),
-                        # after self._cache_lock is released (see its own
-                        # comment on pending_save for why).
-                        if pending_save is not None:
-                            pending_save.append(True)
-                    return (
-                        existing_entry.get('id'), existing_sref,
-                        existing_entry.get('source') or 'live')
-                elif existing_entry.get('matched') is not False:
-                    # Stale entry with an invalid id AND no usable sref -
-                    # a leftover from before this channel ever properly
-                    # matched. Live re-matching just failed too, so
-                    # there's nothing worth preserving; without this, the
-                    # cache keeps claiming matched=True with no real EPG
-                    # data behind it, forever, since nothing else ever
-                    # revisits an entry once it's "matched".
-                    existing_entry['matched'] = False
-                    self.cache[existing_key] = existing_entry
-                    self._index_cache_key(existing_key)
-                    if pending_save is not None:
-                        pending_save.append(True)
-            # Otherwise, no match and no valid sref
-            save_unmatched(
-                channel_name,
-                country_code,
-                servicetype,
-                matched=False)
-            return None, None, None
+                channel_name, country_code, servicetype, matched=True)
+            return result_id, result_sref, 'live'
+
+        # 6. Nothing. A cache entry for it no longer stands for a match
+        # (its id is not the feed's): saved as matched=False here and
+        # not through new_matches/update_complete_cache(), which always
+        # writes matched=True. The save_cache() itself happens in
+        # find_match(), after self._cache_lock is released (see its
+        # comment on pending_save).
+        # Resolved via normalized_index: the raw key an entry is stored
+        # under can differ from search_key (name-cleaning rules changed
+        # since it was written).
+        existing_key = self.normalized_index.get(search_key, search_key)
+        existing_entry = self.cache.get(existing_key)
+        if existing_entry and existing_entry.get('matched') is not False:
+            existing_entry['matched'] = False
+            self.cache[existing_key] = existing_entry
+            self._index_cache_key(existing_key)
+            if pending_save is not None:
+                pending_save.append(True)
+        save_unmatched(channel_name, country_code, servicetype, matched=False)
+        return None, None, None
 
 
 # ==================== EPG CACHE FUNCTIONS ====================
@@ -2796,64 +2337,112 @@ def save_cache(cache):
         return False
 
 
-def _favourite_key(name, url):
-    return "{}###{}".format(name, url)
-
-
 def load_favourites():
-    """Return the persisted favourites dict ({key: {name, url,
-    timestamp}}), or {} on any error/missing file - never raises,
-    matching every other cache reader in this module."""
+    """[{name, url, country_name, country_code, logo, folder,
+    timestamp}] in the user's order, or [] - never raises (see
+    vavoo_store)."""
     try:
-        if not isfile(FAVOURITES_FILE):
-            return {}
-        with open(FAVOURITES_FILE, 'r') as f:
-            data = load(f)
-        return data if isinstance(data, dict) else {}
+        return vavoo_store.load_favourites()
     except Exception as e:
         print("[Favourites] Error loading {}: {}".format(FAVOURITES_FILE, e))
-        return {}
+        return []
+
+
+def favourite_urls():
+    """The favourites' addresses (a channel is its address)."""
+    try:
+        return vavoo_store.favourite_urls()
+    except Exception as e:
+        print("[Favourites] Error loading {}: {}".format(FAVOURITES_FILE, e))
+        return set()
 
 
 def is_favourite(name, url):
-    return _favourite_key(name, url) in load_favourites()
+    return vavoo_store.to_text(url) in favourite_urls()
 
 
-def toggle_favourite(name, url, country_name=None, country_code=None):
-    """Add the (name, url) channel if it isn't already a favourite,
-    remove it if it is. Returns the new state (True = now a favourite)
-    on success, or None on error - same atomic temp-file-then-rename
-    write as save_cache()/_update_favorite_file().
+def toggle_favourite(name, url, country_name=None, country_code=None,
+                     logo=None):
+    """Add the channel if it isn't a favourite yet (at the end, as in
+    the app), remove it if it is. Returns the new state (True = now a
+    favourite), or None on error.
 
-    country_name/country_code are stored alongside the channel so a
-    favourite played back later can still be checked against
-    parental-control's locked-country list (which matches on the
-    display name, e.g. "Italy") and still carry a country_code through
-    to Playstream2 for EPG matching - neither is available again once
-    the user has left the channel-browsing screen that knew them."""
+    country_name/country_code are kept with the channel so a favourite
+    played later is still checked against parental control's locked
+    countries and still carries a country code for the programme
+    guide - neither is known again once the screen that knew them is
+    gone."""
     try:
-        favourites = load_favourites()
-        key = _favourite_key(name, url)
-        now_favourite = key not in favourites
-        if now_favourite:
-            favourites[key] = {
-                'name': name,
-                'url': url,
-                'country_name': country_name,
-                'country_code': country_code,
-                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-            }
-        else:
-            del favourites[key]
-
-        temp_file = FAVOURITES_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(favourites, f, indent=2, sort_keys=True)
-        rename(temp_file, FAVOURITES_FILE)
-        return now_favourite
+        return vavoo_store.toggle_favourite(
+            name, url, country_name, country_code, logo)
     except Exception as e:
         print("[Favourites] Error saving {}: {}".format(FAVOURITES_FILE, e))
         return None
+
+
+# Recently watched channels (the app's "Recently watched"): newest
+# first, each channel once. Under /etc/enigma2, so an update of the
+# plugin (which replaces the plugin folder) keeps it.
+RECENT_FILE = vavoo_store.recent_file()
+RECENT_MAX = 20
+# Every zap adds one, from a background thread (plugin.py) - two quick
+# zaps must not write the file at the same time.
+_recent_lock = threading.Lock()
+
+
+def load_recent():
+    """[{name, url, country_name, country_code, logo, timestamp}],
+    newest first, or [] on any error / missing file - never raises."""
+    try:
+        if not isfile(RECENT_FILE):
+            return []
+        with open(RECENT_FILE, 'r') as f:
+            data = load(f)
+        if not isinstance(data, list):
+            return []
+        return [entry for entry in data
+                if isinstance(entry, dict) and entry.get('name')
+                and entry.get('url')][:RECENT_MAX]
+    except Exception as e:
+        print("[Recent] Error loading {}: {}".format(RECENT_FILE, e))
+        return []
+
+
+def _save_recent(entries):
+    try:
+        temp_file = RECENT_FILE + ".tmp"
+        with open(temp_file, 'w') as f:
+            dump(entries[:RECENT_MAX], f, indent=2)
+        rename(temp_file, RECENT_FILE)
+        return True
+    except Exception as e:
+        print("[Recent] Error saving {}: {}".format(RECENT_FILE, e))
+        return False
+
+
+def add_recent(name, url, country_name=None, country_code=None, logo=None):
+    """Put a channel that was just watched at the top of the list
+    (moved there if it was already in it). Same channel = same name and
+    address, as for the favourites."""
+    if not name or not url:
+        return False
+    with _recent_lock:
+        entries = [entry for entry in load_recent()
+                   if (entry.get('name'), entry.get('url')) != (name, url)]
+        entries.insert(0, {
+            'name': name,
+            'url': url,
+            'country_name': country_name,
+            'country_code': country_code,
+            'logo': logo or "",
+            'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime()),
+        })
+        return _save_recent(entries)
+
+
+def clear_recent():
+    with _recent_lock:
+        return _save_recent([])
 
 
 _curated_channel_db_cache = {}
@@ -2868,8 +2457,8 @@ _CURATED_CHANNEL_DB_NEGATIVE_TTL = 60
 def _load_curated_channel_db(country_code):
     """Fetch/cache this country's community-curated Vavoo channel name
     -> EPG feed channel id mapping (see generate_epg_channel_db.py),
-    used as a fast, pre-solved alternative to live Rytec fuzzy-matching
-    for names Rytec doesn't cover well. Keys are normalized the same
+    used as a fast, pre-solved alternative to matching names against
+    the feed for names that match poorly. Keys are normalized the same
     way _clean_name_for_similarity() normalizes names for comparison
     elsewhere in this file - the generator script uses the identical
     normalization when building the file.
@@ -2964,7 +2553,7 @@ def update_complete_cache(
         for m in matched_channels:
             key = matcher._normalize_key(m['name'], country_code)
             complete_cache[key] = {
-                'id': m['rytec_id'],
+                'id': m['feed_id'],
                 'sref': ensure_sref_trailing_colon(m['dvb_ref']),
                 'name': m['name'],
                 'country': country_code,
@@ -2978,7 +2567,7 @@ def update_complete_cache(
                 'source': m.get('source', 'live'),
                 'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
             }
-            print("[Cache] Added matched: %s -> %s" % (key, m['rytec_id']))
+            print("[Cache] Added matched: %s -> %s" % (key, m['feed_id']))
 
         # Save main cache
         complete_cache = _prune_cache_if_needed(complete_cache)
@@ -3123,18 +2712,6 @@ def _load_unmatched_cache_locked():
     _unmatched_cache_data = data
 
 
-def invalidate_unmatched_cache():
-    """Force the next save_unmatched()/flush_unmatched_cache() call to
-    reload from disk. Call this after anything writes UNMATCHED_FILE
-    directly instead of through save_unmatched() (e.g. a cache-repair
-    routine), so a later flush doesn't overwrite that write with a
-    stale in-memory copy."""
-    global _unmatched_cache_data, _unmatched_cache_dirty
-    with _unmatched_lock:
-        _unmatched_cache_data = None
-        _unmatched_cache_dirty = False
-
-
 def flush_unmatched_cache():
     """Write pending save_unmatched() updates to UNMATCHED_FILE, if any.
     Call once per batch (e.g. at the end of a bouquet export, alongside
@@ -3154,6 +2731,262 @@ def flush_unmatched_cache():
                 len(_unmatched_cache_data))
         except Exception as e:
             print("[Unmatched] Error flushing cache: %s" % e)
+
+
+# ---------------------------------------------------------------------
+# Where a country's programmes come from (the Android app's Epg.kt):
+# its daily files from epgshare01.online (EPG_DAILY_SOURCES, the
+# Balkans from three) first, the copy on GitHub (EPG_COPY_URL) when
+# they fail or are out of date. The proxy's /epg/<cc>.xml is the one
+# place that chooses (country_epg_chunks() below), so the plugin's
+# guide, the feed index and EPGImport all get the same thing - always
+# plain XMLTV, never a .gz (EPGImport tells a .gz by its file name).
+EPG_DAILY_FAIL_BACKOFF = 5 * 60        # the app's FAILED_BACKOFF_MS
+EPG_DAILY_STALE_BACKOFF = 6 * 3600     # all programmes over: the copy
+# A daily file not changed for this long is out of date (it covers
+# several days ahead, so a day or two old still has programmes).
+EPG_DAILY_MAX_AGE = 3 * 86400
+_epg_daily_unusable = {}               # country -> time it may be tried again
+_epg_daily_lock = threading.Lock()
+_EPG_CHUNK = 65536
+
+
+class EpgFeedStale(Exception):
+    """The daily files are there but out of date."""
+
+
+def _epg_code(country_code):
+    return ensure_str(country_code or '', errors='ignore').strip().lower()
+
+
+def epg_copy_url(country_code):
+    """The GitHub copy of a country's guide."""
+    return EPG_COPY_URL % _epg_code(country_code)
+
+
+def epg_daily_urls(country_code):
+    """The country's daily guide files, [] when it has none, or they
+    failed or were out of date not long ago (mark_epg_daily_unusable())."""
+    code = _epg_code(country_code)
+    feeds = EPG_DAILY_SOURCES.get(code)
+    if not feeds:
+        return []
+    with _epg_daily_lock:
+        until = _epg_daily_unusable.get(code)
+        if until is not None and time() < until:
+            return []
+    return [EPG_DAILY_URL % feed for feed in feeds]
+
+
+def mark_epg_daily_unusable(country_code, seconds):
+    """Use the GitHub copy for this country for `seconds`."""
+    code = _epg_code(country_code)
+    if not code:
+        return
+    with _epg_daily_lock:
+        _epg_daily_unusable[code] = max(
+            _epg_daily_unusable.get(code, 0), time() + seconds)
+
+
+def _http_date(text):
+    """An HTTP date ("Wed, 18 Nov 2026 03:10:00 GMT") as a time, or None."""
+    try:
+        parsed = parsedate_tz(text) if text else None
+        return mktime_tz(parsed) if parsed else None
+    except Exception:
+        return None
+
+
+def _file_name(url):
+    return url.rsplit('/', 1)[-1]
+
+
+def _open_daily_feed(url, opener):
+    """A daily file, opened and checked: its first bytes (unpacked)
+    and the stream. Raises EpgFeedStale for one not changed for
+    EPG_DAILY_MAX_AGE, another error for anything not an XMLTV file
+    (a server's error page)."""
+    stream = opener(url, timeout=30)
+    try:
+        modified = response_header(stream, 'Last-Modified')
+        changed = _http_date(modified)
+        if changed is not None and time() - changed > EPG_DAILY_MAX_AGE:
+            raise EpgFeedStale("%s not changed since %s" % (
+                _file_name(url), modified))
+        head = b''
+        while len(head) < 4096:
+            data = stream.read(_EPG_CHUNK)
+            if not data:
+                break
+            head += data
+        if b'<tv' not in head[:8192]:
+            raise ValueError("%s is not an XMLTV file" % _file_name(url))
+        return head, stream
+    except Exception:
+        stream.close()
+        raise
+
+
+_XMLTV_MARK = compile(br'<(channel|programme)[\s>/]|</tv\s*>')
+_XMLTV_KEY = {
+    b'channel': compile(br'\sid\s*=\s*(?:"([^"]*)"|\'([^\']*)\')'),
+    b'programme': compile(br'\schannel\s*=\s*(?:"([^"]*)"|\'([^\']*)\')'),
+}
+
+
+class _XmltvPieces(object):
+    """An XMLTV file's bytes cut into its elements as they arrive, with
+    no XML tree: ("head", text) - all before the first channel or
+    programme; ("channel", id, text); ("programme", channel, text);
+    ("tail", text) - from </tv> on. Each element's text runs up to the
+    next one (the white space between them goes with it)."""
+
+    def __init__(self):
+        self._buf = b''
+        self._kind = b'head'
+        self._from = 0       # where the next mark may start in _buf
+
+    def _piece(self, text):
+        kind = self._kind
+        pattern = _XMLTV_KEY.get(kind)
+        if pattern is not None:
+            match = pattern.search(text[:1024])
+            key = (match.group(1) or match.group(2) or b'') if match else b''
+            return (kind.decode('ascii'), key, text)
+        return (kind.decode('ascii'), text)
+
+    def feed(self, data):
+        buf = self._buf + data
+        out = []
+        start = 0
+        if self._kind != b'tail':
+            for match in _XMLTV_MARK.finditer(buf, self._from):
+                if match.start() > start or self._kind == b'head':
+                    out.append(self._piece(buf[start:match.start()]))
+                start = match.start()
+                self._kind = match.group(1) or b'tail'
+                if self._kind == b'tail':
+                    break
+        self._buf = buf[start:]
+        # The element just begun is at 0 (its own mark is not the next
+        # one); a mark cut in two by the chunk's end is found next time.
+        self._from = max(0 if self._kind == b'head' else 1,
+                         len(self._buf) - 16)
+        return out
+
+    def finish(self):
+        out = [self._piece(self._buf)] if self._buf else []
+        self._buf = b''
+        return out
+
+
+def _feed_pieces(head, stream, breather):
+    """Every piece of one file: `head` (its first bytes, already read)
+    and then the rest of `stream`."""
+    pieces = _XmltvPieces()
+    data = head
+    while data:
+        for piece in pieces.feed(data):
+            yield piece
+        breather.tick()
+        data = stream.read(_EPG_CHUNK)
+    for piece in pieces.finish():
+        yield piece
+
+
+def country_epg_chunks(country_code, urls, opener=None):
+    """A country's guide as plain XMLTV bytes, from its daily files
+    `urls` (epg_daily_urls()). A generator: the first next() raises
+    if nothing can be read (EpgFeedStale when what is there is out of
+    date) - then the caller sends the GitHub copy instead. Closing it
+    closes the downloads.
+
+    One file goes through as it is (unpacked). Several make one guide,
+    as in the app: each channel from the first file that has it, with
+    that file's programmes. In two passes, because the channels must
+    all come before the first programme (_read_epg_feed_channels()
+    stops there): first every file's channels (each file read only up
+    to its first programme), then every file's programmes - the files
+    are opened again for that, one at a time. A file that fails is
+    left out; all of them failing is the error."""
+    opener = opener or open_url_stream
+    code = _epg_code(country_code)
+    breather = _Breather()
+    if len(urls) == 1:
+        head, stream = _open_daily_feed(urls[0], opener)
+        try:
+            data = head
+            while data:
+                yield data
+                breather.tick()
+                data = stream.read(_EPG_CHUNK)
+        finally:
+            stream.close()
+        return
+
+    # 1. The channels, and whose each one is.
+    owner = {}
+    usable = []
+    channel_text = []
+    first_head = None
+    problems = []
+    for index, url in enumerate(urls):
+        try:
+            head, stream = _open_daily_feed(url, opener)
+        except Exception as e:
+            problems.append(e)
+            warning("EPG {}: {} not read ({})".format(code, _file_name(url), e))
+            continue
+        try:
+            for piece in _feed_pieces(head, stream, breather):
+                if piece[0] == 'head':
+                    if first_head is None:
+                        first_head = piece[1]
+                elif piece[0] == 'channel':
+                    if piece[1] not in owner:
+                        owner[piece[1]] = index
+                        channel_text.append(piece[2])
+                else:
+                    break
+        except Exception as e:
+            problems.append(e)
+            warning("EPG {}: {} not read ({})".format(code, _file_name(url), e))
+            continue
+        finally:
+            stream.close()
+        usable.append(index)
+    if not usable:
+        if problems and all(isinstance(e, EpgFeedStale) for e in problems):
+            raise EpgFeedStale("; ".join(str(e) for e in problems))
+        raise IOError("; ".join(str(e) for e in problems) or "no feed")
+    yield first_head or b'<?xml version="1.0" encoding="UTF-8"?>\n<tv>\n'
+    for text in channel_text:
+        yield text
+    del channel_text[:]
+
+    # 2. The programmes, each from its channel's file.
+    for index in usable:
+        url = urls[index]
+        try:
+            head, stream = _open_daily_feed(url, opener)
+        except Exception as e:
+            warning("EPG {}: {} programmes not read ({})".format(
+                code, _file_name(url), e))
+            continue
+        try:
+            for piece in _feed_pieces(head, stream, breather):
+                if piece[0] == 'programme':
+                    if owner.setdefault(piece[1], index) == index:
+                        yield piece[2]
+                elif piece[0] == 'tail':
+                    break
+        except Exception as e:
+            # (what was sent stays: the rest of the guide still counts)
+            warning("EPG {}: {} programmes cut short ({})".format(
+                code, _file_name(url), e))
+        finally:
+            stream.close()
+    yield b'</tv>\n'
 
 
 # country_code -> (timestamp, set(ids), {clean_name: id})
@@ -3177,12 +3010,10 @@ def _get_epg_feed_index(country_code):
     <channel id> values it defines, plus a cleaned-display-name -> id
     lookup.
 
-    Used by write_epg_mapping_file() as a fallback for channels whose
-    Rytec-matched id isn't one the feed itself uses - the same class of
-    mismatch plugin.py's get_current_epg() already works around for the
-    in-plugin overlay, but that fix doesn't cover this separate,
-    epgimport-facing pipeline (exported bouquets), which is what this is
-    for.
+    Used by find_match() (the ids it gives are the feed's own: the
+    source's guide id, an alias or a cache entry counts only when the
+    feed has it; the last step matches the feed's display names) and
+    by write_epg_mapping_file() for exported bouquets.
 
     Never raises - returns (None, None) on any failure so callers just
     skip the fallback and keep existing (correct-for-most-channels)
@@ -3190,6 +3021,16 @@ def _get_epg_feed_index(country_code):
     """
     if not country_code:
         return None, None
+
+    # A programme guide already in memory for this country (see
+    # load_epg_guide()) was read from this very file and carries the
+    # same channel list - no need to ask the network for it again.
+    # find_match() calls this once per channel, and the channel list's
+    # Now/Next panel calls find_match() for every row the user stops
+    # on, right after loading that guide.
+    guide = peek_epg_guide(country_code)
+    if guide is not None and guide.feed_ids:
+        return guide.feed_ids, guide.name_index
 
     cached = _epg_feed_index_cache.get(country_code)
     if cached:
@@ -3199,77 +3040,88 @@ def _get_epg_feed_index(country_code):
         if time() - cached_time < ttl:
             return cached_ids, cached_index
 
-    try:
-        url = "http://{}:{}/epg/{}.xml".format(
-            PROXY_HOST, PORT, country_code.lower())
-        # These feeds run several MB to 10+ MB (full multi-day guide for
-        # every channel in the country) - the default 10s/3-retries
-        # getUrl() timeout budget (tuned for small JSON/HTML responses)
-        # routinely isn't enough to pull one down over a set-top box's
-        # real-world connection, which silently disabled this whole
-        # id-correction path and left most channels stuck on their
-        # (usually wrong, see below) Rytec-matched id.
-        xml_data = getUrl(url, timeout=30, retries=2)
-        if not xml_data:
-            warning(
-                "EPG feed fetch returned empty for {} - id-correction "
-                "fallback disabled for this export, channels will keep "
-                "their Rytec-matched id even if the feed uses a "
-                "different one".format(country_code))
-            # Cache the failure too (empty result, same TTL) - without
-            # this, a country with no feed at all (most of them - only
-            # a minority of country codes have one) would re-attempt this
-            # same failing network fetch for every single unmatched
-            # channel once _find_match_internal() starts consulting this
-            # index as a fallback, instead of once per TTL window.
-            _epg_feed_index_cache[country_code] = (time(), None, None)
-            return None, None
+    url = "http://{}:{}/epg/{}.xml".format(
+        PROXY_HOST, PORT, country_code.lower())
+    feed_ids = None
+    name_index = None
+    last_error = None
+    # Two tries, as before (this used to be getUrl(url, retries=2)).
+    for _attempt in range(2):
+        stream = None
+        try:
+            # These files are 2 to 60 MB (a multi-day guide for every
+            # channel in the country), almost all of it <programme>
+            # entries, with the <channel> definitions this needs all at
+            # the very top, per the XMLTV convention. Read as a stream
+            # and stop at the first <programme>: that is the first few
+            # hundred KB (less, compressed) instead of the whole file,
+            # which this used to download in full on every call just to
+            # read that list.
+            stream = open_url_stream(url, timeout=30)
+            feed_ids, name_index = _read_epg_feed_channels(stream)
+            break
+        except Exception as e:
+            last_error = e
+            feed_ids = None
+            name_index = None
+        finally:
+            if stream is not None:
+                stream.close()
 
-        xml_source = io.BytesIO(
-            xml_data if isinstance(xml_data, binary_type)
-            else xml_data.encode('utf-8'))
-
-        matcher = get_epg_matcher()
-        feed_ids = set()
-        name_index = {}
-        # Stream-parse instead of ET.fromstring(): these feeds are almost
-        # entirely <programme> entries (tens of thousands of them) with
-        # the actual <channel> definitions front-loaded before any of
-        # them, per the XMLTV convention. Building a full DOM of the
-        # whole guide just to read the channel list is both slow and
-        # memory-heavy on box-class hardware - stop as soon as the
-        # <programme> section starts instead.
-        for event, elem in ET.iterparse(xml_source, events=('start', 'end')):
-            if event == 'end' and elem.tag == 'channel':
-                chan_id = elem.get('id')
-                if chan_id:
-                    feed_ids.add(chan_id)
-                    for dn in elem.findall('display-name'):
-                        dn_text = (dn.text or '').strip()
-                        if not dn_text:
-                            continue
-                        clean_dn = matcher._clean_name_for_similarity(dn_text)
-                        if clean_dn:
-                            # Tokens precomputed once here rather than by
-                            # every _find_feed_id_by_name() call that
-                            # scans this same index (once per channel
-                            # whose Rytec id isn't one this feed uses,
-                            # which - see write_epg_mapping_file() - can
-                            # be a large fraction of a country's channels).
-                            name_index[clean_dn] = (
-                                chan_id, _tokenize_for_compat(clean_dn))
-                elem.clear()
-            elif event == 'start' and elem.tag == 'programme':
-                break
-    except Exception as e:
-        warning("Could not fetch/parse EPG feed for {}: {}".format(country_code, e))
-        # Same reasoning as the empty-response branch above: cache the
-        # failure so repeated calls for this country within the TTL
-        # window short-circuit instead of retrying the network fetch.
+    if not feed_ids:
+        warning(
+            "Could not read the EPG feed's channel list for {} ({}) - "
+            "ids are not checked against it and channels are not "
+            "matched by the feed's names".format(country_code, last_error or "empty"))
+        # Remember the failure too (briefly): a country with no feed at
+        # all (most of them - only a minority of country codes have
+        # one) would otherwise re-attempt this same failing fetch for
+        # every single channel instead of once per TTL window.
         _epg_feed_index_cache[country_code] = (time(), None, None)
         return None, None
 
     _epg_feed_index_cache[country_code] = (time(), feed_ids, name_index)
+    return feed_ids, name_index
+
+
+def _index_epg_feed_channel(elem, feed_ids, name_index, folded_names=None):
+    """Record one <channel> element of an EPG feed: its id, and each
+    of its display names, cleaned, -> (id, tokens). With
+    `folded_names`, also each cleaned name without its accents -> id
+    (see EpgGuide.folded_names)."""
+    chan_id = elem.get('id')
+    if not chan_id:
+        return
+    feed_ids.add(chan_id)
+    for dn in elem.findall('display-name'):
+        dn_text = (dn.text or '').strip()
+        if not dn_text:
+            continue
+        clean_dn = clean_name_for_similarity(dn_text)
+        if clean_dn and folded_names is not None:
+            folded_names.setdefault(_fold_accents(clean_dn), chan_id)
+        if clean_dn:
+            # Tokens precomputed once here rather than by every
+            # _find_feed_id_by_name() call that scans this same index
+            # (once per channel the earlier steps of find_match() do
+            # not place, which can be a large fraction of a country's
+            # channels).
+            name_index[clean_dn] = (
+                chan_id, _tokenize_for_compat(clean_dn))
+
+
+def _read_epg_feed_channels(stream):
+    """(set of channel ids, {cleaned display name: (id, tokens)}) from
+    the top of an EPG feed, reading no further than the first
+    <programme>."""
+    feed_ids = set()
+    name_index = {}
+    for event, elem in _fast_ET.iterparse(stream, events=('start', 'end')):
+        if event == 'end' and elem.tag == 'channel':
+            _index_epg_feed_channel(elem, feed_ids, name_index)
+            elem.clear()
+        elif event == 'start' and elem.tag == 'programme':
+            break
     return feed_ids, name_index
 
 
@@ -3302,16 +3154,17 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     best_id = None
     threshold = matcher.similarity_threshold
     sm = SequenceMatcher(None, clean)
+    breather = _Breather()
     # Only the threshold-or-above outcome is ever used by callers (a
-    # below-threshold best_score is never returned), so - same as the
-    # equivalent Rytec-scanning loop in _find_match_internal() - a
+    # below-threshold best_score is never returned), so a
     # candidate whose cheap upper-bound estimate already can't reach the
     # threshold can be skipped before paying for the full ratio()
     # computation. Feed indexes run into the hundreds/thousands of
     # entries (see this function's callers), scanned once per exported
-    # channel whose Rytec id isn't in this feed's own id set, so this
+    # channel the earlier steps of find_match() do not place, so this
     # matters for country-wide export time.
     for dn_key, (dn_id, candidate_tokens) in name_index.items():
+        breather.tick()
         if (source_tokens and candidate_tokens and
                 not _tokens_compatible(source_tokens, candidate_tokens)):
             continue
@@ -3329,6 +3182,746 @@ def _find_feed_id_by_name(channel_name, matcher, name_index):
     return None
 
 
+# ---------------------------------------------------------------------
+# Programme guide: what is on now, and what comes next
+# ---------------------------------------------------------------------
+# One country's epg_<cc>.xml reduced to what the channel list's
+# Now/Next panel and the player's OK overlay need.
+#
+# The files are 2 to 60 MB of XML with 15 000 to 110 000 programmes
+# (measured: tr 2.4 MB, it 13.6, pt 16.7, es 20.4, de 21.3, fr 46.1,
+# pl 63.2). The overlay used to download one whole, build the complete
+# document in memory with ET.fromstring() and keep it - hundreds of MB
+# on a set-top box for the larger countries, never freed. Here the
+# file is read while it downloads (compressed: about a tenth of the
+# size on the wire) and only the programmes that can still matter are
+# kept, as small tuples: a few MB at most.
+#
+# Times: every entry carries its own UTC offset and the files mix
+# them freely ("+0000", "+0100", "+0300", "-0600" all occur, pl is
+# almost entirely "-0600"). The offset used to be thrown away and the
+# rest read as UTC, which is only right for "+0000": the programme
+# shown as current was 1 hour off for es, 3 for tr, 6 for pl.
+
+# A loaded guide is reused this long before it is fetched again: it
+# holds programmes from 3 hours before its load to 24 hours after it,
+# so at 6 hours old it still reaches 18 hours ahead. (It was 1 hour:
+# reading a large guide costs a set-top box 10-30 s of a core, and a
+# box playing a channel paid that every hour - seen as overload.)
+_EPG_GUIDE_TTL = 6 * 3600
+# If fetching it again fails, the old copy is still used up to this
+# age (12 hours ahead left) before giving up on it.
+_EPG_GUIDE_STALE_MAX = 12 * 3600
+# After a failed load, wait this long before the next attempt.
+_EPG_GUIDE_RETRY = 120
+# Programmes are kept from this long before load time (the guide grid
+# looks back 3 hours, as the app's) to this long after it (the grid's
+# window reaches its end). Measured with the largest files: pl keeps
+# about 22 000 programmes in 11 MB, fr 17 000 in 6 MB (12 hours ahead
+# and nothing before, as it used to be: 6 and 3 MB).
+_EPG_GUIDE_BEHIND = 3 * 3600
+_EPG_GUIDE_AHEAD = 24 * 3600
+# Countries kept in memory at once (least recently used goes first) -
+# three (a large one is ~10 MB; a box with 1 GB was seen running out of
+# memory), still enough for a page of Favourites mixing countries.
+_EPG_GUIDE_KEEP = 3
+# Descriptions are cut to this many characters; they are only ever
+# shown in the player overlay's few lines.
+_EPG_GUIDE_DESC_MAX = 400
+# Per network read, not for the whole download.
+_EPG_GUIDE_TIMEOUT = 20
+# Widest UTC offset an XMLTV time can carry (real ones span -12h to
+# +14h) - see the coarse pre-filter in _parse_epg_guide().
+_XMLTV_MAX_OFFSET = 14 * 3600
+
+_XMLTV_TIME_RE = compile(
+    r'^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?'
+    r'\s*(?:([+-])(\d{2}):?(\d{2})|Z|UTC|GMT)?$')
+
+_epg_guide_cache = {}       # country code -> EpgGuide
+_epg_guide_failed = {}      # country code -> time of the last failed load
+_epg_guide_load_locks = {}  # country code -> Lock held while downloading
+# Guards the three dicts above (never held during a download).
+_epg_guide_lock = threading.Lock()
+
+
+# Character codes that reached the file as text instead of as the
+# character: "Praça" - or, with the backslash lost on the way,
+# "Prau00e7a" - for "Praça". Counted in the real files: about 1400
+# titles/descriptions in pl (nearly all "&" for "&") and 90 in
+# pt ("Prau00e7a da Alegria", "O Preu00e7o Certo", ...).
+_BROKEN_ESCAPE_RE = compile(r'(\\?)u00([0-9a-fA-F]{2})')
+
+# Letters that Unicode does not split into "base letter + accent",
+# for _fold_accents().
+_UNSPLIT_LETTERS = {
+    u'ł': u'l', u'Ł': u'L',     # l with stroke (pl)
+    u'ø': u'o', u'Ø': u'O',     # o with stroke
+    u'đ': u'd', u'Đ': u'D',     # d with stroke
+    u'ı': u'i',                      # dotless i (tr)
+    u'ß': u'ss',
+    u'æ': u'ae', u'Æ': u'AE',
+    u'œ': u'oe', u'Œ': u'OE',
+}
+
+
+def _repair_guide_text(text):
+    """Put back characters that arrived as their code (see
+    _BROKEN_ESCAPE_RE). With the backslash still there it is
+    unmistakable; without it only codes of accented letters are
+    touched, so ordinary text that merely contains "u00" and two more
+    hex digits ("Menu0026") is left alone."""
+    if 'u00' not in text:
+        return text
+
+    def _put_back(m):
+        code = int(m.group(2), 16)
+        if code < 0x20 or (not m.group(1) and code < 0xA0):
+            return m.group(0)
+        if code == 0xA0:
+            return u' '
+        return unichr(code)
+
+    return _BROKEN_ESCAPE_RE.sub(_put_back, text)
+
+
+def _fold_accents(text):
+    """Text with its accents dropped ("notícias" -> "noticias"), for
+    comparing a channel name written without them - Vavoo's lists
+    often are: "SIC NOTICIAS", "RTP ACORES" - against a guide that
+    writes them."""
+    text = ensure_str(text, errors='ignore')
+    return u''.join(
+        _UNSPLIT_LETTERS.get(ch, ch)
+        for ch in normalize('NFKD', text) if not combining(ch))
+
+
+def parse_xmltv_time(value):
+    """An XMLTV time such as "20261111233000 +0100" as Unix time (an
+    int), or None if it is not one. No offset means UTC.
+
+    Parsed by hand rather than with datetime.strptime(): this runs
+    from background threads, and strptime()'s first call from two
+    threads at once is a known crash on Python 2 (its lazy import of
+    _strptime is not thread-safe).
+    """
+    if not value:
+        return None
+    m = _XMLTV_TIME_RE.match(value.strip())
+    if not m:
+        return None
+    try:
+        timestamp = calendar.timegm((
+            int(m.group(1)), int(m.group(2)), int(m.group(3)),
+            int(m.group(4)), int(m.group(5)), int(m.group(6) or 0),
+            0, 0, 0))
+    except (ValueError, OverflowError):
+        return None
+    if m.group(7):
+        offset = int(m.group(8)) * 3600 + int(m.group(9)) * 60
+        # "23:30 +0100" is 22:30 UTC: local = UTC + offset.
+        if m.group(7) == '+':
+            timestamp -= offset
+        else:
+            timestamp += offset
+    return timestamp
+
+
+def epg_clock(timestamp):
+    """A Unix time as "HH:MM" on this box's own clock."""
+    return strftime('%H:%M', localtime(timestamp))
+
+
+def _guide_id(feed_id):
+    """A feed channel id as text. On Python 2 an id arrives as UTF-8
+    bytes from one place and as unicode from another
+    ("RTP.África.pt"); as text it still meets itself."""
+    return ensure_str(feed_id, errors='ignore')
+
+
+class EpgGuide(object):
+    """One country's programme guide, reduced to the hours around now.
+
+    programmes: {feed channel id: [(start, stop, title, description),
+    ...]} sorted by start, times as Unix time, from _EPG_GUIDE_BEHIND
+    before load time to _EPG_GUIDE_AHEAD after it. Only channels that
+    have something in those hours are in it.
+    feed_ids / name_index: the feed's own channel list, in the exact
+    shape _get_epg_feed_index() returns it.
+    """
+
+    def __init__(self, country_code, loaded_at):
+        self.country_code = country_code
+        self.loaded_at = loaded_at
+        self.last_used = loaded_at
+        self.programmes = {}
+        # id with its dots dropped -> the id in `programmes` to use
+        # for it - see channel_for().
+        self.dotless = {}
+        self.feed_ids = set()
+        self.name_index = {}
+        # cleaned display name with its accents dropped -> feed id
+        # (the first channel carrying that name) - see
+        # _resolve_guide_channel().
+        self.folded_names = {}
+        self.programme_count = 0
+        # cleaned channel name -> id in `programmes` ("" = not in
+        # this guide), so a channel is matched once per loaded guide
+        # and every later look at it is a dictionary lookup.
+        self.resolved = {}
+
+    def age(self):
+        return time() - self.loaded_at
+
+    def channel_for(self, some_id):
+        """The id in `programmes` that `some_id` means, or None.
+
+        The id itself if this guide has programmes under it. Failing
+        that, an id that differs from it only in its dots: the EPG
+        matcher often hands back another source's spelling of the
+        same channel ("RTP1.pt" for the feed's "RTP.1.pt"), which is
+        the comparison the player overlay has always made.
+
+        Exact first, and never the two merged: the real files list
+        some channels twice under ids that differ only in dots
+        (fr: "France.2.fr" and "France.2..fr", also France 3/4/5 and
+        Arte; it: "Sky.Uno.+.it" and "Sky.Uno.+..it"), and the two
+        copies do not agree on the time zone - in the French file the
+        same programme sits one hour apart in them. Mixing them, as
+        keying everything by its dotless form used to, gives a
+        schedule that jumps between the two.
+        """
+        if not some_id:
+            return None
+        text = _guide_id(some_id)
+        if text in self.programmes:
+            return text
+        return self.dotless.get(text.replace('.', ''))
+
+    def now_next(self, key, now=None):
+        """(current, following) for one id in `programmes`; either
+        can be None. Each is a (start, stop, title, description)
+        tuple."""
+        entries = self.programmes.get(key)
+        if not entries:
+            return None, None
+        if now is None:
+            now = time()
+        current = None
+        following = None
+        for entry in entries:
+            if entry[0] > now:
+                following = entry
+                break
+            if now < entry[1]:
+                # Overlapping entries (it happens): the one that
+                # started last is the one on air.
+                current = entry
+        return current, following
+
+    def between(self, key, start, stop):
+        """The programmes of one id that are on at any moment between
+        `start` and `stop` (the guide grid's window), by start time."""
+        return [entry for entry in self.programmes.get(key) or ()
+                if entry[1] > start and entry[0] < stop]
+
+    def schedule(self, key, count=4, now=None):
+        """The programme on now (if any) and the ones after it, up to
+        `count` in all - the player's mini guide. Same tuples as
+        now_next()."""
+        entries = self.programmes.get(key)
+        if not entries:
+            return []
+        if now is None:
+            now = time()
+        out = []
+        for entry in entries:
+            if entry[1] <= now:
+                continue
+            if out and entry[0] <= now:
+                # Overlapping entries: the one that started last is
+                # the one on air (as in now_next()).
+                out[-1] = entry
+                continue
+            out.append(entry)
+            if len(out) >= count:
+                break
+        return out
+
+
+def _parse_epg_guide(stream, country_code, now):
+    """Read an XMLTV stream into an EpgGuide - see the notes above."""
+    guide = EpgGuide(country_code, now)
+    keep_from = now - _EPG_GUIDE_BEHIND
+    keep_until = now + _EPG_GUIDE_AHEAD
+    # Most of a file is other days. An entry's digits, read as if they
+    # were UTC, are at most _XMLTV_MAX_OFFSET away from its real time,
+    # so anything outside this wider range can be dropped on a plain
+    # string comparison, before paying for two timestamp conversions.
+    coarse_from = strftime(
+        '%Y%m%d%H%M%S', gmtime(keep_from - _XMLTV_MAX_OFFSET))
+    coarse_until = strftime(
+        '%Y%m%d%H%M%S', gmtime(keep_until + _XMLTV_MAX_OFFSET))
+
+    programmes = guide.programmes
+    # One programme's stop is normally the next one's start.
+    parsed_times = {}
+    kept = 0
+    root = None
+    breather = _Breather()
+    for event, elem in _fast_ET.iterparse(stream, events=('start', 'end')):
+        breather.tick()
+        if event == 'start':
+            if root is None:
+                root = elem
+            continue
+        tag = elem.tag
+        if tag == 'programme':
+            channel = elem.get('channel')
+            start_raw = elem.get('start') or ''
+            stop_raw = elem.get('stop') or ''
+            if (channel and stop_raw[:14] >= coarse_from
+                    and start_raw[:14] <= coarse_until):
+                if len(parsed_times) > 2000:
+                    # Only the last few are ever asked for again.
+                    parsed_times.clear()
+                start = parsed_times.get(start_raw)
+                if start is None:
+                    start = parsed_times[start_raw] = parse_xmltv_time(
+                        start_raw)
+                stop = parsed_times.get(stop_raw)
+                if stop is None:
+                    stop = parsed_times[stop_raw] = parse_xmltv_time(
+                        stop_raw)
+                if (start is not None and stop is not None
+                        and start < stop
+                        and stop > keep_from and start < keep_until):
+                    title = _repair_guide_text(
+                        elem.findtext('title') or '').strip()
+                    description = _repair_guide_text(
+                        elem.findtext('desc') or '').strip()
+                    if len(description) > _EPG_GUIDE_DESC_MAX:
+                        description = (
+                            description[:_EPG_GUIDE_DESC_MAX].rstrip() +
+                            '...')
+                    programmes.setdefault(_guide_id(channel), []).append(
+                        (start, stop, title, description))
+                    kept += 1
+            # Drop the element, and everything read so far, from the
+            # tree iterparse() builds behind the scenes - without this
+            # the whole document would pile up in memory anyway.
+            root.clear()
+        elif tag == 'channel':
+            _index_epg_feed_channel(
+                elem, guide.feed_ids, guide.name_index, guide.folded_names)
+            root.clear()
+
+    for entries in programmes.values():
+        # By time only: never let two entries with the same times fall
+        # through to comparing their titles (bytes against unicode on
+        # Python 2).
+        entries.sort(key=lambda entry: (entry[0], entry[1]))
+    # Of several ids that are the same but for their dots, the
+    # shortest stands for all of them when a lookup only matches
+    # without dots (see EpgGuide.channel_for()): the longer ones
+    # ("France.2..fr", "Arte...fr") come from a source that turned a
+    # stray space or sign in the channel's name into an extra dot,
+    # and in the files checked those are the copies with the wrong
+    # time zone. Not dependent on the order in the file.
+    dotless = guide.dotless
+    for feed_id in programmes:
+        key = feed_id.replace('.', '')
+        other = dotless.get(key)
+        if other is None or len(feed_id) < len(other):
+            dotless[key] = feed_id
+    guide.programme_count = kept
+    return guide
+
+
+def _guide_is_current(guide, now):
+    """Whether any programme of this guide is still to end (the app's
+    requireCurrent: a file nobody updates any more has none)."""
+    for entries in guide.programmes.values():
+        for entry in entries:
+            if entry[1] > now:
+                return True
+    return False
+
+
+def _download_epg_guide(country_code):
+    """Fetch and read one country's guide. None on any failure
+    (including "this country has no guide file": a 404).
+
+    The proxy answers with the daily files (X-Vavoo-EPG: daily) or the
+    GitHub copy. Daily files whose programmes are all over are out of
+    date: the copy is used for this country for EPG_DAILY_STALE_BACKOFF
+    and fetched at once."""
+    url = "http://{}:{}/epg/{}.xml".format(PROXY_HOST, PORT, country_code)
+    for _attempt in range(2):
+        started = time()
+        stream = None
+        try:
+            stream = open_url_stream(url, timeout=_EPG_GUIDE_TIMEOUT)
+            source = ("daily" if response_header(stream, 'X-Vavoo-EPG') == 'daily'
+                      else "GitHub copy")
+            guide = _parse_epg_guide(stream, country_code, started)
+            received = stream.bytes_received
+        except Exception as e:
+            warning("Could not load the programme guide for {}: {}".format(
+                country_code, e))
+            return None
+        finally:
+            if stream is not None:
+                stream.close()
+        if source == "daily" and not _guide_is_current(guide, started):
+            print("[EPG] Guide {}: daily feeds out of date, using the "
+                  "GitHub copy".format(country_code))
+            mark_epg_daily_unusable(country_code, EPG_DAILY_STALE_BACKOFF)
+            continue
+        break
+    if not guide.feed_ids and not guide.programmes:
+        warning("Programme guide for {} is empty".format(country_code))
+        return None
+    print("[EPG] Guide {} loaded in {:.1f}s: {} channels, {} programmes "
+          "kept, {} KB downloaded ({}, {})".format(
+              country_code, time() - started, len(guide.feed_ids),
+              guide.programme_count, received // 1024, source,
+              memory_note()))
+    return guide
+
+
+def _usable_epg_guide(guide):
+    """A guide that can still answer (fresh, or stale but recent)."""
+    return guide is not None and guide.age() < _EPG_GUIDE_STALE_MAX
+
+
+def release_guides(keep=None):
+    """Drop the guides held in memory, but `keep`'s (the country being
+    watched) - the box is short of memory. Returns how many went."""
+    keep = ensure_str(keep or '', errors='ignore').lower()
+    with _epg_guide_lock:
+        gone = [code for code in _epg_guide_cache if code != keep]
+        for code in gone:
+            del _epg_guide_cache[code]
+    return len(gone)
+
+
+def peek_epg_guide(country_code):
+    """The guide for this country if a usable one is already in
+    memory, else None. Never touches the network, so it is safe on
+    the GUI thread."""
+    code = ensure_str(country_code or '', errors='ignore').lower()
+    if not code:
+        return None
+    with _epg_guide_lock:
+        guide = _epg_guide_cache.get(code)
+        if not _usable_epg_guide(guide):
+            return None
+        guide.last_used = time()
+        return guide
+
+
+def load_epg_guide(country_code):
+    """The guide for this country, downloading it if there is none in
+    memory or the one there is older than _EPG_GUIDE_TTL. Blocks for
+    the length of the download - call it from a background thread.
+
+    Returns None when there is nothing usable (no guide file for this
+    country, or the download failed and no recent copy is left).
+    Several threads asking for the same country share one download.
+    """
+    code = ensure_str(country_code or '', errors='ignore').lower()
+    if not code:
+        return None
+
+    def _current():
+        """(guide or None, whether a download should be tried) -
+        call with _epg_guide_lock held."""
+        guide = _epg_guide_cache.get(code)
+        if guide is not None and guide.age() < _EPG_GUIDE_TTL:
+            guide.last_used = time()
+            return guide, False
+        if not _usable_epg_guide(guide):
+            guide = None
+        failed_at = _epg_guide_failed.get(code)
+        if failed_at is not None and time() - failed_at < _EPG_GUIDE_RETRY:
+            return guide, False
+        return guide, True
+
+    with _epg_guide_lock:
+        guide, should_load = _current()
+        if not should_load:
+            return guide
+        load_lock = _epg_guide_load_locks.get(code)
+        if load_lock is None:
+            load_lock = _epg_guide_load_locks[code] = threading.Lock()
+
+    with load_lock:
+        # Another thread may have finished the same download (or just
+        # failed at it) while this one waited for the lock.
+        with _epg_guide_lock:
+            guide, should_load = _current()
+            if not should_load:
+                return guide
+
+        fresh = _download_epg_guide(code)
+
+        with _epg_guide_lock:
+            if fresh is None:
+                _epg_guide_failed[code] = time()
+                return guide
+            _epg_guide_failed.pop(code, None)
+            _epg_guide_cache[code] = fresh
+            while len(_epg_guide_cache) > _EPG_GUIDE_KEEP:
+                oldest = min(
+                    (other for other in _epg_guide_cache if other != code),
+                    key=lambda other: _epg_guide_cache[other].last_used)
+                del _epg_guide_cache[oldest]
+            return fresh
+
+
+# preload_epg_guides() loads nothing while the box has less than this
+# available (MemAvailable)
+PRELOAD_MIN_FREE_KB = 200 * 1024
+
+
+def preload_epg_guides(country_codes, go_on=None, max_new=2,
+                       min_free_kb=PRELOAD_MIN_FREE_KB, meminfo=None):
+    """Load these countries' guides ahead of use (the favourites'
+    countries, when the main list has settled), one at a time - each
+    is a download and a parse that rests for other threads (_Breather).
+    Blocks: a background thread only. Skips a guide already in memory
+    or one that failed a moment ago; stops after `max_new`, when one
+    more would push another guide out (one place under
+    _EPG_GUIDE_KEEP stays free), when the box has less than
+    `min_free_kb` available, or when go_on() says no (the player
+    opened - no download while a stream plays). The codes loaded."""
+    meminfo = meminfo or read_meminfo
+    loaded = []
+    for code in country_codes:
+        code = ensure_str(code or '', errors='ignore').lower()
+        if not code or code in loaded:
+            continue
+        if len(loaded) >= max_new or (go_on is not None and not go_on()):
+            break
+        with _epg_guide_lock:
+            guide = _epg_guide_cache.get(code)
+            if guide is not None and guide.age() < _EPG_GUIDE_TTL:
+                continue
+            failed_at = _epg_guide_failed.get(code)
+            if failed_at is not None and time() - failed_at < _EPG_GUIDE_RETRY:
+                continue
+            if len(_epg_guide_cache) >= _EPG_GUIDE_KEEP - 1:
+                break
+        available = meminfo().get("MemAvailable")
+        if available is not None and available < min_free_kb:
+            print("[EPG] Guides not loaded ahead: {} MB available".format(available // 1024))
+            break
+        if load_epg_guide(code) is not None:
+            loaded.append(code)
+    if loaded:
+        print("[EPG] Guides ready ahead: {}".format(", ".join(loaded)))
+    return loaded
+
+
+def _guide_channel_name(channel_name):
+    """A channel name the way it is handed to the matcher for a guide
+    lookup - what the player overlay has always done to it first."""
+    return remove_parentheses(decodeHtml(channel_name))
+
+
+def _resolve_guide_channel(guide, clean_name, country_code, channel_id,
+                           epg_id=None):
+    """The id in guide.programmes for this channel, "" if the guide
+    has nothing for it. Slow the first time for a channel (it runs the
+    EPG matcher), a dictionary lookup afterwards.
+
+    The same two steps the player overlay has always taken: the id
+    find_match() gives (the catalog's own guide id, alias table, local
+    cache, curated database, the feed's own names - see its
+    docstring), and if this
+    feed has no programmes under that id, the channel's name against
+    the feed's own channel names - which now also finds a name that
+    differs only in its accents. `epg_id`: the catalog's own guide id
+    for the channel, when known (find_match()'s epg_guide_id).
+    """
+    key = guide.resolved.get(clean_name)
+    if key is not None:
+        return key
+
+    # The catalog's own guide id (geil.to's), when this guide has
+    # programmes under it, is the answer - no matcher at all (the
+    # app's sourceId(); most of geil.to's channels).
+    if epg_id:
+        key = guide.channel_for(
+            _feed_spelling(epg_id, guide.feed_ids) or epg_id) or ''
+        if key:
+            guide.resolved[clean_name] = key
+            return key
+
+    matcher = get_epg_matcher()
+    key = ''
+    matched_id = None
+    try:
+        matched_id, _unused_sref, _unused_source = matcher.find_match(
+            clean_name, country_code=country_code, channel_id=channel_id,
+            epg_guide_id=epg_id or None)
+    except Exception as e:
+        debug("EPG match failed for {}: {}".format(clean_name, e))
+    if matched_id:
+        key = guide.channel_for(matched_id) or ''
+    if not key:
+        feed_id = None
+        try:
+            cleaned = matcher._clean_name_for_similarity(clean_name)
+            # The feed's own name for it, letter for letter ...
+            exact = guide.name_index.get(cleaned)
+            if exact:
+                feed_id = exact[0]
+            # ... or the same name but for its accents ("SIC NOTICIAS"
+            # is the feed's "SIC Notícias": the similarity search
+            # below refuses that pair, its two second words not being
+            # the same word) ...
+            if not feed_id and cleaned:
+                feed_id = guide.folded_names.get(_fold_accents(cleaned))
+            # ... or the closest name that is similar enough.
+            if not feed_id:
+                feed_id = _find_feed_id_by_name(
+                    clean_name, matcher, guide.name_index)
+        except Exception as e:
+            feed_id = None
+            debug("EPG name match failed for {}: {}".format(clean_name, e))
+        if feed_id:
+            key = guide.channel_for(feed_id) or ''
+    guide.resolved[clean_name] = key
+    return key
+
+
+def lookup_now_next(channel_name, country_code, channel_id=None):
+    """What is on this channel now, and what follows.
+
+    Returns (status, current, following). current / following are
+    (start, stop, title, description) tuples with Unix times, or None.
+    status says why they may be missing:
+      "ok"           at least one of the two was found
+      "no_country"   no country code to look under
+      "no_guide"     no programme guide for this country (none exists,
+                     or it could not be downloaded)
+      "no_match"     the guide has no channel that matches this one
+      "no_programme" the channel is in the guide, with nothing listed
+                     for now or later
+
+    Can block on a download (see load_epg_guide()) and on the EPG
+    matcher: background threads only. peek_now_next() is the variant
+    for the GUI thread.
+    """
+    if not country_code:
+        return "no_country", None, None
+    guide = load_epg_guide(country_code)
+    if guide is None:
+        return "no_guide", None, None
+    key = _resolve_guide_channel(
+        guide, _guide_channel_name(channel_name), country_code, channel_id)
+    if not key:
+        return "no_match", None, None
+    current, following = guide.now_next(key)
+    if current is None and following is None:
+        return "no_programme", None, None
+    return "ok", current, following
+
+
+def peek_now_next(channel_name, country_code):
+    """lookup_now_next() answered from memory alone: the same
+    (status, current, following), or None when answering would need a
+    download or the matcher. Never blocks - safe on the GUI thread."""
+    if not country_code:
+        return "no_country", None, None
+    guide = peek_epg_guide(country_code)
+    if guide is None:
+        return None
+    key = guide.resolved.get(_guide_channel_name(channel_name))
+    if key is None:
+        return None
+    if not key:
+        return "no_match", None, None
+    current, following = guide.now_next(key)
+    if current is None and following is None:
+        return "no_programme", None, None
+    return "ok", current, following
+
+
+def lookup_schedule(channel_name, country_code, channel_id=None, count=4):
+    """(status, programmes): the programme on now and the next ones,
+    up to `count` - the player's mini guide. Same matching and the same
+    status words as lookup_now_next(); can block the same way:
+    background threads only (peek_schedule() on the GUI thread)."""
+    if not country_code:
+        return "no_country", []
+    guide = load_epg_guide(country_code)
+    if guide is None:
+        return "no_guide", []
+    key = _resolve_guide_channel(
+        guide, _guide_channel_name(channel_name), country_code, channel_id)
+    if not key:
+        return "no_match", []
+    programmes = guide.schedule(key, count)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
+def peek_schedule(channel_name, country_code, count=4):
+    """lookup_schedule() from memory alone, or None when it would need
+    a download or the matcher. Never blocks."""
+    if not country_code:
+        return "no_country", []
+    guide = peek_epg_guide(country_code)
+    if guide is None:
+        return None
+    key = guide.resolved.get(_guide_channel_name(channel_name))
+    if key is None:
+        return None
+    if not key:
+        return "no_match", []
+    programmes = guide.schedule(key, count)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
+def lookup_programmes(channel_name, country_code, start, stop,
+                      channel_id=None, epg_id=None):
+    """(status, programmes): what is on this channel between `start`
+    and `stop` - the guide grid. Same matching and status words as
+    lookup_schedule(); can block the same way: background threads only
+    (peek_programmes() on the GUI thread)."""
+    if not country_code:
+        return "no_country", []
+    guide = load_epg_guide(country_code)
+    if guide is None:
+        return "no_guide", []
+    key = _resolve_guide_channel(
+        guide, _guide_channel_name(channel_name), country_code, channel_id,
+        epg_id)
+    if not key:
+        return "no_match", []
+    programmes = guide.between(key, start, stop)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
+def peek_programmes(channel_name, country_code, start, stop):
+    """lookup_programmes() from memory alone, or None when it would
+    need a download or the matcher. Never blocks."""
+    if not country_code:
+        return "no_country", []
+    guide = peek_epg_guide(country_code)
+    if guide is None:
+        return None
+    key = guide.resolved.get(_guide_channel_name(channel_name))
+    if key is None:
+        return None
+    if not key:
+        return "no_match", []
+    programmes = guide.between(key, start, stop)
+    return ("ok" if programmes else "no_programme"), programmes
+
+
 def _build_epg_channels_xml(unique):
     """The channels.xml text for write_epg_mapping_file() - `unique`
     maps each full service reference to its (epg_id, channel_name).
@@ -3338,10 +3931,10 @@ def _build_epg_channels_xml(unique):
     on the first malformed line. Ids taken from an EPG feed arrive here
     already un-escaped (so one containing "&" would have been written
     raw into the attribute), and a channel name containing "--" is not
-    allowed inside an XML comment at all. Ids parsed out of Rytec's own
-    file by regex can still be in their escaped form - un-escaping
-    first makes the result the same either way instead of escaping
-    them twice."""
+    allowed inside an XML comment at all. Ids from older caches or the
+    alias table can still be in their escaped form - un-escaping first
+    makes the result the same either way instead of escaping them
+    twice."""
     xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
     for dvb_ref, (epg_id, ch_name) in unique.items():
         comment = ensure_str(ch_name, errors='ignore')
@@ -3359,7 +3952,7 @@ def _build_epg_channels_xml(unique):
 def write_epg_mapping_file(epg_entries, country_code):
     """
     Write the EPG mapping file for a specific country.
-    epg_entries: list of tuples (rytec_id, full_service_ref, channel_name),
+    epg_entries: list of tuples (epg_id, full_service_ref, channel_name),
     where full_service_ref is the DVB-style tuple *with the stream URL
     appended* (e.g. "4097:0:1:...:0:0:0:http%3a//host/stream") - not the
     bare tuple. EPGImport's own channelFilter() only fast-accepts a
@@ -3378,14 +3971,13 @@ def write_epg_mapping_file(epg_entries, country_code):
         filename = "vavoo.channels.xml"
     channels_file = join(epg_dir, filename)
 
-    # Some channels' Rytec-matched id isn't one this country's actual
-    # feed uses for <channel id> (it has its own convention for a
-    # handful of channels, e.g. "RTP.1.HD.pt" vs the Rytec
-    # "rtp1.pt") - epgimport can't find programme data filed under
-    # an id the feed never defines. Fall back to the feed's own id,
-    # found by display-name match, but only when the Rytec id
-    # genuinely isn't one the feed already has - this never touches
-    # a channel that's already matching correctly.
+    # An id may still not be one this country's feed uses for
+    # <channel id> (a curated entry for another feed, or an old one) -
+    # epgimport can't find programme data filed under an id the feed
+    # never defines. Fall back to the feed's own id, found by
+    # display-name match, but only when the id genuinely isn't one
+    # the feed already has - this never touches a channel that's
+    # already matching correctly.
     #
     # Deliberately outside _epg_lock below: this can fetch and parse a
     # whole country's multi-MB XMLTV feed (up to ~60s across getUrl()'s
@@ -3414,7 +4006,7 @@ def write_epg_mapping_file(epg_entries, country_code):
                     ch_name, matcher, feed_name_index)
                 if fallback_id:
                     debug(
-                        "EPG mapping fallback: '{}' rytec id '{}' not "
+                        "EPG mapping fallback: '{}' id '{}' not "
                         "in feed, using '{}' instead".format(
                             ch_name, epg_id, fallback_id))
                     epg_id = fallback_id

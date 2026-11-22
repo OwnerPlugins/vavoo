@@ -4,25 +4,20 @@
 #  Log: /tmp/vavoo_install.log  (copia anche in /home/root/ a fine run)
 # =====================================================================
 
-version='1.89'
-changelog="- Streams no longer stop every few minutes: a channel now keeps one
-  stream address for the whole viewing, and a failed stream is
-  retried and then moved to another source automatically
-- New default channel source (Geil, needs no token) with Vavoo/Kool
-  as fallback - choose it in Config
-- A channel available from several sources is shown once; press
-  YELLOW in the player to choose the source by name
-- Channel logos (picons) in the channel list and on the player overlay
-- New: Favourites (INFO key), parental control PIN, log viewer in
-  Config, live /playlist.m3u for other players
-- Fixed LEFT/RIGHT muting the sound during playback
-- Fixed a freeze when opening the plugin right after boot, and empty
-  channel lists after a slow start
-- Fixed a proxy restart that could crash the whole box
-- Simpler settings: removed Proxy Enabled, Auto-update EPG and EPG
-  Similarity Threshold
-- Many EPG and bouquet fixes (scheduled update timing, western
-  satellites, reload after export, notification bar on HD screens)"
+version='1.90'
+changelog="- New look from the Android app: Prism, Halo and Orbit themes (or
+  Classic), with a preview window in the channel lists
+- Programme guide (EPG grid) with reminders; Now/Next beside the list
+- Recordings and Pause Live TV on a USB disk or HDD, timers from the guide
+- Favourites with folders and your own order, Recently watched, Search all
+- Parental Control with a PIN pad, Choose countries, Backup / Restore
+- Opens at once with the last channel list; faster zapping; logos kept
+  on a USB stick or SD card
+- A welcome for new installs; simpler Settings (the rest behind one row)
+- MENU -> Factory reset: start again from zero (recordings and backups stay)
+- The same keys on every image; HELP on every screen
+- EPG from the epgshare01 daily guides
+- Fixed crashes on OpenATV 8 when leaving Recordings or a channel list"
 
 LOGFILE=/tmp/vavoo_install.log
 RCFILE=/tmp/vavoo_install.rc
@@ -214,7 +209,7 @@ main() {
     cleanup
     mkdir -p "$TMPPATH" || fail "Cannot create $TMPPATH"
 
-    DOWNLOAD_URL='https://github.com/Belfagor2005/vavoo/archive/refs/heads/main.tar.gz'
+    DOWNLOAD_URL='https://github.com/OwnerPlugins/vavoo/archive/refs/heads/main.tar.gz'
     DOWNLOAD_OK=1
     if command -v curl >/dev/null 2>&1; then
         # -sS: niente barra di progresso nel log, ma errori visibili
@@ -236,16 +231,17 @@ main() {
     ls -la "$TMPPATH"/* 2>/dev/null | head -n 20
 
     section "COPIA FILE"
-    # File dell'utente da conservare tra un aggiornamento e l'altro
-    USERFILES="Favorite.txt"
-    BACKUPDIR=/tmp/vavoo-userdata
-    rm -rf "$BACKUPDIR"; mkdir -p "$BACKUPDIR"
     if [ -d "$PLUGINPATH" ]; then
-        for f in $USERFILES; do
-            if [ -f "$PLUGINPATH/$f" ]; then
-                cp -f "$PLUGINPATH/$f" "$BACKUPDIR/" && log "Backup dati utente: $f"
-            fi
-        done
+        # Older versions kept the favourites and the list of exported
+        # bouquets in the plugin folder, deleted just below: keep them in
+        # /etc/enigma2, where the plugin reads them now (the old favourites
+        # file is read as it is). Never over newer ones already there.
+        if [ -f "$PLUGINPATH/vavoo_favourites.json" ] && [ ! -f /etc/enigma2/vavoo_favourites.json ]; then
+            cp -p "$PLUGINPATH/vavoo_favourites.json" /etc/enigma2/vavoo_favourites.json && log "Favourites kept in /etc/enigma2"
+        fi
+        if [ -f "$PLUGINPATH/Favorite.txt" ] && [ ! -f /etc/enigma2/vavoo_bouquet_list.txt ]; then
+            cp -p "$PLUGINPATH/Favorite.txt" /etc/enigma2/vavoo_bouquet_list.txt && log "Bouquet list kept in /etc/enigma2"
+        fi
         log "Removing previous installation at $PLUGINPATH..."
         rm -rf "$PLUGINPATH"
     fi
@@ -272,12 +268,6 @@ main() {
     fi
     [ "$COPY_OK" -ne 0 ] && fail "Failed to copy plugin files (cp exited with $COPY_OK) - controlla lo spazio libero qui sopra"
 
-    for f in $USERFILES; do
-        if [ -f "$BACKUPDIR/$f" ]; then
-            cp -f "$BACKUPDIR/$f" "$PLUGINPATH/$f" && log "Ripristinato dato utente: $f"
-        fi
-    done
-    rm -rf "$BACKUPDIR"
     sync
 
     section "VERIFICA"

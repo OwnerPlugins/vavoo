@@ -41,11 +41,12 @@ from .vUtils import (
 from .vavoo_proxy import run_proxy_in_background
 from . import (
     PORT,
-    PLUGIN_ROOT,
     PROXY_HOST,
     ENIGMA_PATH,
-    GROUP_NAME_SEPARATORS,
+    group_separators,
+    literals_for,
 )
+from . import vavoo_store
 
 """
 #########################################################
@@ -332,17 +333,9 @@ def remove_bouquets_by_name(name=None):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
                 if name is not None:
-                    name_safe = name.lower().replace(
-                        ' ',
-                        '_').replace(
-                        '➾',
-                        '_').replace(
-                        '⟾',
-                        '_').replace(
-                        '->',
-                        '_').replace(
-                        '→',
-                        '_')
+                    name_safe = name.lower().replace(' ', '_')
+                    for sep in literals_for(name_safe, '➾', '⟾', '->', '→'):
+                        name_safe = name_safe.replace(sep, '_')
                     # Exact match for the flat bouquet
                     # ("userbouquet.vavoo_<name>.tv"/".radio") or a
                     # category sub-bouquet of it
@@ -466,12 +459,9 @@ def is_bouquet_exported(name):
     if not name:
         return False
     try:
-        name_safe = name.lower().replace(
-            ' ', '_').replace(
-            '➾', '_').replace(
-            '⟾', '_').replace(
-            '->', '_').replace(
-            '→', '_')
+        name_safe = name.lower().replace(' ', '_')
+        for sep in literals_for(name_safe, '➾', '⟾', '->', '→'):
+            name_safe = name_safe.replace(sep, '_')
         for fname in listdir(ENIGMA_PATH):
             if '.vavoo_' in fname and (
                     fname.endswith('.tv') or fname.endswith('.radio')):
@@ -554,8 +544,8 @@ def convert_bouquet_sync(
             # channel ref without an embedded URL (see the comment in
             # create_bouquet_file() above where full_service_ref is
             # built).
-            epg_entries = [(m['rytec_id'], m['full_service_ref'], m['name'])
-                           for m in matched if m['rytec_id']]
+            epg_entries = [(m['feed_id'], m['full_service_ref'], m['name'])
+                           for m in matched if m['feed_id']]
             if epg_entries:
                 try:
                     write_epg_mapping_file(epg_entries, country_code)
@@ -783,7 +773,7 @@ def process_epg_matching_background(
                     "original_name in ch: {}".format(
                         repr(ch['original_name'])))
 
-                rytec_id, dvb_ref, match_source = matcher.find_match(
+                feed_id, dvb_ref, match_source = matcher.find_match(
                     ch['original_name'], country_code, servicetype,
                     channel_id=ch['channel_id'],
                     allow_curated_promotion=True,
@@ -808,7 +798,7 @@ def process_epg_matching_background(
                         'channel_id': ch['channel_id'],
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
-                        'rytec_id': rytec_id,
+                        'feed_id': feed_id,
                         'original_url': ch['url'],
                         'source': match_source
                     })
@@ -909,8 +899,8 @@ def process_epg_matching_background(
             # full_service_ref (dvb_ref + stream URL) - see the comment
             # where it's built above; a bare dvb_ref gets silently
             # dropped by EPGImport's channelFilter().
-            epg_entries = [(m['rytec_id'], m['full_service_ref'], m['name'])
-                           for m in matched if m['rytec_id']]
+            epg_entries = [(m['feed_id'], m['full_service_ref'], m['name'])
+                           for m in matched if m['feed_id']]
             if epg_entries:
                 write_epg_mapping_file(epg_entries, country_code)
                 print(
@@ -988,17 +978,17 @@ def _build_bouquet_filename(name_for_path, export_type):
     being stripped/replaced like the other four.
     """
     is_category = any(
-        sep in name_for_path for sep in GROUP_NAME_SEPARATORS)
+        sep in name_for_path for sep in group_separators(name_for_path))
 
     if export_type == "flat" or not is_category:
         safe_name = name_for_path.lower().replace(' ', '_')
-        for sep in GROUP_NAME_SEPARATORS:
+        for sep in group_separators(safe_name):
             safe_name = safe_name.replace(sep, '')
         return "userbouquet.vavoo_%s.tv" % safe_name
 
     country_part = ""
     category_part = ""
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(name_for_path):
         if sep in name_for_path:
             parts = name_for_path.split(sep)
             country_part = parts[0].strip()
@@ -1007,7 +997,7 @@ def _build_bouquet_filename(name_for_path, export_type):
 
     if not country_part or not category_part:
         safe_name = name_for_path.lower().replace(' ', '_')
-        for sep in GROUP_NAME_SEPARATORS:
+        for sep in group_separators(safe_name):
             safe_name = safe_name.replace(sep, '_')
         return "userbouquet.vavoo_%s.tv" % safe_name
 
@@ -1026,7 +1016,7 @@ def _bouquet_country_prefix(name_for_path):
     bouquet for the same country still exists on disk before deleting
     that country's shared EPG channels.xml file.
     """
-    for sep in GROUP_NAME_SEPARATORS:
+    for sep in group_separators(name_for_path):
         if sep in name_for_path:
             parts = name_for_path.split(sep)
             country_part = parts[0].strip()
@@ -1192,7 +1182,7 @@ def create_bouquet_file(
     """
     Create bouquet file, performing matching once.
     Returns (channel_count, bouquet_filename, matched_channels, unmatched_channels)
-    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'rytec_id', 'source'
+    where matched_channels is a list of dicts with 'name', 'channel_id', 'dvb_ref', 'feed_id', 'source'
     and unmatched_channels is a list of dicts with 'name', 'channel_id'.
     """
     try:
@@ -1208,7 +1198,7 @@ def create_bouquet_file(
         # Store items for background processing
         # background_items = []
         # each item: {'name': name, 'channel_id': id, 'dvb_ref': ref,
-        # 'rytec_id': rytec_id}
+        # 'feed_id': feed_id}
         matched = []
         unmatched = []    # each item: {'name': name, 'channel_id': id}
         tv_lines = ["#NAME %s" % _strip_control_chars(name)]
@@ -1239,7 +1229,7 @@ def create_bouquet_file(
                 encoded_url = channel_url.replace(':', '%3a')
 
                 # Perform matching once
-                rytec_id, dvb_ref, match_source = matcher.find_match(
+                feed_id, dvb_ref, match_source = matcher.find_match(
                     channel_name, country_code, servicetype,
                     channel_id=channel_id, allow_curated_promotion=True,
                     epg_guide_id=channel.get('epg_id'))
@@ -1255,7 +1245,7 @@ def create_bouquet_file(
                         'channel_id': channel_id,
                         'dvb_ref': dvb_ref,
                         'full_service_ref': full_service_ref,
-                        'rytec_id': rytec_id,
+                        'feed_id': feed_id,
                         'source': match_source
                     })
                 else:
@@ -1326,7 +1316,8 @@ def create_bouquet_file(
 
 
 def _update_favorite_file(name, url, export_type):
-    """Update Favorite.txt - URL is always empty (proxy only).
+    """Update the bouquet list (vavoo_store.bouquet_list_file(), Favorite.txt
+    in the plugin folder before) - URL is always empty (proxy only).
 
     Precondition: caller holds plugin.py's module-level export_lock -
     same shared-file race as _add_to_main_bouquet()."""
@@ -1340,8 +1331,8 @@ def _update_favorite_file(name, url, export_type):
     # file.
     name = _strip_control_chars(name).replace('|', '')
 
-    favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
-    print("[Bouquet] Updating Favorite.txt: " +
+    favorite_path = vavoo_store.bouquet_list_file()
+    print("[Bouquet] Updating bouquet list: " +
           name + " (type: " + export_type + ")")
 
     # Read existing bouquets
@@ -1361,7 +1352,7 @@ def _update_favorite_file(name, url, export_type):
                                 'timestamp': parts[3].strip() if len(parts) > 3 else str(
                                     time.time())}
         except Exception as e:
-            print("[Bouquet] Error reading Favorite.txt: " + str(e))
+            print("[Bouquet] Error reading bouquet list: " + str(e))
 
     # Update/add current bouquet
     existing_bouquets[name] = {
@@ -1380,11 +1371,11 @@ def _update_favorite_file(name, url, export_type):
                 f.write(line + "\n")
         rename(temp_path, favorite_path)
 
-        print("[Bouquet] Favorite.txt updated with " +
+        print("[Bouquet] bouquet list updated with " +
               str(len(existing_bouquets)) + " bouquets")
 
     except Exception as e:
-        print("[Bouquet] Error writing Favorite.txt: " + str(e))
+        print("[Bouquet] Error writing bouquet list: " + str(e))
 
 
 def remove_favorite_entry(name):
@@ -1401,7 +1392,7 @@ def remove_favorite_entry(name):
     # '|'/newline still finds and removes the entry it actually wrote.
     name = _strip_control_chars(name).replace('|', '')
 
-    favorite_path = join(PLUGIN_ROOT, 'Favorite.txt')
+    favorite_path = vavoo_store.bouquet_list_file()
     if not isfile(favorite_path):
         return
 
@@ -1423,9 +1414,9 @@ def remove_favorite_entry(name):
             rename(temp_path, favorite_path)
         else:
             remove(favorite_path)
-        print("[Bouquet] Removed {} from Favorite.txt".format(name))
+        print("[Bouquet] Removed {} from bouquet list".format(name))
     except Exception as e:
-        print("[Bouquet] Error removing {} from Favorite.txt: {}".format(name, e))
+        print("[Bouquet] Error removing {} from bouquet list: {}".format(name, e))
 
 
 def reorganize_all_bouquets_position(list_position="bottom"):

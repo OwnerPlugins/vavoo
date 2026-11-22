@@ -20,12 +20,23 @@ print_footer() {
     echo "#                                                          #"
     echo "#  Important: Restart Enigma2 to complete the removal      #"
     echo "#                                                          #"
-    echo "#  All Vavoo files and configurations have been removed    #"
+    echo "#  Plugin, bouquets and caches removed. Kept in            #"
+    echo "#  /etc/enigma2: favourites, parental control, timers,     #"
+    echo "#  settings - and your recordings on the disk.             #"
     echo "#                                                          #"
     echo "#  Thank you for using Vavoo Stream Live!                  #"
     echo "#                                                          #"
     echo "############################################################"
 }
+
+# Only when the package is really removed. dpkg (DreamOS) also runs the
+# old package's postrm on an upgrade ("upgrade", after the new files
+# are in place) and on a failed install ("abort-*"): cleaning up then
+# deleted the version just installed.
+case "$1" in
+    remove|purge|"") ;;
+    *) exit 0 ;;
+esac
 
 print_header
 
@@ -70,8 +81,13 @@ echo "✓ Bouquet files removed"
 # installed EPGImport source, not something exclusive to Vavoo.
 echo "Removing Vavoo cache files..."
 for f in vavoo_epg_cache.json vavoo_epg_unmatched_cache.json \
-         vavoo_sref_map.json vavoo_source_prefs.json channel_alias.json; do
+         vavoo_sref_map.json vavoo_source_prefs.json channel_alias.json \
+         vavoo_catalog.json.gz vavoo_catalog.json.gz.tmp; do
     rm -f "/etc/enigma2/$f" > /dev/null 2>&1
+done
+# the logo cache on a USB stick / SD card / SSD (and the one in RAM)
+for d in /media/*/.vavoo_logos /tmp/vavoo_picons; do
+    [ -d "$d" ] && rm -rf "$d" > /dev/null 2>&1
 done
 echo "✓ Cache files removed"
 

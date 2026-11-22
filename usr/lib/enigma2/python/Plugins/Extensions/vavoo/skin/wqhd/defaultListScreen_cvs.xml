@@ -20,4 +20,9 @@
     </widget>
     <widget source="session.VideoPicture" render="Pig" position="1279,880" zPosition="20" size="580,327" backgroundColor="#ff000000" transparent="0" />
     <widget name="proxy_status" position="327,1242" size="600,74" font="cvfont; 46" backgroundColor="#181b2e" foregroundColor="#ffff00" halign="center" valign="center" transparent="1" zPosition="3" />
+    <!-- Now / Next programme of the highlighted channel (NowNextPanel in plugin.py) -->
+    <widget name="epg_now_time" position="1927,1088" size="587,43" font="cvfont;32" foregroundColor="#ffff00" backgroundColor="#181b2e" transparent="1" halign="left" valign="center" noWrap="1" zPosition="3" />
+    <widget name="epg_now_title" position="1927,1131" size="587,56" font="cvfont;40" foregroundColor="#ffffff" backgroundColor="#181b2e" transparent="1" halign="left" valign="center" noWrap="1" zPosition="3" />
+    <widget name="epg_next_time" position="1927,1195" size="587,43" font="cvfont;32" foregroundColor="#ffff00" backgroundColor="#181b2e" transparent="1" halign="left" valign="center" noWrap="1" zPosition="3" />
+    <widget name="epg_next_title" position="1927,1237" size="587,56" font="cvfont;39" foregroundColor="#d0d0e0" backgroundColor="#181b2e" transparent="1" halign="left" valign="center" noWrap="1" zPosition="3" />
 </screen>

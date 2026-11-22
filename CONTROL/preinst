@@ -41,6 +41,17 @@ print_header
 # Remove old version if found
 echo "Checking for existing Vavoo installations..."
 if [ -d "/usr/lib/enigma2/python/Plugins/Extensions/vavoo" ]; then
+    # Older versions kept the favourites and the list of exported
+    # bouquets in the plugin folder, deleted just below: keep them in
+    # /etc/enigma2, where the plugin reads them now. Never over newer
+    # ones already there.
+    OLD="/usr/lib/enigma2/python/Plugins/Extensions/vavoo"
+    if [ -f "$OLD/vavoo_favourites.json" ] && [ ! -f /etc/enigma2/vavoo_favourites.json ]; then
+        cp -p "$OLD/vavoo_favourites.json" /etc/enigma2/vavoo_favourites.json && echo "✓ Favourites kept in /etc/enigma2"
+    fi
+    if [ -f "$OLD/Favorite.txt" ] && [ ! -f /etc/enigma2/vavoo_bouquet_list.txt ]; then
+        cp -p "$OLD/Favorite.txt" /etc/enigma2/vavoo_bouquet_list.txt && echo "✓ Bouquet list kept in /etc/enigma2"
+    fi
     echo "Removing previous version of Vavoo plugin..."
     rm -rf /usr/lib/enigma2/python/Plugins/Extensions/vavoo > /dev/null 2>&1
     echo "✓ Previous version removed successfully"
@@ -48,36 +59,14 @@ else
     echo "✓ No previous installation found"
 fi
 
-# This package requires Python 3 (see CONTROL/control's Depends:
-# python3-requests, python3-six - opkg already refuses to install this
-# package on a system without a python3-requests candidate, so there is
-# no supported Python 2 fallback here).
-echo "Installing required dependencies..."
-PY="python3"
-SIXPKG="python3-six"
-REQPKG="python3-requests"
+# The dependencies (python3-requests, python3-six, ffmpeg...) are in
+# CONTROL/control's Depends: - opkg installs them itself. Running
+# "opkg update" / "opkg install" from here, inside opkg's own run,
+# only failed on its lock (or waited on the network).
 if [ -e "/usr/bin/python3" ]; then
     echo "✓ Using Python 3"
 else
     echo "⚠ /usr/bin/python3 not found, but continuing (required by package dependencies)"
-fi
-
-# Update package list and install dependencies
-echo "Updating package repository..."
-opkg update > /dev/null 2>&1
-
-echo "Installing ${SIXPKG}..."
-if opkg install --force-reinstall "${SIXPKG}" > /dev/null 2>&1; then
-    echo "✓ ${SIXPKG} installed successfully"
-else
-    echo "⚠ Could not install ${SIXPKG}, but continuing installation"
-fi
-
-echo "Installing ${REQPKG}..."
-if opkg install --force-reinstall "${REQPKG}" > /dev/null 2>&1; then
-    echo "✓ ${REQPKG} installed successfully"
-else
-    echo "⚠ Could not install ${REQPKG}, but continuing installation"
 fi
 
 # Additional dependency checks

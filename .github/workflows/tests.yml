@@ -1,0 +1,43 @@
+name: Tests
+
+# The plugin's tests (tests/, Enigma2 faked): every screen, key and menu,
+# the proxy, recordings, the store - on Python 3 and on Python 2.7, the
+# two kinds of image in the wild.
+on:
+  push:
+    branches: [ "develop", "main" ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python3:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.13"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install ffmpeg (the recording tests)
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - name: Install the plugin's own dependencies
+      run: python -m pip install six requests
+    - name: Run the tests
+      run: python tests/run_tests.py
+
+  python2:
+    runs-on: ubuntu-latest
+    container: python:2.7
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install the plugin's own dependencies
+      run: python -m pip install six "requests<2.28"
+    - name: Run the Python 2 tests
+      run: python tests/run_tests.py

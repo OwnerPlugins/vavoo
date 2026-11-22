@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 
 import base64
 import gzip
+import hashlib
 try:
     import requests
 except ImportError:
@@ -21,7 +22,6 @@ try:
     import urllib3
 except ImportError:
     urllib3 = None
-import atexit
 import os
 import re
 from json import loads, load, dumps
@@ -33,21 +33,27 @@ from . import (
     BASE_SITES,
     GEIL_SITES,
     GEIL_LIVE_PATH,
-    GROUP_NAME_SEPARATORS,
-    HOST_GIT,
+    group_separators,
     SOURCE_PREFS_FILE,
-    SREF_MAP_FILE,
+    CATALOG_FILE,
     __version__
 )
 
+from . import vavoo_record
 from .vUtils import (
     _starting_lock,
+    EPG_DAILY_FAIL_BACKOFF,
+    EPG_DAILY_STALE_BACKOFF,
+    EpgFeedStale,
+    country_epg_chunks,
     debug,
     decodeHtml,
+    epg_copy_url,
+    epg_daily_urls,
     get_external_ip,
     is_proxy_running,
-    log_exception,
     make_print,
+    mark_epg_daily_unusable,
     remove_parentheses,
     strip_control_chars,
     trace_error,
@@ -69,9 +75,9 @@ print = make_print("PROXY")
 
 
 try:
-    from urllib.parse import unquote, quote, urlparse, parse_qs
+    from urllib.parse import quote, urlparse, parse_qs
 except ImportError:
-    from urllib import unquote, quote
+    from urllib import quote
     from urlparse import urlparse, parse_qs
 
 # Python 2/3 compatibility for exception names used in handlers
@@ -113,6 +119,19 @@ except ImportError:
 # Disable SSL warnings
 if urllib3 is not None:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+# Paths only the box itself may ask for (the plugin uses 127.0.0.1).
+LOCAL_ONLY_PATHS = ("/shutdown", "/refresh_token")
+
+
+def is_loopback(address):
+    """A request from the box itself (IPv4 127.x, IPv6 ::1, or IPv4
+    as IPv6: ::ffff:127.x)."""
+    address = (address or "").lower()
+    if address.startswith("::ffff:"):
+        address = address[7:]
+    return address.startswith("127.") or address == "::1"
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
@@ -369,41 +388,7 @@ Example Response:
 
 
 ====================================================================
-7. /stream?ref=ServiceReference - Direct Stream Proxy
-====================================================================
-
-URL:
-    http://127.0.0.1:4323/stream?ref=1%3A0%3A1%3A...
-
-Description:
-    Streams MPEG-TS content directly through the proxy
-    instead of redirecting the client.
-
-Features:
-    - upstream buffering
-    - keep-alive
-    - timeout monitoring
-    - chunked streaming
-    - disabled caching
-
-Workflow:
-    1. Decode service reference
-    2. Map reference to channel ID
-    3. Resolve upstream stream
-    4. Proxy TS stream to client
-
-Recommended for:
-    - Enigma2 service references
-    - local TS proxying
-    - IPTV middleware
-    - transcoding pipelines
-
-Example:
-    ffplay "http://127.0.0.1:4323/stream?ref=1%3A0%3A1%3A..."
-
-
-====================================================================
-8. /refresh_token - Refresh addonSig
+7. /refresh_token - Refresh addonSig
 ====================================================================
 
 URL:
@@ -427,7 +412,7 @@ Example Response:
 
 
 ====================================================================
-9. /epg/<country>.xml - EPG Redirect
+8. /epg/<country>.xml - EPG Redirect
 ====================================================================
 
 URL:
@@ -449,7 +434,7 @@ Example:
 
 
 ====================================================================
-10. /shutdown - Graceful Shutdown
+9. /shutdown - Graceful Shutdown
 ====================================================================
 
 URL:
@@ -498,21 +483,24 @@ or:
 # API Endpoints
 TOKEN_ADDON_SIG = 600  # 10 minutes - TOKEN EXPIRES EVERY 10 MINUTES!
 TOKEN_REFRESH_AGE = 480
-GEOIP_URL = "https://www.vavoo.tv/geoip"
+# A recording's own token (own_signature()): a forced renewal right
+# after one was made is not done again (the app's FORCE_MIN_INTERVAL),
+# and a failed request is not repeated at once.
+OWN_SIG_FORCE_MIN = 30
+OWN_SIG_RETRY = 20
 PING_URL = "https://www.vavoo.tv/api/app/ping"
 PING_URL2 = "https://www.vypn.net/api/app/ping"
 # Real VYPN app identity (package/version from its APK metadata),
 # matching a confirmed-working ping payload for this endpoint.
 VYPN_PACKAGE = "net.vypn.app"
 VYPN_VERSION = "1.4.1"
-PID_FILE = "/tmp/vavoo_proxy.pid"
 BOOTING_FILE = "/tmp/vavoo_proxy_booting"
 
 # Primary + mirror. Some regions get HTTP 451 from the primary.
 
 # NOTE: do NOT set "Connection": "close" here - self.session.headers is
 # applied to every request through this session (catalog pages, resolve
-# calls, and the /stream handler's upstream GET), so it would force a
+# calls, the file and EPG fetches), so it would force a
 # fresh TCP/TLS handshake on all of them instead of reusing a pooled
 # connection from the HTTPAdapter configured below.
 HEADERS = {
@@ -537,6 +525,175 @@ HEADERS = {
 # concurrently-starting instance see the marker as stale and start
 # booting too, racing the still-legitimately-running first one.
 MAX_BOOT_AGE = 300
+
+
+# The saved catalog (CATALOG_FILE): started with when younger than this,
+# the new one fetched behind it; a failed fetch tried again this often.
+CATALOG_MAX_AGE = 3 * 86400
+CATALOG_RETRY = 15 * 60
+CATALOG_FORMAT = "vavoo_catalog"
+_CATALOG_TEXT = ("id", "name", "url", "country")
+_CATALOG_OPTIONAL = ("logo", "group", "epg_id")
+# the next start_proxy() loads from the network (restart(fresh=True))
+_fresh_start = [False]
+# the saved file's hash, once known: an unchanged catalog is not written
+# again (the flash)
+_catalog_digest = [None]
+
+
+def catalog_setting():
+    """config.plugins.vavoo.catalog_source: "auto", "geil" or "vavoo"."""
+    try:
+        return e2_config.plugins.vavoo.catalog_source.value
+    except Exception as e:
+        print(" Could not read catalog_source config: {}".format(e))
+        return "auto"
+
+
+def _text_value(value):
+    if value is None:
+        return u""
+    if isinstance(value, (str, type(u""))):
+        return value
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return u"%s" % value
+    return None
+
+
+def _clean_catalog_entry(entry):
+    """A saved channel as the catalog loaders make them, or None: a
+    hand-edited or broken file must not reach the indexes."""
+    if not isinstance(entry, dict):
+        return None
+    out = dict(entry)
+    for key in _CATALOG_TEXT + _CATALOG_OPTIONAL:
+        value = _text_value(entry.get(key))
+        if value is None:
+            return None
+        out[key] = value
+    if not all(out[key] for key in _CATALOG_TEXT):
+        return None
+    return out
+
+
+def load_saved_catalog(setting, path=None, now=None):
+    """(channels, source) of the catalog saved at the last load, or
+    None: no file, a broken one, another format, saved for another
+    catalog_source setting, older than CATALOG_MAX_AGE (a box whose
+    clock is not set yet - before its first time sync - takes it), or
+    almost empty."""
+    path = path or CATALOG_FILE
+    now = time.time() if now is None else now
+    try:
+        with gzip.open(path, "rb") as f:
+            data = loads(f.read().decode("utf-8"))
+    except Exception:
+        return None
+    try:
+        if not isinstance(data, dict) or data.get("format") != CATALOG_FORMAT or \
+                data.get("version") != 1 or data.get("setting") != setting:
+            return None
+        source = data.get("source")
+        saved = data.get("saved")
+        if source not in ("geil", "vavoo") or not isinstance(saved, (int, float)):
+            return None
+        if now - saved > CATALOG_MAX_AGE:
+            return None
+        raw = data.get("channels")
+        if not isinstance(raw, list):
+            return None
+        channels = [c for c in (_clean_catalog_entry(e) for e in raw) if c is not None]
+        if len(channels) < 100:
+            return None
+        _catalog_digest[0] = data.get("hash")
+        # (a plain str: JSON gives unicode on Python 2, and the log
+        # lines it goes into are byte strings with a "✓" there)
+        return channels, str(source)
+    except Exception as e:
+        print("[Catalog] Saved catalog not read: {}".format(e))
+        return None
+
+
+def _saved_digest(path):
+    if _catalog_digest[0] is None:
+        try:
+            with gzip.open(path, "rb") as f:
+                _catalog_digest[0] = loads(f.read().decode("utf-8")).get("hash") or ""
+        except Exception:
+            _catalog_digest[0] = ""
+    return _catalog_digest[0]
+
+
+def save_catalog(channels, source, setting, path=None):
+    """Keep the catalog for the next start (atomic: a temp file renamed
+    over it). Not written when it is the same as the saved one - the
+    flash is written as little as possible. True when written."""
+    path = path or CATALOG_FILE
+    try:
+        body = dumps(channels, sort_keys=True, separators=(",", ":"))
+        if not isinstance(body, bytes):
+            body = body.encode("utf-8")
+        digest = hashlib.md5(body).hexdigest()
+        if digest == _saved_digest(path):
+            return False
+        head = dumps({"format": CATALOG_FORMAT, "version": 1, "setting": setting,
+                      "source": source, "saved": int(time.time()), "hash": digest},
+                     sort_keys=True, separators=(",", ":"))
+        if not isinstance(head, bytes):
+            head = head.encode("utf-8")
+        doc = head[:-1] + b',"channels":' + body + b"}"
+        tmp = path + ".tmp"
+        with gzip.open(tmp, "wb") as f:
+            f.write(doc)
+        os.rename(tmp, path)
+        _catalog_digest[0] = digest
+        print("[Catalog] Saved for the next start: %d channels" % len(channels))
+        return True
+    except Exception as e:
+        print("[Catalog] Not saved: {}".format(e))
+        return False
+
+
+def status_of(p):
+    """What /status answers for a VavooProxy instance - the plugin reads
+    the same in-process (proxy_state()), never over HTTP."""
+    # Locked read - the writer (refresh_addon_sig_if_needed()) updates
+    # "sig" and "ts" as two separate statements under this same lock,
+    # so an unlocked read here could observe a freshly-updated sig
+    # paired with the old ts.
+    with p.addon_sig_lock:
+        addon_sig = dict(p.addon_sig_data)
+    return {
+        "initialized": p.initialized,
+        "channels_count": len(p.all_filtered_items),
+        "catalog_source": p.catalog_source,
+        # geil.to needs no token at all, so addon_sig_valid is
+        # permanently false and addon_sig_age a huge nonsense number on
+        # that source - this flag tells a consumer not to treat either
+        # as a problem, same disambiguation /health's "status" field
+        # already makes internally.
+        "token_required": p.catalog_source != "geil",
+        "addon_sig_valid": addon_sig["sig"] is not None,
+        "addon_sig_age": int(time.time() - addon_sig["ts"]),
+        "local_ip": p.get_local_ip(),
+        "port": PORT}
+
+
+def proxy_state():
+    """The proxy's state, read in this process (the proxy is a thread of
+    Enigma2's own Python, so no HTTP request is needed - the screens ask
+    this on the GUI thread every few seconds): status_of() plus
+    "booting" (a start in progress), "listening" (the server is up and
+    not stopped) and "ready" (listening with its catalog). Always reads
+    the module's `proxy`, which a restart replaces."""
+    p = proxy
+    state = status_of(p)
+    state["booting"] = is_proxy_booting()
+    state["listening"] = p.server is not None and not p.is_stopped()
+    state["ready"] = bool(state["initialized"] and state["listening"])
+    state["catalog_version"] = getattr(p, "catalog_version", 0)
+    state["refreshing"] = bool(getattr(p, "catalog_refreshing", False))
+    return state
 
 
 def is_proxy_booting():
@@ -703,11 +860,8 @@ _GROUP_MULTI_SPACE_RE = re.compile(r'\s+')
 # "group" label into country/category with one of these - shared by
 # load_catalog() and load_geil_catalog() (see _base_country_from_group()).
 # GROUP_NAME_SEPARATORS (__init__.py) is the one shared copy of this
-# list, imported everywhere a country/category or bouquet name needs
-# splitting the same way, instead of each module keeping its own
-# literal (which had already drifted out of sync - see its own
-# comment).
-_GROUP_SEPARATORS = GROUP_NAME_SEPARATORS
+# list, read through group_separators(text) (the separators in text's
+# own string type: Python 2 cannot mix them with unicode).
 
 
 def _base_country_from_group(group):
@@ -718,11 +872,22 @@ def _base_country_from_group(group):
     (one of which rebuilt the separators tuple on every single catalog
     item instead of once)."""
     base_country = group
-    for sep in _GROUP_SEPARATORS:
+    for sep in group_separators(base_country):
         if sep in base_country:
             base_country = base_country.split(sep)[0].strip()
             break
     return base_country or "default"
+
+
+def _category_from_group(group):
+    """The sub-category part of a catalog item's "group" label
+    ("Italy ➾ Sport" -> "Sport"), or "" when it has none (the app's
+    CatalogParser.subCategoryOf)."""
+    group = group or ""
+    for sep in group_separators(group):
+        if sep in group:
+            return group.split(sep, 1)[1].strip()
+    return ""
 
 
 def _group_key(name):
@@ -858,44 +1023,6 @@ def _rewrite_addon_sig_ip(sig, client_ip):
         return sig
 
 
-def is_proxy_already_running():
-    """Check if another proxy instance is running via PID file"""
-    try:
-        with open(PID_FILE, 'r') as f:
-            pid = int(f.read().strip())
-            # Check if process exists
-            os.kill(pid, 0)
-            return True
-    except (IOError, OSError, ValueError):
-        return False
-    except Exception as e:
-        print(str(e))
-        log_exception("is_proxy_already_running error", area="PROXY")
-        return False
-
-
-def write_pid_file():
-    """Write current PID to file"""
-    try:
-        with open(PID_FILE, 'w') as f:
-            f.write(str(os.getpid()))
-        return True
-    except Exception:
-        return False
-
-
-def remove_pid_file():
-    """Remove PID file on exit"""
-    try:
-        if os.path.exists(PID_FILE):
-            os.unlink(PID_FILE)
-    except Exception:
-        pass
-
-
-atexit.register(remove_pid_file)
-
-
 class VavooProxy(object):
     def __init__(self):
         self.session = requests.Session()
@@ -921,6 +1048,10 @@ class VavooProxy(object):
         self._stream_lock = threading.Lock()  # guards active_streams counter
         self.addon_sig_data = {"sig": None, "ts": 0}
         self.addon_sig_lock = threading.Lock()
+        # Tokens of their own, by slot (one per recording) - see
+        # own_signature().
+        self._own_sigs = {}
+        self._own_sig_lock = threading.Lock()
         self.all_filtered_items = []
         # Keyed by country.lower() (catalog casing varies) - was built
         # but never actually read by anything; now used by /channels
@@ -936,12 +1067,20 @@ class VavooProxy(object):
         # for the life of the process.
         self._group_members_cache = {}
         self.countries_list = []
+        # +1 each time a catalog is put in use (_install_catalog()): the
+        # main list redraws its counts when it changes
+        self.catalog_version = 0
+        # started with the saved catalog (or an empty one): fetch the
+        # new one once serving (start_catalog_refresh())
+        self.catalog_needs_refresh = False
+        self.catalog_refreshing = False
+        # one prefetch() at a time
+        self._prefetch_lock = threading.Lock()
         self.current_language = "en"
         self.current_region = "US"
         self.external_ip = None
         self.initialized = False
         self.last_heartbeat = time.time()
-        self.local_ip = None
         # channel_url -> {"url": resolved stream address, "ts": when
         # it was last asked for} - see resolve_with_retry().
         self.resolve_cache = {}
@@ -1068,6 +1207,7 @@ class VavooProxy(object):
     def start_token_monitor(self):
         """Monitor token age with minimal background traffic"""
         def token_monitor_loop():
+            vavoo_record.name_this_thread("vv-token")
             while not self._stop_event.is_set():
                 # Check FIRST, then sleep (first check is immediate at startup)
                 try:
@@ -1121,92 +1261,8 @@ class VavooProxy(object):
                 return self.addon_sig_data["sig"]
 
             try:
-                import uuid
-                unique_id = str(uuid.uuid4())
-                current_timestamp = int(time.time() * 1000)
-
-                # Matches a confirmed-working VYPN ping payload exactly -
-                # the previous version carried extra fields (buildId,
-                # engine, signatures, installer, devMode=True, ...) copied
-                # from an older reverse-engineered client that this
-                # endpoint no longer accepts as a real free-tier client.
-                payload = {
-                    "token": "",
-                    "reason": "app-focus",
-                    "locale": self.current_language,
-                    "theme": "dark",
-                    "metadata": {
-                        "device": {
-                            "type": "phone",
-                            "uniqueId": unique_id},
-                        "os": {
-                            "name": "android",
-                            "version": "14",
-                            "abis": ["arm64-v8a"],
-                            "host": "android"},
-                        "app": {
-                            "platform": "android"},
-                        "version": {
-                            "package": VYPN_PACKAGE,
-                            "binary": VYPN_VERSION,
-                            "js": VYPN_VERSION}},
-                    "appFocusTime": 0,
-                    "playerActive": False,
-                    "playDuration": 0,
-                    "devMode": False,
-                    "hasAddon": True,
-                    "castConnected": False,
-                    "package": VYPN_PACKAGE,
-                    "version": VYPN_VERSION,
-                    "process": "app",
-                    "firstAppStart": current_timestamp - 86400000,
-                    "lastAppStart": current_timestamp,
-                    "ipLocation": None,
-                    "adblockEnabled": True,
-                    "migrationApplied": False,
-                    "migrationTargetInstalled": False,
-                    "proxy": {
-                        "supported": ["ss"],
-                        "engine": "Mu",
-                        "ssVersion": "2022",
-                        "enabled": False,
-                        "autoServer": True,
-                        "id": ""},
-                    "iap": {
-                        "supported": False,
-                        "error": ""}}
-
-                headers = {
-                    "user-agent": "okhttp/4.11.0",
-                    "accept": "application/json",
-                    "content-type": "application/json; charset=utf-8",
-                    "accept-encoding": "gzip",
-                }
-
-                # Try PING_URL (vavoo.tv) first, then PING_URL2 (vypn.net)
-                urls = [PING_URL, PING_URL2]
-                sig = None
-                for url in urls:
-                    try:
-                        r = self.session.post(
-                            url, json=payload, headers=headers, timeout=15)
-                        if r.status_code == 200:
-                            data = r.json()
-                            sig = data.get("addonSig") or data.get("mhub")
-                            if sig:
-                                break
-                            else:
-                                print(
-                                    "[AddonSig] No addonSig received from {}".format(url))
-                    except Exception as e:
-                        print(
-                            "[AddonSig] Request to {} failed: {}".format(
-                                url, e))
-                        continue
+                sig = self._request_addon_sig()
                 if sig:
-                    client_ip = self._get_cached_external_ip()
-                    if client_ip:
-                        sig = _rewrite_addon_sig_ip(sig, client_ip)
                     self.addon_sig_data["sig"] = sig
                     self.addon_sig_data["ts"] = now
                     print("[AddonSig] Token obtained successfully")
@@ -1233,119 +1289,313 @@ class VavooProxy(object):
                     return self.addon_sig_data["sig"]
                 return None
 
-    def initialize_proxy(self):
-        """Initialize the proxy by loading the catalog: geil.to first
-        (no addonSig/token step needed at all), Vavoo's sites
-        (vavoo.to/kool.to) as the fallback catalog source when
-        geil.to's whole catalog can't be loaded - same default/
-        fallback order the companion Android app uses.
+    def _request_addon_sig(self):
+        """One ping for a new token (the addonSig, its IP rewritten as
+        configured), or None. The shared token
+        (refresh_addon_sig_if_needed()) and the recordings' own ones
+        (own_signature()) are both made here."""
+        import uuid
+        unique_id = str(uuid.uuid4())
+        current_timestamp = int(time.time() * 1000)
 
-        This default/fallback order is itself overridable via
-        config.plugins.vavoo.catalog_source ("auto" by default, or
-        pinned to "geil"/"vavoo") - same config-read convention
-        playlist_key already uses elsewhere in this module (see its
-        own e2_config import comment). A pinned choice is respected
-        as-is, with no fallback to the other source if it fails - an
-        explicit preference shouldn't be silently overridden the same
-        way "auto"'s best-effort fallback is.
-        """
+        # Matches a confirmed-working VYPN ping payload exactly -
+        # the previous version carried extra fields (buildId,
+        # engine, signatures, installer, devMode=True, ...) copied
+        # from an older reverse-engineered client that this
+        # endpoint no longer accepts as a real free-tier client.
+        payload = {
+            "token": "",
+            "reason": "app-focus",
+            "locale": self.current_language,
+            "theme": "dark",
+            "metadata": {
+                "device": {
+                    "type": "phone",
+                    "uniqueId": unique_id},
+                "os": {
+                    "name": "android",
+                    "version": "14",
+                    "abis": ["arm64-v8a"],
+                    "host": "android"},
+                "app": {
+                    "platform": "android"},
+                "version": {
+                    "package": VYPN_PACKAGE,
+                    "binary": VYPN_VERSION,
+                    "js": VYPN_VERSION}},
+            "appFocusTime": 0,
+            "playerActive": False,
+            "playDuration": 0,
+            "devMode": False,
+            "hasAddon": True,
+            "castConnected": False,
+            "package": VYPN_PACKAGE,
+            "version": VYPN_VERSION,
+            "process": "app",
+            "firstAppStart": current_timestamp - 86400000,
+            "lastAppStart": current_timestamp,
+            "ipLocation": None,
+            "adblockEnabled": True,
+            "migrationApplied": False,
+            "migrationTargetInstalled": False,
+            "proxy": {
+                "supported": ["ss"],
+                "engine": "Mu",
+                "ssVersion": "2022",
+                "enabled": False,
+                "autoServer": True,
+                "id": ""},
+            "iap": {
+                "supported": False,
+                "error": ""}}
+
+        headers = {
+            "user-agent": "okhttp/4.11.0",
+            "accept": "application/json",
+            "content-type": "application/json; charset=utf-8",
+            "accept-encoding": "gzip",
+        }
+
+        # Try PING_URL (vavoo.tv) first, then PING_URL2 (vypn.net)
+        urls = [PING_URL, PING_URL2]
+        sig = None
+        for url in urls:
+            try:
+                r = self.session.post(
+                    url, json=payload, headers=headers, timeout=15)
+                if r.status_code == 200:
+                    data = r.json()
+                    sig = data.get("addonSig") or data.get("mhub")
+                    if sig:
+                        break
+                    else:
+                        print(
+                            "[AddonSig] No addonSig received from {}".format(url))
+            except Exception as e:
+                print(
+                    "[AddonSig] Request to {} failed: {}".format(
+                        url, e))
+                continue
+        if sig:
+            client_ip = self._get_cached_external_ip()
+            if client_ip:
+                sig = _rewrite_addon_sig_ip(sig, client_ip)
+        return sig
+
+    def own_signature(self, slot, force=False):
+        """A token of its own for `slot` (a recording), as the app's
+        VavooApi.OwnToken: Vavoo plays one stream per token, so a
+        recording on the shared token would cut the player's stream
+        (or the player the recording). Kept and renewed like the
+        shared one (at TOKEN_REFRESH_AGE - the recording asks every
+        minute, Recorder's keep_alive); force: a new one, the last was
+        refused (not again within OWN_SIG_FORCE_MIN seconds). A failed
+        request is not repeated for OWN_SIG_RETRY seconds - the old
+        token, while young enough, is given meanwhile."""
+        now = time.time()
+        with self._own_sig_lock:
+            entry = self._own_sigs.setdefault(
+                slot, {"sig": None, "ts": 0, "failed": 0})
+            fresh = bool(entry["sig"]) and now - entry["ts"] < TOKEN_REFRESH_AGE
+            if fresh and (not force or now - entry["ts"] < OWN_SIG_FORCE_MIN):
+                return entry["sig"]
+            if now - entry["failed"] < OWN_SIG_RETRY:
+                return entry["sig"] if fresh else None
+        try:
+            sig = self._request_addon_sig()
+        except Exception as e:
+            print("[AddonSig] {}: no token of its own ({})".format(slot, e))
+            sig = None
+        with self._own_sig_lock:
+            entry = self._own_sigs.setdefault(
+                slot, {"sig": None, "ts": 0, "failed": 0})
+            if sig:
+                entry.update(sig=sig, ts=time.time(), failed=0)
+                print("[AddonSig] {}: a token of its own".format(slot))
+                return sig
+            entry["failed"] = time.time()
+            return entry["sig"] if fresh else None
+
+    def drop_own_signature(self, slot):
+        with self._own_sig_lock:
+            self._own_sigs.pop(slot, None)
+
+    def resolve_own(self, channel_id, slot, force=False):
+        """channel_id's stream address with `slot`'s own token, for a
+        recording - never through the shared resolve cache (the player
+        keeps its address, see resolve_with_retry()) nor the group
+        state (a grouped channel: the source the group plays from
+        first, then the others, in resolve_group_with_retry()'s
+        order). geil.to channels need no token at all."""
+        if not channel_id:
+            return None
+        if channel_id.startswith(GROUP_ID_PREFIX):
+            country, key = parse_group_id(channel_id)
+            members = self._group_members(country, key) if key else []
+            candidates = self._ordered_group_members(channel_id, members)
+        else:
+            channel = self.channels_by_id.get(channel_id)
+            candidates = [channel] if channel else []
+        if not candidates:
+            return None
+        if self.catalog_source == "geil":
+            for member in candidates:
+                stream_url = self._resolve_geil_channel(
+                    member.get("url"), 2, cache=False)
+                if stream_url:
+                    return stream_url
+            return None
+        if not self.own_signature(slot, force=force):
+            return None
+        for member in candidates:
+            stream_url = self._do_resolve_with_retry(
+                member.get("url"), 2, slot=slot)
+            if stream_url:
+                return stream_url
+        return None
+
+    def initialize_proxy(self, use_saved=True):
+        """Load the catalog: the one saved at the last load first
+        (load_saved_catalog() - the proxy then answers at once, and
+        start_proxy() fetches the new one behind it with
+        start_catalog_refresh()), else from the network
+        (_download_catalog()). use_saved=False ("Reload List"): the
+        network only, waited for.
+
+        Always True: with nothing loaded the proxy starts with an empty
+        catalog (and catalog_needs_refresh, so it keeps trying)."""
         try:
             print(" Initializing...")
-
-            source_preference = "auto"
-            try:
-                source_preference = e2_config.plugins.vavoo.catalog_source.value
-            except Exception as e:
-                print(" Could not read catalog_source config: {}".format(e))
-
-            if source_preference == "vavoo":
-                print(" Catalog source pinned to Vavoo - skipping Geil")
-                self.catalog_source = "vavoo"
-                sig = self.refresh_addon_sig_if_needed()
-                if not sig:
-                    print(
-                        " Warning: Could not get a valid token, but continuing anyway")
-                print(" Attempting to load catalog...")
-                all_channels = self.load_catalog(sig)
+            setting = catalog_setting()
+            if use_saved:
+                saved = load_saved_catalog(setting)
+                if saved is not None:
+                    items, source = saved
+                    self._install_catalog(items, source)
+                    self.catalog_needs_refresh = True
+                    print(" ✓ Started with the saved catalog: %d channels, %d countries (%s) - "
+                          "the new one loads behind it" % (len(items), len(self.countries_list), source))
+                    return True
+            items, source = self._download_catalog(setting)
+            self._install_catalog(items or [], source)
+            if items:
+                save_catalog(items, source, setting)
+                print(" ✓ Initialized: %d channels, %d countries" % (len(items), len(self.countries_list)))
             else:
-                print(" Attempting to load catalog from Geil (no token needed)...")
-                all_channels = self.load_geil_catalog()
-                if all_channels:
-                    self.catalog_source = "geil"
-                elif source_preference == "geil":
-                    print(
-                        " Catalog source pinned to Geil - not falling back to Vavoo")
-                    self.catalog_source = "geil"
-                else:
-                    print(" Geil catalog unavailable, falling back to Vavoo")
-                    self.catalog_source = "vavoo"
-
-                    # First, obtain a valid token
-                    sig = self.refresh_addon_sig_if_needed()
-                    if not sig:
-                        print(
-                            " Warning: Could not get a valid token, but continuing anyway")
-                        # We may continue with an old token or no token at all
-
-                    # Load the catalog
-                    print(" Attempting to load catalog...")
-                    all_channels = self.load_catalog(sig)
-
-            if not all_channels or len(all_channels) == 0:
-                print(" Warning: Catalog is empty or failed to load")
-                # Create an empty list but mark as initialized
-                self.all_filtered_items = []
-                self.channels_by_id = {}
-                self.channels_by_country = {}
-                self._group_members_cache = {}
-                self.countries_list = []
-                self.initialized = True
-                print(" Initialized with empty catalog")
-                return True
-
-            self.all_filtered_items = all_channels
-            self.channels_by_id = {}
-            self.channels_by_country = {}
-            self._group_members_cache = {}
-            countries = set()
-            for channel in all_channels:
-                channel_id = channel.get("id")
-                if channel_id:
-                    self.channels_by_id[channel_id] = channel
-                country = channel.get("country")
-                if country:
-                    country_lower = country.lower()
-                    self.channels_by_country.setdefault(
-                        country_lower, []).append(channel)
-                    group_key = _group_key(channel.get("name", ""))
-                    if group_key:
-                        self._group_members_cache.setdefault(
-                            (country_lower, group_key), []).append(channel)
-                if country and country != "default":
-                    countries.add(country)
-            self.countries_list = sorted(list(countries))
-            self.local_ip = self.get_local_ip(force_refresh=True)
-            self.initialized = True
-
-            # Analysis
-
-            print(
-                " ✓ Initialized: %d channels, %d countries" %
-                (len(all_channels), len(countries))
-            )
+                print(" Warning: Catalog is empty or failed to load - started empty, trying again later")
+                self.catalog_needs_refresh = True
             return True
-
         except Exception as e:
             print(" Initialization error: %s" % str(e))
-            # Even in case of error, try to continue with an empty catalog
+            # Even in case of error, continue with an empty catalog
             print(" Continuing with empty catalog")
-            self.all_filtered_items = []
-            self.channels_by_id = {}
-            self.channels_by_country = {}
-            self._group_members_cache = {}
-            self.countries_list = []
-            self.initialized = True
+            self._install_catalog([], getattr(self, "catalog_source", "vavoo"))
+            self.catalog_needs_refresh = True
             return True  # Always return True; the proxy can work even without a catalog
+
+    def _download_catalog(self, setting):
+        """(channels, source) from the network: geil.to first (no
+        addonSig/token step needed at all), Vavoo's sites (vavoo.to /
+        kool.to) as the fallback when geil.to's whole catalog can't be
+        loaded - the companion Android app's order. `setting` is
+        config.plugins.vavoo.catalog_source: "auto", or pinned to
+        "geil" / "vavoo" - a pinned choice is respected as it is, with
+        no fallback to the other source (an explicit preference is not
+        silently overridden the way "auto"'s best-effort fallback is).
+        Never touches the catalog in use (a refresh runs while it
+        serves)."""
+        if setting == "vavoo":
+            print(" Catalog source pinned to Vavoo - skipping Geil")
+            sig = self.refresh_addon_sig_if_needed()
+            if not sig:
+                print(" Warning: Could not get a valid token, but continuing anyway")
+            print(" Attempting to load catalog...")
+            return self.load_catalog(sig), "vavoo"
+        print(" Attempting to load catalog from Geil (no token needed)...")
+        channels = self.load_geil_catalog()
+        if channels:
+            return channels, "geil"
+        if setting == "geil":
+            print(" Catalog source pinned to Geil - not falling back to Vavoo")
+            return [], "geil"
+        print(" Geil catalog unavailable, falling back to Vavoo")
+        sig = self.refresh_addon_sig_if_needed()
+        if not sig:
+            # We may continue with an old token or no token at all
+            print(" Warning: Could not get a valid token, but continuing anyway")
+        print(" Attempting to load catalog...")
+        return self.load_catalog(sig), "vavoo"
+
+    def _install_catalog(self, channels, source):
+        """Put a catalog in use. Every index is built aside first and
+        then assigned, so a reader (a request thread, the plugin's
+        GUI) always sees whole dicts - a dict in use is never changed,
+        which the indexes' users rely on (country_counts() even goes by
+        the identity of channels_by_country)."""
+        by_id = {}
+        by_country = {}
+        groups = {}
+        countries = set()
+        for channel in channels:
+            channel_id = channel.get("id")
+            if channel_id:
+                by_id[channel_id] = channel
+            country = channel.get("country")
+            if country:
+                country_lower = country.lower()
+                by_country.setdefault(country_lower, []).append(channel)
+                group_key = _group_key(channel.get("name", ""))
+                if group_key:
+                    groups.setdefault((country_lower, group_key), []).append(channel)
+            if country and country != "default":
+                countries.add(country)
+        self.catalog_source = source
+        self.all_filtered_items = channels
+        self.channels_by_id = by_id
+        self._group_members_cache = groups
+        self.countries_list = sorted(countries)
+        self.channels_by_country = by_country
+        self.catalog_version += 1
+        self.initialized = True
+
+    def start_catalog_refresh(self):
+        """Fetch the new catalog behind the one in use (the saved one,
+        or an empty start) - thread "vv-catalog". A failure keeps what
+        is in use and tries again every CATALOG_RETRY seconds while
+        this instance lives."""
+        if self.catalog_refreshing or not self.catalog_needs_refresh:
+            return False
+        self.catalog_refreshing = True
+
+        def _task():
+            vavoo_record.name_this_thread("vv-catalog")
+            try:
+                while not self.is_stopped():
+                    setting = catalog_setting()
+                    try:
+                        items, source = self._download_catalog(setting)
+                    except Exception as e:
+                        print("[Catalog] Refresh failed: {}".format(e))
+                        items, source = [], None
+                    if self.is_stopped():
+                        return
+                    if items:
+                        self._install_catalog(items, source)
+                        self.catalog_needs_refresh = False
+                        save_catalog(items, source, setting)
+                        print("[Catalog] ✓ The new catalog is in: %d channels, %d countries (%s)"
+                              % (len(items), len(self.countries_list), source))
+                        return
+                    print("[Catalog] No new catalog - keeping the one in use, again in %d min"
+                          % (CATALOG_RETRY // 60))
+                    self._stop_event.wait(CATALOG_RETRY)
+            finally:
+                self.catalog_refreshing = False
+
+        worker = threading.Thread(target=_task)
+        worker.daemon = True
+        worker.start()
+        return True
 
     def _parse_geil_group(self, item):
         """geil.to's group comes as a tags array (first tag), not a
@@ -1464,8 +1714,7 @@ class VavooProxy(object):
                                 # against the country's own EPG feed index
                                 # as a new highest-priority exact match in
                                 # VavooEPGMatcher.find_match(), before the
-                                # existing alias/cache/curated-DB/Rytec
-                                # fuzzy-matching chain.
+                                # alias/cache/curated-DB/feed-name chain.
                                 "epg_id": ids.get("tvg", "")
                             })
                         except Exception as e:
@@ -1730,11 +1979,7 @@ class VavooProxy(object):
 
             return None
 
-    def resolve_with_retry(
-            self,
-            channel_url,
-            max_retries=2,
-            force_refresh=False):
+    def resolve_with_retry(self, channel_url, max_retries=2):
         """Resolve a channel's stream address, kept for as long as it
         keeps being asked for.
 
@@ -1753,18 +1998,14 @@ class VavooProxy(object):
 
         A stream that actually failed is dropped explicitly instead -
         see invalidate_resolved() and report_stream_failure().
-
-        force_refresh=True skips the cache read (still updates it with
-        the fresh result below).
         """
         if not channel_url:
             print(" No channel URL provided")
             return None
 
-        if not force_refresh:
-            cached_url = self._get_cached_url(channel_url)
-            if cached_url:
-                return cached_url
+        cached_url = self._get_cached_url(channel_url)
+        if cached_url:
+            return cached_url
 
         # Dedup concurrent resolves of the same channel_url on a cache
         # miss/expiry - two requests for the same popular channel (e.g.
@@ -1865,6 +2106,41 @@ class VavooProxy(object):
 
         return [member for _index, member in sorted(
             enumerate(members), key=sort_key)]
+
+    def prefetch(self, channel_id):
+        """Resolve a channel's address ahead of the zap to it (the
+        player asks for the next one in its direction), so /vavoo then
+        answers from the resolve cache at once. Only on the Geil
+        catalog: it needs no token, while Vavoo plays one stream per
+        token and a resolve on the shared one could cut the stream being
+        watched. Never touches what the player does: no stream count,
+        no group state (a group's source is the one it would try first,
+        read with _ordered_group_members(), which only reads). Unused,
+        the address is forgotten after RESOLVE_IDLE_TTL. One at a time.
+        True when an address is ready."""
+        if self.catalog_source != "geil" or not channel_id:
+            return False
+        if not self._prefetch_lock.acquire(False):
+            return False
+        try:
+            if channel_id.startswith(GROUP_ID_PREFIX):
+                country, key = parse_group_id(channel_id)
+                members = self._group_members(country, key) if key else []
+                ordered = self._ordered_group_members(channel_id, members)
+                channel = ordered[0] if ordered else None
+            else:
+                channel = self.channels_by_id.get(channel_id)
+            url = channel.get("url") if channel else None
+            if not url:
+                return False
+            if self._get_cached_url(url):
+                return True
+            return bool(self.resolve_with_retry(url, max_retries=1))
+        except Exception as e:
+            debug("Prefetch of {} failed: {}".format(channel_id, e))
+            return False
+        finally:
+            self._prefetch_lock.release()
 
     def resolve_group_with_retry(self, group_id):
         """Resolve a grouped channel (a "grp:<country>:<key>" id - see
@@ -1976,6 +2252,165 @@ class VavooProxy(object):
             print("[Proxy] {0}: source {1} failed, retrying it".format(
                 channel_id, failed_member_id))
 
+    def channel_rows(self, country, grouped=True):
+        """A country's channel list as /channels serves it: [{"id",
+        "name", "url", "logo", "country", "epg_id", "category"}], the
+        sources of one channel in one row ("grp:<country>:<key>" id)
+        unless grouped is False (the app's "Group Sources" off: every
+        source its own row, under its catalog name). "category" is the
+        catalog's sub-category ("Italy ➾ Sport" -> "Sport", "" when
+        there is none) - of a grouped row, its first source's. Also
+        called in-process by plugin.py (search all, the channel
+        list's sub-categories)."""
+        # O(channels-in-this-country) via the precomputed
+        # per-country index, instead of scanning the entire
+        # (every-country) catalog on every single /channels
+        # call.
+        matching_channels = (getattr(self, 'channels_by_country', None)
+                             or {}).get((country or "").lower(), [])
+
+        response_channels = []
+        local_ip = self.get_local_ip()
+
+        # Group sources of the same channel (Vavoo's own
+        # ".b"/".c"/".s" convention, which geil.to's "(N)"
+        # suffix is already normalized to by fix_geil_name())
+        # into a single row, like the companion Android app's
+        # "group sources" option - see _group_key()'s own
+        # docstring for why that, and not EPG matching's more
+        # tolerant clean_name_for_similarity(), is used here. A
+        # name that normalizes to "" (nothing recognizable
+        # left) is never grouped with anything else - shown
+        # standalone, same as today.
+        #
+        # _group_key() computed once per channel here (not
+        # twice, once per pass) and carried forward as
+        # channel_keys - halves the regex cost of this
+        # endpoint, which bouquet export calls once per
+        # country *and* once per category on every run.
+        channel_keys = [
+            (channel, _group_key(channel.get("name", "")) if grouped else "")
+            for channel in matching_channels]
+
+        key_members = {}
+        for channel, key in channel_keys:
+            if key:
+                key_members.setdefault(key, []).append(channel)
+
+        emitted_keys = set()
+        for channel, key in channel_keys:
+            members = key_members.get(key) if key else None
+
+            if members and len(members) > 1:
+                # Several sources of one channel - one row for
+                # all of them, emitted the first time any of
+                # its sources is reached (so the row lands
+                # where the first source would have, instead
+                # of reordering the list), skipped every other
+                # time. Resolved through resolve_group_with_
+                # retry() via its synthetic group id, which
+                # picks one source and stays on it until the
+                # player reports it as failed.
+                if key in emitted_keys:
+                    continue
+                emitted_keys.add(key)
+                group_id = make_group_id(country, key)
+                display_names = [
+                    _strip_source_suffix(m.get("name", "")) or
+                    m.get("name", "") for m in members]
+                display_name = min(display_names, key=len)
+                logo = next((m.get("logo")
+                             for m in members if m.get("logo")), "")
+                epg_id = next((m.get("epg_id")
+                               for m in members if m.get("epg_id")), "")
+                proxy_url = "http://%s:%d/vavoo?channel=%s" % (
+                    local_ip, PORT, quote(group_id, safe=''))
+                response_channels.append({
+                    "id": group_id,
+                    "name": display_name,
+                    "url": proxy_url,
+                    "logo": logo,
+                    # The catalog's own casing (e.g. "Italy"),
+                    # same as the standalone branch below -
+                    # not the raw query string (e.g. "italy"),
+                    # which made this field's casing differ
+                    # between a grouped and a standalone row
+                    # in the same response.
+                    "country": members[0].get("country", country),
+                    "epg_id": epg_id,
+                    "category": _category_from_group(
+                        members[0].get("group", ""))
+                })
+            else:
+                channel_id = channel.get("id", "")
+                if not channel_id:
+                    continue
+                # Quoted the same way the grouped branch above
+                # (group_id) and /playlist.m3u (channel_id) already
+                # are - this was the one place a raw catalog id
+                # with a "&"/"#"/space in it could still corrupt
+                # the query string.
+                proxy_url = "http://%s:%d/vavoo?channel=%s" % (
+                    local_ip, PORT, quote(str(channel_id), safe=''))
+                raw_name = channel.get("name", "")
+                shown_name = raw_name if not grouped else (
+                    _strip_source_suffix(raw_name) or raw_name)
+                response_channels.append({
+                    "id": channel_id,
+                    # Strip the same source-variant suffix the
+                    # grouped branch above already strips -
+                    # this channel just happens to have no
+                    # sibling source present in this country's
+                    # catalog right now (common - not every
+                    # channel actually has multiple sources
+                    # even though Vavoo/geil still tags it with
+                    # a letter), which is no reason to show the
+                    # raw ".b"/".c"/".s" suffix forever.
+                    # (grouped off: the catalog name, ".b"/".c"
+                    # included - it is what tells the sources apart)
+                    "name": shown_name,
+                    "url": proxy_url,
+                    "logo": channel.get("logo", ""),
+                    "country": channel.get("country", country),
+                    "epg_id": channel.get("epg_id", ""),
+                    "category": _category_from_group(
+                        channel.get("group", ""))
+                })
+        return response_channels
+
+    def country_counts(self, grouped=True):
+        """{country.lower(): number of rows /channels lists for it} -
+        the sources of one channel counted once, as /channels groups
+        them (one row per _group_key(), plus every channel whose name
+        leaves no key). For the main list's "Portugal (174)" in
+        plugin.py, which calls this in-process from a background
+        thread.
+
+        Worked out once per catalog: initialize_proxy() builds
+        channels_by_country once and never changes it afterwards, so
+        the same dict object means the same counts."""
+        by_country = getattr(self, 'channels_by_country', None) or {}
+        if not grouped:
+            # every source its own row (Group Sources off)
+            return dict((country, len([c for c in channels if c.get("id")]))
+                        for country, channels in by_country.items())
+        cached = getattr(self, '_country_counts', None)
+        if cached is not None and cached[0] is by_country:
+            return cached[1]
+        counts = {}
+        for country, channels in by_country.items():
+            keys = set()
+            standalone = 0
+            for channel in channels:
+                key = _group_key(channel.get("name", ""))
+                if key:
+                    keys.add(key)
+                elif channel.get("id"):
+                    standalone += 1
+            counts[country] = len(keys) + standalone
+        self._country_counts = (by_country, counts)
+        return counts
+
     def get_group_sources(self, group_id):
         """A grouped channel's individual sources and which one is in
         use: {"members": [{"id", "label"}, ...], "current": id or
@@ -1986,13 +2421,18 @@ class VavooProxy(object):
         with self.group_lock:
             state = self._group_state.get(group_id) or {}
             current = state.get("member") or self._group_pins.get(group_id)
+            avoid = dict(state.get("avoid") or {})
         member_ids = [m.get("id") for m in members]
         if current not in member_ids:
             current = None
         labels = _unique_source_labels(members)
+        now = time.time()
         return {
             "members": [
-                {"id": m.get("id"), "label": labels[i]}
+                {"id": m.get("id"), "label": labels[i],
+                 # given up on a moment ago (the app's ✗)
+                 "failed": bool(avoid.get(m.get("id"))) and
+                 now - avoid.get(m.get("id"), 0) < GROUP_AVOID_SECONDS}
                 for i, m in enumerate(members)
             ],
             "current": current,
@@ -2051,7 +2491,7 @@ class VavooProxy(object):
                             if now - v["ts"] >= self.resolve_cache_ttl]:
                     self.resolve_cache.pop(key, None)
 
-    def _resolve_geil_channel(self, channel_url, max_retries):
+    def _resolve_geil_channel(self, channel_url, max_retries, cache=True):
         """Resolve a geil.to channel's stream address - GET
         {base}/live/resolve?url=<its play address>, no token at all.
         Tries the current geil mirror first, then the others, same
@@ -2084,7 +2524,8 @@ class VavooProxy(object):
                     stream_url = result.get("url") or result.get(
                         "streamUrl")
                 if stream_url:
-                    self._cache_resolved_url(channel_url, stream_url)
+                    if cache:
+                        self._cache_resolved_url(channel_url, stream_url)
                     return stream_url
                 print("[Geil] {0} answered with no stream url".format(site))
             except Exception as e:
@@ -2098,14 +2539,18 @@ class VavooProxy(object):
                 "mirrors: {0}".format(last_exception))
         return None
 
-    def _do_resolve_with_retry(self, channel_url, max_retries):
+    def _do_resolve_with_retry(self, channel_url, max_retries, slot=None):
         """The actual network resolve + retry loop - see
-        resolve_with_retry() for the in-flight dedup wrapping this."""
-        if self.catalog_source == "geil":
+        resolve_with_retry() for the in-flight dedup wrapping this.
+        slot: with that slot's own token (resolve_own()), the answer
+        not cached."""
+        if self.catalog_source == "geil" and slot is None:
             return self._resolve_geil_channel(channel_url, max_retries)
         for attempt in range(max_retries):
             try:
-                if attempt > 0:
+                if slot is not None:
+                    current_sig = self.own_signature(slot, force=attempt > 0)
+                elif attempt > 0:
                     # Not force=True: that unconditionally bypassed the
                     # "already fresh" short-circuit above, so a burst of
                     # concurrently failing streams (e.g. right after
@@ -2117,8 +2562,9 @@ class VavooProxy(object):
                     # avoid.
                     self.refresh_addon_sig_if_needed()
 
-                with self.addon_sig_lock:
-                    current_sig = self.addon_sig_data["sig"]
+                if slot is None:
+                    with self.addon_sig_lock:
+                        current_sig = self.addon_sig_data["sig"]
 
                 resolve_headers = {
                     "content-type": "application/json; charset=utf-8",
@@ -2171,7 +2617,8 @@ class VavooProxy(object):
                     stream_url = result.get("url") or result.get("streamUrl")
 
                 if stream_url:
-                    self._cache_resolved_url(channel_url, stream_url)
+                    if slot is None:
+                        self._cache_resolved_url(channel_url, stream_url)
                     print(" Successfully resolved channel URL")
                     return stream_url
                 print(" Resolve response missing URL")
@@ -2198,7 +2645,7 @@ class VavooProxy(object):
         print(" Failed to resolve channel URL after all retries")
         return None
 
-    def get_local_ip(self, force_refresh=False):
+    def get_local_ip(self):
         # Deliberately always 127.0.0.1, not the box's real LAN IP: the
         # /channels endpoint embeds this directly into the proxy URLs
         # returned for bouquet export (http://<local_ip>:PORT/vavoo?...),
@@ -2286,6 +2733,18 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
             # brand-new, uninitialized one).
             p = proxy
 
+            # The proxy answers the whole network (bouquets and
+            # /playlist.m3u on other devices), but its controls only
+            # the box itself: anything on the network - even a web page
+            # in a browser there, with an <img src=...> - could stop
+            # every channel, or keep the token ping busy.
+            if parsed_path.path in LOCAL_ONLY_PATHS and \
+                    not is_loopback(self.client_address[0]):
+                print("[Proxy] {} refused from {}".format(
+                    parsed_path.path, self.client_address[0]))
+                self.send_error(403, "Only from the box itself")
+                return
+
             if parsed_path.path == '/vavoo':
                 channel_id = query_params.get('channel', [None])[0]
                 if not channel_id:
@@ -2329,120 +2788,6 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     print("[Proxy] /vavoo error: " + str(e))
                     self.send_error(500, "Internal proxy error")
 
-            elif parsed_path.path == '/stream':
-                # Get the 'ref' parameter (the converted service reference)
-                ref_encoded = query_params.get('ref', [None])[0]
-                if not ref_encoded:
-                    self.send_error(400, "Missing ref parameter")
-                    return
-
-                # Decode the ref (replace %3a back to :)
-                ref = unquote(ref_encoded)
-
-                # Load the sref map
-                try:
-                    with open(SREF_MAP_FILE, 'r') as f:
-                        sref_map = load(f)
-                except BaseException:
-                    sref_map = {}
-
-                channel_id = sref_map.get(ref)
-                if not channel_id:
-                    self.send_error(404, "Channel not found in map")
-                    return
-
-                # Now get the channel object from p.channels_by_id
-                channel = p.channels_by_id.get(channel_id) if hasattr(
-                    p, 'channels_by_id') else None
-                if not channel:
-                    self.send_error(404, "Channel not found")
-                    return
-
-                try:
-                    # 1. Get stream URL. force=1 skips the resolve
-                    # cache, for a client that knows the address it
-                    # was just given is broken.
-                    force_refresh = query_params.get(
-                        'force', ['0'])[0] == '1'
-                    stream_url = p.resolve_with_retry(
-                        channel["url"], force_refresh=force_refresh)
-                    if not stream_url:
-                        self.send_error(404, "Stream not resolved")
-                        return
-
-                    # 2-4 all live under one try/finally so upstream is
-                    # always closed, including if raise_for_status() raises
-                    # or the client disconnects before headers are sent -
-                    # previously the connection/response was only closed if
-                    # the forwarding loop below was actually reached.
-                    upstream = None
-                    counted_stream = False
-                    try:
-                        # 2. Connect to upstream with streaming (timeout
-                        # aumentato)
-                        upstream = p.session.get(
-                            stream_url, stream=True, timeout=(
-                                10, 90))  # (connect, read) 10s/90s
-                        upstream.raise_for_status()
-
-                        # 3. Send headers to player
-                        if not self.safe_send_response(200):
-                            return
-                        self.send_header(
-                            'Content-Type',
-                            upstream.headers.get(
-                                'Content-Type',
-                                'video/mp2t'))
-                        self.send_header('Connection', 'keep-alive')
-                        # Add headers to prevent caching
-                        self.send_header(
-                            'Cache-Control', 'no-cache, no-store')
-                        self.end_headers()
-
-                        # HEAD requests get headers only - the caller
-                        # (do_HEAD) wants to know the stream is reachable
-                        # without paying for the actual video transfer.
-                        if getattr(self, '_head_only', False):
-                            return
-
-                        # 4. Forward data with timeout monitoring (chunk
-                        # size increased)
-                        p.stream_started()
-                        counted_stream = True
-                        last_data_time = time.time()
-                        try:
-                            # Increase chunk size from 65536 to 262144 (256KB)
-                            for chunk in upstream.iter_content(
-                                    chunk_size=262144):
-                                if chunk:
-                                    self.wfile.write(chunk)
-                                    self.wfile.flush()
-                                    last_data_time = time.time()
-                                else:
-                                    if time.time() - last_data_time > 15:
-                                        print(
-                                            "[Proxy Stream] Upstream stalled for: " + channel_id)
-                                        break
-                                    select.select([], [], [], 0.1)
-                        except (socket.timeout, ConnectionError, BrokenPipeError) as e:
-                            print("[Proxy Stream] Network error: " + str(e))
-                        except Exception as e:
-                            print("[Proxy Stream] Unexpected error: " + str(e))
-                    finally:
-                        if upstream is not None:
-                            try:
-                                upstream.close()
-                            except Exception:
-                                pass
-                        if counted_stream:
-                            p.stream_ended()
-                        print(
-                            "[Proxy Stream] Finished for channel: " +
-                            channel_id)
-                except Exception as e:
-                    print("[Proxy Stream] Error: " + str(e))
-                    self.send_error(500, "Streaming error")
-
             elif parsed_path.path == '/channels':
                 # p is already bound once at the top of do_GET()
                 country = query_params.get('country', [None])[0]
@@ -2450,113 +2795,8 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     self.send_error(400, "Missing country parameter")
                     return
 
-                # O(channels-in-this-country) via the precomputed
-                # per-country index, instead of scanning the entire
-                # (every-country) catalog on every single /channels
-                # call.
-                matching_channels = p.channels_by_country.get(
-                    country.lower(), []) if hasattr(
-                    p, 'channels_by_country') else []
-
-                response_channels = []
-                local_ip = p.get_local_ip()
-
-                # Group sources of the same channel (Vavoo's own
-                # ".b"/".c"/".s" convention, which geil.to's "(N)"
-                # suffix is already normalized to by fix_geil_name())
-                # into a single row, like the companion Android app's
-                # "group sources" option - see _group_key()'s own
-                # docstring for why that, and not EPG matching's more
-                # tolerant clean_name_for_similarity(), is used here. A
-                # name that normalizes to "" (nothing recognizable
-                # left) is never grouped with anything else - shown
-                # standalone, same as today.
-                #
-                # _group_key() computed once per channel here (not
-                # twice, once per pass) and carried forward as
-                # channel_keys - halves the regex cost of this
-                # endpoint, which bouquet export calls once per
-                # country *and* once per category on every run.
-                channel_keys = [
-                    (channel, _group_key(channel.get("name", "")))
-                    for channel in matching_channels]
-
-                key_members = {}
-                for channel, key in channel_keys:
-                    if key:
-                        key_members.setdefault(key, []).append(channel)
-
-                emitted_keys = set()
-                for channel, key in channel_keys:
-                    members = key_members.get(key) if key else None
-
-                    if members and len(members) > 1:
-                        # Several sources of one channel - one row for
-                        # all of them, emitted the first time any of
-                        # its sources is reached (so the row lands
-                        # where the first source would have, instead
-                        # of reordering the list), skipped every other
-                        # time. Resolved through resolve_group_with_
-                        # retry() via its synthetic group id, which
-                        # picks one source and stays on it until the
-                        # player reports it as failed.
-                        if key in emitted_keys:
-                            continue
-                        emitted_keys.add(key)
-                        group_id = make_group_id(country, key)
-                        display_names = [
-                            _strip_source_suffix(m.get("name", "")) or
-                            m.get("name", "") for m in members]
-                        display_name = min(display_names, key=len)
-                        logo = next((m.get("logo")
-                                     for m in members if m.get("logo")), "")
-                        epg_id = next((m.get("epg_id")
-                                       for m in members if m.get("epg_id")), "")
-                        proxy_url = "http://%s:%d/vavoo?channel=%s" % (
-                            local_ip, PORT, quote(group_id, safe=''))
-                        response_channels.append({
-                            "id": group_id,
-                            "name": display_name,
-                            "url": proxy_url,
-                            "logo": logo,
-                            # The catalog's own casing (e.g. "Italy"),
-                            # same as the standalone branch below -
-                            # not the raw query string (e.g. "italy"),
-                            # which made this field's casing differ
-                            # between a grouped and a standalone row
-                            # in the same response.
-                            "country": members[0].get("country", country),
-                            "epg_id": epg_id
-                        })
-                    else:
-                        channel_id = channel.get("id", "")
-                        if not channel_id:
-                            continue
-                        # Quoted the same way the grouped branch above
-                        # (group_id) and /playlist.m3u (channel_id) already
-                        # are - this was the one place a raw catalog id
-                        # with a "&"/"#"/space in it could still corrupt
-                        # the query string.
-                        proxy_url = "http://%s:%d/vavoo?channel=%s" % (
-                            local_ip, PORT, quote(str(channel_id), safe=''))
-                        raw_name = channel.get("name", "")
-                        response_channels.append({
-                            "id": channel_id,
-                            # Strip the same source-variant suffix the
-                            # grouped branch above already strips -
-                            # this channel just happens to have no
-                            # sibling source present in this country's
-                            # catalog right now (common - not every
-                            # channel actually has multiple sources
-                            # even though Vavoo/geil still tags it with
-                            # a letter), which is no reason to show the
-                            # raw ".b"/".c"/".s" suffix forever.
-                            "name": _strip_source_suffix(raw_name) or raw_name,
-                            "url": proxy_url,
-                            "logo": channel.get("logo", ""),
-                            "country": channel.get("country", country),
-                            "epg_id": channel.get("epg_id", "")
-                        })
+                grouped = query_params.get('grouped', ['1'])[0] != '0'
+                response_channels = p.channel_rows(country, grouped)
 
                 if not self.safe_send_response(200):
                     return
@@ -2691,30 +2931,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
             elif parsed_path.path == '/status':
                 # p is already bound once at the top of do_GET()
-                # Locked read - the writer (refresh_addon_sig_if_needed())
-                # updates "sig" and "ts" as two separate statements under
-                # this same lock, so an unlocked read here could observe
-                # a freshly-updated sig paired with the old ts.
-                with p.addon_sig_lock:
-                    addon_sig = dict(p.addon_sig_data)
-                status = {
-                    "initialized": p.initialized,
-                    "channels_count": len(
-                        p.all_filtered_items),
-                    "catalog_source": p.catalog_source,
-                    # geil.to needs no token at all, so addon_sig_valid
-                    # is permanently false and addon_sig_age a huge
-                    # nonsense number on that source - this flag tells
-                    # a consumer not to treat either as a problem, same
-                    # disambiguation /health's "status" field already
-                    # makes internally.
-                    "token_required": p.catalog_source != "geil",
-                    "addon_sig_valid": addon_sig["sig"] is not None,
-                    "addon_sig_age": int(
-                        time.time() -
-                        addon_sig["ts"]),
-                    "local_ip": p.get_local_ip(),
-                    "port": PORT}
+                status = status_of(p)
                 if not self.safe_send_response(200):
                     return
                 self.send_header('Content-Type', 'application/json')
@@ -2722,7 +2939,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 if not self.safe_write(dumps(status)):
                     return
 
-            # Redirect per-country EPG requests to GitHub raw files
+            # A country's programme guide (vUtils' country_epg_chunks())
             elif parsed_path.path.startswith('/epg/') and parsed_path.path.endswith('.xml'):
                 # Lowercase: the actual files on GitHub are lowercase
                 # (epg_it.xml, epg_fr.xml, ...) and raw.githubusercontent.com
@@ -2733,11 +2950,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 # otherwise redirect straight to a 404.
                 country_code = parsed_path.path.split(
                     '/')[-1].replace('.xml', '').lower()
-                github_url = "{}/vavoo-player/master/epg_{}.xml".format(
-                    HOST_GIT, country_code)
-                self.send_response(302)
-                self.send_header('Location', github_url)
-                self.end_headers()
+                self._serve_epg(p, country_code)
 
             elif parsed_path.path == '/health':
                 """Health check endpoint with detailed status"""
@@ -2838,6 +3051,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 if not self.safe_write(dumps(response)):
                     return
 
+            elif parsed_path.path == '/file':
+                self._serve_file(p, query_params)
+
             elif parsed_path.path == '/shutdown':
                 # Signal stop to prevent the restart loop from
                 # re-spawning the server: the global flag, and the
@@ -2900,6 +3116,138 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 print(" Client gone while sending error")
                 return
 
+    def _serve_epg(self, p, country_code):
+        """/epg/<cc>.xml: the country's daily guide files from
+        epgshare01.online, unpacked and (the Balkans' three) put
+        together, as plain XMLTV (X-Vavoo-EPG: daily) - or a redirect
+        to the copy on GitHub when the country has none, or they fail
+        or are out of date (then the copy for a while: vUtils'
+        mark_epg_daily_unusable()). One address for the plugin's
+        guide, its feed index and EPGImport."""
+        urls = epg_daily_urls(country_code)
+        chunks = first = None
+        if urls and not getattr(self, '_head_only', False):
+            chunks = country_epg_chunks(country_code, urls)
+            try:
+                first = next(chunks)
+            except EpgFeedStale as e:
+                print("[EPG] {}: daily files out of date ({}) - the "
+                      "GitHub copy instead".format(country_code, e))
+                mark_epg_daily_unusable(country_code, EPG_DAILY_STALE_BACKOFF)
+                chunks = None
+            except Exception as e:
+                print("[EPG] {}: daily files not read ({}) - the GitHub "
+                      "copy instead".format(country_code, e))
+                mark_epg_daily_unusable(country_code, EPG_DAILY_FAIL_BACKOFF)
+                chunks = None
+        if not urls or (chunks is None and
+                        not getattr(self, '_head_only', False)):
+            if self.safe_send_response(302):
+                self.send_header('Location', epg_copy_url(country_code))
+                self.end_headers()
+            return
+        try:
+            if not self.safe_send_response(200):
+                return
+            self.send_header('Content-Type', 'application/xml; charset=utf-8')
+            self.send_header('X-Vavoo-EPG', 'daily')
+            self.send_header('Connection', 'close')
+            self.close_connection = True
+            self.end_headers()
+            if chunks is None:
+                return          # HEAD
+            if not self.safe_write(first):
+                return
+            for chunk in chunks:
+                if p.is_stopped() or not self.safe_write(chunk):
+                    return
+        finally:
+            if chunks is not None:
+                chunks.close()
+
+    def _serve_file(self, p, query_params):
+        """/file?id=<id>[&offset=<byte>][&follow=1]: a recording or a
+        pause buffer (plugin.py's recorder - vavoo_record.py).
+
+        Only an id registered with vavoo_record.register_file() is
+        served, never a path from the address: the proxy answers the
+        whole network (bouquet exports use the box's own address).
+        offset: where to start (a TS packet boundary, from
+        Recorder.offset_for()); a Range header counts from there.
+        follow=1, while the file is still being recorded: it is sent
+        as it grows until its recorder ends - an endless TS stream to
+        the player, like a live channel. Otherwise the file as it is,
+        with its length (a player can seek in it)."""
+        file_id = (query_params.get('id') or [None])[0]
+        entry = vavoo_record.file_entry(file_id) if file_id else None
+        if not entry or not os.path.isfile(entry[0]):
+            self.send_error(404, "Not Found")
+            return
+        path, recorder = entry
+        try:
+            offset = max(0, int((query_params.get('offset') or ['0'])[0]))
+        except ValueError:
+            offset = 0
+        offset -= offset % vavoo_record.PACKET
+        follow = (query_params.get('follow') or ['0'])[0] == '1' and \
+            recorder is not None and recorder.running
+        size = os.path.getsize(path)
+        start, end = offset, None
+        wanted = self.headers.get('Range') if self.headers else None
+        match = re.match(r'\s*bytes=(\d+)-(\d*)\s*$', wanted or '')
+        if match:
+            start = offset + int(match.group(1))
+            if match.group(2):
+                end = offset + int(match.group(2))
+        if not follow and start >= size:
+            self.send_error(416, "Range Not Satisfiable")
+            return
+        length = None
+        if not self.safe_send_response(206 if match else 200):
+            return
+        self.send_header('Content-Type', 'video/mp2t')
+        if follow:
+            self.send_header('Connection', 'close')
+            self.close_connection = True
+        else:
+            last = size - 1 if end is None else min(end, size - 1)
+            length = last - start + 1
+            self.send_header('Accept-Ranges', 'bytes')
+            self.send_header('Content-Length', str(length))
+            if match:
+                self.send_header('Content-Range', 'bytes %d-%d/%d' % (
+                    start - offset, last - offset, size - offset))
+        self.end_headers()
+        if getattr(self, '_head_only', False):
+            return
+        with open(path, 'rb') as f:
+            f.seek(start)
+            remaining = length
+            while True:
+                # (256 KB at a time: fewer turns of this Python loop
+                # for a stream of several Mbit/s)
+                want = 262144 if remaining is None else min(262144, remaining)
+                if want <= 0:
+                    break
+                data = f.read(want)
+                if not data:
+                    if not follow:
+                        break
+                    if not recorder.running:
+                        # what it wrote last, then the end
+                        data = f.read()
+                        if data:
+                            self.safe_write(data)
+                        break
+                    if p.is_stopped():
+                        break
+                    select.select([], [], [], 0.25)
+                    continue
+                if not self.safe_write(data):
+                    return
+                if remaining is not None:
+                    remaining -= len(data)
+
     def handle_one_request(self):
         """Handle a single request with guaranteed cleanup"""
         try:
@@ -2922,9 +3270,11 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
         """Setup with timeout"""
+        # (one thread per request: shown as "vv-proxy" in top -H)
+        vavoo_record.name_this_thread("vv-proxy")
         BaseHTTPRequestHandler.setup(self)
         self.request.settimeout(self.timeout)
-        # Streaming writes are flushed per-chunk (see the /stream handler);
+        # Streaming writes (/file, /epg) are flushed per chunk;
         # without this, Nagle's algorithm can hold small/odd-sized writes
         # briefly waiting to coalesce them, adding needless latency.
         try:
@@ -2978,10 +3328,12 @@ def shutdown_proxy():
     return True
 
 
-def restart_proxy_in_background():
+def restart_proxy_in_background(fresh=False):
     """Stop the running proxy (if any) and start a fresh one, without
     blocking the caller - stopping waits for the old server to wind
-    down, and callers are on Enigma2's GUI thread.
+    down, and callers are on Enigma2's GUI thread. fresh=True ("Reload
+    List"): the new one loads the catalog from the network and does not
+    start with the saved one.
 
     is_proxy_booting() is True from the moment this returns until the
     new server is up: the old one keeps answering for a moment while
@@ -2992,6 +3344,8 @@ def restart_proxy_in_background():
             write_booting_file()
         except Exception as e:
             print("[Proxy] Could not write booting marker: {}".format(e))
+        if fresh:
+            _fresh_start[0] = True
 
     def _task():
         try:
@@ -3018,8 +3372,7 @@ def restart_proxy_in_background():
 def start_proxy():
     """Start the proxy server with restart on failure"""
     global proxy
-    # IMPORTANT: allow restart only if the current process is not running
-    # (the PID file may be stale if the process has died)
+    # IMPORTANT: allow a restart only if nothing answers on the port
     if is_proxy_running():
         print("[PROXY] Proxy is already running, checking if it's responsive...")
         try:
@@ -3065,11 +3418,11 @@ def start_proxy():
     if proxy.is_stopped():
         proxy = VavooProxy()
 
-    # Write the PID file for this instance
-    write_pid_file()
-
     # Indicate that we are booting
     write_booting_file()
+    # "Reload List" asked for a new catalog, not the saved one
+    use_saved = not _fresh_start[0]
+    _fresh_start[0] = False
 
     STOP_EVENT.clear()
     max_restarts = 3
@@ -3082,7 +3435,7 @@ def start_proxy():
                   str(restart_count + 1) + "/" + str(max_restarts) + ")")
             print("=" * 50)
 
-            if not proxy.initialize_proxy():
+            if not proxy.initialize_proxy(use_saved=use_saved):
                 print("[✗] Failed to initialize proxy")
                 restart_count += 1
                 if restart_count < max_restarts:
@@ -3121,6 +3474,8 @@ def start_proxy():
             print("[✓] IP: " + str(local_ip) + ":" + str(PORT))
             print("[✓] Ready")
             print("=" * 50)
+            # started with the saved (or no) catalog: the new one now
+            serving_proxy.start_catalog_refresh()
 
             # Reset restart counter on success
             restart_count = 0
@@ -3226,6 +3581,7 @@ def _proxy_thread_main():
     leave the "booting" marker behind (which would make every start
     attempt for the next MAX_BOOT_AGE seconds think one is still in
     progress)."""
+    vavoo_record.name_this_thread("vv-proxymain")
     try:
         start_proxy()
     except Exception as e:
@@ -3274,12 +3630,6 @@ def _spawn_proxy_thread():
     """Mark a boot as in progress and start the proxy thread. Caller
     holds _starting_lock and has already made sure nothing is
     listening on the port."""
-    # A PID file without a listening port is just left over from an
-    # earlier proxy thread of this same Enigma2 process (the proxy
-    # never runs as a separate process, so the PID in it is always
-    # Enigma2's own - there is nothing to kill).
-    remove_pid_file()
-
     try:
         write_booting_file()
     except Exception as e:
