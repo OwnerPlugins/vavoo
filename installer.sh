@@ -20,6 +20,42 @@ changelog="- New look from the Android app: Prism, Halo and Orbit themes (or
 - Fixed crashes on OpenATV 8 when leaving Recordings or a channel list"
 
 LOGFILE=/tmp/vavoo_install.log
+
+# The syntax check of the plugin's .py files after the copy: the builtin
+# compile() only - no py_compile, which OpenATV's split Python 3 may not
+# have (it said "NON compila" for a plugin that was fine) - and only the
+# os module. The repository's own tools that come along (translations,
+# skin checks, the EPG database maker - Python 3 only, never imported by
+# the plugin) are not checked. Exit 0: all compile; 1: a SyntaxError
+# (file and line printed); 2: the check itself could not run. (No
+# single quote in it: tests/test_audit.py runs it from here.)
+COMPILE_CHECK='
+import os, sys
+TOOLS = ("update_translations.py", "translate_utils.py", "xml2pot.py",
+         "check_skin_consistency.py", "generate_epg_channel_db.py",
+         "make_theme_assets.py")
+try:
+    folder = sys.argv[1]
+    names = sorted(n for n in os.listdir(folder)
+                   if n.endswith(".py") and n not in TOOLS)
+except Exception as e:
+    print("check not run: %s" % e)
+    sys.exit(2)
+bad = 0
+for name in names:
+    path = os.path.join(folder, name)
+    try:
+        with open(path, "rb") as f:
+            compile(f.read(), path, "exec")
+    except SyntaxError as e:
+        print("%s, line %s: %s" % (name, e.lineno, e.msg))
+        bad += 1
+    except Exception as e:
+        print("%s: check not run: %s" % (name, e))
+        sys.exit(2)
+print("%d files checked" % len(names))
+sys.exit(1 if bad else 0)
+'
 RCFILE=/tmp/vavoo_install.rc
 LOGCOPY_DIR=/home/root
 
@@ -281,12 +317,13 @@ main() {
 
     # Il plugin puo' essere copiato ma non comparire nel menu se Python
     # non riesce a compilarlo o mancano moduli: lo verifichiamo qui.
-    log "Test compilazione plugin.py con $PYBIN..."
-    if $PYBIN -c "import py_compile,sys; py_compile.compile(sys.argv[1], doraise=True)" "$PLUGINPATH/plugin.py" 2>&1; then
-        log "plugin.py compila correttamente"
-    else
-        log "!! plugin.py NON compila con $PYBIN: il plugin non apparira' nel menu"
-    fi
+    log "Test compilazione dei file .py con $PYBIN..."
+    $PYBIN -c "$COMPILE_CHECK" "$PLUGINPATH" 2>&1
+    case $? in
+        0) log "tutti i file .py compilano correttamente" ;;
+        1) log "!! un file .py qui sopra NON compila con $PYBIN: il plugin non apparira' nel menu" ;;
+        *) log "controllo della compilazione non eseguito (vedi sopra) - non vuol dire che il plugin sia rotto" ;;
+    esac
     for mod in requests six difflib; do
         if $PYBIN -c "import $mod" >/dev/null 2>&1; then
             log "modulo python '$mod': OK"

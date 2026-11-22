@@ -3,10 +3,11 @@
 from __future__ import print_function
 import os
 import xml.etree.ElementTree as ET
-import vavoo.vavoo_theme as vt
-import vavoo.vavoo_proxy as vp
+# (the plugin's modules through the harness: it puts them on the path -
+# an "import vavoo..." line here would be moved above it by CI's autopep8)
 from harness import (plugin, store, check, finish, make, row_text, Session,
-                     NOTES, MENUS, V)
+                     NOTES, MENUS, V, vt)
+vp = plugin.vavoo_proxy
 REAL_REQUIRE = plugin._require_parental_pin
 
 print("1. Favourites screen: keys, rows numbered in the user's order")

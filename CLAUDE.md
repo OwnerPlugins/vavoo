@@ -954,8 +954,17 @@ when changing paths, dependencies, or version:
    (`/tmp/vavoo_install.log`, copied to `/home/root`) and a diagnostics
    section; before deleting the old plugin folder it copies an old
    install's `vavoo_favourites.json` / `Favorite.txt` into
-   `/etc/enigma2`. `test_audit.py` checks the download URL, that copy,
-   `sh -n`, and one version in all the places below.
+   `/etc/enigma2`. After the copy, `COMPILE_CHECK` (a Python snippet
+   in a shell variable, no single quote in it) compiles every plugin
+   `.py` with the builtin `compile()` - never `py_compile`, which
+   OpenATV 8.1's split Python 3 lacks (it reported "NON compila" for a
+   good install) - skipping the repository's own tools (`TOOLS`:
+   update_translations, translate_utils, xml2pot, ... - Python 3 only,
+   never imported by the plugin); exit 0 / 1 (SyntaxError, named) / 2
+   (not run). `test_audit.py` checks the download URL, that copy,
+   `sh -n`, runs `COMPILE_CHECK` on the plugin and a broken folder with
+   its own Python (CI: 3 and 2.7), and one version in all the places
+   below.
 
 Updates come from `OwnerPlugins/vavoo` too: `__init__.py`'s
 `UPDATE_HOST` → `INSTALLER_URL` (the plugin's version check reads
