@@ -20,6 +20,9 @@ msgstr "(%s फ़ाइलें हटा दी गईं)"
 msgid "(current)"
 msgstr "(मौजूदा)"
 
+msgid "(token expiring)"
+msgstr ""
+
 msgid "(you have v{})"
 msgstr "(आपके पास v{} है)"
 
@@ -92,14 +95,73 @@ msgstr "- {} डुप्लिकेट प्रविष्टियाँ �
 msgid "- {} entries updated"
 msgstr "- {} प्रविष्टियाँ अद्यतन की गईं"
 
+msgid "0-9: the PIN  ·  ◄ delete  ·  EXIT cancel"
+msgstr ""
+
+msgid "10 seconds back / on"
+msgstr ""
+
+msgid "10 seconds back / on (paused)"
+msgstr ""
+
+msgid "12 hours"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "30 seconds back / on"
+msgstr ""
+
+msgid "30 seconds back / on (paused)"
+msgstr ""
+
 msgid "? Proxy Unknown"
 msgstr "? प्रॉक्सी अज्ञात"
+
+msgid "A 4-digit PIN for adult channels, chosen countries and (optionally) the settings. Once entered, all is open for 15 minutes or until the plugin is left."
+msgstr ""
+
+msgid "A country whose channels come in categories (Sport, News...) lists them first: All channels, the categories, General."
+msgstr ""
+
+msgid "A programme to come: remind / record / watch"
+msgstr ""
+
+#, fuzzy
+msgid "A space"
+msgstr "अंतरिक्ष"
+
+msgid "About"
+msgstr ""
+
+#, fuzzy
+msgid "Add / remove favourite"
+msgstr "पसंदीदा में जोड़ा गया: {}"
+
+msgid "Add Fav"
+msgstr ""
+
+#, fuzzy
+msgid "Add to favourites"
+msgstr "पसंदीदा में जोड़ा गया: {}"
+
+#, fuzzy
+msgid "Added to favourites"
+msgstr "पसंदीदा में जोड़ा गया: {}"
 
 msgid "Added to favourites: {}"
 msgstr "पसंदीदा में जोड़ा गया: {}"
 
+#, fuzzy
+msgid "All channels"
+msgstr "चैनल"
+
 msgid "All countries (%d)"
 msgstr "सभी देश (%d)"
+
+msgid "All settings ({} more)"
+msgstr ""
 
 msgid "An export for another country is already in progress. Please wait."
 msgstr "दूसरे देश के लिए निर्यात पहले से ही प्रगति पर है। कृपया प्रतीक्षा करें।"
@@ -107,23 +169,57 @@ msgstr "दूसरे देश के लिए निर्यात पह�
 msgid "An export is in progress. Please wait before fixing the cache."
 msgstr "एक निर्यात प्रगति पर है. कृपया कैश ठीक करने से पहले प्रतीक्षा करें."
 
+msgid "An hour back / on"
+msgstr ""
+
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "केवल अनाम स्टार्टअप/दिल की धड़कन पिंग (सत्र आईडी, संस्करण, टाइमस्टैम्प - कोई व्यक्तिगत डेटा नहीं)। बाहर निकलना अक्षम करें."
+
+msgid "Aspect ratio"
+msgstr ""
 
 msgid "At an interval hours or fixed time"
 msgstr "एक अंतराल पर घंटों या निश्चित समय पर"
 
+msgid "Audio track"
+msgstr ""
+
+msgid "Audio track / subtitles"
+msgstr ""
+
 msgid "Author:"
 msgstr "लेखक:"
 
-msgid "Auto (Geil, fallback Vavoo)"
-msgstr "कार (बहुत बढ़िया, फ़ॉलबैक वावू)"
+msgid "Auto"
+msgstr ""
+
+msgid "BLUE"
+msgstr ""
+
+msgid "BLUE / PLAY"
+msgstr ""
 
 msgid "Back"
 msgstr "पीछे"
 
+msgid "Back (paused: to live first)"
+msgstr ""
+
+msgid "Back (without saving)"
+msgstr ""
+
+msgid "Back to the settings most people change."
+msgstr ""
+
+#, fuzzy
+msgid "Background"
+msgstr "पृष्ठभूमि का चयन करें"
+
 msgid "Backspace"
 msgstr "बैकस्पेस"
+
+msgid "Backup Settings & Favourites"
+msgstr ""
 
 msgid "Bottom"
 msgstr "तल"
@@ -143,12 +239,9 @@ msgstr "गुलदस्ते पुनः लोड शेड्यूल �
 msgid "Bouquets reorganized successfully!"
 msgstr "गुलदस्ते सफलतापूर्वक पुनर्गठित हुए!"
 
-msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr "अपने तारांकित चैनल ब्राउज़ करें और चलाएं। ब्राउज़ करते समय INFO कुंजी के साथ किसी चैनल को तारांकित/अनतारांकित करें।"
-
 #, fuzzy
-msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
-msgstr "CH±=बदलें | ठीक=टॉगल करें | जानकारी=आईएमडीबी | रुकें=बाहर निकलें"
+msgid "Browse and play your starred channels. Add or remove a channel with the GREEN key while browsing."
+msgstr "अपने तारांकित चैनल ब्राउज़ करें और चलाएं। ब्राउज़ करते समय INFO कुंजी के साथ किसी चैनल को तारांकित/अनतारांकित करें।"
 
 msgid "Cache format fix completed:"
 msgstr "कैश प्रारूप सुधार पूरा हुआ:"
@@ -156,11 +249,29 @@ msgstr "कैश प्रारूप सुधार पूरा हुआ:"
 msgid "Cache is already in correct format. No changes needed."
 msgstr "कैश पहले से ही सही प्रारूप में है. किसी परिवर्तन की आवश्यकता नहीं."
 
+msgid "Can't record (not enough free space?)"
+msgstr ""
+
+msgid "Can't record: no disk (HDD / USB) found"
+msgstr ""
+
 msgid "Cancel"
 msgstr "रद्द करना"
 
 msgid "Cancel execution?"
 msgstr "निष्पादन रद्द करें?"
+
+#, fuzzy
+msgid "Cancel recording"
+msgstr "निष्पादन रद्द करें?"
+
+#, fuzzy
+msgid "Cancel reminder"
+msgstr "निष्पादन रद्द करें?"
+
+#, fuzzy
+msgid "Cancelled"
+msgstr "रद्द करना"
 
 msgid "Case: {}"
 msgstr "मामला: {}"
@@ -169,39 +280,89 @@ msgid "Catalog/Stream Source"
 msgstr "कैटलॉग/स्ट्रीम स्रोत"
 
 #, fuzzy
+msgid "Change it"
+msgstr "चैनल"
+
+msgid "Change the PIN"
+msgstr ""
+
+msgid "Change the setting / lock the country"
+msgstr ""
+
+#, fuzzy
 msgid "Changelog:"
 msgstr "चैनल"
 
 msgid "Changelog: ({}/{}, use up/down)"
 msgstr "चेंजलॉग: ({}/{}, ऊपर/नीचे उपयोग करें)"
 
-msgid "Channels"
+msgid "Changes not saved: GREEN saves, press again to leave without saving"
+msgstr ""
+
+#, fuzzy
+msgid "Channel"
 msgstr "चैनल"
+
+#, fuzzy
+msgid "Channel Logos"
+msgstr "चैनल"
+
+msgid "Channel list updated: {} channels"
+msgstr ""
 
 msgid "Channels: %d"
 msgstr "चैनल: %d"
 
+msgid "Check it"
+msgstr ""
+
 msgid "Checking proxy..."
 msgstr "प्रॉक्सी की जाँच की जा रही है..."
 
-msgid "Choose Stream Source"
-msgstr "स्ट्रीम स्रोत चुनें"
+msgid "Choose a backup: its settings and favourites replace the ones here."
+msgstr ""
+
+#, fuzzy
+msgid "Choose countries"
+msgstr "देशों"
+
+msgid "Classic"
+msgstr ""
+
+msgid "Classic - the original look"
+msgstr ""
+
+msgid "Classic's background (Oktus or Kiddac). Takes effect when the plugin is opened again."
+msgstr ""
+
+#, fuzzy
+msgid "Clear"
+msgstr "सभी साफ करें"
 
 msgid "Clear All"
 msgstr "सभी साफ करें"
 
+#, fuzzy
+msgid "Clear Favourites"
+msgstr "पसंदीदा"
+
+msgid "Clear recently watched"
+msgstr ""
+
+msgid "Clock Format"
+msgstr ""
+
+msgid "Clock in the top-right corner and programme times. Not used by Classic's own clock."
+msgstr ""
+
 msgid "Close"
 msgstr "बंद करना"
 
-#, fuzzy
-msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr "अल्पविराम से अलग किए गए देश के नाम (उदा. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+msgid "Close the player"
+msgstr ""
 
 msgid "Configuration saved successfully!"
 msgstr "कॉन्फ़िगरेशन सफलतापूर्वक सहेजा गया!"
-
-msgid "Configure Main Background Image."
-msgstr "मुख्य पृष्ठभूमि छवि कॉन्फ़िगर करें."
 
 msgid "Configure at a fixed time"
 msgstr "एक निश्चित समय पर कॉन्फ़िगर करें"
@@ -243,11 +404,29 @@ msgstr "श्रेय:"
 msgid "Debug logging"
 msgstr "लॉगिंग डीबग करें"
 
+msgid "Delete"
+msgstr ""
+
+msgid "Delete (press twice)"
+msgstr ""
+
+msgid "Delete a digit"
+msgstr ""
+
+msgid "Delete a letter"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
 msgid "Do you want to export this bouquet?"
 msgstr "क्या आप यह गुलदस्ता निर्यात करना चाहते हैं?"
 
 msgid "Do you want to fix the cache format?"
 msgstr "क्या आप कैश प्रारूप को ठीक करना चाहते हैं?"
+
+msgid "Done"
+msgstr ""
 
 #, fuzzy
 msgid "EPG import already running"
@@ -272,14 +451,23 @@ msgstr "अद्यतन अंतराल (मिनट):"
 msgid "EPGImport plugin not found: {}"
 msgstr "EPGImport प्लगइन नहीं मिला: {}"
 
+msgid "EXIT"
+msgstr ""
+
+msgid "EXIT / BACK"
+msgstr ""
+
+msgid "Earlier"
+msgstr ""
+
 msgid "Enable Vavoo EPG"
 msgstr "वावू ईपीजी सक्षम करें"
 
-msgid "Enter parental control PIN"
-msgstr "अभिभावकीय नियंत्रण पिन दर्ज करें"
-
 msgid "Enter text to search..."
 msgstr "खोजने के लिए पाठ दर्ज करें..."
+
+msgid "Enter the PIN"
+msgstr ""
 
 msgid "Error"
 msgstr "गलती"
@@ -302,14 +490,31 @@ msgstr "बाहर निकलना"
 msgid "Exit and reopen the plugin to see the new background."
 msgstr "नई पृष्ठभूमि देखने के लिए प्लगइन से बाहर निकलें और पुनः खोलें।"
 
-msgid "Export"
-msgstr "निर्यात"
+#, fuzzy
+msgid "Exit and reopen the plugin to see the new look."
+msgstr "नई पृष्ठभूमि देखने के लिए प्लगइन से बाहर निकलें और पुनः खोलें।"
 
 msgid "Export failed: {}"
 msgstr "निर्यात विफल: {}"
 
 msgid "Export started. Bouquet will be available shortly."
 msgstr "निर्यात शुरू हुआ. गुलदस्ता शीघ्र ही उपलब्ध होगा."
+
+#, fuzzy
+msgid "Export this country as a bouquet"
+msgstr "- देशी गुलदस्ते"
+
+msgid "Factory reset"
+msgstr ""
+
+msgid "Factory reset done"
+msgstr ""
+
+msgid "Factory reset done - starting again"
+msgstr ""
+
+msgid "Factory reset..."
+msgstr ""
 
 msgid "Failed to refresh proxy token"
 msgstr "प्रॉक्सी टोकन रीफ़्रेश करने में विफल"
@@ -320,14 +525,40 @@ msgstr "प्रॉक्सी रीफ़्रेश करने में
 msgid "Failed: %(failed)d"
 msgstr "विफल: %(असफल)d"
 
+msgid "Fav"
+msgstr ""
+
 msgid "Favourites"
 msgstr "पसंदीदा"
 
-msgid "Fix Cache"
+#, fuzzy
+msgid "Favourites cleared"
+msgstr "पसंदीदा"
+
+msgid "Fewer settings"
+msgstr ""
+
+#, fuzzy
+msgid "Fix EPG cache"
 msgstr "कैश ठीक करें"
 
 msgid "Fixing cache format..."
 msgstr "कैश प्रारूप ठीक किया जा रहा है..."
+
+msgid "Folder"
+msgstr ""
+
+msgid "Folder for {}"
+msgstr ""
+
+msgid "Folder name (e.g. Sport)"
+msgstr ""
+
+msgid "Folder renamed to {}"
+msgstr ""
+
+msgid "Folder {} removed - its channels stay in the favourites"
+msgstr ""
 
 msgid "Force proxy refresh?"
 msgstr "बलपूर्वक प्रॉक्सी रीफ्रेश करें?"
@@ -335,8 +566,29 @@ msgstr "बलपूर्वक प्रॉक्सी रीफ्रेश 
 msgid "Found: {} channels"
 msgstr "मिला: {} चैनल"
 
+msgid "Full Screen"
+msgstr ""
+
+msgid "Full screen"
+msgstr ""
+
+msgid "GREEN"
+msgstr ""
+
+msgid "GREEN / FAV"
+msgstr ""
+
+msgid "GREEN / PLAY"
+msgstr ""
+
+msgid "GREEN / TEXT"
+msgstr ""
+
 msgid "Geil only"
 msgstr "केवल गिल"
+
+msgid "General"
+msgstr ""
 
 msgid "Generate .m3u file for:"
 msgstr "इसके लिए .m3u फ़ाइल जनरेट करें:"
@@ -353,26 +605,85 @@ msgstr ".m3u फ़ाइलें बनाएं और डिवाइस %s 
 msgid "Generate .m3u files for ALL %d countries?"
 msgstr "सभी %d देशों के लिए .m3u फ़ाइलें जेनरेट करें?"
 
+#, fuzzy
+msgid "Go to that channel"
+msgstr "चैनल प्रारंभ करने में त्रुटि"
+
+msgid "Go to that row"
+msgstr ""
+
+msgid "Group Sources"
+msgstr ""
+
+msgid "Guide"
+msgstr ""
+
+msgid "Halo - frosted glass"
+msgstr ""
+
+msgid "Hide all"
+msgstr ""
+
+msgid "Hide the countries you never watch from the main list and from search."
+msgstr ""
+
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "कितनी बार ईपीजी का पुनः मिलान करें और गुलदस्ते को ताज़ा करें, अभी से गिनती करें।"
+
+msgid "IMDb / TMDB"
+msgstr ""
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
 msgstr "यदि सेट किया गया है, तो /playlist.m3u पर लाइव प्लेलिस्ट को ?key=<this value> की आवश्यकता है - बिना किसी कुंजी के खाली छोड़ दें। यूआरएल: http://%s:%d/playlist.m3u"
 
+msgid "Import EPG now"
+msgstr ""
+
 msgid "Important Notes:"
 msgstr "महत्वपूर्ण टिप्पणियाँ:"
-
-msgid "Incorrect PIN"
-msgstr "ग़लत पिन"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "यदि वीपीएन या धीमे कनेक्शन के कारण प्रॉक्सी में अधिक समय लगता है तो बढ़ाएँ।"
 
+msgid "Keep at least one country"
+msgstr ""
+
 msgid "Keyboard"
 msgstr "कीबोर्ड"
 
+msgid "Keys"
+msgstr ""
+
+msgid "LEFT"
+msgstr ""
+
+msgid "LEFT / RIGHT"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · EXIT: close"
+msgstr ""
+
+msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · OK pause · MENU options · EXIT close"
+msgstr ""
+
+msgid "LEFT / RIGHT move · EXIT: live"
+msgstr ""
+
+msgid "Large"
+msgstr ""
+
+msgid "Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Not used by Classic."
+msgstr ""
+
 msgid "Last channel update: %s"
 msgstr "अंतिम चैनल अद्यतन: %s"
+
+msgid "Later"
+msgstr ""
+
+#, fuzzy
+msgid "Licences"
+msgstr "लाइसेंस:"
 
 msgid "License:"
 msgstr "लाइसेंस:"
@@ -383,16 +694,42 @@ msgstr "लाइसेंस: CC BY-NC-SA 4.0"
 msgid "Link in Main Menu"
 msgstr "मुख्य मेनू में लिंक करें"
 
+msgid "List"
+msgstr ""
+
+msgid "Live"
+msgstr ""
+
 #, fuzzy
 msgid "Loading EPG..."
 msgstr "ईपीजी अपडेट हो रहा है..."
+
+#, fuzzy
+msgid "Loading channels..."
+msgstr "ईपीजी अपडेट हो रहा है..."
+
+msgid "Loading programme guide..."
+msgstr ""
+
+#, fuzzy
+msgid "Loading..."
+msgstr "ईपीजी अपडेट हो रहा है..."
+
+msgid "Loading…"
+msgstr ""
 
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "केवल स्थानीय (127.0.0.1) - केवल यह उपकरण"
 
 #, fuzzy
-msgid "Locked Countries"
-msgstr "देशों"
+msgid "Lock adult channels"
+msgstr "(%d चैनल)?"
+
+msgid "Lock the settings"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
 
 msgid "M3U file generated successfully!"
 msgstr "M3U फ़ाइल सफलतापूर्वक जनरेट हुई!"
@@ -403,15 +740,49 @@ msgstr "M3U पीढ़ी पूरी!"
 msgid "M3U generation error: %s"
 msgstr "M3U जनरेशन त्रुटि: %s"
 
+msgid "Menu"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+msgid "Move it to that place"
+msgstr ""
+
+#, fuzzy
+msgid "Move the channel"
+msgstr "कृपया कोई अन्य चैनल आज़माएँ."
+
 msgid "Movie Services Reference"
 msgstr "मूवी सेवाएँ संदर्भ"
+
+msgid "Movie folder ({})"
+msgstr ""
+
+msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
 msgstr "नेटवर्क (%s) - LAN पर अन्य डिवाइस"
 
+msgid "New PIN (4 digits)"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
 #, fuzzy
 msgid "New version available: v{}"
 msgstr "कोई आइटम उपलब्ध नहीं है"
+
+msgid "Next"
+msgstr ""
+
+msgid "Next / previous channel"
+msgstr ""
+
+msgid "No"
+msgstr ""
 
 msgid "No IMDb/TMDB plugin found"
 msgstr "कोई IMDb/TMDB प्लगइन नहीं मिला"
@@ -419,9 +790,16 @@ msgstr "कोई IMDb/TMDB प्लगइन नहीं मिला"
 msgid "No Internet connection detected. Please check your network."
 msgstr "कोई इंटरनेट कनेक्शन नहीं मिला. कृपया अपना नेटवर्क जांचें."
 
+msgid "No PIN yet: nothing is locked until one is set."
+msgstr ""
+
 #, fuzzy
 msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
 msgstr "EPGImport में Vavoo EPG स्रोत सक्षम नहीं है। कृपया इसे EPGImport सेटिंग्स में सक्षम करें।"
+
+#, fuzzy
+msgid "No backup found"
+msgstr "कोई चैनल नहीं मिला"
 
 #, fuzzy
 msgid "No changelog provided."
@@ -433,8 +811,22 @@ msgstr "कोई चैनल नहीं मिला"
 msgid "No channels found for: %s"
 msgstr "%s के लिए कोई चैनल नहीं मिला"
 
+#, fuzzy
+msgid "No channels watched yet"
+msgstr "कोई चैनल नहीं मिला"
+
+#, fuzzy
+msgid "No favourites"
+msgstr "अभी तक कोई पसंदीदा नहीं"
+
 msgid "No favourites yet"
 msgstr "अभी तक कोई पसंदीदा नहीं"
+
+msgid "No favourites yet. Open a country and press GREEN on a channel."
+msgstr ""
+
+msgid "No folder"
+msgstr ""
 
 msgid "No items available"
 msgstr "कोई आइटम उपलब्ध नहीं है"
@@ -442,17 +834,83 @@ msgstr "कोई आइटम उपलब्ध नहीं है"
 msgid "No programme info available"
 msgstr "कार्यक्रम की कोई जानकारी उपलब्ध नहीं है"
 
+#, fuzzy
+msgid "No programme information"
+msgstr "कार्यक्रम की कोई जानकारी उपलब्ध नहीं है"
+
+msgid "No programme to record here"
+msgstr ""
+
 msgid "No selection"
 msgstr "कोई चयन नहीं"
 
 msgid "No valid channels for: %s"
 msgstr "%s के लिए कोई मान्य चैनल नहीं"
 
+msgid "Non-commercial use only, with attribution; changes shared under the same licence."
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Not available on this receiver"
+msgstr ""
+
+msgid "Not now: a recording is running"
+msgstr ""
+
+msgid "Nothing is playing in the window"
+msgstr ""
+
 msgid "Nothing to remove for: {}"
 msgstr "हटाने के लिए कुछ भी नहीं: {}"
 
+msgid "Nothing watched yet"
+msgstr ""
+
+msgid "Nothing yet: record from the player's options, or set a recording in the guide."
+msgstr ""
+
+#, fuzzy
+msgid "Now"
+msgstr "अब %s"
+
+msgid "Now, the programme's actions"
+msgstr ""
+
+#, fuzzy
+msgid "Now/Next in channel list"
+msgstr "चैनल सूची पर वापस लौट रहे हैं."
+
 msgid "OK"
 msgstr "ठीक है"
+
+msgid "OK / GREEN / PAUSE / PLAY"
+msgstr ""
+
+msgid "OK / LEFT / RIGHT"
+msgstr ""
+
+msgid "OK / RED / EXIT"
+msgstr ""
+
+msgid "OK / YELLOW"
+msgstr ""
+
+msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys"
+msgstr ""
+
+msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "On the last row: all settings / fewer"
+msgstr ""
+
+msgid "On {} - watch it?"
+msgstr ""
 
 msgid "Only one source available for this channel"
 msgstr "इस चैनल के लिए केवल एक ही स्रोत उपलब्ध है"
@@ -460,11 +918,85 @@ msgstr "इस चैनल के लिए केवल एक ही स्�
 msgid "Only one specific country"
 msgstr "केवल एक विशिष्ट देश"
 
-msgid "Parental Control PIN"
+msgid "Open (a row that opens a list or does something)"
+msgstr ""
+
+msgid "Open the category"
+msgstr ""
+
+msgid "Open the country / list"
+msgstr ""
+
+msgid "Open the folder"
+msgstr ""
+
+msgid "Open the last watched channel when the plugin starts."
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "PIN removed"
+msgstr ""
+
+msgid "PIN saved"
+msgstr ""
+
+msgid "PIN set · {} countries locked"
+msgstr ""
+
+msgid "PIN set: adult channels are locked"
+msgstr ""
+
+msgid "PVR / FILE"
+msgstr ""
+
+msgid "Page up / down"
+msgstr ""
+
+#, fuzzy
+msgid "Parental Control"
 msgstr "अभिभावकीय नियंत्रण पिन"
+
+msgid "Pause"
+msgstr ""
+
+msgid "Pause / play on"
+msgstr ""
+
+msgid "Pause Live TV"
+msgstr ""
+
+msgid "Pause live / play on"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "समय-समय पर ईपीजी का दोबारा मिलान करें और पृष्ठभूमि में अपने पसंदीदा देशों के गुलदस्ते ताज़ा करें।"
+
+msgid "Picture: not known yet"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Play in the window (again: full screen)"
+msgstr ""
+
+#, fuzzy
+msgid "Play the channel"
+msgstr "कृपया कोई अन्य चैनल आज़माएँ."
+
+msgid "Play the recording"
+msgstr ""
+
+msgid "Play the recording / cancel the timer"
+msgstr ""
 
 msgid "Playlist Access Key (optional)"
 msgstr "प्लेलिस्ट एक्सेस कुंजी (वैकल्पिक)"
@@ -475,6 +1007,31 @@ msgstr "मुख्य सूची में वावू गुलदस्�
 #, fuzzy
 msgid "Press GREEN to type, YELLOW to delete"
 msgstr "टाइप करने के लिए टेक्स्ट बटन दबाएँ, हटाने के लिए बैकस्पेस दबाएँ"
+
+msgid "Press again to confirm"
+msgstr ""
+
+msgid "Press again to delete"
+msgstr ""
+
+msgid "Preview Window"
+msgstr ""
+
+msgid "Prism - Vavoo's violet"
+msgstr ""
+
+msgid "Prism: Vavoo's violet. Halo: frosted glass over a blue aurora. Orbit: a teal cockpit display. Classic: the plugin's original skin, with its backgrounds. Takes effect when the plugin is opened again."
+msgstr ""
+
+msgid "Programme"
+msgstr ""
+
+msgid "Programme guide"
+msgstr ""
+
+#, fuzzy
+msgid "Programme guide of the favourites"
+msgstr "पसंदीदा अपडेट नहीं किया जा सका"
 
 msgid "Proxy is not running. Please start the proxy first."
 msgstr "प्रॉक्सी नहीं चल रही है. कृपया पहले प्रॉक्सी प्रारंभ करें."
@@ -491,41 +1048,184 @@ msgstr "प्रॉक्सी स्टार्टअप टाइमआउ�
 msgid "Proxy token refreshed successfully"
 msgstr "प्रॉक्सी टोकन सफलतापूर्वक ताज़ा किया गया"
 
+msgid "RED"
+msgstr ""
+
+msgid "RED / EXIT"
+msgstr ""
+
+msgid "RED / EXIT / BACK"
+msgstr ""
+
+msgid "RED / REC"
+msgstr ""
+
+msgid "RED / STOP / EXIT / BACK"
+msgstr ""
+
 msgid "Really close without saving settings?"
 msgstr "सेटिंग्स सहेजे बिना वास्तव में बंद करें?"
 
-msgid "Reload Bouqet"
+msgid "Recently watched"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Record (again: stop)"
+msgstr ""
+
+msgid "Record the highlighted channel (again: stop)"
+msgstr ""
+
+msgid "Record the programme (again: cancel / stop)"
+msgstr ""
+
+msgid "Recording needs ffmpeg"
+msgstr ""
+
+msgid "Recording set: {}"
+msgstr ""
+
+msgid "Recording stopped"
+msgstr ""
+
+msgid "Recording stopped early: {}"
+msgstr ""
+
+msgid "Recording stopped: the disk could not be written (removed?)"
+msgstr ""
+
+msgid "Recording stopped: the disk is nearly full"
+msgstr ""
+
+msgid "Recording stopped: the disk's 4 GB file limit (FAT32)"
+msgstr ""
+
+msgid "Recording: {}"
+msgstr ""
+
+msgid "Recordings"
+msgstr ""
+
+msgid "Recordings folder"
+msgstr ""
+
+msgid "Recordings folder: {}"
+msgstr ""
+
+msgid "Refresh token"
+msgstr ""
+
+#, fuzzy
+msgid "Reload List"
+msgstr "गुलदस्ता पुनः लोड करें"
+
+#, fuzzy
+msgid "Reload bouquets"
 msgstr "गुलदस्ता पुनः लोड करें"
 
 msgid "Reload bouquets and service list?"
 msgstr "गुलदस्ते और सेवा सूची पुनः लोड करें?"
 
-msgid "Remove"
-msgstr "निकालना"
+#, fuzzy
+msgid "Reload failed: {}"
+msgstr "निर्यात विफल: {}"
 
 #, fuzzy
-msgid "Remove ALL"
-msgstr "निकालना"
+msgid "Reload the channel list?"
+msgstr "चैनल सूची पर वापस लौट रहे हैं."
+
+#, fuzzy
+msgid "Reloading channel list..."
+msgstr "चैनल सूची पर वापस लौट रहे हैं."
+
+msgid "Remind me"
+msgstr ""
+
+#, fuzzy
+msgid "Reminder set: {}"
+msgstr "निर्यात विफल: {}"
+
+msgid "Reminders and recordings (●) set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
+
+msgid "Reminders and recordings set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
+msgstr ""
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "सभी वावू गुलदस्ते हटाएँ?"
 
 #, fuzzy
+msgid "Remove Fav"
+msgstr "निकालना"
+
+#, fuzzy
+msgid "Remove all Vavoo bouquets"
+msgstr "सभी वावू गुलदस्ते हटाएँ?"
+
+msgid "Remove all favourite channels (asks to confirm)."
+msgstr ""
+
+#, fuzzy
+msgid "Remove all favourite channels?"
+msgstr "निर्यात विफल: {}"
+
+#, fuzzy
 msgid "Remove failed: {}"
 msgstr "निर्यात विफल: {}"
 
+#, fuzzy
+msgid "Remove favourite"
+msgstr "निर्यात विफल: {}"
+
+#, fuzzy
+msgid "Remove folder"
+msgstr "निर्यात विफल: {}"
+
+#, fuzzy
+msgid "Remove from favourites"
+msgstr "निर्यात विफल: {}"
+
+#, fuzzy
+msgid "Remove from the list"
+msgstr "निर्यात विफल: {}"
+
+msgid "Remove the PIN (unlock everything)"
+msgstr ""
+
 msgid "Remove the exported bouquet for this country/category?"
 msgstr "इस देश/श्रेणी के लिए निर्यातित गुलदस्ता हटाएं?"
+
+#, fuzzy
+msgid "Remove this country's bouquet"
+msgstr "- देशी गुलदस्ते"
 
 msgid "Removed exported bouquet: {}"
 msgstr "हटाया गया निर्यातित गुलदस्ता: {}"
 
 #, fuzzy
+msgid "Removed from favourites"
+msgstr "निर्यात विफल: {}"
+
+#, fuzzy
 msgid "Removed from favourites: {}"
 msgstr "निर्यात विफल: {}"
 
-msgid "Restarting..."
-msgstr "पुनः प्रारंभ हो रहा है..."
+msgid "Rename / delete the folder"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
+
+msgid "Restore from Backup"
+msgstr ""
+
+msgid "Restored - the theme and text size change when the plugin is opened again"
+msgstr ""
+
+msgid "Result"
+msgstr ""
 
 msgid "Returning to channel list."
 msgstr "चैनल सूची पर वापस लौट रहे हैं."
@@ -542,6 +1242,13 @@ msgstr "इसमें सहेजा गया: %(पथ)s"
 msgid "Saved in: %s"
 msgstr "इसमें सहेजा गया: %s"
 
+#, fuzzy
+msgid "Saved: {}"
+msgstr "मामला: {}"
+
+msgid "Saves the settings, the favourites (with folders and order), recently watched, the chosen sources and countries in /media/hdd, /media/usb or /media/mmc (else %s) - not parental control."
+msgstr ""
+
 msgid "Schedule type:"
 msgstr "शेड्यूल प्रकार:"
 
@@ -549,20 +1256,31 @@ msgstr "शेड्यूल प्रकार:"
 msgid "Scheduled EPG/Bouquet Update:"
 msgstr "शेड्यूल प्रकार:"
 
+msgid "Scheduled recording not started: {}"
+msgstr ""
+
+msgid "Scroll"
+msgstr ""
+
 msgid "Search"
 msgstr "खोज"
 
 msgid "Search Channels:"
 msgstr "चैनल खोजें:"
 
+#, fuzzy
+msgid "Search all channels"
+msgstr "चैनल खोजें:"
+
+#, fuzzy
+msgid "Search {}"
+msgstr "खोज"
+
 msgid "Search..."
 msgstr "खोज..."
 
 msgid "Search:"
 msgstr "खोज:"
-
-msgid "Select Background"
-msgstr "पृष्ठभूमि का चयन करें"
 
 msgid "Select M3U export mode:"
 msgstr "M3U निर्यात मोड चुनें:"
@@ -576,11 +1294,48 @@ msgstr "M3U लिंक में उपयोग करने के लिए
 msgid "Send Anonymous Statistics"
 msgstr "अनाम सांख्यिकी भेजें"
 
-msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr "नीचे दिए गए देशों को लॉक करने के लिए एक पिन सेट करें। माता-पिता का नियंत्रण पूरी तरह से अक्षम करने के लिए इसे खाली छोड़ दें।"
+msgid "Set a PIN"
+msgstr ""
+
+#, fuzzy
+msgid "Setting"
+msgstr "पुनः प्रारंभ हो रहा है..."
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings and tools"
+msgstr ""
+
+msgid "Show / hide the bar"
+msgstr ""
+
+msgid "Show / hide the country"
+msgstr ""
+
+msgid "Show Counts"
+msgstr ""
+
+msgid "Show Log"
+msgstr ""
 
 msgid "Show Log (Ok to view)"
 msgstr "लॉग दिखाएँ (देखने के लिए ठीक है)"
+
+msgid "Show all"
+msgstr ""
+
+msgid "Show every setting: the channel sources, the proxy, EPG import, bouquets, playlists, the log..."
+msgstr ""
+
+msgid "Show how many channels each country has, and how many favourites, in the main list."
+msgstr ""
+
+msgid "Show the channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), and no logo is downloaded."
+msgstr ""
+
+msgid "Show the current and the next programme beside the channel list. The country's programme guide is downloaded when you open a country."
+msgstr ""
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Vavoo.log (यूआई जीवनचक्र, प्रति-अनुरोध विवरण) में वर्बोज़ डिबग-स्तरीय संदेश दिखाएं। तुरंत प्रभाव डालता है - समस्या निवारण न होने तक छोड़ दें।"
@@ -588,20 +1343,127 @@ msgstr "Vavoo.log (यूआई जीवनचक्र, प्रति-अन
 msgid "Showing all channels: {}"
 msgstr "सभी चैनल दिखाए जा रहे हैं: {}"
 
+msgid "Sleep timer"
+msgstr ""
+
+msgid "Sleep timer off"
+msgstr ""
+
+msgid "Sleep timer: standby in 1 minute"
+msgstr ""
+
+msgid "Sleep timer: {} min"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+#, fuzzy
+msgid "Source: {}"
+msgstr "गलती: {}"
+
 msgid "Space"
 msgstr "अंतरिक्ष"
 
 msgid "Start EPG update now?"
 msgstr "अभी ईपीजी अपडेट शुरू करें?"
 
+#, fuzzy
+msgid "Start with last channel"
+msgstr "{} चैनलों के साथ गुलदस्ता तैयार"
+
+msgid "Starting now: {}"
+msgstr ""
+
+#, fuzzy
+msgid "Starting the proxy..."
+msgstr "प्रॉक्सी की प्रतीक्षा में..."
+
+msgid "Stop a recording that is running"
+msgstr ""
+
+msgid "Stop recording"
+msgstr ""
+
+msgid "Stop the window"
+msgstr ""
+
+msgid "Stream Info"
+msgstr ""
+
 msgid "Stream ended. Too many connection issues."
 msgstr "स्ट्रीम समाप्त हो गई. बहुत अधिक कनेक्शन समस्याएँ."
+
+msgid "Sub-categories"
+msgstr ""
+
+msgid "Subtitles"
+msgstr ""
 
 msgid "Technical Features:"
 msgstr "तकनीकी सुविधाओं:"
 
+msgid "Text Size"
+msgstr ""
+
+msgid "That file is not a Vavoo Stream backup"
+msgstr ""
+
+msgid "The PIN"
+msgstr ""
+
+msgid "The backup could not be saved"
+msgstr ""
+
+#, fuzzy
+msgid "The channel before"
+msgstr "कोई चैनल नहीं मिला"
+
+#, fuzzy
+msgid "The channel list"
+msgstr "चैनल सूची पर वापस लौट रहे हैं."
+
+msgid "The channel list is still loading..."
+msgstr ""
+
+#, fuzzy
+msgid "The channel watched last"
+msgstr "यह चैनल नहीं चलाया जा सकता"
+
+#, fuzzy
+msgid "The favourites"
+msgstr "पसंदीदा"
+
+#, fuzzy
+msgid "The keyboard"
+msgstr "कीबोर्ड"
+
+msgid "The plugin's licence and the fonts' (SIL OFL)."
+msgstr ""
+
+msgid "The proxy restarts and downloads the list again. A channel playing now stops for a moment."
+msgstr ""
+
+msgid "The same PIN again"
+msgstr ""
+
+msgid "The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row."
+msgstr ""
+
+msgid "The two PINs differ - not changed"
+msgstr ""
+
+msgid "The window's channel: full screen / stop / record"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
 msgid "This channel cannot be played"
 msgstr "यह चैनल नहीं चलाया जा सकता"
+
+msgid "This recording is not running"
+msgstr ""
 
 msgid "This will refresh the authentication token."
 msgstr "यह प्रमाणीकरण टोकन को ताज़ा कर देगा।"
@@ -616,11 +1478,23 @@ msgstr "यह करेगा:"
 msgid "Time to start EPG/bouquet update:"
 msgstr "अद्यतन शुरू करने का समय:"
 
+msgid "Too many wrong PINs - try again in {} s"
+msgstr ""
+
 msgid "Top"
 msgstr "शीर्ष"
 
 msgid "Total channels: %(total_channels)d"
 msgstr "कुल चैनल: %(total_channels)d"
+
+msgid "Type (as on a phone)"
+msgstr ""
+
+msgid "UP / DOWN"
+msgstr ""
+
+msgid "UP / DOWN, CH+ / CH-"
+msgstr ""
 
 msgid "UPPERCASE"
 msgstr "अपरकेस"
@@ -649,6 +1523,9 @@ msgstr "वावू लॉग"
 msgid "Vavoo Stream Live"
 msgstr "वावू स्ट्रीम लाइव"
 
+msgid "Vavoo Stream Live %s by Lululla & Qu4k3 - License CC BY-NC-SA 4.0."
+msgstr ""
+
 msgid "Vavoo Stream Live - Information"
 msgstr "वावू स्ट्रीम लाइव - सूचना"
 
@@ -664,6 +1541,10 @@ msgstr "वावू पहले से ही चल रहा है।"
 msgid "Vavoo/Kool only"
 msgstr "केवल वावू/कूल"
 
+#, fuzzy
+msgid "Version and channels"
+msgstr "मिला: {} चैनल"
+
 msgid "Version:"
 msgstr "संस्करण:"
 
@@ -673,11 +1554,48 @@ msgstr "पसंदीदा देखें (खोलने के लिए 
 msgid "View the last 200 lines of %s."
 msgstr "%s की अंतिम 200 पंक्तियाँ देखें।"
 
+msgid "Watch"
+msgstr ""
+
+#, fuzzy
+msgid "Watch the channel"
+msgstr "कृपया कोई अन्य चैनल आज़माएँ."
+
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ईपीजी समर्थन के साथ वावू प्रॉक्सी में आपका स्वागत है"
 
+msgid "Welcome! Choose a look"
+msgstr ""
+
+msgid "Welcome! Choose the countries for the main list (OK shows or hides one), then GREEN saves. Settings → Choose countries changes it later."
+msgstr ""
+
+msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
+msgstr ""
+
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
 msgstr "किस सेवा से चैनल और स्ट्रीम लोड करना है. ऑटो पहले गील की कोशिश करता है और अनुपलब्ध होने पर वावू में वापस आ जाता है; अन्य दो विकल्प इसे बिल्कुल उसी स्रोत पर पिन करते हैं। सेव पर प्रभाव पड़ता है (यदि प्रॉक्सी चल रही है तो उसे पुनः आरंभ करता है)।"
+
+msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
+msgstr ""
+
+msgid "Wrong PIN - try again"
+msgstr ""
+
+msgid "YELLOW"
+msgstr ""
+
+msgid "YELLOW / BLUE"
+msgstr ""
+
+msgid "YELLOW / BLUE, << / >>"
+msgstr ""
+
+msgid "YELLOW / TEXT"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
 
 #, fuzzy
 msgid "Yes, update now"
@@ -685,6 +1603,10 @@ msgstr "अभी ईपीजी अपडेट शुरू करें?"
 
 msgid "You can start it from the menu or by pressing the TEXT button."
 msgstr "आप इसे मेनू से या टेक्स्ट बटन दबाकर शुरू कर सकते हैं।"
+
+#, fuzzy
+msgid "all channels"
+msgstr "चैनल"
 
 msgid "fixed time"
 msgstr "निश्चित समय"
@@ -695,17 +1617,62 @@ msgstr "अंतराल"
 msgid "lowercase"
 msgstr "छोटे"
 
+msgid "not recorded (no disk) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (no ffmpeg) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded (the stream could not be recorded) - PLAY returns to live"
+msgstr ""
+
+msgid "not recorded - PLAY returns to live"
+msgstr ""
+
+msgid "press play to go on"
+msgstr ""
+
+msgid "recording - press play to go on"
+msgstr ""
+
 msgid "v{} -> v{}"
 msgstr "वी{} -> वी{}"
 
-msgid "✓ Proxy ({0}s)"
-msgstr "✓ प्रॉक्सी ({0}s)"
+#, fuzzy
+msgid "{} channels"
+msgstr "मिला: {} चैनल"
 
-msgid "✓ Proxy OK"
-msgstr "✓ प्रॉक्सी ठीक है"
+#, fuzzy
+msgid "{} countries"
+msgstr "सभी देश (%d)"
 
-msgid "✓ Restarted"
-msgstr "✓ पुनः प्रारंभ"
+msgid "{} found"
+msgstr ""
+
+msgid "{} free"
+msgstr ""
+
+msgid "{} min"
+msgstr ""
+
+msgid "{} min left"
+msgstr ""
+
+msgid "{} of {} countries shown"
+msgstr ""
+
+msgid "{} recordings · {} timers · {} free"
+msgstr ""
+
+msgid "{} sources"
+msgstr ""
+
+msgid "● REC · {} min"
+msgstr ""
+
+#, fuzzy
+msgid "★ Favourites"
+msgstr "पसंदीदा"
 
 msgid "✗ Error"
 msgstr "✗त्रुटि"
@@ -721,6 +1688,48 @@ msgstr "✗ प्रॉक्सी ऑफ़लाइन"
 
 msgid "✗ Restart Failed"
 msgstr "✗ पुनः प्रारंभ विफल"
+
+#~ msgid "Auto (Geil, fallback Vavoo)"
+#~ msgstr "कार (बहुत बढ़िया, फ़ॉलबैक वावू)"
+
+#, fuzzy
+#~ msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
+#~ msgstr "CH±=बदलें | ठीक=टॉगल करें | जानकारी=आईएमडीबी | रुकें=बाहर निकलें"
+
+#~ msgid "Choose Stream Source"
+#~ msgstr "स्ट्रीम स्रोत चुनें"
+
+#, fuzzy
+#~ msgid "Comma-separated country names (e.g. \\\\\\\\\\\\\\\\"
+#~ msgstr "अल्पविराम से अलग किए गए देश के नाम (उदा. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+
+#~ msgid "Configure Main Background Image."
+#~ msgstr "मुख्य पृष्ठभूमि छवि कॉन्फ़िगर करें."
+
+#~ msgid "Enter parental control PIN"
+#~ msgstr "अभिभावकीय नियंत्रण पिन दर्ज करें"
+
+#~ msgid "Export"
+#~ msgstr "निर्यात"
+
+#~ msgid "Incorrect PIN"
+#~ msgstr "ग़लत पिन"
+
+#, fuzzy
+#~ msgid "Remove ALL"
+#~ msgstr "निकालना"
+
+#~ msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
+#~ msgstr "नीचे दिए गए देशों को लॉक करने के लिए एक पिन सेट करें। माता-पिता का नियंत्रण पूरी तरह से अक्षम करने के लिए इसे खाली छोड़ दें।"
+
+#~ msgid "✓ Proxy ({0}s)"
+#~ msgstr "✓ प्रॉक्सी ({0}s)"
+
+#~ msgid "✓ Proxy OK"
+#~ msgstr "✓ प्रॉक्सी ठीक है"
+
+#~ msgid "✓ Restarted"
+#~ msgstr "✓ पुनः प्रारंभ"
 
 #~ msgid "Auto-update EPG"
 #~ msgstr "ऑटो-अपडेट ईपीजी"
@@ -748,9 +1757,6 @@ msgstr "✗ पुनः प्रारंभ विफल"
 
 #~ msgid "Minimum similarity for matching channels (higher = stricter)."
 #~ msgstr "मिलान चैनलों के लिए न्यूनतम समानता (उच्च = सख्त)।"
-
-#~ msgid "Now %s"
-#~ msgstr "अब %s"
 
 #~ msgid "Proxy Disabled"
 #~ msgstr "प्रॉक्सी अक्षम"
@@ -809,17 +1815,11 @@ msgstr "✗ पुनः प्रारंभ विफल"
 #~ msgid "EPG update started successfully"
 #~ msgstr "ईपीजी अपडेट सफलतापूर्वक प्रारंभ हुआ"
 
-#~ msgid "Error: {}"
-#~ msgstr "गलती: {}"
-
 #~ msgid "Ready"
 #~ msgstr "तैयार"
 
 #~ msgid "Updating EPG..."
 #~ msgstr "ईपीजी अपडेट हो रहा है..."
-
-#~ msgid "Please try another channel."
-#~ msgstr "कृपया कोई अन्य चैनल आज़माएँ."
 
 #~ msgid "No channels found in search!!!"
 #~ msgstr "खोज में कोई चैनल नहीं मिला!!!"
@@ -832,9 +1832,6 @@ msgstr "✗ पुनः प्रारंभ विफल"
 
 #~ msgid "Proxy restarting... Please wait"
 #~ msgstr "प्रॉक्सी पुनः आरंभ हो रही है... कृपया प्रतीक्षा करें"
-
-#~ msgid "Waiting for proxy..."
-#~ msgstr "प्रॉक्सी की प्रतीक्षा में..."
 
 #~ msgid "seconds"
 #~ msgstr "सेकंड"
