@@ -365,5 +365,56 @@ check(
 check(subprocess.call(["sh", "-n", os.path.join(REPO,
       "installer.sh")]) == 0, "installer.sh: valid shell")
 
+print(
+    "== the installer's compile check (this Python: %d)" %
+    sys.version_info[0])
+check("py_compile" not in installer.split("COMPILE_CHECK=", 1)[1],
+      "it does not need py_compile (missing on OpenATV 8.1's Python 3)")
+code = re.search(r"^COMPILE_CHECK='(.*?)'$", installer, re.S | re.M).group(1)
+tools = re.findall(r'"([a-z_]+\.py)"', code.split("try:", 1)[0])
+
+
+def compile_check(folder):
+    process = subprocess.Popen([sys.executable,
+                                "-c",
+                                code,
+                                folder],
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT)
+    out = process.communicate()[0].decode("utf-8", "replace")
+    return process.returncode, out
+
+
+rc, out = compile_check(PLUGIN)
+check(
+    rc == 0, "the plugin's own .py files all compile (exit %s: %s)" %
+     (rc, out.strip()))
+broken = os.path.join(TMP, "broken")
+os.makedirs(broken)
+with open(os.path.join(broken, "ok.py"), "w") as f:
+    f.write("x = 1\n")
+with open(os.path.join(broken, "bad.py"), "w") as f:
+    f.write("x = (\n")
+with open(os.path.join(broken, "update_translations.py"), "w") as f:
+    f.write("x = (\n")
+rc, out = compile_check(broken)
+check(
+    rc == 1 and "bad.py" in out and "update_translations" not in out,
+    "a broken file: exit 1, named; the repository tools not checked (%s: %s)" %
+    (rc,
+     out.strip()))
+rc, out = compile_check(os.path.join(TMP, "missing"))
+check(rc == 2, "no folder: exit 2, 'not run' - not 'does not compile' (%s)" % rc)
+imported = []
+for path in CODE_FILES:
+    for tool in tools:
+        name = tool[:-3]
+        if re.search(r"(import|from)\s+\.?%s\b" % name, read(path)):
+            imported.append("%s imports %s" % (os.path.basename(path), name))
+check(
+    tools and not imported,
+    "the tools it skips are never imported by the plugin (%s)" %
+    imported)
+
 shutil.rmtree(TMP, ignore_errors=True)
 finish()
