@@ -1670,8 +1670,9 @@ def cpu_report(before, after, elapsed):
     used = cpu_by_name(before, after)
     total = sum(seconds for _name, seconds in used)
     busy = busy_text(used, least=0.5, most=6)
+    # (halves up on both Pythons: round() is "to even" on Python 3)
     text = "{} % of a core ({} min)".format(
-        int(round(100.0 * total / elapsed)), int(round(elapsed / 60.0)))
+        int(100.0 * total / elapsed + 0.5), int(elapsed / 60.0 + 0.5))
     return text + (" - " + busy if busy else "")
 
 

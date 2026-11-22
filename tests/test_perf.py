@@ -224,8 +224,9 @@ check(used[0] == ("vv-guide", 48.0) and dict(used)["enigma2"] == 30.0 and
       dict(used)["vv-http"] == 3.0 and "odd (name) x" not in dict(used),
       "cpu_by_name(): what each spent between the samples %r" % used)
 text = vu.cpu_report(before, after, 1800)
-check(text == "4 % of a core (30 min) - vv-guide 48.0 s, enigma2 30.0 s, "
-      "vv-http 3.0 s", "cpu_report(): %r" % text)
+check(text == "5 % of a core (30 min) - vv-guide 48.0 s, enigma2 30.0 s, "
+      "vv-http 3.0 s", "cpu_report(): %r (81 s in 30 min: 4.5 %%, the "
+      "same on both Pythons)" % text)
 check(vu.cpu_report(before, {}, 1800) == "" and
       vu.thread_cpu(os.path.join(TMP, "none")) == {},
       "nothing to read: nothing said")
