@@ -806,6 +806,10 @@ msgstr "Không tìm thấy kênh nào"
 msgid "No changelog provided."
 msgstr "Không tìm thấy kênh nào"
 
+#, fuzzy
+msgid "No channels"
+msgstr "Đã tìm thấy: {} kênh"
+
 msgid "No channels found"
 msgstr "Không tìm thấy kênh nào"
 
@@ -814,6 +818,10 @@ msgstr "Không tìm thấy kênh nào cho: %s"
 
 #, fuzzy
 msgid "No channels watched yet"
+msgstr "Không tìm thấy kênh nào"
+
+#, fuzzy
+msgid "No channels: {}"
 msgstr "Không tìm thấy kênh nào"
 
 #, fuzzy
@@ -903,6 +911,14 @@ msgstr ""
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
 msgstr ""
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "Tải lại bó hoa"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "Nguồn danh mục/luồng"
 
 msgid "Off"
 msgstr ""
@@ -1574,7 +1590,8 @@ msgstr ""
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr ""
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "Dịch vụ nào để tải kênh và luồng từ đó. Tự động thử Geil trước và quay lại Vavoo nếu nó không khả dụng; hai tùy chọn còn lại ghim nó vào chính xác một nguồn đó. Có hiệu lực khi lưu (khởi động lại proxy nếu nó đang chạy)."
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1659,6 +1676,9 @@ msgstr ""
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr ""
+
 msgid "{} of {} countries shown"
 msgstr ""
 
@@ -1677,6 +1697,10 @@ msgstr "Yêu thích"
 
 msgid "✗ Error"
 msgstr "✗ Lỗi"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "Đã tìm thấy: {} kênh"
 
 msgid "✗ Proxy Error"
 msgstr "✗ Lỗi proxy"

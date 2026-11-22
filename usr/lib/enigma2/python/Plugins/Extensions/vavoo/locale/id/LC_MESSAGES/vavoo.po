@@ -805,6 +805,10 @@ msgstr "Tidak ada saluran yang ditemukan"
 msgid "No changelog provided."
 msgstr "Tidak ada saluran yang ditemukan"
 
+#, fuzzy
+msgid "No channels"
+msgstr "Ditemukan: {} saluran"
+
 msgid "No channels found"
 msgstr "Tidak ada saluran yang ditemukan"
 
@@ -813,6 +817,10 @@ msgstr "Tidak ada saluran ditemukan untuk: %s"
 
 #, fuzzy
 msgid "No channels watched yet"
+msgstr "Tidak ada saluran yang ditemukan"
+
+#, fuzzy
+msgid "No channels: {}"
 msgstr "Tidak ada saluran yang ditemukan"
 
 #, fuzzy
@@ -902,6 +910,14 @@ msgstr ""
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
 msgstr ""
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "Muat ulang Buket"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "Katalog/Sumber Aliran"
 
 msgid "Off"
 msgstr ""
@@ -1573,7 +1589,8 @@ msgstr ""
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr ""
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "Layanan mana yang memuat saluran dan streaming. Otomatis mencoba Geil terlebih dahulu dan kembali ke Vavoo jika tidak tersedia; dua opsi lainnya menyematkannya ke satu sumber tersebut. Berlaku saat penyimpanan (memulai ulang proksi jika sedang berjalan)."
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1658,6 +1675,9 @@ msgstr ""
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr ""
+
 msgid "{} of {} countries shown"
 msgstr ""
 
@@ -1676,6 +1696,10 @@ msgstr "Favorit"
 
 msgid "✗ Error"
 msgstr "✗ Kesalahan"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "Ditemukan: {} saluran"
 
 msgid "✗ Proxy Error"
 msgstr "✗ Kesalahan Proksi"
