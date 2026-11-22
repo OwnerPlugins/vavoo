@@ -115,7 +115,7 @@ The remote's own keys go straight to their function, in every list and on every 
 | GREEN | Favourites |
 | YELLOW | Search all channels, in every country |
 | BLUE | Reload List: download the channel list again (asks first; the proxy restarts and waits for the new list, a channel playing stops for a moment) |
-| MENU | Settings, Reload bouquets, Remove all Vavoo bouquets, Import EPG now, Fix EPG cache, Refresh token, Show Log, About |
+| MENU | Settings, Reload bouquets, Remove all Vavoo bouquets, Import EPG now, Fix EPG cache, Refresh token, Show Log, Factory reset, About |
 | INFO | Version, channels and countries (hold INFO: About) |
 | EPG | The programme guide of your favourites (the EPG import is in MENU → Import EPG now) |
 | FAV | Favourites |
@@ -332,6 +332,12 @@ Each message stays for a few seconds and then hides by itself. The bar is centre
 - This will add missing fields and remove duplicate entries
 - A notification will show the result
 
+### Factory Reset
+- In the main menu press **MENU** → **"Factory reset"** to start again as a new install: the PIN first when one is set (the reset removes it), then a Yes / No (No by default). Not while a recording is running
+- Deleted: favourites and their folders, recently watched, reminders and recording timers, Parental Control and its PIN, hidden countries, the chosen sources, every setting (back to its default), the Vavoo bouquets and their EPG files, the EPG match caches, the saved channel list and the channel logos
+- Kept: your recordings on the disk, backup files (`VavooStream-backup-*.json` - Restore still works afterwards), exported M3U files, the logs and your anonymous statistics choice
+- The plugin then closes and opens again at the welcome (look, countries, PIN)
+
 ## 🔧 User Configuration
 Press **MENU** → **Settings** in the main menu, the channel list or Favourites. Settings open with the basic options (✓ below); the last row, **"All settings (n more) ▶"**, shows every option, in this order (**"◀ Fewer settings"** goes back). A change is kept even when its row is hidden again:
 
@@ -397,7 +403,7 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - It is asked for a locked country, an adult channel (by its name or category: XXX, adult, 18+, porn…, erotic…, Playboy and the like - "Adult Swim" is not one) when it is previewed, played, chosen in search or zapped to, for the settings when they are locked, and always for Parental Control and Backup / Restore. Once entered, all is open for 15 minutes or until you leave the plugin
 - Five wrong PINs in a row: a pause of 30 s, then 2 min, 8 min and 10 min
 - A locked country has a padlock in the main list; the Now/Next panel shows "Locked" for a channel that needs the PIN
-- Forgot the PIN? Delete `/etc/enigma2/vavoo_parental.json` (telnet/FTP) - nothing is locked any more
+- Forgot the PIN? Delete `/etc/enigma2/vavoo_parental.json` (telnet/FTP) - nothing is locked any more. (MENU → Factory reset asks for the PIN, so it cannot be used to get round it)
 
 ### Choosing a stream source
 - Channels that exist from several sources (Vavoo's ".b" / ".c" / ".s" variants and the like) appear once in the list

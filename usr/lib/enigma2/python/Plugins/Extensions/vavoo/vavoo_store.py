@@ -1019,6 +1019,49 @@ def restore_backup(data):
                 if k not in BACKUP_SKIP_SETTINGS)
 
 
+# ---------------------------------------------------------- factory reset
+
+# Every file the plugin keeps in the data folder (/etc/enigma2) - all of
+# them go in a factory reset. A new data file goes in here too
+# (tests/test_audit.py checks every vavoo_* name the plugin writes is).
+# Not here: the backups (VavooStream-backup-*.json, the user's own) and
+# disable_vavoo_stats (the statistics choice is kept).
+RESET_FILES = (
+    "vavoo_favourites.json", "vavoo_recent.json", "vavoo_timers.json",
+    "vavoo_parental.json", "vavoo_hidden_countries.json",
+    "vavoo_source_prefs.json", "vavoo_bouquet_list.txt", "vavoo_memory.log",
+    "vavoo_epg_cache.json", "vavoo_epg_unmatched_cache.json",
+    "vavoo_catalog.json.gz", "vavoo_catalog.json.gz.tmp",
+    # older versions'
+    "vavoo_sref_map.json", "channel_alias.json",
+)
+# what older versions kept in the plugin folder
+RESET_OLD_PLUGIN_FILES = ("vavoo_favourites.json", "Favorite.txt")
+
+
+def factory_reset():
+    """The data files deleted (RESET_FILES, and the old ones in the
+    plugin folder), the lists' memory forgotten and the PIN locked
+    again. Returns the paths deleted."""
+    removed = []
+    paths = [data_file(name) for name in RESET_FILES]
+    paths += [p for p in (_old_plugin_file(n) for n in RESET_OLD_PLUGIN_FILES) if p]
+    with _fav_lock:
+        with _timer_lock:
+            for path in paths:
+                for each in (path, path + ".tmp"):
+                    try:
+                        if os.path.isfile(each):
+                            os.remove(each)
+                            removed.append(each)
+                    except Exception as e:
+                        print("[vavoo_store] Not deleted {}: {}".format(each, e))
+            _fav_cache[0] = _fav_cache[1] = None
+            _timer_cache[0] = _timer_cache[1] = None
+    relock()
+    return removed
+
+
 # --------------------------------------------------------------- initials
 
 _BRACKETS = re.compile(u"\\(.*?\\)|\\[.*?\\]", re.U)

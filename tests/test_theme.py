@@ -354,7 +354,7 @@ mv.open_menu()
 title, entries, on_choice = menus[-1]
 keys = [k for _l, k in entries]
 check(set(keys) == {"settings", "reload_bouquets", "remove_all", "epg_import", "fix_cache",
-                    "refresh_token", "log", "about"},
+                    "refresh_token", "log", "factory_reset", "about"},
       "main MENU: settings + every Enigma2 tool that left the colour keys %r" % keys)
 called = []
 mv.goConfig = lambda: called.append("settings")

@@ -1784,6 +1784,16 @@ def get_epg_matcher(similarity_threshold=None):
     return _epg_matcher
 
 
+def forget_epg_matches():
+    """A factory reset: the matcher (its cache files are deleted
+    already) and the curated databases are made again on next use."""
+    global _epg_matcher
+    with _epg_matcher_lock:
+        _epg_matcher = None
+    with _curated_channel_db_lock:
+        _curated_channel_db_cache.clear()
+
+
 # get_country_code() returns real ISO 3166-1 codes (needed for flag
 # downloads, e.g. "gb" for United Kingdom), but channel_alias.ALIAS_MAP's
 # ids keep the EPG world's own suffix convention, which doesn't always

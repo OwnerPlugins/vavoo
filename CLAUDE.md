@@ -525,6 +525,21 @@ Parental / Backup / Monogram / SearchText, all under `ENIGMA_PATH`
   name or category. Never in a backup, never touched by a restore.
 - Backup: `VavooStream-backup-*.json` (`"format": "vavoo_e2_backup"`):
   `ui_settings.py`'s `BACKUP_SETTINGS` plus the lists; restore replaces.
+- Factory reset (main list MENU → `MainVavoo.factory_reset()` →
+  `ui_settings.ask_factory_reset()`): refused while a recording runs,
+  the PIN first (`ask_pin()`: the reset removes it), Yes / No (No by
+  default); then `factory_reset()`: thread "vv-reset"
+  `factory_reset_files()` - `vavoo_store.factory_reset()` (every name
+  in `RESET_FILES` + the old plugin-folder files, `relock()`), all
+  Vavoo bouquets under `export_lock`, the logo folders (only ones
+  named `.vavoo_logos` / `PICON_CACHE_DIR`), the tiles, pause
+  leftovers, `release_guides()`, `forget_epg_matches()` - and on the
+  GUI thread `reset_settings()` (each `cfg` element to its default but
+  `RESET_KEEP_SETTINGS`: the statistics choice), the skin / icon
+  caches, `restart_proxy_in_background(fresh=True)`; `MainVavoo` closes
+  and `main()` opens again: the welcome. Kept: recordings, backups,
+  M3U exports, logs. A new data file of the plugin goes into
+  `RESET_FILES` (`test_audit.py` checks).
 - `tile_path()` / `lock_path()` draw small PNGs into `/tmp/vavoo_tiles`
   at run time (no Pillow on a box), so they are not theme assets.
 

@@ -38,6 +38,18 @@ for module in (plugin, bm, plugin.vavoo_proxy):
             setattr(module, name, lambda *a, **k: True)
 plugin.cfg.subcategories = V(False)
 plugin.vUtils.RECENT_FILE = store.recent_file()
+# MENU → Factory reset answered Yes: recorded, its on_done run - the real
+# reset would empty the data the next passes use (test_factory_reset.py)
+RESETS = []
+
+
+def _fake_reset(on_done=None):
+    RESETS.append(on_done)
+    if on_done:
+        on_done()
+
+
+plugin.factory_reset = _fake_reset
 
 
 class _Signal(object):

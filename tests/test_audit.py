@@ -157,5 +157,75 @@ for line in hiding:
     print("  " + line)
 check(not hiding, "self.items / self.keys / self.get ... = never set (%d)" % len(hiding))
 
+print("== what the fake Enigma2 cannot show")
+import ast                                      # noqa: E402
+import glob                                     # noqa: E402
+PLUGIN = harness.PLUGIN_DIR
+store = harness.store
+UI_FILES = [os.path.join(PLUGIN, "plugin.py")] + sorted(glob.glob(os.path.join(PLUGIN, "ui_*.py")))
+CODE_FILES = UI_FILES + [os.path.join(PLUGIN, n) for n in (
+    "vUtils.py", "bouquet_manager.py", "vavoo_proxy.py", "notification_system.py",
+    "vavoo_store.py", "vavoo_record.py", "vavoo_stats.py", "__init__.py")]
+
+
+def read(path):
+    with open(path) as f:
+        return f.read()
+
+
+# every setting used is declared (the fake makes an undeclared one up; a
+# box raises AttributeError)
+base = read(os.path.join(PLUGIN, "ui_base.py"))
+declared = set(re.findall(r"^cfg\.([a-z_0-9]+)\s*=", base, re.M))
+undeclared = []
+for path in CODE_FILES:
+    for number, line in enumerate(read(path).splitlines(), 1):
+        code = line.split("#", 1)[0]
+        for name in re.findall(r"\bcfg\.([a-z_0-9]+)\b", code):
+            if name not in declared and name not in ("dict",):
+                undeclared.append("%s:%d cfg.%s" % (os.path.basename(path), number, name))
+check(not undeclared, "every cfg.<setting> used is declared in ui_base.py (%s)" % undeclared[:5])
+
+
+def is_text(node):
+    if hasattr(ast, "Constant") and isinstance(node, ast.Constant):
+        return isinstance(node.value, (type(u""), type("")))
+    if hasattr(ast, "Str") and not hasattr(ast, "Constant"):
+        return isinstance(node, ast.Str)
+    return False
+
+
+def plain(node):
+    """A literal text (or literals joined with +): what xgettext finds."""
+    if is_text(node):
+        return True
+    return isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add) and \
+        plain(node.left) and plain(node.right)
+
+
+not_found = []
+for path in UI_FILES + [os.path.join(PLUGIN, n) for n in ("vUtils.py", "bouquet_manager.py")]:
+    tree = ast.parse(read(path), path)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "_":
+            if len(node.args) != 1 or not plain(node.args[0]):
+                not_found.append("%s:%d" % (os.path.basename(path), node.lineno))
+check(not not_found, "_() only on literal texts - the translations find them (%s)" % not_found)
+
+# every data file of the plugin is deleted by a factory reset
+names = set()
+for path in CODE_FILES:
+    text = read(path)
+    names.update(re.findall(r"data_file\(\s*[\"']([^\"']+)[\"']", text))
+    names.update(re.findall(r"join\(\s*ENIGMA_PATH\s*,\s*[\"']([^\"']+)[\"']", text))
+names.discard("epgimport.conf")             # EPGImport's own, shared
+names = sorted(n for n in names if not n.startswith("bouquets."))
+not_reset = [n for n in names if n not in store.RESET_FILES]
+check(names and not not_reset, "every data file is in vavoo_store.RESET_FILES (%d; missing %s)"
+      % (len(names), not_reset))
+check(not any(n.startswith(store.BACKUP_PREFIX) for n in store.RESET_FILES) and
+      "disable_vavoo_stats" not in store.RESET_FILES,
+      "...and not the backups nor the statistics choice")
+
 shutil.rmtree(TMP, ignore_errors=True)
 finish()

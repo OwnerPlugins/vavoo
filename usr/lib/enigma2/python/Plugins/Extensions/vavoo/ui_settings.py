@@ -10,8 +10,10 @@ from os.path import (
     basename,
     dirname,
     join,
+    isdir,
     isfile
 )
+from shutil import rmtree
 from json import loads
 from twisted.internet import reactor
 from Components.ActionMap import ActionMap
@@ -38,11 +40,15 @@ from . import (
     PROXY_BASE_URL,
     PROXY_COUNTRIES_URL,
     LOG_FILE,
+    PICON_CACHE_DIR,
+    export_lock,
     literals_for
 )
 from . import vavoo_store
 from . import vavoo_record
-from .bouquet_manager import reorganize_all_bouquets_position, get_local_ip
+from . import vUtils
+from .bouquet_manager import (
+    get_local_ip, remove_bouquets_by_name, reorganize_all_bouquets_position)
 from .vUtils import (
     debug,
     make_print,
@@ -100,15 +106,15 @@ print = make_print("PLUGIN")
 
 
 from .ui_base import (
-    ENIGMA_PATH, PLUGIN_PATH, VavooLogViewer, add_skin_back, cfg, clock_24,
-    current_theme, downloadfree, list_keys, load_screen_skin, named,
-    open_action_menu, open_log_viewer, show_keys, to_string, to_text,
-    url_quote)
+    ENIGMA_PATH, PLUGIN_PATH, VavooLogViewer, _icon_cache, _theme_skin_cache,
+    add_skin_back, cfg, clock_24, current_theme, downloadfree, list_keys,
+    load_screen_skin, named, open_action_menu, open_log_viewer, show_keys,
+    to_string, to_text, url_quote)
 from .ui_pick import (
     VavooCountries, VavooParental, ask_pin)
 from .ui_record import (
-    RECORDINGS, VavooRecordings, record_folder_choices, recordings_folder,
-    size_text)
+    LOGO_FOLDER_NAME, RECORDINGS, VavooRecordings, clean_pause_leftovers,
+    media_mounts, record_folder_choices, recordings_folder, size_text)
 
 
 def basic_rows():
@@ -1418,6 +1424,160 @@ def apply_settings(settings):
         configfile.save()
     except Exception as e:
         print("[vavoo] Settings not saved: {}".format(e))
+
+
+# ---------------------------------------------------------------------
+# MENU → Factory reset: everything the plugin keeps, back to a new
+# install (the welcome runs again). Recordings, backups and the
+# anonymous statistics choice stay.
+# ---------------------------------------------------------------------
+# settings a factory reset leaves as they are (the user's privacy choice)
+RESET_KEEP_SETTINGS = ("stats_enabled",)
+
+
+def _setting_elements():
+    """[(name, element)] of the plugin's settings (Enigma2's
+    ConfigSubsection.dict(); off the box, the attributes)."""
+    try:
+        items = cfg.dict()
+        if isinstance(items, dict) and items:
+            return sorted(items.items())
+    except Exception:
+        pass
+    return sorted((name, element) for name, element in vars(cfg).items()
+                  if not name.startswith("_") and hasattr(element, "value"))
+
+
+def reset_settings():
+    """Every setting back to its default (and saved), but
+    RESET_KEEP_SETTINGS. Returns how many were reset."""
+    count = 0
+    for name, element in _setting_elements():
+        if name in RESET_KEEP_SETTINGS or not hasattr(element, "default"):
+            continue
+        try:
+            element.value = element.default
+            element.save()
+            count += 1
+        except Exception as e:
+            debug("Setting {} not reset: {}".format(name, e))
+    try:
+        configfile.save()
+    except Exception as e:
+        print("[vavoo] Settings not saved: {}".format(e))
+    return count
+
+
+def _logo_folders():
+    """The channel logos' folders: /tmp's, the one in use and each
+    disk's (only folders of that name - nothing else is ever deleted)."""
+    folders = [PICON_CACHE_DIR]
+    current = vUtils.picon_cache_dir()
+    if current and basename(current.rstrip("/")) == LOGO_FOLDER_NAME:
+        folders.append(current)
+    for mount in media_mounts():
+        folders.append(join(mount, LOGO_FOLDER_NAME))
+    out = []
+    for folder in folders:
+        if folder not in out:
+            out.append(folder)
+    return out
+
+
+def factory_reset_files():
+    """The reset's work on the disks (a background thread): the data
+    files, the Vavoo bouquets and their EPG files, the logos and tiles,
+    pause leftovers, the guides and matches in memory. Returns the
+    number of files / folders deleted."""
+    removed = len(vavoo_store.factory_reset())
+    with export_lock:
+        try:
+            removed += remove_bouquets_by_name() or 0
+        except Exception as e:
+            print("[Reset] Bouquets not removed: {}".format(e))
+    for folder in _logo_folders() + [vavoo_store.TILE_DIR]:
+        if isdir(folder):
+            rmtree(folder, ignore_errors=True)
+            removed += 1
+    try:
+        clean_pause_leftovers()
+    except Exception as e:
+        debug("Pause leftovers not cleaned: {}".format(e))
+    try:
+        vUtils.release_guides()
+        vUtils.forget_epg_matches()
+    except Exception as e:
+        debug("Guides not released: {}".format(e))
+    return removed
+
+
+def _finish_factory_reset(removed, on_done):
+    """Back on the GUI thread: the settings, the screens' caches, the
+    bouquets reloaded, a fresh proxy (a new catalog from the network,
+    the default sources), then `on_done()`."""
+    count = reset_settings()
+    _theme_skin_cache.clear()
+    _icon_cache.clear()
+    vUtils.ReloadBouquets(500)
+    try:
+        restart_proxy_in_background(fresh=True)
+    except Exception as e:
+        print("[Reset] Proxy not restarted: {}".format(e))
+    print("[Reset] Factory reset: {} files / folders deleted, {} settings "
+          "back to default".format(removed, count))
+    if on_done:
+        on_done()
+
+
+def factory_reset(on_done=None):
+    """Deletes it all (factory_reset_files() in a thread "vv-reset",
+    then _finish_factory_reset() on the GUI thread)."""
+    def _work():
+        try:
+            removed = factory_reset_files()
+        except Exception as e:
+            print("[Reset] Not complete: {}".format(e))
+            removed = 0
+        reactor.callFromThread(_finish_factory_reset, removed, on_done)
+
+    worker = threading.Thread(target=named(_work, "vv-reset"))
+    worker.daemon = True
+    worker.start()
+
+
+def ask_factory_reset(session, screen, on_done):
+    """MENU → Factory reset: not while a recording runs; the PIN first
+    when there is one (the reset removes it); then a Yes / No (No by
+    default). `screen` is checked for `_closed` before acting."""
+    if RECORDINGS.running():
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Not now: a recording is running"), 4)
+        return
+
+    def answered(answer=None):
+        if not answer or (screen is not None and screen._closed):
+            return
+        if RECORDINGS.running():
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Not now: a recording is running"), 4)
+            return
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Factory reset..."), 3)
+        factory_reset(on_done)
+
+    def confirm():
+        if screen is not None and screen._closed:
+            return
+        session.openWithCallback(
+            answered, MessageBox,
+            _("Factory reset: delete the favourites, recently watched, "
+              "timers, Parental Control and its PIN, every setting, the "
+              "Vavoo bouquets, the EPG files and the caches, and start "
+              "again from the welcome?\n\nYour recordings and backups "
+              "stay."),
+            MessageBox.TYPE_YESNO, default=False)
+
+    ask_pin(session, screen, confirm)
 
 
 LICENCES_FILE = "/tmp/vavoo_licences.txt"

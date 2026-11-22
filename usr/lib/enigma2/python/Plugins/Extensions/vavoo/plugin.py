@@ -132,7 +132,7 @@ from .ui_record import (
     RECORDINGS, VavooRecordings, clean_pause_leftovers, logo_folder, record_channel,
     recordings_folder)
 from .ui_settings import (
-    open_settings, show_about)
+    ask_factory_reset, open_settings, show_about)
 from .ui_guide import (
     REMINDERS, VavooGuide)
 from .ui_player import (
@@ -1070,37 +1070,44 @@ class MainVavoo(Screen, PreviewWindow):
             print("[MainVavoo][refresh_proxy] Refresh proxy error: " + str(e))
 
     def _refresh_proxy_callback(self, result):
-        """Callback for proxy refresh"""
-        if result:
+        """Yes: the proxy asks for a new token - in a thread (the
+        request goes on to Vavoo: seconds; on the GUI thread the box
+        froze meanwhile), the answer back in _on_token_refreshed()."""
+        if not result or self._closed:
+            return
+
+        def _work():
+            ok, error = False, None
             try:
-                # Try to refresh the token
-                response = getUrl(
-                    PROXY_REFRESH_URL, timeout=5)
+                response = getUrl(PROXY_REFRESH_URL, timeout=5, retries=1)
                 if response:
                     data = loads(ensure_str(response))
-                    if data.get("status") == "success":
-                        self.session.open(
-                            MessageBox,
-                            _("Proxy token refreshed successfully"),
-                            MessageBox.TYPE_INFO,
-                            timeout=3
-                        )
-                        self._update_proxy_status_display()
-                    else:
-                        self.session.open(
-                            MessageBox,
-                            _("Failed to refresh proxy token"),
-                            MessageBox.TYPE_ERROR,
-                            timeout=3
-                        )
+                    ok = data.get("status") == "success"
             except Exception as e:
-                print("[Refresh Proxy] Error: " + str(e))
-                self.session.open(
-                    MessageBox,
-                    _("Failed to refresh proxy: ") + str(e),
-                    MessageBox.TYPE_ERROR,
-                    timeout=3
-                )
+                error = e
+            reactor.callFromThread(self._on_token_refreshed, ok, error)
+
+        worker = threading.Thread(target=named(_work, "vv-token"))
+        worker.daemon = True
+        worker.start()
+
+    def _on_token_refreshed(self, ok, error=None):
+        if self._closed:
+            return
+        if error is not None:
+            print("[Refresh Proxy] Error: " + str(error))
+            self.session.open(
+                MessageBox, _("Failed to refresh proxy: ") + str(error),
+                MessageBox.TYPE_ERROR, timeout=3)
+        elif ok:
+            self.session.open(
+                MessageBox, _("Proxy token refreshed successfully"),
+                MessageBox.TYPE_INFO, timeout=3)
+            self._update_proxy_status_display()
+        else:
+            self.session.open(
+                MessageBox, _("Failed to refresh proxy token"),
+                MessageBox.TYPE_ERROR, timeout=3)
 
     def _check_update_popup_tick(self):
         """Poll for the background update check (kicked off during the
@@ -1608,6 +1615,7 @@ class MainVavoo(Screen, PreviewWindow):
             (_("Fix EPG cache"), "fix_cache"),
             (_("Refresh token"), "refresh_token"),
             (_("Show Log"), "log"),
+            (_("Factory reset"), "factory_reset"),
             (_("About"), "about"),
         ]
         actions = {
@@ -1618,11 +1626,31 @@ class MainVavoo(Screen, PreviewWindow):
             "fix_cache": self._fix_cache_format,
             "refresh_token": self.refresh_proxy,
             "log": lambda: open_log_viewer(self.session),
+            "factory_reset": self.factory_reset,
             "about": self.info,
         }
         open_action_menu(
             self.session, _("Menu"), entries,
             lambda key: actions[key]() if key in actions else None)
+
+    def factory_reset(self):
+        """MENU → Factory reset (ui_settings.ask_factory_reset()): then
+        the plugin closes and opens again, at the welcome."""
+        ask_factory_reset(self.session, self, self._after_factory_reset)
+
+    def _after_factory_reset(self):
+        if self._closed:
+            # (left meanwhile: the welcome comes when it is opened)
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("Factory reset done"), 4)
+            return
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Factory reset done - starting again"), 4)
+        session = self.session
+        # opened again once this screen has really gone (Enigma2 closes
+        # it after closex() returns)
+        self.onClose.append(lambda: reactor.callLater(1.0, main, session))
+        self.closex()
 
     def manual_epg_update(self):
         """Manually trigger EPG update"""
@@ -4563,18 +4591,25 @@ def cfgmain(menuid, **kwargs):
         return []
 
 
+# Two public DNS servers: a network that blocks one (some providers and
+# firewalls block 8.8.8.8) is not taken for no Internet at all.
+INTERNET_PROBES = (('8.8.8.8', 53), ('1.1.1.1', 53))
+
+
 def checkInternet():
-    try:
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    import socket
+    for address in INTERNET_PROBES:
         try:
-            s.settimeout(0.5)
-            s.connect(('8.8.8.8', 53))
-            return True
-        finally:
-            s.close()
-    except BaseException:
-        return False
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                s.settimeout(0.5)
+                s.connect(address)
+                return True
+            finally:
+                s.close()
+        except Exception:
+            continue
+    return False
 
 
 def main(session, **kwargs):

@@ -607,13 +607,17 @@ class VavooParental(VavooPickScreen):
 # ---------------------------------------------------------------------
 # Welcome (a new install's first opening)
 # ---------------------------------------------------------------------
-# (short: the popup's rows are not wide)
-WELCOME_THEMES = (
-    ("prism", "Prism - Vavoo's violet"),
-    ("halo", "Halo - frosted glass"),
-    ("orbit", "Orbit - teal cockpit"),
-    ("classic", "Classic - the original look"),
-)
+def welcome_themes():
+    """(theme, label) for the welcome's first step - short: the popup's
+    rows are not wide. Literal _() calls here, as the welcome runs: a
+    module-level table passed to _() later never reached the
+    translations (xgettext only finds _("...") itself)."""
+    return (
+        ("prism", _("Prism - Vavoo's violet")),
+        ("halo", _("Halo - frosted glass")),
+        ("orbit", _("Orbit - teal cockpit")),
+        ("classic", _("Classic - the original look")),
+    )
 
 
 def existing_install():
@@ -698,7 +702,7 @@ def run_welcome(session, on_done):
         session.openWithCallback(chosen, VavooCountries, None, True)
 
     current = cfg.theme.value
-    entries = [((u"\u2713 " if key == current else u"   ") + to_text(_(label)), key)
-               for key, label in WELCOME_THEMES]
+    entries = [((u"\u2713 " if key == current else u"   ") + to_text(label), key)
+               for key, label in welcome_themes()]
     open_action_menu(session, _("Welcome! Choose a look"), entries, countries_step,
                      on_cancel=finish)
