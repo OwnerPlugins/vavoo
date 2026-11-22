@@ -18,7 +18,7 @@ msgid "(%s files deleted)"
 msgstr "(%s फ़ाइलें हटा दी गईं)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(मौजूदा)"
 
 msgid "(you have v{})"
 msgstr "(आपके पास v{} है)"
@@ -96,7 +96,7 @@ msgid "? Proxy Unknown"
 msgstr "? प्रॉक्सी अज्ञात"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "पसंदीदा में जोड़ा गया: {}"
 
 msgid "All countries (%d)"
 msgstr "सभी देश (%d)"
@@ -117,7 +117,7 @@ msgid "Author:"
 msgstr "लेखक:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "कार (बहुत बढ़िया, फ़ॉलबैक वावू)"
 
 msgid "Back"
 msgstr "पीछे"
@@ -144,7 +144,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "गुलदस्ते सफलतापूर्वक पुनर्गठित हुए!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "अपने तारांकित चैनल ब्राउज़ करें और चलाएं। ब्राउज़ करते समय INFO कुंजी के साथ किसी चैनल को तारांकित/अनतारांकित करें।"
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -166,7 +166,7 @@ msgid "Case: {}"
 msgstr "मामला: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "कैटलॉग/स्ट्रीम स्रोत"
 
 #, fuzzy
 msgid "Changelog:"
@@ -185,16 +185,17 @@ msgid "Checking proxy..."
 msgstr "प्रॉक्सी की जाँच की जा रही है..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "स्ट्रीम स्रोत चुनें"
 
 msgid "Clear All"
 msgstr "सभी साफ करें"
 
 msgid "Close"
-msgstr ""
+msgstr "बंद करना"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "अल्पविराम से अलग किए गए देश के नाम (उदा. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "कॉन्फ़िगरेशन सफलतापूर्वक सहेजा गया!"
@@ -215,16 +216,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "जारी है, प्रॉक्सी अभी भी सिंक हो रही है..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "चैनल लोड नहीं हो सका - प्रॉक्सी प्रतिक्रिया नहीं दे रहा है"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "प्रॉक्सी से देश सूची लोड नहीं की जा सकी"
 
 msgid "Could not save the installer script."
 msgstr "इंस्टॉलर स्क्रिप्ट को सहेजा नहीं जा सका."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "पसंदीदा अपडेट नहीं किया जा सका"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "देश: %(उत्पन्न)d/%(कुल)d"
@@ -275,7 +276,7 @@ msgid "Enable Vavoo EPG"
 msgstr "वावू ईपीजी सक्षम करें"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "अभिभावकीय नियंत्रण पिन दर्ज करें"
 
 msgid "Enter text to search..."
 msgstr "खोजने के लिए पाठ दर्ज करें..."
@@ -320,7 +321,7 @@ msgid "Failed: %(failed)d"
 msgstr "विफल: %(असफल)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "पसंदीदा"
 
 msgid "Fix Cache"
 msgstr "कैश ठीक करें"
@@ -335,7 +336,7 @@ msgid "Found: {} channels"
 msgstr "मिला: {} चैनल"
 
 msgid "Geil only"
-msgstr ""
+msgstr "केवल गिल"
 
 msgid "Generate .m3u file for:"
 msgstr "इसके लिए .m3u फ़ाइल जनरेट करें:"
@@ -356,13 +357,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "कितनी बार ईपीजी का पुनः मिलान करें और गुलदस्ते को ताज़ा करें, अभी से गिनती करें।"
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "यदि सेट किया गया है, तो /playlist.m3u पर लाइव प्लेलिस्ट को ?key=<this value> की आवश्यकता है - बिना किसी कुंजी के खाली छोड़ दें। यूआरएल: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "महत्वपूर्ण टिप्पणियाँ:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "ग़लत पिन"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "यदि वीपीएन या धीमे कनेक्शन के कारण प्रॉक्सी में अधिक समय लगता है तो बढ़ाएँ।"
@@ -433,7 +434,7 @@ msgid "No channels found for: %s"
 msgstr "%s के लिए कोई चैनल नहीं मिला"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "अभी तक कोई पसंदीदा नहीं"
 
 msgid "No items available"
 msgstr "कोई आइटम उपलब्ध नहीं है"
@@ -451,22 +452,22 @@ msgid "Nothing to remove for: {}"
 msgstr "हटाने के लिए कुछ भी नहीं: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "ठीक है"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "इस चैनल के लिए केवल एक ही स्रोत उपलब्ध है"
 
 msgid "Only one specific country"
 msgstr "केवल एक विशिष्ट देश"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "अभिभावकीय नियंत्रण पिन"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "समय-समय पर ईपीजी का दोबारा मिलान करें और पृष्ठभूमि में अपने पसंदीदा देशों के गुलदस्ते ताज़ा करें।"
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "प्लेलिस्ट एक्सेस कुंजी (वैकल्पिक)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "मुख्य सूची में वावू गुलदस्तों की स्थिति"
@@ -576,10 +577,10 @@ msgid "Send Anonymous Statistics"
 msgstr "अनाम सांख्यिकी भेजें"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "नीचे दिए गए देशों को लॉक करने के लिए एक पिन सेट करें। माता-पिता का नियंत्रण पूरी तरह से अक्षम करने के लिए इसे खाली छोड़ दें।"
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "लॉग दिखाएँ (देखने के लिए ठीक है)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Vavoo.log (यूआई जीवनचक्र, प्रति-अनुरोध विवरण) में वर्बोज़ डिबग-स्तरीय संदेश दिखाएं। तुरंत प्रभाव डालता है - समस्या निवारण न होने तक छोड़ दें।"
@@ -600,7 +601,7 @@ msgid "Technical Features:"
 msgstr "तकनीकी सुविधाओं:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "यह चैनल नहीं चलाया जा सकता"
 
 msgid "This will refresh the authentication token."
 msgstr "यह प्रमाणीकरण टोकन को ताज़ा कर देगा।"
@@ -643,7 +644,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "वावू ईपीजी स्रोत नहीं मिला। कृपया पहले कम से कम एक गुलदस्ता निर्यात करें।"
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "वावू लॉग"
 
 msgid "Vavoo Stream Live"
 msgstr "वावू स्ट्रीम लाइव"
@@ -661,22 +662,22 @@ msgid "Vavoo is already running."
 msgstr "वावू पहले से ही चल रहा है।"
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "केवल वावू/कूल"
 
 msgid "Version:"
 msgstr "संस्करण:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "पसंदीदा देखें (खोलने के लिए ठीक है)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "%s की अंतिम 200 पंक्तियाँ देखें।"
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ईपीजी समर्थन के साथ वावू प्रॉक्सी में आपका स्वागत है"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "किस सेवा से चैनल और स्ट्रीम लोड करना है. ऑटो पहले गील की कोशिश करता है और अनुपलब्ध होने पर वावू में वापस आ जाता है; अन्य दो विकल्प इसे बिल्कुल उसी स्रोत पर पिन करते हैं। सेव पर प्रभाव पड़ता है (यदि प्रॉक्सी चल रही है तो उसे पुनः आरंभ करता है)।"
 
 #, fuzzy
 msgid "Yes, update now"

@@ -18,7 +18,7 @@ msgid "(%s files deleted)"
 msgstr "(ลบ %s ไฟล์แล้ว)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(ปัจจุบัน)"
 
 msgid "(you have v{})"
 msgstr "(คุณมี วี{})"
@@ -96,7 +96,7 @@ msgid "? Proxy Unknown"
 msgstr "? ไม่ทราบพร็อกซี"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "เพิ่มในรายการโปรด: {}"
 
 msgid "All countries (%d)"
 msgstr "ทุกประเทศ (%d)"
@@ -117,7 +117,7 @@ msgid "Author:"
 msgstr "ผู้เขียน:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "รถยนต์ (เจ๋งมาก ทางเลือกสำรอง Vavoo)"
 
 msgid "Back"
 msgstr "กลับ"
@@ -144,7 +144,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "จัดระเบียบช่อดอกไม้ใหม่ได้สำเร็จ!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "เรียกดูและเล่นช่องที่ติดดาวของคุณ ติดดาว/เลิกติดดาวช่องด้วยปุ่ม INFO ขณะเรียกดู"
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -166,7 +166,7 @@ msgid "Case: {}"
 msgstr "กรณี: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "แค็ตตาล็อก/แหล่งที่มาของสตรีม"
 
 #, fuzzy
 msgid "Changelog:"
@@ -185,16 +185,17 @@ msgid "Checking proxy..."
 msgstr "กำลังตรวจสอบพร็อกซี..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "เลือกแหล่งสตรีม"
 
 msgid "Clear All"
 msgstr "ล้างทั้งหมด"
 
 msgid "Close"
-msgstr ""
+msgstr "ปิด"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "ชื่อประเทศที่คั่นด้วยเครื่องหมายจุลภาค (เช่น \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "บันทึกการกำหนดค่าสำเร็จแล้ว!"
@@ -215,16 +216,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "กำลังดำเนินการต่อ พร็อกซียังคงซิงค์..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "ไม่สามารถโหลดช่อง - พร็อกซีไม่ตอบสนอง"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "ไม่สามารถโหลดรายชื่อประเทศจากพร็อกซี"
 
 msgid "Could not save the installer script."
 msgstr "ไม่สามารถบันทึกสคริปต์การติดตั้งได้"
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "ไม่สามารถอัปเดตรายการโปรดได้"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "ประเทศ: %(สร้าง)d/%(รวม)d"
@@ -275,7 +276,7 @@ msgid "Enable Vavoo EPG"
 msgstr "เปิดใช้งาน Vavoo EPG"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "ป้อน PIN การควบคุมโดยผู้ปกครอง"
 
 msgid "Enter text to search..."
 msgstr "ป้อนข้อความเพื่อค้นหา..."
@@ -320,7 +321,7 @@ msgid "Failed: %(failed)d"
 msgstr "ล้มเหลว: %(ล้มเหลว)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "รายการโปรด"
 
 msgid "Fix Cache"
 msgstr "แก้ไขแคช"
@@ -335,7 +336,7 @@ msgid "Found: {} channels"
 msgstr "พบ: {} ช่อง"
 
 msgid "Geil only"
-msgstr ""
+msgstr "เกิ้ลเท่านั้น"
 
 msgid "Generate .m3u file for:"
 msgstr "สร้างไฟล์ .m3u สำหรับ:"
@@ -356,13 +357,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "บ่อยแค่ไหนที่จะจับคู่ EPG และรีเฟรชช่อดอกไม้นับแต่นี้เป็นต้นไป"
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "หากตั้งค่าไว้ เพลย์ลิสต์สดที่ /playlist.m3u ต้องใช้ ?key=<this value> - เว้นว่างไว้หากไม่มีคีย์ URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "หมายเหตุสำคัญ:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "PIN ไม่ถูกต้อง"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "เพิ่มขึ้นหากพร็อกซีใช้เวลานานเนื่องจาก VPN หรือการเชื่อมต่อช้า"
@@ -433,7 +434,7 @@ msgid "No channels found for: %s"
 msgstr "ไม่พบช่องสำหรับ: %s"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "ยังไม่มีรายการโปรด"
 
 msgid "No items available"
 msgstr "ไม่มีรายการที่มีอยู่"
@@ -451,22 +452,22 @@ msgid "Nothing to remove for: {}"
 msgstr "ไม่มีสิ่งใดที่จะลบสำหรับ: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "ตกลง"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "มีเพียงแหล่งเดียวเท่านั้นสำหรับช่องนี้"
 
 msgid "Only one specific country"
 msgstr "เฉพาะประเทศเดียวเท่านั้น"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "PIN การควบคุมโดยผู้ปกครอง"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "จับคู่ EPG อีกครั้งและรีเฟรชช่อดอกไม้สำหรับประเทศที่คุณชื่นชอบในเบื้องหลัง"
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "คีย์การเข้าถึงเพลย์ลิสต์ (ไม่บังคับ)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "ตำแหน่งของช่อดอกไม้วาวูในรายการหลัก"
@@ -576,10 +577,10 @@ msgid "Send Anonymous Statistics"
 msgstr "ส่งสถิติที่ไม่ระบุชื่อ"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "ตั้ง PIN เพื่อล็อคประเทศด้านล่าง เว้นว่างไว้เพื่อปิดใช้งานการควบคุมโดยผู้ปกครองทั้งหมด"
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "แสดงบันทึก (ตกลงเพื่อดู)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "แสดงข้อความระดับ DEBUG แบบละเอียดใน vavoo.log (วงจรการใช้งาน UI รายละเอียดตามคำขอ) มีผลทันที - งดเว้นเว้นแต่จะแก้ไขปัญหาได้"
@@ -600,7 +601,7 @@ msgid "Technical Features:"
 msgstr "คุณสมบัติทางเทคนิค:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "ช่องนี้ไม่สามารถเล่นได้"
 
 msgid "This will refresh the authentication token."
 msgstr "การดำเนินการนี้จะรีเฟรชโทเค็นการตรวจสอบสิทธิ์"
@@ -643,7 +644,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "ไม่พบแหล่งที่มาของ Vavoo EPG โปรดส่งออกช่อดอกไม้อย่างน้อยหนึ่งช่อก่อน"
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "วาวู ล็อก"
 
 msgid "Vavoo Stream Live"
 msgstr "Vavoo สตรีมสด"
@@ -661,22 +662,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo กำลังทำงานอยู่แล้ว"
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "วาวู/คูลเท่านั้น"
 
 msgid "Version:"
 msgstr "เวอร์ชัน:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "ดูรายการโปรด (ตกลงเพื่อเปิด)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "ดู 200 บรรทัดสุดท้ายของ %s"
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "ยินดีต้อนรับสู่ Vavoo Proxy พร้อมการสนับสนุน EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "บริการใดที่จะโหลดช่องและสตรีม Auto ลองใช้ Geil ก่อนแล้วจึงกลับไปหา Vavoo หากไม่พร้อมใช้งาน อีกสองตัวเลือกปักหมุดไว้กับแหล่งเดียว มีผลเมื่อบันทึก (รีสตาร์ทพร็อกซีหากทำงานอยู่)"
 
 #, fuzzy
 msgid "Yes, update now"

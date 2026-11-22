@@ -19,7 +19,7 @@ msgid "(%s files deleted)"
 msgstr "(%s файлів видалено)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(поточний)"
 
 msgid "(you have v{})"
 msgstr "(у вас є v{})"
@@ -97,7 +97,7 @@ msgid "? Proxy Unknown"
 msgstr "? Проксі невідомий"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "Додано до вибраного: {}"
 
 msgid "All countries (%d)"
 msgstr "Усі країни (%d)"
@@ -118,7 +118,7 @@ msgid "Author:"
 msgstr "Автор:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "Автомобіль (Чудовий, запасний Vavoo)"
 
 msgid "Back"
 msgstr "Назад"
@@ -145,7 +145,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "Букети успішно реорганізовані!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "Переглядайте та відтворюйте канали, позначені зірочкою. Позначте/зніміть зірочку з каналу за допомогою клавіші INFO під час перегляду."
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -167,7 +167,7 @@ msgid "Case: {}"
 msgstr "Регістр: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "Джерело каталогу/потоку"
 
 #, fuzzy
 msgid "Changelog:"
@@ -186,16 +186,17 @@ msgid "Checking proxy..."
 msgstr "Перевірка проксі..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "Виберіть Джерело потоку"
 
 msgid "Clear All"
 msgstr "Очистити все"
 
 msgid "Close"
-msgstr ""
+msgstr "Закрити"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "Назви країн, розділених комами (наприклад, \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "Конфігурацію успішно збережено!"
@@ -216,16 +217,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "Продовжується, проксі ще синхронізується..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "Не вдалося завантажити канали - проксі не відповідає"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "Не вдалося завантажити список країн із проксі"
 
 msgid "Could not save the installer script."
 msgstr "Не вдалося зберегти сценарій інсталятора."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "Не вдалося оновити вибране"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "Країни: %(generated)d/%(total)d"
@@ -276,7 +277,7 @@ msgid "Enable Vavoo EPG"
 msgstr "Увімкнути Vavoo EPG"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "Введіть PIN-код батьківського контролю"
 
 msgid "Enter text to search..."
 msgstr "Введіть текст для пошуку..."
@@ -321,7 +322,7 @@ msgid "Failed: %(failed)d"
 msgstr "Не вдалося: %(не вдалося)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "Вибране"
 
 msgid "Fix Cache"
 msgstr "Виправити кеш"
@@ -336,7 +337,7 @@ msgid "Found: {} channels"
 msgstr "Знайдено каналів: {}"
 
 msgid "Geil only"
-msgstr ""
+msgstr "Тільки Гейл"
 
 msgid "Generate .m3u file for:"
 msgstr "Створити файл .m3u для:"
@@ -357,13 +358,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Як часто повторно зіставляти EPG і оновлювати букети, починаючи з цього моменту."
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "Якщо встановлено, живий список відтворення в /playlist.m3u вимагає ?key=<це значення> - залиште порожнім, щоб не було ключа. URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "Важливі зауваження:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "Неправильний PIN-код"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Збільште, якщо проксі займає багато часу через VPN або повільне з’єднання."
@@ -434,7 +435,7 @@ msgid "No channels found for: %s"
 msgstr "Не знайдено каналів для: %s"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "Вибраних ще немає"
 
 msgid "No items available"
 msgstr "Немає доступних товарів"
@@ -452,22 +453,22 @@ msgid "Nothing to remove for: {}"
 msgstr "Немає нічого для видалення для: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "добре"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "Для цього каналу доступне лише одне джерело"
 
 msgid "Only one specific country"
 msgstr "Тільки одна конкретна країна"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "PIN-код батьківського контролю"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Періодично підбирайте EPG і оновлюйте букети для ваших улюблених країн у фоновому режимі."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "Ключ доступу до списку відтворення (необов’язково)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "Позиція букетів Vavoo в основному списку"
@@ -577,10 +578,10 @@ msgid "Send Anonymous Statistics"
 msgstr "Надсилати анонімну статистику"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "Встановіть PIN-код, щоб заблокувати наведені нижче країни. Залиште пустим, щоб повністю вимкнути батьківський контроль."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "Показати журнал (Добре для перегляду)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Показувати докладні повідомлення рівня DEBUG у vavoo.log (життєвий цикл інтерфейсу користувача, деталі кожного запиту). Набирає чинності негайно - припиніть, якщо не усунуто несправність."
@@ -601,7 +602,7 @@ msgid "Technical Features:"
 msgstr "Технічні характеристики:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "Цей канал не можна відтворити"
 
 msgid "This will refresh the authentication token."
 msgstr "Це оновить маркер автентифікації."
@@ -644,7 +645,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "Джерело EPG Vavoo не знайдено. Спершу експортуйте хоча б один букет."
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "Журнал Vavoo"
 
 msgid "Vavoo Stream Live"
 msgstr "Пряма трансляція Vavoo"
@@ -662,22 +663,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo вже працює."
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "Тільки Vavoo/Kool"
 
 msgid "Version:"
 msgstr "Версія:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "Переглянути вибране (ОК, щоб відкрити)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "Переглянути останні 200 рядків %s."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Ласкаво просимо до Vavoo Proxy із підтримкою EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "З якого сервісу завантажувати канали та потоки. Auto спочатку пробує Geil і повертається до Vavoo, якщо він недоступний; інші два варіанти прикріплюють його саме до одного джерела. Діє після збереження (перезапускає проксі, якщо він працює)."
 
 #, fuzzy
 msgid "Yes, update now"

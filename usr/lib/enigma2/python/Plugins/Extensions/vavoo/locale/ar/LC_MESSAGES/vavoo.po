@@ -18,7 +18,7 @@ msgid "(%s files deleted)"
 msgstr "(%s ملف تم حذفها)"
 
 msgid "(current)"
-msgstr ""
+msgstr "(حاضِر)"
 
 msgid "(you have v{})"
 msgstr "(لديك الخامس {})"
@@ -96,7 +96,7 @@ msgid "? Proxy Unknown"
 msgstr "؟ الوكيل غير معروف"
 
 msgid "Added to favourites: {}"
-msgstr ""
+msgstr "تمت الإضافة إلى المفضلة: {}"
 
 msgid "All countries (%d)"
 msgstr "جميع الدول (%d)"
@@ -117,7 +117,7 @@ msgid "Author:"
 msgstr "المؤلف:"
 
 msgid "Auto (Geil, fallback Vavoo)"
-msgstr ""
+msgstr "سيارة (رائعة، فافو الاحتياطية)"
 
 msgid "Back"
 msgstr "خلف"
@@ -144,7 +144,7 @@ msgid "Bouquets reorganized successfully!"
 msgstr "تم إعادة تنظيم الباقات بنجاح!"
 
 msgid "Browse and play your starred channels. Star/unstar a channel with the INFO key while browsing."
-msgstr ""
+msgstr "تصفح وتشغيل القنوات المميزة بنجمة. قم بتمييز/إلغاء تمييز القناة باستخدام مفتاح INFO أثناء التصفح."
 
 #, fuzzy
 msgid "CH±=Change | OK=Toggle | INFO=IMDb | YELLOW=Source | STOP=Exit"
@@ -166,7 +166,7 @@ msgid "Case: {}"
 msgstr "حالة الأحرف: {}"
 
 msgid "Catalog/Stream Source"
-msgstr ""
+msgstr "الكتالوج/مصدر الدفق"
 
 #, fuzzy
 msgid "Changelog:"
@@ -185,16 +185,17 @@ msgid "Checking proxy..."
 msgstr "جاري فحص الوكيل..."
 
 msgid "Choose Stream Source"
-msgstr ""
+msgstr "اختر مصدر الدفق"
 
 msgid "Clear All"
 msgstr "مسح الكل"
 
 msgid "Close"
-msgstr ""
+msgstr "يغلق"
 
+#, fuzzy
 msgid "Comma-separated country names (e.g. \\\\\\\\"
-msgstr ""
+msgstr "أسماء البلدان مفصولة بفواصل (على سبيل المثال \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 
 msgid "Configuration saved successfully!"
 msgstr "تم حفظ الإعدادات بنجاح!"
@@ -215,16 +216,16 @@ msgid "Continuing, proxy still syncing..."
 msgstr "جارٍ المتابعة، لا تزال مزامنة الوكيل جارية..."
 
 msgid "Could not load channels - proxy not responding"
-msgstr ""
+msgstr "تعذر تحميل القنوات - الوكيل لا يستجيب"
 
 msgid "Could not load the country list from the proxy"
-msgstr ""
+msgstr "تعذر تحميل قائمة البلدان من الوكيل"
 
 msgid "Could not save the installer script."
 msgstr "تعذر حفظ البرنامج النصي للمثبت."
 
 msgid "Could not update favourites"
-msgstr ""
+msgstr "لا يمكن تحديث المفضلة"
 
 msgid "Countries: %(generated)d/%(total)d"
 msgstr "الدول: %(generated)d/%(total)d"
@@ -275,7 +276,7 @@ msgid "Enable Vavoo EPG"
 msgstr "تفعيل EPG فافو"
 
 msgid "Enter parental control PIN"
-msgstr ""
+msgstr "أدخل رقم التعريف الشخصي (PIN) الخاص بالرقابة الأبوية"
 
 msgid "Enter text to search..."
 msgstr "أدخل نصا للبحث..."
@@ -320,7 +321,7 @@ msgid "Failed: %(failed)d"
 msgstr "فشل: %(failed)d"
 
 msgid "Favourites"
-msgstr ""
+msgstr "المفضلة"
 
 msgid "Fix Cache"
 msgstr "إصلاح ذاكرة التخزين المؤقت"
@@ -335,7 +336,7 @@ msgid "Found: {} channels"
 msgstr "تم العثور: {} قناة"
 
 msgid "Geil only"
-msgstr ""
+msgstr "جيل فقط"
 
 msgid "Generate .m3u file for:"
 msgstr "إنشاء ملف .m3u لـ:"
@@ -356,13 +357,13 @@ msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "عدد مرات إعادة مطابقة دليل البرامج الإلكتروني (EPG) وتحديث الباقات، بدءًا من الآن."
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
-msgstr ""
+msgstr "إذا تم تعيينها، فإن قائمة التشغيل المباشرة في /playlist.m3u تتطلب ?key=<هذه القيمة> - اتركها فارغة بدون مفتاح. عنوان URL: http://%s:%d/playlist.m3u"
 
 msgid "Important Notes:"
 msgstr "ملاحظات مهمة:"
 
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "رقم التعريف الشخصي غير صحيح"
 
 msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "تزيد إذا استغرق الوكيل وقتًا طويلاً بسبب VPN أو الاتصال البطيء."
@@ -433,7 +434,7 @@ msgid "No channels found for: %s"
 msgstr "لم يتم العثور على قنوات لـ: %s"
 
 msgid "No favourites yet"
-msgstr ""
+msgstr "لا يوجد مفضلة بعد"
 
 msgid "No items available"
 msgstr "لا توجد عناصر متاحة"
@@ -451,22 +452,22 @@ msgid "Nothing to remove for: {}"
 msgstr "لا يوجد شيء يمكن إزالته من أجل: {}"
 
 msgid "OK"
-msgstr ""
+msgstr "نعم"
 
 msgid "Only one source available for this channel"
-msgstr ""
+msgstr "مصدر واحد فقط متاح لهذه القناة"
 
 msgid "Only one specific country"
 msgstr "دولة محددة واحدة فقط"
 
 msgid "Parental Control PIN"
-msgstr ""
+msgstr "رقم التعريف الشخصي للرقابة الأبوية"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "قم بإعادة مطابقة دليل البرامج الإلكتروني بشكل دوري وتحديث الباقات للبلدان المفضلة لديك في الخلفية."
 
 msgid "Playlist Access Key (optional)"
-msgstr ""
+msgstr "مفتاح الوصول إلى قائمة التشغيل (اختياري)"
 
 msgid "Position of Vavoo bouquets in the main list"
 msgstr "موضع باقات Vavoo في القائمة الرئيسية"
@@ -576,10 +577,10 @@ msgid "Send Anonymous Statistics"
 msgstr "إرسال إحصائيات مجهولة"
 
 msgid "Set a PIN to lock the countries below. Leave empty to disable parental control entirely."
-msgstr ""
+msgstr "قم بتعيين رقم PIN لقفل البلدان أدناه. اتركه فارغًا لتعطيل الرقابة الأبوية تمامًا."
 
 msgid "Show Log (Ok to view)"
-msgstr ""
+msgstr "إظهار السجل (موافق للعرض)"
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "عرض رسائل مطولة على مستوى DEBUG في vavoo.log (دورة حياة واجهة المستخدم، تفاصيل لكل طلب). يسري مفعوله على الفور - اتركه ما لم يتم استكشاف الأخطاء وإصلاحها."
@@ -600,7 +601,7 @@ msgid "Technical Features:"
 msgstr "الميزات التقنية:"
 
 msgid "This channel cannot be played"
-msgstr ""
+msgstr "لا يمكن تشغيل هذه القناة"
 
 msgid "This will refresh the authentication token."
 msgstr "سيؤدي هذا إلى تحديث رمز المصادقة."
@@ -643,7 +644,7 @@ msgid "Vavoo EPG source not found. Please export at least one bouquet first."
 msgstr "لم يتم العثور على مصدر EPG فافو. الرجاء تصدير باقة واحدة على الأقل أولا."
 
 msgid "Vavoo Log"
-msgstr ""
+msgstr "سجل فافو"
 
 msgid "Vavoo Stream Live"
 msgstr "بث مباشر فافو"
@@ -661,22 +662,22 @@ msgid "Vavoo is already running."
 msgstr "Vavoo قيد التشغيل بالفعل."
 
 msgid "Vavoo/Kool only"
-msgstr ""
+msgstr "فافو/كول فقط"
 
 msgid "Version:"
 msgstr "الإصدار:"
 
 msgid "View Favourites (Ok to open)"
-msgstr ""
+msgstr "عرض المفضلة (موافق للفتح)"
 
 msgid "View the last 200 lines of %s."
-msgstr ""
+msgstr "عرض آخر 200 سطر من %s."
 
 msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "مرحبًا بك في Vavoo Proxy الذي يدعم EPG"
 
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
-msgstr ""
+msgstr "الخدمة التي يتم تحميل القنوات والبث منها. يقوم Auto بتجربة Geil أولاً ويعود إلى Vavoo إذا لم يكن متاحًا؛ الخياران الآخران يعلقانه على هذا المصدر بالضبط. يسري مفعوله عند الحفظ (إعادة تشغيل الوكيل إذا كان قيد التشغيل)."
 
 #, fuzzy
 msgid "Yes, update now"
