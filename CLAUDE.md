@@ -949,7 +949,13 @@ when changing paths, dependencies, or version:
    run directly on the box: detects OS flavor (DreamOS/OE/Debian) and
    Python 2 vs 3, installs `wget`/`requests`/`six` (and OE-only deps),
    downloads the `main` branch tarball of `OwnerPlugins/vavoo` from
-   GitHub, and copies `usr/` into place, then prompts a reboot.
+   GitHub, and copies `usr/` into place, then prompts a reboot. Since
+   1.90 it is Belfagor2005's version with a log
+   (`/tmp/vavoo_install.log`, copied to `/home/root`) and a diagnostics
+   section; before deleting the old plugin folder it copies an old
+   install's `vavoo_favourites.json` / `Favorite.txt` into
+   `/etc/enigma2`. `test_audit.py` checks the download URL, that copy,
+   `sh -n`, and one version in all the places below.
 
 Updates come from `OwnerPlugins/vavoo` too: `__init__.py`'s
 `UPDATE_HOST` → `INSTALLER_URL` (the plugin's version check reads

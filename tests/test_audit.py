@@ -227,5 +227,26 @@ check(not any(n.startswith(store.BACKUP_PREFIX) for n in store.RESET_FILES) and
       "disable_vavoo_stats" not in store.RESET_FILES,
       "...and not the backups nor the statistics choice")
 
+print("== the release: one version everywhere, the installer from this repository")
+REPO = harness.REPO
+version = re.search(r'__version__ = "([^"]+)"', read(os.path.join(PLUGIN, "__init__.py"))).group(1)
+installer = read(os.path.join(REPO, "installer.sh"))
+spots = {
+    "CONTROL/control": re.search(r"^Version: (\S+)", read(os.path.join(REPO, "CONTROL", "control")), re.M).group(1),
+    "installer.sh": re.search(r"^version='([^']+)'", installer, re.M).group(1),
+    "the .bb VER": re.search(r'^VER = "([^"]+)"', read(os.path.join(REPO, "enigma2-plugin-extensions-vavoo.bb")),
+                             re.M).group(1),
+    "README badge": re.search(r"badge/Version-([0-9.]+)-", read(os.path.join(REPO, "README.md"))).group(1),
+}
+check(all(v == version for v in spots.values()), "version %s in every place %r" % (version, spots))
+check(read(os.path.join(REPO, "README.md")) == read(os.path.join(PLUGIN, "readme.md")),
+      "README.md and the plugin's readme.md are the same")
+check(plugin.vUtils.is_remote_version_newer("1.89", version), "%s is newer than 1.89 for the update check" % version)
+check("github.com/OwnerPlugins/vavoo/archive/refs/heads/main.tar.gz" in installer,
+      "installer.sh downloads OwnerPlugins/vavoo")
+check("/etc/enigma2/vavoo_favourites.json" in installer and "/etc/enigma2/vavoo_bouquet_list.txt" in installer,
+      "...and keeps an old install's favourites / bouquet list in /etc/enigma2")
+check(subprocess.call(["sh", "-n", os.path.join(REPO, "installer.sh")]) == 0, "installer.sh: valid shell")
+
 shutil.rmtree(TMP, ignore_errors=True)
 finish()
