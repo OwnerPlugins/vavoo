@@ -39,10 +39,15 @@ vp.PORT = PORT
 vu.PORT = PORT
 vp.BOOTING_FILE = os.path.join(harness.DATA, "vavoo_proxy_booting")
 vp.catalog_setting = lambda: "auto"
-CHANNELS = [{"id": u"%d" % i, "name": u"Canal %d Más" % i, "url": u"http://x/%d" % i,
-             "country": u"Portugal", "logo": u"", "group": u"Portugal ➾ Geral", "epg_id": u""}
-            for i in range(150)]
-vp.VavooProxy._download_catalog = lambda self, setting: (list(CHANNELS), "geil")
+CHANNELS = [{"id": u"%d" % i,
+             "name": u"Canal %d Más" % i,
+             "url": u"http://x/%d" % i,
+             "country": u"Portugal",
+             "logo": u"",
+             "group": u"Portugal ➾ Geral",
+             "epg_id": u""} for i in range(150)]
+vp.VavooProxy._download_catalog = lambda self, setting: (
+    list(CHANNELS), "geil")
 vp.VavooProxy.refresh_addon_sig_if_needed = lambda self, force=False: None
 
 
@@ -64,13 +69,21 @@ for _i in range(100):
     if state.get("ready"):
         break
     time.sleep(0.05)
-check(state.get("ready") and state.get("channels_count") == 150, "up and ready (in this process): %r"
-      % dict((k, state.get(k)) for k in ("ready", "listening", "channels_count")))
-check(vu.is_proxy_ready() and vu.is_proxy_running(), "is_proxy_ready() / the port")
+check(
+    state.get("ready") and state.get("channels_count") == 150,
+    "up and ready (in this process): %r" %
+    dict(
+        (k,
+         state.get(k)) for k in (
+            "ready",
+            "listening",
+            "channels_count")))
+check(vu.is_proxy_ready() and vu.is_proxy_running(),
+      "is_proxy_ready() / the port")
 check(not vp.is_proxy_booting(), "the booting marker is gone")
 status = json.loads(get("/status").read().decode("utf-8"))
-check(status.get("initialized") and status.get("channels_count") == 150 and status.get("catalog_source") == "geil",
-      "/status answers")
+check(status.get("initialized") and status.get("channels_count") ==
+      150 and status.get("catalog_source") == "geil", "/status answers")
 rows = json.loads(get("/channels?country=Portugal").read().decode("utf-8"))
 check(len(rows) == 150, "/channels answers (%d)" % len(rows))
 check(os.path.exists(vp.CATALOG_FILE), "the catalog saved for the next start")
@@ -80,10 +93,13 @@ print("== stop")
 vp.shutdown_proxy()
 thread.join(5)
 check(not thread.is_alive(), "the server thread ended")
-check(not vp.proxy_state()["listening"] and not vu.is_proxy_ready(), "not listening, not ready")
+check(
+    not vp.proxy_state()["listening"] and not vu.is_proxy_ready(),
+    "not listening, not ready")
 
 print("== the next start: the saved catalog at once")
-vp.VavooProxy._download_catalog = lambda self, setting: (time.sleep(1.5), (list(CHANNELS[:120]), "geil"))[1]
+vp.VavooProxy._download_catalog = lambda self, setting: (
+    time.sleep(1.5), (list(CHANNELS[:120]), "geil"))[1]
 vp.proxy = vp.VavooProxy()
 t0 = time.time()
 thread = threading.Thread(target=vp._proxy_thread_main)
@@ -94,14 +110,16 @@ for _i in range(100):
         break
     time.sleep(0.02)
 took = time.time() - t0
-check(vp.proxy_state().get("ready") and vp.proxy_state()["channels_count"] == 150 and took < 1.0,
-      "ready in %.2f s with the saved 150, the download (1.5 s) still going" % took)
+check(
+    vp.proxy_state().get("ready") and vp.proxy_state()["channels_count"] == 150 and took < 1.0,
+    "ready in %.2f s with the saved 150, the download (1.5 s) still going" %
+    took)
 for _i in range(150):
     if vp.proxy_state()["channels_count"] == 120:
         break
     time.sleep(0.05)
-check(vp.proxy_state()["channels_count"] == 120 and vp.proxy_state()["catalog_version"] == 2,
-      "then the new catalog in, behind it (version 2)")
+check(vp.proxy_state()["channels_count"] == 120 and vp.proxy_state()[
+      "catalog_version"] == 2, "then the new catalog in, behind it (version 2)")
 vp.shutdown_proxy()
 thread.join(5)
 check(not thread.is_alive(), "stopped again")

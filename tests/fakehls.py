@@ -117,10 +117,11 @@ class FakeChannel(object):
             lines.append('#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud",NAME="en",'
                          'DEFAULT=YES,URI="live_lo.m3u8?tok=%s"' % tok)
             audio = ',AUDIO="aud"'
-        lines += ["#EXT-X-STREAM-INF:BANDWIDTH=500000,RESOLUTION=320x240" + audio,
-                  "live_lo.m3u8?tok=%s" % tok,
-                  "#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=320x240" + audio,
-                  "live_hi.m3u8?tok=%s" % tok]
+        lines += ["#EXT-X-STREAM-INF:BANDWIDTH=500000,RESOLUTION=320x240" +
+                  audio, "live_lo.m3u8?tok=%s" %
+                  tok, "#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=320x240" +
+                  audio, "live_hi.m3u8?tok=%s" %
+                  tok]
         return "\n".join(lines) + "\n"
 
     def live(self, tok):

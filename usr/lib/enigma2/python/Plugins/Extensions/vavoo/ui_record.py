@@ -3,6 +3,13 @@
 """Recordings: the memory watch, the recording service (RECORDINGS),
 the folders and disks, the Recordings list and its player."""
 from __future__ import absolute_import, print_function
+from .ui_pick import (
+    VavooPickScreen, ask_pin)
+from .ui_base import (
+    ACTIVE, NOW_PLAYING, PLAYER_BAR_LABELS, PLAYER_KEYS_PRIO, _icon_cache,
+    build_theme_skin, cfg, clock_24, clock_text, file_stream_sref,
+    open_action_menu, player_keys, show_keys, show_list, stream_channel_id,
+    to_string, to_text)
 
 import os
 import time
@@ -71,15 +78,6 @@ except ImportError as e:
         pass
 
 print = make_print("PLUGIN")
-
-
-from .ui_base import (
-    ACTIVE, NOW_PLAYING, PLAYER_BAR_LABELS, PLAYER_KEYS_PRIO, _icon_cache,
-    build_theme_skin, cfg, clock_24, clock_text, file_stream_sref,
-    open_action_menu, player_keys, show_keys, show_list, stream_channel_id,
-    to_string, to_text)
-from .ui_pick import (
-    VavooPickScreen, ask_pin)
 
 
 # ---------------------------------------------------------------------
@@ -274,7 +272,8 @@ def logo_folder():
         try:
             if vavoo_record.mount_of(point)[1] in vavoo_record.NETWORK_FS:
                 continue
-            if not vavoo_record.on_disk(point) or not vavoo_record.non_rotational(point):
+            if not vavoo_record.on_disk(
+                    point) or not vavoo_record.non_rotational(point):
                 continue
             if vavoo_record.free_bytes(point) < LOGO_MIN_FREE:
                 continue
@@ -497,7 +496,8 @@ class _Recordings(object):
         if recorder.failure and NOTIFICATION_AVAILABLE:
             title = (recorder.info or {}).get("title") or ""
             if recorder.failure == vavoo_record.FAILURE_SPACE:
-                quick_notify(_("Recording stopped: the disk is nearly full"), 6)
+                quick_notify(
+                    _("Recording stopped: the disk is nearly full"), 6)
             elif recorder.failure == vavoo_record.FAILURE_FAT:
                 quick_notify(_("Recording stopped: the disk's 4 GB file "
                                "limit (FAT32)"), 6)

@@ -1045,7 +1045,8 @@ def factory_reset():
     again. Returns the paths deleted."""
     removed = []
     paths = [data_file(name) for name in RESET_FILES]
-    paths += [p for p in (_old_plugin_file(n) for n in RESET_OLD_PLUGIN_FILES) if p]
+    paths += [p for p in (_old_plugin_file(n)
+                          for n in RESET_OLD_PLUGIN_FILES) if p]
     with _fav_lock:
         with _timer_lock:
             for path in paths:
@@ -1055,7 +1056,9 @@ def factory_reset():
                             os.remove(each)
                             removed.append(each)
                     except Exception as e:
-                        print("[vavoo_store] Not deleted {}: {}".format(each, e))
+                        print(
+                            "[vavoo_store] Not deleted {}: {}".format(
+                                each, e))
             _fav_cache[0] = _fav_cache[1] = None
             _timer_cache[0] = _timer_cache[1] = None
     relock()

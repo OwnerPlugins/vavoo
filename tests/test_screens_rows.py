@@ -17,6 +17,7 @@ plugin = harness.plugin
 store = harness.store
 import vavoo.vavoo_record as vr                 # noqa: E402
 
+
 class FakeGuideList(harness.FakeList):
     def __init__(self, item_height=40, font_name="", font_size=20):
         harness.FakeList.__init__(self)
@@ -32,13 +33,21 @@ plugin.cfg.list_epg = V(False)
 plugin.cfg.preview_window = V(False)
 plugin.vUtils.RECENT_FILE = store.recent_file()
 U = u"Rai Südtirol"
-CHANNELS = [{"name": U, "url": u"http://127.0.0.1:4323/vavoo?channel=a", "logo": "", "category": u"Generalisti"},
-            {"name": u"TF1 Séries ★", "url": u"http://127.0.0.1:4323/vavoo?channel=b", "logo": "",
+CHANNELS = [{"name": U,
+             "url": u"http://127.0.0.1:4323/vavoo?channel=a",
+             "logo": "",
+             "category": u"Generalisti"},
+            {"name": u"TF1 Séries ★",
+             "url": u"http://127.0.0.1:4323/vavoo?channel=b",
+             "logo": "",
              "category": u"Sport"},
-            {"name": u"Canale 5", "url": u"http://127.0.0.1:4323/vavoo?channel=c", "logo": ""}] + \
-           [{"name": u"Ch %d" % i, "url": u"http://127.0.0.1:4323/vavoo?channel=x%d" % i, "logo": ""}
-            for i in range(12)]
-GUIDE = [dict(c, country_name=u"Italia", country_code="it", epg_id="x.it") for c in CHANNELS[:5]]
+            {"name": u"Canale 5",
+             "url": u"http://127.0.0.1:4323/vavoo?channel=c",
+             "logo": ""}] + [{"name": u"Ch %d" % i,
+                              "url": u"http://127.0.0.1:4323/vavoo?channel=x%d" % i,
+                              "logo": ""} for i in range(12)]
+GUIDE = [dict(c, country_name=u"Italia", country_code="it", epg_id="x.it")
+         for c in CHANNELS[:5]]
 REC = os.path.join(harness.DATA, "movie")
 if not os.path.isdir(REC):
     os.makedirs(REC)
@@ -50,13 +59,25 @@ for c in CHANNELS[:3]:
 store.set_folder(CHANNELS[0]["url"], u"Desporto á")
 plugin.vUtils.add_recent(U, CHANNELS[0]["url"], u"Italia", "it")
 now = int(time.time())
-store.add_timer(store.KIND_RECORD, CHANNELS[0]["url"], U, u"Telegiornale à sera", now + 3600, now + 7200,
-                u"Italia", "it")
+store.add_timer(
+    store.KIND_RECORD,
+    CHANNELS[0]["url"],
+    U,
+    u"Telegiornale à sera",
+    now + 3600,
+    now + 7200,
+    u"Italia",
+    "it")
 p = vr.new_path(REC, U, u"Film é", now - 3600)
 with open(vr._native(p), "wb") as f:
     f.write(b"\x47" + b"\x00" * 187)
-vr.write_info(p, {"format": vr.INFO_FORMAT, "name": U, "title": u"Film é", "start": now - 3600,
-                  "duration": 1200, "country": u"Italia"})
+vr.write_info(p,
+              {"format": vr.INFO_FORMAT,
+               "name": U,
+               "title": u"Film é",
+               "start": now - 3600,
+               "duration": 1200,
+               "country": u"Italia"})
 
 
 def channel_list(s, subcategories=True):
@@ -69,7 +90,14 @@ def channel_list(s, subcategories=True):
 
 def category(s):
     plugin.cfg.subcategories = V(True)
-    v = make(plugin.vavoo, s, u"Italia", None, None, category=u"Sport", channels=CHANNELS)
+    v = make(
+        plugin.vavoo,
+        s,
+        u"Italia",
+        None,
+        None,
+        category=u"Sport",
+        channels=CHANNELS)
     v._preload_channel_picons = lambda: None
     run_layout(v)
     v._build_channel_list(CHANNELS)
@@ -121,11 +149,20 @@ for theme in ("classic", "prism", "halo", "orbit"):
         for title, build in CASES:
             try:
                 scr = build(Session())
-                rows = scr.widgets.get("grid") or scr.widgets.get("channel_list") or scr.widgets.get("menulist")
+                rows = scr.widgets.get("grid") or scr.widgets.get(
+                    "channel_list") or scr.widgets.get("menulist")
                 n = len(getattr(rows, "rows", []) or [])
                 problem = None
             except Exception as e:
-                n, problem = 0, "%s: %s\n%s" % (e.__class__.__name__, e, traceback.format_exc(limit=6))
-            check(problem is None and n > 0, "%s %s: %s, %d rows%s" % (theme, folder, title, n,
-                                                              "" if problem is None else "\n" + problem))
+                n, problem = 0, "%s: %s\n%s" % (
+                    e.__class__.__name__, e, traceback.format_exc(limit=6))
+            check(
+                problem is None and n > 0,
+                "%s %s: %s, %d rows%s" %
+                (theme,
+                 folder,
+                 title,
+                 n,
+                 "" if problem is None else "\n" +
+                 problem))
 finish()

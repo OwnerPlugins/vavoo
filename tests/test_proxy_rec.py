@@ -39,7 +39,8 @@ check(p.own_signature("rec1") == "OWN1", "a token of its own")
 check(p.own_signature("rec1") == "OWN1" and len(pings) == 1, "kept while young")
 check(p.own_signature("rec2") == "OWN2", "another recording: another token")
 check(p.addon_sig_data["sig"] == "SHARED", "the shared token untouched")
-check(p.own_signature("rec1", force=True) == "OWN1" and len(pings) == 2, "forced right away: the same")
+check(p.own_signature("rec1", force=True) == "OWN1" and len(
+    pings) == 2, "forced right away: the same")
 p._own_sigs["rec1"]["ts"] -= vp.OWN_SIG_FORCE_MIN + 1
 check(p.own_signature("rec1", force=True) == "OWN3", "forced later: a new one")
 p._own_sigs["rec1"]["ts"] -= vp.TOKEN_REFRESH_AGE + 1
@@ -72,7 +73,8 @@ class Resp(object):
 class Session(object):
     def post(self, url, json=None, headers=None, timeout=None):
         posted.append((json["url"], headers["mediahubmx-signature"]))
-        return Resp("https://cdn.example/" + json["url"].split("/")[-1] + ".m3u8")
+        return Resp("https://cdn.example/" +
+                    json["url"].split("/")[-1] + ".m3u8")
 
 
 vp_decode = vp.decode_response
@@ -90,18 +92,24 @@ p.channels_by_id = {"abc": {"id": "abc", "url": "https://vavoo.to/play/abc"},
 p.group_lock = threading.Lock()
 p._group_state = {"grp:italy:rai 1": {"member": "m2"}}
 p._group_pins = {}
-p._group_members_cache = {("italy", "rai 1"): [p.channels_by_id["m1"], p.channels_by_id["m2"]]}
+p._group_members_cache = {
+    ("italy", "rai 1"): [p.channels_by_id["m1"], p.channels_by_id["m2"]]}
 url = p.resolve_own("abc", "recA")
 check(url == "https://cdn.example/abc.m3u8", "resolved: " + str(url))
 check(posted[-1][1].startswith("OWN"), "with its own token: " + posted[-1][1])
 check(p.resolve_cache == {}, "nothing cached (the player's address stays)")
 url = p.resolve_own("grp:italy:rai 1", "recA")
-check(url.endswith("/m2.m3u8"), "a group: the source it plays from first (%s)" % url)
-check(p._group_state["grp:italy:rai 1"]["member"] == "m2", "group state untouched")
+check(
+    url.endswith("/m2.m3u8"),
+    "a group: the source it plays from first (%s)" %
+    url)
+check(p._group_state["grp:italy:rai 1"]["member"]
+      == "m2", "group state untouched")
 check(p.resolve_own("nope", "recA") is None, "unknown channel: None")
 p._request_addon_sig = lambda: None
 p._own_sigs.clear()
-check(p.resolve_own("abc", "recB") is None, "no token to be had: None (the recorder retries)")
+check(p.resolve_own("abc", "recB") is None,
+      "no token to be had: None (the recorder retries)")
 vp.decode_response = vp_decode
 
 print("== /file")
@@ -149,8 +157,8 @@ check(code == 200 and body == data and h.get("Content-Length") == str(size),
 code, h, body = get("/file?id=%s&offset=%d" % (fid, 188 * 10 + 7))
 check(body == data[1880:], "offset rounded down to a packet")
 code, h, body = get("/file?id=" + fid, {"Range": "bytes=188-375"})
-check(code == 206 and body == data[188:376] and
-      h.get("Content-Range") == "bytes 188-375/%d" % size, "Range: %s" % h.get("Content-Range"))
+check(code == 206 and body == data[188:376] and h.get(
+    "Content-Range") == "bytes 188-375/%d" % size, "Range: %s" % h.get("Content-Range"))
 code, h, body = get("/file?id=%s&offset=376" % fid, {"Range": "bytes=188-"})
 check(code == 206 and body == data[564:], "Range counts from the offset")
 code, h, body = get("/file?id=%s&offset=%d" % (fid, size + 188))

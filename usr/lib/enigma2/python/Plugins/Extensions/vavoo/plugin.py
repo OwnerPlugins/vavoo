@@ -1,6 +1,31 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
+from .ui_player import (
+    Playstream2)
+from .ui_guide import (
+    REMINDERS, VavooGuide)
+from .ui_settings import (
+    ask_factory_reset, open_settings, show_about)
+from .ui_record import (
+    RECORDINGS,
+    VavooRecordings,
+    clean_pause_leftovers,
+    logo_folder,
+    record_channel,
+    recordings_folder)
+from .ui_pick import (
+    _require_parental_pin, run_welcome, welcome_needed)
+from .ui_base import (
+    ACTIVE, CHANNEL_FETCH_ATTEMPTS, FAVOURITES_ROW, LIST_KEYS_PRIO,
+    MAIN_KEYS, NOW_PLAYING, NowNextPanel, PLUGIN_PATH, PLUGLOGO,
+    PROXY_MONITOR_INTERVAL_MS, PROXY_WATCHDOG_INTERVAL_MS, PreviewWindow,
+    RECENT_ROW, REMINDERS_ROW, _no_answer, add_epg_panel_labels,
+    add_key_hint_labels, cfg, clock_24, favourite_channels, info_page_keys,
+    info_text, list_keys, list_page_rows, load_screen_skin, m2list, named,
+    open_action_menu, open_log_viewer, row_number, set_notification_theme,
+    show_keys, show_list, stop_preview, title_plug, to_string, to_text,
+    url_quote)
 
 import codecs
 import time
@@ -116,29 +141,6 @@ except ImportError as e:
 print = make_print("PLUGIN")
 
 
-from .ui_base import (
-    ACTIVE, CHANNEL_FETCH_ATTEMPTS, FAVOURITES_ROW, LIST_KEYS_PRIO,
-    MAIN_KEYS, NOW_PLAYING, NowNextPanel, PLUGIN_PATH, PLUGLOGO,
-    PROXY_MONITOR_INTERVAL_MS, PROXY_WATCHDOG_INTERVAL_MS, PreviewWindow,
-    RECENT_ROW, REMINDERS_ROW, _no_answer, add_epg_panel_labels,
-    add_key_hint_labels, cfg, clock_24, favourite_channels, info_page_keys,
-    info_text, list_keys, list_page_rows, load_screen_skin, m2list, named,
-    open_action_menu, open_log_viewer, row_number, set_notification_theme,
-    show_keys, show_list, stop_preview, title_plug, to_string, to_text,
-    url_quote)
-from .ui_pick import (
-    _require_parental_pin, run_welcome, welcome_needed)
-from .ui_record import (
-    RECORDINGS, VavooRecordings, clean_pause_leftovers, logo_folder, record_channel,
-    recordings_folder)
-from .ui_settings import (
-    ask_factory_reset, open_settings, show_about)
-from .ui_guide import (
-    REMINDERS, VavooGuide)
-from .ui_player import (
-    Playstream2)
-
-
 def _is_vavoo_already_open(session):
     try:
         # dialog_stack entries are usually tuples like (dialog, ...)
@@ -153,6 +155,7 @@ def _is_vavoo_already_open(session):
     except Exception as e:
         debug("_is_vavoo_already_open check failed: {}".format(e))
     return False
+
 
 _session = None
 # Guards autostart() itself against re-scheduling delayed_boot_tasks() on
@@ -536,7 +539,8 @@ def proxy_status_text(state, channel_total=None):
     if not state:
         return _("? Proxy Unknown")
     if not state.get("ready"):
-        if state.get("booting") or (state.get("listening") and not state.get("initialized")):
+        if state.get("booting") or (state.get("listening")
+                                    and not state.get("initialized")):
             return _("Loading channels...")
         return _("✗ Proxy Offline")
     # Geil (the default catalog source) needs no addonSig token at all,
@@ -1014,7 +1018,10 @@ class MainVavoo(Screen, PreviewWindow):
         in the background, so their Now / Next and the guide open at
         once (vUtils.preload_epg_guides(): at most 2, never with little
         memory, never while the player is open)."""
-        if getattr(self, "_guide_preload_done", False) or not cfg.list_epg.value:
+        if getattr(
+            self,
+            "_guide_preload_done",
+                False) or not cfg.list_epg.value:
             return
         self._guide_preload_done = True
         timer = self._guide_preload_timer = eTimer()
@@ -1034,7 +1041,8 @@ class MainVavoo(Screen, PreviewWindow):
 
         def _work():
             try:
-                vUtils.preload_epg_guides(guide_countries(), go_on=self._preload_go_on)
+                vUtils.preload_epg_guides(
+                    guide_countries(), go_on=self._preload_go_on)
             except Exception as e:
                 print("[MainVavoo] Guides not loaded ahead: {}".format(e))
 
@@ -1050,11 +1058,20 @@ class MainVavoo(Screen, PreviewWindow):
         state = get_proxy_status() or {}
         version = state.get("catalog_version")
         seen = getattr(self, "_catalog_seen", None)
-        if not state.get("ready") or version is None or seen is None or version == seen:
+        if not state.get(
+                "ready") or version is None or seen is None or version == seen:
             return
-        if getattr(self, "_reloading", False) or not getattr(self, "cat_list", None):
+        if getattr(
+                self,
+                "_reloading",
+                False) or not getattr(
+                self,
+                "cat_list",
+                None):
             return
-        print("[MainVavoo] New catalog in (version %s): list updated" % version)
+        print(
+            "[MainVavoo] New catalog in (version %s): list updated" %
+            version)
         self.cat()
 
     def refresh_proxy(self):
@@ -1382,8 +1399,9 @@ class MainVavoo(Screen, PreviewWindow):
                 if self._reloading:
                     self._reloading = False
                     if NOTIFICATION_AVAILABLE:
-                        quick_notify(_("Channel list updated: {} channels").format(
-                            self._channel_total or 0), 4)
+                        quick_notify(
+                            _("Channel list updated: {} channels").format(
+                                self._channel_total or 0), 4)
                     self._update_proxy_status_display()
                 if not self._start_last_done:
                     self._start_last_done = True
@@ -1602,7 +1620,10 @@ class MainVavoo(Screen, PreviewWindow):
     def info_toast(self):
         """INFO: version, channels and countries (the app's INFO)."""
         if NOTIFICATION_AVAILABLE:
-            quick_notify(info_text(self._channel_total, len(self.countries)), 5)
+            quick_notify(
+                info_text(
+                    self._channel_total, len(
+                        self.countries)), 5)
 
     def open_menu(self):
         """MENU: the settings and the Enigma2 tools that used to be on
@@ -2089,7 +2110,8 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
             if favourite:
                 text += u"  \u2605"
             self['proxy_status'].setText(to_string(text))
-            self['green'].setText(_('Remove Fav') if favourite else _('Add Fav'))
+            self['green'].setText(
+                _('Remove Fav') if favourite else _('Add Fav'))
         except Exception as e:
             debug("Status line not updated: {}".format(e))
 
@@ -2124,23 +2146,23 @@ class vavoo(Screen, NowNextPanel, PreviewWindow):
     def _initialize_actions(self):
         """Initialize the actions for buttons."""
         actions = {
-                "prevBouquet": self.chDown,
-                "nextBouquet": self.chUp,
-                "up": self.moveUp,
-                "down": self.moveDown,
-                "ok": self.ok,
-                "green": self.toggle_favourite,
-                "yellow": self.search_vavoo,
-                # "Full Screen": the highlighted channel straight into
-                # the player (the app's BLUE); OK goes through the
-                # preview window first.
-                "blue": self.full_screen,
-                "cancel": self.backhome,
-                "menu": self.open_menu,
-                # INFO / EPG: the programme guide (the app's)
-                "info": self.info_key,
-                "epg": self.info_key,
-                "red": self.backhome
+            "prevBouquet": self.chDown,
+            "nextBouquet": self.chUp,
+            "up": self.moveUp,
+            "down": self.moveDown,
+            "ok": self.ok,
+            "green": self.toggle_favourite,
+            "yellow": self.search_vavoo,
+            # "Full Screen": the highlighted channel straight into
+            # the player (the app's BLUE); OK goes through the
+            # preview window first.
+            "blue": self.full_screen,
+            "cancel": self.backhome,
+            "menu": self.open_menu,
+            # INFO / EPG: the programme guide (the app's)
+            "info": self.info_key,
+            "epg": self.info_key,
+            "red": self.backhome
         }
         self["actions"] = ActionMap(
             [
@@ -3226,7 +3248,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         if self.folder is None:
             return _("★ Favourites")
         return u"{} ➾ {}".format(to_text(_("★ Favourites")),
-                                     to_text(self._folder_label(self.folder)))
+                                 to_text(self._folder_label(self.folder)))
 
     def _folder_label(self, key):
         if key == self.FOLDER_ALL:
@@ -3764,8 +3786,8 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
                 self._favourite_keys.discard(key)
             self._update_selection()
             if NOTIFICATION_AVAILABLE:
-                quick_notify((_("Added to favourites: {}") if now_favourite
-                              else _("Removed from favourites: {}")).format(name), 3)
+                quick_notify((_("Added to favourites: {}") if now_favourite else _(
+                    "Removed from favourites: {}")).format(name), 3)
             return
         now_favourite = vUtils.toggle_favourite(name, url)
         if now_favourite is None:

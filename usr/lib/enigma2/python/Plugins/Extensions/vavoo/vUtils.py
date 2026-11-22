@@ -218,7 +218,8 @@ def log(msg, level="INFO", area="VUTILS"):
     try:
         line = u"[{0}] [{1}] [{2}] {3}".format(stamp, level, area, msg)
     except Exception:
-        line = u"[{0}] [{1}] [{2}] <unprintable message>".format(stamp, level, area)
+        line = u"[{0}] [{1}] [{2}] <unprintable message>".format(
+            stamp, level, area)
     if PY2:
         line = line.encode("utf-8", "replace")
     _safe_console_write(line)
@@ -346,6 +347,8 @@ class _Breather(object):
         if now - self.since >= _BREATHE_WORK:
             sleep(_BREATHE_REST)
             self.since = time()
+
+
 log("===== Vavoo session start =====", area="VUTILS")
 
 
@@ -2161,8 +2164,8 @@ class VavooEPGMatcher(object):
         # feed's channel list is not known, as it is).
         if alias_available:
             norm_name = channel_alias.normalize_channel_name(channel_name)
-            alias_id = (self.alias_map.get(norm_name) or
-                        channel_alias.ALIAS_MAP.get(norm_name)) if norm_name else None
+            alias_id = (self.alias_map.get(norm_name) or channel_alias.ALIAS_MAP.get(
+                norm_name)) if norm_name else None
             if alias_id:
                 # ALIAS_MAP is curated for Italian channels: for another
                 # country only an id with that country's own suffix
@@ -2935,7 +2938,9 @@ def country_epg_chunks(country_code, urls, opener=None):
             head, stream = _open_daily_feed(url, opener)
         except Exception as e:
             problems.append(e)
-            warning("EPG {}: {} not read ({})".format(code, _file_name(url), e))
+            warning(
+                "EPG {}: {} not read ({})".format(
+                    code, _file_name(url), e))
             continue
         try:
             for piece in _feed_pieces(head, stream, breather):
@@ -2950,7 +2955,9 @@ def country_epg_chunks(country_code, urls, opener=None):
                     break
         except Exception as e:
             problems.append(e)
-            warning("EPG {}: {} not read ({})".format(code, _file_name(url), e))
+            warning(
+                "EPG {}: {} not read ({})".format(
+                    code, _file_name(url), e))
             continue
         finally:
             stream.close()
@@ -3072,7 +3079,8 @@ def _get_epg_feed_index(country_code):
         warning(
             "Could not read the EPG feed's channel list for {} ({}) - "
             "ids are not checked against it and channels are not "
-            "matched by the feed's names".format(country_code, last_error or "empty"))
+            "matched by the feed's names".format(
+                country_code, last_error or "empty"))
         # Remember the failure too (briefly): a country with no feed at
         # all (most of them - only a minority of country codes have
         # one) would otherwise re-attempt this same failing fetch for
@@ -3562,8 +3570,10 @@ def _download_epg_guide(country_code):
         stream = None
         try:
             stream = open_url_stream(url, timeout=_EPG_GUIDE_TIMEOUT)
-            source = ("daily" if response_header(stream, 'X-Vavoo-EPG') == 'daily'
-                      else "GitHub copy")
+            source = (
+                "daily" if response_header(
+                    stream,
+                    'X-Vavoo-EPG') == 'daily' else "GitHub copy")
             guide = _parse_epg_guide(stream, country_code, started)
             received = stream.bytes_received
         except Exception as e:
@@ -3715,7 +3725,9 @@ def preload_epg_guides(country_codes, go_on=None, max_new=2,
                 break
         available = meminfo().get("MemAvailable")
         if available is not None and available < min_free_kb:
-            print("[EPG] Guides not loaded ahead: {} MB available".format(available // 1024))
+            print(
+                "[EPG] Guides not loaded ahead: {} MB available".format(
+                    available // 1024))
             break
         if load_epg_guide(code) is not None:
             loaded.append(code)

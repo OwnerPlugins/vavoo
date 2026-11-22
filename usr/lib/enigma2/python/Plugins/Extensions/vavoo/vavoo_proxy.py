@@ -595,14 +595,17 @@ def load_saved_catalog(setting, path=None, now=None):
             return None
         source = data.get("source")
         saved = data.get("saved")
-        if source not in ("geil", "vavoo") or not isinstance(saved, (int, float)):
+        if source not in (
+                "geil", "vavoo") or not isinstance(
+                saved, (int, float)):
             return None
         if now - saved > CATALOG_MAX_AGE:
             return None
         raw = data.get("channels")
         if not isinstance(raw, list):
             return None
-        channels = [c for c in (_clean_catalog_entry(e) for e in raw) if c is not None]
+        channels = [c for c in (_clean_catalog_entry(e)
+                                for e in raw) if c is not None]
         if len(channels) < 100:
             return None
         _catalog_digest[0] = data.get("hash")
@@ -618,7 +621,8 @@ def _saved_digest(path):
     if _catalog_digest[0] is None:
         try:
             with gzip.open(path, "rb") as f:
-                _catalog_digest[0] = loads(f.read().decode("utf-8")).get("hash") or ""
+                _catalog_digest[0] = loads(
+                    f.read().decode("utf-8")).get("hash") or ""
         except Exception:
             _catalog_digest[0] = ""
     return _catalog_digest[0]
@@ -636,9 +640,15 @@ def save_catalog(channels, source, setting, path=None):
         digest = hashlib.md5(body).hexdigest()
         if digest == _saved_digest(path):
             return False
-        head = dumps({"format": CATALOG_FORMAT, "version": 1, "setting": setting,
-                      "source": source, "saved": int(time.time()), "hash": digest},
-                     sort_keys=True, separators=(",", ":"))
+        head = dumps({"format": CATALOG_FORMAT,
+                      "version": 1,
+                      "setting": setting,
+                      "source": source,
+                      "saved": int(time.time()),
+                      "hash": digest},
+                     sort_keys=True,
+                     separators=(",",
+                                 ":"))
         if not isinstance(head, bytes):
             head = head.encode("utf-8")
         doc = head[:-1] + b',"channels":' + body + b"}"
@@ -647,7 +657,9 @@ def save_catalog(channels, source, setting, path=None):
             f.write(doc)
         os.rename(tmp, path)
         _catalog_digest[0] = digest
-        print("[Catalog] Saved for the next start: %d channels" % len(channels))
+        print(
+            "[Catalog] Saved for the next start: %d channels" %
+            len(channels))
         return True
     except Exception as e:
         print("[Catalog] Not saved: {}".format(e))
@@ -1396,7 +1408,8 @@ class VavooProxy(object):
         with self._own_sig_lock:
             entry = self._own_sigs.setdefault(
                 slot, {"sig": None, "ts": 0, "failed": 0})
-            fresh = bool(entry["sig"]) and now - entry["ts"] < TOKEN_REFRESH_AGE
+            fresh = bool(entry["sig"]) and now - \
+                entry["ts"] < TOKEN_REFRESH_AGE
             if fresh and (not force or now - entry["ts"] < OWN_SIG_FORCE_MIN):
                 return entry["sig"]
             if now - entry["failed"] < OWN_SIG_RETRY:
@@ -1473,16 +1486,21 @@ class VavooProxy(object):
                     items, source = saved
                     self._install_catalog(items, source)
                     self.catalog_needs_refresh = True
-                    print(" ✓ Started with the saved catalog: %d channels, %d countries (%s) - "
-                          "the new one loads behind it" % (len(items), len(self.countries_list), source))
+                    print(
+                        " ✓ Started with the saved catalog: %d channels, %d countries (%s) - "
+                        "the new one loads behind it" %
+                        (len(items), len(
+                            self.countries_list), source))
                     return True
             items, source = self._download_catalog(setting)
             self._install_catalog(items or [], source)
             if items:
                 save_catalog(items, source, setting)
-                print(" ✓ Initialized: %d channels, %d countries" % (len(items), len(self.countries_list)))
+                print(" ✓ Initialized: %d channels, %d countries" %
+                      (len(items), len(self.countries_list)))
             else:
-                print(" Warning: Catalog is empty or failed to load - started empty, trying again later")
+                print(
+                    " Warning: Catalog is empty or failed to load - started empty, trying again later")
                 self.catalog_needs_refresh = True
             return True
         except Exception as e:
@@ -1546,7 +1564,8 @@ class VavooProxy(object):
                 by_country.setdefault(country_lower, []).append(channel)
                 group_key = _group_key(channel.get("name", ""))
                 if group_key:
-                    groups.setdefault((country_lower, group_key), []).append(channel)
+                    groups.setdefault(
+                        (country_lower, group_key), []).append(channel)
             if country and country != "default":
                 countries.add(country)
         self.catalog_source = source
@@ -1583,11 +1602,14 @@ class VavooProxy(object):
                         self._install_catalog(items, source)
                         self.catalog_needs_refresh = False
                         save_catalog(items, source, setting)
-                        print("[Catalog] ✓ The new catalog is in: %d channels, %d countries (%s)"
-                              % (len(items), len(self.countries_list), source))
+                        print(
+                            "[Catalog] ✓ The new catalog is in: %d channels, %d countries (%s)" %
+                            (len(items), len(
+                                self.countries_list), source))
                         return
-                    print("[Catalog] No new catalog - keeping the one in use, again in %d min"
-                          % (CATALOG_RETRY // 60))
+                    print(
+                        "[Catalog] No new catalog - keeping the one in use, again in %d min" %
+                        (CATALOG_RETRY // 60))
                     self._stop_event.wait(CATALOG_RETRY)
             finally:
                 self.catalog_refreshing = False

@@ -18,9 +18,16 @@ for key in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
     os.environ.pop(key, None)
 
 p = vp.VavooProxy()
-p.channels_by_country = {"italy": [
-    {"id": "1", "name": u"RAI 1 .b", "group": u"Italy ➾ Generalisti", "country": "Italy", "url": "x1"},
-    {"id": "2", "name": u"Canale 5 Más", "group": u"Italy ➾ Generalisti", "country": "Italy", "url": "x2"}]}
+p.channels_by_country = {"italy": [{"id": "1",
+                                    "name": u"RAI 1 .b",
+                                    "group": u"Italy ➾ Generalisti",
+                                    "country": "Italy",
+                                    "url": "x1"},
+                                   {"id": "2",
+                                    "name": u"Canale 5 Más",
+                                    "group": u"Italy ➾ Generalisti",
+                                    "country": "Italy",
+                                    "url": "x2"}]}
 p.channels_by_id = dict((c["id"], c) for c in p.channels_by_country["italy"])
 p.countries_list = ["Italy"]
 p.initialized = True
@@ -53,7 +60,10 @@ def raw(request, timeout=10):
 
 
 def get(path, method="GET", headers=""):
-    line = raw(("%s %s HTTP/1.0\r\nHost: x\r\n%s\r\n" % (method, path, headers)).encode("utf-8", "replace"))
+    line = raw(
+        ("%s %s HTTP/1.0\r\nHost: x\r\n%s\r\n" %
+         (method, path, headers)).encode(
+            "utf-8", "replace"))
     try:
         return int(line.split()[1])
     except Exception:
@@ -61,15 +71,21 @@ def get(path, method="GET", headers=""):
 
 
 CASES = [
-    ("/", (404,)), ("/nope", (404,)), ("/vavoo", (400,)), ("/vavoo?channel=", (400,)),
-    ("/vavoo?channel=999", (404, 502, 503)), ("/vavoo?channel=%00", (400, 404, 502, 503)),
+    ("/", (404,)), ("/nope", (404,)), ("/vavoo",
+                                       (400,)), ("/vavoo?channel=", (400,)),
+    ("/vavoo?channel=999", (404, 502, 503)
+     ), ("/vavoo?channel=%00", (400, 404, 502, 503)),
     ("/vavoo?channel=" + "a" * 5000, (400, 404, 414, 502, 503)),
     ("/vavoo?channel=%E2%9E%BE", (400, 404, 502, 503)),
-    ("/channels", (400,)), ("/channels?country=zz", (200,)), ("/channels?country=Italy&grouped=abc", (200,)),
+    ("/channels", (400,)), ("/channels?country=zz", (200,)
+                            ), ("/channels?country=Italy&grouped=abc", (200,)),
     ("/channels?country=It%C3%A1lia", (200,)), ("/group_sources", (400, 404)),
-    ("/group_sources?group=grp:italy:nothing", (200, 404)), ("/group_sources?group=bad", (400,)), ("/playlist.m3u", (200, 403)),
-    ("/playlist.m3u?country=%00", (200, 403, 404)), ("/catalog", (200,)), ("/countries", (200,)),
-    ("/status", (200,)), ("/health", (200,)), ("/file", (404,)), ("/file?id=zzz", (404,)),
+    ("/group_sources?group=grp:italy:nothing", (200, 404)
+     ), ("/group_sources?group=bad", (400,)), ("/playlist.m3u", (200, 403)),
+    ("/playlist.m3u?country=%00", (200, 403, 404)
+     ), ("/catalog", (200,)), ("/countries", (200,)),
+    ("/status", (200,)), ("/health", (200,)
+                          ), ("/file", (404,)), ("/file?id=zzz", (404,)),
     ("/file?id=../../etc/passwd", (404,)), ("/file?path=/etc/passwd", (404,)),
     ("/stream", (404,)), ("/stream?ref=garbage", (404,)),   # (gone: never worked)
     ("/epg/.xml", (302, 200)), ("/epg/..%2f..%2fetc%2fpasswd.xml", (302,)),
@@ -80,7 +96,8 @@ for path, allowed in CASES:
     status = get(path)
     check(status in allowed, "GET %s -> %s" % (path[:60], status))
     status = get(path, "HEAD")
-    check(isinstance(status, int) and status != 500, "HEAD %s -> %s" % (path[:60], status))
+    check(isinstance(status, int) and status != 500,
+          "HEAD %s -> %s" % (path[:60], status))
 
 print("== broken HTTP")
 for what, request in [
@@ -93,6 +110,7 @@ for what, request in [
     check(not line.startswith("ERROR") or "reset" in line or "timed out" not in line,
           "%s: answered or closed, no hang (%r)" % (what, line[:60]))
 print("== still serving")
-check(get("/status") == 200 and get("/health") == 200, "/status and /health after all of it")
+check(get("/status") == 200 and get("/health") ==
+      200, "/status and /health after all of it")
 server.shutdown()
 finish()

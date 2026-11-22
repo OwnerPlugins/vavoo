@@ -69,8 +69,12 @@ SIZES = ("normal", "large")
 plugin.is_proxy_running = lambda *a, **k: True
 plugin.is_proxy_ready = lambda *a, **k: True
 plugin.cfg.subcategories = V(False)
-CH = [{"name": "RAI 1", "url": "http://127.0.0.1:4323/vavoo?channel=r1", "country_name": "Italy",
-       "country_code": "it", "epg_id": "Rai1.it", "logo": ""}]
+CH = [{"name": "RAI 1",
+       "url": "http://127.0.0.1:4323/vavoo?channel=r1",
+       "country_name": "Italy",
+       "country_code": "it",
+       "epg_id": "Rai1.it",
+       "logo": ""}]
 
 
 class Nav(object):
@@ -159,8 +163,8 @@ def try_open(title, build, classic):
     try:
         scr = build(session())
     except Exception as e:
-        return None, ["could not be built: %s: %s\n%s" % (e.__class__.__name__, e,
-                                                          traceback.format_exc(limit=4))]
+        return None, ["could not be built: %s: %s\n%s" %
+                      (e.__class__.__name__, e, traceback.format_exc(limit=4))]
     text = getattr(scr, "skin", None)
     if not text and not (classic and title in NO_OWN_SKIN_CLASSIC):
         problems.append("no skin of its own")
@@ -172,15 +176,20 @@ def try_open(title, build, classic):
         have = set(scr.widgets)
         missing = sorted(n for n in names if n not in have)
         if missing:
-            problems.append("skin names widgets the screen does not create: %s" % ", ".join(missing))
-        bad = sorted(src for src in sources if not (src.startswith("session.") or src.startswith("global.")
-                                                     or src.split(".")[0] in have))
+            problems.append(
+                "skin names widgets the screen does not create: %s" %
+                ", ".join(missing))
+        bad = sorted(src for src in sources if not (src.startswith(
+            "session.") or src.startswith("global.") or src.split(".")[0] in have))
         if bad:
-            problems.append("skin uses sources the screen does not have: %s" % ", ".join(bad))
+            problems.append(
+                "skin uses sources the screen does not have: %s" %
+                ", ".join(bad))
     try:
         run_layout(scr)
     except Exception as e:
-        problems.append("onLayoutFinish: %s: %s\n%s" % (e.__class__.__name__, e, traceback.format_exc(limit=5)))
+        problems.append("onLayoutFinish: %s: %s\n%s" %
+                        (e.__class__.__name__, e, traceback.format_exc(limit=5)))
     return scr, problems
 
 
@@ -196,14 +205,19 @@ class Broken(object):
 
 
 _scr, _problems = try_open("broken", lambda s: make(Broken, s), False)
-check(_scr is None and ("exec() arg 1 must be" in _problems[0] or "exec: arg 1 must be" in _problems[0]),
-      "a lambda in onLayoutFinish: the box's error (%s)" % _problems[0].splitlines()[0][:80])
+check(
+    _scr is None and (
+        "exec() arg 1 must be" in _problems[0] or "exec: arg 1 must be" in _problems[0]),
+    "a lambda in onLayoutFinish: the box's error (%s)" %
+    _problems[0].splitlines()[0][
+        :80])
 Broken.__init__ = lambda self, session: self.__setitem__("menulist", object())
 _scr, _problems = try_open("broken", lambda s: make(Broken, s), False)
 check(any("nope" in p for p in _problems) and any("Event" in p for p in _problems),
       "a widget / source the screen lacks: found (%s)" % "; ".join(_problems))
 
-for dreamos, folder, width in [(d, f, w) for d in (False, True) for f, w in RESOLUTIONS]:
+for dreamos, folder, width in [(d, f, w)
+                               for d in (False, True) for f, w in RESOLUTIONS]:
     plugin.IS_DREAMOS = dreamos
     plugin.screen_width = width
     plugin.THEME_WIDTH = width
@@ -214,12 +228,20 @@ for dreamos, folder, width in [(d, f, w) for d in (False, True) for f, w in RESO
             plugin.cfg.text_size = V(size)
             plugin._theme_skin_cache.clear()
             what = "%s%s %s%s" % ("DreamOS " if dreamos else "", folder, theme,
-                                   "" if theme == "classic" else " " + size)
+                                  "" if theme == "classic" else " " + size)
             print("==", what)
             if theme != "classic":
-                check(plugin.theme_active(), "%s: the theme is in use (all its files there)" % what)
+                check(
+                    plugin.theme_active(),
+                    "%s: the theme is in use (all its files there)" %
+                    what)
             for title, build in SCREENS:
                 scr, problems = try_open(title, build, theme == "classic")
-                check(not problems, "%s: %s opens%s" % (what, title, "" if not problems else
-                                                         "\n      " + "\n      ".join(problems)))
+                check(
+                    not problems,
+                    "%s: %s opens%s" %
+                    (what,
+                     title,
+                     "" if not problems else "\n      " +
+                     "\n      ".join(problems)))
 finish()

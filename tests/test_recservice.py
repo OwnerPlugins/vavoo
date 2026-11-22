@@ -56,30 +56,52 @@ CH = {"name": "RAI 1", "url": URL, "country_name": "Italy",
 print("== folders")
 check(plugin.recordings_folder() == TMP, "the chosen folder")
 plugin.cfg.record_path = V("")
-check(plugin.recordings_folder() == "/media/hdd/movie/", "default: Enigma2's movie folder")
+check(plugin.recordings_folder() == "/media/hdd/movie/",
+      "default: Enigma2's movie folder")
 choices = plugin.record_folder_choices()
-check(choices[0] == ("", "/media/hdd/movie/"), "first choice: the movie folder")
+check(choices[0] == ("", "/media/hdd/movie/"),
+      "first choice: the movie folder")
 plugin.cfg.record_path = V(TMP)
-check((TMP, TMP) in plugin.record_folder_choices(), "the current one is always offered")
-check(plugin.usable_folder(os.path.join(TMP, "sub")) is not None, "made inside an existing folder")
-check(plugin.usable_folder("/nonexistent/x/y") is None, "not on a disk that is not there")
-check(plugin.pause_folder() == TMP, "pause buffer: the recordings folder (no timeshift folder)")
-check(u"→" in plugin.recording_text("Show", time.time() + 600), "'Recording: Show  →  21:02'")
+check((TMP, TMP) in plugin.record_folder_choices(),
+      "the current one is always offered")
+check(plugin.usable_folder(os.path.join(TMP, "sub"))
+      is not None, "made inside an existing folder")
+check(plugin.usable_folder("/nonexistent/x/y")
+      is None, "not on a disk that is not there")
+check(
+    plugin.pause_folder() == TMP,
+    "pause buffer: the recordings folder (no timeshift folder)")
+check(
+    u"→" in plugin.recording_text(
+        "Show",
+        time.time() + 600),
+    "'Recording: Show  →  21:02'")
 
 print("== recording now")
 rec = plugin.RECORDINGS.start(CH, "Il Commissario", time.time() + 6)
 check(rec is not None and rec.running, "started")
 check(plugin.RECORDINGS.recording_of(URL) is rec, "recording_of() finds it")
-check(plugin.RECORDINGS.start(CH, "Again") is rec, "the same channel is not recorded twice")
-check(rec.max_seconds > 6 + 500, "a timed one may run past its end margin (TIMER_EXTRA)")
+check(plugin.RECORDINGS.start(CH, "Again") is rec,
+      "the same channel is not recorded twice")
+check(
+    rec.max_seconds > 6 + 500,
+    "a timed one may run past its end margin (TIMER_EXTRA)")
 time.sleep(3)
-check(fake.resolved and fake.resolved[0][0] == "abc123" and fake.resolved[0][1].startswith("recording:"),
-      "resolved with its own slot: %r" % (fake.resolved[:1],))
+check(fake.resolved and fake.resolved[0][0] == "abc123" and fake.resolved[0][1].startswith(
+    "recording:"), "resolved with its own slot: %r" % (fake.resolved[:1],))
 rec.join(30)
 time.sleep(0.2)
-check(not plugin.RECORDINGS.running() and rec.id not in plugin.RECORDINGS.active, "ended, out of the active ones")
+check(
+    not plugin.RECORDINGS.running() and rec.id not in plugin.RECORDINGS.active,
+    "ended, out of the active ones")
 check(fake.dropped == [rec.slot], "its own token dropped")
-check(os.path.isfile(rec.path) and os.path.getsize(rec.path) > 0, "file written: " + os.path.basename(rec.path))
+check(
+    os.path.isfile(
+        rec.path) and os.path.getsize(
+            rec.path) > 0,
+    "file written: " +
+    os.path.basename(
+        rec.path))
 info = vr.read_info(rec.path)
 check(info["country"] == "Italy" and info["url"] == URL and info["title"] == "Il Commissario"
       and info["sref"] == "4097:0:1:0:0:0:0:0:0:0::RAI 1", "its record: channel, country, title")
@@ -90,14 +112,16 @@ print("== cannot record")
 del NOTES[:]
 real_find = vr.find_ffmpeg
 vr.find_ffmpeg = lambda: None
-check(plugin.RECORDINGS.start(CH) is None and NOTES[-1] == "Recording needs ffmpeg", "no ffmpeg: said")
+check(plugin.RECORDINGS.start(CH)
+      is None and NOTES[-1] == "Recording needs ffmpeg", "no ffmpeg: said")
 vr.find_ffmpeg = real_find
 real_free = vr.free_bytes
 vr.free_bytes = lambda path: 1000
-check(plugin.RECORDINGS.start(CH) is None and NOTES[-1] == "Can't record (not enough free space?)",
-      "no room: said")
+check(plugin.RECORDINGS.start(
+    CH) is None and NOTES[-1] == "Can't record (not enough free space?)", "no room: said")
 del NOTES[:]
-check(plugin.RECORDINGS.start(CH, quiet=True) is None and not NOTES, "quiet: not said")
+check(plugin.RECORDINGS.start(CH, quiet=True)
+      is None and not NOTES, "quiet: not said")
 vr.free_bytes = real_free
 plugin.cfg.record_path = V("/nonexistent/disk/movie/")
 check(plugin.RECORDINGS.start(CH) is None, "no disk: none")
@@ -110,14 +134,16 @@ plugin.cfg.record_path = V(os.path.join(flash, "movie/"))
 del NOTES[:]
 check(plugin.RECORDINGS.start(CH) is None and NOTES[-1] == "Can't record: no disk (HDD / USB) found",
       "no disk mounted: refused, said")
-check(not os.path.exists(os.path.join(flash, "movie")), "...and no folder made on the box's flash")
+check(not os.path.exists(os.path.join(flash, "movie")),
+      "...and no folder made on the box's flash")
 check(plugin.usable_folder(TMP) is None and plugin.pause_folder() is None,
       "not on a disk: no recordings folder, no pause buffer (PAUSE only pauses)")
 vr.on_disk = lambda path: True
 plugin.cfg.record_path = V(TMP)
 check(real_on_disk("/") is False and real_on_disk("/tmp") is False,
       "the root file system (flash) and /tmp are never a disk")
-check(vr.mount_of("/proc/self")[1] == "proc", "mount_of(): the file system type")
+check(vr.mount_of("/proc/self")[1] == "proc",
+      "mount_of(): the file system type")
 
 print("== a recording set in the guide")
 now = time.time()
@@ -130,10 +156,14 @@ plugin._in_standby = lambda: True
 del NOTES[:]
 plugin.REMINDERS.tick()
 rec = plugin.RECORDINGS.recording_of(URL)
-check(rec is not None and rec.info["title"] == "Telegiornale", "started 2 minutes before its programme")
-check(abs(rec.stop_at - (int(now + 900) + store.RECORD_MARGIN)) < 2, "until its end plus the margin")
+check(
+    rec is not None and rec.info["title"] == "Telegiornale",
+    "started 2 minutes before its programme")
+check(abs(rec.stop_at - (int(now + 900) + store.RECORD_MARGIN))
+      < 2, "until its end plus the margin")
 check(not NOTES, "in standby: started without a word")
-check([t["title"] for t in store.load_timers(store.KIND_RECORD)] == ["Later"], "taken out of the timers")
+check([t["title"] for t in store.load_timers(store.KIND_RECORD)]
+      == ["Later"], "taken out of the timers")
 wake = plugin.get_next_wakeup()
 check(wake == int(now + 3600) - store.RECORD_MARGIN - plugin.WAKE_BEFORE,
       "deep standby: wake 5 minutes before the next one starts (%s)" % wake)
@@ -143,12 +173,15 @@ time.sleep(0.2)
 check(not rec.running, "stopped by hand")
 
 vr.find_ffmpeg = lambda: None
-store.add_timer(store.KIND_RECORD, URL, "RAI 1", "Broken", int(time.time() + 60),
-                int(time.time() + 600), "Italy", "it", "")
+store.add_timer(store.KIND_RECORD, URL, "RAI 1", "Broken", int(
+    time.time() + 60), int(time.time() + 600), "Italy", "it", "")
 plugin._in_standby = lambda: False
 del NOTES[:]
 plugin.REMINDERS.tick()
-check(NOTES == ["Scheduled recording not started: Broken"], "could not start: said (%r)" % NOTES)
+check(
+    NOTES == ["Scheduled recording not started: Broken"],
+    "could not start: said (%r)" %
+    NOTES)
 vr.find_ffmpeg = real_find
 for t in store.load_timers():
     store.remove_timer(t["id"])

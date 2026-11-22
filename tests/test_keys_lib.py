@@ -13,7 +13,8 @@ def read_keymap(path, into=None):
     for m in ET.parse(path).getroot().findall("map"):
         rows = into.setdefault(m.get("context"), [])
         for k in m.findall("key"):
-            rows.append((k.get("id"), set(k.get("flags")), k.get("mapto") or k.get("mapTo")))
+            rows.append((k.get("id"), set(k.get("flags")),
+                        k.get("mapto") or k.get("mapTo")))
     return into
 
 

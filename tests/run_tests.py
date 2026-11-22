@@ -25,12 +25,27 @@ FFMPEG = ("test_memory", "test_proxy_rec", "test_record", "test_record_disk",
           "test_recservice", "test_shift")
 # what runs on Python 2 (the rest uses Python 3 only things in the test
 # itself - the plugin code they test is checked there too)
-PYTHON2 = ("test_audit", "test_bad_files", "test_direct_keys", "test_epg_match",
-           "test_catalog_cache", "test_closed", "test_epg_sources", "test_every_key", "test_factory_reset", "test_keys", "test_list_keys",
-           "test_log", "test_proxy_start", "test_proxy_state",
-           "test_py2_separators", "test_screens_open", "test_screens_rows", "test_settings_welcome",
-           "test_speedups",
-           "test_store")
+PYTHON2 = (
+    "test_audit",
+    "test_bad_files",
+    "test_direct_keys",
+    "test_epg_match",
+    "test_catalog_cache",
+    "test_closed",
+    "test_epg_sources",
+    "test_every_key",
+    "test_factory_reset",
+    "test_keys",
+    "test_list_keys",
+    "test_log",
+    "test_proxy_start",
+    "test_proxy_state",
+    "test_py2_separators",
+    "test_screens_open",
+    "test_screens_rows",
+    "test_settings_welcome",
+    "test_speedups",
+    "test_store")
 TIMEOUT = 600
 
 
@@ -46,11 +61,16 @@ def repo_state():
     """`git status --porcelain` of the checkout (None without git): a
     test must never change a file of the repository."""
     try:
-        process = subprocess.Popen(["git", "status", "--porcelain", "--untracked-files=no"],
-                                   cwd=os.path.dirname(HERE), stdout=subprocess.PIPE,
+        process = subprocess.Popen(["git",
+                                    "status",
+                                    "--porcelain",
+                                    "--untracked-files=no"],
+                                   cwd=os.path.dirname(HERE),
+                                   stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         out = process.communicate()[0]
-        return out.decode("utf-8", "replace") if process.returncode == 0 else None
+        return out.decode(
+            "utf-8", "replace") if process.returncode == 0 else None
     except Exception:
         return None
 
@@ -62,9 +82,15 @@ def last_line(text):
 
 def main(argv):
     quick = "--quick" in argv
-    wanted = [a[:-3] if a.endswith(".py") else a for a in argv if not a.startswith("-")]
-    names = sorted(os.path.basename(p)[:-3] for p in glob.glob(os.path.join(HERE, "test_*.py"))
-                   if not p.endswith("test_keys_lib.py"))
+    wanted = [
+        a[:-3] if a.endswith(".py") else a for a in argv if not a.startswith("-")]
+    names = sorted(
+        os.path.basename(p)[
+            :-
+            3] for p in glob.glob(
+            os.path.join(
+                HERE,
+                "test_*.py")) if not p.endswith("test_keys_lib.py"))
     if wanted:
         names = [n for n in names if n in wanted]
     elif PY2:
@@ -75,7 +101,8 @@ def main(argv):
     started = time.time()
     for name in names:
         if name in FFMPEG and (quick or not has_ffmpeg):
-            results.append((name, "skipped", "--quick" if quick else "no ffmpeg / ffprobe", 0.0))
+            results.append(
+                (name, "skipped", "--quick" if quick else "no ffmpeg / ffprobe", 0.0))
             continue
         t0 = time.time()
         command = [sys.executable, "-B", os.path.join(HERE, name + ".py")]
@@ -111,8 +138,15 @@ def main(argv):
     after = repo_state()
     if before is not None and after != before:
         changed = sorted(set(after.splitlines()) ^ set(before.splitlines()))
-        results.append(("(repository)", "FAILED", "files changed by the tests: %s" % ", ".join(changed), 0.0))
-        print("(repository)           FAILED  the tests changed files in the checkout:\n  " + "\n  ".join(changed))
+        results.append(
+            ("(repository)",
+             "FAILED",
+             "files changed by the tests: %s" %
+             ", ".join(changed),
+             0.0))
+        print(
+            "(repository)           FAILED  the tests changed files in the checkout:\n  " +
+            "\n  ".join(changed))
     failed = [r for r in results if r[1] == "FAILED"]
     skipped = [r for r in results if r[1] == "skipped"]
     print("-" * 70)

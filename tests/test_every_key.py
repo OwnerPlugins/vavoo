@@ -33,7 +33,10 @@ plugin.is_proxy_booting = lambda *a, **k: False
 # (no real proxy: "Reload List" would start one, stuck on the blocked
 # network - every request to it after that waits for its timeout)
 for module in (plugin, bm, plugin.vavoo_proxy):
-    for name in ("restart_proxy_in_background", "run_proxy_in_background", "start_proxy"):
+    for name in (
+        "restart_proxy_in_background",
+        "run_proxy_in_background",
+            "start_proxy"):
         if hasattr(module, name):
             setattr(module, name, lambda *a, **k: True)
 plugin.cfg.subcategories = V(False)
@@ -101,7 +104,11 @@ if PY2:
 
     def checked_set(self, text):
         if isinstance(text, unicode):                    # noqa: F821
-            BAD_TEXT.append(("setText", text, "".join(traceback.format_stack(limit=4)[:-1])))
+            BAD_TEXT.append(
+                ("setText", text, "".join(
+                    traceback.format_stack(
+                        limit=4)[
+                        :-1])))
         real_set(self, text)
     harness.FakeLabel.setText = checked_set
     real_entry = harness.Entry.__init__
@@ -138,18 +145,43 @@ def session():
 
 URL1 = "http://127.0.0.1:4323/vavoo?channel=r1"
 URL2 = "http://127.0.0.1:4323/vavoo?channel=c5"
-CHANNELS = [{"name": u"RAI 1", "url": URL1, "logo": "", "epg_id": "Rai.1.it", "category": u"Generale"},
-            {"name": u"Canale 5 Más", "url": URL2, "logo": "", "epg_id": "", "category": u"Generale"}]
+CHANNELS = [{"name": u"RAI 1",
+             "url": URL1,
+             "logo": "",
+             "epg_id": "Rai.1.it",
+             "category": u"Generale"},
+            {"name": u"Canale 5 Más",
+             "url": URL2,
+             "logo": "",
+             "epg_id": "",
+             "category": u"Generale"}]
 GUIDE_CH = [dict(c, country_name="Italy", country_code="it") for c in CHANNELS]
 store.add_favourite(u"RAI 1", URL1, "Italy", "it")
-store.add_favourite(u"Télé Monte", "http://127.0.0.1:4323/vavoo?channel=tm", "France", "fr")
-plugin.vUtils.add_recent(u"RAI 1", URL1, "Italy", "it") if hasattr(plugin.vUtils, "add_recent") else None
+store.add_favourite(
+    u"Télé Monte",
+    "http://127.0.0.1:4323/vavoo?channel=tm",
+    "France",
+    "fr")
+plugin.vUtils.add_recent(
+    u"RAI 1",
+    URL1,
+    "Italy",
+    "it") if hasattr(
+        plugin.vUtils,
+    "add_recent") else None
 time.sleep(0.5)
 
 
 def recording_data():
-    return {"path": os.path.join(TMP, "x.ts"), "title": u"Show é", "name": u"RAI 1",
-            "duration": 60, "start": 0, "country": "Italy"}
+    return {
+        "path": os.path.join(
+            TMP,
+            "x.ts"),
+        "title": u"Show é",
+        "name": u"RAI 1",
+        "duration": 60,
+        "start": 0,
+        "country": "Italy"}
 
 
 def fill_main(scr):
@@ -218,7 +250,13 @@ def attempt(what, fn, *args):
         fn(*args)
         return True
     except Exception as e:
-        FAILS.append("%s: %s: %s\n%s" % (what, e.__class__.__name__, e, traceback.format_exc(limit=6)))
+        FAILS.append(
+            "%s: %s: %s\n%s" %
+            (what,
+             e.__class__.__name__,
+             e,
+             traceback.format_exc(
+                 limit=6)))
         return False
 
 
@@ -231,12 +269,15 @@ def cancel_dialogs(what, scr, start):
         if "MessageBox" in name:
             # (each answer from where it was asked: the dialog again)
             for answer in (True, False):
-                attempt("%s -> %s answered %r" % (what, name, answer), cb, answer)
+                attempt(
+                    "%s -> %s answered %r" %
+                    (what, name, answer), cb, answer)
                 count["answers"] += 1
 
 
 count = {"actions": 0, "menus": 0, "dialogs": 0, "answers": 0}
-PASSES = [(theme, filled) for theme in ("classic", "prism") for filled in (True, False)]
+PASSES = [(theme, filled) for theme in ("classic", "prism")
+          for filled in (True, False)]
 for theme, filled in PASSES:
     plugin.cfg.theme = V(theme)
     plugin._theme_skin_cache.clear()
@@ -254,7 +295,8 @@ for theme, filled in PASSES:
             try:
                 probe = fresh(build, fill)
             except Exception as e:
-                FAILS.append("%s: could not be built: %s\n%s" % (where, e, traceback.format_exc(limit=6)))
+                FAILS.append("%s: could not be built: %s\n%s" %
+                             (where, e, traceback.format_exc(limit=6)))
                 continue
         for widget, action in actions_of(probe):
             if action == "ignore":
@@ -275,13 +317,19 @@ for theme, filled in PASSES:
                 for label, key in entries:
                     scr2 = fresh(build, fill)
                     del MENUS[:]
-                    if not attempt(what + " (again)", scr2.widgets[widget].actions[action]) or not MENUS:
+                    if not attempt(
+                            what + " (again)",
+                            scr2.widgets[widget].actions[action]) or not MENUS:
                         continue
                     _t, _e, choose = MENUS[-1]
                     start2 = len(scr2.session.opened)
                     count["menus"] += 1
-                    if attempt("%s menu '%s' -> %r" % (what, label, key), choose, key):
-                        cancel_dialogs("%s menu '%s'" % (what, label), scr2, start2)
+                    if attempt(
+                        "%s menu '%s' -> %r" %
+                            (what, label, key), choose, key):
+                        cancel_dialogs(
+                            "%s menu '%s'" %
+                            (what, label), scr2, start2)
 
 print("== %d actions, %d menu entries, %d dialogs cancelled, %d confirmations answered (Python %d)"
       % (count["actions"], count["menus"], count["dialogs"], count["answers"], sys.version_info[0]))
@@ -311,15 +359,24 @@ def close_and_run(where, build, fill, action=None):
         try:
             scr = fresh(build, fill)
         except Exception as e:
-            FAILS.append("%s: could not be built: %s\n%s" % (where, e, traceback.format_exc(limit=6)))
+            FAILS.append("%s: could not be built: %s\n%s" %
+                         (where, e, traceback.format_exc(limit=6)))
             return False
         if action is not None:
             widget, name = action
             del MENUS[:]
             if not attempt(where, scr.widgets[widget].actions[name]):
                 return False
-        if not (attempt(where + " own close", harness.own_close, scr) and
-                attempt(where + " Enigma2's doClose()", harness.enigma2_close, scr)):
+        if not (
+            attempt(
+                where +
+                " own close",
+                harness.own_close,
+                scr) and attempt(
+                where +
+                " Enigma2's doClose()",
+                harness.enigma2_close,
+                scr)):
             return False
         for failure in pending.run():
             FAILS.append("%s: after the close: %s" % (where, failure))
@@ -344,12 +401,13 @@ for theme in ("classic", "prism"):
             continue
         for widget, action in actions_of(probe):
             if action != "ignore":
-                if close_and_run("%s [%s.%s] (then closed)" % (where[:-9], widget, action),
-                                 build, fill, (widget, action)):
+                if close_and_run("%s [%s.%s] (then closed)" % (
+                        where[:-9], widget, action), build, fill, (widget, action)):
                     closed += 1
 plugin.getUrl = real_get_url
-print("== %d screens closed as Enigma2 does (fresh, and after each key), then their pending work run"
-      % closed)
+print(
+    "== %d screens closed as Enigma2 does (fresh, and after each key), then their pending work run" %
+    closed)
 seen = set()
 for fail in FAILS:
     head = fail.splitlines()[0]
@@ -359,11 +417,17 @@ for fail in FAILS:
     seen.add(key)
     print("-" * 70)
     print(fail)
-check(not FAILS, "every key, menu entry and cancel: no exception (%d failures, %d distinct)"
-      % (len(FAILS), len(seen)))
+check(
+    not FAILS,
+    "every key, menu entry and cancel: no exception (%d failures, %d distinct)" %
+    (len(FAILS),
+     len(seen)))
 if PY2:
     for kind, text, stack in BAD_TEXT[:15]:
         print("-" * 70)
         print("unicode to %s: %r\n%s" % (kind, text, stack))
-    check(not BAD_TEXT, "Python 2: widgets only got bytes (%d unicode)" % len(BAD_TEXT))
+    check(
+        not BAD_TEXT,
+        "Python 2: widgets only got bytes (%d unicode)" %
+        len(BAD_TEXT))
 finish()

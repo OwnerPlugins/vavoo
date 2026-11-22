@@ -11,8 +11,17 @@ import tempfile
 import time
 import zlib
 
-PLUGIN_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                          "usr", "lib", "enigma2", "python", "Plugins", "Extensions", "vavoo")
+PLUGIN_DIR = os.path.join(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.abspath(__file__))),
+    "usr",
+    "lib",
+    "enigma2",
+    "python",
+    "Plugins",
+    "Extensions",
+    "vavoo")
 sys.path.insert(0, PLUGIN_DIR)
 import vavoo_store as st  # noqa: E402
 
@@ -69,8 +78,8 @@ check([f["url"] for f in st.load_favourites()][-1] == "u4", "added at the end")
 check(st.add_favourite("B", "u4") is False, "already one")
 check(st.toggle_favourite("B", "u4") is False and not st.is_favourite("u4"),
       "toggle removes")
-check(st.toggle_favourite("B", "u4", "Italy", "it") is True and st.is_favourite("u4"),
-      "toggle adds")
+check(st.toggle_favourite("B", "u4", "Italy", "it")
+      is True and st.is_favourite("u4"), "toggle adds")
 check(st.favourite_urls() == set(["u1", "u2", "u3", "u4"]), "urls")
 
 print("3. folders")
@@ -111,7 +120,8 @@ check([f["url"] for f in st.load_favourites()] == ["u1", "u2", "u3", "u4"],
       "whole list")
 
 print("5. repair by name")
-rows = [{"name": "rai 1", "url": "u1new", "logo": "L"}, {"name": "A", "url": "u2"}]
+rows = [{"name": "rai 1", "url": "u1new",
+         "logo": "L"}, {"name": "A", "url": "u2"}]
 check(st.repair_favourites("italy", rows) == 1, "one changed")
 f = st.find_favourite("u1new")
 check(f is not None and f["logo"] == "L" and not st.is_favourite("u1"),
@@ -141,7 +151,8 @@ check("1234" not in json.dumps(saved) and len(saved["salt"]) == 16,
       "PIN hashed with salt")
 st.relock()
 check(not st.is_unlocked(), "relocked")
-check(st.lock_adult() and not st.lock_settings(), "defaults: adult yes, settings no")
+check(st.lock_adult() and not st.lock_settings(),
+      "defaults: adult yes, settings no")
 for name, adult in (("XXX TV", True), ("Adult Swim", False), ("ADULTS ONLY", True),
                     ("Erotik 1", True), ("Private TV", True), ("Playboy", True),
                     ("Sport 18+", True), ("Sexy", False), ("Superotic", False),
@@ -153,13 +164,21 @@ st.set_option("adult", False)
 check(not st.needs_pin_for_channel("XXX TV"), "adult lock off")
 st.set_option("adult", True)
 st.set_locked_countries(["Italy"])
-check(st.needs_pin_for_country("italy ") and not st.needs_pin_for_country("Spain"),
-      "locked country, case and spaces ignored")
-check(st.needs_pin_for_channel("RAI 1", "Italy"), "channel of a locked country")
+check(st.needs_pin_for_country("italy ") and not st.needs_pin_for_country(
+    "Spain"), "locked country, case and spaces ignored")
+check(
+    st.needs_pin_for_channel(
+        "RAI 1",
+        "Italy"),
+    "channel of a locked country")
 check(not st.needs_pin_for_settings(), "settings not locked by default")
 st.set_option("settings", True)
 check(st.needs_pin_for_settings(), "settings locked")
-check(st.check_pin("1234") == ("ok", 0) and st.is_unlocked(), "right PIN opens")
+check(
+    st.check_pin("1234") == (
+        "ok",
+        0) and st.is_unlocked(),
+    "right PIN opens")
 check(not st.needs_pin_for_channel("XXX TV"), "open for a while")
 st._unlocked_at[0] = st.uptime() - st.UNLOCK_SECONDS - 1
 check(not st.is_unlocked(), "15 minutes later: locked again")
@@ -221,11 +240,16 @@ check(path and os.path.dirname(path) == media and
 backup = st.read_backup(path)
 check(backup["format"] == "vavoo_e2_backup" and backup["version"] == "1.89",
       "format and version")
-check("parental_pin" not in backup["settings"] and backup["settings"]["theme"] == "halo",
-      "PIN setting left out")
+check(
+    "parental_pin" not in backup["settings"] and backup["settings"]["theme"] == "halo",
+    "PIN setting left out")
 check("1234" not in open(path).read() or True, "no PIN")
 check(backup["favourites"][0]["folder"] == "Sport", "folders in it")
-check(backup["hidden_countries"] == ["Albania", "Spain"], "hidden countries in it")
+check(
+    backup["hidden_countries"] == [
+        "Albania",
+        "Spain"],
+    "hidden countries in it")
 check(st.list_backups([media])[0][0] == path, "listed")
 st.clear_favourites()
 st.set_hidden_countries([])
@@ -250,32 +274,70 @@ for name, want in (("RAI 1", "R1"), ("Canale 5", "C5"), ("SKY SPORT HD", "SS"),
                    ("TELECINCO HD .b", "T"), ("(UK) BBC One", "BO"),
                    ("---", "TV"), ("4K", "TV"), ("rtl+", "R"), ("ZDF", "Z"),
                    ("Das Erste HD", "DE"), (u"Ö1", u"Ö")):
-    check(st.initials(name) == want, "initials %r -> %r (%r)" % (name, want, st.initials(name)))
+    check(
+        st.initials(name) == want, "initials %r -> %r (%r)" %
+        (name, want, st.initials(name)))
 check(st.java_hash("hello") == 99162322 and st.java_hash("Hello") == 69609650 and
       st.java_hash("abc") == 96354 and st.java_hash("") == 0, "Java hashCode")
-check(st.java_hash("polygenelubricants") == -2147483648, "Java hashCode overflow")
+check(st.java_hash("polygenelubricants") == -
+      2147483648, "Java hashCode overflow")
 check(st.hue_for("rai 1") == st.hue_for("RAI 1"), "colour ignores case")
 h = (st.java_hash("RAI 1") & 0x7fffffff) % 360
 check(st.hue_for("RAI 1") == h, "hue = hashCode % 360")
 check(st.hsv_to_rgb(0, 0.55, 0.62) == (158, 71, 71), "HSV red")
 check(st.hsv_to_rgb(120, 0.55, 0.62) == (71, 158, 71), "HSV green")
-check(all(st.tile_hue(n) % 10 == 0 for n in ("a", "b", "RAI 1")), "tile hue on 10° steps")
+check(all(st.tile_hue(n) % 10 == 0 for n in (
+    "a", "b", "RAI 1")), "tile hue on 10° steps")
 
 print("11. search")
 check(st.normalize(u"Cuátro TV-1!") == u"cuatro tv 1", "normalize")
-check(st.normalize(u"Straße") == u"strasse" and st.normalize(u"KANAL D ı") == u"kanal d i",
-      "ß and ı")
-names = [u"SPORT 1", u"SPORT1", u"SPORT 11", u"SKY SPORT 1 HD", u"ATV", u"TV 2",
-         u"Cuátro", u"EUROSPORT 1"]
-check(st.search(names, u"1") == [u"EUROSPORT 1", u"SKY SPORT 1 HD", u"SPORT 1", u"SPORT1"]
-      or set(st.search(names, u"1")) == set([u"SPORT 1", u"SPORT1", u"SKY SPORT 1 HD", u"EUROSPORT 1"]),
-      "1: not SPORT 11 (%s)" % st.search(names, u"1"))
+check(st.normalize(u"Straße") == u"strasse" and st.normalize(
+    u"KANAL D ı") == u"kanal d i", "ß and ı")
+names = [
+    u"SPORT 1",
+    u"SPORT1",
+    u"SPORT 11",
+    u"SKY SPORT 1 HD",
+    u"ATV",
+    u"TV 2",
+    u"Cuátro",
+    u"EUROSPORT 1"]
+check(
+    st.search(
+        names,
+        u"1") == [
+            u"EUROSPORT 1",
+            u"SKY SPORT 1 HD",
+            u"SPORT 1",
+            u"SPORT1"] or set(
+                st.search(
+                    names,
+                    u"1")) == set(
+                        [
+                            u"SPORT 1",
+                            u"SPORT1",
+                            u"SKY SPORT 1 HD",
+                            u"EUROSPORT 1"]),
+    "1: not SPORT 11 (%s)" %
+    st.search(
+        names,
+        u"1"))
 check(st.search(names, u"tv") == [u"TV 2"], "tv: not ATV")
 check(st.search(names, u"cuatro") == [u"Cuátro"], "accents")
 res = st.search(names, u"sport 1")
-check(res[0] in (u"SPORT 1", u"SPORT1") and u"SPORT 11" not in res and
-      u"EUROSPORT 1" in res, "starts with the first word first; 3+ letters inside (%s)" % res)
-check(st.search(names, u"1 sport") == st.search(names, u"1 sport"), "any order")
+check(
+    res[0] in (
+        u"SPORT 1",
+        u"SPORT1") and u"SPORT 11" not in res and u"EUROSPORT 1" in res,
+    "starts with the first word first; 3+ letters inside (%s)" %
+    res)
+check(
+    st.search(
+        names,
+        u"1 sport") == st.search(
+            names,
+            u"1 sport"),
+    "any order")
 check(st.search(names, u"") == [], "empty query")
 
 print("12. pictures")
@@ -297,7 +359,8 @@ def read_png(path):
             idat += body
         pos += 12 + n
     raw = zlib.decompress(idat)
-    rows = [raw[1 + y * (width * 4 + 1):(y + 1) * (width * 4 + 1)] for y in range(height)]
+    rows = [raw[1 + y * (width * 4 + 1):(y + 1) * (width * 4 + 1)]
+            for y in range(height)]
     return width, height, rows
 
 
@@ -309,7 +372,8 @@ check((w, hh) == (48, 48), "tile 48x48")
 centre = rows[24][24 * 4:24 * 4 + 4]
 corner = rows[0][0:4]
 rgb = st.hsv_to_rgb(st.tile_hue("RAI 1"), 0.55, 0.62)
-check(tuple(bytearray(centre)) == rgb + (255,), "centre in the channel's colour")
+check(tuple(bytearray(centre)) == rgb +
+      (255,), "centre in the channel's colour")
 check(bytearray(corner)[3] == 0, "corner transparent (rounded)")
 check(st.tile_path("RAI 1", 48) == p1, "reused")
 check(dt < 1.0, "drawn quickly (%.3f s)" % dt)
@@ -318,35 +382,77 @@ w, hh, rows = read_png(lp)
 check((w, hh) == (30, 40), "padlock 30x40")
 check(bytearray(rows[38][15 * 4:15 * 4 + 4])[3] == 255, "body filled")
 check(bytearray(rows[0][0:4])[3] == 0, "top corner empty")
-check(bytearray(rows[14][15 * 4:15 * 4 + 4])[3] == 0 and bytearray(rows[9][15 * 4:15 * 4 + 4])[3] == 255, "shackle: ring drawn, inside empty")
+check(bytearray(rows[14][15 *
+                         4:15 *
+                         4 +
+                         4])[3] == 0 and bytearray(rows[9][15 *
+                                                           4:15 *
+                                                           4 +
+                                                           4])[3] == 255, "shackle: ring drawn, inside empty")
 
 print("13. timers")
 check(st.load_timers() == [], "none at first")
 t1 = st.add_timer("remind", "u1", "RAI 1", "Film", 1000, 2000, "Italy", "it")
 t2 = st.add_timer("remind", "u2", "SIC", "News", 500, 900)
-check([t["title"] for t in st.load_timers()] == ["News", "Film"], "by start time")
-check(st.find_timer("u1", 1000)["title"] == "Film" and st.find_timer("u1", 1001) is None, "find")
+check([t["title"] for t in st.load_timers()]
+      == ["News", "Film"], "by start time")
+check(
+    st.find_timer(
+        "u1",
+        1000)["title"] == "Film" and st.find_timer(
+            "u1",
+            1001) is None,
+    "find")
 t1b = st.add_timer("remind", "u1", "RAI 1", "Film (new)", 1000, 2100)
-check(len(st.load_timers()) == 2 and st.find_timer("u1", 1000)["title"] == "Film (new)",
-      "same kind, channel and start: replaced")
+check(len(st.load_timers()) == 2 and st.find_timer("u1", 1000)[
+      "title"] == "Film (new)", "same kind, channel and start: replaced")
 st.add_timer("record", "u1", "RAI 1", "Film", 1000, 2000)
-check(len(st.load_timers()) == 3 and st.find_timer("u1", 1000, "record") is not None,
-      "a recording of the same programme is its own timer")
-check(st.alarm_time(st.find_timer("u1", 1000, "record")) == 1000 - 120 and
-      st.alarm_time(st.find_timer("u1", 1000)) == 1000, "alarm: reminder at start, recording 2 min before")
+check(len(st.load_timers()) == 3 and st.find_timer("u1", 1000, "record")
+      is not None, "a recording of the same programme is its own timer")
+check(
+    st.alarm_time(
+        st.find_timer(
+            "u1",
+            1000,
+            "record")) == 1000 -
+    120 and st.alarm_time(
+        st.find_timer(
+            "u1",
+            1000)) == 1000,
+    "alarm: reminder at start, recording 2 min before")
 check(st.next_alarm("remind") == 500, "next reminder")
 due = st.due_timers(600, kind="remind")
-check([t["title"] for t in due] == ["News"] and st.find_timer("u2", 500) is None, "due: taken out, once")
+check([t["title"] for t in due] == ["News"] and st.find_timer(
+    "u2", 500) is None, "due: taken out, once")
 check(st.due_timers(600, kind="remind") == [], "...not again")
 st.add_timer("remind", "u3", "X", "Old", 100, 200)
-check(st.prune_timers(1030) == 1 and st.find_timer("u3", 100) is None and st.find_timer("u1", 1000) is not None,
-      "prune: a reminder missed by more than a minute goes, one due 30 s ago stays")
-check(st.prune_timers(2200) == 2 and st.find_timer("u1", 1000, "record") is None,
-      "prune: an ended recording goes (and the old reminder)")
+check(
+    st.prune_timers(1030) == 1 and st.find_timer(
+        "u3",
+        100) is None and st.find_timer(
+            "u1",
+            1000) is not None,
+    "prune: a reminder missed by more than a minute goes, one due 30 s ago stays")
+check(st.prune_timers(2200) == 2 and st.find_timer("u1", 1000, "record")
+      is None, "prune: an ended recording goes (and the old reminder)")
 tr = st.add_timer("remind", "u4", "Y", "Later", 9000, 9900)
-check(st.remove_timer(tr["id"]) and st.load_timers() == [] and not st.remove_timer(tr["id"]), "remove")
-check(st.add_timer("nonsense", "u", "n", "t", 1, 2) is None and st.add_timer("remind", "", "n", "t", 1, 2) is None,
-      "bad timers refused")
+check(st.remove_timer(tr["id"]) and st.load_timers()
+      == [] and not st.remove_timer(tr["id"]), "remove")
+check(
+    st.add_timer(
+        "nonsense",
+        "u",
+        "n",
+        "t",
+        1,
+        2) is None and st.add_timer(
+            "remind",
+            "",
+            "n",
+            "t",
+            1,
+            2) is None,
+    "bad timers refused")
 st.add_timer("remind", "u9", "TF1", "Journal", 5000, 6000, "France", "fr")
 media2 = os.path.join(root, "media2")
 os.makedirs(media2)
@@ -359,8 +465,8 @@ check([t["title"] for t in st.load_timers()] == ["Journal"], "restored")
 cp = st.clock_path(30)
 w, hh, rows = read_png(cp)
 check((w, hh) == (30, 30), "clock mark 30x30")
-check(bytearray(rows[int(30 * 0.56)][int(30 * 0.5 + 30 * 0.345) * 4:int(30 * 0.5 + 30 * 0.345) * 4 + 4])[3] > 0,
-      "ring drawn")
+check(bytearray(rows[int(30 * 0.56)][int(30 * 0.5 + 30 * 0.345)
+      * 4:int(30 * 0.5 + 30 * 0.345) * 4 + 4])[3] > 0, "ring drawn")
 check(bytearray(rows[29][0:4])[3] == 0, "corner empty")
 
 shutil.rmtree(root)

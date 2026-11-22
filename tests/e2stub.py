@@ -92,7 +92,8 @@ class FakeModule(types.ModuleType):
         if name.startswith('__') and name.endswith('__'):
             raise AttributeError(name)
         key = (self.__name__, name)
-        if key not in _class_cache and name.replace("_", "").isupper() and name.upper() == name:
+        if key not in _class_cache and name.replace(
+                "_", "").isupper() and name.upper() == name:
             # constants (RT_HALIGN_LEFT, ...): numbers, as on a box
             _class_cache[key] = 0
         if key not in _class_cache:
@@ -109,7 +110,8 @@ if _PY3:
     class Finder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
         def find_spec(self, fullname, path, target=None):
             if fullname.split(".")[0] in FAKE_ROOTS:
-                return importlib.machinery.ModuleSpec(fullname, self, is_package=True)
+                return importlib.machinery.ModuleSpec(
+                    fullname, self, is_package=True)
             return None
 
         def create_module(self, spec):

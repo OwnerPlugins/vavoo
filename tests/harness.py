@@ -40,6 +40,7 @@ class FakeActionMap(object):
 
 class _TimerSignal(object):
     """eTimer.timeout (DreamOS): connect() adds to the callbacks."""
+
     def __init__(self, timer):
         self.timer = timer
 
@@ -68,6 +69,7 @@ class FakeTimer(object):
 
 class Entry(object):
     """A list row's entry, keeping what it was given."""
+
     def __init__(self, **k):
         self.__dict__.update(k)
 
@@ -120,6 +122,7 @@ def finish():
 
 class V(object):
     """A setting (Components.config) with a fixed value."""
+
     def __init__(self, value):
         self.value = value
 
@@ -193,7 +196,13 @@ MENUS = []
 MENU_CANCELS = []        # on_cancel of each menu in MENUS (or None)
 
 
-def _fake_menu(session, title, entries, on_choice, layout="menu", on_cancel=None):
+def _fake_menu(
+        session,
+        title,
+        entries,
+        on_choice,
+        layout="menu",
+        on_cancel=None):
     MENUS.append((title, entries, on_choice))
     MENU_CANCELS.append(on_cancel)
 
@@ -237,9 +246,25 @@ def make(cls, *args, **kw):
 # self.items(), skin code self.keys() - an attribute of the screen with
 # one of these names hides the dict's method ("'list' object is not
 # callable" as the screen closes - the Recordings crash on OpenATV 8.1).
-DICT_NAMES = ("clear", "copy", "fromkeys", "get", "has_key", "items", "iteritems",
-              "iterkeys", "itervalues", "keys", "pop", "popitem", "setdefault",
-              "update", "values", "viewitems", "viewkeys", "viewvalues")
+DICT_NAMES = (
+    "clear",
+    "copy",
+    "fromkeys",
+    "get",
+    "has_key",
+    "items",
+    "iteritems",
+    "iterkeys",
+    "itervalues",
+    "keys",
+    "pop",
+    "popitem",
+    "setdefault",
+    "update",
+    "values",
+    "viewitems",
+    "viewkeys",
+    "viewvalues")
 
 
 def dict_shadows(screen):
@@ -250,13 +275,16 @@ def dict_shadows(screen):
 def check_dict_names(screen):
     hidden = dict_shadows(screen)
     if hidden:
-        raise TypeError("%s: attribute(s) %s hide the dict methods Enigma2's "
-                        "Screen.doClose() calls ('list' object is not callable)"
-                        % (type(screen).__name__, ", ".join(hidden)))
+        raise TypeError(
+            "%s: attribute(s) %s hide the dict methods Enigma2's "
+            "Screen.doClose() calls ('list' object is not callable)" %
+            (type(screen).__name__, ", ".join(hidden)))
 
 
 def _gone(self, name):
-    raise AttributeError("'%s' object has no attribute '%s'" % (type(self).__name__, name))
+    raise AttributeError(
+        "'%s' object has no attribute '%s'" %
+        (type(self).__name__, name))
 
 
 _CLOSED_CLASSES = {}
@@ -274,7 +302,8 @@ def enigma2_close(screen):
     cls = type(screen)
     closed = _CLOSED_CLASSES.get(cls)
     if closed is None:
-        closed = _CLOSED_CLASSES[cls] = type(cls.__name__, (cls,), {"__getattr__": _gone})
+        closed = _CLOSED_CLASSES[cls] = type(
+            cls.__name__, (cls,), {"__getattr__": _gone})
     screen.__dict__.clear()
     screen.__class__ = closed
 
@@ -289,9 +318,18 @@ class _Delayed(object):
 
 class _HeldThread(object):
     """A screen module's threading.Thread: kept, not started."""
-    def __init__(self, pending, target=None, args=(), kwargs=None, name=None, **_k):
+
+    def __init__(
+            self,
+            pending,
+            target=None,
+            args=(),
+            kwargs=None,
+            name=None,
+            **_k):
         self._pending = pending
-        self.target, self.args, self.kwargs = target, tuple(args), dict(kwargs or {})
+        self.target, self.args, self.kwargs = target, tuple(
+            args), dict(kwargs or {})
         self.daemon = False
         self.name = name
 
@@ -329,6 +367,7 @@ class Pending(object):
     callLater() and the threads its modules start - kept while
     `hold()` is on, run by `run()` (the closed-screen checks: on the box
     these come after the screen has closed)."""
+
     def __init__(self):
         self.calls = []
         self.threads = []
@@ -384,9 +423,16 @@ class Pending(object):
                     try:
                         held.target(*held.args, **held.kwargs)
                     except Exception as e:
-                        box.append("thread %s: %s: %s\n%s" % (
-                            getattr(held.target, "__name__", held.target), e.__class__.__name__,
-                            e, traceback.format_exc(limit=5)))
+                        box.append(
+                            "thread %s: %s: %s\n%s" %
+                            (getattr(
+                                held.target,
+                                "__name__",
+                                held.target),
+                                e.__class__.__name__,
+                                e,
+                                traceback.format_exc(
+                                limit=5)))
                 worker = threading.Thread(target=body)
                 worker.daemon = True
                 worker.start()
@@ -434,7 +480,8 @@ def run_layout(screen):
 def texts(screen, name="menulist"):
     out = []
     for row in screen.widgets[name].rows:
-        last = [e for e in row[1:] if hasattr(e, "text") or (isinstance(e, tuple) and False)]
+        last = [e for e in row[1:] if hasattr(
+            e, "text") or (isinstance(e, tuple) and False)]
         out.append(row_text(row))
     return out
 

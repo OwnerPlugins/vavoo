@@ -55,8 +55,13 @@ BAD = [
                                  ensure_ascii=False).encode("utf-8")),
 ]
 
-FILES = [store.favourites_file(), store.recent_file(), store.source_prefs_file(),
-         store.hidden_countries_file(), store.parental_file(), store.timers_file()]
+FILES = [
+    store.favourites_file(),
+    store.recent_file(),
+    store.source_prefs_file(),
+    store.hidden_countries_file(),
+    store.parental_file(),
+    store.timers_file()]
 
 READERS = [
     ("load_favourites", lambda: store.load_favourites()),
@@ -89,8 +94,12 @@ def recording_files(content):
     with open(other, "wb") as f:
         f.write(b"\x47" + b"\x00" * 187)
     with open(other + vr.INFO_SUFFIX, "wb") as f:
-        f.write(json.dumps({"format": vr.INFO_FORMAT, "name": None, "title": 5, "start": "x",
-                            "duration": "y", "country": []}).encode("utf-8"))
+        f.write(json.dumps({"format": vr.INFO_FORMAT,
+                            "name": None,
+                            "title": 5,
+                            "start": "x",
+                            "duration": "y",
+                            "country": []}).encode("utf-8"))
 
 
 plugin.REMINDERS.session = Session()
@@ -101,17 +110,26 @@ def screens():
     s = Session()
     out = []
     for title, build in (
-            ("Recordings", lambda: make(plugin.VavooRecordings, s)),
-            ("Favourites", lambda: make(plugin.VavooFavourites, s)),
-            ("Recently watched", lambda: make(plugin.VavooFavourites, s, "recent")),
-            ("Choose countries", lambda: make(plugin.VavooCountries, s, ["Albania", "Italy"])),
-            ("Parental Control", lambda: make(plugin.VavooParental, s, ["Italy", "Albania"]))):
+        ("Recordings", lambda: make(
+            plugin.VavooRecordings, s)), ("Favourites", lambda: make(
+            plugin.VavooFavourites, s)), ("Recently watched", lambda: make(
+                plugin.VavooFavourites, s, "recent")), ("Choose countries", lambda: make(
+                    plugin.VavooCountries, s, [
+                        "Albania", "Italy"])), ("Parental Control", lambda: make(
+                            plugin.VavooParental, s, [
+                                "Italy", "Albania"]))):
         try:
             scr = build()
             run_layout(scr)
             out.append((title, None))
         except Exception as e:
-            out.append((title, "%s: %s\n%s" % (e.__class__.__name__, e, traceback.format_exc(limit=6))))
+            out.append(
+                (title,
+                 "%s: %s\n%s" %
+                 (e.__class__.__name__,
+                  e,
+                  traceback.format_exc(
+                      limit=6))))
     return out
 
 
@@ -126,7 +144,13 @@ for label, content in BAD:
         try:
             reader()
         except Exception as e:
-            failed.append("%s: %s: %s\n%s" % (name, e.__class__.__name__, e, traceback.format_exc(limit=4)))
+            failed.append(
+                "%s: %s: %s\n%s" %
+                (name,
+                 e.__class__.__name__,
+                 e,
+                 traceback.format_exc(
+                     limit=4)))
     try:
         vr.list_recordings(REC)
     except Exception as e:
@@ -148,11 +172,16 @@ for label, content in BAD:
             junk = json.loads(content.decode("utf-8"))
         except Exception:
             junk = content.decode("utf-8", "replace")
-        store.restore_backup({"format": store.BACKUP_FORMAT, "favourites": junk, "recent": junk,
-                              "source_prefs": junk, "hidden_countries": junk, "timers": junk,
+        store.restore_backup({"format": store.BACKUP_FORMAT,
+                              "favourites": junk,
+                              "recent": junk,
+                              "source_prefs": junk,
+                              "hidden_countries": junk,
+                              "timers": junk,
                               "settings": junk})
     except Exception as e:
-        failed.append("backup: %s: %s\n%s" % (e.__class__.__name__, e, traceback.format_exc(limit=4)))
+        failed.append("backup: %s: %s\n%s" %
+                      (e.__class__.__name__, e, traceback.format_exc(limit=4)))
     for title, problem in screens():
         if problem:
             failed.append("%s does not open: %s" % (title, problem))
@@ -160,16 +189,32 @@ for label, content in BAD:
         label, "" if not failed else "\n      " + "\n      ".join(failed)))
 
 print("== a record with the wrong types")
-recording_files(b'{"format": "vavoo_recording", "start": "yesterday", "duration": "long", '
-                b'"title": 7, "name": null, "country": ["x"], "url": "u"}')
+recording_files(
+    b'{"format": "vavoo_recording", "start": "yesterday", "duration": "long", '
+    b'"title": 7, "name": null, "country": ["x"], "url": "u"}')
 recs = vr.list_recordings(REC)
-check(len(recs) == 2 and all(isinstance(r["start"], (int, float)) and isinstance(r["duration"], (int, float))
-                             for r in recs), "numbers are numbers (from the file name when wrong)")
+check(
+    len(recs) == 2 and all(
+        isinstance(
+            r["start"],
+            (int,
+             float)) and isinstance(
+            r["duration"],
+            (int,
+             float)) for r in recs),
+    "numbers are numbers (from the file name when wrong)")
 show = [r for r in recs if r["path"].endswith("Show.ts")][0]
-check(show["title"] == u"7" and show["name"] == u"RAI 1" and show.get("country", u"") == u"",
-      "texts are texts; a missing name comes from the file name: %r" % ((show["title"], show["name"]),))
-check(abs(show["start"] - __import__("time").mktime((2026, 11, 18, 20, 0, 0, 0, 0, -1))) < 1,
-      "the start from the file name ('20261118 2000')")
+check(
+    show["title"] == u"7" and show["name"] == u"RAI 1" and show.get(
+        "country",
+        u"") == u"",
+    "texts are texts; a missing name comes from the file name: %r" %
+    ((show["title"],
+      show["name"]),
+     ))
+check(abs(show["start"] -
+          __import__("time").mktime((2026, 11, 18, 20, 0, 0, 0, 0, -
+                                     1))) < 1, "the start from the file name ('20261118 2000')")
 try:
     rp = make(plugin.VavooRecordingPlayer, Session(), show)
     run_layout(rp)

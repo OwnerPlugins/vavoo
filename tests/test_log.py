@@ -39,7 +39,8 @@ except Exception as e:
     print("    raised: %r" % e)
 check(ok, "the proxy's print() with ✓ / ✗, several arguments")
 text = io.open(LOG, encoding="utf-8").read()
-check(u"[✓] Channels: 9818" in text and u"Canale 5 Más · Télé" in text and u"[✓] Ready" in text,
-      "all in the file, as UTF-8")
+check(
+    u"[✓] Channels: 9818" in text and u"Canale 5 Más · Télé" in text and u"[✓] Ready" in text,
+    "all in the file, as UTF-8")
 check(text.count("\n") >= 7, "one line each (%d)" % text.count("\n"))
 finish()

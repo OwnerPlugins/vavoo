@@ -15,7 +15,14 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-EXTENSIONS = os.path.join(REPO, "usr", "lib", "enigma2", "python", "Plugins", "Extensions")
+EXTENSIONS = os.path.join(
+    REPO,
+    "usr",
+    "lib",
+    "enigma2",
+    "python",
+    "Plugins",
+    "Extensions")
 PLUGIN_DIR = os.path.join(EXTENSIONS, "vavoo")
 for _path in (EXTENSIONS, HERE):
     if _path not in sys.path:
@@ -78,6 +85,7 @@ def patch(name, value):
 
 class PluginView(object):
     """Every screen module seen as one (see the docstring at the top)."""
+
     def __getattr__(self, name):
         for module in ui_modules():
             if hasattr(module, name):
@@ -105,7 +113,8 @@ def load_plugin():
         patch("STATS_DISABLE_FILE", STATS_OFF)
         # (the proxy's saved catalog in the throw-away folder, never
         # /etc/enigma2)
-        module.vavoo_proxy.CATALOG_FILE = os.path.join(DATA, "vavoo_catalog.json.gz")
+        module.vavoo_proxy.CATALOG_FILE = os.path.join(
+            DATA, "vavoo_catalog.json.gz")
     return plugin
 
 
@@ -132,7 +141,8 @@ def module_of(name):
 def source_of(*names):
     """The source text of classes / functions, joined."""
     import inspect
-    return "\n".join(inspect.getsource(getattr(plugin, name)) for name in names)
+    return "\n".join(inspect.getsource(getattr(plugin, name))
+                     for name in names)
 
 
 def plugin_source():

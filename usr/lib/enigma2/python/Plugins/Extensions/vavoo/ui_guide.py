@@ -2,6 +2,17 @@
 # -*- coding: utf-8 -*-
 """The programme guide (the app's EPG grid) and the reminders service."""
 from __future__ import absolute_import, print_function
+from .ui_settings import (
+    open_settings)
+from .ui_record import (
+    MEMORY_WATCH, RECORDINGS, VavooRecordings, recording_text)
+from .ui_pick import (
+    ask_pin)
+from .ui_base import (
+    ACTIVE, THEME_WIDTH, _epg_channel_id, _in_standby, build_theme_skin,
+    cfg, clock_text, current_theme, floor_half_hour, info_page_keys,
+    large_text, list_keys, named, open_action_menu, programme_time,
+    row_number, scaled_icon, show_keys, to_string, to_text)
 
 import time
 import threading
@@ -69,19 +80,6 @@ except ImportError as e:
         pass
 
 print = make_print("PLUGIN")
-
-
-from .ui_base import (
-    ACTIVE, THEME_WIDTH, _epg_channel_id, _in_standby, build_theme_skin,
-    cfg, clock_text, current_theme, floor_half_hour, info_page_keys,
-    large_text, list_keys, named, open_action_menu, programme_time,
-    row_number, scaled_icon, show_keys, to_string, to_text)
-from .ui_pick import (
-    ask_pin)
-from .ui_record import (
-    MEMORY_WATCH, RECORDINGS, VavooRecordings, recording_text)
-from .ui_settings import (
-    open_settings)
 
 
 def play_reminder(session, timer):

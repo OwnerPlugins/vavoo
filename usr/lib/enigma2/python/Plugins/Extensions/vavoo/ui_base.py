@@ -1179,7 +1179,13 @@ class VavooMenu(Screen):
         self["menulist"].pageDown()
 
 
-def open_action_menu(session, title, entries, on_choice, layout="menu", on_cancel=None):
+def open_action_menu(
+        session,
+        title,
+        entries,
+        on_choice,
+        layout="menu",
+        on_cancel=None):
     """The MENU key's actions: `entries` = [(label, key)], on_choice(key)
     once one is picked (on_cancel() on EXIT, when given). The theme's
     own popup in a modern theme (`layout` "player_menu": the player's
@@ -1466,12 +1472,18 @@ class NowNextPanel(object):
             if status != "no_country":
                 if current is not None:
                     now_title = u"▶ {}  {}".format(
-                        to_text(programme_time(current[0])), to_text(current[2]))
+                        to_text(
+                            programme_time(
+                                current[0])), to_text(
+                            current[2]))
                 else:
                     now_title = _("No programme information")
                 if following is not None:
                     next_title = u"» {}  {}".format(
-                        to_text(programme_time(following[0])), to_text(following[2]))
+                        to_text(
+                            programme_time(
+                                following[0])), to_text(
+                            following[2]))
             self._epg_panel_show("", now_title, "", next_title)
             return
         if status != "no_country":
@@ -1889,7 +1901,7 @@ class VavooLogViewer(Screen):
         self.skin = build_theme_skin("log", title=to_string(title)) or \
             Console.skin.replace(
                 'Command execution...', title
-            ).replace('text="Restart GUI"', 'text=""')
+        ).replace('text="Restart GUI"', 'text=""')
         self.onClose.append(self._mark_closed)
 
         try:

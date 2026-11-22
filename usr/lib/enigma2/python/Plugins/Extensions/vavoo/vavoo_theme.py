@@ -560,7 +560,8 @@ class _Skin(object):
         converted, not the sizes, so two rectangles that touch in the
         table still touch on screen."""
         left, top = self.px(x), self.px(y)
-        return left, top, max(1, self.px(x + w) - left), max(1, self.px(y + h) - top)
+        return left, top, max(1, self.px(
+            x + w) - left), max(1, self.px(y + h) - top)
 
     def font(self, size, bold=False):
         name = self.look["font_bold" if bold else "font"][0]
@@ -1184,7 +1185,7 @@ def player_list_classic(width):
 
     def rect(x, y, w, h, color, z):
         lines.append(
-            '	<eLabel position="%d,%d" size="%d,%d" backgroundColor="%s" '
+            '    <eLabel position="%d,%d" size="%d,%d" backgroundColor="%s" '
             'zPosition="%d" />' % (px(x), px(y), max(1, px(x + w) - px(x)),
                                    max(1, px(y + h) - px(y)), color, z))
 
@@ -1197,13 +1198,13 @@ def player_list_classic(width):
     framed(140, 150, 664, 690)
     framed(830, 150, 950, 690)
     lines.append(
-        '	<widget name="menulist" position="%d,%d" size="%d,%d" '
+        '    <widget name="menulist" position="%d,%d" size="%d,%d" '
         'zPosition="2" scrollbarMode="showOnDemand" transparent="1" '
         'backgroundColor="#121018" foregroundColor="#ffffff" '
         'backgroundColorSelected="%s" foregroundColorSelected="#ffffff" />'
         % (px(152), px(170), px(640), px(650), CLASSIC_COLORS["selected"]))
     lines.append(
-        '	<widget name="guide" position="%d,%d" size="%d,%d" '
+        '    <widget name="guide" position="%d,%d" size="%d,%d" '
         'font="%s;%d" halign="left" valign="top" foregroundColor="#ffffff" '
         'backgroundColor="#121018" transparent="1" zPosition="3" />'
         % (px(860), px(174), px(890), px(642), CLASSIC_COLORS["font"],
@@ -1242,6 +1243,7 @@ def _blend(color, under, alpha):
     """`color` at `alpha` (0-255) over `under`, opaque."""
     r1, g1, b1, _a = parse_color(color)
     r2, g2, b2, _b = parse_color(under)
+
     def mix(a, b):
         return int(round(a * alpha / 255.0 + b * (255 - alpha) / 255.0))
     return "#%02x%02x%02x" % (mix(r1, r2), mix(g1, g2), mix(b1, b2))
@@ -1313,7 +1315,7 @@ def _guide_widgets(add, px_rect, metrics, colors, width, font_name,
         'halign="left" valign="center" foregroundColor="#ffffff" '
         'backgroundColor="%s" transparent="1" zPosition="3" noWrap="1" />'
         % (px_rect(64, 44, 1792, 56) + (title_font, max(8, scaled(36, width)),
-                                         bg)))
+                                        bg)))
     for name, top, height in (("ruler", m["grid_y"], m["header_h"]),
                               ("grid", m["rows_y"], m["rows"] * m["row_h"])):
         add('<widget name="%s" position="%d,%d" size="%d,%d" zPosition="2" '

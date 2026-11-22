@@ -2,6 +2,16 @@
 # -*- coding: utf-8 -*-
 """The Settings screen, backup / restore, licences and About."""
 from __future__ import absolute_import, print_function
+from .ui_record import (
+    LOGO_FOLDER_NAME, RECORDINGS, VavooRecordings, clean_pause_leftovers,
+    media_mounts, record_folder_choices, recordings_folder, size_text)
+from .ui_pick import (
+    VavooCountries, VavooParental, ask_pin)
+from .ui_base import (
+    ENIGMA_PATH, PLUGIN_PATH, VavooLogViewer, _icon_cache, _theme_skin_cache,
+    add_skin_back, cfg, clock_24, current_theme, downloadfree, list_keys,
+    load_screen_skin, named, open_action_menu, open_log_viewer, show_keys,
+    to_string, to_text, url_quote)
 
 import codecs
 import threading
@@ -103,18 +113,6 @@ except ImportError as e:
         pass
 
 print = make_print("PLUGIN")
-
-
-from .ui_base import (
-    ENIGMA_PATH, PLUGIN_PATH, VavooLogViewer, _icon_cache, _theme_skin_cache,
-    add_skin_back, cfg, clock_24, current_theme, downloadfree, list_keys,
-    load_screen_skin, named, open_action_menu, open_log_viewer, show_keys,
-    to_string, to_text, url_quote)
-from .ui_pick import (
-    VavooCountries, VavooParental, ask_pin)
-from .ui_record import (
-    LOGO_FOLDER_NAME, RECORDINGS, VavooRecordings, clean_pause_leftovers,
-    media_mounts, record_folder_choices, recordings_folder, size_text)
 
 
 def basic_rows():
@@ -471,16 +469,27 @@ class vavoo_config(Screen, ConfigListScreen):
         for row in self.list:
             self._rows_seen[id(row[1])] = row[1]
         basic = basic_rows()
-        hidden = [row for row in self.list if not any(row[1] is b for b in basic)]
+        hidden = [
+            row for row in self.list if not any(
+                row[1] is b for b in basic)]
         if not self.show_all:
-            self.list = [row for row in self.list if any(row[1] is b for b in basic)]
-            label = to_text(_("All settings ({} more)")).format(len(hidden)) + u" \u25b6"
-            info = _("Show every setting: the channel sources, the proxy, EPG import, "
-                     "bouquets, playlists, the log...")
+            self.list = [
+                row for row in self.list if any(
+                    row[1] is b for b in basic)]
+            label = to_text(
+                _("All settings ({} more)")).format(
+                len(hidden)) + u" \u25b6"
+            info = _(
+                "Show every setting: the channel sources, the proxy, EPG import, "
+                "bouquets, playlists, the log...")
         else:
             label = u"\u25c0 " + to_text(_("Fewer settings"))
             info = _("Back to the settings most people change.")
-        self.list.append(getConfigListEntry(to_string(label), cfg.more_settings, info))
+        self.list.append(
+            getConfigListEntry(
+                to_string(label),
+                cfg.more_settings,
+                info))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.setInfo()
@@ -564,7 +573,8 @@ class vavoo_config(Screen, ConfigListScreen):
         self.show_all = not self.show_all
         self.createSetup()
         try:
-            self["config"].setCurrentIndex(before - 1 if self.show_all else len(self.list) - 1)
+            self["config"].setCurrentIndex(
+                before - 1 if self.show_all else len(self.list) - 1)
         except Exception as e:
             debug("Settings: selection not moved: {}".format(e))
 
@@ -619,7 +629,8 @@ class vavoo_config(Screen, ConfigListScreen):
         elif sel and sel == cfg.about:
             show_about(self.session)
         elif sel and sel == cfg.view_favourites:
-            from .plugin import VavooFavourites   # (plugin.py imports this module)
+            # (plugin.py imports this module)
+            from .plugin import VavooFavourites
             self.session.open(VavooFavourites)
         elif sel and sel == cfg.playlist_key:
             # Plain ConfigText entries have nothing else wired to the
@@ -1275,7 +1286,8 @@ class vavoo_config(Screen, ConfigListScreen):
 
             # Apply any change to the scheduled bouquet auto-update timer
             # live, instead of requiring a reboot for it to take effect.
-            from .plugin import check_configuring   # (plugin.py imports this module)
+            # (plugin.py imports this module)
+            from .plugin import check_configuring
             check_configuring()
 
             if self.old_list_position != cfg.list_position.value:
@@ -1593,7 +1605,7 @@ def licences_text():
     under a header (the app's Licences screen)."""
     parts = [
         u"Vavoo Stream Live V.{} - {}".format(to_text(__version__),
-                                             to_text(__author__)),
+                                              to_text(__author__)),
         u"License: CC BY-NC-SA 4.0 - "
         u"https://creativecommons.org/licenses/by-nc-sa/4.0/",
         to_text(_("Non-commercial use only, with attribution; changes "

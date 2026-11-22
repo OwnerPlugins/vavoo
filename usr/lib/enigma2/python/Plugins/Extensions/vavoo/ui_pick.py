@@ -3,6 +3,10 @@
 """The settings-wide pick lists (Choose countries, Parental Control)
 and the PIN pad."""
 from __future__ import absolute_import, print_function
+from .ui_base import (
+    cfg, clock_24, info_page_keys, list_keys, list_page_rows,
+    load_screen_skin, m2list, open_action_menu, proxy_countries, show_keys,
+    show_list, to_string, to_text)
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
@@ -54,12 +58,6 @@ except ImportError as e:
         pass
 
 print = make_print("PLUGIN")
-
-
-from .ui_base import (
-    cfg, clock_24, info_page_keys, list_keys, list_page_rows,
-    load_screen_skin, m2list, open_action_menu, proxy_countries, show_keys,
-    show_list, to_string, to_text)
 
 
 class VavooPickScreen(Screen):
@@ -549,8 +547,9 @@ class VavooParental(VavooPickScreen):
         self._row_keys = keys
         self._show(rows, select)
         if has_pin:
-            self['statusbar'].setText(_("PIN set · {} countries locked").format(
-                len(locked)))
+            self['statusbar'].setText(
+                _("PIN set · {} countries locked").format(
+                    len(locked)))
         else:
             self['statusbar'].setText(
                 _("No PIN yet: nothing is locked until one is set."))
@@ -679,9 +678,9 @@ def run_welcome(session, on_done):
                 finish()
             ask_new_pin(session, pin_set, on_cancel=finish)
         session.openWithCallback(
-            answered, MessageBox,
-            _("Lock the adult channels with a PIN?\n(Settings → Parental Control "
-              "can change it later.)"), MessageBox.TYPE_YESNO, default=False)
+            answered, MessageBox, _(
+                "Lock the adult channels with a PIN?\n(Settings → Parental Control "
+                "can change it later.)"), MessageBox.TYPE_YESNO, default=False)
 
     def countries_step(key):
         cfg.theme.value = key
@@ -702,7 +701,11 @@ def run_welcome(session, on_done):
         session.openWithCallback(chosen, VavooCountries, None, True)
 
     current = cfg.theme.value
-    entries = [((u"\u2713 " if key == current else u"   ") + to_text(label), key)
-               for key, label in welcome_themes()]
-    open_action_menu(session, _("Welcome! Choose a look"), entries, countries_step,
-                     on_cancel=finish)
+    entries = [((u"\u2713 " if key == current else u"   ") +
+                to_text(label), key) for key, label in welcome_themes()]
+    open_action_menu(
+        session,
+        _("Welcome! Choose a look"),
+        entries,
+        countries_step,
+        on_cancel=finish)

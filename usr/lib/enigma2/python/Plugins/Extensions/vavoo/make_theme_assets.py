@@ -110,7 +110,8 @@ class _Layer(object):
             self.stroke_w = self._line(spec[7], scale)
             self.radius = spec[8] * scale
             self.stripe = _premultiplied(spec[9])
-            self.stripe_x = self.x0 + float(max(2, int(round(spec[10] * scale))))
+            self.stripe_x = self.x0 + \
+                float(max(2, int(round(spec[10] * scale))))
         elif self.kind == "hole":
             self.fill = None
             self.radius = spec[5] * scale
@@ -161,9 +162,17 @@ class _Layer(object):
             # (as Android's GradientDrawable: the fill ends half-way
             # under the outline)
             inset = self.stroke_w / 2.0
-            pixel = _over(pixel, self.fill, cover if inset <= 0.0 else _coverage(
-                px, py, self.x0 + inset, self.y0 + inset, self.x1 - inset,
-                self.y1 - inset, self.radius - inset))
+            pixel = _over(
+                pixel,
+                self.fill,
+                cover if inset <= 0.0 else _coverage(
+                    px,
+                    py,
+                    self.x0 + inset,
+                    self.y0 + inset,
+                    self.x1 - inset,
+                    self.y1 - inset,
+                    self.radius - inset))
         if self.stroke_w > 0.0:
             inner = _coverage(
                 px, py, self.x0 + self.stroke_w, self.y0 + self.stroke_w,

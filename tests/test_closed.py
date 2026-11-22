@@ -62,13 +62,19 @@ class _Probe(plugin.Screen):
 probe = _Probe.__new__(_Probe)
 probe.onClose = []
 probe.items = []
-check(attempt(harness.enigma2_close, probe) is not None and "not callable" in attempt(
-    harness.enigma2_close, probe), "an attribute named items: the TypeError of the crash log")
+check(
+    attempt(
+        harness.enigma2_close,
+        probe) is not None and "not callable" in attempt(
+            harness.enigma2_close,
+            probe),
+    "an attribute named items: the TypeError of the crash log")
 probe = _Probe.__new__(_Probe)
 probe.onClose = []
 probe.thing = 1
 harness.enigma2_close(probe)
-check(attempt(lambda: probe.thing) is not None, "after the close an attribute is gone (AttributeError)")
+check(attempt(lambda: probe.thing) is not None,
+      "after the close an attribute is gone (AttributeError)")
 
 print("== every class that uses _closed has it True on the class (read after the close)")
 import inspect                                  # noqa: E402
@@ -81,32 +87,52 @@ for module in harness.ui_modules():
             text = inspect.getsource(klass)
         except (IOError, TypeError):
             continue
-        if "self._closed" in text and getattr(klass, "_closed", None) is not True:
+        if "self._closed" in text and getattr(
+                klass, "_closed", None) is not True:
             missing.append("%s.%s" % (module.__name__, name))
 check(not missing, "_closed = True on the class (%s)" % ", ".join(missing))
 
 print("== Recordings (OK / EXIT on the main list's row)")
-store.add_timer(store.KIND_RECORD, "http://127.0.0.1:4323/vavoo?channel=r1", u"RAI 1",
-                u"Film", time.time() + 3600, time.time() + 7200, country=u"Italy")
+store.add_timer(
+    store.KIND_RECORD,
+    "http://127.0.0.1:4323/vavoo?channel=r1",
+    u"RAI 1",
+    u"Film",
+    time.time() + 3600,
+    time.time() + 7200,
+    country=u"Italy")
 error = attempt(lambda: make(plugin.VavooRecordings, session()))
 check(error is None, "built (%s)" % error)
 if error is None:
     scr = make(plugin.VavooRecordings, session())
     run_layout(scr)
     scr.refresh()
-    check(not harness.dict_shadows(scr), "no attribute hides a dict method (%s)" % harness.dict_shadows(scr))
+    check(
+        not harness.dict_shadows(scr),
+        "no attribute hides a dict method (%s)" %
+        harness.dict_shadows(scr))
     error = attempt(harness.enigma2_close, scr)
-    check(error is None, "closed like Enigma2: no 'list' object is not callable (%s)" % error)
-    check(attempt(scr._tick) is None, "its refresh timer firing late: nothing done, no error")
+    check(
+        error is None,
+        "closed like Enigma2: no 'list' object is not callable (%s)" %
+        error)
+    check(attempt(scr._tick) is None,
+          "its refresh timer firing late: nothing done, no error")
 
 print("== Parental Control")
-error = attempt(lambda: make(plugin.VavooParental, session(), ["Italy", "Albania"]))
+error = attempt(
+    lambda: make(
+        plugin.VavooParental, session(), [
+            "Italy", "Albania"]))
 check(error is None, "built (%s)" % error)
 if error is None:
     scr = make(plugin.VavooParental, session(), ["Italy", "Albania"])
     run_layout(scr)
     scr.refresh()
-    check(not harness.dict_shadows(scr), "no attribute hides a dict method (%s)" % harness.dict_shadows(scr))
+    check(
+        not harness.dict_shadows(scr),
+        "no attribute hides a dict method (%s)" %
+        harness.dict_shadows(scr))
     error = attempt(harness.enigma2_close, scr)
     check(error is None, "closed like Enigma2 (%s)" % error)
 
@@ -122,15 +148,17 @@ if error is None:
 
 print("== a country's list closed while its logos download (the vv-logos error)")
 plugin.cfg.logos = V(True)
-CHANNELS = [{"name": u"Channel %d" % i, "url": "http://127.0.0.1:4323/vavoo?channel=c%d" % i,
-             "logo": "http://logos.invalid/%d.png" % i, "category": u"Generale"}
-            for i in range(30)]
+CHANNELS = [{"name": u"Channel %d" %
+             i, "url": "http://127.0.0.1:4323/vavoo?channel=c%d" %
+             i, "logo": "http://logos.invalid/%d.png" %
+             i, "category": u"Generale"} for i in range(30)]
 pending = harness.Pending().hold()
 scr = make(plugin.vavoo, session(), "Italy", None)
 run_layout(scr)
 pending.clear()
 scr._build_channel_list(CHANNELS)
-check(len(pending.threads) >= 1, "the logo download is a thread (%d held)" % len(pending.threads))
+check(len(pending.threads) >= 1,
+      "the logo download is a thread (%d held)" % len(pending.threads))
 downloads = []
 
 
@@ -151,7 +179,13 @@ pending.release()
 for failure in failures:
     print("-" * 60)
     print(failure)
-check(not failures, "the thread and the calls it left: no exception (%d)" % len(failures))
-check(len(downloads) == 23, "it stopped at the close (%d downloads, not 30)" % len(downloads))
+check(
+    not failures,
+    "the thread and the calls it left: no exception (%d)" %
+    len(failures))
+check(
+    len(downloads) == 23,
+    "it stopped at the close (%d downloads, not 30)" %
+    len(downloads))
 
 finish()

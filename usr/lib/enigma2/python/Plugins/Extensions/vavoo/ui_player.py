@@ -3,6 +3,23 @@
 """The full-screen player (Playstream2), its channel list over the
 video, the sleep timer and the info bar."""
 from __future__ import absolute_import, print_function
+from .ui_guide import (
+    VavooGuide)
+from .ui_record import (
+    RECORDINGS, RECORD_LOG, SHIFT_WHY, pause_folder, record_channel)
+from .ui_pick import (
+    ask_pin)
+from .ui_base import (
+    ACTIVE, FONT_SIZE_EPG, FONT_SIZE_TOP, IS_DREAMOS, NOW_PLAYING,
+    OVERLAY_HEIGHT_EPG, OVERLAY_HEIGHT_TOP, OVERLAY_PICON_H,
+    OVERLAY_PICON_W, OVERLAY_PICON_X, OVERLAY_PICON_Y, OVERLAY_WIDTH,
+    OVERLAY_Y_EPG, PLAYER_BAR_LABELS, PLAYER_KEYS_PRIO, PLUGIN_PATH,
+    PROXY_MONITOR_INTERVAL_MS, PROXY_WATCHDOG_INTERVAL_MS, THEME_WIDTH,
+    _epg_channel_id, aspect_manager, build_stream_sref, build_theme_skin,
+    cfg, clock_24, favourite_channels, file_stream_sref, info_page_keys,
+    list_keys, m2list, named, open_action_menu, player_keys,
+    programme_time, remember_recent, show_keys, show_list,
+    stream_channel_id, to_string, to_text, url_quote)
 
 import time
 import threading
@@ -98,25 +115,6 @@ except ImportError as e:
         pass
 
 print = make_print("PLUGIN")
-
-
-from .ui_base import (
-    ACTIVE, FONT_SIZE_EPG, FONT_SIZE_TOP, IS_DREAMOS, NOW_PLAYING,
-    OVERLAY_HEIGHT_EPG, OVERLAY_HEIGHT_TOP, OVERLAY_PICON_H,
-    OVERLAY_PICON_W, OVERLAY_PICON_X, OVERLAY_PICON_Y, OVERLAY_WIDTH,
-    OVERLAY_Y_EPG, PLAYER_BAR_LABELS, PLAYER_KEYS_PRIO, PLUGIN_PATH,
-    PROXY_MONITOR_INTERVAL_MS, PROXY_WATCHDOG_INTERVAL_MS, THEME_WIDTH,
-    _epg_channel_id, aspect_manager, build_stream_sref, build_theme_skin,
-    cfg, clock_24, favourite_channels, file_stream_sref, info_page_keys,
-    list_keys, m2list, named, open_action_menu, player_keys,
-    programme_time, remember_recent, show_keys, show_list,
-    stream_channel_id, to_string, to_text, url_quote)
-from .ui_pick import (
-    ask_pin)
-from .ui_record import (
-    RECORDINGS, RECORD_LOG, SHIFT_WHY, pause_folder, record_channel)
-from .ui_guide import (
-    VavooGuide)
 
 
 # The bar's buttons are captions of the remote's keys, the same in
@@ -308,7 +306,8 @@ class VavooPlayerList(Screen):
         if index is None:
             return
         name, url = self.channels[index]
-        code = self.country_codes[index] if index < len(self.country_codes) else None
+        code = self.country_codes[index] if index < len(
+            self.country_codes) else None
         country = (self.country_names[index]
                    if index < len(self.country_names) else None)
         logo = self.logos[index] if index < len(self.logos) else None
@@ -333,7 +332,8 @@ class VavooPlayerList(Screen):
 
     def _request(self, index):
         name, url = self.channels[index]
-        code = self.country_codes[index] if index < len(self.country_codes) else None
+        code = self.country_codes[index] if index < len(
+            self.country_codes) else None
         return (index, name, url, code)
 
     def _selection_changed(self):
@@ -1078,38 +1078,38 @@ class Playstream2(
         # playpauseService), which before reached Enigma2's main menu or
         # its seek keys - off while a live stream plays.
         fallback = {
-                "showMenu": self.mainMenu,
-                "mainMenu": self.mainMenu,
-                "menu": self.mainMenu,
-                "stop": self.leavePlayer,
-                # REC: record this channel / stop (the app's Record)
-                "instantRecord": self.toggle_record,
-                "cancel": self.back,
-                "channelDown": self.previousitem,
-                "channelUp": self.nextitem,
-                "down": self.previousitem,
-                "up": self.nextitem,
-                "back": self.back,
-                "epg": self.open_guide,
-                "info": self.open_guide,
-                "red": self.back,
-                "green": self.toggle_favourite,
-                "yellow": self.chooseStreamSource,
-                "blue": self.list_key,
-                "historyBack": self.recall,
-                # behind live (Pause Live TV): 10 s back / on
-                "left": self.key_left,
-                "right": self.key_right,
-                "1": lambda: self.key_digit(1),
-                "2": lambda: self.key_digit(2),
-                "3": lambda: self.key_digit(3),
-                "4": lambda: self.key_digit(4),
-                "5": lambda: self.key_digit(5),
-                "6": lambda: self.key_digit(6),
-                "7": lambda: self.key_digit(7),
-                "8": lambda: self.key_digit(8),
-                "9": lambda: self.key_digit(9),
-                "0": lambda: self.key_digit(0),
+            "showMenu": self.mainMenu,
+            "mainMenu": self.mainMenu,
+            "menu": self.mainMenu,
+            "stop": self.leavePlayer,
+            # REC: record this channel / stop (the app's Record)
+            "instantRecord": self.toggle_record,
+            "cancel": self.back,
+            "channelDown": self.previousitem,
+            "channelUp": self.nextitem,
+            "down": self.previousitem,
+            "up": self.nextitem,
+            "back": self.back,
+            "epg": self.open_guide,
+            "info": self.open_guide,
+            "red": self.back,
+            "green": self.toggle_favourite,
+            "yellow": self.chooseStreamSource,
+            "blue": self.list_key,
+            "historyBack": self.recall,
+            # behind live (Pause Live TV): 10 s back / on
+            "left": self.key_left,
+            "right": self.key_right,
+            "1": lambda: self.key_digit(1),
+            "2": lambda: self.key_digit(2),
+            "3": lambda: self.key_digit(3),
+            "4": lambda: self.key_digit(4),
+            "5": lambda: self.key_digit(5),
+            "6": lambda: self.key_digit(6),
+            "7": lambda: self.key_digit(7),
+            "8": lambda: self.key_digit(8),
+            "9": lambda: self.key_digit(9),
+            "0": lambda: self.key_digit(0),
         }
         self['actions'] = ActionMap(
             [
@@ -1362,7 +1362,8 @@ class Playstream2(
         if self._closed or not self.itemscount or \
                 getattr(self, "_shift_state", None) is not None:
             return
-        index = (int(self.currentindex) + getattr(self, "_prefetch_dir", 1)) % self.itemscount
+        index = (int(self.currentindex) + getattr(self,
+                 "_prefetch_dir", 1)) % self.itemscount
         channel_id = stream_channel_id(self.list[index][0][1])
         if not channel_id:
             return
@@ -1401,7 +1402,8 @@ class Playstream2(
     def _commit_digits(self):
         self._digit_timer.stop()
         number, self._typed = self._typed, 0
-        if 1 <= number <= self.itemscount and number - 1 != int(self.currentindex):
+        if 1 <= number <= self.itemscount and number - \
+                1 != int(self.currentindex):
             self.zap_to(number - 1)
         else:
             self._fill_bar()
@@ -1572,7 +1574,8 @@ class Playstream2(
         logo_url = getattr(self, 'current_logo_url', None)
         if logo_url and cfg.logos.value:
             cache_file = get_picon_cache_path(logo_url)
-            if cache_file and file_exists(cache_file) and getsize(cache_file) > 100:
+            if cache_file and file_exists(
+                    cache_file) and getsize(cache_file) > 100:
                 path = cache_file
         if path is None and self.country_code:
             flag = join(PLUGIN_PATH, "skin", "cowntry",
