@@ -70,7 +70,6 @@ from . import (
     ALIAS_FILE,
     INSTALLER_URL,
     ENIGMA_PATH,
-    export_lock,
 )
 from . import vavoo_store
 from .epg_name_utils import (
@@ -135,6 +134,13 @@ except ImportError:
 _epg_lock = threading.Lock()
 _starting_lock = threading.Lock()
 _unmatched_lock = threading.Lock()
+# CACHE_FILE's own read-modify-write (save_cache(), update_complete_cache(),
+# fix_cache_format()). Never export_lock here: an export holds that for
+# its whole run and calls find_match() inside it - a plain Lock asked
+# for again by the same thread never comes back (a box's scheduled
+# bouquet update hung for good at the first cached channel the feed no
+# longer had, and every export after it was refused until a reboot).
+_cache_file_lock = threading.Lock()
 
 LOG_MAX_BYTES = 1024 * 1024
 DEBUG_ENABLED = str(
@@ -2233,26 +2239,23 @@ class VavooEPGMatcher(object):
         # cross-thread ambiguity since it's never shared beyond this
         # one call's stack.
         pending_save = []
+        snapshot = None
         with self._cache_lock:
             result = self._find_match_locked(
                 channel_name, country_code, servicetype, channel_id,
                 allow_curated_promotion, curated_db, epg_guide_id,
                 feed_index, pending_save)
-        if pending_save:
-            # save_cache() writes the same CACHE_FILE a bouquet
-            # export's update_complete_cache() does - share
-            # export_lock (the same convention plugin.py's cache-
-            # format-fix call already follows) so the two writers
-            # can't interleave and corrupt/drop each other's write.
-            # Deliberately done here, AFTER self._cache_lock was
-            # already released above: taking export_lock while still
-            # holding _cache_lock would invert the lock order
-            # update_complete_cache() itself relies on (its caller
-            # holds export_lock first, then it takes _cache_lock
-            # internally) - acquiring them in the opposite order here
-            # could deadlock against a concurrent export.
-            with export_lock:
-                save_cache(self.cache)
+            if pending_save:
+                # (a copy: another thread may change the cache while
+                # it is written)
+                snapshot = dict(self.cache)
+        if snapshot is not None:
+            # save_cache() takes CACHE_FILE's own lock (_cache_file_lock),
+            # after self._cache_lock was released - never export_lock:
+            # a bouquet export holds that for its whole run and calls
+            # this inside it (the same thread asking a plain Lock again
+            # hung the export for good).
+            save_cache(snapshot)
         return result
 
     def _find_match_locked(
@@ -2439,7 +2442,13 @@ def load_cache():
 
 
 def save_cache(cache):
-    """Save cache to file with complete format validation"""
+    """Save cache to file with complete format validation (under
+    _cache_file_lock)."""
+    with _cache_file_lock:
+        return _save_cache_unlocked(cache)
+
+
+def _save_cache_unlocked(cache):
     try:
         required_fields = [
             'id',
@@ -2646,6 +2655,51 @@ def _load_curated_channel_db(country_code):
         return db
 
 
+def _merge_matched_into_cache_file(matcher, matched_channels, country_code):
+    """CACHE_FILE read, the matched channels put in, written back (the
+    caller holds _cache_file_lock). The new cache dict."""
+    complete_cache = {}
+    # Load existing cache
+    if exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                complete_cache = load(f)
+            print(
+                "[Cache] Loaded %d existing entries" %
+                len(complete_cache))
+        except Exception as e:
+            print("[Cache] Error loading cache: %s" % e)
+            complete_cache = {}
+
+    # Add matched channels (only these go to main cache)
+    for m in matched_channels:
+        key = matcher._normalize_key(m['name'], country_code)
+        complete_cache[key] = {
+            'id': m['feed_id'],
+            'sref': ensure_sref_trailing_colon(m['dvb_ref']),
+            'name': m['name'],
+            'country': country_code,
+            'matched': True,
+            # Carried over from find_match()'s return value so a
+            # future cache hit knows whether this entry already
+            # came from the curated DB (see
+            # _try_promote_to_curated()) without re-deriving it -
+            # defaults to 'live' for callers that don't pass it
+            # through (pre-existing entries/older code paths).
+            'source': m.get('source', 'live'),
+            'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
+        }
+        print("[Cache] Added matched: %s -> %s" % (key, m['feed_id']))
+
+    # Save main cache
+    complete_cache = _prune_cache_if_needed(complete_cache)
+    temp_file = CACHE_FILE + ".tmp"
+    with open(temp_file, 'w') as f:
+        dump(complete_cache, f, indent=4, sort_keys=True)
+    rename(temp_file, CACHE_FILE)
+    return complete_cache
+
+
 def update_complete_cache(
         matched_channels,
         unmatched_channels,
@@ -2668,45 +2722,14 @@ def update_complete_cache(
     try:
         matcher = get_epg_matcher()
         complete_cache = {}
-
-        # Load existing cache
-        if exists(CACHE_FILE):
-            try:
-                with open(CACHE_FILE, 'r') as f:
-                    complete_cache = load(f)
-                print(
-                    "[Cache] Loaded %d existing entries" %
-                    len(complete_cache))
-            except Exception as e:
-                print("[Cache] Error loading cache: %s" % e)
-                complete_cache = {}
-
-        # Add matched channels (only these go to main cache)
-        for m in matched_channels:
-            key = matcher._normalize_key(m['name'], country_code)
-            complete_cache[key] = {
-                'id': m['feed_id'],
-                'sref': ensure_sref_trailing_colon(m['dvb_ref']),
-                'name': m['name'],
-                'country': country_code,
-                'matched': True,
-                # Carried over from find_match()'s return value so a
-                # future cache hit knows whether this entry already
-                # came from the curated DB (see
-                # _try_promote_to_curated()) without re-deriving it -
-                # defaults to 'live' for callers that don't pass it
-                # through (pre-existing entries/older code paths).
-                'source': m.get('source', 'live'),
-                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-            }
-            print("[Cache] Added matched: %s -> %s" % (key, m['feed_id']))
-
-        # Save main cache
-        complete_cache = _prune_cache_if_needed(complete_cache)
-        temp_file = CACHE_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(complete_cache, f, indent=4, sort_keys=True)
-        rename(temp_file, CACHE_FILE)
+        # (the file's read-modify-write under its own lock - the caller
+        # holds export_lock, which nothing in here asks for again)
+        _cache_file_lock.acquire()
+        try:
+            complete_cache = _merge_matched_into_cache_file(
+                matcher, matched_channels, country_code)
+        finally:
+            _cache_file_lock.release()
 
         # Update matcher with new cache - under the same lock find_match()
         # holds around its own cache/normalized_index/new_matches use,
@@ -4295,6 +4318,17 @@ def ensure_vavoo_epg_sources_enabled():
 
 
 def fix_cache_format(
+        remove_duplicates=True,
+        remove_unmatched=False,
+        remove_invalid=False):
+    """_fix_cache_format_unlocked() under CACHE_FILE's own lock
+    (_cache_file_lock)."""
+    with _cache_file_lock:
+        return _fix_cache_format_unlocked(
+            remove_duplicates, remove_unmatched, remove_invalid)
+
+
+def _fix_cache_format_unlocked(
         remove_duplicates=True,
         remove_unmatched=False,
         remove_invalid=False):

@@ -35,6 +35,7 @@ PYTHON2 = (
     "test_closed",
     "test_epg_sources",
     "test_every_key",
+    "test_export_lock",
     "test_factory_reset",
     "test_keys",
     "test_list_keys",

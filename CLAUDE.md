@@ -457,6 +457,17 @@ spawned by watching TV) — its `cache`/`normalized_index`/`new_matches`
 mutations are guarded by `self._cache_lock` (an `RLock`), taken by
 `find_match()` and by every external mutator
 (`update_complete_cache()`, `clean_cache_and_unmatched()`).
+`CACHE_FILE`'s read-modify-write has its own `_cache_file_lock`
+(`save_cache()`, `update_complete_cache()` →
+`_merge_matched_into_cache_file()`, `fix_cache_format()`);
+`find_match()` saves a copy of the cache taken under `_cache_lock`,
+after releasing it. `export_lock` (a plain `Lock` in `__init__.py`) is
+the exporter's: the scheduled update (`AutoStartTimer`) and a manual
+export hold it for the whole run, and nothing that runs inside an
+export asks for it again - `find_match()` did, to save the cache, and
+a box's scheduled update hung for good at the first cached channel the
+feed no longer had (every export after it refused until a reboot;
+`tests/test_export_lock.py`).
 
 **Curated EPG channel database** — a pre-solved matching path for
 names that match the feed poorly (first made for Spain, Poland,
