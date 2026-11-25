@@ -3446,8 +3446,10 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         with groups ([(country, [entry])], in favourite_entries' order)
         a title row before each country's."""
         total = len(self.favourite_entries)
-        self._channel_rows = [self._channel_row(i, entry, total)
-                              for i, entry in enumerate(self.favourite_entries)]
+        self._channel_rows = [
+            self._channel_row(
+                i, entry, total) for i, entry in enumerate(
+                self.favourite_entries)]
         if not groups:
             self.cat_list = list(self._channel_rows)
             self._row_entry = list(range(total))

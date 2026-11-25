@@ -559,7 +559,7 @@ def convert_bouquet_sync(
             if epg_entries:
                 try:
                     write_epg_mapping_file(epg_entries, country_code,
-                                       ENIGMA_PATH)
+                                           ENIGMA_PATH)
                     print(
                         "[Bouquet] EPG mapping written for {} channels".format(
                             len(epg_entries)))
@@ -1479,7 +1479,11 @@ def _quote_id(channel_id):
     return quote(channel_id, safe="")
 
 
-def favourites_bouquet_lines(title, entries, servicetype, other_label=u"Other"):
+def favourites_bouquet_lines(
+        title,
+        entries,
+        servicetype,
+        other_label=u"Other"):
     """(lines, channels, left out, [channel]) of the favourites
     bouquet: "#NAME title", then for each country a marker with its
     name and its channels, each as a country bouquet writes it (the
@@ -1611,7 +1615,9 @@ def remove_favourites_bouquet():
         try:
             remove(path)
         except Exception as e:
-            print("[Favourites] Cannot remove %s: %s" % (FAVOURITES_BOUQUET, e))
+            print(
+                "[Favourites] Cannot remove %s: %s" %
+                (FAVOURITES_BOUQUET, e))
             return False
     _remove_bouquet_lines_from_main_files([FAVOURITES_BOUQUET])
     remove_favorite_entry(FAVOURITES_NAME)

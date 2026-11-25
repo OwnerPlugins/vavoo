@@ -232,8 +232,12 @@ fv._build_list()
 print("== the favourites bouquet")
 lines, count, skipped, channels = bm.favourites_bouquet_lines(
     u"Vavoo ★ Favourites", store.load_favourites(), "4097", u"Other")
-ref = lambda cid: (bm.unique_fallback_sref("4097", cid) +
-                   "http%3a//127.0.0.1%3a4323/vavoo?channel=" + cid)
+
+
+def ref(cid): return (bm.unique_fallback_sref("4097", cid) +
+                      "http%3a//127.0.0.1%3a4323/vavoo?channel=" + cid)
+
+
 check(lines == [
     u"#NAME Vavoo ★ Favourites",
     u"#SERVICE 1:64:1:0:0:0:0:0:0:0::Italy", u"#DESCRIPTION Italy",
