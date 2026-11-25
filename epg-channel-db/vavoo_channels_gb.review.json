@@ -1,1878 +1,1402 @@
 [
   {
-    "name": "DISCOVERY CHANNEL (BACKUP) .s",
+    "name": "DISCOVERY CHANNEL",
     "best_score": 0.692
   },
   {
-    "name": "DISCOVERY HISTORY .b",
+    "name": "DISCOVERY HISTORY",
     "best_score": 0.692
   },
   {
-    "name": "DISCOVERY SCIENCE .b",
+    "name": "DISCOVERY SCIENCE",
     "best_score": 0.692
   },
   {
-    "name": "NAT GEO PEOPLE .b",
+    "name": "NAT GEO PEOPLE",
     "best_score": 0.667
   },
   {
-    "name": "CNBC NEWS .s",
-    "best_score": 0.615
+    "name": "ZEE TV INDIA",
+    "best_score": 0.667
   },
   {
-    "name": "MTV BASE .s",
+    "name": "COLORS EUROPE",
+    "best_score": 0.632
+  },
+  {
+    "name": "MTV 90S",
+    "best_score": 0.6
+  },
+  {
+    "name": "MTV LIVE",
     "best_score": 0.545
   },
   {
-    "name": "MTV HITS .s",
-    "best_score": 0.545
-  },
-  {
-    "name": "MTV MUSIC .s",
+    "name": "B4U PLUS",
     "best_score": 0.5
   },
   {
-    "name": "MTV ROCKS .s",
-    "best_score": 0.5
-  },
-  {
-    "name": "BBC TWO NORTHERN IRELAND .s",
+    "name": "BBC TWO NORTHERN IRELAND",
     "best_score": 0.452
   },
   {
-    "name": "ID CRIME INVESTIGATION .b",
+    "name": "ID CRIME INVESTIGATION",
     "best_score": 0.167
   },
   {
-    "name": "4 MUSIC .s",
+    "name": "4 MUSIC",
     "best_score": 0.0
   },
   {
-    "name": "4MUSIC .s",
+    "name": "5 ACTION",
     "best_score": 0.0
   },
   {
-    "name": "AFC WIMBLEDON .s",
+    "name": "5 SELECT HD",
     "best_score": 0.0
   },
   {
-    "name": "ALJAZEERA NEWS .s",
+    "name": "5 STAR",
     "best_score": 0.0
   },
   {
-    "name": "AMAZON .s",
+    "name": "ALJAZEERA NEWS",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO BADMINTON .s",
+    "name": "AMAZON",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO BADMINTON 2 .s",
+    "name": "AMC",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO CRICKET .s",
+    "name": "ASTRO BADMINTON",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO FOOTBALL .s",
+    "name": "ASTRO BADMINTON 2",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO GRANDSTAND .s",
+    "name": "ASTRO CRICKET",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO PL .s",
+    "name": "ASTRO FOOTBALL",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO PREMIER LEAGUE .s",
+    "name": "ASTRO PL",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO PREMIER LEAGUE 2 .s",
+    "name": "ASTRO PREMIER LEAGUE",
     "best_score": 0.0
   },
   {
-    "name": "ASTRO SPORTS PLUS .s",
+    "name": "ASTRO PREMIER LEAGUE 2",
     "best_score": 0.0
   },
   {
-    "name": "BABY TV .s",
+    "name": "ASTRO SPORTS PLUS",
     "best_score": 0.0
   },
   {
-    "name": "BABY TV UK .b",
+    "name": "BABY TV",
     "best_score": 0.0
   },
   {
-    "name": "BARNET F.C. .s",
+    "name": "BABY TV UK",
     "best_score": 0.0
   },
   {
-    "name": "BARNSLEY F.C. .s",
+    "name": "BBC 3",
     "best_score": 0.0
   },
   {
-    "name": "BARROW A.F.C. .s",
+    "name": "BBC ENTERTAINMENT",
     "best_score": 0.0
   },
   {
-    "name": "BBC 3 .s",
+    "name": "BBC ONE EAST E",
     "best_score": 0.0
   },
   {
-    "name": "BBC ENTERTAINMENT .s",
+    "name": "BBC ONE LONDON",
     "best_score": 0.0
   },
   {
-    "name": "BBC ONE EAST E .b",
+    "name": "BBC ONE WALES",
     "best_score": 0.0
   },
   {
-    "name": "BBC ONE EAST W .b",
+    "name": "BBC ONE YK&LI",
     "best_score": 0.0
   },
   {
-    "name": "BBC ONE LONDON .b",
+    "name": "BBC SCOTLAND",
     "best_score": 0.0
   },
   {
-    "name": "BBC ONE W MID .b",
+    "name": "BBC WORLD NEWS",
     "best_score": 0.0
   },
   {
-    "name": "BBC ONE WALES .b",
+    "name": "BEIN SPORTS 1",
     "best_score": 0.0
   },
   {
-    "name": "BBC ONE YK&LI .b",
+    "name": "BEIN SPORTS 1 PL",
     "best_score": 0.0
   },
   {
-    "name": "BBC SCOTLAND .s",
+    "name": "BEIN SPORTS 2",
     "best_score": 0.0
   },
   {
-    "name": "BBC SCOTLAND (BACKUP) .s",
+    "name": "BEIN SPORTS 3",
     "best_score": 0.0
   },
   {
-    "name": "BBC WORLD NEWS .s",
+    "name": "BEIN SPORTS ENGLISH 2",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 1 .s",
+    "name": "BEIN SPORTS USA",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 1 PL .s",
+    "name": "BLACKPOOL F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 2 .s",
+    "name": "BOX NATION",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS 3 .s",
+    "name": "BRADFORD CITY A.F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS ENGLISH 2 .s",
+    "name": "BT SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS LA LIGA .b",
+    "name": "BT SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS USA .s",
+    "name": "C4 L",
     "best_score": 0.0
   },
   {
-    "name": "BLACKPOOL F.C. .s",
+    "name": "CARDIFF CITY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BOLTON WANDERERS F.C. .s",
+    "name": "CARTOON NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "BOX NATION .b",
+    "name": "CBS ACTION",
     "best_score": 0.0
   },
   {
-    "name": "BOX NATION .s",
+    "name": "CBS DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "BOX NATION (BACKUP 2) .b",
+    "name": "CBS REALITY",
     "best_score": 0.0
   },
   {
-    "name": "BOX NATION (BACKUP) .b",
+    "name": "CBS REALITY+1",
     "best_score": 0.0
   },
   {
-    "name": "BRADFORD CITY A.F.C. .s",
+    "name": "CELEBRATION TV",
     "best_score": 0.0
   },
   {
-    "name": "BRISTOL ROVERS F.C. .s",
+    "name": "CHAMPS BRISTOL CITY",
     "best_score": 0.0
   },
   {
-    "name": "BROMLEY FC .s",
+    "name": "CHAMPS HULL CITY",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 1 .b",
+    "name": "CHAMPS IPSWICH TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 1 (BACKUP) .b",
+    "name": "CHAMPS LEICESTER CITY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 1 HD .b",
+    "name": "CHAMPS MIDDLESBROUGH F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 2 .b",
+    "name": "CHAMPS NORWICH CITY",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 2 (BACKUP) .b",
+    "name": "CHAMPS PORTSMOUTH FC",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 2 HD .b",
+    "name": "CHAMPS PRESTON NORTH END F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 3 .b",
+    "name": "CHAMPS QUEENS PARK RANGERS F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 3 (BACKUP) .b",
+    "name": "CHAMPS SHEFFIELD UNITED F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT 3 HD .b",
+    "name": "CHAMPS SHEFFIELD WEDNESDAY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT ESPN .b",
+    "name": "CHAMPS SOUTHAMPTON F.C.",
     "best_score": 0.0
   },
   {
-    "name": "BT SPORT ESPN HD .b",
+    "name": "CHAMPS STOKE CITY",
     "best_score": 0.0
   },
   {
-    "name": "BURTON ALBION F.C. .s",
+    "name": "CHAMPS WATFORD F.C.",
     "best_score": 0.0
   },
   {
-    "name": "C4 L .b",
+    "name": "CHAMPS WEST BROMWICH ALBION F.C.",
     "best_score": 0.0
   },
   {
-    "name": "CAMBRIDGE UNITED F.C. .s",
+    "name": "CHELTENHAM TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "CARDIFF CITY F.C. .s",
+    "name": "CHESTERFIELD F.C.",
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK .b",
+    "name": "CINEEDGE MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK .s",
+    "name": "COMEDY CENTRAL EXTRA",
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK HD .b",
+    "name": "CRAWLEY TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "CBS ACTION .s",
+    "name": "CREATE & CRAFT",
     "best_score": 0.0
   },
   {
-    "name": "CBS DRAMA .b",
+    "name": "CREWE ALEXANDRA F.C.",
     "best_score": 0.0
   },
   {
-    "name": "CBS REALITY .b",
+    "name": "DAVE",
     "best_score": 0.0
   },
   {
-    "name": "CBS REALITY+1 .b",
+    "name": "DAVE JA VU",
     "best_score": 0.0
   },
   {
-    "name": "CELEBRATION TV .b",
+    "name": "DESI RADIO",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS BIRMINGHAM CITY .s",
+    "name": "DISNEY CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS BRISTOL CITY .s",
+    "name": "DISNEY JUNIOR",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS COVENTRY CITY .s",
+    "name": "DISNEY XD",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS DERBY COUNTY .s",
+    "name": "DOCUMENTARY 1",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS HULL CITY .s",
+    "name": "DOCUMENTARY 2",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS IPSWICH TOWN F.C. .s",
+    "name": "DOCUMENTARY 3",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS LEICESTER CITY F.C. .s",
+    "name": "DOCUMENTARY 4",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS MIDDLESBROUGH F.C. .s",
+    "name": "DOCUMENTARY 5",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS NORWICH CITY .s",
+    "name": "DOCUMENTARY 6",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS OXFORD UNITED F.C. .s",
+    "name": "DOCUMENTARY 7",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS PORTSMOUTH FC .s",
+    "name": "DOCUMENTARY 8",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS PRESTON NORTH END F.C. .s",
+    "name": "DOCUMENTARY 9",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS QUEENS PARK RANGERS F.C. .s",
+    "name": "DONCASTER ROVERS F.C.",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS SHEFFIELD UNITED F.C. .s",
+    "name": "DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS SHEFFIELD WEDNESDAY F.C. .s",
+    "name": "DRAMA+1",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS SOUTHAMPTON F.C. .s",
+    "name": "DUCK TV",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS STOKE CITY .s",
+    "name": "DWAYNE JOHNSON E",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS SWANSEA CITY .s",
+    "name": "EDGESPORT",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS WATFORD F.C. .s",
+    "name": "EIR SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS WEST BROMWICH ALBION F.C. .s",
+    "name": "EIR SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "CHAMPS WREXHAM A.F.C. .s",
+    "name": "ENGLISH CLUB",
     "best_score": 0.0
   },
   {
-    "name": "CHELTENHAM TOWN F.C. .s",
+    "name": "EPL 01",
     "best_score": 0.0
   },
   {
-    "name": "CHESTERFIELD F.C. .s",
+    "name": "EPL 02 15:00 BURNLEY VS NOTTINGHAM FOREST",
     "best_score": 0.0
   },
   {
-    "name": "CINEEDGE MOVIES .s",
+    "name": "EPL 03 15:00 WEST HAM UNITED VS CRYSTAL PALACE",
     "best_score": 0.0
   },
   {
-    "name": "COLCHESTER UNITED F.C. .s",
+    "name": "EPL 04",
     "best_score": 0.0
   },
   {
-    "name": "COMEDY CENTRAL .s",
+    "name": "EPL 05",
     "best_score": 0.0
   },
   {
-    "name": "COMEDY CENTRAL (BACKUP) .s",
+    "name": "EPL 07 20:00 FULHAM VS BRENTFORD",
     "best_score": 0.0
   },
   {
-    "name": "COMEDY CENTRAL HD .s",
+    "name": "EPL 08",
     "best_score": 0.0
   },
   {
-    "name": "CRAWLEY TOWN F.C. .s",
+    "name": "EPL 09",
     "best_score": 0.0
   },
   {
-    "name": "CREATE & CRAFT .s",
+    "name": "EPL 10",
     "best_score": 0.0
   },
   {
-    "name": "CREWE ALEXANDRA F.C. .s",
+    "name": "EPL 11",
     "best_score": 0.0
   },
   {
-    "name": "CRIME+ INVESTIGATION .s",
+    "name": "EPL 12",
     "best_score": 0.0
   },
   {
-    "name": "DAVE .b",
+    "name": "ETV1",
     "best_score": 0.0
   },
   {
-    "name": "DAVE .s",
+    "name": "ETV5",
     "best_score": 0.0
   },
   {
-    "name": "DAVE (BACKUP) .s",
+    "name": "EUROSPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "DAVE JA VU .b",
+    "name": "EUROSPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "DAVE JA VU .s",
+    "name": "EUROSPORT HD",
     "best_score": 0.0
   },
   {
-    "name": "DESI RADIO .b",
+    "name": "EXETER CITY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY CHANNEL .b",
+    "name": "FANTASTIC BEATS",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY CHANNEL .s",
+    "name": "FARGO FINSIHED",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY JUNIOR .b",
+    "name": "FC LIVERPOOL TV",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY JUNIOR .s",
+    "name": "FIGHT BOX",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY XD .b",
+    "name": "FIVE",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY XD .s",
+    "name": "FLEETWOOD TOWN",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 1 .s",
+    "name": "FLOW SPORT",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 2 .s",
+    "name": "FOX",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 3 .s",
+    "name": "FOX NEWS",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 4 .s",
+    "name": "FREE SPORTS HD",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 5 .s",
+    "name": "FRIENDS ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 6 .s",
+    "name": "FUEL TV",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 7 .s",
+    "name": "GAME OF THRONES ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 8 .s",
+    "name": "GILLINGHAM F.C.",
     "best_score": 0.0
   },
   {
-    "name": "DOCUMENTARY 9 .s",
+    "name": "GODFATHER OF HARLEM",
     "best_score": 0.0
   },
   {
-    "name": "DONCASTER ROVERS F.C. .s",
+    "name": "GODZILLA",
     "best_score": 0.0
   },
   {
-    "name": "DRAMA .b",
+    "name": "GOOD FOOD",
     "best_score": 0.0
   },
   {
-    "name": "DRAMA .s",
+    "name": "GREAT! CLASS+1",
     "best_score": 0.0
   },
   {
-    "name": "DRAMA+1 .b",
+    "name": "GREAT! CLASSIC",
     "best_score": 0.0
   },
   {
-    "name": "DUCK TV .b",
+    "name": "GREEK",
     "best_score": 0.0
   },
   {
-    "name": "DWAYNE JOHNSON E .s",
+    "name": "GRIMSBY TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "EDGESPORT .b",
+    "name": "HARRISON FORD",
     "best_score": 0.0
   },
   {
-    "name": "EIR SPORT 1 .b",
+    "name": "HELLRAISER",
     "best_score": 0.0
   },
   {
-    "name": "EIR SPORT 1 .s",
+    "name": "HEY ARNOLD!",
     "best_score": 0.0
   },
   {
-    "name": "EIR SPORT 1 (BACKUP) .b",
+    "name": "HI-IMPACT TV",
     "best_score": 0.0
   },
   {
-    "name": "EIR SPORT 2 .b",
+    "name": "HIGHLANDER",
     "best_score": 0.0
   },
   {
-    "name": "EIR SPORT 2 .s",
+    "name": "HILLSONG",
     "best_score": 0.0
   },
   {
-    "name": "EIR SPORT 2 (BACKUP) .b",
+    "name": "HISTORY UK",
     "best_score": 0.0
   },
   {
-    "name": "ENGLISH CLUB .b",
+    "name": "HOBBY MAKER",
     "best_score": 0.0
   },
   {
-    "name": "EPL 01 .s",
+    "name": "HORIZON SPORTS",
     "best_score": 0.0
   },
   {
-    "name": "EPL 02 15:00 BURNLEY VS NOTTINGHAM FOREST .s",
+    "name": "HORROR CH+1",
     "best_score": 0.0
   },
   {
-    "name": "EPL 03 15:00 WEST HAM UNITED VS CRYSTAL PALACE .s",
+    "name": "HORROR CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "EPL 04 .s",
+    "name": "HOSTEL",
     "best_score": 0.0
   },
   {
-    "name": "EPL 05 .s",
+    "name": "HOW I MET YOUR FATHER",
     "best_score": 0.0
   },
   {
-    "name": "EPL 06 17:30 MANCHESTER UNITED VS CHELSEA .s",
+    "name": "HOW TO RAIN YOUR DRAGON",
     "best_score": 0.0
   },
   {
-    "name": "EPL 07 20:00 FULHAM VS BRENTFORD .s",
+    "name": "HUB PREMIER 1",
     "best_score": 0.0
   },
   {
-    "name": "EPL 08 .s",
+    "name": "HUB PREMIER 10",
     "best_score": 0.0
   },
   {
-    "name": "EPL 09 .s",
+    "name": "HUB PREMIER 11",
     "best_score": 0.0
   },
   {
-    "name": "EPL 10 .s",
+    "name": "HUB PREMIER 2",
     "best_score": 0.0
   },
   {
-    "name": "EPL 11 .s",
+    "name": "HUB PREMIER 3",
     "best_score": 0.0
   },
   {
-    "name": "EPL 12 .s",
+    "name": "HUB PREMIER 4",
     "best_score": 0.0
   },
   {
-    "name": "ETV1 .b",
+    "name": "HUB PREMIER 5",
     "best_score": 0.0
   },
   {
-    "name": "ETV5 .b",
+    "name": "HUB PREMIER 6",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 .b",
+    "name": "HUB PREMIER 7",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 .s",
+    "name": "HUB PREMIER 8",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 (BACKUP) .s",
+    "name": "HUB PREMIER 9",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 HD .b",
+    "name": "HUB SPORTS 1",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 .b",
+    "name": "HUB SPORTS 2",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 .s",
+    "name": "HUB SPORTS 3",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 (BACKUP) .s",
+    "name": "HUDDERSFIELD TOWN A.F.C.",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 HD .b",
+    "name": "ITV BE",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT HD .s",
+    "name": "ITV WALES",
     "best_score": 0.0
   },
   {
-    "name": "EXETER CITY F.C. .s",
+    "name": "ITVBE",
     "best_score": 0.0
   },
   {
-    "name": "FANTASTIC BEATS .s",
+    "name": "JURASSIC WORLD",
     "best_score": 0.0
   },
   {
-    "name": "FARGO FINSIHED .s",
+    "name": "KEAANU REVEES",
     "best_score": 0.0
   },
   {
-    "name": "FC LIVERPOOL TV .b",
+    "name": "KEVIN SPACEY",
     "best_score": 0.0
   },
   {
-    "name": "FIGHT BOX .b",
+    "name": "KIDS",
     "best_score": 0.0
   },
   {
-    "name": "FIVE .s",
+    "name": "KIDS 1",
     "best_score": 0.0
   },
   {
-    "name": "FLEETWOOD TOWN .s",
+    "name": "KIDS 2",
     "best_score": 0.0
   },
   {
-    "name": "FLOW SPORT .s",
+    "name": "KIDS 3",
     "best_score": 0.0
   },
   {
-    "name": "FOX .s",
+    "name": "KIDS 4",
     "best_score": 0.0
   },
   {
-    "name": "FOX NEWS .s",
+    "name": "KIDS 5",
     "best_score": 0.0
   },
   {
-    "name": "FREE SPORTS HD .b",
+    "name": "KISS",
     "best_score": 0.0
   },
   {
-    "name": "FRIENDS ꜱᴇƦꞮᴇ .s",
+    "name": "LALIGA TV",
     "best_score": 0.0
   },
   {
-    "name": "FUEL TV .b",
+    "name": "LASERFILMS ACTION",
     "best_score": 0.0
   },
   {
-    "name": "GAME OF THRONES ꜱᴇƦꞮᴇ .s",
+    "name": "LASERFILMS ANIMATION",
     "best_score": 0.0
   },
   {
-    "name": "GILLINGHAM F.C. .s",
+    "name": "LASERFILMS CLASSIC",
     "best_score": 0.0
   },
   {
-    "name": "GODFATHER OF HARLEM .s",
+    "name": "LASERFILMS DOCUMENTARY",
     "best_score": 0.0
   },
   {
-    "name": "GODZILLA .s",
+    "name": "LASERFILMS HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "GOOD FOOD .s",
+    "name": "LASERILMS CRIME",
     "best_score": 0.0
   },
   {
-    "name": "GREAT! CLASS+1 .b",
+    "name": "LFC TV",
     "best_score": 0.0
   },
   {
-    "name": "GREAT! CLASSIC .b",
+    "name": "LINCOLN CITY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "GREEK .s",
+    "name": "LIVERPOOL FC",
     "best_score": 0.0
   },
   {
-    "name": "GRIMSBY TOWN F.C. .s",
+    "name": "LUTON TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "HARRISON FORD .s",
+    "name": "MADEA FAMILY",
     "best_score": 0.0
   },
   {
-    "name": "HELLRAISER .s",
+    "name": "MAGIC",
     "best_score": 0.0
   },
   {
-    "name": "HEY ARNOLD! .s",
+    "name": "MANS VS BE",
     "best_score": 0.0
   },
   {
-    "name": "HI-IMPACT TV .b",
+    "name": "MANSFIELD TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "HIGHLANDER .s",
+    "name": "MARILYN MONRO",
     "best_score": 0.0
   },
   {
-    "name": "HILLSONG .b",
+    "name": "MIRAMAX MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY 2 .s",
+    "name": "MORGAN FREEMAN",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY UK .b",
+    "name": "MOTORSPORT TV",
     "best_score": 0.0
   },
   {
-    "name": "HOBBY MAKER .s",
+    "name": "MOVIES4MEN",
     "best_score": 0.0
   },
   {
-    "name": "HORIZON SPORTS .b",
+    "name": "MR. ROBOT",
     "best_score": 0.0
   },
   {
-    "name": "HORROR CH+1 .b",
+    "name": "MRS FLETCHER",
     "best_score": 0.0
   },
   {
-    "name": "HORROR CHANNEL .b",
+    "name": "NATIONAL GEOGRAPHIC",
     "best_score": 0.0
   },
   {
-    "name": "HORROR CHANNEL .s",
+    "name": "NCIS HAWAI",
     "best_score": 0.0
   },
   {
-    "name": "HORROR CHANNEL (BACKUP) .b",
+    "name": "NFL NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "HORSE & COUNTRY .b",
+    "name": "NICK JUNIOR",
     "best_score": 0.0
   },
   {
-    "name": "HOSTEL .s",
+    "name": "NICOLAS CAGE",
     "best_score": 0.0
   },
   {
-    "name": "HOW I MET YOUR FATHER .s",
+    "name": "NORTHAMPTON TOWN F.C.",
     "best_score": 0.0
   },
   {
-    "name": "HOW TO RAIN YOUR DRAGON .s",
+    "name": "NOW SPORTS 1",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 1 .s",
+    "name": "NOW SPORTS 2",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 1 (BACKUP) .s",
+    "name": "NOW SPORTS 5",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 10 .s",
+    "name": "NOW SPORTS 6",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 11 .s",
+    "name": "NOW SPORTS 7",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 2 .s",
+    "name": "ORIGINALS MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 3 .s",
+    "name": "PEACE TV",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 5 .s",
+    "name": "PETERBOROUGH UNITED F.C.",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 6 .s",
+    "name": "PICK",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 7 .s",
+    "name": "PICK+1",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 8 .s",
+    "name": "PLANET EARTH 2 24/7",
     "best_score": 0.0
   },
   {
-    "name": "HUB PREMIER 9 .s",
+    "name": "PLYMOUTH ARGYLE F.C.",
     "best_score": 0.0
   },
   {
-    "name": "HUB SPORTS 1 .s",
+    "name": "PORT VALE F.C.",
     "best_score": 0.0
   },
   {
-    "name": "HUB SPORTS 3 .s",
+    "name": "PRIMAL KIDS",
     "best_score": 0.0
   },
   {
-    "name": "HUDDERSFIELD TOWN A.F.C. .s",
+    "name": "PRIVATE EYES",
     "best_score": 0.0
   },
   {
-    "name": "ITV BE .s",
+    "name": "RACING POST TV HD",
     "best_score": 0.0
   },
   {
-    "name": "ITV WALES .b",
+    "name": "RACING UK",
     "best_score": 0.0
   },
   {
-    "name": "ITVBE .b",
+    "name": "RANGERS FC",
     "best_score": 0.0
   },
   {
-    "name": "ITVBE .s",
+    "name": "READING F.C.",
     "best_score": 0.0
   },
   {
-    "name": "JURASSIC WORLD .s",
+    "name": "RED BULL TV",
     "best_score": 0.0
   },
   {
-    "name": "KEAANU REVEES .s",
+    "name": "RESIDENT ALIEN ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "KEVIN SPACEY .s",
+    "name": "ROBBERY AND HEIST",
     "best_score": 0.0
   },
   {
-    "name": "KIDS .b",
+    "name": "ROTHERHAM UNITED F.C.",
     "best_score": 0.0
   },
   {
-    "name": "KIDS 1 .s",
+    "name": "RT HD",
     "best_score": 0.0
   },
   {
-    "name": "KIDS 2 .s",
+    "name": "RTE 1",
     "best_score": 0.0
   },
   {
-    "name": "KIDS 3 .s",
+    "name": "RTE JR",
     "best_score": 0.0
   },
   {
-    "name": "KIDS 4 .s",
+    "name": "RTE TWO",
     "best_score": 0.0
   },
   {
-    "name": "KIDS 5 .s",
+    "name": "RUSH SPORT",
     "best_score": 0.0
   },
   {
-    "name": "KISS .b",
+    "name": "SAB TV",
     "best_score": 0.0
   },
   {
-    "name": "LALIGA TV .s",
+    "name": "SALFORD CITY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "LALIGA TV (BACKUP) .s",
+    "name": "SAMUEL L JACKSON",
     "best_score": 0.0
   },
   {
-    "name": "LASERFILMS ACTION .s",
+    "name": "SEAN CONERY",
     "best_score": 0.0
   },
   {
-    "name": "LASERFILMS ANIMATION .s",
+    "name": "SEINFELD",
     "best_score": 0.0
   },
   {
-    "name": "LASERFILMS CLASSIC .s",
+    "name": "SEVERANCE ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "LASERFILMS DOCUMENTARY .s",
+    "name": "SHADOW AND BONES",
     "best_score": 0.0
   },
   {
-    "name": "LASERFILMS HISTORY .s",
+    "name": "SHE RA AND THE PRINCESS OF POWER",
     "best_score": 0.0
   },
   {
-    "name": "LASERILMS CRIME .s",
+    "name": "SHOWCASE",
     "best_score": 0.0
   },
   {
-    "name": "LFC TV .s",
+    "name": "SKY 1",
     "best_score": 0.0
   },
   {
-    "name": "LINCOLN CITY F.C. .s",
+    "name": "SKY 2",
     "best_score": 0.0
   },
   {
-    "name": "LIVERPOOL FC .b",
+    "name": "SKY CINEMA ACTION",
     "best_score": 0.0
   },
   {
-    "name": "LUTON TOWN F.C. .s",
+    "name": "SKY CINEMA ACTION & ADVENTURE",
     "best_score": 0.0
   },
   {
-    "name": "MADEA FAMILY .s",
+    "name": "SKY CINEMA DISNEY",
     "best_score": 0.0
   },
   {
-    "name": "MAGIC .b",
+    "name": "SKY CINEMA DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "MAGIC .s",
+    "name": "SKY CINEMA FAMILY",
     "best_score": 0.0
   },
   {
-    "name": "MAGIC HD .s",
+    "name": "SKY CINEMA GREATS",
     "best_score": 0.0
   },
   {
-    "name": "MANS VS BE .s",
+    "name": "SKY CINEMA PREMIERE",
     "best_score": 0.0
   },
   {
-    "name": "MANSFIELD TOWN F.C. .s",
+    "name": "SKY CINEMA THRILLER",
     "best_score": 0.0
   },
   {
-    "name": "MARILYN MONRO .s",
+    "name": "SKY MAX",
     "best_score": 0.0
   },
   {
-    "name": "MORGAN FREEMAN .s",
+    "name": "SKY MOVIES HITS",
     "best_score": 0.0
   },
   {
-    "name": "MOTORSPORT TV .b",
+    "name": "SKY SHOWCASE",
     "best_score": 0.0
   },
   {
-    "name": "MOVIES4MEN .b",
+    "name": "SKY SPORT ACTION",
     "best_score": 0.0
   },
   {
-    "name": "MR. ROBOT .s",
+    "name": "SKY SPORT CRICKET",
     "best_score": 0.0
   },
   {
-    "name": "MRS FLETCHER .s",
+    "name": "SKY SPORT GOLF",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEOGRAPHIC .b",
+    "name": "SKY SPORT MIX",
     "best_score": 0.0
   },
   {
-    "name": "NCIS HAWAI .s",
+    "name": "SKY SPORT NEWS",
     "best_score": 0.0
   },
   {
-    "name": "NFL NETWORK .s",
+    "name": "SKY SPORT RACING",
     "best_score": 0.0
   },
   {
-    "name": "NICK JUNIOR .b",
+    "name": "SKY SPORTS ACTION",
     "best_score": 0.0
   },
   {
-    "name": "NICOLAS CAGE .s",
+    "name": "SKY SPORTS ARENA",
     "best_score": 0.0
   },
   {
-    "name": "NORTHAMPTON TOWN F.C. .s",
+    "name": "SKY SPORTS CRICKET",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 1 .s",
+    "name": "SKY SPORTS F1",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 2 .s",
+    "name": "SKY SPORTS GOLF",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 3 .s",
+    "name": "SKY SPORTS MAIN EVENT",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 4 .s",
+    "name": "SKY SPORTS MIX",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 5 .s",
+    "name": "SKY SPORTS NEWS",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 6 .s",
+    "name": "SKY SPORTS NEWS HQ HD",
     "best_score": 0.0
   },
   {
-    "name": "NOW SPORTS 7 .s",
+    "name": "SKY SPORTS RACING HD",
     "best_score": 0.0
   },
   {
-    "name": "ORIGINALS MOVIES .s",
+    "name": "SKY SPORTS TENNIS",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT .b",
+    "name": "SKY STORE INFO",
     "best_score": 0.0
   },
   {
-    "name": "PEACE TV .s",
+    "name": "SKY STORE PREMIERE 12 ᴴᴰ",
     "best_score": 0.0
   },
   {
-    "name": "PETERBOROUGH UNITED F.C. .s",
+    "name": "SKY STORE PREMIERE 16 ᴴᴰ",
     "best_score": 0.0
   },
   {
-    "name": "PICK .b",
+    "name": "SKY STORE PREMIERE 21 ᴴᴰ",
     "best_score": 0.0
   },
   {
-    "name": "PICK+1 .b",
+    "name": "SKY STORE PREMIERE 26 ᴴᴰ",
     "best_score": 0.0
   },
   {
-    "name": "PLANET EARTH 2 24/7 .b",
+    "name": "SKYS PORTS ARENA",
     "best_score": 0.0
   },
   {
-    "name": "PLYMOUTH ARGYLE F.C. .s",
+    "name": "SKYS PORTS FOOTBALL",
     "best_score": 0.0
   },
   {
-    "name": "PORT VALE F.C. .s",
+    "name": "SKYS PORTS MAIN EVENT",
     "best_score": 0.0
   },
   {
-    "name": "PRIMAL KIDS .s",
+    "name": "SONY CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "PRIVATE EYES .s",
+    "name": "SPFL 01 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "RACING POST TV HD .s",
+    "name": "SPFL 02 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "RACING UK .b",
+    "name": "SPFL 03 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "RANGERS FC .b",
+    "name": "SPFL 05 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "READING F.C. .s",
+    "name": "SPFL 06 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "RED BULL TV .b",
+    "name": "SPFL 07 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "RESIDENT ALIEN ꜱᴇƦꞮᴇ .s",
+    "name": "SPFL 08 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "ROBBERY AND HEIST .s",
+    "name": "SPFL 09 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "ROTHERHAM UNITED F.C. .s",
+    "name": "SPFL 10 (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "RTE 1 .s",
+    "name": "STAR TREK PICARD ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "RTE 2 .s",
+    "name": "STARZ TV",
     "best_score": 0.0
   },
   {
-    "name": "RTE JR .b",
+    "name": "STEPHEN KING",
     "best_score": 0.0
   },
   {
-    "name": "RTE JR .s",
+    "name": "STEVENAGE F.C.",
     "best_score": 0.0
   },
   {
-    "name": "RTE NEWS .s",
+    "name": "STOCKPORT COUNTY F.C.",
     "best_score": 0.0
   },
   {
-    "name": "RTE ONE .s",
+    "name": "STRANGER THINGS",
     "best_score": 0.0
   },
   {
-    "name": "RTE TWO .s",
+    "name": "SUPERMAN AND ALOIS",
     "best_score": 0.0
   },
   {
-    "name": "RUSH SPORT .s",
+    "name": "SUPERRIX MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "SALFORD CITY F.C. .s",
+    "name": "SUPERSPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "SAMUEL L JACKSON .s",
+    "name": "SYFY HD",
     "best_score": 0.0
   },
   {
-    "name": "SEAN CONERY .s",
+    "name": "SYLVESTER STALLONE",
     "best_score": 0.0
   },
   {
-    "name": "SEINFELD .s",
+    "name": "TERRENCE MALIK",
     "best_score": 0.0
   },
   {
-    "name": "SEVERANCE ꜱᴇƦꞮᴇ .s",
+    "name": "THANE",
     "best_score": 0.0
   },
   {
-    "name": "SHADOW AND BONES .s",
+    "name": "THE ARK",
     "best_score": 0.0
   },
   {
-    "name": "SHE RA AND THE PRINCESS OF POWER .s",
+    "name": "THE FRESH PRINC OF BELAIR",
     "best_score": 0.0
   },
   {
-    "name": "SHOWCASE .b",
+    "name": "THE MANDOLARIAN",
     "best_score": 0.0
   },
   {
-    "name": "SHOWCASE .s",
+    "name": "THE OWL HOUSE KIDS ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "SKY 1 .s",
+    "name": "THE PET COLLECTIVE",
     "best_score": 0.0
   },
   {
-    "name": "SKY 2 .s",
+    "name": "THE WHITE LOTUS ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA ACTION .b",
+    "name": "THE WITCHEER ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA ACTION .s",
+    "name": "TNT SPORTS ESPN",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA ACTION & ADVENTURE .b",
+    "name": "TOM AND JERRY",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA ACTION HD .s",
+    "name": "TOM HANKS",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA DISNEY .b",
+    "name": "TRAVEL CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA DISNEY .s",
+    "name": "TRUE DETECTIVE ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA DRAMA .b",
+    "name": "TVO KIDS",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA FAMILY .b",
+    "name": "U & DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA FAMILY .s",
+    "name": "UFC FIGHT NIGHT PASS",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA GREATS .b",
+    "name": "UNIVERSAL CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIERE .b",
+    "name": "VH1",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIERE HD .s",
+    "name": "VIAPLAY EVENT 10",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA SCI-FI .s",
+    "name": "VIAPLAY EVENT 11",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA THRILLER .b",
+    "name": "VIAPLAY EVENT 13",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA THRILLER .s",
+    "name": "VIAPLAY EVENT 14",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA THRILLER HD .s",
+    "name": "VIAPLAY EVENT 15",
     "best_score": 0.0
   },
   {
-    "name": "SKY MOVIES HITS .s",
+    "name": "VIAPLAY EVENT 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY SHOWCASE .s",
+    "name": "VIAPLAY EVENT 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY SHOWCASE HD .s",
+    "name": "VIAPLAY EVENT 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORT ACTION .b",
+    "name": "VIAPLAY EVENT 6",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORT CRICKET .b",
+    "name": "VIAPLAY EVENT 8",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORT GOLF .b",
+    "name": "VIAPLAY SPORTS 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORT MIX .b",
+    "name": "VICELAND",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS ARENA (BACKUP) .s",
+    "name": "VIKINGS ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS ARENA HD .b",
+    "name": "VIN DIESEL",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS ARENA HD .s",
+    "name": "WALSALL F.C.",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS CRICKET .b",
+    "name": "WAREHOUSE ꜱᴇƦꞮᴇ",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS CRICKET .s",
+    "name": "WIGAN ATHLETIC F.C.",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS CRICKET (BACKUP) .s",
+    "name": "WILL SMTH",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS CRICKET HD .b",
+    "name": "WILLEM DAFOE",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS CRICKET HD .s",
+    "name": "WILLOW CRICKET",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 .b",
+    "name": "WODDY ALLEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 (BACKUP) .b",
+    "name": "WWE",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 (BACKUP) .s",
+    "name": "XMASTV",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 FHD .s",
+    "name": "YELLOW STONE",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 FHD (BACKUP) .s",
+    "name": "YESTERDAY",
     "best_score": 0.0
   },
   {
-    "name": "SKY SPORTS F1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS GOLF .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS GOLF .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS GOLF (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS GOLF HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS GOLF HD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MAIN EVENT HD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MIX .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MIX .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MIX (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS MIX HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS NEWS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS NEWS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS NEWS (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS NEWS HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS PREMIER LEAGUE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS PREMIER LEAGUE [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS PREMIER LEAGUE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS PREMIER LEAGUE HD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS RACING .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS RACING (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS RACING HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS RACING HD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS TENNIS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS TENNIS (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORTS TENNIS FHD .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 15 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 19 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 21 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 27 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 28 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 4 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY STORE PREMIERE 8 ᴴᴰ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKYS PORTS ARENA .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKYS PORTS FOOTBALL .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKYS PORTS MAIN EVENT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 01 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 02 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 03 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 04 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 05 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 06 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 07 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 08 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPFL 10 (MATCH TIME) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STAR TREK PICARD ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STARZ TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STEPHEN KING .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STEVENAGE F.C. .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STOCKPORT COUNTY F.C. .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STRANGER THINGS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPER SPORT CRICKET .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERMAN AND ALOIS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERRIX MOVIES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSPORT 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSPORT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSPORT 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSPORT ACTION .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSPORT GOLF .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SYFY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SYFY HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SYLVESTER STALLONE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TERRENCE MALIK .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "THANE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE ARK .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE FRESH PRINC OF BELAIR .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE MANDOLARIAN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE OWL HOUSE KIDS ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE PET COLLECTIVE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE WHITE LOTUS ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE WITCHEER ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT SPORTS ESPN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOM AND JERRY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOM HANKS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRAVEL CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRUE DETECTIVE ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVO KIDS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "U & DRAMA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VH1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 10 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 11 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 12 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 13 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 14 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 15 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 4 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 6 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 7 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 8 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY EVENT 9 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIAPLAY SPORTS 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VICELAND .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIKINGS ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIN DIESEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WALSALL F.C. .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WAREHOUSE ꜱᴇƦꞮᴇ .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WIGAN ATHLETIC F.C. .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WILL SMTH .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WILLEM DAFOE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WILLOW CRICKET .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WODDY ALLEN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WWE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WYCOMBE WANDERERS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "XMASTV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "YELLOW STONE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "YESTERDAY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "YESTERDAY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "YESTERDAY (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "YESTERDAY +1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "YESTERDAY+1 .b",
+    "name": "YESTERDAY+1",
     "best_score": 0.0
   }
 ]

@@ -1,702 +1,582 @@
 [
   {
-    "name": "DISCOVERY .b",
+    "name": "DISCOVERY",
     "best_score": 0.692
   },
   {
-    "name": "BN .c",
+    "name": "CMC TV",
     "best_score": 0.667
   },
   {
-    "name": "CMC TV .s",
+    "name": "PINK LOL",
     "best_score": 0.667
   },
   {
-    "name": "PINK LOL .s",
+    "name": "RTCG SAT",
     "best_score": 0.667
   },
   {
-    "name": "RTCG SAT .s",
+    "name": "RTV TK TUZLA",
     "best_score": 0.667
   },
   {
-    "name": "RTV TK TUZLA .c",
+    "name": "TV 1",
     "best_score": 0.667
   },
   {
-    "name": "DA VINCI LEARNING .s",
-    "best_score": 0.64
+    "name": "TV 5",
+    "best_score": 0.667
   },
   {
-    "name": "NAT GEO .c",
+    "name": "HISTORY CHANNEL",
     "best_score": 0.636
   },
   {
-    "name": "NAT GEO .s",
+    "name": "NAT GEO",
     "best_score": 0.636
   },
   {
-    "name": "PINK HAHA .b",
+    "name": "PINK HAHA",
     "best_score": 0.615
   },
   {
-    "name": "PINK HAHA .s",
-    "best_score": 0.615
-  },
-  {
-    "name": "TV 5 .s",
-    "best_score": 0.6
-  },
-  {
-    "name": "N1 .c",
+    "name": "N1",
     "best_score": 0.571
   },
   {
-    "name": "PINK BRAVO .b",
+    "name": "PINK BRAVO",
     "best_score": 0.571
   },
   {
-    "name": "FOX .b",
+    "name": "PRVA TV CG",
+    "best_score": 0.571
+  },
+  {
+    "name": "TV K3",
+    "best_score": 0.571
+  },
+  {
+    "name": "FOX",
     "best_score": 0.545
   },
   {
-    "name": "FOX .c",
-    "best_score": 0.545
-  },
-  {
-    "name": "FOX .s",
-    "best_score": 0.545
-  },
-  {
-    "name": "PINK PANTER .c",
+    "name": "PINK PANTER",
     "best_score": 0.533
   },
   {
-    "name": "AXN ADRIA .s",
+    "name": "AXN ADRIA",
     "best_score": 0.5
   },
   {
-    "name": "SOS .c",
+    "name": "MOJA TV PREMIJER LIGA",
     "best_score": 0.5
   },
   {
-    "name": "M1 FILM .s",
+    "name": "SOS",
+    "best_score": 0.5
+  },
+  {
+    "name": "TV USK",
+    "best_score": 0.5
+  },
+  {
+    "name": "M1 FILM",
     "best_score": 0.444
   },
   {
-    "name": "OTV VALENTINO .c",
+    "name": "TV SLON",
+    "best_score": 0.444
+  },
+  {
+    "name": "TV NASHA",
+    "best_score": 0.4
+  },
+  {
+    "name": "OTV VALENTINO",
     "best_score": 0.375
   },
   {
-    "name": "ATV BANJA LUKA .c",
+    "name": "TV SEHARA",
+    "best_score": 0.364
+  },
+  {
+    "name": "TV SEVDAH",
+    "best_score": 0.364
+  },
+  {
+    "name": "ATV BANJA LUKA",
     "best_score": 0.353
   },
   {
-    "name": "DMC TELEVIZIJA .c",
+    "name": "DMC TELEVIZIJA",
     "best_score": 0.353
   },
   {
-    "name": "PINK SCI FI & FANTASY .b",
+    "name": "PINK SCI FI & FANTASY",
     "best_score": 0.348
   },
   {
-    "name": "24 KITCHEN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "24 KITCHEN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ADRIA TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ADRIATIC SPORT 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ADRIATIC SPORT 2 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ADRIATIC SPORT 3 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ALJAZEERA BALKANS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ARENA SPORT PREMIUM 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ARENA SPORT PREMIUM 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "BOSNA TV 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "CC EXTRA .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 6 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 7 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINE+ SELECT 9 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR ACTION .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR ACTION TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR COMEDY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR FANTASY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR FANTASY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR PREMIERE 1 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR PREMIERE 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR PREMIERE 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "CINESTAR PREMIERE 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "CITYPLAY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY CI .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY ID .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY SCIENCE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY TURBO XTRA (DTX) .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DISCOVERY WORLD .c",
-    "best_score": 0.0
+    "name": "TV 5 ISLAM",
+    "best_score": 0.333
   },
   {
-    "name": "DISNEY CHANEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "DOBRA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DOBRA DJECIJA .c",
-    "best_score": 0.0
+    "name": "TV BANOVINA",
+    "best_score": 0.308
   },
   {
-    "name": "DOBRA EXCLUSIVE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "DOBRA ISLAMSKA .c",
-    "best_score": 0.0
+    "name": "TV GLAS DRINE",
+    "best_score": 0.267
   },
   {
-    "name": "DOBRA MUZICKA .c",
-    "best_score": 0.0
+    "name": "TV NOVI PAZAR",
+    "best_score": 0.267
   },
   {
-    "name": "DOBRA PLUS .c",
-    "best_score": 0.0
+    "name": "TV SLON EXTRA",
+    "best_score": 0.267
   },
   {
-    "name": "DOBRA SVADBA .c",
-    "best_score": 0.0
+    "name": "TV VIJESTI CG",
+    "best_score": 0.267
   },
   {
-    "name": "ELITA8 LIVE 1 .c",
+    "name": "24 KITCHEN",
     "best_score": 0.0
   },
   {
-    "name": "ELITA8 LIVE 2 .c",
+    "name": "ADRIATIC SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "ELITA8 LIVE 3 .c",
+    "name": "ADRIATIC SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "ELITA8 LIVE 4 .c",
+    "name": "ADRIATIC SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "FEDERALNA TELEVIZIJA .s",
+    "name": "ALJAZEERA BALKANS",
     "best_score": 0.0
   },
   {
-    "name": "FOOD NETWORK .c",
+    "name": "ARENA BOX",
     "best_score": 0.0
   },
   {
-    "name": "FOOD NETWORK .s",
+    "name": "ARENA SPORT PREMIUM 1",
     "best_score": 0.0
   },
   {
-    "name": "FOX CRIME .b",
+    "name": "ARENA SPORT PREMIUM 2",
     "best_score": 0.0
   },
   {
-    "name": "FOX CRIME .c",
+    "name": "ARENA SPORT PREMIUM 3",
     "best_score": 0.0
   },
   {
-    "name": "FOX CRIME .s",
+    "name": "BOSNA TV 1",
     "best_score": 0.0
   },
   {
-    "name": "FOX LIFE .b",
+    "name": "CINE+ SELECT 5",
     "best_score": 0.0
   },
   {
-    "name": "FOX LIFE .c",
+    "name": "CINE+ SELECT 9",
     "best_score": 0.0
   },
   {
-    "name": "FOX LIFE .s",
+    "name": "CINESTAR ACTION",
     "best_score": 0.0
   },
   {
-    "name": "FOX MOVIES .b",
+    "name": "CINESTAR ACTION TV",
     "best_score": 0.0
   },
   {
-    "name": "FOX MOVIES .c",
+    "name": "CINESTAR FANTASY",
     "best_score": 0.0
   },
   {
-    "name": "FOX MOVIES .s",
+    "name": "CINESTAR PREMIERE 1",
     "best_score": 0.0
   },
   {
-    "name": "GORA PREMIERE 1 .c",
+    "name": "CINESTAR PREMIERE 2",
     "best_score": 0.0
   },
   {
-    "name": "HAHA .s",
+    "name": "CITYPLAY",
     "best_score": 0.0
   },
   {
-    "name": "HEMA TV .c",
+    "name": "DISCOVERY CI",
     "best_score": 0.0
   },
   {
-    "name": "HISTORIJA TV .c",
+    "name": "DISCOVERY ID",
     "best_score": 0.0
   },
   {
-    "name": "HIT BRCKO .s",
+    "name": "DISCOVERY SCIENCE",
     "best_score": 0.0
   },
   {
-    "name": "HIT TELEVIZIJA .c",
+    "name": "DISCOVERY TURBO XTRA (DTX)",
     "best_score": 0.0
   },
   {
-    "name": "HNTV .s",
+    "name": "DISCOVERY WORLD",
     "best_score": 0.0
   },
   {
-    "name": "IDJ TV .s",
+    "name": "DOBRA",
     "best_score": 0.0
   },
   {
-    "name": "INVESTIGATION DISCOVERY .c",
+    "name": "DOBRA DJECIJA",
     "best_score": 0.0
   },
   {
-    "name": "KANAL 5 .c",
+    "name": "DOBRA EXCLUSIVE",
     "best_score": 0.0
   },
   {
-    "name": "KCN 2 .s",
+    "name": "DOBRA ISLAMSKA",
     "best_score": 0.0
   },
   {
-    "name": "KCN 3 .s",
+    "name": "DOBRA MUZICKA",
     "best_score": 0.0
   },
   {
-    "name": "LOONEY TUNES .s",
+    "name": "DOBRA PLUS",
     "best_score": 0.0
   },
   {
-    "name": "LUD ZBUNJEN NORMALAN .s",
+    "name": "DOBRA SVADBA",
     "best_score": 0.0
   },
   {
-    "name": "MASA I MEDO .s",
+    "name": "ELITA8 LIVE 1",
     "best_score": 0.0
   },
   {
-    "name": "MAX SPORT 1 .c",
+    "name": "ELITA8 LIVE 2",
     "best_score": 0.0
   },
   {
-    "name": "MAXCRO SELECT 2 .s",
+    "name": "ELITA8 LIVE 3",
     "best_score": 0.0
   },
   {
-    "name": "MAXCRO SELECT 6 .s",
+    "name": "ELITA8 LIVE 4",
     "best_score": 0.0
   },
   {
-    "name": "MAXCRO SELECT 8 .s",
+    "name": "FEDERALNA TELEVIZIJA",
     "best_score": 0.0
   },
   {
-    "name": "MAXCRO SELECT 9 .s",
+    "name": "FOOD NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "MINI TV .c",
+    "name": "FOX CRIME",
     "best_score": 0.0
   },
   {
-    "name": "MINI TV .s",
+    "name": "FOX LIFE",
     "best_score": 0.0
   },
   {
-    "name": "MOJA TV PREMIJER LIGA .c",
+    "name": "FOX MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "MY TV .c",
+    "name": "GORA PREMIERE 1",
     "best_score": 0.0
   },
   {
-    "name": "N1 SRB .s",
+    "name": "HAHA",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEO WILD HD .b",
+    "name": "HEMA TV",
     "best_score": 0.0
   },
   {
-    "name": "NEON TV .c",
+    "name": "HISTORIJA TV",
     "best_score": 0.0
   },
   {
-    "name": "NETIP CINEMA 1 .c",
+    "name": "HIT BRCKO",
     "best_score": 0.0
   },
   {
-    "name": "NETIP CINEMA 2 .c",
+    "name": "HIT TELEVIZIJA",
     "best_score": 0.0
   },
   {
-    "name": "NETIP CINEMA 3 .c",
+    "name": "HNTV",
     "best_score": 0.0
   },
   {
-    "name": "NETIP CINEMA 4 .c",
+    "name": "IDJ KIDS",
     "best_score": 0.0
   },
   {
-    "name": "NETIP DOMACI FILMOVI 1 .c",
+    "name": "IDJ TV",
     "best_score": 0.0
   },
   {
-    "name": "NETIP NETFLIX .c",
+    "name": "INVESTIGATION DISCOVERY",
     "best_score": 0.0
   },
   {
-    "name": "NICKJR HR .b",
+    "name": "KANAL 5",
     "best_score": 0.0
   },
   {
-    "name": "NTVIC KAKANJ .c",
+    "name": "KCN 2",
     "best_score": 0.0
   },
   {
-    "name": "PAROVI 1 LIVE .c",
+    "name": "KCN 3",
     "best_score": 0.0
   },
   {
-    "name": "PAROVI 2 LIVE .c",
+    "name": "LOONEY TUNES",
     "best_score": 0.0
   },
   {
-    "name": "PEPA PRAŠCIC .s",
+    "name": "LUD ZBUNJEN NORMALAN",
     "best_score": 0.0
   },
   {
-    "name": "PLANETA TV .s",
+    "name": "MASA I MEDO",
     "best_score": 0.0
   },
   {
-    "name": "PODRINJE TV .c",
+    "name": "MAX SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "RTS ZIVOT .s",
+    "name": "MAXCRO SELECT 3",
     "best_score": 0.0
   },
   {
-    "name": "RTV BUDVA .c",
+    "name": "MAXCRO SELECT 6",
     "best_score": 0.0
   },
   {
-    "name": "RTV BUGOJNO .c",
+    "name": "MAXCRO SELECT 8",
     "best_score": 0.0
   },
   {
-    "name": "RTV CAZIN .c",
+    "name": "MAXCRO SELECT 9",
     "best_score": 0.0
   },
   {
-    "name": "RTV HERCEG BOSNE .c",
+    "name": "MINI TV",
     "best_score": 0.0
   },
   {
-    "name": "RTV LUKAVAC .c",
+    "name": "MY TV",
     "best_score": 0.0
   },
   {
-    "name": "RTV VOGOSĆA .c",
+    "name": "N1 SRB",
     "best_score": 0.0
   },
   {
-    "name": "SEHARA TV .c",
+    "name": "NATIONAL GEO WILD HD",
     "best_score": 0.0
   },
   {
-    "name": "SOBRANISKI KANAL .s",
+    "name": "NETIP CINEMA 1",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 1 .b",
+    "name": "NETIP CINEMA 2",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 1 .s",
+    "name": "NETIP CINEMA 3",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 2 .b",
+    "name": "NETIP CINEMA 4",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 2 .c",
+    "name": "NETIP DOMACI FILMOVI 2",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 2 [LIVE DURING EVENTS ONLY] .s",
+    "name": "NETIP NETFLIX",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 3 .b",
+    "name": "NICKJR HR",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 3 .c",
+    "name": "NTVIC KAKANJ",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 3 .s",
+    "name": "PAROVI 1 LIVE",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 4 .b",
+    "name": "PAROVI 2 LIVE",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 4 .c",
+    "name": "PEPA PRAŠCIC",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 5 .c",
+    "name": "PODRINJE TV",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 7 .c",
+    "name": "RTS ZIVOT",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 8 .c",
+    "name": "RTV BUDVA",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB FIGHT .c",
+    "name": "RTV BUGOJNO",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB GOLF .c",
+    "name": "RTV CAZIN",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB GOLF .s",
+    "name": "RTV HERCEG BOSNE",
     "best_score": 0.0
   },
   {
-    "name": "SPORT TV 1 .s",
+    "name": "RTV LUKAVAC",
     "best_score": 0.0
   },
   {
-    "name": "SUPER TV .c",
+    "name": "RTV VOGOSĆA",
     "best_score": 0.0
   },
   {
-    "name": "TATABRADA TV .c",
+    "name": "SEHARA TV",
     "best_score": 0.0
   },
   {
-    "name": "TK TUZLA .s",
+    "name": "SMART TELEVIZIJA",
     "best_score": 0.0
   },
   {
-    "name": "TK TUZLA BH .s",
+    "name": "SOBRANISKI KANAL",
     "best_score": 0.0
   },
   {
-    "name": "TOM AND JERRY .c",
+    "name": "SPORT KLUB 1",
     "best_score": 0.0
   },
   {
-    "name": "TV 1 .s",
+    "name": "SPORT KLUB 2",
     "best_score": 0.0
   },
   {
-    "name": "TV 5 ISLAM .c",
+    "name": "SPORT KLUB 3",
     "best_score": 0.0
   },
   {
-    "name": "TV BANOVINA .c",
+    "name": "SPORT KLUB 4",
     "best_score": 0.0
   },
   {
-    "name": "TV GLAS DRINE .s",
+    "name": "SPORT KLUB 5",
     "best_score": 0.0
   },
   {
-    "name": "TV ISTOK .c",
+    "name": "SPORT KLUB 7",
     "best_score": 0.0
   },
   {
-    "name": "TV K3 .c",
+    "name": "SPORT KLUB 8",
     "best_score": 0.0
   },
   {
-    "name": "TV NASHA .s",
+    "name": "SPORT KLUB FIGHT",
     "best_score": 0.0
   },
   {
-    "name": "TV NOVI PAZAR .s",
+    "name": "SPORT KLUB GOLF",
     "best_score": 0.0
   },
   {
-    "name": "TV SEVDAH .s",
+    "name": "SPORT TV 1",
     "best_score": 0.0
   },
   {
-    "name": "TV SLON .s",
+    "name": "SUPER STAR TV HD",
     "best_score": 0.0
   },
   {
-    "name": "TV SLON EXTRA .c",
+    "name": "TATABRADA TV",
     "best_score": 0.0
   },
   {
-    "name": "TV USK .c",
+    "name": "TK TUZLA",
     "best_score": 0.0
   },
   {
-    "name": "TV VIJESTI CG .s",
+    "name": "TK TUZLA BH",
     "best_score": 0.0
   },
   {
-    "name": "TVSA SARAJEVO .s",
+    "name": "TNT KIDS",
     "best_score": 0.0
   },
   {
-    "name": "VALENTINO MUSIC .s",
+    "name": "TOM AND JERRY",
     "best_score": 0.0
   },
   {
-    "name": "VAVOOM .b",
+    "name": "TVSA SARAJEVO",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT KINO PREMIERE .c",
+    "name": "VALENTINO MUSIC",
     "best_score": 0.0
   },
   {
-    "name": "X-TOXIC .s",
+    "name": "VAVOOM",
     "best_score": 0.0
   },
   {
-    "name": "ZADRUGA 1 .s",
+    "name": "X-TOXIC",
     "best_score": 0.0
   },
   {
-    "name": "ZADRUGA 2 .s",
+    "name": "ZADRUGA 1",
     "best_score": 0.0
   },
   {
-    "name": "ZADRUGA 3 .s",
+    "name": "ZADRUGA 3",
     "best_score": 0.0
   },
   {
-    "name": "ZADRUGA 4 .s",
+    "name": "ZADRUGA 4",
     "best_score": 0.0
   },
   {
-    "name": "ZIVINICE .c",
+    "name": "ZIVINICE",
     "best_score": 0.0
   }
 ]

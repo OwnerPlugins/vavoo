@@ -1,570 +1,534 @@
 [
   {
-    "name": "DIGI 4K TV .s",
+    "name": "DIGI 4K TV",
     "best_score": 0.571
   },
   {
-    "name": "AXN WITH .b",
+    "name": "AXN WITH",
     "best_score": 0.545
   },
   {
-    "name": "B 1 .s",
+    "name": "B 1",
     "best_score": 0.5
   },
   {
-    "name": "DIVA CHANNEL .s",
+    "name": "DIVA CHANNEL",
     "best_score": 0.5
   },
   {
-    "name": "E! .s",
+    "name": "E!",
     "best_score": 0.125
   },
   {
-    "name": "1 MUSIC CHANNEL .s",
+    "name": "1 MUSIC CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "1MUSIC CHANNEL .s",
+    "name": "1MUSIC CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "2020 FILM .s",
+    "name": "2020 FILM",
     "best_score": 0.0
   },
   {
-    "name": "2021 FILM .s",
+    "name": "6 TV",
     "best_score": 0.0
   },
   {
-    "name": "2022 FILM .s",
+    "name": "A 7 TV",
     "best_score": 0.0
   },
   {
-    "name": "6 TV .s",
+    "name": "ANTENA MONDEN",
     "best_score": 0.0
   },
   {
-    "name": "A 7 TV .b",
+    "name": "ARCADIA WORLD",
     "best_score": 0.0
   },
   {
-    "name": "A7 TV .s",
+    "name": "ARGES TV",
     "best_score": 0.0
   },
   {
-    "name": "ANTENA MONDEN .s",
+    "name": "ATOMIC ACADEMY TV",
     "best_score": 0.0
   },
   {
-    "name": "ARCADIA WORLD .s",
+    "name": "ATOMIC TV",
     "best_score": 0.0
   },
   {
-    "name": "ARDEAL TV .s",
+    "name": "AUTO MOTOR SPORT",
     "best_score": 0.0
   },
   {
-    "name": "ARGES TV .s",
+    "name": "BOLLYWOOD CLASSIC",
     "best_score": 0.0
   },
   {
-    "name": "ATOMIC ACADEMY TV .s",
+    "name": "BOLLYWOOD TV",
     "best_score": 0.0
   },
   {
-    "name": "ATOMIC TV .s",
+    "name": "BOOMERANG",
     "best_score": 0.0
   },
   {
-    "name": "AUTO MOTOR SPORT .s",
+    "name": "BUCOVINA TV",
     "best_score": 0.0
   },
   {
-    "name": "BOLLYWOOD TV .b",
+    "name": "BUCURESTI TV",
     "best_score": 0.0
   },
   {
-    "name": "BOLLYWOOD TV .s",
+    "name": "BUGS BANNY",
     "best_score": 0.0
   },
   {
-    "name": "BOLLYWOOD TV HD .b",
+    "name": "CATINE",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG .b",
+    "name": "CI",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG .s",
+    "name": "CINEMA ACTIUNE",
     "best_score": 0.0
   },
   {
-    "name": "BUCOVINA TV .s",
+    "name": "CINEMA AVENTURA",
     "best_score": 0.0
   },
   {
-    "name": "BUCURESTI TV .s",
+    "name": "CINEMA COMEDIE",
     "best_score": 0.0
   },
   {
-    "name": "BUGS BANNY .s",
+    "name": "CINEMA CRIME",
     "best_score": 0.0
   },
   {
-    "name": "CATINE .s",
+    "name": "CINEMA DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "CI .s",
+    "name": "CINEMA FICTION",
     "best_score": 0.0
   },
   {
-    "name": "CINEMA COMEDIE .s",
+    "name": "CINEMA KIDS-DUBLAT",
     "best_score": 0.0
   },
   {
-    "name": "CINEMA DRAMA .s",
+    "name": "COMEDY PLAY",
     "best_score": 0.0
   },
   {
-    "name": "CINEMA KIDS-DUBLAT .s",
+    "name": "COMEDYEST HD",
     "best_score": 0.0
   },
   {
-    "name": "CINEMA THIRLLER .s",
+    "name": "CROMTEL TV",
     "best_score": 0.0
   },
   {
-    "name": "COMEDY PLAY .s",
+    "name": "DAVINCI LEARNING",
     "best_score": 0.0
   },
   {
-    "name": "COMEDYEST HD .b",
+    "name": "DISCOVERY HD SHOWCASE",
     "best_score": 0.0
   },
   {
-    "name": "DAVINCI LEARNING .b",
+    "name": "DISCOVERY INVESTIGATION",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY INVESTIGATION .s",
+    "name": "DISCOVERY SCIENCE",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY SCIENCE .s",
+    "name": "DISNEY JR",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY SCIENCE HD .b",
+    "name": "DTX",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY JR .s",
+    "name": "DTX HD RO",
     "best_score": 0.0
   },
   {
-    "name": "DOI DEGEABA .s",
+    "name": "ENTERTAINMENT",
     "best_score": 0.0
   },
   {
-    "name": "DTX .s",
+    "name": "EST TV",
     "best_score": 0.0
   },
   {
-    "name": "DTX HD RO .b",
+    "name": "FINE & LIVING",
     "best_score": 0.0
   },
   {
-    "name": "ENTERTAINMENT .s",
+    "name": "FISHING & HUNTING",
     "best_score": 0.0
   },
   {
-    "name": "EST TV .s",
+    "name": "HDNET COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "FIGHTBOX HD .b",
+    "name": "HDNET PREMIERE",
     "best_score": 0.0
   },
   {
-    "name": "FINE & LIVING .s",
+    "name": "HDNET SURVIVOR KANALD",
     "best_score": 0.0
   },
   {
-    "name": "HIT MUSIC .s",
+    "name": "HDNETRO",
     "best_score": 0.0
   },
   {
-    "name": "HORA TV .s",
+    "name": "HELLO TASTE",
     "best_score": 0.0
   },
   {
-    "name": "I UMOR-S09 .s",
+    "name": "HIT",
     "best_score": 0.0
   },
   {
-    "name": "I UMOR-S10 .s",
+    "name": "HIT CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "I UMOR-S11 .s",
+    "name": "HIT MUSIC",
     "best_score": 0.0
   },
   {
-    "name": "I.UMOR-S09 .s",
+    "name": "HORA TV",
     "best_score": 0.0
   },
   {
-    "name": "I.UMOR-S10 .s",
+    "name": "I UMOR-S09",
     "best_score": 0.0
   },
   {
-    "name": "ICONCERT .s",
+    "name": "I UMOR-S10",
     "best_score": 0.0
   },
   {
-    "name": "IDA TV .s",
+    "name": "I UMOR-S11",
     "best_score": 0.0
   },
   {
-    "name": "IMPACT TV DANCE .s",
+    "name": "ICONCERT",
     "best_score": 0.0
   },
   {
-    "name": "IMPACT TV MANELE .s",
+    "name": "IDA TV",
     "best_score": 0.0
   },
   {
-    "name": "INTERMEDIA SUCEAVA .s",
+    "name": "IMPACT TV DANCE",
     "best_score": 0.0
   },
   {
-    "name": "JIM JAM .s",
+    "name": "IMPACT TV MANELE",
     "best_score": 0.0
   },
   {
-    "name": "L.UMOR-S11 .s",
+    "name": "INTERMEDIA SUCEAVA",
     "best_score": 0.0
   },
   {
-    "name": "LAS FIERBINTI SERIA 18 .s",
+    "name": "JIM JAM",
     "best_score": 0.0
   },
   {
-    "name": "LAS FIERBINTI SERIA 19 .s",
+    "name": "L.UMOR-S11",
     "best_score": 0.0
   },
   {
-    "name": "LAS FIERBINTI SERIA 20 .s",
+    "name": "LAS FIERBINTI SERIA 18",
     "best_score": 0.0
   },
   {
-    "name": "LAS FIERBINTI SERIA 21 .s",
+    "name": "LAS FIERBINTI SERIA 19",
     "best_score": 0.0
   },
   {
-    "name": "LOOK PLUS .s",
+    "name": "LAS FIERBINTI SERIA 20",
     "best_score": 0.0
   },
   {
-    "name": "LOOK PLUS HD .b",
+    "name": "LAS FIERBINTI SERIA 21",
     "best_score": 0.0
   },
   {
-    "name": "LOOK SPORT .s",
+    "name": "LOOK PLUS",
     "best_score": 0.0
   },
   {
-    "name": "LOOK SPORT HD .b",
+    "name": "LOOK SPORT",
     "best_score": 0.0
   },
   {
-    "name": "M9TV .s",
+    "name": "M9TV",
     "best_score": 0.0
   },
   {
-    "name": "MASHA .s",
+    "name": "MEDIA SUD",
     "best_score": 0.0
   },
   {
-    "name": "MDI TV .s",
+    "name": "MEDICOOL TV",
     "best_score": 0.0
   },
   {
-    "name": "MEDIA SUD .s",
+    "name": "MEGAMAX",
     "best_score": 0.0
   },
   {
-    "name": "MEDICOOL TV .s",
+    "name": "MIREASA",
     "best_score": 0.0
   },
   {
-    "name": "MEGAMAX .b",
+    "name": "MTV 00",
     "best_score": 0.0
   },
   {
-    "name": "MIREASA .s",
+    "name": "MTV DANCE",
     "best_score": 0.0
   },
   {
-    "name": "MTV 00 .s",
+    "name": "MUSCEL TV",
     "best_score": 0.0
   },
   {
-    "name": "MTV DANCE .s",
+    "name": "NAT GEO WILD HD",
     "best_score": 0.0
   },
   {
-    "name": "MUSCEL TV .s",
+    "name": "NATIONAL GEOGRAFIC HD",
     "best_score": 0.0
   },
   {
-    "name": "N 24 .s",
+    "name": "NET",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL CLUJ .s",
+    "name": "NET COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEOGRAFIC HD .b",
+    "name": "NET PREMIERE",
     "best_score": 0.0
   },
   {
-    "name": "NET .s",
+    "name": "NETRO",
     "best_score": 0.0
   },
   {
-    "name": "NET COMEDY .s",
+    "name": "NICK TOONS",
     "best_score": 0.0
   },
   {
-    "name": "NET PREMIERE .s",
+    "name": "OBSERVATOR NEWS",
     "best_score": 0.0
   },
   {
-    "name": "NETRO .s",
+    "name": "ORANGE SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "NICK TOONS .s",
+    "name": "ORANGE SPORT 4",
     "best_score": 0.0
   },
   {
-    "name": "OBSERVATOR NEWS .s",
+    "name": "PAPRIKA TV",
     "best_score": 0.0
   },
   {
-    "name": "ORANGE SPORT 1 .s",
+    "name": "PLOIESTI TV",
     "best_score": 0.0
   },
   {
-    "name": "ORANGE SPORT 2 .s",
+    "name": "PLUS SECUEVA",
     "best_score": 0.0
   },
   {
-    "name": "ORANGE SPORT 3 .s",
+    "name": "PLUS SUCEAVA",
     "best_score": 0.0
   },
   {
-    "name": "ORANGE SPORT 4 .s",
+    "name": "PREMIERA SAPTAMANII 1",
     "best_score": 0.0
   },
   {
-    "name": "PAPRIKA TV .s",
+    "name": "PREMIERA SAPTAMANII 2",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .s",
+    "name": "PREMIERA SAPTAMANII 3",
     "best_score": 0.0
   },
   {
-    "name": "PLOIESTI TV .s",
+    "name": "PRO 2",
     "best_score": 0.0
   },
   {
-    "name": "PLUS SECUEVA .s",
+    "name": "PRO FIT",
     "best_score": 0.0
   },
   {
-    "name": "PLUS SUCEAVA .s",
+    "name": "PRO GOLD",
     "best_score": 0.0
   },
   {
-    "name": "PREMIERA SAPTAMANII 1 .s",
+    "name": "PRO X",
     "best_score": 0.0
   },
   {
-    "name": "PREMIERA SAPTAMANII 2 .s",
+    "name": "ROMANIA ARE ROAST",
     "best_score": 0.0
   },
   {
-    "name": "PREMIERA SAPTAMANII 3 .s",
+    "name": "ROMANIA TV",
     "best_score": 0.0
   },
   {
-    "name": "PRO 2 HD .b",
+    "name": "ROTV VALENCIA",
     "best_score": 0.0
   },
   {
-    "name": "PRO FIT .s",
+    "name": "SAPTAMANII 1",
     "best_score": 0.0
   },
   {
-    "name": "PRO GOLD .b",
+    "name": "SAPTAMANII 2",
     "best_score": 0.0
   },
   {
-    "name": "PRO GOLD .s",
+    "name": "SAPTAMANII 3",
     "best_score": 0.0
   },
   {
-    "name": "PRO X .s",
+    "name": "SCI-FI",
     "best_score": 0.0
   },
   {
-    "name": "PRO X HD .b",
+    "name": "SERIALE- BLACK MIRROR",
     "best_score": 0.0
   },
   {
-    "name": "ROMANIA ARE ROAST .s",
+    "name": "SERIALE- GOMMORA",
     "best_score": 0.0
   },
   {
-    "name": "ROMANIA TV .b",
+    "name": "SERIALE- PEAKY BLINDERS",
     "best_score": 0.0
   },
   {
-    "name": "ROTV VALENCIA .s",
+    "name": "SERIALE- THE DARK",
     "best_score": 0.0
   },
   {
-    "name": "SCI-FI .s",
+    "name": "SERIALE- THE WITCHER",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- BLACK MIRROR .s",
+    "name": "SERIALE- TREADSTONE",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- GOMMORA .s",
+    "name": "SERIALE- VLAD",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- PEAKY BLINDERS .s",
+    "name": "SKY SHOWTIME 1",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- THE DARK .s",
+    "name": "SKY SHOWTIME 2",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- THE WITCHER .s",
+    "name": "SPERANTATV",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- TREADSTONE .s",
+    "name": "STAND UP REVOLUTION",
     "best_score": 0.0
   },
   {
-    "name": "SERIALE- VLAD .s",
+    "name": "TELEKOM SPORT 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "SPERANTATV .s",
+    "name": "TELEKOM SPORT 2 HD",
     "best_score": 0.0
   },
   {
-    "name": "STAND UP REVOLUTION .s",
+    "name": "TELEKOM SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "TEENNICK .s",
+    "name": "TELEKOM SPORT 4",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 1 .s",
+    "name": "THE HUNGRY GAMES - TRILOGY",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 1 HD .b",
+    "name": "TNT",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 2 .s",
+    "name": "TOM AND JERRY",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 2 HD .b",
+    "name": "TRAVEL CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 3 .s",
+    "name": "TRUE CINEMA",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 3 HD .b",
+    "name": "TV 1000",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 4 .s",
+    "name": "TVR TARGU MURES",
     "best_score": 0.0
   },
   {
-    "name": "TELEKOM SPORT 4 HD .b",
+    "name": "TVR TIMISOARA",
     "best_score": 0.0
   },
   {
-    "name": "TEZAUR TV .s",
+    "name": "TVRI",
     "best_score": 0.0
   },
   {
-    "name": "THE HUNGRY GAMES - TRILOGY .s",
+    "name": "U TV",
     "best_score": 0.0
   },
   {
-    "name": "TNT .s",
+    "name": "VH1",
     "best_score": 0.0
   },
   {
-    "name": "TNT HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOM AND JERRY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TRAVEL CHANNEL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV 1000 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV 1000 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVR TARGU MURES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVRI .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "U TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VH1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT EXPORER .b",
+    "name": "VIASAT EXPORER",
     "best_score": 0.0
   }
 ]
