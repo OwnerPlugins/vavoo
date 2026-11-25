@@ -302,7 +302,8 @@ on `127.0.0.1:4323`. It:
   and only moves on after repeated failure reports.
 - `/channels` is `VavooProxy.channel_rows(country, grouped)` (also
   called in-process: Search all, sub-categories); `&grouped=0` is
-  Group Sources off. `country_counts(grouped)` follows it.
+  Group Sources off, and what every export asks for (bouquets,
+  .m3u files - below). `country_counts(grouped)` follows it.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
   `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (the
   country's guide: `_serve_epg()`, see "EPG sources" below), `/file`,
@@ -407,7 +408,15 @@ per-category/hierarchical) that reference the proxy, matches each
 channel to its country's EPG feed (`find_match()`, below) for the
 EPGImport channels file, and can reorganize bouquet position
 (top/bottom of channel list). The match result's `feed_id` key is the
-channel's id in the country's EPG feed.
+channel's id in the country's EPG feed. Every source of a channel is
+its own entry, under its catalog name ("SIC .b", "SIC .c", "SIC .d"):
+`get_channels_from_proxy()` (both exports, manual and scheduled) and
+the settings' M3U `get_channels_for_country()` ask `/channels` with
+`&grouped=0`, whatever `cfg.group_sources` says (a bouquet has no
+source menu); old bouquets' `grp:` entries still resolve.
+`channel_alias.normalize_channel_name()` strips any source tag (the
+proxy's `_GROUP_SUFFIX_RE` rule, plus `.c`/`.s`/`.b` with no space) so
+each source finds the alias (`tests/test_export_sources.py`).
 
 **EPG sources (`vUtils.py`, `vavoo_proxy.py`'s `_serve_epg()`)** — as
 the Android app (`Epg.kt`): a country's programmes come from its daily

@@ -376,7 +376,13 @@ def normalize_channel_name(raw_name):
     # "RAI 4K" and "SKY SPORT 4K" are their own distinct channels with
     # dedicated ALIAS_MAP entries - stripping it would silently merge
     # them into the wrong (non-4K) channel.
-    name = sub(r'\s*\.(c|s|b)$', '', name, flags=IGNORECASE)
+    # Any source tag, not only .c/.s/.b: exported bouquets carry every
+    # source under its catalog name ("RAI 1 .d", Geil's "(2)" as
+    # "RAI 1 .2" - fix_geil_name()), the same tag rule as the proxy's
+    # grouping (_GROUP_SUFFIX_RE). The old rule stays for a tag with
+    # no space before it ("RAI 1.b").
+    name = sub(r'(\s+\.[A-Z0-9]{1,3}|\s*\.(C|S|B))$', '', name,
+               flags=IGNORECASE)
     # Only strip the quality suffix if the name doesn't already match a
     # dedicated ALIAS_MAP entry that keeps it (e.g. "DMAX HD" ->
     # DMAXHD.it is a different Rytec id than "DMAX" -> DMAX.it, same as

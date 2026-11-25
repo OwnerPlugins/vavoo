@@ -70,7 +70,7 @@ The Full HD skins of this version, drawn with sample channels.
 - **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use, the clock and date and one row of keys. BLUE opens the channel list over the video with a **mini guide** (now, the next three, the description), YELLOW the source, EPG the guide; type a channel number to go there; 0 (or RECALL) goes back to the previous channel
 - **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), record, stream info (resolution, frame rate, codec, source), programme guide and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
-- **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
+- **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered. Exported bouquets list every source as its own channel, under its own name
 - **Programme Guide** – As in the app: INFO (or EPG) in a channel list, Favourites or Recently watched, or MENU → "Programme guide" in the player, shows a grid of those channels with three hours across - a box per programme, the now line, what is on now in its own colour. Look back 3 hours or ahead to the end of the guide (about a day)
 - **Reminders** – OK on a programme still to come → "Remind me": at its start a window offers to watch it, also with the plugin closed
 - **Recordings** – As in the app: record the channel you watch (MENU → Record, or REC) until the programme's end, or set a recording in the guide. It goes on when you zap, close the plugin or put the box in standby, and the box wakes from deep standby for one set in the guide. Recordings go to Enigma2's movie folder (they show in the box's own movie list too) and play from the "Recordings" list
@@ -84,7 +84,7 @@ The Full HD skins of this version, drawn with sample channels.
 - **Welcome** – On a new install, the first opening asks for the look, your countries and (if you want) a PIN for adult channels
 
 ### In your Enigma2 channel list
-- **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom
+- **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom - every source of a channel ("SIC .b", "SIC .c", "SIC .d") as its own channel
 - **Scheduled Updates** – Re-match EPG and refresh the exported bouquets at an interval or at a fixed time of day
 - **EPG Integration** – Electronic Program Guide for supported channels, in the plugin and through EPGImport: epgshare01's daily files, the GitHub copy as a fallback
 - **M3U Playlist Generation** – Create standard M3U playlist files for external players
@@ -409,7 +409,8 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - Channels that exist from several sources (Vavoo's ".b" / ".c" / ".s" variants and the like) appear once in the list
 - While such a channel is playing, press **MENU → Source**: the menu lists every source by its channel name, "✓" on the one in use and "✗" on one that failed a moment ago; the bar's status line shows the source in use
 - Settings → **"Group Sources"** off shows every source as its own row instead
-- Pick another one if a source buffers or keeps stopping. The choice is remembered for that channel, also in exported bouquets
+- Pick another one if a source buffers or keeps stopping. The choice is remembered for that channel
+- Exported bouquets (and the .m3u files) list every source as its own channel, under its catalog name ("SIC .b", "SIC .c", "SIC .d"), whatever "Group Sources" says: a bouquet has no source menu. Bouquets exported by earlier versions have one entry per channel; they still work, and become one per source the next time they are exported or updated
 
 ## 🎯 Benefits
 - ✅ **No 10-minute blocks** – Proxy handles authentication tokens
@@ -484,17 +485,20 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - **Grouped sources**: several catalog entries for the same channel
   (Vavoo's own `.b`/`.c`/`.s`-style suffix, Geil's `(N)` already
   normalized to match it) are shown as a single row in `/channels`
-  (and so in the plugin's channel list, search, favourites, and
-  exported bouquets - all of which read `/channels`), named without
-  the suffix, same idea as the companion Android app's "group
-  sources" option. The proxy picks one source and stays on it. When
+  (and so in the plugin's channel list, search and favourites), named
+  without the suffix, same idea as the companion Android app's "group
+  sources" option. Exported bouquets and .m3u files ask
+  `/channels?...&grouped=0`: every source its own entry, under its
+  catalog name. The proxy picks one source and stays on it. When
   the plugin's player reports that the stream ended, the same source
   is retried once with a fresh address; a second failure within a
   minute moves on to the next source. In the player, **MENU → Source** opens
   a "Choose Stream Source" menu to pick one yourself - each source is
   listed under its own catalog name (e.g. "SIC .b", "SIC HD .s"), the
   pick is remembered (`/etc/enigma2/vavoo_source_prefs.json`) and also
-  applies to that channel in exported bouquets. This can't recover a source
+  applies to a grouped entry left in a bouquet exported by an earlier
+  version.
+  This can't recover a source
   that resolved fine but is slow/buffering - pick another one for that.
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
@@ -562,13 +566,15 @@ The proxy provides these endpoints:
 ### Bouquet Export
 - Path: Plugin menu → Select country → GREEN button
 - Creates bouquets with proxy URLs: `http://127.0.0.1:4323/vavoo?channel=CHANNEL_ID`
-- Channels are matched to their country's EPG feed (see "EPG Integration" above)
+- Every source of a channel is its own entry, under its catalog name ("SIC .b", "SIC .c", "SIC .d")
+- Channels are matched to their country's EPG feed (see "EPG Integration" above); every source of a channel gets its guide
 - EPG mapping files are automatically generated for each country
 - Supports both flat bouquets and hierarchical categories
 
 ### M3U Export
 - Path: Config Menu → "Generate .m3u files" (press OK)
 - Downloads playlist from proxy and saves as `vavoo_[country]_playlist.m3u`
+- Every source of a channel is its own entry, as in the bouquets
 - Supports single country or all countries export
 
 ### EPG Files

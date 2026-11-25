@@ -709,8 +709,11 @@ def get_channels_from_proxy(name, export_type):
         # Encode the name
         encoded_name = quote(name)
 
-        # Proxy URL
-        proxy_url = "http://{}:{}/channels?country={}".format(
+        # Every source of a channel its own entry ("SIC .b", "SIC .c",
+        # "SIC .d" - grouped=0), whatever "Group Sources" says for the
+        # plugin's own list: a bouquet has no source menu, so it lists
+        # them all, under their catalog names.
+        proxy_url = "http://{}:{}/channels?country={}&grouped=0".format(
             PROXY_HOST, PORT, encoded_name)
 
         # Request to the proxy

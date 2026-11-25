@@ -1046,8 +1046,10 @@ class vavoo_config(Screen, ConfigListScreen):
         """Get channels for a country from the proxy"""
         try:
             encoded_country = url_quote(country_name)
+            # every source its own entry, as the bouquets
+            # (bouquet_manager.get_channels_from_proxy())
             proxy_url = PROXY_BASE_URL + \
-                "/channels?country={}".format(encoded_country)
+                "/channels?country={}&grouped=0".format(encoded_country)
             response = getUrl(proxy_url, timeout=15)
             if not response:
                 print("[M3U] No response for %s" % country_name)
