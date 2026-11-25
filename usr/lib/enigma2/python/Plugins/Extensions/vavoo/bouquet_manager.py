@@ -240,8 +240,10 @@ def _add_to_main_bouquet(bouquet_name, bouquet_type, list_position="bottom"):
         print("DEBUG: Skipping " + bouquet_name + " - not a userbouquet")
         return
 
-    bouquet_line = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + \
-        bouquet_name + '" ORDER BY bouquet\n'
+    # (text: bouquets.tv is written through io.open(), which on Python 2
+    # takes no byte string - a str bouquet name made every line fail)
+    bouquet_line = u'#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + \
+        vavoo_store.to_text(bouquet_name) + u'" ORDER BY bouquet\n'
 
     try:
         # Read existing content - this is a shared, system-wide file that
@@ -1344,7 +1346,7 @@ def _update_favorite_file(name, url, export_type):
     # field on read-back (here and in remove_favorite_entry()), and an
     # embedded newline would inject an extra pseudo-entry into the flat
     # file.
-    name = _strip_control_chars(name).replace('|', '')
+    name = _strip_control_chars(vavoo_store.to_text(name)).replace(u'|', u'')
 
     favorite_path = vavoo_store.bouquet_list_file()
     print("[Bouquet] Updating bouquet list: " +
@@ -1381,8 +1383,10 @@ def _update_favorite_file(name, url, export_type):
         temp_path = favorite_path + ".tmp"
         with io.open(temp_path, 'w', encoding='utf-8') as f:
             for bouq_name, bouq_data in sorted(existing_bouquets.items()):
-                line = bouq_name + "|" + \
-                    bouq_data['url'] + "|" + bouq_data['export_type'] + "|" + bouq_data['timestamp']
+                # (text on both Pythons, see _add_to_main_bouquet())
+                line = u"|".join(vavoo_store.to_text(part) for part in (
+                    bouq_name, bouq_data['url'], bouq_data['export_type'],
+                    bouq_data['timestamp']))
                 f.write(line + "\n")
         rename(temp_path, favorite_path)
 
@@ -1405,7 +1409,7 @@ def remove_favorite_entry(name):
     """
     # Match _update_favorite_file()'s sanitization so a name containing
     # '|'/newline still finds and removes the entry it actually wrote.
-    name = _strip_control_chars(name).replace('|', '')
+    name = _strip_control_chars(vavoo_store.to_text(name)).replace(u'|', u'')
 
     favorite_path = vavoo_store.bouquet_list_file()
     if not isfile(favorite_path):
