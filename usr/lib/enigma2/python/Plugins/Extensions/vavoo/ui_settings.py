@@ -319,6 +319,11 @@ class vavoo_config(Screen, ConfigListScreen):
               "→ Source in the player picks one. Off: every source in "
               "its own row.")))
         self.list.append(getConfigListEntry(
+            _("Favourites by country"),
+            cfg.fav_by_country,
+            _("The favourites under a title per country, as in the "
+              "favourites bouquet. Off: one list in your order.")))
+        self.list.append(getConfigListEntry(
             _("Channel Logos"),
             cfg.logos,
             _("Show the channels' logos in the lists and the player. "
@@ -1401,7 +1406,8 @@ BACKUP_SETTINGS = (
     "theme", "text_size", "show_counts", "clock_format", "back",
     "catalog_source", "playlist_key", "proxy_startup_timeout",
     "epg_enabled", "preview_window", "start_last", "list_epg",
-    "group_sources", "logos", "subcategories", "autobouquetupdate",
+    "group_sources", "fav_by_country", "logos", "subcategories",
+    "autobouquetupdate",
     "timetype", "updateinterval", "fixedtime", "services",
     "list_position", "stmain", "stats_enabled", "debug_logging",
     "timeshift", "record_path",

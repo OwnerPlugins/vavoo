@@ -36,8 +36,11 @@ from .vUtils import (
     update_complete_cache,
     update_epg_sources,
     write_epg_mapping_file,
-    ensure_sref_trailing_colon
+    ensure_sref_trailing_colon,
+    prune_epg_mapping_file,
+    prune_epg_mapping_files,
 )
+from . import vUtils
 from .vavoo_proxy import run_proxy_in_background
 from . import (
     PORT,
@@ -372,68 +375,20 @@ def remove_bouquets_by_name(name=None):
             # registration in bouquets.tv/.radio survives.
             _remove_bouquet_lines_from_main_files(removed_filenames)
 
-        # --- also remove associated EPG files ---
-        epg_dir = "/etc/epgimport"
-
+        # --- also the EPG files' entries no bouquet holds any more ---
+        # A country's channels file is shared by every bouquet playing
+        # its channels (its categories, the favourites bouquet): only
+        # the entries of the bouquets just removed go.
         if name is not None:
-            # Specific removal for a country, or for one category
-            # sub-bouquet of it
             country_code = get_country_code_from_bouquet_name(name)
             if country_code:
-                # vavoo_<country>.channels.xml is SHARED by every
-                # category sub-bouquet of a country (see vUtils.py's
-                # per-country EPG filename). If `name` is itself a
-                # category bouquet (e.g. "Italy -> Sport") and a
-                # sibling category bouquet for the same country (e.g.
-                # "Italy -> News") survives the removal above, deleting
-                # the shared EPG file here would silently break that
-                # sibling's EPG - only delete it when no such sibling
-                # remains on disk.
-                country_prefix = _bouquet_country_prefix(
-                    _sanitize_name_for_path(name))
-                sibling_exists = False
-                if country_prefix:
-                    # Same two-pattern "does a bouquet for this country
-                    # exist" check as is_bouquet_exported()/the removal
-                    # loop above - a category sibling
-                    # ("userbouquet.vavoo_italy_news.tv") AND a flat,
-                    # whole-country bouquet ("userbouquet.vavoo_italy.tv")
-                    # both reference the very same shared EPG file, so
-                    # either one surviving means it's still needed.
-                    flat_name = "userbouquet.vavoo_%s." % country_prefix
-                    category_prefix = "userbouquet.vavoo_%s_" % country_prefix
-                    for fname in listdir(ENIGMA_PATH):
-                        if ('.vavoo_' in fname and
-                                (fname.endswith('.tv') or fname.endswith('.radio')) and
-                                (fname.startswith(flat_name) or
-                                 fname.startswith(category_prefix))):
-                            sibling_exists = True
-                            break
-
-                if not sibling_exists:
-                    epg_file = join(
-                        epg_dir, "vavoo_{}.channels.xml".format(
-                            country_code.lower()))
-                    if file_exists(epg_file):
-                        try:
-                            remove(epg_file)
-                            print(
-                                "✓ Removed EPG file: vavoo_{}.channels.xml".format(country_code))
-                        except Exception as e:
-                            print("Error removing EPG file: {}".format(e))
+                prune_epg_mapping_file(country_code, ENIGMA_PATH)
         else:
-            # Removing all bouquets: delete all vavoo_*.channels.xml
-            # files, plus the no-country-code fallback filename
-            # write_epg_mapping_file() falls back to
-            # ("vavoo.channels.xml", no underscore) when a bouquet's
-            # country can't be determined - the "vavoo_*" glob alone
-            # doesn't match that one, which left it behind forever.
-            pattern = join(epg_dir, "vavoo_*.channels.xml")
-            epg_files = glob.glob(pattern)
-            fallback_epg_file = join(epg_dir, "vavoo.channels.xml")
-            if file_exists(fallback_epg_file):
-                epg_files.append(fallback_epg_file)
-            for epg_file in epg_files:
+            # Every Vavoo bouquet gone: every vavoo*.channels.xml - also
+            # "vavoo.channels.xml", the file write_epg_mapping_file()
+            # uses when a bouquet's country is not known.
+            for epg_file in glob.glob(join(vUtils.EPGIMPORT_DIR,
+                                           "vavoo*.channels.xml")):
                 try:
                     remove(epg_file)
                     print("✓ Removed EPG file: {}".format(basename(epg_file)))
@@ -548,7 +503,8 @@ def convert_bouquet_sync(
                            for m in matched if m['feed_id']]
             if epg_entries:
                 try:
-                    write_epg_mapping_file(epg_entries, country_code)
+                    write_epg_mapping_file(epg_entries, country_code,
+                                       ENIGMA_PATH)
                     print(
                         "[Bouquet] EPG mapping written for {} channels".format(
                             len(epg_entries)))
@@ -905,7 +861,8 @@ def process_epg_matching_background(
             epg_entries = [(m['feed_id'], m['full_service_ref'], m['name'])
                            for m in matched if m['feed_id']]
             if epg_entries:
-                write_epg_mapping_file(epg_entries, country_code)
+                write_epg_mapping_file(epg_entries, country_code,
+                                       ENIGMA_PATH)
                 print(
                     "[EPGBackground] EPG mapping written for %d channels" %
                     len(epg_entries))
@@ -1420,6 +1377,190 @@ def remove_favorite_entry(name):
         print("[Bouquet] Removed {} from bouquet list".format(name))
     except Exception as e:
         print("[Bouquet] Error removing {} from bouquet list: {}".format(name, e))
+
+
+# ---------------------------------------------------------------------
+# The favourites bouquet: one bouquet with the user's favourites, a
+# marker (a title line Enigma2 does not play) for each country and its
+# channels under it - the Favourites list's order
+# (vavoo_store.favourites_by_country()). Exported from the Favourites'
+# MENU, kept by the scheduled update (its line in the bouquet list) and
+# rewritten by the plugin when the favourites change.
+
+FAVOURITES_BOUQUET = "userbouquet.vavoo_favourites.tv"
+FAVOURITES_NAME = "Favourites"          # its line in the bouquet list
+FAVOURITES_EXPORT = "favourites"        # ... and that line's type
+
+
+def favourites_bouquet_exported():
+    return isfile(join(ENIGMA_PATH, FAVOURITES_BOUQUET))
+
+
+def _url_id(url):
+    """The id in a proxy address "...vavoo?channel=<id>" (a catalog id
+    or a "grp:" group id), decoded, or None."""
+    url = vavoo_store.to_text(url)
+    if u"vavoo?channel=" not in url:
+        return None
+    channel_id = url.split(u"vavoo?channel=", 1)[1]
+    for separator in (u"&", u"?", u"#"):
+        channel_id = channel_id.split(separator)[0]
+    if str is bytes:    # Python 2: unquote bytes, then UTF-8
+        channel_id = unquote(channel_id.encode("utf-8")).decode(
+            "utf-8", "ignore")
+    else:
+        channel_id = unquote(channel_id)
+    return channel_id or None
+
+
+def _quote_id(channel_id):
+    if str is bytes:
+        return vavoo_store.to_text(
+            quote(channel_id.encode("utf-8"), safe=""))
+    return quote(channel_id, safe="")
+
+
+def favourites_bouquet_lines(title, entries, servicetype, other_label=u"Other"):
+    """(lines, channels, left out, [channel]) of the favourites
+    bouquet: "#NAME title", then for each country a marker with its
+    name and its channels, each as a country bouquet writes it (the
+    proxy's address, unique_fallback_sref() of its id). A channel that
+    asks for the PIN (Parental Control) is left out: the bouquet plays
+    without one. Each channel: {name, id, url, country_code, ref}."""
+    text = vavoo_store.to_text
+    lines = [u"#NAME " + _strip_control_chars(text(title))]
+    channels = []
+    skipped = 0
+    marker = 0
+    for country, members in vavoo_store.favourites_by_country(entries):
+        rows = []
+        for entry in members:
+            channel_id = _url_id(entry.get("url"))
+            name = text(entry.get("name")).strip()
+            if not channel_id or not name:
+                continue
+            if vavoo_store.is_channel_locked(name, entry.get("country_name")):
+                skipped += 1
+                continue
+            url = u"http://%s:%d/vavoo?channel=%s" % (
+                PROXY_HOST, PORT, _quote_id(channel_id))
+            ref = text(unique_fallback_sref(servicetype, channel_id)) + \
+                url.replace(u":", u"%3a")
+            shown = text(sanitizeFilename(remove_parentheses(
+                decodeHtml(name)))) or name
+            rows.append(u"#SERVICE " + ref)
+            rows.append(u"#DESCRIPTION " + _strip_control_chars(shown))
+            channels.append({"name": name, "id": channel_id, "url": url,
+                             "country_code": text(entry.get("country_code")),
+                             "ref": ref})
+        if not rows:
+            continue
+        marker += 1
+        label = _strip_control_chars(
+            text(country) or text(other_label)).replace(u":", u" ").strip()
+        lines.append(u"#SERVICE 1:64:%x:0:0:0:0:0:0:0::%s" % (marker, label))
+        lines.append(u"#DESCRIPTION " + label)
+        lines.extend(rows)
+    return lines, len(channels), skipped, channels
+
+
+def _favourites_epg(channels, servicetype):
+    """The favourites' guide, per country: matched as a country export
+    does, into the country's channels file (shared, see
+    write_epg_mapping_file())."""
+    matcher = get_epg_matcher()
+    by_country = {}
+    for channel in channels:
+        code = channel["country_code"]
+        if code:
+            by_country.setdefault(code, []).append(channel)
+    for code, members in by_country.items():
+        matched = []
+        unmatched = []
+        for channel in members:
+            try:
+                feed_id, dvb_ref, source = matcher.find_match(
+                    channel["name"], code, servicetype,
+                    channel_id=channel["id"], allow_curated_promotion=True)
+            except Exception as e:
+                print("[Favourites] Matching %s: %s" % (channel["name"], e))
+                continue
+            if feed_id and dvb_ref:
+                matched.append({
+                    'name': channel["name"], 'channel_id': channel["id"],
+                    'dvb_ref': dvb_ref.rstrip(':'),
+                    'full_service_ref': channel["ref"], 'feed_id': feed_id,
+                    'source': source})
+            else:
+                unmatched.append({'name': channel["name"],
+                                  'channel_id': channel["id"]})
+        entries = [(m['feed_id'], m['full_service_ref'], m['name'])
+                   for m in matched]
+        if entries:
+            write_epg_mapping_file(entries, code, ENIGMA_PATH)
+        try:
+            update_complete_cache(matched, unmatched, code, servicetype)
+        except Exception as e:
+            print("[Favourites] Error updating the EPG cache: %s" % e)
+    try:
+        flush_unmatched_cache()
+    except Exception as e:
+        print("[Favourites] Error flushing the unmatched cache: %s" % e)
+    update_epg_sources()
+
+
+def export_favourites_sync(title, servicetype, bouquet_position,
+                           other_label=u"Other", epg=True):
+    """The favourites bouquet written (again), in the channel list and
+    in the bouquet list (the scheduled update keeps it), then - with
+    `epg` and "Enable Vavoo EPG" - its guide. Returns (channels, left
+    out for the PIN), or None when it could not be written.
+
+    Precondition: the caller holds export_lock (the files it shares
+    with every export: bouquets.tv, the bouquet list, the EPG files)."""
+    lines, count, skipped, channels = favourites_bouquet_lines(
+        title, vavoo_store.load_favourites(), servicetype, other_label)
+    path = join(ENIGMA_PATH, FAVOURITES_BOUQUET)
+    try:
+        temp_path = path + ".tmp"
+        with io.open(temp_path, 'w', encoding='utf-8') as f:
+            f.write(u"\n".join(lines) + u"\n")
+        rename(temp_path, path)
+    except Exception as e:
+        print("[Favourites] Cannot write %s: %s" % (FAVOURITES_BOUQUET, e))
+        return None
+    print("[Favourites] %s written: %d channels, %d left out (PIN)" % (
+        FAVOURITES_BOUQUET, count, skipped))
+    _add_to_main_bouquet(FAVOURITES_BOUQUET, 'tv', bouquet_position)
+    _update_favorite_file(FAVOURITES_NAME, "", FAVOURITES_EXPORT)
+    if epg and channels and config.plugins.vavoo.epg_enabled.value:
+        try:
+            _favourites_epg(channels, servicetype)
+        except Exception as e:
+            print("[Favourites] EPG: %s" % e)
+            trace_error()
+    return count, skipped
+
+
+def remove_favourites_bouquet():
+    """The favourites bouquet gone: its file, its line in bouquets.tv and
+    in the bouquet list, its entries in the EPG files. True if it was
+    there. Precondition: the caller holds export_lock."""
+    path = join(ENIGMA_PATH, FAVOURITES_BOUQUET)
+    existed = isfile(path)
+    if existed:
+        try:
+            remove(path)
+        except Exception as e:
+            print("[Favourites] Cannot remove %s: %s" % (FAVOURITES_BOUQUET, e))
+            return False
+    _remove_bouquet_lines_from_main_files([FAVOURITES_BOUQUET])
+    remove_favorite_entry(FAVOURITES_NAME)
+    prune_epg_mapping_files(ENIGMA_PATH)
+    update_epg_sources()
+    ReloadBouquets(500)
+    print("[Favourites] Favourites bouquet removed")
+    return existed
 
 
 def reorganize_all_bouquets_position(list_position="bottom"):

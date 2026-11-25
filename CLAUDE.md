@@ -417,6 +417,32 @@ source menu); old bouquets' `grp:` entries still resolve.
 `channel_alias.normalize_channel_name()` strips any source tag (the
 proxy's `_GROUP_SUFFIX_RE` rule, plus `.c`/`.s`/`.b` with no space) so
 each source finds the alias (`tests/test_export_sources.py`).
+- The favourites bouquet (`FAVOURITES_BOUQUET` =
+  `userbouquet.vavoo_favourites.tv`, "Vavoo ★ Favourites"):
+  `favourites_bouquet_lines()` - a marker (`#SERVICE
+  1:64:<n>:0:0:0:0:0:0:0::<country>`) per country of
+  `vavoo_store.favourites_by_country()`, its channels as a country
+  bouquet writes them (`unique_fallback_sref()` of the id + the proxy
+  address: the bouquet needs no matching), the channels that ask for
+  the PIN (`is_channel_locked()`) left out. `export_favourites_sync()`
+  (under `export_lock`) writes it, registers it, puts
+  `Favourites||favourites|time` in the bouquet list (the scheduled
+  update's `FAVOURITES_EXPORT` branch) and matches its guide per
+  country; `remove_favourites_bouquet()`. plugin.py's
+  `export_favourites_bouquet()` (thread "vv-favbouquet", Favourites →
+  MENU) and the follow: `vavoo_store.on_favourites_changed()` →
+  `_favourites_changed()` → written again `FAVOURITES_FOLLOW_DELAY`
+  10 s after the last change, when exported.
+- A country's EPG channels file (`vavoo_<cc>.channels.xml` under
+  `vUtils.EPGIMPORT_DIR`, never a literal path) is shared by every
+  bouquet that plays its channels: `write_epg_mapping_file(...,
+  bouquet_dir)` keeps the entries already there that a Vavoo bouquet
+  on disk still holds (`_bouquet_service_refs()`; the bouquet is
+  written before its mapping), `remove_bouquets_by_name(name)` calls
+  `prune_epg_mapping_file(cc)` (only the entries no bouquet holds go;
+  the file goes when empty) - exporting the favourites never takes a
+  country bouquet's guide, nor the other way round
+  (`tests/test_fav_countries.py`).
 
 **EPG sources (`vUtils.py`, `vavoo_proxy.py`'s `_serve_epg()`)** — as
 the Android app (`Epg.kt`): a country's programmes come from its daily
@@ -583,8 +609,16 @@ Parental / Backup / Monogram / SearchText, all under `ENIGMA_PATH`
   favourite is its address (`/vavoo?channel=<id>`);
   `repair_favourites()` re-finds one by name when a country's list
   loads; `reorder_favourites()` keeps the places of the favourites it
-  is given (a folder's move swaps only that folder's channels). The
-  plugin folder is deleted by every update (installer.sh,
+  is given (a folder's move swaps only that folder's channels).
+  `favourites_by_country(entries)` = `[(country, [entry])]` (countries
+  by their first favourite, "" last) is the order of the Favourites
+  list with `cfg.fav_by_country` (on: a title row per country,
+  `VavooFavourites._row_entry` maps rows to `favourite_entries`, UP /
+  DOWN step over the titles, the player gets `_channel_rows` alone, a
+  move stays in its country and MENU → Move this country moves a
+  whole one) and of the favourites bouquet; `favourite_channels()`
+  follows it. `on_favourites_changed(fn)`: called after each write
+  (it only schedules). The plugin folder is deleted by every update (installer.sh,
   CONTROL/preinst): never keep user data there - `migrate_old_files()`
   (and both installers) move the old `vavoo_favourites.json` /
   `Favorite.txt` (now `vavoo_bouquet_list.txt`) out once; the old dict
@@ -996,7 +1030,8 @@ Needs `six` and `requests`; the recording tests need `ffmpeg` /
   tests start it themselves - `test_proxy_start.py`, on a free port),
   no write to the plugin's skin (`add_skin_back` replaced;
   `REAL_ADD_SKIN_BACK` for `test_audit`), the saved catalog in the
-  temp folder. `run_tests.py` fails when the tests leave any file of
+  temp folder, `vUtils.EPGIMPORT_DIR` there too (never
+  /etc/epgimport). `run_tests.py` fails when the tests leave any file of
   the checkout changed. Tests end with `e2env.exit_now()` (no Python
   shutdown: daemon threads writing to stdout made it crash now and
   then).

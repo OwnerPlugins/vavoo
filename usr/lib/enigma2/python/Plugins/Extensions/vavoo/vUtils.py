@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 import calendar
 import glob
 import hashlib
+import io
 try:
     import six
 except ImportError:
@@ -4099,21 +4100,135 @@ def _build_epg_channels_xml(unique):
     alias table can still be in their escaped form - un-escaping first
     makes the result the same either way instead of escaping them
     twice."""
-    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
+    # (u'' templates: on Python 2 a byte-string template's .format()
+    # raised on a name with an accent - a favourite keeps its own name)
+    xml_lines = [u'<?xml version="1.0" encoding="utf-8"?>', u'<channels>']
     for dvb_ref, (epg_id, ch_name) in unique.items():
         comment = ensure_str(ch_name, errors='ignore')
-        while '--' in comment:
-            comment = comment.replace('--', '- -')
+        while u'--' in comment:
+            comment = comment.replace(u'--', u'- -')
         xml_lines.append(
-            '  <channel id="{}">{}</channel><!-- {} -->'.format(
+            u'  <channel id="{}">{}</channel><!-- {} -->'.format(
                 html_escape(html_unescape(epg_id)),
                 html_escape(dvb_ref),
                 comment))
-    xml_lines.append('</channels>')
-    return '\n'.join(xml_lines)
+    xml_lines.append(u'</channels>')
+    return u'\n'.join(xml_lines)
 
 
-def write_epg_mapping_file(epg_entries, country_code):
+# EPGImport's folder: the channels files (vavoo_<cc>.channels.xml) and
+# vavoo.sources.xml. Read at call time (the tests point it elsewhere).
+EPGIMPORT_DIR = "/etc/epgimport"
+
+# One line of a channels file as _build_epg_channels_xml() writes it
+_EPG_CHANNEL_LINE_RE = compile(
+    r'<channel id="([^"]*)">([^<]*)</channel>(?:<!-- (.*?) -->)?')
+
+
+def _epg_channels_filename(country_code):
+    if country_code:
+        return "vavoo_{}.channels.xml".format(country_code.lower())
+    return "vavoo.channels.xml"
+
+
+def _bouquet_service_refs(bouquet_dir=None):
+    """Every service reference the Vavoo bouquets on disk hold (a
+    country's, its categories', the favourites'), markers left out: a
+    channels file keeps an entry while some bouquet still plays it."""
+    folder = bouquet_dir or ENIGMA_PATH
+    refs = set()
+    try:
+        names = listdir(folder)
+    except Exception:
+        return refs
+    for name in names:
+        if not (name.startswith("userbouquet.vavoo_") and
+                (name.endswith(".tv") or name.endswith(".radio"))):
+            continue
+        try:
+            with io.open(join(folder, name), "r", encoding="utf-8",
+                         errors="ignore") as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith("#SERVICE "):
+                        ref = line[len("#SERVICE "):].strip()
+                        if ref and not ref.startswith("1:64:"):
+                            refs.add(ref)
+        except Exception as e:
+            print("[EPG] Cannot read {}: {}".format(name, e))
+    return refs
+
+
+def _read_epg_channels_file(path):
+    """{full service reference: (epg_id, channel_name)} of a channels
+    file this plugin wrote ({} when there is none)."""
+    entries = {}
+    if not exists(path):
+        return entries
+    try:
+        with io.open(path, "r", encoding="utf-8", errors="ignore") as f:
+            text = f.read()
+    except Exception as e:
+        print("[EPG] Cannot read {}: {}".format(path, e))
+        return entries
+    for epg_id, ref, name in _EPG_CHANNEL_LINE_RE.findall(text):
+        ref = html_unescape(ref).strip()
+        if ref:
+            entries[ref] = (html_unescape(epg_id), (name or u"").strip())
+    return entries
+
+
+def _write_epg_channels_file(path, unique):
+    """unique written as the channels file at path (atomic), or the
+    file deleted when nothing is left. True when it went well."""
+    with _epg_lock:
+        try:
+            if not unique:
+                if exists(path):
+                    remove(path)
+                return True
+            channels_xml = _build_epg_channels_xml(unique)
+            temp_path = path + ".tmp"
+            # UTF-8 text on both Pythons (a plain open() could not write
+            # a channel name with an accent on Python 2, nor on a box
+            # whose locale is ASCII)
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
+                f.write(ensure_str(channels_xml, errors='ignore'))
+            rename(temp_path, path)
+            return True
+        except Exception as e:
+            print("[EPG] Error writing {}: {}".format(basename(path), e))
+            return False
+
+
+def prune_epg_mapping_file(country_code, bouquet_dir=None):
+    """A country's channels file keeps only the entries a Vavoo bouquet
+    still holds (deleted when none is left) - after a bouquet is
+    removed. The country's own bouquet gone, its favourites keep their
+    guide."""
+    path = join(EPGIMPORT_DIR, _epg_channels_filename(country_code))
+    entries = _read_epg_channels_file(path)
+    if not entries and not exists(path):
+        return 0
+    refs = _bouquet_service_refs(bouquet_dir)
+    kept = dict((ref, value) for ref, value in entries.items()
+                if ref in refs)
+    if len(kept) != len(entries) or not kept:
+        _write_epg_channels_file(path, kept)
+        print("[EPG] {}: {} of {} entries kept".format(
+            basename(path), len(kept), len(entries)))
+    return len(kept)
+
+
+def prune_epg_mapping_files(bouquet_dir=None):
+    """prune_epg_mapping_file() for every Vavoo channels file."""
+    for path in glob.glob(join(EPGIMPORT_DIR, "vavoo*.channels.xml")):
+        name = basename(path)[:-len(".channels.xml")]
+        code = name[len("vavoo_"):] if name.startswith("vavoo_") else ""
+        prune_epg_mapping_file(code, bouquet_dir)
+
+
+def write_epg_mapping_file(epg_entries, country_code, bouquet_dir=None):
     """
     Write the EPG mapping file for a specific country.
     epg_entries: list of tuples (epg_id, full_service_ref, channel_name),
@@ -4124,15 +4239,20 @@ def write_epg_mapping_file(epg_entries, country_code):
     through to a fake-recording probe that fails silently for it, so
     passing the bare tuple here means the channel gets dropped entirely
     during EPGImport's own channels.xml parse pass.
+
+    One file per country is shared by every bouquet that plays the
+    country's channels (the country's, its categories', the
+    favourites'): the entries already in it stay while a Vavoo bouquet
+    on disk (bouquet_dir, ENIGMA_PATH by default) still holds them -
+    the bouquet is always written before its mapping - so exporting the
+    favourites never takes the guide from the country's bouquet, nor
+    the other way round.
     """
-    epg_dir = "/etc/epgimport"
+    epg_dir = EPGIMPORT_DIR
     if not exists(epg_dir):
         makedirs(epg_dir)
 
-    if country_code:
-        filename = "vavoo_{}.channels.xml".format(country_code.lower())
-    else:
-        filename = "vavoo.channels.xml"
+    filename = _epg_channels_filename(country_code)
     channels_file = join(epg_dir, filename)
 
     # An id may still not be one this country's feed uses for
@@ -4180,21 +4300,20 @@ def write_epg_mapping_file(epg_entries, country_code):
         print("[EPG] No entries to write, skipping.")
         return None
 
-    channels_xml = _build_epg_channels_xml(unique)
+    # the other bouquets' entries of this country
+    refs = _bouquet_service_refs(bouquet_dir)
+    kept = 0
+    for ref, value in _read_epg_channels_file(channels_file).items():
+        if ref not in unique and ref in refs:
+            unique[ref] = value
+            kept += 1
 
-    with _epg_lock:
-        try:
-            temp_path = channels_file + ".tmp"
-            with open(temp_path, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
-                f.write(channels_xml)
-            rename(temp_path, channels_file)
-            print(
-                "[EPG] Written {} entries to {}".format(
-                    len(unique), filename))
-            return filename
-        except Exception as e:
-            print("[EPG] Error writing {}: {}".format(filename, e))
-            return None
+    if _write_epg_channels_file(channels_file, unique):
+        print(
+            "[EPG] Written {} entries to {} ({} of other bouquets)".format(
+                len(unique), filename, kept))
+        return filename
+    return None
 
 
 def update_epg_sources():
@@ -4202,7 +4321,7 @@ def update_epg_sources():
     Scan /etc/epgimport for vavoo_*.channels.xml files and generate
     a master vavoo.sources.xml containing a source for each.
     """
-    epg_dir = "/etc/epgimport"
+    epg_dir = EPGIMPORT_DIR
     sources_file = join(epg_dir, "vavoo.sources.xml")
     pattern = join(epg_dir, "vavoo_*.channels.xml")
     files = glob.glob(pattern)
@@ -4287,7 +4406,7 @@ def ensure_vavoo_epg_sources_enabled():
         if not config.plugins.vavoo.epg_enabled.value:
             return
 
-        epg_dir = "/etc/epgimport"
+        epg_dir = EPGIMPORT_DIR
         pattern = join(epg_dir, "vavoo_*.channels.xml")
         files = glob.glob(pattern)
         if not files:
