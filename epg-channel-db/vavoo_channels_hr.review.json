@@ -1,194 +1,230 @@
 [
   {
-    "name": "CMC TV .c",
+    "name": "CMC TV",
     "best_score": 0.667
   },
   {
-    "name": "ZDRAVA TV 7 HRVATSKA .c",
+    "name": "ZDRAVA TV 7 HRVATSKA",
     "best_score": 0.667
   },
   {
-    "name": "VTV .c",
+    "name": "HBO ADRIA",
+    "best_score": 0.5
+  },
+  {
+    "name": "VTV",
     "best_score": 0.4
   },
   {
-    "name": "OTV VALENTINO .c",
+    "name": "OTV VALENTINO",
     "best_score": 0.375
   },
   {
-    "name": "RTL CROATIA WORLD .c",
+    "name": "RTL CROATIA WORLD",
     "best_score": 0.3
   },
   {
-    "name": "24 KITCHEN .c",
+    "name": "24 KITCHEN",
     "best_score": 0.0
   },
   {
-    "name": "ALJAZEERA BALKANS .c",
+    "name": "ALJAZEERA BALKANS",
     "best_score": 0.0
   },
   {
-    "name": "ANIMAL PLANET .c",
+    "name": "ANIMAL PLANET",
     "best_score": 0.0
   },
   {
-    "name": "CBS REALITY .c",
+    "name": "CBS REALITY",
     "best_score": 0.0
   },
   {
-    "name": "CINESTAR FANTASY .c",
+    "name": "CINESTAR FANTASY",
     "best_score": 0.0
   },
   {
-    "name": "CRIME+ INVESTIGATION .c",
+    "name": "CRIME+ INVESTIGATION",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY WORLD .c",
+    "name": "CRO MAX SELECT 3",
     "best_score": 0.0
   },
   {
-    "name": "FOX CHANNEL .c",
+    "name": "CRO MAX SELECT 5",
     "best_score": 0.0
   },
   {
-    "name": "FOX LIFE .c",
+    "name": "DALMACIJA",
     "best_score": 0.0
   },
   {
-    "name": "FOX MOVIES .c",
+    "name": "DISCOVERY WORLD",
     "best_score": 0.0
   },
   {
-    "name": "HAJDUK TV .c",
+    "name": "FOX CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "JADRAN TV .c",
+    "name": "FOX CRIME",
     "best_score": 0.0
   },
   {
-    "name": "KANAL RI .c",
+    "name": "FOX LIFE",
     "best_score": 0.0
   },
   {
-    "name": "KREATOR TV .c",
+    "name": "FOX MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "LOV I RIBOLOV .c",
+    "name": "HAJDUK TV",
     "best_score": 0.0
   },
   {
-    "name": "M1 FILM GOLD .c",
+    "name": "HRT 1",
     "best_score": 0.0
   },
   {
-    "name": "MAX SPORT 1 .c",
+    "name": "HRT 2",
     "best_score": 0.0
   },
   {
-    "name": "MAX SPORT 2 .c",
+    "name": "HRT 3",
     "best_score": 0.0
   },
   {
-    "name": "MINI TV .c",
+    "name": "HRT 4",
     "best_score": 0.0
   },
   {
-    "name": "MINIMAX .c",
+    "name": "HRT DOCUMENTARY",
     "best_score": 0.0
   },
   {
-    "name": "MREZA ZAGREB .c",
+    "name": "HRT INTERNATIONAL",
     "best_score": 0.0
   },
   {
-    "name": "N1 .c",
+    "name": "INVESTIGATION DISCOVERY",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO .c",
+    "name": "JADRAN TV",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD .c",
+    "name": "KANAL RI",
     "best_score": 0.0
   },
   {
-    "name": "NOVA WORLD .c",
+    "name": "KREATOR TV",
     "best_score": 0.0
   },
   {
-    "name": "OSJECKA TV .c",
+    "name": "LOV I RIBOLOV",
     "best_score": 0.0
   },
   {
-    "name": "PLAVA VINKOVAČKA .c",
+    "name": "M1 FILM",
     "best_score": 0.0
   },
   {
-    "name": "POSAVINA TV .c",
+    "name": "M1 FILM GOLD",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 1 .c",
+    "name": "MAX SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 10 .c",
+    "name": "MAX SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 2 .c",
+    "name": "MINI TV",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 3 .c",
+    "name": "MREZA ZAGREB",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 4 .c",
+    "name": "N1",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 5 .c",
+    "name": "NAT GEO",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 6 .c",
+    "name": "NAT GEO WILD",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 7 .c",
+    "name": "NOVA WORLD",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 8 .c",
+    "name": "OSJECKA TV",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB 9 .c",
+    "name": "PLAVA VINKOVAČKA",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB FIGHT .c",
+    "name": "POLJOPRIVREDNA TV",
     "best_score": 0.0
   },
   {
-    "name": "TV BANOVINA .c",
+    "name": "SPORT KLUB 1",
     "best_score": 0.0
   },
   {
-    "name": "TV TREND KARLOVAC .c",
+    "name": "SPORT KLUB 2",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT KINO PREMIERE .c",
+    "name": "SPORT KLUB 3",
     "best_score": 0.0
   },
   {
-    "name": "ZAPAD .c",
+    "name": "SPORT KLUB 4",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KLUB 5",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KLUB 6",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KLUB 8",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KLUB 9",
+    "best_score": 0.0
+  },
+  {
+    "name": "SPORT KLUB FIGHT",
+    "best_score": 0.0
+  },
+  {
+    "name": "TV BANOVINA",
+    "best_score": 0.0
+  },
+  {
+    "name": "VIASAT KINO PREMIERE",
+    "best_score": 0.0
+  },
+  {
+    "name": "ZAPAD",
     "best_score": 0.0
   }
 ]

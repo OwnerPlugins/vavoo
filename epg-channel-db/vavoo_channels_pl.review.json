@@ -1,486 +1,454 @@
 [
   {
-    "name": "NAT GEO .c",
+    "name": "TVP 3 LODZ",
     "best_score": 0.667
   },
   {
-    "name": "TVP 3 LODZ .c",
-    "best_score": 0.667
-  },
-  {
-    "name": "POLSAT ROMANS .b",
+    "name": "POLSAT ROMANS",
     "best_score": 0.632
   },
   {
-    "name": "CINEMAX POLAND 1 FHD .b",
+    "name": "CINEMAX POLAND 1 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 2 FHD .b",
+    "name": "CINEMAX POLAND 2 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 3 FHD .b",
+    "name": "CINEMAX POLAND 3 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 4 FHD .b",
+    "name": "CINEMAX POLAND 4 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 5 FHD .b",
+    "name": "CINEMAX POLAND 5 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 6 FHD .b",
+    "name": "CINEMAX POLAND 6 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 7 FHD .b",
+    "name": "CINEMAX POLAND 7 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 8 FHD .b",
+    "name": "CINEMAX POLAND 8 FHD",
     "best_score": 0.609
   },
   {
-    "name": "CINEMAX POLAND 9 FHD .b",
+    "name": "CINEMAX POLAND 9 FHD",
     "best_score": 0.609
   },
   {
-    "name": "JUNIOR CHANNEL .c",
+    "name": "JUNIOR CHANNEL",
     "best_score": 0.6
   },
   {
-    "name": "KSW PPV (MATCH TIME) .c",
+    "name": "KSW PPV (MATCH TIME)",
     "best_score": 0.6
   },
   {
-    "name": "POLSAT JIM JAM .b",
+    "name": "POLSAT JIM JAM",
     "best_score": 0.6
   },
   {
-    "name": "POLSAT REALITY .c",
+    "name": "POLSAT REALITY",
     "best_score": 0.6
   },
   {
-    "name": "TVP 3 GDANSK .c",
+    "name": "TVP 3 GDANSK",
     "best_score": 0.588
   },
   {
-    "name": "TVP 3 GORZOW .c",
+    "name": "TVP 3 GORZOW",
     "best_score": 0.588
   },
   {
-    "name": "TVP 3 KRAKOW .c",
+    "name": "TVP 3 KRAKOW",
     "best_score": 0.588
   },
   {
-    "name": "TVP 3 POZNAN .c",
+    "name": "TVP 3 POZNAN",
     "best_score": 0.588
   },
   {
-    "name": "CINEMAX POLAND 11 FHD .b",
+    "name": "CINEMAX POLAND 10 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 12 FHD .b",
+    "name": "CINEMAX POLAND 11 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 13 FHD .b",
+    "name": "CINEMAX POLAND 12 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 14 FHD .b",
+    "name": "CINEMAX POLAND 13 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 15 FHD .b",
+    "name": "CINEMAX POLAND 14 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 16 FHD .b",
+    "name": "CINEMAX POLAND 15 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 17 FHD .b",
+    "name": "CINEMAX POLAND 16 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 18 FHD .b",
+    "name": "CINEMAX POLAND 17 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 19 FHD .b",
+    "name": "CINEMAX POLAND 19 FHD",
     "best_score": 0.583
   },
   {
-    "name": "CINEMAX POLAND 20 FHD .b",
+    "name": "CINEMAX POLAND 20 FHD",
     "best_score": 0.583
   },
   {
-    "name": "WP TV .c",
+    "name": "WP TV",
     "best_score": 0.571
   },
   {
-    "name": "TVP 3 WROCLAW .c",
+    "name": "TVP 3 WROCLAW",
     "best_score": 0.556
   },
   {
-    "name": "NICK JUNIOR .c",
+    "name": "NICK JUNIOR",
     "best_score": 0.533
   },
   {
-    "name": "TV PLUS 2 .c",
+    "name": "TV PLUS 2",
     "best_score": 0.5
   },
   {
-    "name": "TVC SUPER .c",
+    "name": "TVC SUPER",
     "best_score": 0.5
   },
   {
-    "name": "TVP 3 BIALYSTOK .c",
+    "name": "TVP 3 BIALYSTOK",
     "best_score": 0.5
   },
   {
-    "name": "TVP NAKUA .c",
+    "name": "TVP NAKUA",
     "best_score": 0.5
   },
   {
-    "name": "TBN .c",
+    "name": "TBN",
     "best_score": 0.462
   },
   {
-    "name": "TVN FABULA .b",
+    "name": "TVN FABULA",
     "best_score": 0.462
   },
   {
-    "name": "TVN FABULA .c",
-    "best_score": 0.462
-  },
-  {
-    "name": "TVT ZGORZELEC .c",
+    "name": "TVN TALK SHOW",
     "best_score": 0.375
   },
   {
-    "name": "TV TORUN .c",
+    "name": "TVT ZGORZELEC",
+    "best_score": 0.375
+  },
+  {
+    "name": "TV TORUN",
     "best_score": 0.364
   },
   {
-    "name": "TV BOLESLAWIEC .c",
+    "name": "TV BOLESLAWIEC",
     "best_score": 0.353
   },
   {
-    "name": "TV KUJAWY .c",
+    "name": "TV KUJAWY",
     "best_score": 0.333
   },
   {
-    "name": "TVP 3 GORZOW WIELKOPOLSKI .c",
+    "name": "TVP 3 GORZOW WIELKOPOLSKI",
     "best_score": 0.333
   },
   {
-    "name": "TVN KULTOWE SERIALE .c",
+    "name": "TVN KULTOWE SERIALE",
     "best_score": 0.273
   },
   {
-    "name": "TVN ZYCIE JAK W BAJCE .c",
+    "name": "TVN ZYCIE JAK W BAJCE",
     "best_score": 0.25
   },
   {
-    "name": "TVN SERIALE O KOBIETACH .c",
+    "name": "TVN SERIALE O KOBIETACH",
     "best_score": 0.231
   },
   {
-    "name": "E! .c",
+    "name": "E!",
     "best_score": 0.125
   },
   {
-    "name": "4FUN GOLD HITS .b",
+    "name": "4FUN GOLD HITS",
     "best_score": 0.0
   },
   {
-    "name": "4FUN TV .c",
+    "name": "4FUN TV",
     "best_score": 0.0
   },
   {
-    "name": "ATM ROZRYWKA TV .b",
+    "name": "ATM ROZRYWKA TV",
     "best_score": 0.0
   },
   {
-    "name": "CANAL NOW .b",
+    "name": "CANAL NOW",
     "best_score": 0.0
   },
   {
-    "name": "CANAL+ 360 .c",
+    "name": "CANAL+ 360",
     "best_score": 0.0
   },
   {
-    "name": "CANAL+ NOW .c",
+    "name": "CANAL+ NOW",
     "best_score": 0.0
   },
   {
-    "name": "CARTOONITO .c",
+    "name": "CARTOONITO",
     "best_score": 0.0
   },
   {
-    "name": "CBEEBIES .c",
+    "name": "CBEEBIES",
     "best_score": 0.0
   },
   {
-    "name": "CHILLIZET .c",
+    "name": "CHILLIZET",
     "best_score": 0.0
   },
   {
-    "name": "CRIME+ INVESTIGATION .c",
+    "name": "CRIME+ INVESTIGATION",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY HISTORY .c",
+    "name": "DISCOVERY HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY TURBO XTRA (DTX) .c",
+    "name": "DISCOVERY TURBO XTRA (DTX)",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY WORLD .c",
+    "name": "DISCOVERY WORLD",
     "best_score": 0.0
   },
   {
-    "name": "DLA CIEBIE TV .c",
+    "name": "DLA CIEBIE TV",
     "best_score": 0.0
   },
   {
-    "name": "DOMO HD .b",
+    "name": "DOMO HD",
     "best_score": 0.0
   },
   {
-    "name": "DUCK TV .c",
+    "name": "DUCK TV",
     "best_score": 0.0
   },
   {
-    "name": "ESKAROCK TV .b",
+    "name": "ESKAROCK TV",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 3 .c",
+    "name": "EXTREME SPORTS",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 4 .c",
+    "name": "EXTREME SPORTS CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "EXTREME SPORTS .b",
+    "name": "FIGHT BOX HD",
     "best_score": 0.0
   },
   {
-    "name": "EXTREME SPORTS CHANNEL .c",
+    "name": "FIGHT KLUB",
     "best_score": 0.0
   },
   {
-    "name": "EXTREME SPORTS HD .b",
+    "name": "FX",
     "best_score": 0.0
   },
   {
-    "name": "FIGHT BOX HD .b",
+    "name": "FX COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "FIGHT KLUB .c",
+    "name": "INVESTIGATION DISCOVERY",
     "best_score": 0.0
   },
   {
-    "name": "FIGHT KLUB HD .b",
+    "name": "JIMJAM POLSAT",
     "best_score": 0.0
   },
   {
-    "name": "FX .c",
+    "name": "KINO PLAY",
     "best_score": 0.0
   },
   {
-    "name": "FX COMEDY .c",
+    "name": "KUCHNIA HD",
     "best_score": 0.0
   },
   {
-    "name": "INVESTIGATION DISCOVERY .c",
+    "name": "KUCHNIA+",
     "best_score": 0.0
   },
   {
-    "name": "JIMJAM POLSAT .c",
+    "name": "LIFETIME",
     "best_score": 0.0
   },
   {
-    "name": "KINO PLAY .c",
+    "name": "LUBUSKA TV HORYZONT",
     "best_score": 0.0
   },
   {
-    "name": "KUCHNIA HD .b",
+    "name": "MOCONOMY",
     "best_score": 0.0
   },
   {
-    "name": "KUCHNIA+ .c",
+    "name": "MTV ROCKS",
     "best_score": 0.0
   },
   {
-    "name": "LIFETIME .c",
+    "name": "MUSICBOX",
     "best_score": 0.0
   },
   {
-    "name": "LIFETIME HD .b",
+    "name": "MYZEN POLSKA 4K",
     "best_score": 0.0
   },
   {
-    "name": "LUBUSKA TV HORYZONT .c",
+    "name": "NAT GEO PLAY",
     "best_score": 0.0
   },
   {
-    "name": "MOCONOMY .c",
+    "name": "NAT GEO WILD",
     "best_score": 0.0
   },
   {
-    "name": "MTV ROCKS .b",
+    "name": "NATIONAL GEO",
     "best_score": 0.0
   },
   {
-    "name": "MUSICBOX .c",
+    "name": "NSPORT",
     "best_score": 0.0
   },
   {
-    "name": "MYZEN POLSKA 4K .c",
+    "name": "NSPORT+",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO PLAY .c",
+    "name": "NUTA TV",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD .c",
+    "name": "PARAMOUNT CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEO .b",
+    "name": "PVOD",
     "best_score": 0.0
   },
   {
-    "name": "NSPORT .b",
+    "name": "SCI-FI",
     "best_score": 0.0
   },
   {
-    "name": "NSPORT+ .b",
+    "name": "SHOW TV",
     "best_score": 0.0
   },
   {
-    "name": "NUTA TV .c",
+    "name": "SKYSHOWTIME 1",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .c",
+    "name": "SKYSHOWTIME 2",
     "best_score": 0.0
   },
   {
-    "name": "PVOD .b",
+    "name": "SPORT KLUB",
     "best_score": 0.0
   },
   {
-    "name": "SCI-FI .c",
+    "name": "SPORTOWA TV",
     "best_score": 0.0
   },
   {
-    "name": "SCIFI HD .b",
+    "name": "STARS TV",
     "best_score": 0.0
   },
   {
-    "name": "SHOW TV .c",
+    "name": "SUPER EXPRESS TV",
     "best_score": 0.0
   },
   {
-    "name": "SKYSHOWTIME 1 .c",
+    "name": "SUPERSTACJA",
     "best_score": 0.0
   },
   {
-    "name": "SKYSHOWTIME 2 .c",
+    "name": "SZLAGIER",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB .b",
+    "name": "TELEWIZJA BIZNESOWA",
     "best_score": 0.0
   },
   {
-    "name": "SPORT KLUB .c",
+    "name": "TNT",
     "best_score": 0.0
   },
   {
-    "name": "SPORTOWA TV .c",
+    "name": "TRACE TV",
     "best_score": 0.0
   },
   {
-    "name": "SUPER EXPRESS TV .c",
+    "name": "TVR",
     "best_score": 0.0
   },
   {
-    "name": "SUPERSTACJA .b",
+    "name": "VIAPLAY KSW TV (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "SZLAGIER .c",
+    "name": "VIASAT EXPLORE",
     "best_score": 0.0
   },
   {
-    "name": "TELEWIZJA BIZNESOWA .c",
+    "name": "VIASAT EXPLORE CLASSIC",
     "best_score": 0.0
   },
   {
-    "name": "TNT .c",
+    "name": "VIASAT HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "TNT HD .b",
+    "name": "VIASAT NATURE",
     "best_score": 0.0
   },
   {
-    "name": "TRACE TV .b",
+    "name": "VIASAT TRUE CRIME",
     "best_score": 0.0
   },
   {
-    "name": "TVR .b",
+    "name": "W POLSCE",
     "best_score": 0.0
   },
   {
-    "name": "VIAPLAY KSW TV (MATCH TIME) .c",
+    "name": "W POLSCE POLSAT UHD",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT EXPLORE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT EXPLORE CLASSIC .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT HISTORY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT NATURE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT TRUE CRIME .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "W POLSCE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "W POLSCE POLSAT UHD .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ZEST TV .b",
+    "name": "ZEST TV",
     "best_score": 0.0
   }
 ]

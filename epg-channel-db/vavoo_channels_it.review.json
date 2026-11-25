@@ -1,1226 +1,910 @@
 [
   {
-    "name": "FRANCE 24 (EN) .s",
+    "name": "SKY SPORT MOTO GP",
     "best_score": 0.692
   },
   {
-    "name": "SKY SPORT MOTO GP .c",
+    "name": "SKY SPORT SERIE A",
     "best_score": 0.692
   },
   {
-    "name": "SKY SPORT SERIE A .c",
-    "best_score": 0.692
-  },
-  {
-    "name": "LA 7 D .c",
+    "name": "LA 7 D",
     "best_score": 0.667
   },
   {
-    "name": "SKY SPORT FOOTBALL [LIVE DURING EVENTS ONLY] .s",
+    "name": "SKY SPORT FOOTBALL [LIVE DURING EVENTS ONLY]",
     "best_score": 0.667
   },
   {
-    "name": "CACCIA .c",
+    "name": "SPORTITALIA SOLOCALCIO",
+    "best_score": 0.667
+  },
+  {
+    "name": "CACCIA",
     "best_score": 0.6
   },
   {
-    "name": "RMC 101 .c",
+    "name": "RMC 101",
     "best_score": 0.6
   },
   {
-    "name": "SUPER TENNIS .c",
+    "name": "SUPER TENNIS",
     "best_score": 0.588
   },
   {
-    "name": "SUPER TENNIS .s",
-    "best_score": 0.588
-  },
-  {
-    "name": "CINE 34 MEDIASET .s",
+    "name": "CINE 34 MEDIASET",
     "best_score": 0.545
   },
   {
-    "name": "FOX .s",
+    "name": "FOX",
     "best_score": 0.545
   },
   {
-    "name": "BLOOMBERG TV EMEA LIVE EVENT .s",
+    "name": "BLOOMBERG TV EMEA LIVE EVENT",
     "best_score": 0.486
   },
   {
-    "name": "SUPER TV BRESCIA .c",
+    "name": "SUPER TV BRESCIA",
     "best_score": 0.476
   },
   {
-    "name": "SUPER TV BRESCIA .s",
-    "best_score": 0.476
+    "name": "QVC ITALIA",
+    "best_score": 0.462
   },
   {
-    "name": "SUPER TV ARISTANIS .c",
+    "name": "SUPER TV ARISTANIS",
     "best_score": 0.435
   },
   {
-    "name": "20 MEDIASET .c",
+    "name": "20 MEDIASET",
     "best_score": 0.308
   },
   {
-    "name": "111 TV .c",
+    "name": "111 TV",
     "best_score": 0.0
   },
   {
-    "name": "12 TV PARMA .c",
+    "name": "12 TV PARMA",
     "best_score": 0.0
   },
   {
-    "name": "27 TWENTY SEVEN .s",
+    "name": "27 TWENTY SEVEN",
     "best_score": 0.0
   },
   {
-    "name": "51 CUSANO ITALIA TV .s",
+    "name": "51 CUSANO ITALIA TV",
     "best_score": 0.0
   },
   {
-    "name": "51 RADIO TV .c",
+    "name": "7 GOLD",
     "best_score": 0.0
   },
   {
-    "name": "70-80.IT .c",
+    "name": "70-80.IT",
     "best_score": 0.0
   },
   {
-    "name": "A2ITV .s",
+    "name": "A3",
     "best_score": 0.0
   },
   {
-    "name": "A3 .c",
+    "name": "ALICE",
     "best_score": 0.0
   },
   {
-    "name": "AB .s",
+    "name": "ALTO ADIGE TV",
     "best_score": 0.0
   },
   {
-    "name": "ADESSO TV .c",
+    "name": "ANIMAL PLANET",
     "best_score": 0.0
   },
   {
-    "name": "ALICE .c",
+    "name": "ANTENNA 2",
     "best_score": 0.0
   },
   {
-    "name": "ALICE .s",
+    "name": "ARABI TV",
     "best_score": 0.0
   },
   {
-    "name": "ALMA TV .c",
+    "name": "ARANCIA TV",
     "best_score": 0.0
   },
   {
-    "name": "ALMA TV .s",
+    "name": "ARTE NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "ALTO ADIGE TV .c",
+    "name": "AURORA ARTE",
     "best_score": 0.0
   },
   {
-    "name": "ALTO ADIGE TV .s",
+    "name": "AVENGERS GRIMM CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "ANTENNA 2 .c",
+    "name": "BABY TV",
     "best_score": 0.0
   },
   {
-    "name": "ANTENNA 2 .s",
+    "name": "BBC SERIES",
     "best_score": 0.0
   },
   {
-    "name": "ARANCIA TV .c",
+    "name": "BBC TOP GEAR ITALY",
     "best_score": 0.0
   },
   {
-    "name": "ARTE NETWORK .c",
+    "name": "BELLA RADIO TV",
     "best_score": 0.0
   },
   {
-    "name": "AURORA ARTE .c",
+    "name": "BELLLA & MONELLA TV",
     "best_score": 0.0
   },
   {
-    "name": "AURORA ARTE .s",
+    "name": "BIANCONERA JUVENTUS TV",
     "best_score": 0.0
   },
   {
-    "name": "AVENGERS GRIMM CHANNEL .c",
+    "name": "BLAZE",
     "best_score": 0.0
   },
   {
-    "name": "BABY TV .s",
+    "name": "BYOBLU",
     "best_score": 0.0
   },
   {
-    "name": "BBC SERIES .c",
+    "name": "CAFE 24",
     "best_score": 0.0
   },
   {
-    "name": "BBC TOP GEAR ITALY .c",
+    "name": "CAFE TV 24",
     "best_score": 0.0
   },
   {
-    "name": "BELLA RADIO TV .c",
+    "name": "CAMERA DEI DEPUTATI",
     "best_score": 0.0
   },
   {
-    "name": "BELLLA & MONELLA TV .c",
+    "name": "CANALE 122",
     "best_score": 0.0
   },
   {
-    "name": "BERGAMO TV .c",
+    "name": "CANALE 2",
     "best_score": 0.0
   },
   {
-    "name": "BIANCONERA JUVENTUS TV .s",
+    "name": "CANALE 2 ALTAMURA",
     "best_score": 0.0
   },
   {
-    "name": "BLAZE .c",
+    "name": "CANALE 21 EXTRA",
     "best_score": 0.0
   },
   {
-    "name": "BYOBLU .c",
+    "name": "CANALE 21 LAZIO",
     "best_score": 0.0
   },
   {
-    "name": "CAFE 24 .c",
+    "name": "CANALE 7",
     "best_score": 0.0
   },
   {
-    "name": "CAFE TV 24 .s",
+    "name": "CANALE 8",
     "best_score": 0.0
   },
   {
-    "name": "CAMERA DEI DEPUTATI .c",
+    "name": "CANALE DIECI",
     "best_score": 0.0
   },
   {
-    "name": "CAMERA DEPUTATI .s",
+    "name": "CANALE TELECHIARA",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 122 .c",
+    "name": "CG GRANDI FILM",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 2 .c",
+    "name": "CG TV",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 2 ALTAMURA .s",
+    "name": "COMPANY TV",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 21 CAMPANIA .c",
+    "name": "CREMONA 1",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 21 EXTRA .s",
+    "name": "CRIME + INV",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 21 LAZIO .s",
+    "name": "DISCOVERY DMAX",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 7 .c",
+    "name": "DISCOVERY FOCUS",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 7 .s",
+    "name": "DISCOVERY GIALLO",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 8 .c",
+    "name": "DISCOVERY K2",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 8 .s",
+    "name": "DISCOVERY MOTOR TREND",
     "best_score": 0.0
   },
   {
-    "name": "CANALE 88 MADEINBO .s",
+    "name": "DISCOVERY NOVE",
     "best_score": 0.0
   },
   {
-    "name": "CANALE TELECHIARA .s",
+    "name": "DISCOVERY SCIENCE",
     "best_score": 0.0
   },
   {
-    "name": "CG ENTERTAINMENT .s",
+    "name": "DISNEY+ FILM",
     "best_score": 0.0
   },
   {
-    "name": "COMPANY TV .c",
+    "name": "ELIVE TV BRESCIA",
     "best_score": 0.0
   },
   {
-    "name": "COMPANY TV .s",
+    "name": "ENTELLA TV",
     "best_score": 0.0
   },
   {
-    "name": "CREMONA 1 .c",
+    "name": "EQU TV",
     "best_score": 0.0
   },
   {
-    "name": "CRIME + INV .s",
+    "name": "ESPANSIONE TV",
     "best_score": 0.0
   },
   {
-    "name": "CUSANO NEWS7 .c",
+    "name": "ESPERIA TV",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY DMAX .s",
+    "name": "ESPERIA TV 18",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY FOCUS .s",
+    "name": "ÈTV MARCHE",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY GIALLO .s",
+    "name": "ETV MARCHE",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY K2 .s",
+    "name": "ÈTV RETE 7",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY MOTOR TREND .s",
+    "name": "EURO INDIE MUSIC CHART TV",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY NOVE .s",
+    "name": "EURO TV",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY NOVE (BACKUP) .s",
+    "name": "EUROSPORT 6 TIMVISION",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY+ FILM .c",
+    "name": "EXTRA TV",
     "best_score": 0.0
   },
   {
-    "name": "ELIVE TV BRESCIA .c",
+    "name": "FAILARMY",
     "best_score": 0.0
   },
   {
-    "name": "ELIVE TV BRESCIA .s",
+    "name": "FANO TV",
     "best_score": 0.0
   },
   {
-    "name": "ENTELLA TV .c",
+    "name": "FASHIONTV",
     "best_score": 0.0
   },
   {
-    "name": "ENTELLA TV .s",
+    "name": "FM ITALIA",
     "best_score": 0.0
   },
   {
-    "name": "ESPANSIONE TV .c",
+    "name": "FM ITALIA TV",
     "best_score": 0.0
   },
   {
-    "name": "ESPERIA TV .c",
+    "name": "GIOVANNI PAOLO",
     "best_score": 0.0
   },
   {
-    "name": "ESPERIA TV 18 .s",
+    "name": "GLOBUS TELEVISION",
     "best_score": 0.0
   },
   {
-    "name": "ÈTV MARCHE .c",
+    "name": "GOLD TV",
     "best_score": 0.0
   },
   {
-    "name": "ETV MARCHE .s",
+    "name": "GRANDE FRATELLO",
     "best_score": 0.0
   },
   {
-    "name": "ÈTV RETE 7 .c",
+    "name": "ICARO TV",
     "best_score": 0.0
   },
   {
-    "name": "ETV RETE 7 .s",
+    "name": "IMAS TV",
     "best_score": 0.0
   },
   {
-    "name": "EURO INDIE MUSIC CHART TV .c",
+    "name": "ITALIA 3",
     "best_score": 0.0
   },
   {
-    "name": "EURO TV .c",
+    "name": "ITALIAN FISHING TV",
     "best_score": 0.0
   },
   {
-    "name": "EURO TV .s",
+    "name": "IUNIOR TV",
     "best_score": 0.0
   },
   {
-    "name": "EXTRA TV .c",
+    "name": "KISS KISS",
     "best_score": 0.0
   },
   {
-    "name": "FAILARMY .s",
+    "name": "KISS KISS ITALIA",
     "best_score": 0.0
   },
   {
-    "name": "FANO TV .s",
+    "name": "KISS KISS NAPOLI",
     "best_score": 0.0
   },
   {
-    "name": "FASHIONTV .c",
+    "name": "LA C ONAIR",
     "best_score": 0.0
   },
   {
-    "name": "FM ITALIA .s",
+    "name": "LA C TV",
     "best_score": 0.0
   },
   {
-    "name": "FM ITALIA TV .c",
+    "name": "LA NUOVA TV",
     "best_score": 0.0
   },
   {
-    "name": "GIOVANNI PAOLO .s",
+    "name": "LA TR3",
     "best_score": 0.0
   },
   {
-    "name": "GLOBUS TELEVISION .c",
+    "name": "LA TR3 MARSALA",
     "best_score": 0.0
   },
   {
-    "name": "GOLD TV .c",
+    "name": "LAZIO STYLE CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "GRANDE FRATELLO .c",
+    "name": "LAZIO TV 13",
     "best_score": 0.0
   },
   {
-    "name": "GRANDUCATO .c",
+    "name": "LE CRONACHE TV",
     "best_score": 0.0
   },
   {
-    "name": "ICARO TV .c",
+    "name": "LOVE FM TV",
     "best_score": 0.0
   },
   {
-    "name": "ICARO TV .s",
+    "name": "M2O",
     "best_score": 0.0
   },
   {
-    "name": "ITALIA 3 .s",
+    "name": "MARIA+VISION",
     "best_score": 0.0
   },
   {
-    "name": "ITALIAN FISHING TV .c",
+    "name": "MEDIASET 1",
     "best_score": 0.0
   },
   {
-    "name": "IUNIOR TV .c",
+    "name": "MEDIASET 20",
     "best_score": 0.0
   },
   {
-    "name": "IUNIOR TV .s",
+    "name": "MEDIASET IRIS",
     "best_score": 0.0
   },
   {
-    "name": "KISS KISS .c",
+    "name": "MEDIASET ITALIA 2",
     "best_score": 0.0
   },
   {
-    "name": "KISS KISS .s",
+    "name": "MOTORTREND",
     "best_score": 0.0
   },
   {
-    "name": "KISS KISS ITALIA .c",
+    "name": "MS MOTOR",
     "best_score": 0.0
   },
   {
-    "name": "KISS KISS NAPOLI .c",
+    "name": "NAT GEO",
     "best_score": 0.0
   },
   {
-    "name": "LA C ONAIR .c",
+    "name": "NAT GEO WILD",
     "best_score": 0.0
   },
   {
-    "name": "LA C TV .c",
+    "name": "NAUTICAL",
     "best_score": 0.0
   },
   {
-    "name": "LA NUOVA TV .c",
+    "name": "ONDA NOVARA TV",
     "best_score": 0.0
   },
   {
-    "name": "LA TR3 .c",
+    "name": "ONDA TV",
     "best_score": 0.0
   },
   {
-    "name": "LA TR3 MARSALA .s",
+    "name": "ORLER TV",
     "best_score": 0.0
   },
   {
-    "name": "LAC NEWS 24 .s",
+    "name": "PADRE PIO TV",
     "best_score": 0.0
   },
   {
-    "name": "LAZIO TV 13 .c",
+    "name": "PEER TV ALTO ADIGE",
     "best_score": 0.0
   },
   {
-    "name": "LE CRONACHE TV .s",
+    "name": "PEOPLE ARE AWESOME",
     "best_score": 0.0
   },
   {
-    "name": "LOVE FM TV .c",
+    "name": "PESCA",
     "best_score": 0.0
   },
   {
-    "name": "M2O .c",
+    "name": "PESCA E CACCIA",
     "best_score": 0.0
   },
   {
-    "name": "M2O .s",
+    "name": "PREMIUM CRIME",
     "best_score": 0.0
   },
   {
-    "name": "M2O TV .s",
+    "name": "PRIMO CANALE",
     "best_score": 0.0
   },
   {
-    "name": "MARIA+VISION .c",
+    "name": "PRIMOCANALE",
     "best_score": 0.0
   },
   {
-    "name": "MEDIASET 1 .s",
+    "name": "QUADRIFOGLIO TV",
     "best_score": 0.0
   },
   {
-    "name": "MEDIASET 20 .s",
+    "name": "QUARTA RETE",
     "best_score": 0.0
   },
   {
-    "name": "MEDIASET IRIS .s",
+    "name": "RADIO 51",
     "best_score": 0.0
   },
   {
-    "name": "MEDIASET ITALIA 2 .s",
+    "name": "RADIO CAPITAL",
     "best_score": 0.0
   },
   {
-    "name": "MOTORTREND .c",
+    "name": "RADIO MONTE CARLO",
     "best_score": 0.0
   },
   {
-    "name": "MS MOTOR .s",
+    "name": "RADIO NUMBER ONE",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO .c",
+    "name": "RAI ITALIA",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO .s",
+    "name": "RAI SCUOLA",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD .s",
+    "name": "RAKUTEN TV ACTION MOVIES ITALY",
     "best_score": 0.0
   },
   {
-    "name": "NAUTICAL .s",
+    "name": "RAKUTEN TV DRAMA MOVIES ITALY",
     "best_score": 0.0
   },
   {
-    "name": "OL3 RADIO .c",
+    "name": "RAKUTEN TV ROMANCE MOVIES ITALY",
     "best_score": 0.0
   },
   {
-    "name": "ONDA NOVARA TV .c",
+    "name": "RAKUTEN TV TOP MOVIES ITALY",
     "best_score": 0.0
   },
   {
-    "name": "ONDA NOVARA TV .s",
+    "name": "RDS SOCIAL",
     "best_score": 0.0
   },
   {
-    "name": "ONDA TV .c",
+    "name": "RDS SOCIAL TV",
     "best_score": 0.0
   },
   {
-    "name": "ONDA TV .s",
+    "name": "REGGIO TV",
     "best_score": 0.0
   },
   {
-    "name": "ORLER TV .c",
+    "name": "RETE 8",
     "best_score": 0.0
   },
   {
-    "name": "ORLER TV .s",
+    "name": "RETE ORO",
     "best_score": 0.0
   },
   {
-    "name": "PADRE PIO TV .c",
+    "name": "RETE SOLE",
     "best_score": 0.0
   },
   {
-    "name": "PADRE PIO TV .s",
+    "name": "RETE TV ITALIA",
     "best_score": 0.0
   },
   {
-    "name": "PAROLE DI VITA .c",
+    "name": "RETE VENETA",
     "best_score": 0.0
   },
   {
-    "name": "PEER TV ALTO ADIGE .c",
+    "name": "RETEBIELLA TV",
     "best_score": 0.0
   },
   {
-    "name": "PEOPLE ARE AWESOME .c",
+    "name": "RSI LA 1",
     "best_score": 0.0
   },
   {
-    "name": "PESCA .c",
+    "name": "RSI LA 2",
     "best_score": 0.0
   },
   {
-    "name": "PESCA E CACCIA .s",
+    "name": "RTC TELECALABRIA",
     "best_score": 0.0
   },
   {
-    "name": "PREMIUM CRIME .s",
+    "name": "RTM",
     "best_score": 0.0
   },
   {
-    "name": "PRIMA TV .c",
+    "name": "RTP (RETE TELEVISIVA)",
     "best_score": 0.0
   },
   {
-    "name": "PRIMA TV .s",
+    "name": "RTTR",
     "best_score": 0.0
   },
   {
-    "name": "PRIMO CANALE .s",
+    "name": "RTTR TV",
     "best_score": 0.0
   },
   {
-    "name": "PRIMOCANALE .c",
+    "name": "RTV SAN MARINO",
     "best_score": 0.0
   },
   {
-    "name": "QUADRIFOGLIO TV .c",
+    "name": "SENATO TV",
     "best_score": 0.0
   },
   {
-    "name": "QUARTA RETE .s",
+    "name": "SKY CINEMA STORIES",
     "best_score": 0.0
   },
   {
-    "name": "RADIO 101 .s",
+    "name": "SKY PRIMAFILA 1",
     "best_score": 0.0
   },
   {
-    "name": "RADIO 24 .s",
+    "name": "SKY PRIMAFILA 10",
     "best_score": 0.0
   },
   {
-    "name": "RADIO 51 .s",
+    "name": "SKY PRIMAFILA 11",
     "best_score": 0.0
   },
   {
-    "name": "RADIO BIRIKINA TV .s",
+    "name": "SKY PRIMAFILA 12",
     "best_score": 0.0
   },
   {
-    "name": "RADIO CAPITAL .s",
+    "name": "SKY PRIMAFILA 15",
     "best_score": 0.0
   },
   {
-    "name": "RADIO FRECCIA .s",
+    "name": "SKY PRIMAFILA 16",
     "best_score": 0.0
   },
   {
-    "name": "RADIO IBIZA TV .s",
+    "name": "SKY PRIMAFILA 18",
     "best_score": 0.0
   },
   {
-    "name": "RADIO IGLESIAS SARDEGNA .s",
+    "name": "SKY PRIMAFILA 2",
     "best_score": 0.0
   },
   {
-    "name": "RADIO MONTE CARLO .s",
+    "name": "SKY PRIMAFILA 3",
     "best_score": 0.0
   },
   {
-    "name": "RADIO NUMBER ONE .s",
+    "name": "SKY PRIMAFILA 4",
     "best_score": 0.0
   },
   {
-    "name": "RADIO STUDIO DELTA TV .s",
+    "name": "SKY PRIMAFILA 5",
     "best_score": 0.0
   },
   {
-    "name": "RAI SCUOLA .c",
+    "name": "SKY PRIMAFILA 6",
     "best_score": 0.0
   },
   {
-    "name": "RAI SCUOLA .s",
+    "name": "SKY PRIMAFILA 7",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN ACTION MOVIES .s",
+    "name": "SKY PRIMAFILA 8",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN COMEDY MOVIES .s",
+    "name": "SKY PRIMAFILA 9",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ACTION MOVIES ITALY .c",
+    "name": "SKY PRIMAFILA PREMIERE 02",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ASIAN CINEMA ITALY .c",
+    "name": "SKY SUPER TENNIS",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV COMEDY MOVIES ITALY .c",
+    "name": "SKYSHOWTIME 1",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV CRIME SERIES ITALY .c",
+    "name": "SPORT ITALIA",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV DRAMA MOVIES ITALY .c",
+    "name": "SPORT ITALIA SOLO CALCIO [LIVE DURING EVENTS ONLY]",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV FAMILY MOVIES ITALY .c",
+    "name": "ST EUROPE CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ROMANCE MOVIES ITALY .c",
+    "name": "STAR LIFE",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV SCI-FI ITALY .c",
+    "name": "STEREO 5 TV",
     "best_score": 0.0
   },
   {
-    "name": "RDS SOCIAL .s",
+    "name": "SUPERSIX LOMBARDIA",
     "best_score": 0.0
   },
   {
-    "name": "RDS SOCIAL TV .c",
+    "name": "TELE ABRUZZO",
     "best_score": 0.0
   },
   {
-    "name": "REGGIO TV .c",
+    "name": "TELE CHIARA",
     "best_score": 0.0
   },
   {
-    "name": "REI TV .c",
+    "name": "TELE FRIULI",
     "best_score": 0.0
   },
   {
-    "name": "RETE 8 .c",
+    "name": "TELE TRICOLORE",
     "best_score": 0.0
   },
   {
-    "name": "RETE ORO .c",
+    "name": "TELE TUSCIASABINA 2000",
     "best_score": 0.0
   },
   {
-    "name": "RETE ORO .s",
+    "name": "TELE VISA",
     "best_score": 0.0
   },
   {
-    "name": "RETE SOLE .c",
+    "name": "TELEARENA",
     "best_score": 0.0
   },
   {
-    "name": "RETE TV ITALIA .c",
+    "name": "TELEARTE",
     "best_score": 0.0
   },
   {
-    "name": "RETE TV ITALIA .s",
+    "name": "TELEBARI",
     "best_score": 0.0
   },
   {
-    "name": "RETE VENETA .c",
+    "name": "TELEBELLUNO",
     "best_score": 0.0
   },
   {
-    "name": "RETE VENETA .s",
+    "name": "TELEBOARIO",
     "best_score": 0.0
   },
   {
-    "name": "RETE VENETA (VENETO) .s",
+    "name": "TELECOLOR",
     "best_score": 0.0
   },
   {
-    "name": "RETEBIELLA TV .c",
+    "name": "TELEFOGGIA",
     "best_score": 0.0
   },
   {
-    "name": "RSI LA 1 .c",
+    "name": "TELEMANTOVA",
     "best_score": 0.0
   },
   {
-    "name": "RSI LA 1 .s",
+    "name": "TELEMIA",
     "best_score": 0.0
   },
   {
-    "name": "RSI LA 2 .c",
+    "name": "TELEMISTRETTA",
     "best_score": 0.0
   },
   {
-    "name": "RSI LA 2 .s",
+    "name": "TELENORD",
     "best_score": 0.0
   },
   {
-    "name": "RTC TELECALABRIA .c",
+    "name": "TELEPACE 1",
     "best_score": 0.0
   },
   {
-    "name": "RTM .c",
+    "name": "TELEPACE 2",
     "best_score": 0.0
   },
   {
-    "name": "RTP (RETE TELEVISIVA) .c",
+    "name": "TELEPACE 3",
     "best_score": 0.0
   },
   {
-    "name": "RTTR .c",
+    "name": "TELEPACE 4",
     "best_score": 0.0
   },
   {
-    "name": "RTTR TV .s",
+    "name": "TELEPACE TRENTO (HISTORY LAB)",
     "best_score": 0.0
   },
   {
-    "name": "RTV SAN MARINO .s",
+    "name": "TELEQUATTRO",
     "best_score": 0.0
   },
   {
-    "name": "SENATO TV .c",
+    "name": "TELERAMA",
     "best_score": 0.0
   },
   {
-    "name": "SENATO TV .s",
+    "name": "TELEROMAGNA",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA STORIES .c",
+    "name": "TELESPAZIO TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 1 .c",
+    "name": "TELETRICOLORE",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 1 .s",
+    "name": "TELETUTTO",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 10 .c",
+    "name": "TG COM 24",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 10 .s",
+    "name": "TOP CALCIO 24",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 11 .c",
+    "name": "TRG MEDIA",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 12 .c",
+    "name": "TV 2000",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 13 .c",
+    "name": "TV EUROPE",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 14 .c",
+    "name": "TV MODA",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 15 .c",
+    "name": "TV QUI (MODENA)",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 16 .c",
+    "name": "TV2000",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 18 .c",
+    "name": "TV7 NEWS",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 2 .c",
+    "name": "TVA VICENZA",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 2 .s",
+    "name": "TVRS",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 3 .c",
+    "name": "UMBRIA TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 3 .s",
+    "name": "UNINETTUNO",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 4 .c",
+    "name": "UNINETTUNO UNIVERSITY TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 4 .s",
+    "name": "UNIRESAT",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 5 .c",
+    "name": "VCO AZZURRA TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 5 .s",
+    "name": "VIDEO NOVARA",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 6 .c",
+    "name": "VIDEOTOLENTINO",
     "best_score": 0.0
   },
   {
-    "name": "SKY PRIMAFILA 6 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA 7 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA 7 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA 8 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA 8 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA 9 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA 9 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA PREMIERE 01 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PRIMAFILA PREMIERE 02 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SUPER TENNIS .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKYSHOWTIME 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORT ITALIA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTITALIA PLUS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTITALIA SOLOCALCIO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "ST EUROPE CHANNEL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STAR CHANNEL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STAR COMEDY .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STAR CRIME .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STAR LIFE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STEREO 5 TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STEREO 5 TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSIX LOMBARDIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SUPERSIX LOMBARDIA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE ABRUZZO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE ABRUZZO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE CHIARA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE CHIARA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE FRIULI .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE LIGURIA SUD .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE MANTOVA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE MIA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE PAVIA (BACKUP) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE TRICOLORE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE TUBBIES .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELE VISA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEARENA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEARTE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEBARI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEBELLUNO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEBOARIO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELECITTA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELECOLOR .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEFOGGIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEMANTOVA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEMIA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEMISTRETTA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEMOLISE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELENORD .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEPACE 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEPACE 2 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEPACE 3 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEPACE 4 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEPACE TRENTO (HISTORY LAB) .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEQUATTRO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELERAMA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEROMAGNA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELESPAZIO TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV 2000 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV EUROPE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV MODA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV QUI .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV QUI (MODENA) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV2000 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV7 NEWS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVA VICENZA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVA VICENZA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVRS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "UMBRIA TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "UMBRIA TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNINETTUNO .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNINETTUNO UNIVERSITY TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIRE SAT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIRESAT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "VCO AZZURRA TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIDEO NOVARA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIDEOLINA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIDEOSTAR TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIDEOTOLENTINO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "YU-GI-OH! ITALY .c",
+    "name": "YU-GI-OH! ITALY",
     "best_score": 0.0
   }
 ]

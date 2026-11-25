@@ -1,4938 +1,3510 @@
 [
   {
-    "name": "BIBEL TV IMPULS .c",
+    "name": "BIBEL TV IMPULS",
     "best_score": 0.696
   },
   {
-    "name": "DISCOVERY CHANNEL .s",
+    "name": "DISCOVERY CHANNEL",
     "best_score": 0.692
   },
   {
-    "name": "DISCOVERY CHANNEL HD .b",
-    "best_score": 0.692
-  },
-  {
-    "name": "13TH STREET .c",
+    "name": "13TH STREET",
     "best_score": 0.688
   },
   {
-    "name": "13TH STREET .s",
-    "best_score": 0.688
-  },
-  {
-    "name": "13TH STREET HD .b",
-    "best_score": 0.688
-  },
-  {
-    "name": "13TH STREET HD (BACKUP) .b",
-    "best_score": 0.688
-  },
-  {
-    "name": "CANAL+ GOLF .c",
+    "name": "CANAL+ GOLF",
     "best_score": 0.667
   },
   {
-    "name": "DAZN MBL HD .b",
+    "name": "DAZN MBL HD",
     "best_score": 0.667
   },
   {
-    "name": "DAZN NBA HD .b",
+    "name": "DF1 TV",
     "best_score": 0.667
   },
   {
-    "name": "DF1 TV .c",
+    "name": "DMAX RAW",
     "best_score": 0.667
   },
   {
-    "name": "DMAX RAW .b",
+    "name": "EURONEWS DEUTSCH HD",
     "best_score": 0.667
   },
   {
-    "name": "EURONEWS DEUTSCH HD .b",
+    "name": "EURONEWS GERMANY",
     "best_score": 0.667
   },
   {
-    "name": "EURONEWS GERMANY .b",
+    "name": "N-TV HD+",
     "best_score": 0.667
   },
   {
-    "name": "EURONEWS GERMANY (BACKUP) .b",
+    "name": "RTL HD+",
     "best_score": 0.667
   },
   {
-    "name": "N-TV HD+ .b",
+    "name": "RTL UP",
     "best_score": 0.667
   },
   {
-    "name": "NITRO HEVC .b",
+    "name": "SAT 1 GOLD AUSTRIA",
     "best_score": 0.667
   },
   {
-    "name": "NITRO HEVC (BACKUP) .b",
+    "name": "SAT 1 HD+",
     "best_score": 0.667
   },
   {
-    "name": "ORF 1 HEVC .b",
+    "name": "SAT.1 RAW",
     "best_score": 0.667
   },
   {
-    "name": "ORF 2 HEVC .b",
+    "name": "SIXX RAW",
     "best_score": 0.667
   },
   {
-    "name": "RTL HD+ .b",
+    "name": "SYFY RAW",
     "best_score": 0.667
   },
   {
-    "name": "RTL HD+ (BACKUP) .b",
+    "name": "TLC HD+",
     "best_score": 0.667
   },
   {
-    "name": "RTL UP .c",
+    "name": "VOX HD+",
     "best_score": 0.667
   },
   {
-    "name": "RTL UP .s",
+    "name": "WDR HD+",
     "best_score": 0.667
   },
   {
-    "name": "RTL UP HD .b",
+    "name": "WELT/ N24 HD",
     "best_score": 0.667
   },
   {
-    "name": "SAT 1 HD+ .b",
+    "name": "ZDF HD+",
     "best_score": 0.667
   },
   {
-    "name": "SAT 1 HD+ (BACKUP) .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "SAT.1 RAW .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "SYFY RAW .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "TLC HD+ .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "VOX HD+ .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "VOX HD+ (BACKUP) .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "VOX UP .s",
-    "best_score": 0.667
-  },
-  {
-    "name": "WDR HD+ .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "WELT/ N24 HD .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "ZDF HD+ .b",
-    "best_score": 0.667
-  },
-  {
-    "name": "EUROSPORT 1 DEUTSCHLAND .b",
+    "name": "EUROSPORT 1 DEUTSCHLAND",
     "best_score": 0.647
   },
   {
-    "name": "DAZN 1 BAR HD+ .b",
+    "name": "DAZN 1 BAR HD+",
     "best_score": 0.632
   },
   {
-    "name": "DAZN 2 BAR HD+ .b",
+    "name": "DAZN 2 BAR HD+",
     "best_score": 0.632
   },
   {
-    "name": "ANIXE SERIE .c",
+    "name": "ANIXE SERIE",
     "best_score": 0.625
   },
   {
-    "name": "SERVUS TV .c",
+    "name": "SERVUS TV",
     "best_score": 0.621
   },
   {
-    "name": "SERVUS TV .s",
-    "best_score": 0.621
-  },
-  {
-    "name": "SERVUS TV HD .b",
-    "best_score": 0.621
-  },
-  {
-    "name": "DAZN FAST+ .c",
+    "name": "DAZN FAST+",
     "best_score": 0.615
   },
   {
-    "name": "DAZN RISE .c",
+    "name": "DAZN RISE",
     "best_score": 0.615
   },
   {
-    "name": "DMAX HEVC .b",
+    "name": "ORF1 RAW",
     "best_score": 0.615
   },
   {
-    "name": "KIKA HEVC .b",
-    "best_score": 0.615
-  },
-  {
-    "name": "ORF1 RAW .b",
-    "best_score": 0.615
-  },
-  {
-    "name": "SAT.1 HEVC .b",
-    "best_score": 0.615
-  },
-  {
-    "name": "SIXX HEVC .b",
-    "best_score": 0.615
-  },
-  {
-    "name": "DAZN 1 BAR RAW .b",
+    "name": "DAZN 1 BAR RAW",
     "best_score": 0.6
   },
   {
-    "name": "DAZN 2 BAR RAW .b",
+    "name": "DAZN 2 BAR RAW",
     "best_score": 0.6
   },
   {
-    "name": "DISNEY+ .c",
+    "name": "DISNEY+",
     "best_score": 0.6
   },
   {
-    "name": "N-TV RAW .b",
+    "name": "N-TV RAW",
     "best_score": 0.6
   },
   {
-    "name": "RTL RAW .b",
+    "name": "RTL RAW",
     "best_score": 0.6
   },
   {
-    "name": "VOX RAW .b",
+    "name": "VOX RAW",
     "best_score": 0.6
   },
   {
-    "name": "ZDF NEO .b",
+    "name": "ZDF NEO",
     "best_score": 0.6
   },
   {
-    "name": "ZDF NEO .c",
+    "name": "ZDF RAW",
     "best_score": 0.6
   },
   {
-    "name": "ZDF NEO .s",
-    "best_score": 0.6
-  },
-  {
-    "name": "ZDF RAW .b",
-    "best_score": 0.6
-  },
-  {
-    "name": "ANIXE SERIES .s",
+    "name": "ANIXE SERIES",
     "best_score": 0.588
   },
   {
-    "name": "CANAL+ ACTION .c",
+    "name": "CANAL+ ACTION",
     "best_score": 0.588
   },
   {
-    "name": "BR TV .b",
+    "name": "BR TV",
     "best_score": 0.571
   },
   {
-    "name": "DAZN 1 BAR HEVC .b",
+    "name": "DAZN BAR 1 HD",
     "best_score": 0.571
   },
   {
-    "name": "DAZN 2 BAR HEVC .b",
+    "name": "DAZN BAR 2 []",
     "best_score": 0.571
   },
   {
-    "name": "DAZN BAR 1 [] .c",
-    "best_score": 0.571
-  },
-  {
-    "name": "DAZN BAR 1 FHD .s",
-    "best_score": 0.571
-  },
-  {
-    "name": "DAZN BAR 1 HD .s",
-    "best_score": 0.571
-  },
-  {
-    "name": "DAZN BAR 2 [] .c",
-    "best_score": 0.571
-  },
-  {
-    "name": "DAZN BAR 2 FHD .s",
-    "best_score": 0.571
-  },
-  {
-    "name": "DAZN BAR 2 HD .s",
-    "best_score": 0.571
-  },
-  {
-    "name": "ATV HEVC .b",
+    "name": "ATV HEVC",
     "best_score": 0.545
   },
   {
-    "name": "MTV HEVC .b",
+    "name": "QVC LIVE",
     "best_score": 0.545
   },
   {
-    "name": "QVC LIVE .c",
+    "name": "QVC ZWEI",
     "best_score": 0.545
   },
   {
-    "name": "QVC LIVE HD .b",
+    "name": "RTL 2 HD+",
     "best_score": 0.545
   },
   {
-    "name": "QVC ZWEI .s",
+    "name": "RTL ZWEI",
     "best_score": 0.545
   },
   {
-    "name": "RTL 2 HD+ .b",
+    "name": "TV 2 / FYN",
     "best_score": 0.545
   },
   {
-    "name": "RTL 2 HD+ (BACKUP) .b",
+    "name": "TV 2 / ØST",
     "best_score": 0.545
   },
   {
-    "name": "RTL HEVC .b",
+    "name": "TV 2 / SYD",
     "best_score": 0.545
   },
   {
-    "name": "RTL ZWEI .c",
+    "name": "ZDF INFO",
     "best_score": 0.545
   },
   {
-    "name": "RTL ZWEI .s",
-    "best_score": 0.545
-  },
-  {
-    "name": "RTL ZWEI HD .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "TV 2 / FYN .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "TV 2 / SYD .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "ZDF INFO .c",
-    "best_score": 0.545
-  },
-  {
-    "name": "ZDF INFO HD .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "ZDF INFO HD (BACKUP) .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "DAZN LFC TV HD .b",
+    "name": "WELT/ N24 HD+",
     "best_score": 0.533
   },
   {
-    "name": "NICK JUNIOR .c",
-    "best_score": 0.533
-  },
-  {
-    "name": "WELT/ N24 HD+ .b",
-    "best_score": 0.533
-  },
-  {
-    "name": "AXN .s",
+    "name": "AXN",
     "best_score": 0.5
   },
   {
-    "name": "AXN HD .b",
+    "name": "DAZN EVENT 1 HD",
     "best_score": 0.5
   },
   {
-    "name": "AXN HD (BACKUP) .b",
+    "name": "DAZN EVENT 2 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 1 HD .b",
+    "name": "DAZN EVENT 3 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 2 HD .b",
+    "name": "DAZN EVENT 4 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 3 HD .b",
+    "name": "DAZN EVENT 5 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 4 HD .b",
+    "name": "DAZN EVENT 6 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 5 HD .b",
+    "name": "DAZN EVENT 7 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 6 HD .b",
+    "name": "DAZN EVENT 8 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 7 HD .b",
+    "name": "DAZN EVENT 9 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 8 HD .b",
+    "name": "DAZN SPORT 1 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN EVENT 9 HD .b",
+    "name": "DAZN SPORT 2 HD",
     "best_score": 0.5
   },
   {
-    "name": "DAZN SPORT 1 HD .b",
+    "name": "HSE 24 TV",
     "best_score": 0.5
   },
   {
-    "name": "DAZN SPORT 1 HD (BACKUP) .b",
+    "name": "HSE TREND",
     "best_score": 0.5
   },
   {
-    "name": "DAZN SPORT 2 HD .b",
+    "name": "ONE MUSIC",
     "best_score": 0.5
   },
   {
-    "name": "DAZN SPORT 2 HD (BACKUP) .b",
+    "name": "ONE TERRA",
     "best_score": 0.5
   },
   {
-    "name": "HSE 24 TV .b",
+    "name": "QVC STYLE",
     "best_score": 0.5
   },
   {
-    "name": "HSE TREND .c",
+    "name": "RTL 2 RAW",
     "best_score": 0.5
   },
   {
-    "name": "ONE MUSIC .s",
+    "name": "RTL NITRO",
     "best_score": 0.5
   },
   {
-    "name": "ONE TERRA .c",
+    "name": "RTL SHINE",
     "best_score": 0.5
   },
   {
-    "name": "QVC STYLE .c",
+    "name": "SIXX AUSTRIA",
     "best_score": 0.5
   },
   {
-    "name": "RTL 2 RAW .b",
+    "name": "TV 2 / NORD",
     "best_score": 0.5
   },
   {
-    "name": "RTL NITRO .s",
+    "name": "TV 2 NEWS",
     "best_score": 0.5
   },
   {
-    "name": "RTL NITRO HD .b",
+    "name": "TV 2 ZULU",
     "best_score": 0.5
   },
   {
-    "name": "RTL SHINE .c",
-    "best_score": 0.5
-  },
-  {
-    "name": "TV 2 / NORD .b",
-    "best_score": 0.5
-  },
-  {
-    "name": "TV 2 ZULU .b",
-    "best_score": 0.5
-  },
-  {
-    "name": "DAZN 1 -HD (LOCAL) HEVC H.265 .s",
+    "name": "DAZN 1 -HD (LOCAL) HEVC H.265",
     "best_score": 0.48
   },
   {
-    "name": "PRIME EVENT INFO .c",
-    "best_score": 0.476
-  },
-  {
-    "name": "DAZN EVENT 10 HD .b",
+    "name": "DAZN EVENT 10 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 11 HD .b",
+    "name": "DAZN EVENT 11 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 12 HD .b",
+    "name": "DAZN EVENT 12 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 13 HD .b",
+    "name": "DAZN EVENT 13 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 14 HD .b",
+    "name": "DAZN EVENT 14 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 15 HD .b",
+    "name": "DAZN EVENT 15 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 16 HD .b",
+    "name": "DAZN EVENT 16 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENT 17 HD .b",
+    "name": "DAZN EVENT 17 HD",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENTS 1 .s",
+    "name": "DAZN EVENTS 1",
     "best_score": 0.471
   },
   {
-    "name": "DAZN EVENTS 2 .s",
+    "name": "DAZN EVENTS 2",
     "best_score": 0.471
   },
   {
-    "name": "UHD1 BY ASTRA .c",
+    "name": "UHD1 BY ASTRA",
     "best_score": 0.471
   },
   {
-    "name": "RBB BERLIN .c",
+    "name": "RBB BERLIN",
     "best_score": 0.462
   },
   {
-    "name": "RTL COMEDY .c",
+    "name": "RTL COMEDY",
     "best_score": 0.462
   },
   {
-    "name": "RTL+ LIVE 1 .b",
+    "name": "RTL+ LIVE 1",
     "best_score": 0.462
   },
   {
-    "name": "RTL+ LIVE 3 .b",
+    "name": "RTL+ LIVE 2",
     "best_score": 0.462
   },
   {
-    "name": "RTL+ LIVE 4 .b",
+    "name": "RTL+ LIVE 3",
     "best_score": 0.462
   },
   {
-    "name": "RTL+ LIVE 5 .b",
+    "name": "RTL+ LIVE 4",
     "best_score": 0.462
   },
   {
-    "name": "RTL+ LIVE 6 .b",
+    "name": "RTL+ LIVE 5",
     "best_score": 0.462
   },
   {
-    "name": "TV 2 SPORT .b",
+    "name": "RTL+ LIVE 6",
     "best_score": 0.462
   },
   {
-    "name": "WDR 1 LIVE .c",
+    "name": "TV 2 SPORT",
     "best_score": 0.462
   },
   {
-    "name": "HSE24 EXTRA .b",
+    "name": "WDR 1 LIVE",
+    "best_score": 0.462
+  },
+  {
+    "name": "HSE24 EXTRA",
     "best_score": 0.429
   },
   {
-    "name": "QVC GERMANY .c",
+    "name": "QVC GERMANY",
     "best_score": 0.429
   },
   {
-    "name": "RTL AUSTRIA .b",
+    "name": "RTL AUSTRIA",
     "best_score": 0.429
   },
   {
-    "name": "RTL+ EVENT 3 .c",
+    "name": "RTL+ EVENT 3",
     "best_score": 0.429
   },
   {
-    "name": "VOX AUSTRIA .b",
+    "name": "VOX AUSTRIA",
     "best_score": 0.429
   },
   {
-    "name": "ZDF NEO RAW .b",
+    "name": "ZDF NEO RAW",
     "best_score": 0.429
   },
   {
-    "name": "DAZN EVENT INFO .c",
-    "best_score": 0.421
-  },
-  {
-    "name": "DAZN EUROSPORT 1 HD .b",
+    "name": "DAZN EUROSPORT 1 HD",
     "best_score": 0.4
   },
   {
-    "name": "DAZN EUROSPORT 2 HD .b",
+    "name": "DAZN EUROSPORT 2 HD",
     "best_score": 0.4
   },
   {
-    "name": "DAZN NFL NETWORK HD .b",
+    "name": "DAZN NFL NETWORK HD",
     "best_score": 0.4
   },
   {
-    "name": "HSE 24 EXTRA .s",
+    "name": "HSE 24 EXTRA",
     "best_score": 0.4
   },
   {
-    "name": "HSE 24 TREND .s",
+    "name": "HSE 24 TREND",
     "best_score": 0.4
   },
   {
-    "name": "MTV MUSIC 24 .b",
+    "name": "MTV MUSIC 24",
     "best_score": 0.4
   },
   {
-    "name": "RTL NITRO HD+ .b",
+    "name": "RTL NITRO HD+",
     "best_score": 0.4
   },
   {
-    "name": "RTL2 AUSTRIA .b",
+    "name": "RTL2 AUSTRIA",
     "best_score": 0.4
   },
   {
-    "name": "TV 2 CHARLIE .b",
-    "best_score": 0.4
-  },
-  {
-    "name": "DAZN SPORTDIGITAL HD .b",
+    "name": "DAZN SPORTDIGITAL HD",
     "best_score": 0.381
   },
   {
-    "name": "NDR FERNSEHEN .b",
+    "name": "NDR FERNSEHEN",
     "best_score": 0.375
   },
   {
-    "name": "NDR FERNSEHEN .c",
+    "name": "TV 2 / BORNHOLM",
     "best_score": 0.375
   },
   {
-    "name": "GEO HD .b",
+    "name": "TV 2 / MIDT-VEST",
+    "best_score": 0.375
+  },
+  {
+    "name": "GEO HD",
     "best_score": 0.353
   },
   {
-    "name": "RTL LUXEMBOURG .s",
+    "name": "ONE 1 MUSIC TV",
     "best_score": 0.353
   },
   {
-    "name": "3 SAT .s",
+    "name": "RTL LUXEMBOURG",
+    "best_score": 0.353
+  },
+  {
+    "name": "3 SAT",
     "best_score": 0.333
   },
   {
-    "name": "3 SAT HD .b",
+    "name": "TV 2 / ØSTJYLLAND",
     "best_score": 0.333
   },
   {
-    "name": "TV 2 / ØSTJYLLAND .b",
-    "best_score": 0.333
-  },
-  {
-    "name": "RTL LUXEMBOURG 2 .s",
+    "name": "RTL PLUS AUSTRIA",
     "best_score": 0.316
   },
   {
-    "name": "RTL PLUS AUSTRIA .b",
-    "best_score": 0.316
-  },
-  {
-    "name": "RTL+ HUNDKATZEMAUS .c",
+    "name": "RTL+ HUNDKATZEMAUS",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 1 .b",
+    "name": "RTL+ SPORT EVENT 1",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 1 (BACKUP) .b",
+    "name": "RTL+ SPORT EVENT 2",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 1 [LIVE DURING EVENTS ONLY] .s",
+    "name": "RTL+ SPORT EVENT 3",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 2 .b",
+    "name": "RTL+ SPORT EVENT 4",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 2 .c",
+    "name": "RTL+ SPORT EVENT 5",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 2 (BACKUP) .b",
+    "name": "RTL+ SPORT EVENT 6",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 2 [LIVE DURING EVENTS ONLY] .s",
+    "name": "RTL+ SPORT EVENT 7",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 3 .b",
+    "name": "RTL+ SPORT EVENT 8",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 3 .c",
+    "name": "RTL+ SPORT EVENT 9",
     "best_score": 0.3
   },
   {
-    "name": "RTL+ SPORT EVENT 3 (BACKUP) .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 3 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 4 .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 4 .c",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 4 (BACKUP) .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 4 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 5 .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 5 (BACKUP) .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 5 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 6 .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 6 .c",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 6 (BACKUP) .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 6 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 7 .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 7 .c",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 7 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 8 .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 8 .c",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 8 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 9 .b",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 9 .c",
-    "best_score": 0.3
-  },
-  {
-    "name": "RTL+ SPORT EVENT 9 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.3
-  },
-  {
-    "name": "HR FERNSEHEN .c",
+    "name": "HR FERNSEHEN",
     "best_score": 0.286
   },
   {
-    "name": "HR FERNSEHEN .s",
+    "name": "RTL SHOPPING QUEEN",
     "best_score": 0.286
   },
   {
-    "name": "RTL SHOPPING QUEEN .c",
+    "name": "RTL+ SPORT EVENT 10",
     "best_score": 0.286
   },
   {
-    "name": "RTL+ SPORT EVENT 10 .b",
+    "name": "WDR FERNSEHEN BONN",
     "best_score": 0.286
   },
   {
-    "name": "RTL+ SPORT EVENT 10 .c",
-    "best_score": 0.286
-  },
-  {
-    "name": "RTL+ SPORT EVENT 10 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.286
-  },
-  {
-    "name": "WDR FERNSEHEN BONN .c",
-    "best_score": 0.286
-  },
-  {
-    "name": "WDR FERNSEHEN ESSEN .c",
+    "name": "WDR FERNSEHEN ESSEN",
     "best_score": 0.273
   },
   {
-    "name": "WDR FERNSEHEN AACHEN .c",
+    "name": "WDR FERNSEHEN SIEGEN",
     "best_score": 0.261
   },
   {
-    "name": "WDR FERNSEHEN SIEGEN .c",
-    "best_score": 0.261
-  },
-  {
-    "name": "WDR FERNSEHEN DORTMUND .c",
+    "name": "WDR FERNSEHEN DORTMUND",
     "best_score": 0.24
   },
   {
-    "name": "WDR FERNSEHEN DUISBURG .c",
+    "name": "WDR FERNSEHEN DUISBURG",
     "best_score": 0.24
   },
   {
-    "name": "WDR FERNSEHEN BIELEFELD .c",
+    "name": "WDR FERNSEHEN BIELEFELD",
     "best_score": 0.231
   },
   {
-    "name": "WDR FERNSEHEN WUPPERTAL .c",
+    "name": "WDR FERNSEHEN WUPPERTAL",
     "best_score": 0.231
   },
   {
-    "name": "BR FERNSEHEN SUD .c",
+    "name": "BR FERNSEHEN SUD",
     "best_score": 0.222
   },
   {
-    "name": "WDR FERNSEHEN DÜSSELDORF .c",
+    "name": "WDR FERNSEHEN DÜSSELDORF",
     "best_score": 0.222
   },
   {
-    "name": "BR FERNSEHEN NORD .c",
+    "name": "BR FERNSEHEN NORD",
     "best_score": 0.211
   },
   {
-    "name": "MDR FERNSEHEN SACHSEN ANHALT .c",
+    "name": "MDR FERNSEHEN SACHSEN ANHALT",
     "best_score": 0.194
   },
   {
-    "name": "[[[ TELEKOM SPORT ]]] .b",
+    "name": "1.2.3 TV",
     "best_score": 0.0
   },
   {
-    "name": "✦ ✦ NETFLIX STORE ✦ ✦ .b",
+    "name": "13TH STREET HD+",
     "best_score": 0.0
   },
   {
-    "name": "1.2.3 TV .s",
+    "name": "13TH STREET RAW",
     "best_score": 0.0
   },
   {
-    "name": "13TH STREET HD+ .b",
+    "name": "6EREN",
     "best_score": 0.0
   },
   {
-    "name": "13TH STREET RAW .b",
+    "name": "A&E HD",
     "best_score": 0.0
   },
   {
-    "name": "6EREN .b",
+    "name": "ALLGAU",
     "best_score": 0.0
   },
   {
-    "name": "A&E HD .b",
+    "name": "ALLGAU TV",
     "best_score": 0.0
   },
   {
-    "name": "ALEX BERLIN .c",
+    "name": "AMASIA",
     "best_score": 0.0
   },
   {
-    "name": "ALLGAU .s",
+    "name": "AMAZON PR ME SPORT",
     "best_score": 0.0
   },
   {
-    "name": "ALLGAU TV .c",
+    "name": "AMAZON PRIME HD",
     "best_score": 0.0
   },
   {
-    "name": "ALTENBURG TV .c",
+    "name": "AMAZON PRIME SPORT [NUR LIVE STREAMING]",
     "best_score": 0.0
   },
   {
-    "name": "AMAZON PR ME SPORT .b",
+    "name": "AMAZON PRIME VIDEO 1",
     "best_score": 0.0
   },
   {
-    "name": "AMAZON PRIME HD .b",
+    "name": "AMAZON PRIME VIDEO 2",
     "best_score": 0.0
   },
   {
-    "name": "AMAZON PRIME SPORT [NUR LIVE STREAMING] .c",
+    "name": "ANTENNE KAERNTEN",
     "best_score": 0.0
   },
   {
-    "name": "AMAZON PRIME VIDEO 1 .c",
+    "name": "ANTENNE STEIERMARK",
     "best_score": 0.0
   },
   {
-    "name": "AMAZON PRIME VIDEO 2 .c",
+    "name": "APART TV",
     "best_score": 0.0
   },
   {
-    "name": "APART TV .c",
+    "name": "ARD DAS ERSTE",
     "best_score": 0.0
   },
   {
-    "name": "ARD DAS ERSTE .s",
+    "name": "ARISTO TV",
     "best_score": 0.0
   },
   {
-    "name": "ARISTO TV .c",
+    "name": "AUGSBURG",
     "best_score": 0.0
   },
   {
-    "name": "AUGSBURG .s",
+    "name": "AUGSBURG TV",
     "best_score": 0.0
   },
   {
-    "name": "AUTO MOTO SPORT HD .b",
+    "name": "AUTO MOTO SPORT HD",
     "best_score": 0.0
   },
   {
-    "name": "BABY TV .c",
+    "name": "BABY TV",
     "best_score": 0.0
   },
   {
-    "name": "BADEN TV .c",
+    "name": "BADEN TV",
     "best_score": 0.0
   },
   {
-    "name": "BADEN TV .s",
+    "name": "BADEN TV SÜD",
     "best_score": 0.0
   },
   {
-    "name": "BADEN TV SÜD .c",
+    "name": "BALLERMANN TV",
     "best_score": 0.0
   },
   {
-    "name": "BALLERMANN TV .c",
+    "name": "BAUER SUCHT FRAU",
     "best_score": 0.0
   },
   {
-    "name": "BAYWATCH .c",
+    "name": "BAYWATCH",
     "best_score": 0.0
   },
   {
-    "name": "BBC TOP GEAR GERMANY .c",
+    "name": "BBC TOP GEAR GERMANY",
     "best_score": 0.0
   },
   {
-    "name": "BIBELTV HD .b",
+    "name": "BIBELTV HD",
     "best_score": 0.0
   },
   {
-    "name": "BILD TV .c",
+    "name": "BILD TV",
     "best_score": 0.0
   },
   {
-    "name": "BLK REGIONAL TV .c",
+    "name": "BLK REGIONAL TV",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K ABENTEUER .b",
+    "name": "BLUETV 4K ABENTEUER",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K ACTION .b",
+    "name": "BLUETV 4K ACTION",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K BOLLYWOOD .b",
+    "name": "BLUETV 4K BOLLYWOOD",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K DRAMA .b",
+    "name": "BLUETV 4K DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K FAMILIE .b",
+    "name": "BLUETV 4K FAMILIE",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K FANTASY .b",
+    "name": "BLUETV 4K FANTASY",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K HORROR .b",
+    "name": "BLUETV 4K HORROR",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K KOM DIE .b",
+    "name": "BLUETV 4K KOM DIE",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K KRIMI .b",
+    "name": "BLUETV 4K KRIMI",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K LIEBESFILM .b",
+    "name": "BLUETV 4K LIEBESFILM",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K MYSTERY .b",
+    "name": "BLUETV 4K MYSTERY",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV 4K THRILLER .b",
+    "name": "BLUETV 4K SCI-FI",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV ACTION 2 ʜᴅ .b",
+    "name": "BLUETV 4K THRILLER",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV ACTION 3 ʜᴅ .b",
+    "name": "BLUETV ABENTEUER ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV BOLLYWOOD ʜᴅ .b",
+    "name": "BLUETV ACTION 1 ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV DRAMA ʜᴅ .b",
+    "name": "BLUETV ACTION 2 ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV FAMILIE 1 ʜᴅ .b",
+    "name": "BLUETV BOLLYWOOD ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV FAMILIE 2 ʜᴅ .b",
+    "name": "BLUETV DOKU ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV FANTASY ʜᴅ .b",
+    "name": "BLUETV DRAMA ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV HISTORIE ʜᴅ .b",
+    "name": "BLUETV FAMILIE 1 ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV HORROR 1 ʜᴅ .b",
+    "name": "BLUETV FAMILIE 2 ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV KOMODIE ʜᴅ .b",
+    "name": "BLUETV FANTASY ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV KRIEGSFILM ʜᴅ .b",
+    "name": "BLUETV HISTORIE ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV KRIMI ʜᴅ .b",
+    "name": "BLUETV HORROR 1 ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV LIEBESFILM 1 ʜᴅ .b",
+    "name": "BLUETV KOMODIE ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV MARVEL ʜᴅ .b",
+    "name": "BLUETV KRIEGSFILM ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV MYSTERY ʜᴅ .b",
+    "name": "BLUETV KRIMI ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV SCIENCE-FICTION ʜᴅ .b",
+    "name": "BLUETV LIEBESFILM 1 ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BLUETV THRILLER ʜᴅ .b",
+    "name": "BLUETV MARVEL ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG .b",
+    "name": "BLUETV MYSTERY ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG (BACKUP 2) .b",
+    "name": "BLUETV SCIENCE-FICTION ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG (BACKUP 3) .b",
+    "name": "BLUETV THRILLER ʜᴅ",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG (BACKUP) .b",
+    "name": "BOOMERANG",
     "best_score": 0.0
   },
   {
-    "name": "C+I HD .b",
+    "name": "C+I HD",
     "best_score": 0.0
   },
   {
-    "name": "CHEMNITZ FERNSEHEN .c",
+    "name": "CHEMNITZ FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME 007 .c",
+    "name": "CINE MAX JURASSIC PARK",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME ACTION .c",
+    "name": "CINEDOME 007",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME ANIMATION .c",
+    "name": "CINEDOME ACTION",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME CINEMA .c",
+    "name": "CINEDOME ANIMATION",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME DC MOVIES .c",
+    "name": "CINEDOME CINEMA",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FAMILIE .c",
+    "name": "CINEDOME DC MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX ACTION .c",
+    "name": "CINEDOME FAMILIE",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX ANIMATION .c",
+    "name": "CINEDOME FILMAX ACTION",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX ARNOLD SCHWARZENEGGER .c",
+    "name": "CINEDOME FILMAX ANIMATION",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX BOLLYWOOD .c",
+    "name": "CINEDOME FILMAX ARNOLD SCHWARZENEGGER",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX BOLLYWOOD 2 .c",
+    "name": "CINEDOME FILMAX BOLLYWOOD",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX CINEMA .c",
+    "name": "CINEDOME FILMAX BRUCE WILLIS",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX COMEDY .c",
+    "name": "CINEDOME FILMAX CINEMA",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX DENZEL WASHINGTON .c",
+    "name": "CINEDOME FILMAX COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX FAMILY .c",
+    "name": "CINEDOME FILMAX FAMILY",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX HARRY POTTER .c",
+    "name": "CINEDOME FILMAX HARRY POTTER",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX HITS .c",
+    "name": "CINEDOME FILMAX HITS",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX HORROR .c",
+    "name": "CINEDOME FILMAX HORROR",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX JEAN CLAUDE VAN DAMME .c",
+    "name": "CINEDOME FILMAX JASON STATHAM",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX KURT RUSSELL .c",
+    "name": "CINEDOME FILMAX JEAN CLAUDE VAN DAMME",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX LEONARDO DICAPRIO .c",
+    "name": "CINEDOME FILMAX KURT RUSSELL",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX MITTELERDE .c",
+    "name": "CINEDOME FILMAX LEONARDO DICAPRIO",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX SYLVESTER STALLONE .c",
+    "name": "CINEDOME FILMAX MARVEL",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX THE FAST & THE FURIOUS .c",
+    "name": "CINEDOME FILMAX MITTELERDE",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX TOM CRUISE .c",
+    "name": "CINEDOME FILMAX STAR WARS",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX TOMMY LEE JONES .c",
+    "name": "CINEDOME FILMAX SYLVESTER STALLONE",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME FILMAX WILL SMITH .c",
+    "name": "CINEDOME FILMAX THE FAST & THE FURIOUS",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME HITS .c",
+    "name": "CINEDOME FILMAX TOMMY LEE JONES",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME HORROR .c",
+    "name": "CINEDOME FILMAX WILL SMITH",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME JACKIE CHAN .c",
+    "name": "CINEDOME JACKIE CHAN",
     "best_score": 0.0
   },
   {
-    "name": "CINEDOME MARVEL .c",
+    "name": "CINEDOME MARVEL",
     "best_score": 0.0
   },
   {
-    "name": "CROTV .c",
+    "name": "CROTV",
     "best_score": 0.0
   },
   {
-    "name": "DABEITV .c",
+    "name": "DABEITV",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 1 FHD .b",
+    "name": "DB LIGA 1 FHD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 1 HD .b",
+    "name": "DB LIGA 1 HD+",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 1 HD+ .b",
+    "name": "DB LIGA 10 FHD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 10 FHD .b",
+    "name": "DB LIGA 2 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 10 HD .b",
+    "name": "DB LIGA 3 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 3 FHD .b",
+    "name": "DB LIGA 4 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 5 HD .b",
+    "name": "DB LIGA 5 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 6 FHD .b",
+    "name": "DB LIGA 6 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 6 HD .b",
+    "name": "DB LIGA 7 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 7 FHD .b",
+    "name": "DB LIGA 8 HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 7 HD .b",
+    "name": "DELUXE DANCE",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 8 FHD .b",
+    "name": "DELUXE RAP",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 8 HD .b",
+    "name": "DELUXE ROCK",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 9 FHD .b",
+    "name": "DER AKTION R TV HD",
     "best_score": 0.0
   },
   {
-    "name": "DB LIGA 9 HD .b",
+    "name": "DEUTSCHE SPORT",
     "best_score": 0.0
   },
   {
-    "name": "DELUXE DANCE .c",
+    "name": "DEUTSCHES MUSIK FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "DELUXE LOUNGE .c",
+    "name": "DIE NEUE ZEIT TV",
     "best_score": 0.0
   },
   {
-    "name": "DELUXE RAP .c",
+    "name": "DISNEY CH. HD",
     "best_score": 0.0
   },
   {
-    "name": "DELUXE ROCK .c",
+    "name": "DISNEY CINEMAGIC",
     "best_score": 0.0
   },
   {
-    "name": "DEPERATE HOUSEWIFE S 27/7 .b",
+    "name": "DISNEY JUNIOR",
     "best_score": 0.0
   },
   {
-    "name": "DER AKTION R TV HD .b",
+    "name": "DISNEY XD",
     "best_score": 0.0
   },
   {
-    "name": "DER KLEINE PRINZ .b",
+    "name": "DK4",
     "best_score": 0.0
   },
   {
-    "name": "DER KLEINE RITTER TRENK .b",
+    "name": "DR RAMASJANG",
     "best_score": 0.0
   },
   {
-    "name": "DEUTSCHE SPORT .b",
+    "name": "DRESDEN FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "DEUTSCHES MUSIK FERNSEHEN .b",
+    "name": "DW",
     "best_score": 0.0
   },
   {
-    "name": "DEUTSCHES MUSIK FERNSEHEN .c",
+    "name": "DW DEUTSCH",
     "best_score": 0.0
   },
   {
-    "name": "DIE ABENTEUER DES JUNGEN MARCO POLO .b",
+    "name": "DW TV",
     "best_score": 0.0
   },
   {
-    "name": "DIE NEUE ZEIT TV .c",
+    "name": "DYN EVENT INFO CHANNEL []",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY CINEMAGIC .b",
+    "name": "DYN SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY JUNIOR (BACKUP 2) .b",
+    "name": "DYN SPORT 10",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY JUNIOR (BACKUP) .b",
+    "name": "DYN SPORT 11",
     "best_score": 0.0
   },
   {
-    "name": "DK4 .b",
+    "name": "DYN SPORT 12",
     "best_score": 0.0
   },
   {
-    "name": "DR RAMASJANG .b",
+    "name": "DYN SPORT 14",
     "best_score": 0.0
   },
   {
-    "name": "DW .b",
+    "name": "DYN SPORT 18",
     "best_score": 0.0
   },
   {
-    "name": "DW DEUTSCH .c",
+    "name": "DYN SPORT 19",
     "best_score": 0.0
   },
   {
-    "name": "DW TV .s",
+    "name": "DYN SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 1 .c",
+    "name": "DYN SPORT 25",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 1 HD .b",
+    "name": "DYN SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 10 .c",
+    "name": "DYN SPORT 4",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 10 .s",
+    "name": "DYN SPORT 6",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 11 .c",
+    "name": "DYN SPORT 7",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 12 .c",
+    "name": "DYN SPORT 8",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 14 .c",
+    "name": "DYN SPORT 9",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 18 .c",
+    "name": "DYN SPORT MIX",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 2 .c",
+    "name": "DYN SPORTS 10",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 2 .s",
+    "name": "DYN SPORTS 11",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 2 HD .b",
+    "name": "DYN SPORTS 12",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 21 .c",
+    "name": "DYN SPORTS 13",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 22 .c",
+    "name": "DYN SPORTS 14",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 25 .c",
+    "name": "DYN SPORTS 15",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 3 .c",
+    "name": "DYN SPORTS 16",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 4 .c",
+    "name": "DYN SPORTS 17",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 5 .s",
+    "name": "DYN SPORTS 18",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 6 .c",
+    "name": "DYN SPORTS 19",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 7 .c",
+    "name": "DYN SPORTS 20",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT 8 .s",
+    "name": "DYN SPORTS 3",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORT MIX .c",
+    "name": "DYN SPORTS 4",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 10 .b",
+    "name": "DYN SPORTS 5",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 11 .b",
+    "name": "DYN SPORTS 6",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 12 .b",
+    "name": "DYN SPORTS 7",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 13 .b",
+    "name": "DYN SPORTS 8",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 14 .b",
+    "name": "DYN SPORTS 9",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 15 .b",
+    "name": "E! ENTERTAINM. HEVC",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 16 .b",
+    "name": "E! ENTERTAINMENT",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 17 .b",
+    "name": "EAGLE BOLLYWOOD HD",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 18 .b",
+    "name": "EAGLE MASHA UND DER B HD",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 19 .b",
+    "name": "EAGLE PEPPA WUTZ HD",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 20 .b",
+    "name": "ECHT JETZT",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 3 .b",
+    "name": "EDGE SPORT",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 4 .b",
+    "name": "EDGESPORT HD+",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 5 .b",
+    "name": "ELDO.TV",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 6 .b",
+    "name": "EMERGENCY ROOM 24/7",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 7 .b",
+    "name": "EMS TV LINGEN",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 8 .b",
+    "name": "ERZ TV STOLLBERG",
     "best_score": 0.0
   },
   {
-    "name": "DYN SPORTS 9 .b",
+    "name": "EUROSPORT 360 HD 10",
     "best_score": 0.0
   },
   {
-    "name": "E! ENTERTAINM. HEVC .b",
+    "name": "EUROSPORT 360 HD 12",
     "best_score": 0.0
   },
   {
-    "name": "E! ENTERTAINMENT .s",
+    "name": "EUROSPORT 360 HD 14",
     "best_score": 0.0
   },
   {
-    "name": "EAGLE BOLLYWOOD HD .b",
+    "name": "EUROSPORT 360 HD 3",
     "best_score": 0.0
   },
   {
-    "name": "EAGLE PEPPA WUTZ HD .b",
+    "name": "EUROSPORT 360 HD 4",
     "best_score": 0.0
   },
   {
-    "name": "EAGLE PJ MASKS HD .b",
+    "name": "EUROSPORT 360 HD 5",
     "best_score": 0.0
   },
   {
-    "name": "EB COLLECTION KUNG FU PANDA .c",
+    "name": "EUROSPORT 360 HD 7",
     "best_score": 0.0
   },
   {
-    "name": "EB COLLECTION TERMINATOR .c",
+    "name": "EUROSPORT 360 HD 8",
     "best_score": 0.0
   },
   {
-    "name": "ECHT JETZT .c",
+    "name": "FASHIONTV",
     "best_score": 0.0
   },
   {
-    "name": "EDGESPORT HD+ .b",
+    "name": "FC BAYERN",
     "best_score": 0.0
   },
   {
-    "name": "EGOFM .b",
+    "name": "FC BAYERN TV",
     "best_score": 0.0
   },
   {
-    "name": "ELDO.TV .c",
+    "name": "FEUERWEHRMANN SAM TV",
     "best_score": 0.0
   },
   {
-    "name": "EMERGENCY ROOM 24/7 .b",
+    "name": "FILM GOLD",
     "best_score": 0.0
   },
   {
-    "name": "ERZ TV STOLLBERG .c",
+    "name": "FILMAX KIDS 1",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 10 .b",
+    "name": "FILMAX KIDS 2",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 11 .b",
+    "name": "FILSTALWELLE TV",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 15 .b",
+    "name": "FIX&FOXI",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 16 .b",
+    "name": "FOLX",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 3 .b",
+    "name": "FOX",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 4 .b",
+    "name": "FOX HD+",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 5 .b",
+    "name": "FRANKEN FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 7 .b",
+    "name": "FRANKEN PLUS",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 8 .b",
+    "name": "FS1",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 360 HD 9 .b",
+    "name": "FUSSBALL TV",
     "best_score": 0.0
   },
   {
-    "name": "FASHIONTV .c",
+    "name": "FUSSBALL TV 2 UHD",
     "best_score": 0.0
   },
   {
-    "name": "FC BAYERN .c",
+    "name": "GEO TV",
     "best_score": 0.0
   },
   {
-    "name": "FC BAYERN HD .b",
+    "name": "GERMANY BOX AMAZON PRIME HD",
     "best_score": 0.0
   },
   {
-    "name": "FC BAYERN TV .b",
+    "name": "GERMANY KIDS FILME 1",
     "best_score": 0.0
   },
   {
-    "name": "FC BAYERN TV (BACKUP) .b",
+    "name": "GERMANY KIDS FILME 10",
     "best_score": 0.0
   },
   {
-    "name": "FC BAYERN TV HD .b",
+    "name": "GERMANY KIDS FILME 2",
     "best_score": 0.0
   },
   {
-    "name": "FC BAYERN TV HD (BACKUP) .b",
+    "name": "GERMANY KIDS FILME 3",
     "best_score": 0.0
   },
   {
-    "name": "FEUERWEHRMANN SAM TV .b",
+    "name": "GERMANY KIDS FILME 4",
     "best_score": 0.0
   },
   {
-    "name": "FILM GOLD .c",
+    "name": "GERMANY KIDS FILME 5",
     "best_score": 0.0
   },
   {
-    "name": "FILMAX KIDS 1 .b",
+    "name": "GERMANY KIDS FILME 6",
     "best_score": 0.0
   },
   {
-    "name": "FILMAX KIDS 2 .b",
+    "name": "GERMANY KIDS FILME 7",
     "best_score": 0.0
   },
   {
-    "name": "FILMAX KIDS 3 .b",
+    "name": "GERMANY KIDS FILME 8",
     "best_score": 0.0
   },
   {
-    "name": "FILSTALWELLE TV .c",
+    "name": "GERMANY KIDS FILME 9",
     "best_score": 0.0
   },
   {
-    "name": "FOX .c",
+    "name": "GREYS ANATOMY 24/7",
     "best_score": 0.0
   },
   {
-    "name": "FOX HD .b",
+    "name": "HANDYSTAR",
     "best_score": 0.0
   },
   {
-    "name": "FOX HD (BACKUP) .b",
+    "name": "HEALTH TV",
     "best_score": 0.0
   },
   {
-    "name": "FOX HD+ .b",
+    "name": "HEIMAT KANAL",
     "best_score": 0.0
   },
   {
-    "name": "FOX HD+ (BACKUP) .b",
+    "name": "HGTV (BACKUP)",
     "best_score": 0.0
   },
   {
-    "name": "FRANKEN FERNSEHEN .c",
+    "name": "HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "FRANKEN PLUS .c",
+    "name": "HISTORY CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "FS1 .c",
+    "name": "HISTORY HD+",
     "best_score": 0.0
   },
   {
-    "name": "FUSSBALL TV .s",
+    "name": "HISTORY RAW",
     "best_score": 0.0
   },
   {
-    "name": "FUSSBALL TV 1 .c",
+    "name": "HR-FERNSEHEN HD",
     "best_score": 0.0
   },
   {
-    "name": "GEO TV .c",
+    "name": "ID INVESTIGATION DISCOVERY",
     "best_score": 0.0
   },
   {
-    "name": "GEO TV HD .b",
+    "name": "ISTUFF",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY BOX AMAZON PRIME HD .s",
+    "name": "JUNIOR",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 1 .b",
+    "name": "JUST FISHING",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 10 .b",
+    "name": "JUWELO TV",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 2 .b",
+    "name": "KABEL 1 CLASSICS",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 3 .b",
+    "name": "KABEL 1 DOKU",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 4 .b",
+    "name": "KABEL 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 5 .b",
+    "name": "KABEL 1 HD+",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 6 .b",
+    "name": "KANAL 4 HD",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 7 .b",
+    "name": "KANAL 5",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 8 .b",
+    "name": "KANAL12 SPREMBERG TV",
     "best_score": 0.0
   },
   {
-    "name": "GERMANY KIDS FILME 9 .b",
+    "name": "KAUFBEI TV",
     "best_score": 0.0
   },
   {
-    "name": "GO2 TRAVEL .c",
+    "name": "KINDER SENDER",
     "best_score": 0.0
   },
   {
-    "name": "GREYS ANATOMY 24/7 .b",
+    "name": "KINDERM RCHEN 1",
     "best_score": 0.0
   },
   {
-    "name": "HEALTH TV .c",
+    "name": "KINDERM RCHEN 2",
     "best_score": 0.0
   },
   {
-    "name": "HEIMAT KANAL .c",
+    "name": "KING OF QUEENS 24/7",
     "best_score": 0.0
   },
   {
-    "name": "HEIMAT KANAL .s",
+    "name": "KINOWELT TV",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY .b",
+    "name": "KRONE HIT TV",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY .c",
+    "name": "KULTUR MD",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY [SAT] [] .c",
+    "name": "L-TV",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY CHANNEL .s",
+    "name": "LABOR14",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY HD .b",
+    "name": "LAUSITZWELLE",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY HD (BACKUP) .b",
+    "name": "LIGHT CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY HD+ .b",
+    "name": "LUXE TV (LUXEMBOURG)",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY HEVC .b",
+    "name": "MAGENTA FUSSBALL 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY RAW .b",
+    "name": "MAGENTA FUSSBALL 10 HD",
     "best_score": 0.0
   },
   {
-    "name": "HR-FERNSEHEN HD .b",
+    "name": "MAGENTA FUSSBALL 11 HD",
     "best_score": 0.0
   },
   {
-    "name": "HR-FERNSEHEN HD (BACKUP) .b",
+    "name": "MAGENTA FUSSBALL 12 HD",
     "best_score": 0.0
   },
   {
-    "name": "ID INVESTIGATION DISCOVERY .b",
+    "name": "MAGENTA FUSSBALL 13 HD",
     "best_score": 0.0
   },
   {
-    "name": "ISTUFF .c",
+    "name": "MAGENTA FUSSBALL 14 HD",
     "best_score": 0.0
   },
   {
-    "name": "JAM FM .b",
+    "name": "MAGENTA FUSSBALL 15 HD",
     "best_score": 0.0
   },
   {
-    "name": "JUNIOR .b",
+    "name": "MAGENTA FUSSBALL 16 HD",
     "best_score": 0.0
   },
   {
-    "name": "JUNIOR (BACKUP) .b",
+    "name": "MAGENTA FUSSBALL 17 HD",
     "best_score": 0.0
   },
   {
-    "name": "JUNIOR HD .b",
+    "name": "MAGENTA FUSSBALL 18 HD",
     "best_score": 0.0
   },
   {
-    "name": "JUST FISHING .c",
+    "name": "MAGENTA FUSSBALL 2 HD",
     "best_score": 0.0
   },
   {
-    "name": "JUWELO .c",
+    "name": "MAGENTA FUSSBALL 3 HD",
     "best_score": 0.0
   },
   {
-    "name": "JUWELO TV .s",
+    "name": "MAGENTA FUSSBALL 4 HD",
     "best_score": 0.0
   },
   {
-    "name": "KABEL 1 CLASSICS .b",
+    "name": "MAGENTA FUSSBALL 5 HD",
     "best_score": 0.0
   },
   {
-    "name": "KABEL 1 CLASSICS .s",
+    "name": "MAGENTA FUSSBALL 6 HD",
     "best_score": 0.0
   },
   {
-    "name": "KABEL 1 CLASSICS HD .b",
+    "name": "MAGENTA FUSSBALL 7 HD",
     "best_score": 0.0
   },
   {
-    "name": "KABEL 1 HD .b",
+    "name": "MAGENTA FUSSBALL 8 HD",
     "best_score": 0.0
   },
   {
-    "name": "KABEL 1 HD (BACKUP) .b",
+    "name": "MAGENTA FUSSBALL 9 HD",
     "best_score": 0.0
   },
   {
-    "name": "KABEL 1 HD+ .b",
+    "name": "MAGENTA MUSIK 1",
     "best_score": 0.0
   },
   {
-    "name": "KANAL 4 HD .b",
+    "name": "MAGENTA SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "KANAL 5 .b",
+    "name": "MAGENTA SPORT 10",
     "best_score": 0.0
   },
   {
-    "name": "KANAL12 SPREMBERG TV .c",
+    "name": "MAGENTA SPORT 11 [LIVE DURING EVENTS ONLY]",
     "best_score": 0.0
   },
   {
-    "name": "KINDER SENDER .b",
+    "name": "MAGENTA SPORT 12",
     "best_score": 0.0
   },
   {
-    "name": "KINDERM RCHEN 1 .b",
+    "name": "MAGENTA SPORT 13",
     "best_score": 0.0
   },
   {
-    "name": "KINDERM RCHEN 2 .b",
+    "name": "MAGENTA SPORT 14",
     "best_score": 0.0
   },
   {
-    "name": "KING OF QUEENS 24/7 .b",
+    "name": "MAGENTA SPORT 15",
     "best_score": 0.0
   },
   {
-    "name": "KINOWELT TV .b",
+    "name": "MAGENTA SPORT 16",
     "best_score": 0.0
   },
   {
-    "name": "KINOWELT TV .c",
+    "name": "MAGENTA SPORT 17 HD",
     "best_score": 0.0
   },
   {
-    "name": "KINOWELT TV .s",
+    "name": "MAGENTA SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "KRONE HIT TV .s",
+    "name": "MAGENTA SPORT 20",
     "best_score": 0.0
   },
   {
-    "name": "KULTUR MD .c",
+    "name": "MAGENTA SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "LABOR14 .c",
+    "name": "MAGENTA SPORT 4",
     "best_score": 0.0
   },
   {
-    "name": "LAUSITZWELLE .c",
+    "name": "MAGENTA SPORT 5",
     "best_score": 0.0
   },
   {
-    "name": "LIGHT CHANNEL .c",
+    "name": "MAGENTA SPORT 6",
     "best_score": 0.0
   },
   {
-    "name": "LIGHT CHANNEL .s",
+    "name": "MAGENTA SPORT 7",
     "best_score": 0.0
   },
   {
-    "name": "LUXE TV (LUXEMBOURG) .c",
+    "name": "MAGENTA SPORT 8",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 1 HD .b",
+    "name": "MAGENTA SPORT 9",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 10 HD .b",
+    "name": "MAGENTA SPORT GOLF 1",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 11 HD .b",
+    "name": "MASCHA UND DER BAR",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 12 HD .b",
+    "name": "MASHA UND DER B R",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 13 HD .b",
+    "name": "MAX KINO",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 14 HD .b",
+    "name": "MAX KINO 2",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 15 HD .b",
+    "name": "MAX KINO 3",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 16 HD .b",
+    "name": "MAX KINO COLLECTION",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 17 HD .b",
+    "name": "MDF 1",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 18 HD .b",
+    "name": "MIRACULOUS",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 2 HD .b",
+    "name": "MOTORSPORT TV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 3 HD .b",
+    "name": "MR BEAN",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 4 HD .b",
+    "name": "MS GOLF 1",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 5 HD .b",
+    "name": "MÜNCHEN TV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA FUSSBALL 9 HD .b",
+    "name": "MYTEAMTV 10",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA MUSIK 1 .c",
+    "name": "MYTEAMTV 11",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA MUSIK 2 .c",
+    "name": "MYTEAMTV 12",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 1 .b",
+    "name": "MYTEAMTV 13",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 1 .c",
+    "name": "MYTEAMTV 14",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 1 .s",
+    "name": "MYTEAMTV 15",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 10 .c",
+    "name": "MYTEAMTV 16",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 10 [LIVE DURING EVENTS ONLY] .s",
+    "name": "MYTEAMTV 17",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 10 HD .b",
+    "name": "MYTEAMTV 18",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 11 [LIVE DURING EVENTS ONLY] .s",
+    "name": "MYTEAMTV 2",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 11 HD .b",
+    "name": "MYTEAMTV 3",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 12 .c",
+    "name": "MYTEAMTV 8",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 12 .s",
+    "name": "MYTEAMTV 9",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 12 HD .b",
+    "name": "NACHRICHTEN",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 13 .c",
+    "name": "NATGEO HD",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 13 HD .b",
+    "name": "NATIONAL GEOGRAPHIC",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 14 .c",
+    "name": "NBA TV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 14 HD .b",
+    "name": "NICK.JR.",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 15 .c",
+    "name": "NICK/COMEDY CENTRAL+1",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 15 HD .b",
+    "name": "NICK/MTV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 16 HD .b",
+    "name": "NICKELODEON",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 17 .c",
+    "name": "NIEDERBAYERN TV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 17 HD .b",
+    "name": "NIEDERBAYERN TV DEGGENDORF & STRAUBING",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 18 HD .b",
+    "name": "NIEDERBAYERN TV LANDSHUT",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 2 .b",
+    "name": "NIEDERBAYERN TV PASSAU",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 2 .c",
+    "name": "NIEDERBAYERN TV SATELLIT",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 2 .s",
+    "name": "NOA 4 HAMBURG",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 20 .c",
+    "name": "NOA 4 NORDERSTEDT",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 3 .b",
+    "name": "NOW GLOBAL",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 3 .c",
+    "name": "NRWISION",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 3 .s",
+    "name": "OBERLAUSITZ TV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 4 .b",
+    "name": "OBERPFALZ TV",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 4 .c",
+    "name": "OFFENER KANAL MAGDEBURG",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 4 .s",
+    "name": "OK DESSAU",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 5 .b",
+    "name": "OK FLENSBURG",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 5 .c",
+    "name": "OK KASSEL",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 6 .b",
+    "name": "OK KIEL",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 6 .c",
+    "name": "OK LUDWIGSHAFEN",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 6 .s",
+    "name": "OK MERSEBURG",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 7 .b",
+    "name": "OK SALZWEDEL",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 7 .s",
+    "name": "OK STENDAL",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 8 .b",
+    "name": "OK WEINSTRASSE",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 8 .c",
+    "name": "OK WERNIGERODE",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 8 .s",
+    "name": "OK4",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 9 .b",
+    "name": "OKD",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 9 .c",
+    "name": "ONEBY",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT 9 .s",
+    "name": "ORF 3",
     "best_score": 0.0
   },
   {
-    "name": "MAGENTA SPORT GOLF 1 .c",
+    "name": "OUT TV",
     "best_score": 0.0
   },
   {
-    "name": "MASCHA UND DER BAR .b",
+    "name": "PARAMOUNT NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "MASHA UND DER B R .b",
+    "name": "PARANORMAL",
     "best_score": 0.0
   },
   {
-    "name": "MAX KINO 2 .b",
+    "name": "PEARL TV SHOP",
     "best_score": 0.0
   },
   {
-    "name": "MAX KINO 3 .b",
+    "name": "PEER TV SÜDTIROL",
     "best_score": 0.0
   },
   {
-    "name": "MAX KINO COLLECTION .b",
+    "name": "PJ MASKS",
     "best_score": 0.0
   },
   {
-    "name": "MDF 1 .c",
+    "name": "PLANET",
     "best_score": 0.0
   },
   {
-    "name": "MIRACULOUS .b",
+    "name": "PLUTO TV NICK",
     "best_score": 0.0
   },
   {
-    "name": "MOTORSPORT TV .b",
+    "name": "POPCORN SELECT 1",
     "best_score": 0.0
   },
   {
-    "name": "MOVIEDOME .c",
+    "name": "POPCORN SELECT 3",
     "best_score": 0.0
   },
   {
-    "name": "MR BEAN .c",
+    "name": "POPCORN SELECT 4",
     "best_score": 0.0
   },
   {
-    "name": "MR. BEAN .b",
+    "name": "POPCORN SELECT 5",
     "best_score": 0.0
   },
   {
-    "name": "MS GOLF 1 .c",
+    "name": "POPCORN SELECT 6",
     "best_score": 0.0
   },
   {
-    "name": "MS GOLF 2 .c",
+    "name": "POPCORN SELECT 7",
     "best_score": 0.0
   },
   {
-    "name": "MUENCHEN .b",
+    "name": "POPCORN SELECT 9",
     "best_score": 0.0
   },
   {
-    "name": "MÜNCHEN TV .c",
+    "name": "PRO 7",
     "best_score": 0.0
   },
   {
-    "name": "MUSIK .b",
+    "name": "PRO 7 FUN",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 1 .c",
+    "name": "PRO 7 FUN HD+",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 10 .c",
+    "name": "PRO 7 HD+",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 11 .c",
+    "name": "PRO 7 MAXX",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 12 .c",
+    "name": "PRO 7 MAXX HD+",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 13 .c",
+    "name": "PRO SIEBEN RAW",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 14 .c",
+    "name": "PRO7 FUN HD",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 15 .c",
+    "name": "PRO7 MAXX",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 16 .c",
+    "name": "PRO7 MAXX AUSTRIA",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 17 .c",
+    "name": "PRO7 MAXX HD+",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 2 .c",
+    "name": "PRO7 MAXX RAW",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 3 .c",
+    "name": "PUNKTUM",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 4 .c",
+    "name": "RADIO BREMEN FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 5 .c",
+    "name": "RADIO WASER TV BREMEN",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 6 .c",
+    "name": "RAKUTEN TV ACTION MOVIES GERMANY",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 7 .c",
+    "name": "RAKUTEN TV CRIME SERIES GERMANY",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 8 .c",
+    "name": "RAKUTEN TV ROMANCE MOVIES GERMANY",
     "best_score": 0.0
   },
   {
-    "name": "MYTEAMTV 9 .c",
+    "name": "RAKUTEN TV THRILLERS GERMANY",
     "best_score": 0.0
   },
   {
-    "name": "N24 DOCU .b",
+    "name": "RAKUTEN TV TOP MOVIES GERMANY",
     "best_score": 0.0
   },
   {
-    "name": "NACHRICHTEN .b",
+    "name": "RAN 1",
     "best_score": 0.0
   },
   {
-    "name": "NATGEO HD .b",
+    "name": "RBW",
     "best_score": 0.0
   },
   {
-    "name": "NBA TV .b",
+    "name": "RED BULL TV",
     "best_score": 0.0
   },
   {
-    "name": "NICK.JR. .b",
+    "name": "REGIO TV",
     "best_score": 0.0
   },
   {
-    "name": "NICK/COMEDY CENTRAL+1 .b",
+    "name": "REGIO TV BODENSEE",
     "best_score": 0.0
   },
   {
-    "name": "NICK/MTV .b",
+    "name": "REGIO TV STUTTGART",
     "best_score": 0.0
   },
   {
-    "name": "NICKELODEON .b",
+    "name": "RENNSTEIG TV",
     "best_score": 0.0
   },
   {
-    "name": "NICKELODEON .c",
+    "name": "RFH",
     "best_score": 0.0
   },
   {
-    "name": "NICKELODEON .s",
+    "name": "RFH TV",
     "best_score": 0.0
   },
   {
-    "name": "NIEDERBAYERN TV .s",
+    "name": "RFO",
     "best_score": 0.0
   },
   {
-    "name": "NIEDERBAYERN TV DEGGENDORF & STRAUBING .c",
+    "name": "RFO ROSENHEIM",
     "best_score": 0.0
   },
   {
-    "name": "NIEDERBAYERN TV LANDSHUT .c",
+    "name": "RHEINLOKAL",
     "best_score": 0.0
   },
   {
-    "name": "NIEDERBAYERN TV PASSAU .c",
+    "name": "RHEINMAIN TV",
     "best_score": 0.0
   },
   {
-    "name": "NIEDERBAYERN TV PASSAU .s",
+    "name": "RIVER MONSTERS",
     "best_score": 0.0
   },
   {
-    "name": "NIEDERBAYERN TV SATELLIT .c",
+    "name": "ROCK ANTENNE",
     "best_score": 0.0
   },
   {
-    "name": "NOA 4 HAMBURG .c",
+    "name": "ROCKY CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "NOA 4 HAMBURG .s",
+    "name": "RT DE",
     "best_score": 0.0
   },
   {
-    "name": "NOA 4 NORDERSTEDT .c",
+    "name": "RTLII HEVC",
     "best_score": 0.0
   },
   {
-    "name": "NOA 4 NORDERSTEDT .s",
+    "name": "RWE ERFURT",
     "best_score": 0.0
   },
   {
-    "name": "NOW GLOBAL .c",
+    "name": "S. SPORT 1 FHD",
     "best_score": 0.0
   },
   {
-    "name": "NRWISION .c",
+    "name": "S. SPORT 10 HD",
     "best_score": 0.0
   },
   {
-    "name": "NRWISION .s",
+    "name": "S. SPORT 11 HD",
     "best_score": 0.0
   },
   {
-    "name": "OBERLAUSITZ TV .s",
+    "name": "S. SPORT 2 HD",
     "best_score": 0.0
   },
   {
-    "name": "OBERPFALZ TV .c",
+    "name": "S. SPORT 3 HD",
     "best_score": 0.0
   },
   {
-    "name": "OBERPFALZ TV .s",
+    "name": "S. SPORT 4 FHD",
     "best_score": 0.0
   },
   {
-    "name": "OF TV OFFENBACH .c",
+    "name": "S. SPORT 5 HD",
     "best_score": 0.0
   },
   {
-    "name": "OFFENER KANAL MAGDEBURG .c",
+    "name": "S. SPORT 6 FHD",
     "best_score": 0.0
   },
   {
-    "name": "OK 54 .c",
+    "name": "S. SPORT 7 FHD",
     "best_score": 0.0
   },
   {
-    "name": "OK DESSAU .c",
+    "name": "S. SPORT 8 FHD",
     "best_score": 0.0
   },
   {
-    "name": "OK DESSAU .s",
+    "name": "S. SPORT 9 HD",
     "best_score": 0.0
   },
   {
-    "name": "OK FLENSBURG .c",
+    "name": "S. SPORT F1 HD",
     "best_score": 0.0
   },
   {
-    "name": "OK KAISERSLAUTERN .c",
+    "name": "S. SPORT MIX HD",
     "best_score": 0.0
   },
   {
-    "name": "OK KASSEL .c",
+    "name": "S. SPORT NEWS HD",
     "best_score": 0.0
   },
   {
-    "name": "OK KIEL .c",
+    "name": "S. SPORT PREMIER LEAGUE HD",
     "best_score": 0.0
   },
   {
-    "name": "OK LUDWIGSHAFEN .c",
+    "name": "S. SPORT TENNIS HD",
     "best_score": 0.0
   },
   {
-    "name": "OK MERSEBURG .c",
+    "name": "S. SPORT TOP EVENT HD",
     "best_score": 0.0
   },
   {
-    "name": "OK SALZWEDEL .c",
+    "name": "SAARLAND FERNSEHEN 1",
     "best_score": 0.0
   },
   {
-    "name": "OK STENDAL .c",
+    "name": "SAARLAND FERNSEHEN 2",
     "best_score": 0.0
   },
   {
-    "name": "OK WEINSTRASSE .c",
+    "name": "SACHSEN EINS",
     "best_score": 0.0
   },
   {
-    "name": "OK WERNIGERODE .c",
+    "name": "SACHSEN FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "OK4 .c",
+    "name": "SACHSENEINS",
     "best_score": 0.0
   },
   {
-    "name": "OKD .c",
+    "name": "SALVE TV",
     "best_score": 0.0
   },
   {
-    "name": "ONEBY .b",
+    "name": "SEENLUFT 24",
     "best_score": 0.0
   },
   {
-    "name": "ORF 3 .c",
+    "name": "SEENLUFT24",
     "best_score": 0.0
   },
   {
-    "name": "ORF 3 HEVC .b",
+    "name": "SENDER NEU JERUSALEM",
     "best_score": 0.0
   },
   {
-    "name": "OUT TV .c",
+    "name": "SERIEN+",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT NETWORK .b",
+    "name": "SERVUS TV HD+",
     "best_score": 0.0
   },
   {
-    "name": "PARANORMAL .c",
+    "name": "SERVUS TV MOTORSPORT",
     "best_score": 0.0
   },
   {
-    "name": "PEARL TV SHOP .b",
+    "name": "SERVUSTV DEUTSCHLAND HD",
     "best_score": 0.0
   },
   {
-    "name": "PEER TV SÜDTIROL .c",
+    "name": "SERVUSTV OESTERREICH HD",
     "best_score": 0.0
   },
   {
-    "name": "PJ MASKS .b",
+    "name": "SKY 1",
     "best_score": 0.0
   },
   {
-    "name": "PLUTO TV MTV .c",
+    "name": "SKY 1 HD+",
     "best_score": 0.0
   },
   {
-    "name": "PLUTO TV N24 DOKU .c",
+    "name": "SKY 1 RAW",
     "best_score": 0.0
   },
   {
-    "name": "PLUTO TV NICK .c",
+    "name": "SKY 24",
     "best_score": 0.0
   },
   {
-    "name": "POPCORN SELECT 3 .c",
+    "name": "SKY ACTION",
     "best_score": 0.0
   },
   {
-    "name": "POPCORN SELECT 4 .c",
+    "name": "SKY ACTION HD+",
     "best_score": 0.0
   },
   {
-    "name": "POPCORN SELECT 5 .c",
+    "name": "SKY ARTS",
     "best_score": 0.0
   },
   {
-    "name": "POPCORN SELECT 6 .c",
+    "name": "SKY BEST OF",
     "best_score": 0.0
   },
   {
-    "name": "POPCORN SELECT 7 .c",
+    "name": "SKY BEST OF HD+",
     "best_score": 0.0
   },
   {
-    "name": "POPCORN SELECT 9 .c",
+    "name": "SKY BOX ABENTEUER",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 FUN .s",
+    "name": "SKY BOX ACTION",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 FUN HD .b",
+    "name": "SKY BOX BOLLYWOOD",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 FUN HD+ .b",
+    "name": "SKY BOX DOCU",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 HD .b",
+    "name": "SKY BOX DRAMA",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 HD (BACKUP) .b",
+    "name": "SKY BOX FAMILIE",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 HD+ .b",
+    "name": "SKY BOX FANTASY",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 HD+ (BACKUP) .b",
+    "name": "SKY BOX HISTORIE",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 MAXX .s",
+    "name": "SKY BOX HORROR",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 MAXX HD .b",
+    "name": "SKY BOX KARATE",
     "best_score": 0.0
   },
   {
-    "name": "PRO 7 MAXX HD+ .b",
+    "name": "SKY BOX KOMODIE",
     "best_score": 0.0
   },
   {
-    "name": "PRO SIEBEN RAW .b",
+    "name": "SKY BOX KRIEGSFILM",
     "best_score": 0.0
   },
   {
-    "name": "PRO7 FUN HD .b",
+    "name": "SKY BOX KRIMI",
     "best_score": 0.0
   },
   {
-    "name": "PRO7 MAXX .b",
+    "name": "SKY BOX LIEBESFILM",
     "best_score": 0.0
   },
   {
-    "name": "PRO7 MAXX HD+ .b",
+    "name": "SKY BOX MYSTERY",
     "best_score": 0.0
   },
   {
-    "name": "PRO7 MAXX HEVC .b",
+    "name": "SKY BOX PREMIEREN 1",
     "best_score": 0.0
   },
   {
-    "name": "PRO7 MAXX HEVC (BACKUP) .b",
+    "name": "SKY BOX PREMIEREN 10 HD",
     "best_score": 0.0
   },
   {
-    "name": "PRO7 MAXX RAW .b",
+    "name": "SKY BOX PREMIEREN 11 HD",
     "best_score": 0.0
   },
   {
-    "name": "PUNKTUM .c",
+    "name": "SKY BOX PREMIEREN 12 HD",
     "best_score": 0.0
   },
   {
-    "name": "PUNKTUM .s",
+    "name": "SKY BOX PREMIEREN 13 HD",
     "best_score": 0.0
   },
   {
-    "name": "RADIO BREMEN FERNSEHEN .c",
+    "name": "SKY BOX PREMIEREN 14 HD",
     "best_score": 0.0
   },
   {
-    "name": "RADIO WASER TV BREMEN .c",
+    "name": "SKY BOX PREMIEREN 15 HD",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ACTION MOVIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 16 HD",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV COMEDY MOVIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 17 HD",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV CRIME SERIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 18 HD",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV DRAMA MOVIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 19 HD",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV FAMILY MOVIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 2",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ROMANCE MOVIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 20 HD",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV THRILLERS GERMANY .c",
+    "name": "SKY BOX PREMIEREN 3",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV TOP MOVIES GERMANY .c",
+    "name": "SKY BOX PREMIEREN 4",
     "best_score": 0.0
   },
   {
-    "name": "RAN 1 .c",
+    "name": "SKY BOX PREMIEREN 5",
     "best_score": 0.0
   },
   {
-    "name": "RBW .s",
+    "name": "SKY BOX PREMIEREN 6",
     "best_score": 0.0
   },
   {
-    "name": "RED BULL TV .b",
+    "name": "SKY BOX PREMIEREN 7",
     "best_score": 0.0
   },
   {
-    "name": "RED BULL TV .c",
+    "name": "SKY BOX PREMIEREN 8 HD",
     "best_score": 0.0
   },
   {
-    "name": "REGIO TV .s",
+    "name": "SKY BOX PREMIEREN 9 HD",
     "best_score": 0.0
   },
   {
-    "name": "REGIO TV BODENSEE .c",
+    "name": "SKY BOX SCI-FI",
     "best_score": 0.0
   },
   {
-    "name": "REGIO TV SCHWABEN .c",
+    "name": "SKY BOX THRILLER",
     "best_score": 0.0
   },
   {
-    "name": "REGIO TV STUTTGART .c",
+    "name": "SKY BOX WESTERN",
     "best_score": 0.0
   },
   {
-    "name": "RENNSTEIG TV .s",
+    "name": "SKY BUNDESLIGA",
     "best_score": 0.0
   },
   {
-    "name": "RFH .c",
+    "name": "SKY BUNDESLIGA 1",
     "best_score": 0.0
   },
   {
-    "name": "RFH TV .s",
+    "name": "SKY BUNDESLIGA 1 HD+",
     "best_score": 0.0
   },
   {
-    "name": "RFO .c",
+    "name": "SKY BUNDESLIGA 1 RAW",
     "best_score": 0.0
   },
   {
-    "name": "RFO .s",
+    "name": "SKY BUNDESLIGA 10 HD",
     "best_score": 0.0
   },
   {
-    "name": "RFO ROSENHEIM .c",
+    "name": "SKY BUNDESLIGA 10 HD+",
     "best_score": 0.0
   },
   {
-    "name": "RHEINLOKAL .c",
+    "name": "SKY BUNDESLIGA 10 RAW",
     "best_score": 0.0
   },
   {
-    "name": "RHEINMAIN TV .c",
+    "name": "SKY BUNDESLIGA 2",
     "best_score": 0.0
   },
   {
-    "name": "RIVER MONSTERS .c",
+    "name": "SKY BUNDESLIGA 2 HD+",
     "best_score": 0.0
   },
   {
-    "name": "RNF .b",
+    "name": "SKY BUNDESLIGA 2 RAW",
     "best_score": 0.0
   },
   {
-    "name": "RNF .c",
+    "name": "SKY BUNDESLIGA 3",
     "best_score": 0.0
   },
   {
-    "name": "ROCK ANTENNE .b",
+    "name": "SKY BUNDESLIGA 3 HD+",
     "best_score": 0.0
   },
   {
-    "name": "ROCK ANTENNE .c",
+    "name": "SKY BUNDESLIGA 4",
     "best_score": 0.0
   },
   {
-    "name": "ROCKY CHANNEL .c",
+    "name": "SKY BUNDESLIGA 4 HD+",
     "best_score": 0.0
   },
   {
-    "name": "RT DE .c",
+    "name": "SKY BUNDESLIGA 5",
     "best_score": 0.0
   },
   {
-    "name": "RTLII HEVC .b",
+    "name": "SKY BUNDESLIGA 5 HD+",
     "best_score": 0.0
   },
   {
-    "name": "RWE ERFURT .c",
+    "name": "SKY BUNDESLIGA 5 RAW",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 1 FHD .b",
+    "name": "SKY BUNDESLIGA 6",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 1 HD .b",
+    "name": "SKY BUNDESLIGA 7",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 10 FHD .b",
+    "name": "SKY BUNDESLIGA 7 HD+",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 10 HD .b",
+    "name": "SKY BUNDESLIGA 8 HD",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 11 FHD .b",
+    "name": "SKY BUNDESLIGA 8 HD+",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 11 HD .b",
+    "name": "SKY BUNDESLIGA 8 RAW",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 2 FHD .b",
+    "name": "SKY BUNDESLIGA 9 HD",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 2 HD .b",
+    "name": "SKY BUNDESLIGA 9 HD+",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 3 FHD (MATCH TIME) .b",
+    "name": "SKY BUNDESLIGA 9 RAW",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 3 HD .b",
+    "name": "SKY BUNDESLIGA HD+",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 4 FHD .b",
+    "name": "SKY BUNDESLIGA1",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 4 HD .b",
+    "name": "SKY CINEMA 1",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 5 FHD .b",
+    "name": "SKY CINEMA 1+",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 5 HD .b",
+    "name": "SKY CINEMA 24",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 6 FHD .b",
+    "name": "SKY CINEMA BEST OF",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 6 HD .b",
+    "name": "SKY CINEMA BEST OF HD+",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 7 FHD .b",
+    "name": "SKY CINEMA BEST OF RAW",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 7 HD .b",
+    "name": "SKY CINEMA BLOCKBUSTER",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 8 FHD .b",
+    "name": "SKY CINEMA CRIME",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 9 FHD .b",
+    "name": "SKY CINEMA DOCUMENTARIES",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT 9 HD .b",
+    "name": "SKY CINEMA EMOTION",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT F1 HD .b",
+    "name": "SKY CINEMA FUN",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT LIGA UHD .b",
+    "name": "SKY CINEMA HITS",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT PREMIER LEAGUE FHD .b",
+    "name": "SKY CINEMA KRIMI",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT PREMIER LEAGUE HD .b",
+    "name": "SKY CINEMA NOSTALGIE",
     "best_score": 0.0
   },
   {
-    "name": "S. SPORT TENNIS HD .b",
+    "name": "SKY CINEMA PREMIEREN",
     "best_score": 0.0
   },
   {
-    "name": "SAARLAND FERNSEHEN 1 .c",
+    "name": "SKY CINEMA PREMIEREN +24",
     "best_score": 0.0
   },
   {
-    "name": "SAARLAND FERNSEHEN 2 .c",
+    "name": "SKY CINEMA PREMIEREN +24 RAW",
     "best_score": 0.0
   },
   {
-    "name": "SACHSEN EINS .c",
+    "name": "SKY CINEMA PREMIEREN 24",
     "best_score": 0.0
   },
   {
-    "name": "SACHSEN FERNSEHEN .c",
+    "name": "SKY CINEMA PREMIEREN HD+",
     "best_score": 0.0
   },
   {
-    "name": "SACHSEN FERNSEHEN .s",
+    "name": "SKY CINEMA PREMIEREN RAW",
     "best_score": 0.0
   },
   {
-    "name": "SACHSENEINS .s",
+    "name": "SKY CINEMA SPECIAL",
     "best_score": 0.0
   },
   {
-    "name": "SALVE TV .c",
+    "name": "SKY CINEMA SPECIAL HD+",
     "best_score": 0.0
   },
   {
-    "name": "SALVE TV .s",
+    "name": "SKY CINEMA SPECIAL RAW",
     "best_score": 0.0
   },
   {
-    "name": "SEENLUFT 24 .s",
+    "name": "SKY CINEMA THRILLER",
     "best_score": 0.0
   },
   {
-    "name": "SEENLUFT24 .c",
+    "name": "SKY CINEMA THRILLER HD+",
     "best_score": 0.0
   },
   {
-    "name": "SENDER NEU JERUSALEM .c",
+    "name": "SKY CINEMA THRILLER RAW",
     "best_score": 0.0
   },
   {
-    "name": "SERIEN+ .c",
+    "name": "SKY CLASSICS",
     "best_score": 0.0
   },
   {
-    "name": "SERVUS TV HD+ .b",
+    "name": "SKY COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "SERVUS TV HEVC .b",
+    "name": "SKY COMEDY HD RAW",
     "best_score": 0.0
   },
   {
-    "name": "SERVUS TV MOTORSPORT .c",
+    "name": "SKY FAMILY",
     "best_score": 0.0
   },
   {
-    "name": "SERVUSTV DEUTSCHLAND HD .b",
+    "name": "SKY FAMILY HD+",
     "best_score": 0.0
   },
   {
-    "name": "SERVUSTV OESTERREICH HD .b",
+    "name": "SKY FORMULA 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY 1 RAW .b",
+    "name": "SKY FUN",
     "best_score": 0.0
   },
   {
-    "name": "SKY 24 .b",
+    "name": "SKY HITS",
     "best_score": 0.0
   },
   {
-    "name": "SKY ACTION .b",
+    "name": "SKY JUNIOR",
     "best_score": 0.0
   },
   {
-    "name": "SKY ACTION .s",
+    "name": "SKY NOSTALGIE",
     "best_score": 0.0
   },
   {
-    "name": "SKY ACTION HD .b",
+    "name": "SKY POPCORN SELECT 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY ACTION HD+ .b",
+    "name": "SKY POPCORN SELECT 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY ARTS .c",
+    "name": "SKY POPCORN SELECT 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BEST OF .b",
+    "name": "SKY POPCORN SELECT 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BEST OF HD .b",
+    "name": "SKY POPCORN SELECT 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY BEST OF HD+ .b",
+    "name": "SKY PREMIEREN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX ABENTEUER .c",
+    "name": "SKY PREMIEREN 24 HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX ABENTEUER HD .b",
+    "name": "SKY PREMIEREN 24 HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX ACTION .c",
+    "name": "SKY PREMIEREN HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX ACTION HD .b",
+    "name": "SKY SELECT",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX BOLLYWOOD .c",
+    "name": "SKY SELECT 06 4K (MULTIAUDIO)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX BOLLYWOOD HD .b",
+    "name": "SKY SELECT 07 4K (MULTIAUDIO)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX DOCU .c",
+    "name": "SKY SELECT 08 4K (MULTIAUDIO)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX DOCU HD .b",
+    "name": "SKY SELECT 09 4K (MULTIAUDIO)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX DRAMA .c",
+    "name": "SKY SELECT 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX DRAMA HD .b",
+    "name": "SKY SELECT 1 BOX",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX FAMILIE .c",
+    "name": "SKY SELECT 10",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX FAMILIE HD .b",
+    "name": "SKY SELECT 13 4K (MULTIAUDIO)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX FANTASY .c",
+    "name": "SKY SELECT 14 4K (MULTIAUDIO)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX FANTASY HD .b",
+    "name": "SKY SELECT 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX HISTORIE .c",
+    "name": "SKY SELECT 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX HISTORIE HD .b",
+    "name": "SKY SELECT 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX HORROR .c",
+    "name": "SKY SELECT 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX HORROR HD .b",
+    "name": "SKY SELECT 6",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KARATE .c",
+    "name": "SKY SELECT 7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KARATE HD .b",
+    "name": "SKY SELECT 8",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KOMODIE .c",
+    "name": "SKY SELECT 9",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KOMODIE HD .b",
+    "name": "SKY SELECT PREMIERE 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KRIEGSFILM .c",
+    "name": "SKY SELECT PREMIERE 10",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KRIEGSFILM HD .b",
+    "name": "SKY SELECT PREMIERE 12",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KRIMI .c",
+    "name": "SKY SELECT PREMIERE 13",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX KRIMI HD .b",
+    "name": "SKY SELECT PREMIERE 14",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX LIEBESFILM .c",
+    "name": "SKY SELECT PREMIERE 15",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX LIEBESFILM HD .b",
+    "name": "SKY SELECT PREMIERE 16",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX MYSTERY .c",
+    "name": "SKY SELECT PREMIERE 17",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX MYSTERY HD .b",
+    "name": "SKY SELECT PREMIERE 18",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 1 .c",
+    "name": "SKY SELECT PREMIERE 19",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 1 HD .b",
+    "name": "SKY SELECT PREMIERE 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 10 HD .b",
+    "name": "SKY SELECT PREMIERE 20",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 11 HD .b",
+    "name": "SKY SELECT PREMIERE 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 12 HD .b",
+    "name": "SKY SELECT PREMIERE 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 13 HD .b",
+    "name": "SKY SELECT PREMIERE 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 14 HD .b",
+    "name": "SKY SELECT PREMIERE 6",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 15 HD .b",
+    "name": "SKY SELECT PREMIERE 7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 16 HD .b",
+    "name": "SKY SELECT PREMIERE 8",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 17 HD .b",
+    "name": "SKY SELECT PREMIERE 9",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 18 HD .b",
+    "name": "SKY SELECT PREMIERE VITRINE",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 19 HD .b",
+    "name": "SKY SERIEN&SHOWS HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 2 .c",
+    "name": "SKY SPECIAL HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 2 HD .b",
+    "name": "SKY SPECIAL HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 20 HD .b",
+    "name": "SKY SPORT 11 [LIVE DURING EVENTS ONLY]",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 3 .c",
+    "name": "SKY SPORT EXTREME SPORTS",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 3 HD .b",
+    "name": "SKY THRILLER HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 4 .c",
+    "name": "SKY THRILLER HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 4 HD .b",
+    "name": "SONLIFE (ENG)",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 5 .c",
+    "name": "SONNENKLAR TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 5 HD .b",
+    "name": "SONY ANIXE",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 6 .c",
+    "name": "SONY AXN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 6 HD .b",
+    "name": "SONY CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 7 .c",
+    "name": "SONY CHANNEL HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 7 HD .b",
+    "name": "SPIEGEL TV WISSEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 8 HD .b",
+    "name": "SPIEGEL WISSEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX PREMIEREN 9 HD .b",
+    "name": "SPONGEBOB HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX SCI-FI .c",
+    "name": "SPORT DIGITAL",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX SCI-FI HD .b",
+    "name": "SPORTDEUTSCHLAND EVENT 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX THRILLER .c",
+    "name": "SPORTDEUTSCHLAND EVENT 12",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX THRILLER HD .b",
+    "name": "SPORTDEUTSCHLAND EVENT 13",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX WESTERN .c",
+    "name": "SPORTDEUTSCHLAND EVENT 14",
     "best_score": 0.0
   },
   {
-    "name": "SKY BOX WESTERN HD .b",
+    "name": "SPORTDEUTSCHLAND EVENT 15",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA .c",
+    "name": "SPORTDEUTSCHLAND EVENT 17",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 (MATCH TIME) .s",
+    "name": "SPORTDEUTSCHLAND EVENT 18",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 (ONLY DURING EVENTS) .s",
+    "name": "SPORTDEUTSCHLAND EVENT 19",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 [SPIELTAG] .c",
+    "name": "SPORTDEUTSCHLAND EVENT 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 HD .b",
+    "name": "SPORTDEUTSCHLAND EVENT 21",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 HD (BACKUP) .b",
+    "name": "SPORTDEUTSCHLAND EVENT 22",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 HD+ .b",
+    "name": "SPORTDEUTSCHLAND EVENT 24",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 HEVC .b",
+    "name": "SPORTDEUTSCHLAND EVENT 25",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 1 RAW .b",
+    "name": "SPORTDEUTSCHLAND EVENT 27",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 (MATCH TIME) .s",
+    "name": "SPORTDEUTSCHLAND EVENT 28",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 (ONLY DURING EVENTS) .s",
+    "name": "SPORTDEUTSCHLAND EVENT 29",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 [SPIELTAG] .c",
+    "name": "SPORTDEUTSCHLAND EVENT 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 HD .b",
+    "name": "SPORTDEUTSCHLAND EVENT 32",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 HD (BACKUP 2) .b",
+    "name": "SPORTDEUTSCHLAND EVENT 33",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 HD (BACKUP) .b",
+    "name": "SPORTDEUTSCHLAND EVENT 35",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 HD+ .b",
+    "name": "SPORTDEUTSCHLAND EVENT 37",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 10 RAW .b",
+    "name": "SPORTDEUTSCHLAND EVENT 38",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 .b",
+    "name": "SPORTDEUTSCHLAND EVENT 39",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 (ONLY DURING EVENTS) .s",
+    "name": "SPORTDEUTSCHLAND EVENT 40",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 [LIVE DURING EVENTS ONLY] .s",
+    "name": "SPORTDEUTSCHLAND EVENT 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 [SPIELTAG] .c",
+    "name": "SPORTDEUTSCHLAND EVENT 7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 HD .b",
+    "name": "SPORTDEUTSCHLAND EVENT 8",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 HD (BACKUP) .b",
+    "name": "SPORTDEUTSCHLAND EVENT 9",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 HD+ .b",
+    "name": "SPORTDIGITAL FUSBALL HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 2 RAW .b",
+    "name": "SPORTDIGITALL FUSSBALL",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 .b",
+    "name": "SR",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 (MATCH TIME) .s",
+    "name": "SR FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 (ONLY DURING EVENTS) .s",
+    "name": "STAR WARS CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 [SPIELTAG] .c",
+    "name": "STINGRAY CLASSICA",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 HD .b",
+    "name": "STINGRAY DJAZZ",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 HD (BACKUP) .b",
+    "name": "STUDIO 47",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 HD+ .b",
+    "name": "SWR",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 3 RAW .b",
+    "name": "SWR 3 VISUAL RADIO",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 .b",
+    "name": "SWR BW HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 (MATCH TIME) .s",
+    "name": "SWR DASDING 90.8",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 (ONLY DURING EVENTS) .s",
+    "name": "SWR FERNSEHEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 [SPIELTAG] .c",
+    "name": "TEEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 HD .b",
+    "name": "TELEKOM 3 BUNDESLIGA 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 HD (BACKUP 2) .b",
+    "name": "TELEKOM 3 BUNDESLIGA 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 HD (BACKUP) .b",
+    "name": "TELEKOM 3 BUNDESLIGA 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 HD+ .b",
+    "name": "TELEKOM 3 BUNDESLIGA 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 4 RAW .b",
+    "name": "TELEKOM 3 BUNDESLIGA 6",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 .b",
+    "name": "TELEKOM 3 BUNDESLIGA 7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 (MATCH TIME) .s",
+    "name": "TELEKOM 3 BUNDESLIGA 8",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 (ONLY DURING EVENTS) .s",
+    "name": "TELEKOM BBL SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 [SPIELTAG] .c",
+    "name": "TELEKOM BBL SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 HD .b",
+    "name": "TELEKOM BBL SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 HD (BACKUP 2) .b",
+    "name": "TELEKOM BBL SPORT 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 HD (BACKUP) .b",
+    "name": "TELEKOM BUNDESLIGA 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 HD+ .b",
+    "name": "TELEKOM BUNDESLIGA 2 HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 5 RAW .b",
+    "name": "TELEKOM BUNDESLIGA 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 .b",
+    "name": "TELEKOM BUNDESLIGA 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 (MATCH TIME) .s",
+    "name": "TELEKOM BUNDESLIGA 5 HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 (ONLY DURING EVENTS) .s",
+    "name": "TELEKOM BUNDESLIGA 6",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 [SPIELTAG] .c",
+    "name": "TELEKOM BUNDESLIGA 7 HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 HD .b",
+    "name": "TELEKOM BUNDESLIGA 8 [LIVE DURING EVENTS ONLY]",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 HD (BACKUP 2) .b",
+    "name": "TELEKOM DEL SPORT 1",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 HD (BACKUP) .b",
+    "name": "TELEKOM DEL SPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 6 RAW .b",
+    "name": "TELEKOM DEL SPORT 3",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 .s",
+    "name": "TELEKOM DEL SPORT 4",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 (MATCH TIME) .s",
+    "name": "TELEKOM DEL SPORT 5",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 (ONLY DURING EVENTS) .s",
+    "name": "TELEKOM DEL SPORT 6",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 [SPIELTAG] .c",
+    "name": "TELEKOM DEL SPORT 7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 HD .b",
+    "name": "TELTOWKANAL",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 HD (BACKUP 2) .b",
+    "name": "TERRA MATER WILD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 HD (BACKUP) .b",
+    "name": "THE MIDDLE 24/7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 HD+ .b",
+    "name": "THE NIGHT SHIFT 24/7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 7 RAW .b",
+    "name": "THE WICKED TUNA",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 (MATCH TIME) .s",
+    "name": "TIDE TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 (ONLY DURING EVENTS) .s",
+    "name": "TNT COMEDY HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 [SPIELTAG] .c",
+    "name": "TNT COMEDY HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 HD .b",
+    "name": "TNT FILM HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 HD (BACKUP 2) .b",
+    "name": "TNT FILM HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 HD+ .b",
+    "name": "TNT SERIE HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 8 RAW .b",
+    "name": "TNT SERIE HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 (MATCH TIME) .s",
+    "name": "TOP FILME",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 [SPIELTAG] .c",
+    "name": "TOTE M DCHEN LEN NICHT 24/7",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 HD .b",
+    "name": "TV INGOLSTADT",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 HD .s",
+    "name": "TV MAINFRANKEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 HD (BACKUP) .b",
+    "name": "TV OBERFRANKEN",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 HD+ .b",
+    "name": "TV3 HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA 9 RAW .b",
+    "name": "TV3 MAX",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA HD .b",
+    "name": "TV3 PULS",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA HD+ .b",
+    "name": "TV3 SPORT",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA UHD .b",
+    "name": "TV3+ HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY BUNDESLIGA1 .b",
+    "name": "TVA OSTBAYERN",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA 1+ .s",
+    "name": "UNIVERSAL TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA 24 .c",
+    "name": "UNIVERSAL TV HD+",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST .s",
+    "name": "UNIVERSAL TV RAW",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF .c",
+    "name": "V FILM ACTION",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF .s",
+    "name": "V FILM FAMILY",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF HD .b",
+    "name": "V FILM HITS",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF HD (BACKUP) .b",
+    "name": "V FILM PREMIERE",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF HD+ .b",
+    "name": "V SERIES",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF HEVC .b",
+    "name": "V SPORT GOLF",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA BEST OF RAW .b",
+    "name": "VF: DE: DISCOVERY HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA CRIME .s",
+    "name": "VF: DE: NATGEO HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA DOCUMENTARIES .s",
+    "name": "VF: DE: NATGEO WILD HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA EMOTION .b",
+    "name": "VH1 CLASSIC",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA EMOTION .c",
+    "name": "VIASAT EXPLORE",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA EMOTION .s",
+    "name": "VIASAT HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA FUN .s",
+    "name": "VIASAT NATURE",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA HITS .c",
+    "name": "VOLKSMUSIK TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA HITS .s",
+    "name": "WAIDWERK",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA NOSTALGIE .c",
+    "name": "WAIDWERK TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA NOSTALGIE .s",
+    "name": "WARNER COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN .c",
+    "name": "WARNER COMEDY RAW",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN .s",
+    "name": "WARNER FILM",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 .b",
+    "name": "WARNER FILM RAW",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 .c",
+    "name": "WARNER SERIE HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 .s",
+    "name": "WARNER SERIE RAW",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 (BACKUP) .b",
+    "name": "WEDO MOVIES",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 HD .b",
+    "name": "WEDO SPORTS",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 HEVC .b",
+    "name": "WELT/N24 SD",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN +24 RAW .b",
+    "name": "WETTER.COM TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN 24 .s",
+    "name": "WETTIN TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN HD .b",
+    "name": "WICKED TUNA",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN HD+ .b",
+    "name": "WORLD POKER TOUR",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN HEVC .b",
+    "name": "WWE HD",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA PREMIEREN RAW .b",
+    "name": "XITE",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA SPECIAL .c",
+    "name": "XPLORE",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA SPECIAL HD+ .b",
+    "name": "YAKARI TV",
     "best_score": 0.0
   },
   {
-    "name": "SKY CINEMA SPECIAL RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA THRILLER .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA THRILLER .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA THRILLER HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA THRILLER HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA THRILLER HEVC .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CINEMA THRILLER RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY CLASSICS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY COMEDY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY COMEDY HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY COMEDY HEVC .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY FAMILY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY FAMILY HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY FORMULA 1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY FORMULA 1 UHD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY HITS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY JUNIOR .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY NOSTALGIE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY NOSTALGIE .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY POPCORN SELECT 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY POPCORN SELECT 4 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY POPCORN SELECT 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PREMIEREN .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PREMIEREN 24 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PREMIEREN 24 HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PREMIEREN HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY PREMIEREN HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 06 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 07 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 08 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 09 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 1 BOX .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 10 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 10 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 10 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 10 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 13 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 14 4K (MULTIAUDIO) .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 2 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 2 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 2 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 3 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 3 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 4 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 4 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 4 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 5 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 5 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 5 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 6 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 6 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 6 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 6 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 7 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 7 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 7 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 8 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 8 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 8 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 8 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 9 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 9 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 9 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT 9 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 1 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 10 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 11 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 12 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 13 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 14 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 15 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 16 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 17 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 18 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 19 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 2 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 20 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 3 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 4 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 5 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 6 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 7 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 8 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE 9 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PREMIERE VITRINE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SELECT PROGRAMM BERSICHT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SERIEN & SHOWS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SERIEN & SHOWS FHD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SERIEN & SHOWS HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SERIEN & SHOWS+ .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPECIAL HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY SPORT 11 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY THRILLER HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SKY THRILLER HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONLIFE (ENG) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONNENKLAR TV .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONNENKLAR TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONNENKLAR TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY ANIXE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY ANIXE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY AXN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY AXN (AXN BLACK) .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY AXN (AXN WHITE) .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY AXN HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY CHANNEL HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SONY CHANNEL HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL TV KONFLIKTE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL TV WISSEN .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL TV WISSEN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL TV WISSEN (BACKUP 2) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL TV WISSEN (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL TV WISSEN HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPIEGEL WISSEN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPONGEBOB HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORT DIGITAL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORT DIGITAL FHD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORT DIGITAL HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORT DIGITAL HD (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 1 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 10 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 11 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 12 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 13 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 14 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 15 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 16 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 17 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 18 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 19 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 20 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 21 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 22 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 23 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 24 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 25 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 26 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 27 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 28 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 29 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 30 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 31 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 32 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 33 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 34 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 35 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 36 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 37 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 38 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 39 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 40 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 5 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 6 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 8 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDEUTSCHLAND EVENT 9 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDIGITAL FUSBALL HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SPORTDIGITALL FUSSBALL .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SR .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SR FERNSEHEN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STAR WARS CHANNEL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STINGRAY CLASSICA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STINGRAY CLASSICA .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "STINGRAY CLASSICA FHD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "STINGRAY DJAZZ .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STINGRAY ICONCERTS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "STUDIO 47 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SWR .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "SWR 3 VISUAL RADIO .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SWR BW HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "SWR DASDING 90.8 .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "SWR HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TASTEMADE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TEEN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 1 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 5 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 6 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM 3 BUNDESLIGA 8 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BBL SPORT 1 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BBL SPORT 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BBL SPORT 3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BBL SPORT 4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 1 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 2 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 3 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 3 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 4 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 5 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 5 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 6 .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 6 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 7 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM BUNDESLIGA 8 [LIVE DURING EVENTS ONLY] .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 1 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 5 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 6 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELEKOM DEL SPORT 7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TELTOWKANAL .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TERRA MATER WILD .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE MIDDLE 24/7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE NIGHT SHIFT 24/7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "THE WICKED TUNA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TIDE TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT COMEDY HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT COMEDY HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT FILM HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT FILM HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT SERIE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TNT SERIE HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOP FILME .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TOTE M DCHEN LEN NICHT 24/7 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV INGOLSTADT .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV INGOLSTADT .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV MAINFRANKEN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV OBERFRANKEN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV OBERFRANKEN .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV3 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV3 MAX .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV3 PULS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV3 SPORT .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TV3+ HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "TVA OSTBAYERN .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL TV HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL TV HD (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL TV HD+ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "UNIVERSAL TV RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "V FILM ACTION .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "V FILM FAMILY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "V FILM HITS .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "V FILM PREMIERE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "V SERIES .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "V SPORT GOLF .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VF: DE: DISCOVERY HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VF: DE: NATGEO HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VF: DE: NATGEO WILD HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VH1 CLASSIC .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VH1 CLASSIC (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT EXPLORE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT HISTORY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VIASAT NATURE .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "VOLKSMUSIK TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WAIDWERK TV .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER COMEDY .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER COMEDY .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER COMEDY HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER COMEDY RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER COMEDY RAW (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER FILM .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER FILM HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER FILM RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER FILM RAW (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER SERIE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER SERIE RAW .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WARNER SERIE RAW (BACKUP) .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WEDO MOVIES .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WEDO SPORTS .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WELT/N24 SD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WETTER.COM TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WETTIN TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WICKED TUNA .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "WORLD POKER TOUR .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "WWE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "XITE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "XITE HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "XPLORE .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "YAKARI TV .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "YU-GI-OH! .c",
+    "name": "YU-GI-OH!",
     "best_score": 0.0
   }
 ]

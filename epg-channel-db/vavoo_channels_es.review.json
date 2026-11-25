@@ -1,754 +1,714 @@
 [
   {
-    "name": "CANAL 33 MADRID .c",
-    "best_score": 0.696
-  },
-  {
-    "name": "HISTORIA .b",
-    "best_score": 0.696
-  },
-  {
-    "name": "HISTORIA .c",
-    "best_score": 0.696
-  },
-  {
-    "name": "CLAN .b",
+    "name": "CLAN",
     "best_score": 0.667
   },
   {
-    "name": "MEZZO .c",
-    "best_score": 0.667
-  },
-  {
-    "name": "BLOOMBERG TV EUROPE .c",
-    "best_score": 0.643
-  },
-  {
-    "name": "CANAL SUR ANDALUCIA .c",
-    "best_score": 0.643
-  },
-  {
-    "name": "VAMOS BAR 1 HD .b",
+    "name": "VAMOS BAR 1 HD",
     "best_score": 0.625
   },
   {
-    "name": "VAMOS BAR 2 HD .b",
+    "name": "VAMOS BAR 2 HD",
     "best_score": 0.625
   },
   {
-    "name": "XTRM FULL HD .b",
+    "name": "XTRM FULL HD",
     "best_score": 0.615
   },
   {
-    "name": "CANAL 4 .c",
+    "name": "CANAL 4",
     "best_score": 0.609
   },
   {
-    "name": "CANAL SUR ANDALUCIA 2 .c",
+    "name": "CANAL SUR ANDALUCIA 2",
     "best_score": 0.6
   },
   {
-    "name": "FOX LIFE .c",
+    "name": "MEZZO",
+    "best_score": 0.556
+  },
+  {
+    "name": "FOX LIFE",
     "best_score": 0.545
   },
   {
-    "name": "FOX LIFE HD .b",
+    "name": "GOL",
     "best_score": 0.545
   },
   {
-    "name": "GOL .b",
-    "best_score": 0.545
-  },
-  {
-    "name": "PUNT 3 VALL UIXO .c",
-    "best_score": 0.545
-  },
-  {
-    "name": "AXN WHITE .c",
+    "name": "AXN WHITE",
     "best_score": 0.5
   },
   {
-    "name": "AXN WHITE HD .b",
-    "best_score": 0.5
-  },
-  {
-    "name": "BLOOMBERG TV EMEA LIVE EVENT .c",
+    "name": "BLOOMBERG TV EMEA LIVE EVENT",
     "best_score": 0.486
   },
   {
-    "name": "AMC LIVING .c",
+    "name": "AMC LIVING",
     "best_score": 0.462
   },
   {
-    "name": "TVG MUSIGAL .c",
+    "name": "TVG MUSIGAL",
     "best_score": 0.429
   },
   {
-    "name": "FOX SPORTS 3 .c",
+    "name": "FOX SPORTS 3",
     "best_score": 0.4
   },
   {
-    "name": "TVG CULTURAL .c",
+    "name": "TVG INFANTIL",
     "best_score": 0.4
   },
   {
-    "name": "TVG INFANTIL .c",
-    "best_score": 0.4
-  },
-  {
-    "name": "FDF .b",
+    "name": "FDF",
     "best_score": 0.375
   },
   {
-    "name": "TV3 CATALUNIA .b",
+    "name": "TV3 CATALUNIA",
     "best_score": 0.375
   },
   {
-    "name": "TV3 CATALUNYA .c",
+    "name": "TV3 CATALUNYA",
     "best_score": 0.375
   },
   {
-    "name": "101 TV .c",
+    "name": "101 TV",
     "best_score": 0.0
   },
   {
-    "name": "13 REALITIES .c",
+    "name": "24 HORAS",
     "best_score": 0.0
   },
   {
-    "name": "24 HORAS .b",
+    "name": "7 STORIA",
     "best_score": 0.0
   },
   {
-    "name": "7 TELEVALENCIA .c",
+    "name": "7 TELEVALENCIA",
     "best_score": 0.0
   },
   {
-    "name": "7 TV MURCIA .c",
+    "name": "7 TV MURCIA",
     "best_score": 0.0
   },
   {
-    "name": "8 LA MARINA TV .c",
+    "name": "8 LA MARINA TV",
     "best_score": 0.0
   },
   {
-    "name": "A PUNT .c",
+    "name": "A PUNT",
     "best_score": 0.0
   },
   {
-    "name": "A&E .c",
+    "name": "A&E",
     "best_score": 0.0
   },
   {
-    "name": "A3 SERIES HD .b",
+    "name": "A3 SERIES HD",
     "best_score": 0.0
   },
   {
-    "name": "ACTIVA TV .c",
+    "name": "ACTIVA TV",
     "best_score": 0.0
   },
   {
-    "name": "ADORAM TV .c",
+    "name": "AGUACATE TV",
     "best_score": 0.0
   },
   {
-    "name": "AGUACATE TV .c",
+    "name": "AHORA TV",
     "best_score": 0.0
   },
   {
-    "name": "AHORA TV .c",
+    "name": "ALACANTI TV",
     "best_score": 0.0
   },
   {
-    "name": "ALACANTI TV .c",
+    "name": "ALCARRIA TV",
     "best_score": 0.0
   },
   {
-    "name": "ALCARRIA TV .c",
+    "name": "ARAGON",
     "best_score": 0.0
   },
   {
-    "name": "ARAGON .b",
+    "name": "ARAGON TV INTERNACIONAL",
     "best_score": 0.0
   },
   {
-    "name": "ARAGON TV INTERNACIONAL .c",
+    "name": "ARTEQUATRE",
     "best_score": 0.0
   },
   {
-    "name": "ARTEQUATRE .c",
+    "name": "BABY TV",
     "best_score": 0.0
   },
   {
-    "name": "BARCA TV .b",
+    "name": "BARCA TV",
     "best_score": 0.0
   },
   {
-    "name": "BARCA TV .c",
+    "name": "BEIN SPORTS LA LIGA",
     "best_score": 0.0
   },
   {
-    "name": "BARCA TV (BACKUP) .b",
+    "name": "BEIN SPORTS XTRA Ñ",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS LA LIGA .b",
+    "name": "BLAZE",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS N .b",
+    "name": "CACAVISION",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS N .c",
+    "name": "CANAL 1 MAR MENOR",
     "best_score": 0.0
   },
   {
-    "name": "BEIN SPORTS XTRA Ñ .c",
+    "name": "CANAL 10 EMPORDA",
     "best_score": 0.0
   },
   {
-    "name": "BLAZE .b",
+    "name": "CANAL 3 BIAR",
     "best_score": 0.0
   },
   {
-    "name": "BLAZE .c",
+    "name": "CANAL 33 MADRID",
     "best_score": 0.0
   },
   {
-    "name": "CACAVISION .c",
+    "name": "CANAL 4 MANCHA CENTRO",
     "best_score": 0.0
   },
   {
-    "name": "CADENA ELITE .c",
+    "name": "CANAL 45 TV",
     "best_score": 0.0
   },
   {
-    "name": "CANAL 10 EMPORDA .c",
+    "name": "CANAL 56",
     "best_score": 0.0
   },
   {
-    "name": "CANAL 3 BIAR .c",
+    "name": "CANAL DECASA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL 45 TV .c",
+    "name": "CANAL DIOCESANO",
     "best_score": 0.0
   },
   {
-    "name": "CANAL 56 .c",
+    "name": "CANAL DONANA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL DECASA .b",
+    "name": "CANAL HOLLYWOOD",
     "best_score": 0.0
   },
   {
-    "name": "CANAL DIOCESANO .c",
+    "name": "CANAL MALAGA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL DONANA .c",
+    "name": "CANAL ODISEA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL HOLLYWOOD .c",
+    "name": "CANAL PANDA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL MALAGA .c",
+    "name": "CANAL PARLAMENTO",
     "best_score": 0.0
   },
   {
-    "name": "CANAL ODISEA .b",
+    "name": "CANAL SAN ROQUE",
     "best_score": 0.0
   },
   {
-    "name": "CANAL ODISEA .c",
+    "name": "CANAL SIERRA DE CADIZ",
     "best_score": 0.0
   },
   {
-    "name": "CANAL PANDA .b",
+    "name": "CANAL TARONJA ANOIA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL PANDA .c",
+    "name": "CLASSICA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL PARLAMENTO .c",
+    "name": "CNN EN ESPANOL",
     "best_score": 0.0
   },
   {
-    "name": "CANAL SAN ROQUE .c",
+    "name": "COMEDIA ESPANOLA",
     "best_score": 0.0
   },
   {
-    "name": "CANAL SIERRA DE CADIZ .c",
+    "name": "COSMOPOLITAN TV",
     "best_score": 0.0
   },
   {
-    "name": "CANAL TARONJA ANOIA .c",
+    "name": "COSTA NOROESTE TV",
     "best_score": 0.0
   },
   {
-    "name": "CNN EN ESPANOL .c",
+    "name": "CRIME & INVESTIGATION",
     "best_score": 0.0
   },
   {
-    "name": "COMEDIA ESPANOLA .c",
+    "name": "CULTURA 24 TV",
     "best_score": 0.0
   },
   {
-    "name": "COSMOPOLITAN TV .c",
+    "name": "D KISS",
     "best_score": 0.0
   },
   {
-    "name": "COSTA NOROESTE TV .c",
+    "name": "DIEZ TV",
     "best_score": 0.0
   },
   {
-    "name": "CRIME & INVESTIGATION .b",
+    "name": "DISNEY JUNIOR",
     "best_score": 0.0
   },
   {
-    "name": "CULTURA 24 TV .c",
+    "name": "DW ESPAÑOL",
     "best_score": 0.0
   },
   {
-    "name": "D KISS .c",
+    "name": "EL PINGUINO TV",
     "best_score": 0.0
   },
   {
-    "name": "DIEZ TV .c",
+    "name": "EMPORDA TV",
     "best_score": 0.0
   },
   {
-    "name": "DISNEY JUNIOR .b",
+    "name": "ENFAMILIA",
     "best_score": 0.0
   },
   {
-    "name": "DW ESPAÑOL .c",
+    "name": "ESPERANZA TV",
     "best_score": 0.0
   },
   {
-    "name": "EL PINGUINO TV .c",
+    "name": "ESPN 2",
     "best_score": 0.0
   },
   {
-    "name": "EMPORDA TV .c",
+    "name": "ESPN DEPORTES",
     "best_score": 0.0
   },
   {
-    "name": "ENFAMILIA .c",
+    "name": "ETB BASQUE",
     "best_score": 0.0
   },
   {
-    "name": "ESPERANZA TV .c",
+    "name": "FACTORIA DE FICCION/FDF",
     "best_score": 0.0
   },
   {
-    "name": "ESPN 2 .c",
+    "name": "GALICIA TV",
     "best_score": 0.0
   },
   {
-    "name": "ESPN 3 .c",
+    "name": "GOIENA EUS",
     "best_score": 0.0
   },
   {
-    "name": "ESPN DEPORTES .c",
+    "name": "GOL TV",
     "best_score": 0.0
   },
   {
-    "name": "ETB BASQUE .c",
+    "name": "HAMAIKA TELEBISTA",
     "best_score": 0.0
   },
   {
-    "name": "FACTORIA DE FICCION/FDF .c",
+    "name": "HISTORIA",
     "best_score": 0.0
   },
   {
-    "name": "GALICIA TV .c",
+    "name": "IBERLIA TV",
     "best_score": 0.0
   },
   {
-    "name": "GOIENA EUS .c",
+    "name": "IBUEN VIAJE",
     "best_score": 0.0
   },
   {
-    "name": "GOL TV HD .b",
+    "name": "INTERCOMARCAL",
     "best_score": 0.0
   },
   {
-    "name": "HAMAIKA TELEBISTA .c",
+    "name": "INTERECONOMIA",
     "best_score": 0.0
   },
   {
-    "name": "HBO SIGNATURE .c",
+    "name": "INVESTIGATION DISCOVERY",
     "best_score": 0.0
   },
   {
-    "name": "IBERLIA TV .b",
+    "name": "LA LIGA TV BAR HD",
     "best_score": 0.0
   },
   {
-    "name": "IBUEN VIAJE .c",
+    "name": "LA LIGA TV HD",
     "best_score": 0.0
   },
   {
-    "name": "INTERCOMARCAL .c",
+    "name": "LA SEXTA",
     "best_score": 0.0
   },
   {
-    "name": "INTERECONOMIA .c",
+    "name": "LANCELOT TV",
     "best_score": 0.0
   },
   {
-    "name": "INVESTIGATION DISCOVERY .c",
+    "name": "LIGA CAMPEONES HD",
     "best_score": 0.0
   },
   {
-    "name": "LANCELOT TV .c",
+    "name": "LIGA TV",
     "best_score": 0.0
   },
   {
-    "name": "LIGA CAMPEONES HD .b",
+    "name": "LOGOS TV",
     "best_score": 0.0
   },
   {
-    "name": "LIGA TV .b",
+    "name": "LOGOS TV KIDS",
     "best_score": 0.0
   },
   {
-    "name": "LIGA TV BAR 3 HD .b",
+    "name": "M.ACCION HD",
     "best_score": 0.0
   },
   {
-    "name": "LIGA TV BAR 4 HD .b",
+    "name": "M.DEPORTES HD",
     "best_score": 0.0
   },
   {
-    "name": "LOGOS TV .c",
+    "name": "M.ESTRENOS HD",
     "best_score": 0.0
   },
   {
-    "name": "LOGOS TV KIDS .c",
+    "name": "M.FORMULA 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "LOGOS TV SALUD .c",
+    "name": "M.GOLF HD",
     "best_score": 0.0
   },
   {
-    "name": "M.ACCION HD .b",
+    "name": "M.LIGA DE CAMPEONES HD",
     "best_score": 0.0
   },
   {
-    "name": "M.DEPORTES HD .b",
+    "name": "M+ ELLAS VAMOS",
     "best_score": 0.0
   },
   {
-    "name": "M.ESTRENOS HD .b",
+    "name": "M95 MARBELLA",
     "best_score": 0.0
   },
   {
-    "name": "M.FORMULA 1 HD .b",
+    "name": "MARBELLA TV",
     "best_score": 0.0
   },
   {
-    "name": "M.GOLF HD .b",
+    "name": "MARÍA+VISIÓN SEVILLA",
     "best_score": 0.0
   },
   {
-    "name": "M.LIGA DE CAMPEONES HD .b",
+    "name": "MIJAS 3.40 TV",
     "best_score": 0.0
   },
   {
-    "name": "M+ ELLAS VAMOS .c",
+    "name": "MOLAHITS TV",
     "best_score": 0.0
   },
   {
-    "name": "M95 MARBELLA .c",
+    "name": "MOVISTAR ACCI©N HD",
     "best_score": 0.0
   },
   {
-    "name": "MARÍA+VISIÓN SEVILLA .c",
+    "name": "MOVISTAR COMEDIA HD",
     "best_score": 0.0
   },
   {
-    "name": "MIJAS 3.40 TV .c",
+    "name": "MOVISTAR DRAMA HD",
     "best_score": 0.0
   },
   {
-    "name": "MOLAHITS TV .c",
+    "name": "MOVISTAR ESTRENOS HD",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR ACCI©N HD .b",
+    "name": "MOVISTAR F1 HD",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR COMEDIA HD .b",
+    "name": "MOVISTAR LA LIGA",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR DRAMA HD .b",
+    "name": "MOVISTAR LA LIGA 1",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR F1 HD .b",
+    "name": "MOVISTAR LA LIGA 2",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR LA LIGA .b",
+    "name": "MOVISTAR LA LIGA 3",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR LA LIGA (BACKUP) .b",
+    "name": "MOVISTAR SERIESMANIA HD",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR LA LIGA 1 .b",
+    "name": "MTV ESPANA",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR LA LIGA 2 .b",
+    "name": "NAT GEO",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR SERIES HD .b",
+    "name": "NAT GEO WILD HD",
     "best_score": 0.0
   },
   {
-    "name": "MOVISTAR SERIESMANIA HD .b",
+    "name": "NATURE TIME",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD HD .b",
+    "name": "NICK JR",
     "best_score": 0.0
   },
   {
-    "name": "NATURE TIME .c",
+    "name": "NORTEVISION",
     "best_score": 0.0
   },
   {
-    "name": "NICK JR .b",
+    "name": "ODISSEIA",
     "best_score": 0.0
   },
   {
-    "name": "NORTEVISION .c",
+    "name": "OIZMENDI TELEBISTA",
     "best_score": 0.0
   },
   {
-    "name": "OIZMENDI TELEBISTA .c",
+    "name": "ONDA 15 TV",
     "best_score": 0.0
   },
   {
-    "name": "ONDA 15 TV .c",
+    "name": "ONDA CADIZ",
     "best_score": 0.0
   },
   {
-    "name": "ONDA CADIZ .c",
+    "name": "PARAMOUNT CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .b",
+    "name": "PEQUERADIO",
     "best_score": 0.0
   },
   {
-    "name": "PEQUERADIO .c",
+    "name": "POP WORLD TV",
     "best_score": 0.0
   },
   {
-    "name": "POP WORLD TV .c",
+    "name": "PORTAL FOXMIX",
     "best_score": 0.0
   },
   {
-    "name": "PORTAL FOXMIX .c",
+    "name": "PUNT 3 VALL UIXO",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ACTION MOVIES SPAIN .c",
+    "name": "RAKUTEN TV ACTION MOVIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV CINE ESPAÑOL .c",
+    "name": "RAKUTEN TV CINE ESPAÑOL",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV COMEDY MOVIES SPAIN .c",
+    "name": "RAKUTEN TV COMEDY MOVIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV CRIME SERIES SPAIN .c",
+    "name": "RAKUTEN TV CRIME SERIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV DRAMA MOVIES SPAIN .c",
+    "name": "RAKUTEN TV DRAMA MOVIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV FAMILY MOVIES SPAIN .c",
+    "name": "RAKUTEN TV FAMILY MOVIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV ROMANCE MOVIES SPAIN .c",
+    "name": "RAKUTEN TV ROMANCE MOVIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV THRILLERS SPAIN .c",
+    "name": "RAKUTEN TV THRILLERS SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RAKUTEN TV TOP MOVIES SPAIN .c",
+    "name": "RAKUTEN TV TOP MOVIES SPAIN",
     "best_score": 0.0
   },
   {
-    "name": "RALLY TV .c",
+    "name": "RALLY TV",
     "best_score": 0.0
   },
   {
-    "name": "RT ESPAÑOL .c",
+    "name": "RT ESPAÑOL",
     "best_score": 0.0
   },
   {
-    "name": "RTV VIDA .c",
+    "name": "RTV VIDA",
     "best_score": 0.0
   },
   {
-    "name": "RTVE .c",
+    "name": "RTVE",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME ACCION .c",
+    "name": "RUNTIME ACCION",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME COMEDIA .c",
+    "name": "RUNTIME COMEDIA",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME CRIMEN .c",
+    "name": "RUNTIME CRIMEN",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME ESPANOL .c",
+    "name": "RUNTIME ESPANOL",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME ROMANCE .c",
+    "name": "RUNTIME ROMANCE",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME SERIES .c",
+    "name": "RUNTIME SERIES",
     "best_score": 0.0
   },
   {
-    "name": "RUNTIME THRILLER & TERROR .c",
+    "name": "RUNTIME THRILLER & TERROR",
     "best_score": 0.0
   },
   {
-    "name": "SOPHIA TV ESPAÑOL .c",
+    "name": "SOPHIA TV ESPAÑOL",
     "best_score": 0.0
   },
   {
-    "name": "STAR CHANNEL .c",
+    "name": "STAR LIFE",
     "best_score": 0.0
   },
   {
-    "name": "STAR LIFE .c",
+    "name": "STAR TVE",
     "best_score": 0.0
   },
   {
-    "name": "STAR TVE .c",
+    "name": "SURF CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "SURF CHANNEL .c",
+    "name": "TBN ESPANA",
     "best_score": 0.0
   },
   {
-    "name": "TBN ESPANA .c",
+    "name": "TELE MADRID",
     "best_score": 0.0
   },
   {
-    "name": "TELE MADRID .b",
+    "name": "TELE SAFOR",
     "best_score": 0.0
   },
   {
-    "name": "TELE SAFOR .c",
+    "name": "TELEMOTRIL",
     "best_score": 0.0
   },
   {
-    "name": "TELEMOTRIL .c",
+    "name": "TELETICINO",
     "best_score": 0.0
   },
   {
-    "name": "TELETICINO .c",
+    "name": "TELEVIGO",
     "best_score": 0.0
   },
   {
-    "name": "TELEVIGO .c",
+    "name": "TELEVISIÓN MELILLA",
     "best_score": 0.0
   },
   {
-    "name": "TELEVISIÓN MELILLA .c",
+    "name": "TNT HD",
     "best_score": 0.0
   },
   {
-    "name": "TOROLE TV .c",
+    "name": "TOROLE TV",
     "best_score": 0.0
   },
   {
-    "name": "TOROS .c",
+    "name": "TOROS",
     "best_score": 0.0
   },
   {
-    "name": "TOROS TV .b",
+    "name": "TOROS TV",
     "best_score": 0.0
   },
   {
-    "name": "TOROS TV HD .b",
+    "name": "TV GALICIA",
     "best_score": 0.0
   },
   {
-    "name": "TV GALICIA .b",
+    "name": "TVE INTERNACIONAL AMÉRICA 1",
     "best_score": 0.0
   },
   {
-    "name": "TVE INTERNACIONAL AMÉRICA 1 .c",
+    "name": "TVE INTERNACIONAL EUROPA",
     "best_score": 0.0
   },
   {
-    "name": "TVE INTERNACIONAL EUROPA .c",
+    "name": "TVE LA 1 MADRID",
     "best_score": 0.0
   },
   {
-    "name": "TVE LA 1 MADRID .c",
+    "name": "TVE LA 2",
     "best_score": 0.0
   },
   {
-    "name": "TVE LA 2 .c",
+    "name": "UNIVERS TV",
     "best_score": 0.0
   },
   {
-    "name": "UNIVERS TV .c",
+    "name": "UROLA TELEBISTA",
     "best_score": 0.0
   },
   {
-    "name": "UROLA TELEBISTA .c",
+    "name": "VIAJAR",
     "best_score": 0.0
   },
   {
-    "name": "VIAJAR .c",
+    "name": "VIN TV",
     "best_score": 0.0
   },
   {
-    "name": "VIN TV .c",
-    "best_score": 0.0
-  },
-  {
-    "name": "YU-GI-OH! EN ESPANOL .c",
+    "name": "YU-GI-OH! EN ESPANOL",
     "best_score": 0.0
   }
 ]

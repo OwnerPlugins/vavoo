@@ -1,1630 +1,1454 @@
 [
   {
-    "name": ".SCI‑FI .b",
+    "name": ".BLACK",
     "best_score": 0.0
   },
   {
-    "name": "24 TECHNO .s",
+    "name": "RED",
     "best_score": 0.0
   },
   {
-    "name": "360 TUNEBOX .s",
+    "name": "24 TECHNO",
     "best_score": 0.0
   },
   {
-    "name": "360 НОВОСТИ .b",
+    "name": "360 TUNEBOX",
     "best_score": 0.0
   },
   {
-    "name": "365 DAYS .s",
+    "name": "360 НОВОСТИ",
     "best_score": 0.0
   },
   {
-    "name": "365 ДНЕЙ ТВ .b",
+    "name": "365 DAYS",
     "best_score": 0.0
   },
   {
-    "name": "5 KANAL .s",
+    "name": "365 ДНЕЙ ТВ",
     "best_score": 0.0
   },
   {
-    "name": "8 КАНАЛ .b",
+    "name": "5 KANAL",
     "best_score": 0.0
   },
   {
-    "name": "A 2 .s",
+    "name": "8 КАНАЛ",
     "best_score": 0.0
   },
   {
-    "name": "A1 .b",
+    "name": "A 2",
     "best_score": 0.0
   },
   {
-    "name": "A2 .b",
+    "name": "A1",
     "best_score": 0.0
   },
   {
-    "name": "ABTO 24 .s",
+    "name": "A2",
     "best_score": 0.0
   },
   {
-    "name": "AMC .s",
+    "name": "ABTO 24",
     "best_score": 0.0
   },
   {
-    "name": "AMEDIA 1 .s",
+    "name": "AMC",
     "best_score": 0.0
   },
   {
-    "name": "AMEDIA HIT .b",
+    "name": "AMEDIA 1",
     "best_score": 0.0
   },
   {
-    "name": "AMEDIA HIT .s",
+    "name": "AMEDIA HIT",
     "best_score": 0.0
   },
   {
-    "name": "AMEDIA PREMIUM .s",
+    "name": "AMEDIA PREMIUM",
     "best_score": 0.0
   },
   {
-    "name": "AMEDIA PREMIUM HD .b",
+    "name": "ANI",
     "best_score": 0.0
   },
   {
-    "name": "ANI .b",
+    "name": "ANIMAL PLANET",
     "best_score": 0.0
   },
   {
-    "name": "ANI .s",
+    "name": "AUTO PLUS",
     "best_score": 0.0
   },
   {
-    "name": "ANIMAL PLANET .b",
+    "name": "AVTO PLUS",
     "best_score": 0.0
   },
   {
-    "name": "ANIMAL PLANET .s",
+    "name": "BBC WORLD NEWS",
     "best_score": 0.0
   },
   {
-    "name": "ANIMAL PLANET HD .b",
+    "name": "BELARUS",
     "best_score": 0.0
   },
   {
-    "name": "AUTO PLUS .s",
+    "name": "BELARUS 1",
     "best_score": 0.0
   },
   {
-    "name": "AVTO PLUS .s",
+    "name": "BELARUS 2",
     "best_score": 0.0
   },
   {
-    "name": "BBC WORLD NEWS .b",
+    "name": "BLUESTV",
     "best_score": 0.0
   },
   {
-    "name": "BELARUS 1 .s",
+    "name": "BOLLYWOOD",
     "best_score": 0.0
   },
   {
-    "name": "BELARUS 2 .s",
+    "name": "BOOMERANG",
     "best_score": 0.0
   },
   {
-    "name": "BLUESTV .s",
+    "name": "BOXE TB",
     "best_score": 0.0
   },
   {
-    "name": "BOLLYWOOD .s",
+    "name": "BRIDGE",
     "best_score": 0.0
   },
   {
-    "name": "BOLLYWOOD HD .b",
+    "name": "BRIDGE DELUXE",
     "best_score": 0.0
   },
   {
-    "name": "BOOMERANG .b",
+    "name": "BRIDGE TV DELUXE",
     "best_score": 0.0
   },
   {
-    "name": "BOXE TB .s",
+    "name": "BRIDGE TV РУССКИЙ ХИТ",
     "best_score": 0.0
   },
   {
-    "name": "BRIDGE .s",
+    "name": "CARTOON NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "BRIDGE DELUXE .s",
+    "name": "CGTN РУССКИЙ",
     "best_score": 0.0
   },
   {
-    "name": "BRIDGE TV DELUXE .b",
+    "name": "CGTN‑РУССКИЙ",
     "best_score": 0.0
   },
   {
-    "name": "BRIDGE TV РУССКИЙ ХИТ .b",
+    "name": "CHE",
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK .b",
+    "name": "CINEMA",
     "best_score": 0.0
   },
   {
-    "name": "CARTOON NETWORK .s",
+    "name": "CLASSIC MUSIC HD",
     "best_score": 0.0
   },
   {
-    "name": "CGTN РУССКИЙ .s",
+    "name": "COMEDY HD",
     "best_score": 0.0
   },
   {
-    "name": "CGTN‑РУССКИЙ .b",
+    "name": "CTC",
     "best_score": 0.0
   },
   {
-    "name": "CLASSIC MUSIC HD .b",
+    "name": "DA VINCI",
     "best_score": 0.0
   },
   {
-    "name": "COMEDY HD .b",
+    "name": "DA VINCI KIDS",
     "best_score": 0.0
   },
   {
-    "name": "CTC .s",
+    "name": "DA VINCI LEARNING",
     "best_score": 0.0
   },
   {
-    "name": "DA VINCI .b",
+    "name": "DETSKIY MIR",
     "best_score": 0.0
   },
   {
-    "name": "DA VINCI KIDS .s",
+    "name": "DISCOVERY CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "DA VINCI LEARNING .s",
+    "name": "DISCOVERY ID XTRA",
     "best_score": 0.0
   },
   {
-    "name": "DETSKIY MIR .s",
+    "name": "DISCOVERY SCIENCE",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY CHANNEL .s",
+    "name": "DOM KINO",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY CHANNEL HD .b",
+    "name": "DOM KINO PREMIUM",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY ID XTRA .s",
+    "name": "DOMASHNIE JIVOTNIE",
     "best_score": 0.0
   },
   {
-    "name": "DISCOVERY SCIENCE .b",
+    "name": "DOMASHNIY",
     "best_score": 0.0
   },
   {
-    "name": "DOM KINO .s",
+    "name": "DORAMA",
     "best_score": 0.0
   },
   {
-    "name": "DOM KINO PREMIUM .s",
+    "name": "DOZHD TV",
     "best_score": 0.0
   },
   {
-    "name": "DOMASHNIE JIVOTNIE .s",
+    "name": "DTX",
     "best_score": 0.0
   },
   {
-    "name": "DOMASHNIY .s",
+    "name": "DUCKTV HD",
     "best_score": 0.0
   },
   {
-    "name": "DORAMA .b",
+    "name": "E TV",
     "best_score": 0.0
   },
   {
-    "name": "DOZHD TV .s",
+    "name": "ENGLISH CLUB",
     "best_score": 0.0
   },
   {
-    "name": "DTX .s",
+    "name": "EUREKA",
     "best_score": 0.0
   },
   {
-    "name": "DUCKTV HD .b",
+    "name": "EUROKINO",
     "best_score": 0.0
   },
   {
-    "name": "E TV .b",
+    "name": "EURONEWS",
     "best_score": 0.0
   },
   {
-    "name": "ENGLISH CLUB .b",
+    "name": "EUROPA PLUS",
     "best_score": 0.0
   },
   {
-    "name": "EUREKA .s",
+    "name": "EUROSPORT",
     "best_score": 0.0
   },
   {
-    "name": "EUROKINO .s",
+    "name": "EUROSPORT 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "EURONEWS .b",
+    "name": "EUROSPORT 2",
     "best_score": 0.0
   },
   {
-    "name": "EURONEWS .s",
+    "name": "EXTREME SPORTS",
     "best_score": 0.0
   },
   {
-    "name": "EUROPA PLUS .s",
+    "name": "FASHION TV",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT .s",
+    "name": "FASTNFUNBOX HD",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 1 HD .b",
+    "name": "FIGHTBOX HD",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 [LIVE DURING EVENTS ONLY] .s",
+    "name": "FIRST CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "EUROSPORT 2 HD .b",
+    "name": "FLIXSNIP",
     "best_score": 0.0
   },
   {
-    "name": "EXTREME SPORTS .b",
+    "name": "FOOD",
     "best_score": 0.0
   },
   {
-    "name": "FASHION TV .s",
+    "name": "FOOD NETWORK",
     "best_score": 0.0
   },
   {
-    "name": "FASTNFUNBOX HD .b",
+    "name": "FOTBALL",
     "best_score": 0.0
   },
   {
-    "name": "FIGHTBOX HD .b",
+    "name": "FOX",
     "best_score": 0.0
   },
   {
-    "name": "FIRST CHANNEL .s",
+    "name": "FOX LIFE HD",
     "best_score": 0.0
   },
   {
-    "name": "FLIXSNIP .b",
+    "name": "GULLI GIRL",
     "best_score": 0.0
   },
   {
-    "name": "FOOD .s",
+    "name": "HAWE",
     "best_score": 0.0
   },
   {
-    "name": "FOOD NETWORK .b",
+    "name": "HAWE HOBEW",
     "best_score": 0.0
   },
   {
-    "name": "FOOD NETWORK .s",
+    "name": "HD LIFE",
     "best_score": 0.0
   },
   {
-    "name": "FOTBALL .s",
+    "name": "HDL",
     "best_score": 0.0
   },
   {
-    "name": "FOX .s",
+    "name": "HGTV HD",
     "best_score": 0.0
   },
   {
-    "name": "FOX HD .b",
+    "name": "HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "FOX LIFE HD .b",
+    "name": "HISTORY 2",
     "best_score": 0.0
   },
   {
-    "name": "GULLI GIRL .b",
+    "name": "HOLLYWOOD",
     "best_score": 0.0
   },
   {
-    "name": "HAWE .s",
+    "name": "HTB",
     "best_score": 0.0
   },
   {
-    "name": "HAWE HOBEW .s",
+    "name": "ID",
     "best_score": 0.0
   },
   {
-    "name": "HD LIFE .s",
+    "name": "ILLUSION",
     "best_score": 0.0
   },
   {
-    "name": "HDL .b",
+    "name": "ISTORIYA",
     "best_score": 0.0
   },
   {
-    "name": "HGTV HD .b",
+    "name": "JIMJAM",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY .s",
+    "name": "KARUSEL TV",
     "best_score": 0.0
   },
   {
-    "name": "HISTORY 2 .s",
+    "name": "KHL",
     "best_score": 0.0
   },
   {
-    "name": "HOLLYWOOD .b",
+    "name": "KHL PRIME",
     "best_score": 0.0
   },
   {
-    "name": "HOLLYWOOD HD .b",
+    "name": "KHL TV",
     "best_score": 0.0
   },
   {
-    "name": "HTB .s",
+    "name": "KINO CINEMA",
     "best_score": 0.0
   },
   {
-    "name": "ID .b",
+    "name": "KINO FILM",
     "best_score": 0.0
   },
   {
-    "name": "ILLUSION .s",
+    "name": "KINO HIT",
     "best_score": 0.0
   },
   {
-    "name": "ISTORIYA .s",
+    "name": "KINO HOME",
     "best_score": 0.0
   },
   {
-    "name": "JIMJAM .b",
+    "name": "KINO KLUB",
     "best_score": 0.0
   },
   {
-    "name": "KARUSEL TV .s",
+    "name": "KINO KOMEDIJA",
     "best_score": 0.0
   },
   {
-    "name": "KHL .b",
+    "name": "KINO MIX",
     "best_score": 0.0
   },
   {
-    "name": "KHL PRIME .b",
+    "name": "KINO PREMIUM",
     "best_score": 0.0
   },
   {
-    "name": "KHL TV .s",
+    "name": "KINO ROKAS 1",
     "best_score": 0.0
   },
   {
-    "name": "KINO CINEMA .s",
+    "name": "KINO ROKAS 2",
     "best_score": 0.0
   },
   {
-    "name": "KINO FILM .s",
+    "name": "KINOKOMEDIA",
     "best_score": 0.0
   },
   {
-    "name": "KINO HIT .s",
+    "name": "KINOPREMIERA",
     "best_score": 0.0
   },
   {
-    "name": "KINO HOME .s",
+    "name": "KINOSVIDANIE",
     "best_score": 0.0
   },
   {
-    "name": "KINO KLUB .s",
+    "name": "KINOXIT",
     "best_score": 0.0
   },
   {
-    "name": "KINO KOMEDIJA .s",
+    "name": "KOMEDIJA TV",
     "best_score": 0.0
   },
   {
-    "name": "KINO MIX .s",
+    "name": "KOMEDIYNOE",
     "best_score": 0.0
   },
   {
-    "name": "KINO PREMIUM .s",
+    "name": "KUHNYA TV",
     "best_score": 0.0
   },
   {
-    "name": "KINO ROKAS 1 .s",
+    "name": "LA MINOR",
     "best_score": 0.0
   },
   {
-    "name": "KINO ROKAS 2 .s",
+    "name": "LEN 24",
     "best_score": 0.0
   },
   {
-    "name": "KINOKOMEDIA .s",
+    "name": "LEOMAX24",
     "best_score": 0.0
   },
   {
-    "name": "KINOPREMIERA .s",
+    "name": "LIFE HD",
     "best_score": 0.0
   },
   {
-    "name": "KINOSVIDANIE .s",
+    "name": "M‑1 GLOBAL",
     "best_score": 0.0
   },
   {
-    "name": "KINOXIT .s",
+    "name": "M2",
     "best_score": 0.0
   },
   {
-    "name": "KOMEDIJA TV .s",
+    "name": "MATCH ARENA",
     "best_score": 0.0
   },
   {
-    "name": "KOMEDIYNOE .s",
+    "name": "MATCH BOX",
     "best_score": 0.0
   },
   {
-    "name": "KUHNYA TV .s",
+    "name": "MATCH FUTBOL 1",
     "best_score": 0.0
   },
   {
-    "name": "LA MINOR .s",
+    "name": "MATCH FUTBOL 2",
     "best_score": 0.0
   },
   {
-    "name": "LEN 24 .s",
+    "name": "MATCH FUTBOL 3",
     "best_score": 0.0
   },
   {
-    "name": "LEOMAX24 .b",
+    "name": "MATCH IGRA",
     "best_score": 0.0
   },
   {
-    "name": "LIFE HD .s",
+    "name": "MATCH OUR SPORTS",
     "best_score": 0.0
   },
   {
-    "name": "M‑1 GLOBAL .b",
+    "name": "MATCH PLANET",
     "best_score": 0.0
   },
   {
-    "name": "M2 .s",
+    "name": "MATCH PREMIERE",
     "best_score": 0.0
   },
   {
-    "name": "MAMA .s",
+    "name": "MATCH TV",
     "best_score": 0.0
   },
   {
-    "name": "MATCH (MAT4) .s",
+    "name": "MATCH! PLANETA",
     "best_score": 0.0
   },
   {
-    "name": "MATCH ARENA .s",
+    "name": "MCM TOP",
     "best_score": 0.0
   },
   {
-    "name": "MATCH BOX .s",
+    "name": "MEGAHIT",
     "best_score": 0.0
   },
   {
-    "name": "MATCH FUTBOL 1 .s",
+    "name": "MEZZO",
     "best_score": 0.0
   },
   {
-    "name": "MATCH FUTBOL 2 .s",
+    "name": "MEZZO LIVE HD",
     "best_score": 0.0
   },
   {
-    "name": "MATCH FUTBOL 3 .s",
+    "name": "MILLET",
     "best_score": 0.0
   },
   {
-    "name": "MATCH IGRA .s",
+    "name": "MIR",
     "best_score": 0.0
   },
   {
-    "name": "MATCH OUR SPORTS .s",
+    "name": "MOYA PLANETA",
     "best_score": 0.0
   },
   {
-    "name": "MATCH PREMIERE .s",
+    "name": "MTV",
     "best_score": 0.0
   },
   {
-    "name": "MATCH SPORTS [LIVE DURING EVENTS ONLY] .s",
+    "name": "MTV 00S",
     "best_score": 0.0
   },
   {
-    "name": "MATCH TV .s",
+    "name": "MTV 80S",
     "best_score": 0.0
   },
   {
-    "name": "MATCH! PLANETA .s",
+    "name": "MTV LIVE",
     "best_score": 0.0
   },
   {
-    "name": "MCM TOP .b",
+    "name": "MTV LIVE INTERNATIONAL HD",
     "best_score": 0.0
   },
   {
-    "name": "MEGAHIT .s",
+    "name": "MULT TV",
     "best_score": 0.0
   },
   {
-    "name": "MEGAHIT HD .b",
+    "name": "MUSIC",
     "best_score": 0.0
   },
   {
-    "name": "MEZZO .b",
+    "name": "MUSIC BOX GOLD",
     "best_score": 0.0
   },
   {
-    "name": "MEZZO LIVE HD .b",
+    "name": "MUSIC BOX RUSSIA",
     "best_score": 0.0
   },
   {
-    "name": "MIR .s",
+    "name": "MUZ TV",
     "best_score": 0.0
   },
   {
-    "name": "MOYA PLANETA .s",
+    "name": "MUZHSKOE KINO",
     "best_score": 0.0
   },
   {
-    "name": "MTV .b",
+    "name": "NASHE KINO",
     "best_score": 0.0
   },
   {
-    "name": "MTV 00S .b",
+    "name": "NAT GEO",
     "best_score": 0.0
   },
   {
-    "name": "MTV 80S .b",
+    "name": "NAT GEO WILD",
     "best_score": 0.0
   },
   {
-    "name": "MTV LIVE .s",
+    "name": "NATIONAL GEOGRAPHIC",
     "best_score": 0.0
   },
   {
-    "name": "MTV LIVE INTERNATIONAL HD .b",
+    "name": "NICK JR.",
     "best_score": 0.0
   },
   {
-    "name": "MULT TV .s",
+    "name": "NICKELODEON",
     "best_score": 0.0
   },
   {
-    "name": "MUSIC .s",
+    "name": "NICKTOONS",
     "best_score": 0.0
   },
   {
-    "name": "MUSIC BOX GOLD .b",
+    "name": "NTV",
     "best_score": 0.0
   },
   {
-    "name": "MUSIC BOX RUSSIA .s",
+    "name": "ONE CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "MUSIC BOX RUSSIA HD .b",
+    "name": "PARAMOUNT CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "MUZ TV .s",
+    "name": "PEH TB",
     "best_score": 0.0
   },
   {
-    "name": "MUZHSKOE KINO .s",
+    "name": "PERVIY",
     "best_score": 0.0
   },
   {
-    "name": "NASHE KINO .s",
+    "name": "PERVIY KANAL",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO .s",
+    "name": "PETPO",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD .s",
+    "name": "PJATNICA",
     "best_score": 0.0
   },
   {
-    "name": "NAT GEO WILD HD .b",
+    "name": "PREMIERA CINEMA",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEOGRAPHIC .s",
+    "name": "PREMIERE",
     "best_score": 0.0
   },
   {
-    "name": "NATIONAL GEOGRAPHIC HD .b",
+    "name": "PRO100 TV",
     "best_score": 0.0
   },
   {
-    "name": "NICK JR. .b",
+    "name": "PYATNICA",
     "best_score": 0.0
   },
   {
-    "name": "NICKELODEON .s",
+    "name": "RBK TV",
     "best_score": 0.0
   },
   {
-    "name": "NICKELODEON HD .b",
+    "name": "REN TV",
     "best_score": 0.0
   },
   {
-    "name": "NICKTOONS .b",
+    "name": "RETRO MUSIC TV",
     "best_score": 0.0
   },
   {
-    "name": "NTV .s",
+    "name": "RT (АНГЛИЙСКИЙ)",
     "best_score": 0.0
   },
   {
-    "name": "ONE CHANNEL .s",
+    "name": "RT DOCUMENTARY",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .b",
+    "name": "RTDOCUMENTARY",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT CHANNEL .s",
+    "name": "RTG",
     "best_score": 0.0
   },
   {
-    "name": "PARAMOUNT COMEDY .b",
+    "name": "RTR PLANETA",
     "best_score": 0.0
   },
   {
-    "name": "PEH TB .s",
+    "name": "RU TV",
     "best_score": 0.0
   },
   {
-    "name": "PERVIY .s",
+    "name": "RUTV",
     "best_score": 0.0
   },
   {
-    "name": "PERVIY KANAL .s",
+    "name": "RUSSIA 24",
     "best_score": 0.0
   },
   {
-    "name": "PETPO .s",
+    "name": "RUSSIA BESTSELLER",
     "best_score": 0.0
   },
   {
-    "name": "PJATNICA .s",
+    "name": "RUSSIA COMEDY",
     "best_score": 0.0
   },
   {
-    "name": "PREMIERA CINEMA .s",
+    "name": "RUSSIA DETECTIVE",
     "best_score": 0.0
   },
   {
-    "name": "PREMIERE .s",
+    "name": "RUSSIA ILLUSION",
     "best_score": 0.0
   },
   {
-    "name": "PREMIERE HD .b",
+    "name": "RUSSIA ROMAN",
     "best_score": 0.0
   },
   {
-    "name": "PRO100 TV .s",
+    "name": "RUSSIA RTR",
     "best_score": 0.0
   },
   {
-    "name": "PYATNICA .s",
+    "name": "RUSSIA TODAY",
     "best_score": 0.0
   },
   {
-    "name": "RBK TV .s",
+    "name": "RUSSIA XTREAM",
     "best_score": 0.0
   },
   {
-    "name": "RED .s",
+    "name": "RUSSIA-K",
     "best_score": 0.0
   },
   {
-    "name": "REN TV .s",
+    "name": "SERIAL",
     "best_score": 0.0
   },
   {
-    "name": "RETRO MUSIC TV .s",
+    "name": "SHANSON TV",
     "best_score": 0.0
   },
   {
-    "name": "RT (АНГЛИЙСКИЙ) .b",
+    "name": "SHOP&SHOW",
     "best_score": 0.0
   },
   {
-    "name": "RT DOCUMENTARY .s",
+    "name": "SHOPPING LIVE",
     "best_score": 0.0
   },
   {
-    "name": "RTDOCUMENTARY .s",
+    "name": "SHOT TV HD",
     "best_score": 0.0
   },
   {
-    "name": "RTG .s",
+    "name": "SONY SCI-FI",
     "best_score": 0.0
   },
   {
-    "name": "RTG HD .b",
+    "name": "SONY TURBO",
     "best_score": 0.0
   },
   {
-    "name": "RTR PLANETA .s",
+    "name": "SOVERSHENNO SEKRETNO",
     "best_score": 0.0
   },
   {
-    "name": "RU TV .s",
+    "name": "STAR TB",
     "best_score": 0.0
   },
   {
-    "name": "RU.TV .b",
+    "name": "TB 3",
     "best_score": 0.0
   },
   {
-    "name": "RU.TV .s",
+    "name": "TBA LIFE",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA 24 .s",
+    "name": "TBC",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA BESTSELLER .s",
+    "name": "TELE CAFE",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA COMEDY .s",
+    "name": "TELEPUTESHESTVYA",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA DETECTIVE .s",
+    "name": "THT 4",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA ILLUSION .s",
+    "name": "TIJI",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA ROMAN .s",
+    "name": "TIJI TV",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA TODAY .s",
+    "name": "TLC",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA XTREAM .s",
+    "name": "TNT",
     "best_score": 0.0
   },
   {
-    "name": "RUSSIA-K .s",
+    "name": "TNT 4",
     "best_score": 0.0
   },
   {
-    "name": "RUTV .s",
+    "name": "TNT MUSIC",
     "best_score": 0.0
   },
   {
-    "name": "SERIAL .s",
+    "name": "TOCHIKA ORTIVA",
     "best_score": 0.0
   },
   {
-    "name": "SERIAL HD .b",
+    "name": "TRACE SPORT STARS HD",
     "best_score": 0.0
   },
   {
-    "name": "SHANSON TV .s",
+    "name": "TRAVEL ADVENTURE",
     "best_score": 0.0
   },
   {
-    "name": "SHOP&SHOW .b",
+    "name": "TRAVEL CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "SHOPPING LIVE .b",
+    "name": "TRAVEL+",
     "best_score": 0.0
   },
   {
-    "name": "SHOT TV HD .b",
+    "name": "TRAVEL+ADVENTURE",
     "best_score": 0.0
   },
   {
-    "name": "SONY SCI-FI .s",
+    "name": "TV 1000",
     "best_score": 0.0
   },
   {
-    "name": "SONY TURBO .s",
+    "name": "TV 1000 ACTION",
     "best_score": 0.0
   },
   {
-    "name": "SOVERSHENNO SEKRETNO .s",
+    "name": "TV 1000 MEGAHIT",
     "best_score": 0.0
   },
   {
-    "name": "STAR .s",
+    "name": "TV 1000 PREMIUM",
     "best_score": 0.0
   },
   {
-    "name": "STAR TB .s",
+    "name": "TV 1000 PYCCKOE",
     "best_score": 0.0
   },
   {
-    "name": "TB 3 .s",
+    "name": "TV 1000 RUSKOE KINO",
     "best_score": 0.0
   },
   {
-    "name": "TBA LIFE .s",
+    "name": "TV 1000 РУССКОЕ КИНО HD",
     "best_score": 0.0
   },
   {
-    "name": "TBC .s",
+    "name": "TV CENTER",
     "best_score": 0.0
   },
   {
-    "name": "TELE CAFE .s",
+    "name": "TV XXI",
     "best_score": 0.0
   },
   {
-    "name": "TELEPUTESHESTVYA .s",
+    "name": "UNIVER TV",
     "best_score": 0.0
   },
   {
-    "name": "THT 4 .s",
+    "name": "V GOSTYAX U SKAZKI",
     "best_score": 0.0
   },
   {
-    "name": "THT MUSIC .s",
+    "name": "VIASAT EXPLORE HD",
     "best_score": 0.0
   },
   {
-    "name": "TIJI .b",
+    "name": "VIASAT EXPLORER",
     "best_score": 0.0
   },
   {
-    "name": "TIJI TV .s",
+    "name": "VIASAT NATURE",
     "best_score": 0.0
   },
   {
-    "name": "TLC .s",
+    "name": "VIASAT SPORT EAST",
     "best_score": 0.0
   },
   {
-    "name": "TLC HD .b",
+    "name": "VIASAT SPORT HD",
     "best_score": 0.0
   },
   {
-    "name": "TNT .s",
+    "name": "VIJU+ EXPLORER",
     "best_score": 0.0
   },
   {
-    "name": "TNT 4 .s",
+    "name": "VIJU+ HISTORY",
     "best_score": 0.0
   },
   {
-    "name": "TOCHIKA ORTIVA .s",
+    "name": "VIJU+ MEGAHIT",
     "best_score": 0.0
   },
   {
-    "name": "TRACE SPORT STARS HD .b",
+    "name": "VIJU+ NATURE",
     "best_score": 0.0
   },
   {
-    "name": "TRAVEL ADVENTURE .s",
+    "name": "VIJU+ PREMIUM",
     "best_score": 0.0
   },
   {
-    "name": "TRAVEL CHANNEL .s",
+    "name": "WORLD FASHION CHANNEL",
     "best_score": 0.0
   },
   {
-    "name": "TRAVEL CHANNEL HD .b",
+    "name": "ZEE TV",
     "best_score": 0.0
   },
   {
-    "name": "TRAVEL+ .s",
+    "name": "ZVEZDA",
     "best_score": 0.0
   },
   {
-    "name": "TRAVEL+ADVENTURE .b",
+    "name": "АВТО 24",
     "best_score": 0.0
   },
   {
-    "name": "TRAVEL+ADVENTURE .s",
+    "name": "АВТО ПЛЮС",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 .s",
+    "name": "АРСЕНАЛ (MATCH TIME)",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 ACTION HD .b",
+    "name": "АРХЫЗ 24",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 HD .b",
+    "name": "БЕЛАРУСЬ 24",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 MEGAHIT .s",
+    "name": "БЕЛРОС",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 PREMIUM .s",
+    "name": "БОКС ТВ",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 PYCCKOE .s",
+    "name": "В ГОСТЯХ У СКАЗКИ",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 RUSKOE KINO .s",
+    "name": "ВАШ УСПЕХ",
     "best_score": 0.0
   },
   {
-    "name": "TV 1000 РУССКОЕ КИНО HD .b",
+    "name": "ВОЛГОГРАД 24",
     "best_score": 0.0
   },
   {
-    "name": "TV CENTER .s",
+    "name": "ГЛАЗАМИ ТУРИСТА HD",
     "best_score": 0.0
   },
   {
-    "name": "TV XXI .s",
+    "name": "ДАГЕСТАН",
     "best_score": 0.0
   },
   {
-    "name": "TV XXI (TV21) .s",
+    "name": "ДИАЛОГИ О РЫБАЛКЕ",
     "best_score": 0.0
   },
   {
-    "name": "UNIVER TV .s",
+    "name": "ДИКИЙ",
     "best_score": 0.0
   },
   {
-    "name": "V GOSTYAX U SKAZKI .s",
+    "name": "ДОКТОР",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT 1000 ACTION .s",
+    "name": "ДОМАШНИЕ ЖИВОТНЫЕ",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT EXPLORE HD .b",
+    "name": "ДОМАШНИЙ",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT EXPLORER .s",
+    "name": "ЕВРОКИНО",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT HISTORY .s",
+    "name": "ЕГЭ",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT HISTORY HD .b",
+    "name": "ЖИВИ!",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT NATURE .s",
+    "name": "ЗВЕЗДА",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT NATURE HD .b",
+    "name": "ЗВЕЗДА ПЛЮС",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT NATURE/VIASAT HISTORY HD .b",
+    "name": "ИЗВЕСТИЯ",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT SPORT EAST .s",
+    "name": "ИЗВЕСТИЯ ТВ",
     "best_score": 0.0
   },
   {
-    "name": "VIASAT SPORT HD .b",
+    "name": "ИЛЛЮЗИОН+",
     "best_score": 0.0
   },
   {
-    "name": "VIJU+ EXPLORER .s",
+    "name": "ИНДИЙСКОЕ КИНО",
     "best_score": 0.0
   },
   {
-    "name": "VIJU+ HISTORY .s",
+    "name": "ИСТОРИЯ",
     "best_score": 0.0
   },
   {
-    "name": "VIJU+ MEGAHIT .s",
+    "name": "КВН ТВ",
     "best_score": 0.0
   },
   {
-    "name": "VIJU+ NATURE .s",
+    "name": "КИНОКОМЕДИЯ",
     "best_score": 0.0
   },
   {
-    "name": "VIJU+ PREMIUM .s",
+    "name": "КИНОМИКС",
     "best_score": 0.0
   },
   {
-    "name": "WORLD FASHION CHANNEL .b",
+    "name": "КИНОПРЕМЬЕРА HD",
     "best_score": 0.0
   },
   {
-    "name": "ZEE TV .b",
+    "name": "КИНОСВИДАНИЕ",
     "best_score": 0.0
   },
   {
-    "name": "ZEE TV .s",
+    "name": "КИНОСЕМЬЯ",
     "best_score": 0.0
   },
   {
-    "name": "ZVEZDA .s",
+    "name": "КИНОСЕРИЯ",
     "best_score": 0.0
   },
   {
-    "name": "АВТО 24 .b",
+    "name": "КИНОУЖАС",
     "best_score": 0.0
   },
   {
-    "name": "АВТО ПЛЮС .b",
+    "name": "КИНОХИТ",
     "best_score": 0.0
   },
   {
-    "name": "АРСЕНАЛ (MATCH TIME) .s",
+    "name": "КОМЕДИЯ",
     "best_score": 0.0
   },
   {
-    "name": "АРХЫЗ 24 .s",
+    "name": "КТО ЕСТЬ КТО",
     "best_score": 0.0
   },
   {
-    "name": "БЕЛАРУСЬ 24 .b",
+    "name": "КТОКУДА",
     "best_score": 0.0
   },
   {
-    "name": "БЕЛРОС .b",
+    "name": "КУХНЯ ТВ",
     "best_score": 0.0
   },
   {
-    "name": "БОКС ТВ .b",
+    "name": "ЛЮБИМОЕ КИНО",
     "best_score": 0.0
   },
   {
-    "name": "В ГОСТЯХ У СКАЗКИ .b",
+    "name": "МАЛЫШ",
     "best_score": 0.0
   },
   {
-    "name": "ВАШ УСПЕХ .b",
+    "name": "МАМА",
     "best_score": 0.0
   },
   {
-    "name": "ГЛАЗАМИ ТУРИСТА HD .b",
+    "name": "МАТЧ!",
     "best_score": 0.0
   },
   {
-    "name": "ДАГЕСТАН .s",
+    "name": "МАТЧ! HD+",
     "best_score": 0.0
   },
   {
-    "name": "ДИАЛОГИ О РЫБАЛКЕ .b",
+    "name": "МАТЧ! АРЕНА HD",
     "best_score": 0.0
   },
   {
-    "name": "ДИКИЙ .b",
+    "name": "МАТЧ! БОЕЦ",
     "best_score": 0.0
   },
   {
-    "name": "ДОКТОР .b",
+    "name": "МАТЧ! ИГРА HD",
     "best_score": 0.0
   },
   {
-    "name": "ДОМАШНИЕ ЖИВОТНЫЕ .b",
+    "name": "МАТЧ! ПЛАНЕТА",
     "best_score": 0.0
   },
   {
-    "name": "ДОМАШНИЙ .b",
+    "name": "МАТЧ! СТРАНА",
     "best_score": 0.0
   },
   {
-    "name": "ЕВРОКИНО .b",
+    "name": "МАТЧ! ФУТБОЛ 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "ЕГЭ .b",
+    "name": "МАТЧ! ФУТБОЛ 2 HD",
     "best_score": 0.0
   },
   {
-    "name": "ЖИВИ! .b",
+    "name": "МАТЧ! ФУТБОЛ 3 HD",
     "best_score": 0.0
   },
   {
-    "name": "ЗВЕЗДА .b",
+    "name": "МИР",
     "best_score": 0.0
   },
   {
-    "name": "ЗВЕЗДА ПЛЮС .b",
+    "name": "МИР 24",
     "best_score": 0.0
   },
   {
-    "name": "ИЗВЕСТИЯ .b",
+    "name": "МИР БАСКЕТБОЛА",
     "best_score": 0.0
   },
   {
-    "name": "ИЗВЕСТИЯ .s",
+    "name": "МИР СЕРИАЛА",
     "best_score": 0.0
   },
   {
-    "name": "ИЗВЕСТИЯ ТВ .s",
+    "name": "МОСКВА 24",
     "best_score": 0.0
   },
   {
-    "name": "ИЛЛЮЗИОН+ .b",
+    "name": "МОСФИЛЬМ. ЗОЛОТАЯ КОЛЛЕКЦИЯ",
     "best_score": 0.0
   },
   {
-    "name": "ИНДИЙСКОЕ КИНО .b",
+    "name": "МОТОРСПОРТ ТВ",
     "best_score": 0.0
   },
   {
-    "name": "ИСТОРИЯ .b",
+    "name": "МОЯ ПЛАНЕТА",
     "best_score": 0.0
   },
   {
-    "name": "КАНАЛ DISNEY .b",
+    "name": "МОЯ СТИХИЯ",
     "best_score": 0.0
   },
   {
-    "name": "КВН ТВ .b",
+    "name": "МУЖСКОЕ КИНО",
     "best_score": 0.0
   },
   {
-    "name": "КИНО ТВ .b",
+    "name": "МУЖСКОЙ ТВ",
     "best_score": 0.0
   },
   {
-    "name": "КИНОКОМЕДИЯ .b",
+    "name": "МУЗ",
     "best_score": 0.0
   },
   {
-    "name": "КИНОМИКС .b",
+    "name": "МУЗ СОЮЗ",
     "best_score": 0.0
   },
   {
-    "name": "КИНОПРЕМЬЕРА HD .b",
+    "name": "МУЛЬТ",
     "best_score": 0.0
   },
   {
-    "name": "КИНОСВИДАНИЕ .b",
+    "name": "МУЛЬТИЛАНДИЯ",
     "best_score": 0.0
   },
   {
-    "name": "КИНОСВИДАНИЕ .s",
+    "name": "МУЛЬТИМУЗЫКА",
     "best_score": 0.0
   },
   {
-    "name": "КИНОСЕМЬЯ .b",
+    "name": "НАСТОЯЩЕЕ СТРАШНОЕ ТЕЛЕВИДЕНИЕ (НСТВ)",
     "best_score": 0.0
   },
   {
-    "name": "КИНОСЕРИЯ .b",
+    "name": "НАША ТЕМА HD",
     "best_score": 0.0
   },
   {
-    "name": "КИНОУЖАС .b",
+    "name": "НАШЕ НОВОЕ КИНО",
     "best_score": 0.0
   },
   {
-    "name": "КИНОХИТ .b",
+    "name": "НТВ +2",
     "best_score": 0.0
   },
   {
-    "name": "КОМЕДИЯ .b",
+    "name": "НТВ +4",
     "best_score": 0.0
   },
   {
-    "name": "КТО ЕСТЬ КТО .b",
+    "name": "НТВ +6",
     "best_score": 0.0
   },
   {
-    "name": "КТОКУДА .b",
+    "name": "НТВ +8",
     "best_score": 0.0
   },
   {
-    "name": "КУХНЯ ТВ .b",
+    "name": "НТВ HD",
     "best_score": 0.0
   },
   {
-    "name": "ЛЮБИМОЕ КИНО .b",
+    "name": "НТВ ПРАВО",
     "best_score": 0.0
   },
   {
-    "name": "МАЛЫШ .b",
+    "name": "НТВ СЕРИАЛ",
     "best_score": 0.0
   },
   {
-    "name": "МАМА .b",
+    "name": "НТВ СТИЛЬ",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! .b",
+    "name": "НТВ‑ХИТ",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! HD+ .b",
+    "name": "ОТР",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! АРЕНА HD .b",
+    "name": "ОХОТА И РЫБАЛКА",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! БОЕЦ .b",
+    "name": "ПЕРВЫЙ КАНАЛ HD",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! ИГРА HD .b",
+    "name": "ПРОДВИЖЕНИЕ",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! ПЛАНЕТА .b",
+    "name": "ПЯТНИЦА",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! СТРАНА .b",
+    "name": "ПЯТНИЦА +2",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! СТРАНА HD .b",
+    "name": "ПЯТНИЦА +6",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! ФУТБОЛ 1 HD .b",
+    "name": "ПЯТЫЙ КАНАЛ",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! ФУТБОЛ 2 HD .b",
+    "name": "РАДОСТЬ МОЯ",
     "best_score": 0.0
   },
   {
-    "name": "МАТЧ! ФУТБОЛ 3 HD .b",
+    "name": "РАТНИК HD",
     "best_score": 0.0
   },
   {
-    "name": "МИР .b",
+    "name": "РБК‑ТВ",
     "best_score": 0.0
   },
   {
-    "name": "МИР .s",
+    "name": "РЕН ТВ",
     "best_score": 0.0
   },
   {
-    "name": "МИР 24 .b",
+    "name": "РОДНОЕ КИНО",
     "best_score": 0.0
   },
   {
-    "name": "МИР БАСКЕТБОЛА .b",
+    "name": "РОССИЯ 1 +2",
     "best_score": 0.0
   },
   {
-    "name": "МИР СЕРИАЛА .b",
+    "name": "РОССИЯ 1 +4",
     "best_score": 0.0
   },
   {
-    "name": "МОСКВА 24 .b",
+    "name": "РОССИЯ 1 +6",
     "best_score": 0.0
   },
   {
-    "name": "МОСФИЛЬМ. ЗОЛОТАЯ КОЛЛЕКЦИЯ .b",
+    "name": "РОССИЯ 1 +8",
     "best_score": 0.0
   },
   {
-    "name": "МОТОРСПОРТ ТВ .b",
+    "name": "РОССИЯ 1 HD",
     "best_score": 0.0
   },
   {
-    "name": "МОЯ ПЛАНЕТА .b",
+    "name": "РОССИЯ 24",
     "best_score": 0.0
   },
   {
-    "name": "МОЯ СТИХИЯ .b",
+    "name": "РОССИЯ К",
     "best_score": 0.0
   },
   {
-    "name": "МУЖСКОЕ КИНО .b",
+    "name": "РУССКИЙ БЕСТСЕЛЛЕР",
     "best_score": 0.0
   },
   {
-    "name": "МУЖСКОЕ КИНО .s",
+    "name": "РУССКИЙ ДЕТЕКТИВ",
     "best_score": 0.0
   },
   {
-    "name": "МУЖСКОЙ ТВ .b",
+    "name": "РУССКИЙ ИЛЛЮЗИОН",
     "best_score": 0.0
   },
   {
-    "name": "МУЗ .b",
+    "name": "РУССКИЙ РОМАН",
     "best_score": 0.0
   },
   {
-    "name": "МУЗ СОЮЗ .s",
+    "name": "САНКТ‑ПЕТЕРБУРГ",
     "best_score": 0.0
   },
   {
-    "name": "МУЛЬТ .b",
+    "name": "САРАФАН",
     "best_score": 0.0
   },
   {
-    "name": "МУЛЬТИЛАНДИЯ .b",
+    "name": "СПАС",
     "best_score": 0.0
   },
   {
-    "name": "МУЛЬТИМУЗЫКА .b",
+    "name": "СТАРТ HD",
     "best_score": 0.0
   },
   {
-    "name": "НАСТОЯЩЕЕ СТРАШНОЕ ТЕЛЕВИДЕНИЕ (НСТВ) .b",
+    "name": "СТС",
     "best_score": 0.0
   },
   {
-    "name": "НАУКА .b",
+    "name": "СТС KIDS HD",
     "best_score": 0.0
   },
   {
-    "name": "НАША ТЕМА HD .b",
+    "name": "СУББОТА!",
     "best_score": 0.0
   },
   {
-    "name": "НАШЕ НОВОЕ КИНО .b",
+    "name": "ТАЙНЫ ГАЛАКТИКИ",
     "best_score": 0.0
   },
   {
-    "name": "НТВ +2 .b",
+    "name": "ТАНЦУЙ! HD",
     "best_score": 0.0
   },
   {
-    "name": "НТВ +4 .b",
+    "name": "ТВЦ",
     "best_score": 0.0
   },
   {
-    "name": "НТВ +6 .b",
+    "name": "ТЕАТР HD",
     "best_score": 0.0
   },
   {
-    "name": "НТВ +8 .b",
+    "name": "ТЕЛЕКАНАЛ 360",
     "best_score": 0.0
   },
   {
-    "name": "НТВ HD .b",
+    "name": "ТЕЛЕКАНАЛ FAN",
     "best_score": 0.0
   },
   {
-    "name": "НТВ ПРАВО .b",
+    "name": "ТНВ‑ПЛАНЕТА",
     "best_score": 0.0
   },
   {
-    "name": "НТВ СЕРИАЛ .b",
+    "name": "ТНТ",
     "best_score": 0.0
   },
   {
-    "name": "НТВ СТИЛЬ .b",
+    "name": "ТНТ MUSIC",
     "best_score": 0.0
   },
   {
-    "name": "НТВ‑ХИТ .b",
+    "name": "ТНТ4",
     "best_score": 0.0
   },
   {
-    "name": "ОТР .b",
+    "name": "ТОЧКА ОТРЫВА",
     "best_score": 0.0
   },
   {
-    "name": "ОХОТА И РЫБАЛКА .b",
+    "name": "УНИКУМ",
     "best_score": 0.0
   },
   {
-    "name": "ПЕРВЫЙ КАНАЛ HD .b",
+    "name": "УСАДЬБА‑ТВ",
     "best_score": 0.0
   },
   {
-    "name": "ПРОДВИЖЕНИЕ .b",
+    "name": "Ю",
     "best_score": 0.0
   },
   {
-    "name": "ПЯТНИЦА .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ПЯТНИЦА .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "ПЯТНИЦА +2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ПЯТНИЦА +6 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ПЯТЫЙ КАНАЛ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РАДОСТЬ МОЯ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РАТНИК HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РБК‑ТВ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РЕН ТВ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОДНОЕ КИНО .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ 1 +2 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ 1 +4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ 1 +6 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ 1 +8 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ 1 HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ 24 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РОССИЯ К .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РУССКИЙ БЕСТСЕЛЛЕР .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РУССКИЙ ДЕТЕКТИВ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РУССКИЙ ИЛЛЮЗИОН .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "РУССКИЙ РОМАН .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "САНКТ‑ПЕТЕРБУРГ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "САРАФАН .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "СПАС .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "СТАРТ HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "СТС .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "СТС .s",
-    "best_score": 0.0
-  },
-  {
-    "name": "СТС KIDS HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "СУББОТА! .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТАЙНЫ ГАЛАКТИКИ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТАНЦУЙ! HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТВ‑3 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТВЦ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТЕАТР HD .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТЕЛЕКАНАЛ 360 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТЕЛЕКАНАЛ FAN .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТНВ‑ПЛАНЕТА .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТНТ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТНТ MUSIC .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТНТ4 .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ТОЧКА ОТРЫВА .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "УНИКУМ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "УСАДЬБА‑ТВ .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "Ю .b",
-    "best_score": 0.0
-  },
-  {
-    "name": "ЮВЕЛИРОЧКА .b",
+    "name": "ЮВЕЛИРОЧКА",
     "best_score": 0.0
   }
 ]
