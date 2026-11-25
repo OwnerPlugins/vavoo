@@ -84,6 +84,7 @@ installer.sh              # curl|bash-style installer: detects OS/Python version
 update_all_plugins.py     # repo-root dev script: finds every plugin's locale dir and runs its update_translations.py
 .github/workflows/         # CI (see below)
 tests/                     # the tests: Enigma2 faked, the real plugin code run (see "Tests")
+                          #   (+ headless_proxy.py: the proxy without a box, for the EPG DB workflow)
 screen/                    # README screenshots: <theme>_<screen>.jpg = the Full HD skins drawn
                           #   with sample data (README links them as /screen/..., so the plugin
                           #   folder's identical readme.md works too); screen1-9 = old (1.61)
@@ -516,11 +517,17 @@ Turkey). `epg-channel-db/vavoo_channels_<cc>.json` in this repo maps
 `channel name -> EPG feed id`, generated offline by
 `generate_epg_channel_db.py` (dev-time script, run against a live
 `vavoo_proxy` instance — fuzzy-matches Vavoo's live channel list
-against that country's own `epg_<cc>.xml` feed, using name-normalization
+(`/channels`) against the guide the plugin itself reads (the proxy's
+`/epg/<cc>.xml`; `--feed-url` takes another), using name-normalization
 helpers shared with the runtime matcher via `epg_name_utils.py`, a
 plain-Python module with no Enigma2 dependency so it can be imported
 both on-box and off-box). `vUtils.py`'s `_load_curated_channel_db()`
-downloads and caches it in-memory for 24h. A failed/empty fetch is
+downloads it from this repository (`CURATED_DB_HOST` = `UPDATE_HOST`,
+where the workflow commits it - it read Belfagor2005's `HOST_MAIN`,
+which the workflow never wrote) and caches it in-memory for 24h; a
+curated id the country's feed does not have is not taken (the step and
+`_try_promote_to_curated()` go through `_feed_spelling()`, as the steps
+before it). A failed/empty fetch is
 remembered too, but only for 60 seconds: `find_match()` asks for this on
 every channel lookup, so not remembering a failure at all cost one
 GitHub request per channel (or a full timeout each when GitHub is
@@ -531,9 +538,14 @@ per-channel-unique service reference via
 channels/countries can never collide in Enigma2's `eEPGCache` (which
 indexes purely by the DVB tuple, ignoring the embedded stream URL) even
 when they share the same EPG id. `.github/workflows/generate_epg_channel_db.yml`
-regenerates this weekly (plus on-demand) on a self-hosted runner — required
-since fetching Vavoo's live channel list needs an authenticated
-`vavoo_proxy` instance, unreachable from GitHub's hosted cloud runners.
+regenerates this weekly (plus on-demand) on GitHub's own runners:
+`tests/headless_proxy.py` starts the plugin's proxy there with Enigma2
+faked (e2env, as the tests), its catalog from the network (Geil first:
+no token), prints "READY n channels" and serves until killed; the
+generator asks it at 127.0.0.1:4323 and the result is committed (also
+after one country failed). It used to need a self-hosted runner beside
+a box - none was online after 2026-10-12, so every run waited 24 h and
+was cancelled (`tests/test_epg_db_workflow.py`).
 
 **In-plugin programme info (`vUtils.py`'s `load_epg_guide()` /
 `lookup_now_next()`)** — what is on a channel now and next, read
@@ -1089,9 +1101,9 @@ when changing paths, dependencies, or version:
 
 Updates come from `OwnerPlugins/vavoo` too: `__init__.py`'s
 `UPDATE_HOST` → `INSTALLER_URL` (the plugin's version check reads
-`version=` from that installer.sh). `HOST_MAIN` / `HOST_GIT` (still
-Belfagor2005) stay for the EPG feeds, `data.json` and the curated
-channel database.
+`version=` from that installer.sh) and the curated channel database
+(`CURATED_DB_HOST`). `HOST_MAIN` / `HOST_GIT` (still Belfagor2005) stay
+for the EPG feeds and `data.json`.
 
 All three assume the plugin always lives at
 `usr/lib/enigma2/python/Plugins/Extensions/vavoo/` (or the `lib64`

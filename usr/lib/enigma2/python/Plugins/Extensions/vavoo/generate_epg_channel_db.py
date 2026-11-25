@@ -3,9 +3,9 @@
 """
 Dev-time generator for a curated Vavoo-channel-name -> EPG-feed-id
 mapping, built by matching a country's live Vavoo channel list against
-that same country's own epg_<cc>.xml programme feed (the one
-vavoo_proxy.py's /epg/<cc>.xml endpoint redirects EPGImport to) instead
-of Rytec's much sparser database for most countries (see this
+that same country's own guide - the proxy's /epg/<cc>.xml, the very
+guide the plugin and EPGImport read (epgshare01's daily files, else the
+GitHub copy) - instead of Rytec's much sparser database for most countries (see this
 project's own investigation: Spain had 7 Rytec entries vs 373 channels
 in its own feed, Poland 0 vs 636, Turkey 10 vs 178).
 
@@ -18,8 +18,10 @@ correspond to" problem, the same thing VavooEPGMatcher's live Rytec
 fuzzy-matching (and its own epg-feed fallback) already solve on-box,
 just precomputed once here instead of redone on every user's export.
 
-Run this against a box's running proxy (or point --proxy-host at one
-over the LAN). Country codes or display names both work (see
+Run this against a running proxy: a box's (--proxy-host over the LAN),
+or the one tests/headless_proxy.py starts without a box (what
+.github/workflows/generate_epg_channel_db.yml does on GitHub's own
+runners). Country codes or display names both work (see
 resolve_country()):
 
     python generate_epg_channel_db.py es pl tr --proxy-host 192.168.1.50
@@ -43,7 +45,6 @@ import argparse
 import json
 import sys
 from difflib import SequenceMatcher
-from io import BytesIO
 from os.path import join
 from urllib.error import HTTPError
 from urllib.parse import quote
@@ -58,7 +59,13 @@ from epg_name_utils import (
 )
 
 DEFAULT_THRESHOLD = 0.70
-EPG_FEED_URL_TEMPLATE = (
+# The guide each country's channels are matched against: by default the
+# proxy's own /epg/<cc>.xml (PROXY_FEED_URL, filled with the proxy's
+# host and port) - the one the plugin reads, so a curated id is one its
+# guide has. --feed-url takes another template ("{}" = the code), e.g.
+# COPY_FEED_URL, the GitHub copy this script used to read directly.
+PROXY_FEED_URL = "http://{host}:{port}/epg/{{}}.xml"
+COPY_FEED_URL = (
     "https://raw.githubusercontent.com/Belfagor2005/vavoo-player/"
     "master/epg_{}.xml")
 
@@ -254,25 +261,33 @@ def _id_quality_key(chan_id):
     return (chan_id.count('..'), len(chan_id), chan_id)
 
 
-def fetch_feed_index(country):
-    """Fetch and parse this country's epg_<cc>.xml, returning a list of
-    (feed_id, clean_display_name, tokens) - same shape of work
-    vUtils.py's _get_epg_feed_index() does on-box, fetched directly
-    from GitHub here instead of via the local proxy's redirect, since
-    this script may run off-box."""
+def fetch_feed_index(country, feed_url=COPY_FEED_URL):
+    """Fetch and parse this country's guide (feed_url, "{}" = the code),
+    returning a list of (feed_id, clean_display_name, tokens) - same
+    shape of work vUtils.py's _get_epg_feed_index() does on-box. Read
+    while it downloads, only up to the first <programme> (the channels
+    come first; a daily file is up to 60 MB)."""
     # quote(): country falls through to a raw, unmapped feed code for
     # anything not in COUNTRY_CODES (e.g. "france sport") - an unescaped
     # space there breaks the request, same class of bug as in
     # fetch_vavoo_channels() above.
-    url = EPG_FEED_URL_TEMPLATE.format(quote(country.lower()))
+    url = feed_url.format(quote(country.lower()))
     print("Fetching {} ...".format(url))
-    data = fetch_url(url, timeout=120)
+    req = Request(url, headers={"User-Agent": "vavoo-epg-db-generator/1.0"})
+    resp = urlopen(req, timeout=120)
+    try:
+        return _parse_feed_channels(resp)
+    finally:
+        resp.close()
+
+
+def _parse_feed_channels(stream):
     index = []
     # Maps a cleaned display-name to its position in `index`, so a
     # later duplicate can replace an earlier one instead of only ever
     # being able to skip it.
     seen_names = {}
-    for event, elem in ET.iterparse(BytesIO(data), events=("start", "end")):
+    for event, elem in ET.iterparse(stream, events=("start", "end")):
         if event == "end" and elem.tag == "channel":
             chan_id = elem.get("id")
             if chan_id:
@@ -367,7 +382,8 @@ def generate_for_country(
         feed_code,
         proxy_host,
         proxy_port,
-        threshold):
+        threshold,
+        feed_url=None):
     """query_name is what vavoo_proxy's /channels endpoint expects
     (Vavoo's own raw catalog country field - a display name, e.g.
     "portugal"); feed_code is the 2-letter code epg_<cc>.xml is named
@@ -379,7 +395,9 @@ def generate_for_country(
             "0 Vavoo channels for query '{}' - bad country name, or "
             "the catalog genuinely has none right now".format(query_name))
 
-    feed_index = fetch_feed_index(feed_code)
+    feed_index = fetch_feed_index(
+        feed_code, feed_url or PROXY_FEED_URL.format(
+            host=proxy_host, port=proxy_port))
     print("{}: {} feed channels".format(feed_code.upper(), len(feed_index)))
     if not feed_index:
         raise EmptyResultError(
@@ -448,6 +466,11 @@ def main():
         "--proxy-port", type=int, default=4323,
         help="Port of a running vavoo_proxy instance (default: 4323)")
     parser.add_argument(
+        "--feed-url", default=None,
+        help="The guide to match against, '{}' = the country code "
+             "(default: the proxy's own /epg/<cc>.xml, the guide the "
+             "plugin reads; e.g. " + COPY_FEED_URL + ")")
+    parser.add_argument(
         "--threshold", type=float, default=DEFAULT_THRESHOLD,
         help="Minimum similarity to auto-accept a match "
              "(default: {})".format(DEFAULT_THRESHOLD))
@@ -500,7 +523,7 @@ def main():
         try:
             matched, review = generate_for_country(
                 query_name, cc, args.proxy_host, args.proxy_port,
-                args.threshold)
+                args.threshold, args.feed_url)
 
             if cc not in combined:
                 combined[cc] = (_load_existing_matched(

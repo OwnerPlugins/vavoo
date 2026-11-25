@@ -736,7 +736,8 @@ check(
     "version check reads OwnerPlugins/vavoo main")
 check(
     "HOST_MAIN = 'https://raw.githubusercontent.com/Belfagor2005/vavoo/main'" in init,
-    "guides / channel DB source unchanged")
+    "HOST_MAIN kept (Belfagor2005; the curated channel DB is read from "
+    "UPDATE_HOST - test_epg_db_workflow)")
 inst = io.open(REPO + "/installer.sh", encoding="utf-8").read()
 check("github.com/OwnerPlugins/vavoo/archive/refs/heads/main.tar.gz" in inst and "Belfagor2005" not in inst.split(
     "DOWNLOAD_URL=")[1][:80], "installer downloads OwnerPlugins/vavoo")

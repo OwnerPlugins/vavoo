@@ -2,33 +2,18 @@ name: Generate EPG Channel Database
 
 # Regenerates the curated Vavoo channel name -> EPG feed id mapping
 # (epg-channel-db/vavoo_channels_<cc>.json) that vUtils.py's
-# _load_curated_channel_db() downloads on-box. Needs a live,
-# authenticated vavoo_proxy instance to fetch Vavoo's current channel
-# list, which only exists inside actual Enigma2-coupled code - so this
-# MUST run on a self-hosted runner that can reach that proxy (the box
-# itself, or the same LAN), not GitHub's hosted cloud runners.
+# _load_curated_channel_db() downloads on-box - from this repository
+# (CURATED_DB_HOST = UPDATE_HOST, OwnerPlugins/vavoo main), where this
+# workflow commits it.
 #
-# One-time setup required (not done by this file):
-#   1. Register a self-hosted runner: repo Settings -> Actions ->
-#      Runners -> New self-hosted runner, installed on/near the box
-#      running vavoo_proxy.
-#   2. REQUIRED for this repo's actual setup: the proxy is not reachable
-#      at 127.0.0.1:4323 from the runner, so set repository variable
-#      VAVOO_PROXY_HOST (Settings -> Secrets and variables -> Actions ->
-#      Variables) to the box's real LAN address. This used to be
-#      hardcoded here as a literal IP - moved out to a repo variable so
-#      the source doesn't bake in internal network topology, but that
-#      means this step is no longer optional: without it, the fallback
-#      here is the portable-but-wrong 127.0.0.1, and every run will fail
-#      to reach the proxy.
-#
-# IMPORTANT: this only commits back to the repo it runs in. The live
-# plugin reads epg-channel-db/ from Belfagor2005/vavoo's main branch
-# (HOST_MAIN in __init__.py) - a fork of that repo running this workflow
-# only updates its own history, not the upstream one. For this to
-# actually reach the running plugin, either this workflow needs to run
-# inside Belfagor2005/vavoo itself, or this fork's commits need to flow
-# upstream through its normal PR/merge process.
+# It runs on GitHub's own runners: tests/headless_proxy.py starts the
+# plugin's proxy there with Enigma2 faked (as the tests do), its catalog
+# from the network (Geil first, which needs no token). The generator
+# then matches each country's live channel list (the proxy's /channels)
+# against the guide the plugin itself reads (the proxy's /epg/<cc>.xml:
+# epgshare01's daily files, else the GitHub copy). It used to need a
+# self-hosted runner beside a box; none was online after 2026-10-12, so
+# every weekly run waited 24 h and was cancelled.
 
 # Scheduled + manual-dispatch runs can otherwise overlap (a manual
 # retry during the weekly run, or two manual runs) and race on the
@@ -40,9 +25,8 @@ concurrency:
 
 on:
   schedule:
-    # Weekly - Vavoo's catalog and the epg_<cc>.xml feeds don't churn
-    # fast enough to need this more often, and a self-hosted runner is
-    # presumably shared with the box's own normal workload.
+    # Weekly - Vavoo's catalog and the guides don't churn fast enough to
+    # need this more often.
     - cron: '0 3 * * 1'
   workflow_dispatch:
     inputs:
@@ -51,9 +35,13 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: write
+
 jobs:
   generate:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
@@ -64,33 +52,56 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install the plugin's own dependencies
+        run: python -m pip install six requests
+
+      - name: Start the plugin's proxy (Enigma2 faked)
+        run: |
+          nohup python3 tests/headless_proxy.py --port 4323 --wait 600 \
+            > "$RUNNER_TEMP/proxy.log" 2>&1 &
+          for i in $(seq 1 330); do
+            if grep -q "^READY" "$RUNNER_TEMP/proxy.log"; then
+              grep "^READY" "$RUNNER_TEMP/proxy.log"
+              exit 0
+            fi
+            if grep -q "^NO CATALOG" "$RUNNER_TEMP/proxy.log"; then
+              break
+            fi
+            sleep 2
+          done
+          echo "The proxy has no catalog:"
+          tail -60 "$RUNNER_TEMP/proxy.log"
+          exit 1
+
       - name: Generate channel database
         working-directory: usr/lib/enigma2/python/Plugins/Extensions/vavoo
         env:
-          VAVOO_PROXY_HOST: ${{ vars.VAVOO_PROXY_HOST || '127.0.0.1' }}
-          VAVOO_PROXY_PORT: ${{ vars.VAVOO_PROXY_PORT || '4323' }}
           COUNTRIES_INPUT: ${{ github.event.inputs.countries }}
         run: |
           # Default: every country Vavoo's own catalog actually offers
-          # (VAVOO_COUNTRIES in the script) - countries with no
-          # epg_<cc>.xml feed are skipped, not treated as failures.
-          # Pass a manual `countries` input to override with an explicit
-          # subset instead (e.g. to skip ru, which has no usable feed).
+          # (VAVOO_COUNTRIES in the script) - countries with no guide are
+          # skipped, not treated as failures. Pass a manual `countries`
+          # input to override with an explicit subset instead.
           if [ -n "$COUNTRIES_INPUT" ]; then
             echo "Generating for: $COUNTRIES_INPUT"
             python3 generate_epg_channel_db.py $COUNTRIES_INPUT \
-              --proxy-host "$VAVOO_PROXY_HOST" \
-              --proxy-port "$VAVOO_PROXY_PORT" \
+              --proxy-host 127.0.0.1 --proxy-port 4323 \
               --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
           else
             echo "Generating for: --all"
             python3 generate_epg_channel_db.py --all \
-              --proxy-host "$VAVOO_PROXY_HOST" \
-              --proxy-port "$VAVOO_PROXY_PORT" \
+              --proxy-host 127.0.0.1 --proxy-port 4323 \
               --output-dir "$GITHUB_WORKSPACE/epg-channel-db"
           fi
 
+      - name: The proxy's log
+        if: always()
+        run: tail -80 "$RUNNER_TEMP/proxy.log" || true
+
       - name: Commit and push changes
+        # (also after a country failed: the generator writes only the
+        # countries that worked, and the run still shows the failure)
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"

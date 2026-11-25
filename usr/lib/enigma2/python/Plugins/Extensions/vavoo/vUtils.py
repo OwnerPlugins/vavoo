@@ -64,7 +64,7 @@ from . import (
     LOG_FILE,
     CACHE_FILE,
     UNMATCHED_FILE,
-    HOST_MAIN,
+    UPDATE_HOST,
     EPG_COPY_URL,
     EPG_DAILY_SOURCES,
     EPG_DAILY_URL,
@@ -2130,7 +2130,7 @@ class VavooEPGMatcher(object):
 
     def _try_promote_to_curated(
             self, channel_name, country_code, servicetype, channel_id,
-            cached, allow_curated_promotion, curated_db):
+            cached, allow_curated_promotion, curated_db, feed_ids=None):
         """Called from a local-cache-hit branch in _find_match_locked().
         A cache entry written before the curated channel database
         existed for this country (or before this specific channel was
@@ -2152,6 +2152,9 @@ class VavooEPGMatcher(object):
             return None
         curated_key = self._clean_name_for_similarity(channel_name)
         curated_id = curated_db.get(curated_key)
+        if curated_id and feed_ids:
+            # (only to an id the feed has, as the curated step itself)
+            curated_id = _feed_spelling(curated_id, feed_ids)
         if not curated_id or not channel_id:
             return None
         print(
@@ -2339,7 +2342,7 @@ class VavooEPGMatcher(object):
                     promoted = self._try_promote_to_curated(
                         channel_name, country_code, servicetype,
                         channel_id, cached, allow_curated_promotion,
-                        curated_db)
+                        curated_db, feed_ids)
                     if promoted:
                         return promoted
                     print("[Match] Local cache HIT: {}".format(cached_key))
@@ -2356,6 +2359,15 @@ class VavooEPGMatcher(object):
         if country_code and curated_db and channel_id:
             curated_id = curated_db.get(
                 self._clean_name_for_similarity(channel_name))
+            if curated_id and feed_ids:
+                # as the steps above: an id the feed does not have
+                # (made against another guide, or an old one) gives no
+                # programmes - the feed's own names may still find it
+                spelled = _feed_spelling(curated_id, feed_ids)
+                if not spelled:
+                    print("[Match] Curated id '{}' is not in the {} feed"
+                          .format(curated_id, country_code))
+                curated_id = spelled
             if curated_id:
                 print("[Match] CURATED DB HIT: {} -> {}".format(
                     channel_name, curated_id))
@@ -2589,6 +2601,10 @@ def clear_recent():
 
 _curated_channel_db_cache = {}
 _curated_channel_db_lock = threading.Lock()
+# Where the curated database is read: this plugin's own repository,
+# where generate_epg_channel_db.yml commits it (it used to be read from
+# HOST_MAIN, Belfagor2005's, which the workflow never wrote).
+CURATED_DB_HOST = UPDATE_HOST
 _CURATED_CHANNEL_DB_TTL = 86400
 # How long a failed/empty fetch is remembered - see
 # _load_curated_channel_db(). Same value and reasoning as
@@ -2630,7 +2646,7 @@ def _load_curated_channel_db(country_code):
         db = {}
         try:
             url = "{}/epg-channel-db/vavoo_channels_{}.json".format(
-                HOST_MAIN, country_code.lower())
+                CURATED_DB_HOST, country_code.lower())
             data = getUrl(url, timeout=15, retries=1)
             if data:
                 parsed = loads(ensure_str(data))
