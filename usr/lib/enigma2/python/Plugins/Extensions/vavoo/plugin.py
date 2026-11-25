@@ -82,6 +82,7 @@ from .bouquet_manager import (
     export_favourites_sync,
     favourites_bouquet_exported,
     remove_favourites_bouquet,
+    retitle_vavoo_bouquets,
 )
 from .vUtils import (
     debug,
@@ -5108,10 +5109,35 @@ def main(session, **kwargs):
         except Exception as e:
             print("Cache initialization error: %s" % str(e))
         clean_pause_leftovers()
+        retitle_bouquets_in_background()
         session.open(startVavoo)
     except Exception as e:
         print('error as:', e)
         trace_error()
+
+
+def retitle_bouquets_in_background():
+    """The bouquets exported before their names began with "Vavoo ★ "
+    get it (bouquet_manager.retitle_vavoo_bouquets()), in a thread;
+    skipped while an export runs (the next opening tries again)."""
+    if not export_lock.acquire(False):
+        return False
+
+    def task():
+        changed = 0
+        try:
+            changed = retitle_vavoo_bouquets()
+        except Exception as e:
+            print("[Bouquet] Renaming the bouquets failed: {}".format(e))
+        finally:
+            export_lock.release()
+        if changed:
+            ReloadBouquets(500)
+
+    thread = threading.Thread(target=named(task, "vv-retitle"))
+    thread.daemon = True
+    thread.start()
+    return True
 
 
 def Plugins(**kwargs):

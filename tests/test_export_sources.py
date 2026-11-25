@@ -72,7 +72,8 @@ bm._add_to_main_bouquet = lambda *a, **k: None
 try:
     count, filename, channels, _cc = bm.create_fallback_bouquet_sync(
         "4097", "Portugal", "flat", "bottom")
-    text = open(os.path.join(TMP, filename)).read() if filename else ""
+    text = open(os.path.join(TMP, filename), "rb").read().decode(
+        "utf-8") if filename else u""
     services = [line for line in text.splitlines()
                 if line.startswith("#SERVICE")]
     descriptions = [line[len("#DESCRIPTION "):] for line in text.splitlines()
@@ -87,6 +88,62 @@ try:
     check(not any("grp%3a" in s for s in services), "no grouped row")
     check(len(set(s.split("http")[0] for s in services)) == 5,
           "each its own service reference")
+    check(text.splitlines()[0] == u"#NAME Vavoo ★ Portugal" and
+          filename == "userbouquet.vavoo_portugal.tv",
+          "named 'Vavoo ★ Portugal' (as the favourites), the file as "
+          "before: %r" % text.splitlines()[:1])
+
+    print("== the scheduled update's bouquet: the same name")
+
+    class NoMatch(object):
+        def find_match(self, *a, **k):
+            return None, None, None
+
+    for name, wanted, wanted_file in (
+            (u"Portugal", u"#NAME Vavoo ★ Portugal",
+             "userbouquet.vavoo_portugal.tv"),
+            (u"Italy ➾ Sport", u"#NAME Vavoo ★ Italy ➾ Sport",
+             "userbouquet.vavoo_italy_sport.tv")):
+        result = bm.create_bouquet_file(
+            name, rows, "4097", "hierarchical", "bottom", NoMatch(), "")
+        first = open(os.path.join(TMP, result[1]), "rb").read().decode(
+            "utf-8").splitlines()[0] if result[1] else u""
+        check(first == wanted and result[1] == wanted_file,
+              "%s: %r, %s" % (name, first, result[1]))
+    check(bm.bouquet_title(u"Vavoo ★ Italy") == u"Vavoo ★ Italy",
+          "a name with the prefix gets no second one")
+
+    print("== the bouquets exported before get the name")
+
+    def write(fname, text):
+        with open(os.path.join(TMP, fname), "wb") as f:
+            f.write(text.encode("utf-8"))
+
+    def read(fname):
+        return open(os.path.join(TMP, fname), "rb").read().decode("utf-8")
+
+    old_lines = u"#NAME Portugal\n#SERVICE 4097:0:1:a:b:0:0:0:0:0:x\n" \
+        u"#DESCRIPTION SIC\n"
+    write("userbouquet.vavoo_portugal.tv", old_lines)
+    write("userbouquet.vavoo_italy.tv", u"#NAME Vavoo ★ Italy\n")
+    write(bm.FAVOURITES_BOUQUET, u"#NAME Vavoo ★ Favoritos\n")
+    write("userbouquet.favourites.tv", u"#NAME Favourites (TV)\n")
+    write("userbouquet.vavoo_italy_sport.tv", u"#NAME Italy ➾ Sport\n")
+    check(bm.retitle_vavoo_bouquets() == 2, "two renamed")
+    check(read("userbouquet.vavoo_portugal.tv") ==
+          old_lines.replace(u"#NAME Portugal", u"#NAME Vavoo ★ Portugal"),
+          "Portugal: 'Vavoo ★ Portugal', its channels as they were")
+    check(read("userbouquet.vavoo_italy_sport.tv") ==
+          u"#NAME Vavoo ★ Italy ➾ Sport\n", "a category too")
+    check(read("userbouquet.vavoo_italy.tv") == u"#NAME Vavoo ★ Italy\n" and
+          read(bm.FAVOURITES_BOUQUET) == u"#NAME Vavoo ★ Favoritos\n" and
+          read("userbouquet.favourites.tv") == u"#NAME Favourites (TV)\n",
+          "already named, the favourites' and Enigma2's own: untouched")
+    check(bm.retitle_vavoo_bouquets() == 0, "again: nothing to do")
+    check(plugin.retitle_bouquets_in_background and
+          "retitle_bouquets_in_background()" in
+          harness.e2env.source_of("main"),
+          "main() does it each time the plugin opens")
 finally:
     bm.is_proxy_running, bm.is_proxy_ready = real_running, real_ready
     bm.ENIGMA_PATH, bm._add_to_main_bouquet = real_enigma, real_add

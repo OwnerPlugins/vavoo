@@ -84,7 +84,7 @@ The Full HD skins of this version, drawn with sample channels.
 - **Welcome** – On a new install, the first opening asks for the look, your countries and (if you want) a PIN for adult channels
 
 ### In your Enigma2 channel list
-- **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom - every source of a channel ("SIC .b", "SIC .c", "SIC .d") as its own channel
+- **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom, as "Vavoo ★ Portugal" (a category: "Vavoo ★ Italy ➾ Sport") - every source of a channel ("SIC .b", "SIC .c", "SIC .d") as its own channel
 - **Favourites Bouquet** – Your favourites as one bouquet, "Vavoo ★ Favourites": a title per country with its channels under it, kept the same as the Favourites list
 - **Scheduled Updates** – Re-match EPG and refresh the exported bouquets at an interval or at a fixed time of day
 - **EPG Integration** – Electronic Program Guide for supported channels, in the plugin and through EPGImport: epgshare01's daily files, the GitHub copy as a fallback
@@ -572,6 +572,7 @@ The proxy provides these endpoints:
 ### Bouquet Export
 - Path: Plugin menu → Select country → GREEN button
 - Creates bouquets with proxy URLs: `http://127.0.0.1:4323/vavoo?channel=CHANNEL_ID`
+- Named "Vavoo ★ <country>" in the channel list ("Vavoo ★ Portugal", a category "Vavoo ★ Italy ➾ Sport"), like the favourites bouquet; the file names stay `userbouquet.vavoo_<country>.tv`. Bouquets exported by earlier versions get the name the next time the plugin opens
 - Every source of a channel is its own entry, under its catalog name ("SIC .b", "SIC .c", "SIC .d")
 - Channels are matched to their country's EPG feed (see "EPG Integration" above); every source of a channel gets its guide
 - EPG mapping files are automatically generated for each country - one per country, shared by every bouquet that plays its channels (the country's, its categories', the favourites'): exporting one never takes the guide from another, and removing one only takes its own entries

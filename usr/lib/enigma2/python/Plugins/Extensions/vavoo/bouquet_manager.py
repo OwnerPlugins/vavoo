@@ -158,6 +158,59 @@ def _strip_control_chars(text):
     return ''.join(c for c in text if ord(c) > 31)
 
 
+# Every Vavoo bouquet's name in the channel list starts the same way as
+# the favourites' ("Vavoo ★ Favourites"): "Vavoo ★ Portugal", "Vavoo ★
+# Italy ➾ Sport". Only the #NAME line: the file names stay as they were.
+BOUQUET_TITLE_PREFIX = u"Vavoo ★ "
+
+
+def bouquet_title(name):
+    """A country's (or category's) bouquet name in the channel list."""
+    title = _strip_control_chars(vavoo_store.to_text(name)).strip()
+    if title.startswith(BOUQUET_TITLE_PREFIX):
+        return title
+    return BOUQUET_TITLE_PREFIX + title
+
+
+def retitle_vavoo_bouquets():
+    """The bouquets exported before their names began with "Vavoo ★ "
+    get it: only their #NAME line, written again (atomic); the
+    favourites bouquet has its own title. Returns how many changed.
+
+    Precondition: the caller holds export_lock."""
+    changed = 0
+    try:
+        names = listdir(ENIGMA_PATH)
+    except Exception:
+        return 0
+    for fname in sorted(names):
+        if not (fname.startswith("userbouquet.vavoo_") and
+                (fname.endswith(".tv") or fname.endswith(".radio"))):
+            continue
+        if fname == FAVOURITES_BOUQUET:
+            continue
+        path = join(ENIGMA_PATH, fname)
+        try:
+            with io.open(path, 'r', encoding='utf-8', errors='ignore') as f:
+                lines = f.readlines()
+            if not lines or not lines[0].startswith(u"#NAME "):
+                continue
+            title = lines[0][len(u"#NAME "):].strip()
+            if not title or title.startswith(BOUQUET_TITLE_PREFIX):
+                continue
+            lines[0] = u"#NAME " + bouquet_title(title) + u"\n"
+            temp_path = path + ".tmp"
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
+                f.writelines(lines)
+            rename(temp_path, path)
+            changed += 1
+        except Exception as e:
+            print("[Bouquet] Cannot rename %s: %s" % (fname, e))
+    if changed:
+        print(u"[Bouquet] %d bouquets renamed Vavoo ★ ..." % changed)
+    return changed
+
+
 def get_local_ip():
     """Get the local IP address (2s timeout to avoid blocking on restricted networks)."""
     try:
@@ -1032,7 +1085,9 @@ def create_fallback_bouquet_sync(
         bouquet_path = join(ENIGMA_PATH, bouquet_filename)
 
         # 6. Build bouquet lines with fallback
-        lines = ["#NAME %s" % _strip_control_chars(name)]
+        # (text: on Python 2 a name with an accent, in bytes, beside
+        # the unicode lines made the file fail to write)
+        lines = [u"#NAME " + bouquet_title(name)]
         channel_count = 0
         channels_list = []
         seen_channel_ids = set()
@@ -1161,7 +1216,7 @@ def create_bouquet_file(
         # 'feed_id': feed_id}
         matched = []
         unmatched = []    # each item: {'name': name, 'channel_id': id}
-        tv_lines = ["#NAME %s" % _strip_control_chars(name)]
+        tv_lines = [u"#NAME " + bouquet_title(name)]
         channel_count = 0
         seen_channel_ids = set()
         for channel in channels:

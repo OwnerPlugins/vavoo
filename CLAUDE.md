@@ -417,6 +417,12 @@ source menu); old bouquets' `grp:` entries still resolve.
 `channel_alias.normalize_channel_name()` strips any source tag (the
 proxy's `_GROUP_SUFFIX_RE` rule, plus `.c`/`.s`/`.b` with no space) so
 each source finds the alias (`tests/test_export_sources.py`).
+Their `#NAME` is `bouquet_title(name)` = `BOUQUET_TITLE_PREFIX`
+"Vavoo ★ " + the country / category (as the favourites', "Vavoo ★
+Favourites"), written as text; the file names stay from `name`.
+`retitle_vavoo_bouquets()` (plugin.py's `retitle_bouquets_in_background()`
+from `main()`, thread "vv-retitle", under `export_lock` when free) gives
+the bouquets exported before their prefix - only the `#NAME` line.
 - The favourites bouquet (`FAVOURITES_BOUQUET` =
   `userbouquet.vavoo_favourites.tv`, "Vavoo ★ Favourites"):
   `favourites_bouquet_lines()` - a marker (`#SERVICE
