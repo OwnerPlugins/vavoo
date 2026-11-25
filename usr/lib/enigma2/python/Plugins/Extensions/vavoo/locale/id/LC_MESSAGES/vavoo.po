@@ -21,7 +21,7 @@ msgid "(current)"
 msgstr "(saat ini)"
 
 msgid "(token expiring)"
-msgstr ""
+msgstr "(token habis masa berlakunya)"
 
 msgid "(you have v{})"
 msgstr "(kamu punya v{})"
@@ -96,51 +96,51 @@ msgid "- {} entries updated"
 msgstr "- Entri {} diperbarui"
 
 msgid "0-9: the PIN  ·  ◄ delete  ·  EXIT cancel"
-msgstr ""
+msgstr "0-9: PIN · ◄ hapus · KELUAR batal"
 
 msgid "10 seconds back / on"
-msgstr ""
+msgstr "10 detik mundur / hidup"
 
 msgid "10 seconds back / on (paused)"
-msgstr ""
+msgstr "10 detik mundur / aktif (dijeda)"
 
 msgid "12 hours"
-msgstr ""
+msgstr "12 jam"
 
 msgid "24 hours"
-msgstr ""
+msgstr "24 jam"
 
 msgid "30 seconds back / on"
-msgstr ""
+msgstr "30 detik mundur / hidup"
 
 msgid "30 seconds back / on (paused)"
-msgstr ""
+msgstr "30 detik mundur / aktif (dijeda)"
 
 msgid "? Proxy Unknown"
 msgstr "? Proksi Tidak Diketahui"
 
 msgid "A 4-digit PIN for adult channels, chosen countries and (optionally) the settings. Once entered, all is open for 15 minutes or until the plugin is left."
-msgstr ""
+msgstr "PIN 4 digit untuk saluran dewasa, negara pilihan, dan (opsional) pengaturan. Setelah masuk, semua terbuka selama 15 menit atau sampai plugin tersisa."
 
 msgid "A country whose channels come in categories (Sport, News...) lists them first: All channels, the categories, General."
-msgstr ""
+msgstr "Negara yang salurannya masuk dalam kategori (Olahraga, Berita...) mencantumkannya terlebih dahulu: Semua saluran, kategori, Umum."
 
 msgid "A programme to come: remind / record / watch"
-msgstr ""
+msgstr "Sebuah program yang akan datang: ingatkan / rekam / tonton"
 
 #, fuzzy
 msgid "A space"
 msgstr "Ruang angkasa"
 
 msgid "About"
-msgstr ""
+msgstr "Tentang"
 
 #, fuzzy
 msgid "Add / remove favourite"
 msgstr "Ditambahkan ke favorit: {}"
 
 msgid "Add Fav"
-msgstr ""
+msgstr "Tambahkan Favorit"
 
 #, fuzzy
 msgid "Add to favourites"
@@ -161,7 +161,7 @@ msgid "All countries (%d)"
 msgstr "Semua negara (%d)"
 
 msgid "All settings ({} more)"
-msgstr ""
+msgstr "Semua setelan ({} selengkapnya)"
 
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Ekspor untuk negara lain sedang berlangsung. Harap tunggu."
@@ -170,46 +170,46 @@ msgid "An export is in progress. Please wait before fixing the cache."
 msgstr "Ekspor sedang berlangsung. Harap tunggu sebelum memperbaiki cache."
 
 msgid "An hour back / on"
-msgstr ""
+msgstr "Satu jam kembali / aktif"
 
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Hanya startup anonim/ping detak jantung (id sesi, versi, stempel waktu - tidak ada data pribadi). Nonaktifkan untuk memilih tidak ikut."
 
 msgid "Aspect ratio"
-msgstr ""
+msgstr "Rasio aspek"
 
 msgid "At an interval hours or fixed time"
 msgstr "Pada interval jam atau waktu tetap"
 
 msgid "Audio track"
-msgstr ""
+msgstr "trek audio"
 
 msgid "Audio track / subtitles"
-msgstr ""
+msgstr "Trek audio / subtitle"
 
 msgid "Author:"
 msgstr "Pengarang:"
 
 msgid "Auto"
-msgstr ""
+msgstr "Mobil"
 
 msgid "BLUE"
-msgstr ""
+msgstr "BIRU"
 
 msgid "BLUE / PLAY"
-msgstr ""
+msgstr "BIRU / MAINKAN"
 
 msgid "Back"
 msgstr "Kembali"
 
 msgid "Back (paused: to live first)"
-msgstr ""
+msgstr "Kembali (dijeda: untuk hidup dulu)"
 
 msgid "Back (without saving)"
-msgstr ""
+msgstr "Kembali (tanpa menyimpan)"
 
 msgid "Back to the settings most people change."
-msgstr ""
+msgstr "Kembali ke pengaturan yang diubah kebanyakan orang."
 
 #, fuzzy
 msgid "Background"
@@ -219,7 +219,7 @@ msgid "Backspace"
 msgstr "Ruang belakang"
 
 msgid "Backup Settings & Favourites"
-msgstr ""
+msgstr "Pengaturan Cadangan & Favorit"
 
 msgid "Bottom"
 msgstr "Dasar"
@@ -250,10 +250,10 @@ msgid "Cache is already in correct format. No changes needed."
 msgstr "Cache sudah dalam format yang benar. Tidak diperlukan perubahan."
 
 msgid "Can't record (not enough free space?)"
-msgstr ""
+msgstr "Tidak dapat merekam (tidak cukup ruang kosong?)"
 
 msgid "Can't record: no disk (HDD / USB) found"
-msgstr ""
+msgstr "Tidak dapat merekam: tidak ditemukan disk (HDD/USB)."
 
 msgid "Cancel"
 msgstr "Membatalkan"
@@ -284,10 +284,10 @@ msgid "Change it"
 msgstr "Saluran"
 
 msgid "Change the PIN"
-msgstr ""
+msgstr "Ubah PINnya"
 
 msgid "Change the setting / lock the country"
-msgstr ""
+msgstr "Ubah pengaturan/kunci negara"
 
 #, fuzzy
 msgid "Changelog:"
@@ -297,7 +297,7 @@ msgid "Changelog: ({}/{}, use up/down)"
 msgstr "Changelog: ({}/{}, gunakan atas/bawah)"
 
 msgid "Changes not saved: GREEN saves, press again to leave without saving"
-msgstr ""
+msgstr "Perubahan tidak disimpan: HIJAU menyimpan, tekan lagi untuk keluar tanpa menyimpan"
 
 #, fuzzy
 msgid "Channel"
@@ -308,32 +308,32 @@ msgid "Channel Logos"
 msgstr "Saluran"
 
 msgid "Channel list updated: {} channels"
-msgstr ""
+msgstr "Daftar saluran diperbarui: {} saluran"
 
 msgid "Channels: %d"
 msgstr "Saluran: %d"
 
 msgid "Check it"
-msgstr ""
+msgstr "Periksa itu"
 
 msgid "Checking proxy..."
 msgstr "Memeriksa proksi..."
 
 msgid "Choose a backup: its settings and favourites replace the ones here."
-msgstr ""
+msgstr "Pilih cadangan: pengaturan dan favoritnya menggantikan yang ada di sini."
 
 #, fuzzy
 msgid "Choose countries"
 msgstr "Negara"
 
 msgid "Classic"
-msgstr ""
+msgstr "Klasik"
 
 msgid "Classic - the original look"
-msgstr ""
+msgstr "Klasik - tampilan aslinya"
 
 msgid "Classic's background (Oktus or Kiddac). Takes effect when the plugin is opened again."
-msgstr ""
+msgstr "Latar belakang klasik (Oktus atau Kiddac). Berlaku ketika plugin dibuka kembali."
 
 #, fuzzy
 msgid "Clear"
@@ -347,19 +347,19 @@ msgid "Clear Favourites"
 msgstr "Favorit"
 
 msgid "Clear recently watched"
-msgstr ""
+msgstr "Hapus yang baru saja ditonton"
 
 msgid "Clock Format"
-msgstr ""
+msgstr "Format Jam"
 
 msgid "Clock in the top-right corner and programme times. Not used by Classic's own clock."
-msgstr ""
+msgstr "Jam di pojok kanan atas dan waktu program. Tidak digunakan oleh jam Classic sendiri."
 
 msgid "Close"
 msgstr "Menutup"
 
 msgid "Close the player"
-msgstr ""
+msgstr "Tutup pemutar"
 
 msgid "Configuration saved successfully!"
 msgstr "Konfigurasi berhasil disimpan!"
@@ -405,19 +405,19 @@ msgid "Debug logging"
 msgstr "Pencatatan debug"
 
 msgid "Delete"
-msgstr ""
+msgstr "Menghapus"
 
 msgid "Delete (press twice)"
-msgstr ""
+msgstr "Hapus (tekan dua kali)"
 
 msgid "Delete a digit"
-msgstr ""
+msgstr "Hapus satu digit"
 
 msgid "Delete a letter"
-msgstr ""
+msgstr "Hapus surat"
 
 msgid "Deleted"
-msgstr ""
+msgstr "Dihapus"
 
 msgid "Do you want to export this bouquet?"
 msgstr "Apakah Anda ingin mengekspor buket ini?"
@@ -426,7 +426,7 @@ msgid "Do you want to fix the cache format?"
 msgstr "Apakah Anda ingin memperbaiki format cache?"
 
 msgid "Done"
-msgstr ""
+msgstr "Selesai"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -452,13 +452,13 @@ msgid "EPGImport plugin not found: {}"
 msgstr "Plugin EPGImport tidak ditemukan: {}"
 
 msgid "EXIT"
-msgstr ""
+msgstr "KELUAR"
 
 msgid "EXIT / BACK"
-msgstr ""
+msgstr "KELUAR / KEMBALI"
 
 msgid "Earlier"
-msgstr ""
+msgstr "Lebih awal"
 
 msgid "Enable Vavoo EPG"
 msgstr "Aktifkan Vavoo EPG"
@@ -467,7 +467,7 @@ msgid "Enter text to search..."
 msgstr "Masukkan teks untuk mencari..."
 
 msgid "Enter the PIN"
-msgstr ""
+msgstr "Masukkan PINnya"
 
 msgid "Error"
 msgstr "Kesalahan"
@@ -509,16 +509,16 @@ msgid "Export this country as a bouquet"
 msgstr "- Karangan bunga pedesaan"
 
 msgid "Factory reset"
-msgstr ""
+msgstr "Reset pabrik"
 
 msgid "Factory reset done"
-msgstr ""
+msgstr "Reset pabrik selesai"
 
 msgid "Factory reset done - starting again"
-msgstr ""
+msgstr "Reset pabrik selesai - mulai lagi"
 
 msgid "Factory reset..."
-msgstr ""
+msgstr "Reset pabrik..."
 
 msgid "Failed to refresh proxy token"
 msgstr "Gagal menyegarkan token proksi"
@@ -530,7 +530,7 @@ msgid "Failed: %(failed)d"
 msgstr "Gagal: %(gagal)d"
 
 msgid "Fav"
-msgstr ""
+msgstr "Favorit"
 
 msgid "Favourites"
 msgstr "Favorit"
@@ -552,7 +552,7 @@ msgid "Favourites cleared"
 msgstr "Favorit"
 
 msgid "Fewer settings"
-msgstr ""
+msgstr "Lebih sedikit pengaturan"
 
 #, fuzzy
 msgid "Fix EPG cache"
@@ -562,19 +562,19 @@ msgid "Fixing cache format..."
 msgstr "Memperbaiki format cache..."
 
 msgid "Folder"
-msgstr ""
+msgstr "Map"
 
 msgid "Folder for {}"
-msgstr ""
+msgstr "Folder untuk {}"
 
 msgid "Folder name (e.g. Sport)"
-msgstr ""
+msgstr "Nama folder (misalnya Olahraga)"
 
 msgid "Folder renamed to {}"
-msgstr ""
+msgstr "Folder diganti namanya menjadi {}"
 
 msgid "Folder {} removed - its channels stay in the favourites"
-msgstr ""
+msgstr "Folder {} dihapus - salurannya tetap menjadi favorit"
 
 msgid "Force proxy refresh?"
 msgstr "Paksa penyegaran proxy?"
@@ -583,28 +583,28 @@ msgid "Found: {} channels"
 msgstr "Ditemukan: {} saluran"
 
 msgid "Full Screen"
-msgstr ""
+msgstr "Layar Penuh"
 
 msgid "Full screen"
-msgstr ""
+msgstr "Layar penuh"
 
 msgid "GREEN"
-msgstr ""
+msgstr "HIJAU"
 
 msgid "GREEN / FAV"
-msgstr ""
+msgstr "HIJAU / FAV"
 
 msgid "GREEN / PLAY"
-msgstr ""
+msgstr "HIJAU / BERMAIN"
 
 msgid "GREEN / TEXT"
-msgstr ""
+msgstr "HIJAU / TEKS"
 
 msgid "Geil only"
 msgstr "Hanya Geil"
 
 msgid "General"
-msgstr ""
+msgstr "Umum"
 
 msgid "Generate .m3u file for:"
 msgstr "Hasilkan file .m3u untuk:"
@@ -626,34 +626,34 @@ msgid "Go to that channel"
 msgstr "Kesalahan memulai saluran"
 
 msgid "Go to that row"
-msgstr ""
+msgstr "Pergi ke baris itu"
 
 msgid "Group Sources"
-msgstr ""
+msgstr "Sumber Grup"
 
 msgid "Guide"
-msgstr ""
+msgstr "Memandu"
 
 msgid "Halo - frosted glass"
-msgstr ""
+msgstr "Halo - kaca buram"
 
 msgid "Hide all"
-msgstr ""
+msgstr "Sembunyikan semua"
 
 msgid "Hide the countries you never watch from the main list and from search."
-msgstr ""
+msgstr "Sembunyikan negara yang tidak pernah Anda tonton dari daftar utama dan dari pencarian."
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "Seberapa sering mencocokkan ulang EPG dan menyegarkan karangan bunga, dihitung mulai sekarang."
 
 msgid "IMDb / TMDB"
-msgstr ""
+msgstr "IMDB/TMDB"
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
 msgstr "Jika disetel, daftar putar langsung di /playlist.m3u memerlukan ?key=<nilai ini> - biarkan kosong jika tidak ada kunci. URL: http://%s:%d/playlist.m3u"
 
 msgid "Import EPG now"
-msgstr ""
+msgstr "Impor EPG sekarang"
 
 msgid "Important Notes:"
 msgstr "Catatan Penting:"
@@ -662,40 +662,40 @@ msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Tingkatkan jika proxy membutuhkan waktu lama karena VPN atau koneksi lambat."
 
 msgid "Keep at least one country"
-msgstr ""
+msgstr "Pertahankan setidaknya satu negara"
 
 msgid "Keyboard"
 msgstr "papan ketik"
 
 msgid "Keys"
-msgstr ""
+msgstr "Kunci"
 
 msgid "LEFT"
-msgstr ""
+msgstr "KIRI"
 
 msgid "LEFT / RIGHT"
-msgstr ""
+msgstr "KIRI / KANAN"
 
 msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · EXIT: close"
-msgstr ""
+msgstr "KIRI / KANAN 10 dtk · KUNING / BIRU 30 dtk · KELUAR: tutup"
 
 msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · OK pause · MENU options · EXIT close"
-msgstr ""
+msgstr "KIRI / KANAN 10 dtk · KUNING / BIRU 30 dtk · OK jeda · Opsi MENU · EXIT tutup"
 
 msgid "LEFT / RIGHT move · EXIT: live"
-msgstr ""
+msgstr "Gerakan KIRI / KANAN · KELUAR: hidup"
 
 msgid "Large"
-msgstr ""
+msgstr "Besar"
 
 msgid "Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Not used by Classic."
-msgstr ""
+msgstr "Besar: daftar, nama, dan baris program lebih besar, lebih mudah dibaca dari sofa. Normal: lebih kecil, lebih banyak baris. Tidak digunakan oleh Klasik."
 
 msgid "Last channel update: %s"
 msgstr "Pembaruan saluran terakhir: %s"
 
 msgid "Later"
-msgstr ""
+msgstr "Nanti"
 
 #, fuzzy
 msgid "Licences"
@@ -711,10 +711,10 @@ msgid "Link in Main Menu"
 msgstr "Tautan di Menu Utama"
 
 msgid "List"
-msgstr ""
+msgstr "Daftar"
 
 msgid "Live"
-msgstr ""
+msgstr "Hidup"
 
 #, fuzzy
 msgid "Loading EPG..."
@@ -725,14 +725,14 @@ msgid "Loading channels..."
 msgstr "Memperbarui EPG..."
 
 msgid "Loading programme guide..."
-msgstr ""
+msgstr "Memuat panduan program..."
 
 #, fuzzy
 msgid "Loading..."
 msgstr "Memperbarui EPG..."
 
 msgid "Loading…"
-msgstr ""
+msgstr "Memuat…"
 
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "Hanya lokal (127.0.0.1) - hanya perangkat ini"
@@ -742,10 +742,10 @@ msgid "Lock adult channels"
 msgstr "(%d saluran)?"
 
 msgid "Lock the settings"
-msgstr ""
+msgstr "Kunci pengaturannya"
 
 msgid "Locked"
-msgstr ""
+msgstr "Terkunci"
 
 msgid "M3U file generated successfully!"
 msgstr "File M3U berhasil dibuat!"
@@ -760,10 +760,10 @@ msgid "Menu"
 msgstr ""
 
 msgid "Move"
-msgstr ""
+msgstr "Bergerak"
 
 msgid "Move it to that place"
-msgstr ""
+msgstr "Pindahkan ke tempat itu"
 
 #, fuzzy
 msgid "Move the channel"
@@ -781,35 +781,35 @@ msgid "Movie Services Reference"
 msgstr "Referensi Layanan Film"
 
 msgid "Movie folder ({})"
-msgstr ""
+msgstr "Folder film ({})"
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
-msgstr ""
+msgstr "Memindahkan {}: ▲▼, ◄► halaman, nomor; Oke untuk menyelesaikan"
 
 msgid "Moving {}: ▲▼; OK to finish"
-msgstr ""
+msgstr "Bergerak {}: ▲▼; Oke untuk menyelesaikan"
 
 msgid "Network (%s) - other devices on the LAN"
 msgstr "Jaringan (%s) - perangkat lain di LAN"
 
 msgid "New PIN (4 digits)"
-msgstr ""
+msgstr "PIN baru (4 digit)"
 
 msgid "New folder…"
-msgstr ""
+msgstr "Folder baru…"
 
 #, fuzzy
 msgid "New version available: v{}"
 msgstr "Tidak ada item yang tersedia"
 
 msgid "Next"
-msgstr ""
+msgstr "Berikutnya"
 
 msgid "Next / previous channel"
-msgstr ""
+msgstr "Saluran berikutnya / sebelumnya"
 
 msgid "No"
-msgstr ""
+msgstr "TIDAK"
 
 msgid "No IMDb/TMDB plugin found"
 msgstr "Tidak ditemukan plugin IMDb/TMDB"
@@ -818,7 +818,7 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Tidak ada koneksi Internet yang terdeteksi. Silakan periksa jaringan Anda."
 
 msgid "No PIN yet: nothing is locked until one is set."
-msgstr ""
+msgstr "Belum ada PIN: tidak ada yang terkunci sampai PIN disetel."
 
 #, fuzzy
 msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
@@ -858,10 +858,10 @@ msgid "No favourites yet"
 msgstr "Belum ada favorit"
 
 msgid "No favourites yet. Open a country and press GREEN on a channel."
-msgstr ""
+msgstr "Belum ada favorit. Buka negara dan tekan HIJAU di saluran."
 
 msgid "No folder"
-msgstr ""
+msgstr "Tidak ada map"
 
 msgid "No items available"
 msgstr "Tidak ada item yang tersedia"
@@ -874,7 +874,7 @@ msgid "No programme information"
 msgstr "Tidak ada info program yang tersedia"
 
 msgid "No programme to record here"
-msgstr ""
+msgstr "Tidak ada program untuk direkam di sini"
 
 msgid "No selection"
 msgstr "Tidak ada pilihan"
@@ -883,19 +883,19 @@ msgid "No valid channels for: %s"
 msgstr "Tidak ada saluran yang valid untuk: %s"
 
 msgid "Non-commercial use only, with attribution; changes shared under the same licence."
-msgstr ""
+msgstr "Hanya untuk penggunaan non-komersial, dengan atribusi; perubahan yang dibagikan di bawah lisensi yang sama."
 
 msgid "Normal"
 msgstr ""
 
 msgid "Not available on this receiver"
-msgstr ""
+msgstr "Tidak tersedia pada receiver ini"
 
 msgid "Not now: a recording is running"
-msgstr ""
+msgstr "Jangan sekarang: rekaman sedang berjalan"
 
 msgid "Nothing is playing in the window"
-msgstr ""
+msgstr "Tidak ada yang diputar di jendela"
 
 #, fuzzy
 msgid "Nothing to remove"
@@ -905,17 +905,17 @@ msgid "Nothing to remove for: {}"
 msgstr "Tidak ada yang perlu dihapus: {}"
 
 msgid "Nothing watched yet"
-msgstr ""
+msgstr "Belum ada yang ditonton"
 
 msgid "Nothing yet: record from the player's options, or set a recording in the guide."
-msgstr ""
+msgstr "Belum ada: rekam dari opsi pemutar, atau atur rekaman di panduan."
 
 #, fuzzy
 msgid "Now"
 msgstr "Sekarang %s"
 
 msgid "Now, the programme's actions"
-msgstr ""
+msgstr "Sekarang, tindakan programnya"
 
 #, fuzzy
 msgid "Now/Next in channel list"
@@ -925,22 +925,22 @@ msgid "OK"
 msgstr "OKE"
 
 msgid "OK / GREEN / PAUSE / PLAY"
-msgstr ""
+msgstr "OK / HIJAU / JEDA / MAINKAN"
 
 msgid "OK / LEFT / RIGHT"
-msgstr ""
+msgstr "Oke / KIRI / KANAN"
 
 msgid "OK / RED / EXIT"
-msgstr ""
+msgstr "OK / MERAH / KELUAR"
 
 msgid "OK / YELLOW"
-msgstr ""
+msgstr "Oke / KUNING"
 
 msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys"
-msgstr ""
+msgstr "Bilah OK · CH± zap · HIJAU favorit · Sumber KUNING · Daftar BIRU · Panduan EPG · Opsi MENU · Tombol BANTUAN"
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
-msgstr ""
+msgstr "OK memutar saluran di jendela kecil di samping daftar; OK lagi di atasnya terbuka layar penuh (BIRU langsung ke layar penuh). Mati: OK membuka layar penuh sekaligus."
 
 #, fuzzy
 msgid "OK: Reload List"
@@ -951,13 +951,13 @@ msgid "OK: Settings (Catalog/Stream Source: Auto)"
 msgstr "Katalog/Sumber Aliran"
 
 msgid "Off"
-msgstr ""
+msgstr "Mati"
 
 msgid "On the last row: all settings / fewer"
-msgstr ""
+msgstr "Di baris terakhir: semua pengaturan / lebih sedikit"
 
 msgid "On {} - watch it?"
-msgstr ""
+msgstr "Di {} - tonton?"
 
 msgid "Only one source available for this channel"
 msgstr "Hanya satu sumber yang tersedia untuk saluran ini"
@@ -966,87 +966,87 @@ msgid "Only one specific country"
 msgstr "Hanya satu negara tertentu"
 
 msgid "Open (a row that opens a list or does something)"
-msgstr ""
+msgstr "Buka (baris yang membuka daftar atau melakukan sesuatu)"
 
 msgid "Open the category"
-msgstr ""
+msgstr "Buka kategori"
 
 msgid "Open the country / list"
-msgstr ""
+msgstr "Buka negara/daftar"
 
 msgid "Open the folder"
-msgstr ""
+msgstr "Buka foldernya"
 
 msgid "Open the last watched channel when the plugin starts."
-msgstr ""
+msgstr "Buka saluran yang terakhir ditonton saat plugin dimulai."
 
 msgid "Options"
-msgstr ""
+msgstr "Pilihan"
 
 msgid "Orbit - teal cockpit"
-msgstr ""
+msgstr "Orbit - kokpit teal"
 
 msgid "Other"
-msgstr ""
+msgstr "Lainnya"
 
 msgid "PIN removed"
-msgstr ""
+msgstr "PIN dihapus"
 
 msgid "PIN saved"
-msgstr ""
+msgstr "PIN disimpan"
 
 msgid "PIN set · {} countries locked"
-msgstr ""
+msgstr "Set PIN · {} negara terkunci"
 
 msgid "PIN set: adult channels are locked"
-msgstr ""
+msgstr "Set PIN: saluran dewasa dikunci"
 
 msgid "PVR / FILE"
 msgstr ""
 
 msgid "Page up / down"
-msgstr ""
+msgstr "Halaman atas/bawah"
 
 #, fuzzy
 msgid "Parental Control"
 msgstr "PIN Kontrol Orang Tua"
 
 msgid "Pause"
-msgstr ""
+msgstr "Berhenti sebentar"
 
 msgid "Pause / play on"
-msgstr ""
+msgstr "Jeda / mainkan"
 
 msgid "Pause Live TV"
-msgstr ""
+msgstr "Jeda TV Langsung"
 
 msgid "Pause live / play on"
-msgstr ""
+msgstr "Jeda siaran langsung / mainkan"
 
 msgid "Paused"
-msgstr ""
+msgstr "Dijeda"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Cocokkan ulang EPG secara berkala dan segarkan karangan bunga untuk negara favorit Anda di latar belakang."
 
 msgid "Picture: not known yet"
-msgstr ""
+msgstr "Gambar: belum diketahui"
 
 msgid "Play"
-msgstr ""
+msgstr "Bermain"
 
 msgid "Play in the window (again: full screen)"
-msgstr ""
+msgstr "Putar di jendela (sekali lagi: layar penuh)"
 
 #, fuzzy
 msgid "Play the channel"
 msgstr "Silakan coba saluran lain."
 
 msgid "Play the recording"
-msgstr ""
+msgstr "Putar rekamannya"
 
 msgid "Play the recording / cancel the timer"
-msgstr ""
+msgstr "Putar rekaman / batalkan pengatur waktu"
 
 msgid "Playlist Access Key (optional)"
 msgstr "Kunci Akses Daftar Putar (opsional)"
@@ -1059,25 +1059,25 @@ msgid "Press GREEN to type, YELLOW to delete"
 msgstr "Tekan tombol TEXT untuk mengetik, BACKSPACE untuk menghapus"
 
 msgid "Press again to confirm"
-msgstr ""
+msgstr "Tekan lagi untuk konfirmasi"
 
 msgid "Press again to delete"
-msgstr ""
+msgstr "Tekan lagi untuk menghapus"
 
 msgid "Preview Window"
-msgstr ""
+msgstr "Jendela Pratinjau"
 
 msgid "Prism - Vavoo's violet"
-msgstr ""
+msgstr "Prisma - ungu Vavoo"
 
 msgid "Prism: Vavoo's violet. Halo: frosted glass over a blue aurora. Orbit: a teal cockpit display. Classic: the plugin's original skin, with its backgrounds. Takes effect when the plugin is opened again."
-msgstr ""
+msgstr "Prisma: Ungu Vavoo. Halo: kaca buram di atas aurora biru. Orbit: tampilan kokpit berwarna biru kehijauan. Klasik: skin asli plugin, dengan latar belakangnya. Berlaku ketika plugin dibuka kembali."
 
 msgid "Programme"
-msgstr ""
+msgstr "Program"
 
 msgid "Programme guide"
-msgstr ""
+msgstr "Panduan program"
 
 #, fuzzy
 msgid "Programme guide of the favourites"
@@ -1099,73 +1099,73 @@ msgid "Proxy token refreshed successfully"
 msgstr "Token proxy berhasil disegarkan"
 
 msgid "RED"
-msgstr ""
+msgstr "MERAH"
 
 msgid "RED / EXIT"
-msgstr ""
+msgstr "MERAH / KELUAR"
 
 msgid "RED / EXIT / BACK"
-msgstr ""
+msgstr "MERAH / KELUAR / KEMBALI"
 
 msgid "RED / REC"
-msgstr ""
+msgstr "MERAH / REKAM"
 
 msgid "RED / STOP / EXIT / BACK"
-msgstr ""
+msgstr "MERAH / BERHENTI / KELUAR / KEMBALI"
 
 msgid "Really close without saving settings?"
 msgstr "Benar-benar dekat tanpa menyimpan pengaturan?"
 
 msgid "Recently watched"
-msgstr ""
+msgstr "Baru-baru ini ditonton"
 
 msgid "Record"
-msgstr ""
+msgstr "Catatan"
 
 msgid "Record (again: stop)"
-msgstr ""
+msgstr "Rekam (sekali lagi: berhenti)"
 
 msgid "Record the highlighted channel (again: stop)"
-msgstr ""
+msgstr "Rekam saluran yang disorot (sekali lagi: berhenti)"
 
 msgid "Record the programme (again: cancel / stop)"
-msgstr ""
+msgstr "Rekam programnya (sekali lagi: batal/hentikan)"
 
 msgid "Recording needs ffmpeg"
-msgstr ""
+msgstr "Perekaman membutuhkan ffmpeg"
 
 msgid "Recording set: {}"
-msgstr ""
+msgstr "Kumpulan rekaman: {}"
 
 msgid "Recording stopped"
-msgstr ""
+msgstr "Perekaman dihentikan"
 
 msgid "Recording stopped early: {}"
-msgstr ""
+msgstr "Perekaman dihentikan lebih awal: {}"
 
 msgid "Recording stopped: the disk could not be written (removed?)"
-msgstr ""
+msgstr "Perekaman dihentikan: disk tidak dapat ditulis (dihapus?)"
 
 msgid "Recording stopped: the disk is nearly full"
-msgstr ""
+msgstr "Perekaman terhenti: disk hampir penuh"
 
 msgid "Recording stopped: the disk's 4 GB file limit (FAT32)"
-msgstr ""
+msgstr "Perekaman dihentikan: batas file disk sebesar 4 GB (FAT32)"
 
 msgid "Recording: {}"
-msgstr ""
+msgstr "Rekaman: {}"
 
 msgid "Recordings"
-msgstr ""
+msgstr "Rekaman"
 
 msgid "Recordings folder"
-msgstr ""
+msgstr "Folder rekaman"
 
 msgid "Recordings folder: {}"
-msgstr ""
+msgstr "Folder rekaman: {}"
 
 msgid "Refresh token"
-msgstr ""
+msgstr "Segarkan token"
 
 #, fuzzy
 msgid "Reload List"
@@ -1191,17 +1191,17 @@ msgid "Reloading channel list..."
 msgstr "Kembali ke daftar saluran."
 
 msgid "Remind me"
-msgstr ""
+msgstr "Ingatkan saya"
 
 #, fuzzy
 msgid "Reminder set: {}"
 msgstr "Ekspor gagal: {}"
 
 msgid "Reminders and recordings (●) set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
-msgstr ""
+msgstr "Pengingat dan rekaman (●) diatur dalam panduan, dan rekaman pada disk. OK: putar (atau batalkan pengatur waktu) - HIJAU: hapus."
 
 msgid "Reminders and recordings set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
-msgstr ""
+msgstr "Pengingat dan rekaman diatur dalam panduan, dan rekaman pada disk. OK: putar (atau batalkan pengatur waktu) - HIJAU: hapus."
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Hapus SEMUA karangan bunga Vavoo?"
@@ -1215,7 +1215,7 @@ msgid "Remove all Vavoo bouquets"
 msgstr "Hapus SEMUA karangan bunga Vavoo?"
 
 msgid "Remove all favourite channels (asks to confirm)."
-msgstr ""
+msgstr "Hapus semua saluran favorit (meminta konfirmasi)."
 
 #, fuzzy
 msgid "Remove all favourite channels?"
@@ -1242,7 +1242,7 @@ msgid "Remove from the list"
 msgstr "Ekspor gagal: {}"
 
 msgid "Remove the PIN (unlock everything)"
-msgstr ""
+msgstr "Hapus PIN (buka semuanya)"
 
 msgid "Remove the exported bouquet for this country/category?"
 msgstr "Hapus buket yang diekspor untuk negara/kategori ini?"
@@ -1271,19 +1271,19 @@ msgid "Removed from favourites: {}"
 msgstr "Ekspor gagal: {}"
 
 msgid "Rename / delete the folder"
-msgstr ""
+msgstr "Ganti nama/hapus folder tersebut"
 
 msgid "Rename folder"
-msgstr ""
+msgstr "Ganti nama folder"
 
 msgid "Restore from Backup"
-msgstr ""
+msgstr "Pulihkan dari Cadangan"
 
 msgid "Restored - the theme and text size change when the plugin is opened again"
-msgstr ""
+msgstr "Dipulihkan - tema dan ukuran teks berubah ketika plugin dibuka kembali"
 
 msgid "Result"
-msgstr ""
+msgstr "Hasil"
 
 msgid "Returning to channel list."
 msgstr "Kembali ke daftar saluran."
@@ -1305,7 +1305,7 @@ msgid "Saved: {}"
 msgstr "Kasus: {}"
 
 msgid "Saves the settings, the favourites (with folders and order), recently watched, the chosen sources and countries in /media/hdd, /media/usb or /media/mmc (else %s) - not parental control."
-msgstr ""
+msgstr "Menyimpan pengaturan, favorit (dengan folder dan urutan), baru-baru ini ditonton, sumber dan negara yang dipilih di /media/hdd, /media/usb atau /media/mmc (lainnya %s) - bukan kontrol orang tua."
 
 msgid "Schedule type:"
 msgstr "Jenis jadwal:"
@@ -1315,10 +1315,10 @@ msgid "Scheduled EPG/Bouquet Update:"
 msgstr "Jenis jadwal:"
 
 msgid "Scheduled recording not started: {}"
-msgstr ""
+msgstr "Perekaman terjadwal tidak dimulai: {}"
 
 msgid "Scroll"
-msgstr ""
+msgstr "Menggulir"
 
 msgid "Search"
 msgstr "Mencari"
@@ -1353,47 +1353,47 @@ msgid "Send Anonymous Statistics"
 msgstr "Kirim Statistik Anonim"
 
 msgid "Set a PIN"
-msgstr ""
+msgstr "Tetapkan PIN"
 
 #, fuzzy
 msgid "Setting"
 msgstr "Memulai ulang..."
 
 msgid "Settings"
-msgstr ""
+msgstr "Pengaturan"
 
 msgid "Settings and tools"
-msgstr ""
+msgstr "Pengaturan dan alat"
 
 msgid "Show / hide the bar"
-msgstr ""
+msgstr "Tampilkan / sembunyikan bilah"
 
 msgid "Show / hide the country"
-msgstr ""
+msgstr "Tampilkan / sembunyikan negara"
 
 msgid "Show Counts"
-msgstr ""
+msgstr "Tampilkan Hitungan"
 
 msgid "Show Log"
-msgstr ""
+msgstr "Tampilkan Log"
 
 msgid "Show Log (Ok to view)"
 msgstr "Tampilkan Log (Oke untuk melihat)"
 
 msgid "Show all"
-msgstr ""
+msgstr "Tunjukkan semuanya"
 
 msgid "Show every setting: the channel sources, the proxy, EPG import, bouquets, playlists, the log..."
-msgstr ""
+msgstr "Tampilkan setiap pengaturan: sumber saluran, proksi, impor EPG, karangan bunga, daftar putar, log..."
 
 msgid "Show how many channels each country has, and how many favourites, in the main list."
-msgstr ""
+msgstr "Tunjukkan berapa banyak saluran yang dimiliki masing-masing negara, dan berapa banyak favorit, di daftar utama."
 
 msgid "Show the channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), and no logo is downloaded."
-msgstr ""
+msgstr "Tampilkan logo saluran di daftar dan pemutar. Mati: inisial setiap saluran pada ubin dengan warnanya sendiri (Klasik: ikon Vavoo), dan tidak ada logo yang diunduh."
 
 msgid "Show the current and the next programme beside the channel list. The country's programme guide is downloaded when you open a country."
-msgstr ""
+msgstr "Tampilkan program saat ini dan berikutnya di samping daftar saluran. Panduan program negara diunduh saat Anda membuka suatu negara."
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Tampilkan pesan tingkat DEBUG verbose di vavoo.log (siklus hidup UI, detail per permintaan). Berlaku segera - hentikan kecuali ada pemecahan masalah."
@@ -1402,19 +1402,19 @@ msgid "Showing all channels: {}"
 msgstr "Menampilkan semua saluran: {}"
 
 msgid "Sleep timer"
-msgstr ""
+msgstr "Pengatur waktu tidur"
 
 msgid "Sleep timer off"
-msgstr ""
+msgstr "Pengatur waktu tidur mati"
 
 msgid "Sleep timer: standby in 1 minute"
-msgstr ""
+msgstr "Pengatur waktu tidur: siaga dalam 1 menit"
 
 msgid "Sleep timer: {} min"
-msgstr ""
+msgstr "Pengatur waktu tidur: {} mnt"
 
 msgid "Source"
-msgstr ""
+msgstr "Sumber"
 
 #, fuzzy
 msgid "Source: {}"
@@ -1431,47 +1431,47 @@ msgid "Start with last channel"
 msgstr "Buket siap dengan {} saluran"
 
 msgid "Starting now: {}"
-msgstr ""
+msgstr "Mulai sekarang: {}"
 
 #, fuzzy
 msgid "Starting the proxy..."
 msgstr "Menunggu proksi..."
 
 msgid "Stop a recording that is running"
-msgstr ""
+msgstr "Hentikan rekaman yang sedang berjalan"
 
 msgid "Stop recording"
-msgstr ""
+msgstr "Berhenti merekam"
 
 msgid "Stop the window"
-msgstr ""
+msgstr "Hentikan jendelanya"
 
 msgid "Stream Info"
-msgstr ""
+msgstr "Info Aliran"
 
 msgid "Stream ended. Too many connection issues."
 msgstr "Streaming berakhir. Terlalu banyak masalah koneksi."
 
 msgid "Sub-categories"
-msgstr ""
+msgstr "Sub-kategori"
 
 msgid "Subtitles"
-msgstr ""
+msgstr "Subtitle"
 
 msgid "Technical Features:"
 msgstr "Fitur Teknis:"
 
 msgid "Text Size"
-msgstr ""
+msgstr "Ukuran Teks"
 
 msgid "That file is not a Vavoo Stream backup"
-msgstr ""
+msgstr "File itu bukan cadangan Vavoo Stream"
 
 msgid "The PIN"
-msgstr ""
+msgstr "PINnya"
 
 msgid "The backup could not be saved"
-msgstr ""
+msgstr "Cadangan tidak dapat disimpan"
 
 #, fuzzy
 msgid "The channel before"
@@ -1482,7 +1482,7 @@ msgid "The channel list"
 msgstr "Kembali ke daftar saluran."
 
 msgid "The channel list is still loading..."
-msgstr ""
+msgstr "Daftar saluran masih dimuat..."
 
 #, fuzzy
 msgid "The channel watched last"
@@ -1493,41 +1493,41 @@ msgid "The favourites"
 msgstr "Favorit"
 
 msgid "The favourites bouquet could not be written"
-msgstr ""
+msgstr "Buket favorit tidak dapat ditulis"
 
 msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
-msgstr ""
+msgstr "Favorit di bawah judul per negara, seperti dalam buket favorit. Off: satu daftar dalam pesanan Anda."
 
 #, fuzzy
 msgid "The keyboard"
 msgstr "papan ketik"
 
 msgid "The plugin's licence and the fonts' (SIL OFL)."
-msgstr ""
+msgstr "Lisensi plugin dan font (SIL OFL)."
 
 msgid "The proxy restarts and downloads the list again. A channel playing now stops for a moment."
-msgstr ""
+msgstr "Proksi memulai ulang dan mengunduh daftarnya lagi. Pemutaran saluran sekarang berhenti sejenak."
 
 msgid "The same PIN again"
-msgstr ""
+msgstr "PIN yang sama lagi"
 
 msgid "The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row."
-msgstr ""
+msgstr "Sumber satu saluran (.b, .c, .s) dalam satu baris; MENU → Sumber di pemain memilih satu. Mati: setiap sumber di barisnya masing-masing."
 
 msgid "The two PINs differ - not changed"
-msgstr ""
+msgstr "Kedua PIN tersebut berbeda – tidak diubah"
 
 msgid "The window's channel: full screen / stop / record"
-msgstr ""
+msgstr "Saluran jendela: layar penuh/berhenti/rekam"
 
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 msgid "This channel cannot be played"
 msgstr "Saluran ini tidak dapat diputar"
 
 msgid "This recording is not running"
-msgstr ""
+msgstr "Rekaman ini tidak berjalan"
 
 msgid "This will refresh the authentication token."
 msgstr "Ini akan menyegarkan token autentikasi."
@@ -1543,7 +1543,7 @@ msgid "Time to start EPG/bouquet update:"
 msgstr "Saatnya memulai pembaruan:"
 
 msgid "Too many wrong PINs - try again in {} s"
-msgstr ""
+msgstr "Terlalu banyak PIN yang salah - coba lagi dalam {} detik"
 
 msgid "Top"
 msgstr "Atas"
@@ -1552,13 +1552,13 @@ msgid "Total channels: %(total_channels)d"
 msgstr "Total saluran: %(total_channels)d"
 
 msgid "Type (as on a phone)"
-msgstr ""
+msgstr "Ketik (seperti di telepon)"
 
 msgid "UP / DOWN"
-msgstr ""
+msgstr "ATAS / BAWAH"
 
 msgid "UP / DOWN, CH+ / CH-"
-msgstr ""
+msgstr "ATAS / BAWAH, CH+ / CH-"
 
 msgid "UPPERCASE"
 msgstr "HURUF BESAR"
@@ -1592,7 +1592,7 @@ msgid "Vavoo Stream Live"
 msgstr "Aliran Vavoo Langsung"
 
 msgid "Vavoo Stream Live %s by Lululla & Qu4k3 - License CC BY-NC-SA 4.0."
-msgstr ""
+msgstr "Vavoo Streaming Langsung %s oleh Lululla & Qu4k3 - Lisensi CC BY-NC-SA 4.0."
 
 msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Streaming Langsung - Informasi"
@@ -1623,7 +1623,7 @@ msgid "View the last 200 lines of %s."
 msgstr "Lihat 200 baris terakhir %s."
 
 msgid "Watch"
-msgstr ""
+msgstr "Jam tangan"
 
 #, fuzzy
 msgid "Watch the channel"
@@ -1633,38 +1633,38 @@ msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Selamat datang di Vavoo Proxy dengan dukungan EPG"
 
 msgid "Welcome! Choose a look"
-msgstr ""
+msgstr "Selamat datang! Pilih tampilan"
 
 msgid "Welcome! Choose the countries for the main list (OK shows or hides one), then GREEN saves. Settings → Choose countries changes it later."
-msgstr ""
+msgstr "Selamat datang! Pilih negara untuk daftar utama (OK tampilkan atau sembunyikan), lalu HIJAU simpan. Pengaturan → Pilih negara, ubah nanti."
 
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
-msgstr ""
+msgstr "Tempat penyimpanan rekaman: folder film Enigma2, atau disk lain. Mereka juga ditampilkan di daftar film kotak itu sendiri."
 
 #, fuzzy
 msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "Layanan mana yang memuat saluran dan streaming. Otomatis mencoba Geil terlebih dahulu dan kembali ke Vavoo jika tidak tersedia; dua opsi lainnya menyematkannya ke satu sumber tersebut. Berlaku saat penyimpanan (memulai ulang proksi jika sedang berjalan)."
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
-msgstr ""
+msgstr "Saat saluran dijeda, saluran tersebut direkam pada disk: pemutaran dilanjutkan dari tempat Anda menjeda, KIRI / KANAN bergerak maju mundur, EXIT kembali ditayangkan (hingga 2 jam)."
 
 msgid "Wrong PIN - try again"
-msgstr ""
+msgstr "PIN salah - coba lagi"
 
 msgid "YELLOW"
-msgstr ""
+msgstr "KUNING"
 
 msgid "YELLOW / BLUE"
-msgstr ""
+msgstr "KUNING / BIRU"
 
 msgid "YELLOW / BLUE, << / >>"
-msgstr ""
+msgstr "KUNING / BIRU, << / >>"
 
 msgid "YELLOW / TEXT"
-msgstr ""
+msgstr "KUNING / TEKS"
 
 msgid "Yes"
-msgstr ""
+msgstr "Ya"
 
 #, fuzzy
 msgid "Yes, update now"
@@ -1687,22 +1687,22 @@ msgid "lowercase"
 msgstr "huruf kecil"
 
 msgid "not recorded (no disk) - PLAY returns to live"
-msgstr ""
+msgstr "tidak direkam (tidak ada disk) - PLAY kembali ditayangkan"
 
 msgid "not recorded (no ffmpeg) - PLAY returns to live"
-msgstr ""
+msgstr "tidak direkam (tidak ada ffmpeg) - PLAY kembali ditayangkan"
 
 msgid "not recorded (the stream could not be recorded) - PLAY returns to live"
-msgstr ""
+msgstr "tidak direkam (streaming tidak dapat direkam) - PLAY kembali ditayangkan"
 
 msgid "not recorded - PLAY returns to live"
-msgstr ""
+msgstr "tidak direkam - PLAY kembali ditayangkan"
 
 msgid "press play to go on"
-msgstr ""
+msgstr "tekan putar untuk melanjutkan"
 
 msgid "recording - press play to go on"
-msgstr ""
+msgstr "rekaman - tekan putar untuk melanjutkan"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -1716,35 +1716,35 @@ msgid "{} countries"
 msgstr "Semua negara (%d)"
 
 msgid "{} found"
-msgstr ""
+msgstr "{} ditemukan"
 
 msgid "{} free"
-msgstr ""
+msgstr "{} bebas"
 
 #, fuzzy
 msgid "{} left out (Parental Control)"
 msgstr "PIN Kontrol Orang Tua"
 
 msgid "{} min"
-msgstr ""
+msgstr "{} menit"
 
 msgid "{} min left"
-msgstr ""
+msgstr "{} menit lagi"
 
 msgid "{} not answering"
-msgstr ""
+msgstr "{} tidak menjawab"
 
 msgid "{} of {} countries shown"
-msgstr ""
+msgstr "{} dari {} negara ditampilkan"
 
 msgid "{} recordings · {} timers · {} free"
-msgstr ""
+msgstr "{} rekaman · {} pengatur waktu · {} gratis"
 
 msgid "{} sources"
-msgstr ""
+msgstr "{} sumber"
 
 msgid "● REC · {} min"
-msgstr ""
+msgstr "● REKAM · {} mnt"
 
 #, fuzzy
 msgid "★ Favourites"

@@ -993,7 +993,7 @@ msgid "Orbit - teal cockpit"
 msgstr "Orbit – blaugrünes Cockpit"
 
 msgid "Other"
-msgstr ""
+msgstr "Andere"
 
 msgid "PIN removed"
 msgstr "PIN entfernt"
@@ -1499,10 +1499,10 @@ msgid "The favourites"
 msgstr "Favoriten"
 
 msgid "The favourites bouquet could not be written"
-msgstr ""
+msgstr "Der Favoritenstrauß konnte nicht geschrieben werden"
 
 msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
-msgstr ""
+msgstr "Die Favoriten unter einem Titel pro Land, wie im Favoritenstrauß. Aus: eine Liste in Ihrer Bestellung."
 
 #, fuzzy
 msgid "The keyboard"

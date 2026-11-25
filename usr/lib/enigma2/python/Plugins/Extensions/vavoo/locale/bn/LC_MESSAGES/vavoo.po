@@ -988,7 +988,7 @@ msgid "Orbit - teal cockpit"
 msgstr "কক্ষপথ - টিল ককপিট"
 
 msgid "Other"
-msgstr ""
+msgstr "অন্যান্য"
 
 msgid "PIN removed"
 msgstr "পিন সরানো হয়েছে"
@@ -1494,10 +1494,10 @@ msgid "The favourites"
 msgstr "প্রিয়"
 
 msgid "The favourites bouquet could not be written"
-msgstr ""
+msgstr "পছন্দের তোড়া লেখা যায়নি"
 
 msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
-msgstr ""
+msgstr "দেশের প্রতি একটি শিরোনামের অধীনে ফেভারিট, যেমন ফেভারিটের তোড়াতে। বন্ধ: আপনার অর্ডারে একটি তালিকা।"
 
 #, fuzzy
 msgid "The keyboard"

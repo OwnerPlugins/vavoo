@@ -988,7 +988,7 @@ msgid "Orbit - teal cockpit"
 msgstr "مدار - کابین خلبان سبز رنگ"
 
 msgid "Other"
-msgstr ""
+msgstr "دیگر"
 
 msgid "PIN removed"
 msgstr "پین حذف شد"
@@ -1494,10 +1494,10 @@ msgid "The favourites"
 msgstr "موارد دلخواه"
 
 msgid "The favourites bouquet could not be written"
-msgstr ""
+msgstr "دسته گل مورد علاقه نمی تواند نوشته شود"
 
 msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
-msgstr ""
+msgstr "موارد دلخواه تحت عنوان در هر کشور، مانند دسته گل مورد علاقه. خاموش: یک لیست در سفارش شما."
 
 #, fuzzy
 msgid "The keyboard"

@@ -988,7 +988,7 @@ msgid "Orbit - teal cockpit"
 msgstr "المدار - قمرة القيادة باللون الأزرق المخضر"
 
 msgid "Other"
-msgstr ""
+msgstr "آخر"
 
 msgid "PIN removed"
 msgstr "تمت إزالة رقم التعريف الشخصي"
@@ -1494,10 +1494,10 @@ msgid "The favourites"
 msgstr "المفضلة"
 
 msgid "The favourites bouquet could not be written"
-msgstr ""
+msgstr "لا يمكن كتابة باقة المفضلة"
 
 msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
-msgstr ""
+msgstr "المفضلة تحت عنوان لكل بلد، كما في باقة المفضلة. إيقاف: قائمة واحدة في طلبك."
 
 #, fuzzy
 msgid "The keyboard"

@@ -423,7 +423,7 @@ msgid "Delete (press twice)"
 msgstr "Supprimer (appuyez deux fois)"
 
 msgid "Delete a digit"
-msgstr ""
+msgstr "Supprimer un chiffre"
 
 msgid "Delete a letter"
 msgstr "Supprimer une lettre"
@@ -764,7 +764,7 @@ msgid "Lock the settings"
 msgstr "Verrouiller les paramètres"
 
 msgid "Locked"
-msgstr ""
+msgstr "Fermé"
 
 msgid "M3U file generated successfully!"
 msgstr "Fichier M3U généré avec succès !"
@@ -1007,10 +1007,10 @@ msgid "Orbit - teal cockpit"
 msgstr "Orbite - cockpit bleu sarcelle"
 
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 msgid "PIN removed"
-msgstr ""
+msgstr "Code PIN supprimé"
 
 msgid "PIN saved"
 msgstr "Code PIN enregistré"
@@ -1294,7 +1294,7 @@ msgid "Rename / delete the folder"
 msgstr "Renommer/supprimer le dossier"
 
 msgid "Rename folder"
-msgstr ""
+msgstr "Renommer le dossier"
 
 msgid "Restore from Backup"
 msgstr "Restaurer à partir d'une sauvegarde"
@@ -1515,10 +1515,10 @@ msgid "The favourites"
 msgstr "Favoris"
 
 msgid "The favourites bouquet could not be written"
-msgstr ""
+msgstr "Le bouquet favoris n'a pas pu être écrit"
 
 msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
-msgstr ""
+msgstr "Les favoris sous un titre par pays, comme dans le bouquet des favoris. Désactivé : une liste dans votre commande."
 
 #, fuzzy
 msgid "The keyboard"
@@ -1754,7 +1754,7 @@ msgid "{} min"
 msgstr "{} minutes"
 
 msgid "{} min left"
-msgstr ""
+msgstr "{} minutes restantes"
 
 msgid "{} not answering"
 msgstr "{} ne répond pas"
