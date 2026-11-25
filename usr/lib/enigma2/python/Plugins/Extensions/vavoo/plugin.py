@@ -77,7 +77,12 @@ from .bouquet_manager import (
     remove_bouquets_by_name,
     export_bouquet_async,
     is_bouquet_exported,
-    remove_favorite_entry
+    remove_favorite_entry,
+    FAVOURITES_EXPORT,
+    export_favourites_sync,
+    favourites_bouquet_exported,
+    remove_favourites_bouquet,
+    retitle_vavoo_bouquets,
 )
 from .vUtils import (
     debug,
@@ -1077,8 +1082,13 @@ class MainVavoo(Screen, PreviewWindow):
         timer.start(self.GUIDE_PRELOAD_AFTER_MS, True)
 
     def _preload_go_on(self):
-        return not self._closed and NOW_PLAYING.owner != NOW_PLAYING.PLAYER \
-            and ACTIVE.get("player") is None
+        # never while a stream plays - the preview, the player, or a
+        # bouquet channel outside the plugin (vUtils.stream_playing():
+        # the proxy was asked for one lately): the guides then load
+        # when they are needed, and give way to it (_Breather)
+        return not self._closed and not vUtils.stream_playing() and \
+            NOW_PLAYING.owner != NOW_PLAYING.PLAYER and \
+            ACTIVE.get("player") is None
 
     def _preload_guides(self):
         if not self._preload_go_on():
@@ -1787,7 +1797,7 @@ class MainVavoo(Screen, PreviewWindow):
             return
 
         # Check if Vavoo EPG source file exists
-        vavoo_sources = "/etc/epgimport/vavoo.sources.xml"
+        vavoo_sources = join(vUtils.EPGIMPORT_DIR, "vavoo.sources.xml")
         if not isfile(vavoo_sources):
             self.session.open(
                 MessageBox,
@@ -3213,7 +3223,17 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         # True: the rows are folders (self.folder_keys), not channels
         self.showing_folders = False
         self.folder_keys = []
+        # The rows under their countries ("Favourites by country"):
+        # _row_entry[row] = the index of the row's channel in
+        # favourite_entries, None for a country's title; _channel_rows =
+        # the channels' rows alone (the player's list); _spans =
+        # [(country, first, end)] of favourite_entries.
+        self._row_entry = []
+        self._channel_rows = []
+        self._spans = []
         self.moving = False
+        self._moving_country = False
+        self._move_span = None
         self._moved = False
         self._digits = ""
         self._digit_time = 0
@@ -3306,6 +3326,12 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             lambda: record_channel(channel), channel_name=name)
 
     def help_rows(self):
+        if self.moving and self._moving_country:
+            return [
+                (_("UP / DOWN"), _("Move the country")),
+                (_("OK / YELLOW"), _("Done")),
+                (_("EXIT"), _("Done")),
+            ]
         if self.moving:
             return [
                 (_("UP / DOWN"), _("Move the channel")),
@@ -3384,6 +3410,11 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
                          logo_url=entry.get('logo') or None,
                          display=to_string(text), themed=self._themed)
 
+    def _by_country(self):
+        """The favourites under a title per country (not Recently
+        watched)."""
+        return self.mode != self.MODE_RECENT and cfg.fav_by_country.value
+
     def _build_list(self, keep=False):
         selected = None
         if keep:
@@ -3392,6 +3423,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         self._favourite_keys = set(to_text(e['url']) for e in favourites)
         self.showing_folders = False
         self.folder_keys = []
+        groups = None
         if self.mode == self.MODE_RECENT:
             self.favourite_entries = vUtils.load_recent()
         else:
@@ -3400,18 +3432,92 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
                 self._build_folder_rows(favourites, folders)
                 self._show_rows(selected)
                 return
-            # in the user's order (vavoo_store)
-            self.favourite_entries = self._channels_in_view(favourites)
-        total = len(self.favourite_entries)
-        self.cat_list = [self._channel_row(i, entry, total)
-                         for i, entry in enumerate(self.favourite_entries)]
+            # in the user's order (vavoo_store), under their countries
+            entries = self._channels_in_view(favourites)
+            if self._by_country():
+                groups = vavoo_store.favourites_by_country(entries)
+                entries = [e for _c, members in groups for e in members]
+            self.favourite_entries = entries
+        self._fill_rows(groups)
         self._show_rows(selected)
+
+    def _fill_rows(self, groups=None):
+        """cat_list from favourite_entries: the channels numbered 1..n,
+        with groups ([(country, [entry])], in favourite_entries' order)
+        a title row before each country's."""
+        total = len(self.favourite_entries)
+        self._channel_rows = [self._channel_row(i, entry, total)
+                              for i, entry in enumerate(self.favourite_entries)]
+        if not groups:
+            self.cat_list = list(self._channel_rows)
+            self._row_entry = list(range(total))
+            self._spans = [(u"", 0, total)] if total else []
+            return
+        rows = []
+        row_entry = []
+        spans = []
+        index = 0
+        for country, members in groups:
+            rows.append(self._country_row(country, len(members)))
+            row_entry.append(None)
+            spans.append((country, index, index + len(members)))
+            for _member in members:
+                rows.append(self._channel_rows[index])
+                row_entry.append(index)
+                index += 1
+        self.cat_list = rows
+        self._row_entry = row_entry
+        self._spans = spans
+
+    def _country_row(self, country, count):
+        """A country's title row: its flag and name ("(n)" with Show
+        Channel Count)."""
+        label = to_text(country) or to_text(_("Other"))
+        display = u"{} ({})".format(label, count) \
+            if cfg.show_counts.value else label
+        return show_list(to_string(label), to_string(u"\x00country:" + label),
+                         display=to_string(display), themed=self._themed)
+
+    def _regroup(self):
+        """The rows again after a move (the same countries, the same
+        sizes, favourite_entries' new order)."""
+        if self._by_country() and self._spans:
+            self._fill_rows([(country, self.favourite_entries[first:end])
+                             for country, first, end in self._spans])
+        else:
+            self._fill_rows(None)
+
+    def _row_of(self, entry_index):
+        """The row of favourite_entries[entry_index] (0 without one)."""
+        for row, index in enumerate(self._row_entry):
+            if index == entry_index:
+                return row
+        return 0
+
+    def _entry_index(self):
+        """The highlighted channel's index in favourite_entries, or None
+        (a country's title, a folder row)."""
+        if self.showing_folders:
+            return None
+        row = self._index()
+        if 0 <= row < len(self._row_entry):
+            return self._row_entry[row]
+        return None
+
+    def _span_of(self, entry_index):
+        for span in self._spans:
+            if span[1] <= entry_index < span[2]:
+                return span
+        return (u"", 0, len(self.favourite_entries))
 
     def _build_folder_rows(self, favourites, folders):
         """The app's folder rows: All channels (n), the folders A-Z,
         No folder (n) - a count only with Show Channel Count."""
         self.showing_folders = True
         self.favourite_entries = []
+        self._row_entry = []
+        self._channel_rows = []
+        self._spans = []
         counts = {}
         for entry in favourites:
             key = entry.get('folder') or self.FOLDER_NONE
@@ -3442,7 +3548,9 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
     def _show_rows(self, selected=None):
         self['menulist'].l.setList(self.cat_list)
         if self.cat_list:
-            index = 0
+            # (on the first channel, not on its country's title)
+            index = 0 if self.showing_folders or not self.favourite_entries \
+                else self._row_of(0)
             if selected is not None:
                 for i, row in enumerate(self.cat_list):
                     if row[0][1] == selected:
@@ -3468,11 +3576,21 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
                 self['proxy_status'].setText(to_string(label))
                 return
             i = self['menulist'].getSelectedIndex() or 0
-            text = u"{} · {}/{}".format(label, i + 1, len(self.cat_list))
+            position, total = i, len(self.cat_list)
+            if not self.showing_folders and self.favourite_entries:
+                # counted in channels (a country's title is not one)
+                total = len(self.favourite_entries)
+                entry = self._entry_index()
+                position = entry if entry is not None else next(
+                    (e for e in self._row_entry[i:] if e is not None), 0)
+            text = u"{} · {}/{}".format(label, position + 1, total)
             if 0 <= i < len(self.cat_list):
                 name, url = self.cat_list[i][0][0], self.cat_list[i][0][1]
                 self['name'].setText(to_string(name))
-                if self.moving:
+                if self.moving and self._moving_country:
+                    country = self._span_of(position)[0] or _("Other")
+                    text = u"⇅  " + to_text(country)
+                elif self.moving:
                     text = u"⇅  " + to_text(name)
                 elif self.mode == self.MODE_RECENT:
                     favourite = to_text(url) in self._favourite_keys
@@ -3499,14 +3617,15 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             "logo": e.get("logo"), "country_name": e.get("country_name"),
             "country_code": e.get("country_code")}
             for e in self.favourite_entries]
+        entry = self._entry_index()
         self.session.openWithCallback(
-            self._on_guide_closed, VavooGuide, channels, self._index(),
-            self._title())
+            self._on_guide_closed, VavooGuide, channels,
+            entry if entry is not None else 0, self._title())
 
     def _on_guide_closed(self, result=None):
         if self._closed or not result or result[0] != "watch":
             return
-        self['menulist'].moveToIndex(result[1])
+        self['menulist'].moveToIndex(self._row_of(result[1]))
         self.full_screen()
 
     def open_menu(self):
@@ -3520,16 +3639,52 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         if self.mode == self.MODE_RECENT:
             entries.insert(1, (_("Clear recently watched"), "clear"))
             actions["clear"] = self.clear_recent
+        else:
+            more = []
+            if len(self._spans) > 1 and self._entry_index() is not None:
+                more.append((_("Move this country"), "move_country"))
+                actions["move_country"] = lambda: self._set_moving(
+                    True, country=True)
+            if favourites_bouquet_exported():
+                more.append((_("Update the favourites bouquet"), "fav_bq"))
+                more.append((_("Remove the favourites bouquet"), "fav_rm"))
+                actions["fav_rm"] = self._ask_remove_favourites_bouquet
+            else:
+                more.append((_("Export favourites as a bouquet"), "fav_bq"))
+            actions["fav_bq"] = lambda: export_favourites_bouquet()
+            entries[1:1] = more
         open_action_menu(
             self.session, self._title(), entries,
             lambda key: actions[key]() if key in actions else None)
+
+    def _ask_remove_favourites_bouquet(self):
+        self.session.openWithCallback(
+            self._remove_favourites_bouquet, MessageBox,
+            _("Remove the favourites bouquet from the channel list?"),
+            MessageBox.TYPE_YESNO, default=False)
+
+    def _remove_favourites_bouquet(self, answer=None):
+        if not answer:
+            return
+        if not export_lock.acquire(False):
+            if NOTIFICATION_AVAILABLE:
+                quick_notify(_("An export for another country is already "
+                               "in progress. Please wait."), 4)
+            return
+        try:
+            removed = remove_favourites_bouquet()
+        finally:
+            export_lock.release()
+        if NOTIFICATION_AVAILABLE:
+            quick_notify(_("Favourites bouquet removed") if removed
+                         else _("Nothing to remove"), 3)
 
     def clear_recent(self):
         vUtils.clear_recent()
         self._build_list()
 
     def _epg_panel_country(self):
-        i = self['menulist'].getSelectedIndex()
+        i = self._entry_index()
         if i is None or not 0 <= i < len(self.favourite_entries):
             return None
         return self.favourite_entries[i].get('country_name')
@@ -3539,7 +3694,7 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         carries its own country code."""
         if not self.cat_list or self.showing_folders:
             return None
-        i = self['menulist'].getSelectedIndex()
+        i = self._entry_index()
         if i is None or not 0 <= i < len(self.favourite_entries):
             return None
         entry = self.favourite_entries[i]
@@ -3554,31 +3709,54 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
     def _page_rows(self):
         return list_page_rows(self['menulist'], self._themed)
 
-    def _go(self, index, wrap=False):
+    def _step(self, delta, page=False):
+        """UP / DOWN (delta 1, round at the ends) and ◄► (a page, up to
+        the ends); a country's title row is stepped over. While moving,
+        the channel (or the country) moves instead."""
         if not self.cat_list:
             return
         if self.moving:
-            self._move_to(index)
+            if self._moving_country:
+                self._move_country(1 if delta > 0 else -1)
+            else:
+                entry = self._entry_index()
+                if entry is not None:
+                    self._move_entry_to(entry + delta)
             return
-        if wrap:
-            index %= len(self.cat_list)
-        index = max(0, min(index, len(self.cat_list) - 1))
-        self['menulist'].moveToIndex(index)
+        count = len(self.cat_list)
+        row = self._index() + delta
+        if page:
+            row = max(0, min(row, count - 1))
+        else:
+            row %= count
+        if not self.showing_folders and len(self._row_entry) == count:
+            direction = 1 if delta > 0 else -1
+            for _attempt in range(count):
+                if self._row_entry[row] is not None:
+                    break
+                following = row + direction
+                if not page:
+                    following %= count
+                elif not 0 <= following < count:
+                    direction = -direction
+                    following = row + direction
+                row = max(0, min(following, count - 1))
+        self['menulist'].moveToIndex(row)
 
     def _index(self):
         return self['menulist'].getSelectedIndex() or 0
 
     def moveUp(self):
-        self._go(self._index() - 1, wrap=not self.moving)
+        self._step(-1)
 
     def moveDown(self):
-        self._go(self._index() + 1, wrap=not self.moving)
+        self._step(1)
 
     def page_up(self):
-        self._go(self._index() - self._page_rows())
+        self._step(-self._page_rows(), page=True)
 
     def page_down(self):
-        self._go(self._index() + self._page_rows())
+        self._step(self._page_rows(), page=True)
 
     def number(self, digit):
         """The number keys go to that row (to that place while
@@ -3595,45 +3773,97 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         self._digit_time = now
         self._digits = (self._digits + str(digit))[-4:]
         target = int(self._digits) - 1
-        if 0 <= target < len(self.cat_list):
-            self._go(target)
+        if not 0 <= target < len(self.favourite_entries):
+            return
+        if not self.moving:
+            self['menulist'].moveToIndex(self._row_of(target))
+        elif not self._moving_country:
+            self._move_entry_to(target)
 
     # ---- favourites: move (the app's YELLOW)
 
-    def _set_moving(self, on):
+    def _set_moving(self, on, country=False):
+        """Move the highlighted channel (within its country), or - with
+        `country`, MENU → Move this country - its whole country."""
         if not on:
             self._finish_move()
+        entry = self._entry_index()
+        span = self._span_of(entry) if entry is not None else None
+        if span is None:
+            room = False        # (not on a channel)
+        elif country:
+            room = len(self._spans) > 1
+        else:
+            room = span[2] - span[1] > 1
         self.moving = bool(on and not self.showing_folders and
-                           self.mode != self.MODE_RECENT and
-                           len(self.cat_list) > 1)
+                           self.mode != self.MODE_RECENT and room)
+        self._moving_country = bool(self.moving and country)
+        self._move_span = span if self.moving else None
         self['yellow'].setText(_('Done') if self.moving else _('Move'))
         if self.moving and NOTIFICATION_AVAILABLE:
-            name = self.cat_list[self._index()][0][0]
-            quick_notify(_("Moving {}: ▲▼, ◄► a page, "
-                           "a number; OK to finish").format(name), 6)
+            if self._moving_country:
+                quick_notify(_("Moving {}: ▲▼; OK to finish").format(
+                    to_string(span[0] or _("Other"))), 6)
+            else:
+                name = self.cat_list[self._index()][0][0]
+                quick_notify(_("Moving {}: ▲▼, ◄► a page, "
+                               "a number; OK to finish").format(name), 6)
         self._update_selection()
 
-    def _move_to(self, target):
-        """The channel being moved to row `target` (not saved yet:
-        once, on Done)."""
-        pos = self._index()
-        target = max(0, min(target, len(self.cat_list) - 1))
+    def _move_entry_to(self, target):
+        """The channel being moved to place `target` of
+        favourite_entries, within its country (not saved yet: once, on
+        Done)."""
+        pos = self._entry_index()
+        if pos is None:
+            return
+        _country, first, end = self._span_of(pos)
+        target = max(first, min(target, end - 1))
         if target == pos:
             return
         entry = self.favourite_entries.pop(pos)
         self.favourite_entries.insert(target, entry)
-        total = len(self.favourite_entries)
-        self.cat_list = [self._channel_row(i, e, total)
-                         for i, e in enumerate(self.favourite_entries)]
+        self._moved = True
+        self._regroup()
+        self['menulist'].l.setList(self.cat_list)
+        self['menulist'].moveToIndex(self._row_of(target))
+
+    def _move_country(self, direction):
+        """The highlighted channel's whole country one place up / down
+        among the countries."""
+        pos = self._entry_index()
+        if pos is None:
+            return
+        spans = list(self._spans)
+        here = next((k for k, s in enumerate(spans) if s[1] <= pos < s[2]),
+                    None)
+        there = None if here is None else here + direction
+        if there is None or not 0 <= there < len(spans):
+            return
+        entry = self.favourite_entries[pos]
+        groups = [(c, self.favourite_entries[first:end])
+                  for c, first, end in spans]
+        groups[here], groups[there] = groups[there], groups[here]
+        self.favourite_entries = [e for _c, members in groups for e in members]
+        self._fill_rows(groups)
         self._moved = True
         self['menulist'].l.setList(self.cat_list)
-        self['menulist'].moveToIndex(target)
+        index = next(i for i, e in enumerate(self.favourite_entries)
+                     if e is entry)
+        self['menulist'].moveToIndex(self._row_of(index))
+        self._update_selection()
 
     def _finish_move(self):
+        """Saved once: a channel's move swaps only its country's places
+        (reorder_favourites() keeps the places of the channels it is
+        given); a country's move saves the order shown."""
         if self._moved:
             self._moved = False
-            vavoo_store.reorder_favourites(
-                [e['url'] for e in self.favourite_entries])
+            entries = self.favourite_entries
+            span = self._move_span
+            if span is not None and not self._moving_country:
+                entries = entries[span[1]:span[2]]
+            vavoo_store.reorder_favourites([e['url'] for e in entries])
 
     # ---- keys
 
@@ -3765,10 +3995,11 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
         row, or (None, None, None, None)."""
         if not self.cat_list or self.showing_folders:
             return None, None, None, None
-        i = self['menulist'].getSelectedIndex()
-        if i is None or not 0 <= i < len(self.favourite_entries):
+        i = self._entry_index()
+        if i is None or not 0 <= i < len(self.favourite_entries) or \
+                i >= len(self._channel_rows):
             return None, None, None, None
-        item = self.cat_list[i][0]
+        item = self._channel_rows[i][0]
         return i, item, item[0], item[1]
 
     def ok(self):
@@ -3836,10 +4067,11 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             # (the PIN was asked by ok() / full_screen(): a favourite
             # from a locked country used to play with no PIN prompt at
             # all - see MainVavoo.ok()'s use of the same helper)
+            # (the channels' rows alone: no country titles to zap to)
             self.session.openWithCallback(
                 self._on_player_closed,
                 Playstream2,
-                name, url, i, item, self.cat_list,
+                name, url, i, item, self._channel_rows,
                 country_code=country_code,
                 country_codes=country_codes,
                 logo_url=entry.get('logo') or None,
@@ -3902,8 +4134,9 @@ class VavooFavourites(Screen, NowNextPanel, PreviewWindow):
             quick_notify(_("Removed from favourites: {}").format(name), 3)
         self._build_list()
         # the next channel takes the removed one's place
-        if self.cat_list and not self.showing_folders:
-            self['menulist'].moveToIndex(min(i, len(self.cat_list) - 1))
+        if self.favourite_entries and not self.showing_folders:
+            self['menulist'].moveToIndex(
+                self._row_of(min(i, len(self.favourite_entries) - 1)))
 
 
 # --- Live search screen ---
@@ -3981,6 +4214,98 @@ def open_favourites_guide(session, screen, on_closed=None):
             play_entries(session, screen, channels, result[1], on_closed)
     session.openWithCallback(watched, VavooGuide, channels, 0,
                              _("★ Favourites"))
+
+
+# --- The favourites bouquet ("Vavoo ★ Favourites" in the channel list)
+
+def favourites_bouquet_title():
+    return u"Vavoo " + to_text(_("★ Favourites"))
+
+
+def _favourites_exported(result):
+    """GUI thread: what export_favourites_bouquet() did."""
+    if not NOTIFICATION_AVAILABLE:
+        return
+    if result is None:
+        quick_notify(_("The favourites bouquet could not be written"), 4)
+        return
+    count, skipped = result
+    text = to_text(_("Favourites bouquet: {} channels")).format(count)
+    if skipped:
+        text += u" · " + to_text(
+            _("{} left out (Parental Control)")).format(skipped)
+    quick_notify(to_string(text), 5)
+
+
+def export_favourites_bouquet(quiet=False):
+    """The favourites bouquet written (again) in a background thread,
+    its guide matched (bouquet_manager.export_favourites_sync()). quiet:
+    the plugin following a change of the favourites - no message, and
+    later again while another export runs."""
+    if not export_lock.acquire(False):
+        if quiet:
+            reactor.callLater(60, _follow_favourites_now)
+        elif NOTIFICATION_AVAILABLE:
+            quick_notify(_("An export for another country is already "
+                           "in progress. Please wait."), 4)
+        return False
+    title = favourites_bouquet_title()
+    other = to_text(_("Other"))
+    services, position = cfg.services.value, cfg.list_position.value
+
+    def task():
+        result = None
+        try:
+            result = export_favourites_sync(title, services, position, other)
+        except Exception as e:
+            print("[Favourites] Export failed: {}".format(e))
+            trace_error()
+        finally:
+            export_lock.release()
+        if not quiet:
+            reactor.callFromThread(_favourites_exported, result)
+
+    if not quiet and NOTIFICATION_AVAILABLE:
+        quick_notify(_("Export started. Bouquet will be available shortly."),
+                     3)
+    thread = threading.Thread(target=named(task, "vv-favbouquet"))
+    thread.daemon = True
+    thread.start()
+    return True
+
+
+# The favourites bouquet follows the list: a change (added, removed,
+# moved, a folder, repaired, restored) writes it again 10 s after the
+# last one, when it is exported.
+FAVOURITES_FOLLOW_DELAY = 10
+_favourites_follow = [None]     # the pending reactor call
+
+
+def _follow_favourites_now():
+    _favourites_follow[0] = None
+    if favourites_bouquet_exported():
+        export_favourites_bouquet(quiet=True)
+
+
+def _schedule_favourites_follow():
+    pending = _favourites_follow[0]
+    try:
+        if pending is not None and pending.active():
+            pending.cancel()
+    except Exception:
+        pass
+    _favourites_follow[0] = reactor.callLater(
+        FAVOURITES_FOLLOW_DELAY, _follow_favourites_now)
+
+
+def _favourites_changed():
+    """vavoo_store's listener (any thread, under the favourites' lock):
+    only schedules, on the GUI thread."""
+    if favourites_bouquet_exported():
+        reactor.callFromThread(_schedule_favourites_follow)
+
+
+vavoo_store.on_favourites_changed(_favourites_changed)
 
 
 class VavooSearch(Screen):
@@ -4560,6 +4885,20 @@ class AutoStartTimer(object):
             for name, url, export_type in bouquets_to_update:
                 print("[AutoStartTimer] Updating: " + name)
 
+                if export_type == FAVOURITES_EXPORT:
+                    # the favourites bouquet: from the favourites file,
+                    # not a country's list (nothing to remove first)
+                    result = export_favourites_sync(
+                        favourites_bouquet_title(), cfg.services.value,
+                        cfg.list_position.value, to_text(_("Other")))
+                    if result is not None:
+                        successful_updates += 1
+                        print("[AutoStartTimer] ✓ Updated: favourites "
+                              "(%d channels)" % result[0])
+                    else:
+                        print("[AutoStartTimer] ✗ Failed: favourites")
+                    continue
+
                 # Remove old bouquet
                 removed = remove_bouquets_by_name(name)
                 if removed > 0:
@@ -4770,10 +5109,35 @@ def main(session, **kwargs):
         except Exception as e:
             print("Cache initialization error: %s" % str(e))
         clean_pause_leftovers()
+        retitle_bouquets_in_background()
         session.open(startVavoo)
     except Exception as e:
         print('error as:', e)
         trace_error()
+
+
+def retitle_bouquets_in_background():
+    """The bouquets exported before their names began with "Vavoo ★ "
+    get it (bouquet_manager.retitle_vavoo_bouquets()), in a thread;
+    skipped while an export runs (the next opening tries again)."""
+    if not export_lock.acquire(False):
+        return False
+
+    def task():
+        changed = 0
+        try:
+            changed = retitle_vavoo_bouquets()
+        except Exception as e:
+            print("[Bouquet] Renaming the bouquets failed: {}".format(e))
+        finally:
+            export_lock.release()
+        if changed:
+            ReloadBouquets(500)
+
+    thread = threading.Thread(target=named(task, "vv-retitle"))
+    thread.daemon = True
+    thread.start()
+    return True
 
 
 def Plugins(**kwargs):

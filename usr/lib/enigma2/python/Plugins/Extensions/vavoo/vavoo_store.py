@@ -273,6 +273,18 @@ def _load_entries():
     return entries
 
 
+_fav_listeners = []
+
+
+def on_favourites_changed(fn):
+    """fn() is called after every write of the favourites (added,
+    removed, moved, a folder, repaired, restored) - the favourites
+    bouquet follows the list that way. Called in the thread that wrote
+    them, under the favourites' lock: fn only schedules its work."""
+    if fn not in _fav_listeners:
+        _fav_listeners.append(fn)
+
+
 def _save_favourites(entries):
     path = favourites_file()
     ok = _write_json(path, {"format": FAVOURITES_FORMAT, "version": 2,
@@ -280,7 +292,36 @@ def _save_favourites(entries):
     if ok:
         _fav_cache[0] = _file_stamp(path)
         _fav_cache[1] = entries
+        for fn in list(_fav_listeners):
+            try:
+                fn()
+            except Exception as e:
+                print("[vavoo_store] Favourites listener failed: {}".format(e))
     return ok
+
+
+def favourites_by_country(entries):
+    """[(country_name, [entry])]: the favourites under their countries,
+    as the Favourites list and the favourites bouquet show them - the
+    countries in the order of their first favourite, the channels in
+    the user's order, a country whatever its case, the ones with no
+    country ("") at the end."""
+    groups = []
+    by_key = {}
+    nameless = []
+    for entry in entries:
+        name = to_text(entry.get("country_name")).strip()
+        key = name.lower()
+        if not key:
+            nameless.append(entry)
+            continue
+        if key not in by_key:
+            by_key[key] = (name, [])
+            groups.append(by_key[key])
+        by_key[key][1].append(entry)
+    if nameless:
+        groups.append((u"", nameless))
+    return groups
 
 
 def load_favourites():

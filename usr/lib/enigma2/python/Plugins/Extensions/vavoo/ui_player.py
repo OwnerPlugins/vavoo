@@ -909,6 +909,8 @@ class Playstream2(
     STATE_PLAYING = 1
     STATE_PAUSED = 2
     ENABLE_RESUME_SUPPORT = True
+    # (set by __init__ / startStream(): see _bar_epg())
+    _stream_since = 0.0
     ALLOW_SUSPEND = True
     screen_timeout = 5000
     _closed = True          # (ui_base's CLOSED_UNTIL_OPEN)
@@ -973,6 +975,14 @@ class Playstream2(
             self._digit_timer.timeout.connect(self._commit_digits)
         self._info_shown = False
         self._bar_epg_for = None
+        # since when the channel plays (startStream()): the bar fetches
+        # a guide that is not in memory only after BAR_EPG_WAIT
+        self._stream_since = time.time()
+        self._bar_epg_timer = eTimer()
+        try:
+            self._bar_epg_timer.callback.append(self._bar_epg_due)
+        except Exception:
+            self._bar_epg_timer.timeout.connect(self._bar_epg_due)
         self._channel_logo_picload = None
         # Pause Live TV (the app's timeshift): the buffer being
         # recorded, the state (None = live, "paused" = live paused and
@@ -1605,10 +1615,17 @@ class Playstream2(
         except Exception as e:
             debug("Player logo not shown: {}".format(e))
 
+    # Seconds a channel plays before the bar fetches its country's guide
+    # when it is not in memory: reading one (13 to 47 MB) while the
+    # stream starts made it stutter, and zapping through channels of
+    # other countries started a download at every step.
+    BAR_EPG_WAIT = 10
+
     def _bar_epg(self):
         """The programme lines, progress and minutes left - from memory
         when the guide is there, else looked up in the background (the
-        bar shows the country meanwhile)."""
+        bar shows the country meanwhile) once the channel has played
+        BAR_EPG_WAIT seconds."""
         if not self.country_code:
             self._draw_bar_epg(("no_country", None, None))
             return
@@ -1616,10 +1633,17 @@ class Playstream2(
         if answer is not None:
             self._draw_bar_epg(answer)
             return
-        self._draw_bar_epg(("loading", None, None))
         wanted = self.url
         if self._bar_epg_for == wanted:
+            self._draw_bar_epg(("loading", None, None))
             return
+        wait = self.BAR_EPG_WAIT - (time.time() - self._stream_since)
+        if wait > 0:
+            # (the country meanwhile, as with no guide)
+            self._draw_bar_epg(("wait", None, None))
+            self._bar_epg_timer.start(int(wait * 1000) + 100, True)
+            return
+        self._draw_bar_epg(("loading", None, None))
         self._bar_epg_for = wanted
         name, country_code = self.name, self.country_code
         channel_id = _epg_channel_id(self.url)
@@ -1641,6 +1665,13 @@ class Playstream2(
         worker = threading.Thread(target=named(_work, "vv-bar"))
         worker.daemon = True
         worker.start()
+
+    def _bar_epg_due(self):
+        """BAR_EPG_WAIT is over: the bar's programme lines for the
+        channel playing now (a zap meanwhile started the wait again)."""
+        if self._closed:
+            return
+        self._bar_epg()
 
     def _draw_bar_epg(self, answer):
         status, current, following = answer
@@ -2402,6 +2433,9 @@ class Playstream2(
         self.is_streaming = True
 
         if not is_retry:
+            # (the bar's guide waits for the stream to settle -
+            # _bar_epg())
+            self._stream_since = time.time()
             # Fresh channel selection - start its EOF/retry tracking clean.
             # A retry is a restart of the SAME channel (see
             # restartAfterEOF); eof_count must survive that, or the

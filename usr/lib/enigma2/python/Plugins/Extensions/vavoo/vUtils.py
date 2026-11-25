@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 import calendar
 import glob
 import hashlib
+import io
 try:
     import six
 except ImportError:
@@ -70,7 +71,6 @@ from . import (
     ALIAS_FILE,
     INSTALLER_URL,
     ENIGMA_PATH,
-    export_lock,
 )
 from . import vavoo_store
 from .epg_name_utils import (
@@ -135,6 +135,13 @@ except ImportError:
 _epg_lock = threading.Lock()
 _starting_lock = threading.Lock()
 _unmatched_lock = threading.Lock()
+# CACHE_FILE's own read-modify-write (save_cache(), update_complete_cache(),
+# fix_cache_format()). Never export_lock here: an export holds that for
+# its whole run and calls find_match() inside it - a plain Lock asked
+# for again by the same thread never comes back (a box's scheduled
+# bouquet update hung for good at the first cached channel the feed no
+# longer had, and every export after it was refused until a reboot).
+_cache_file_lock = threading.Lock()
 
 LOG_MAX_BYTES = 1024 * 1024
 DEBUG_ENABLED = str(
@@ -324,11 +331,38 @@ print = make_print("VUTILS")
 # overloaded while a guide was read).
 _BREATHE_WORK = 0.05
 _BREATHE_REST = 0.025
+# While a stream plays such a loop gives way far more: a fifth of a
+# core, Python's lock free four fifths of the time for the menus and
+# for the proxy's answers to the player's playlist refresh (a box's
+# channels stuttered and its menus dragged after 1.90, which reads the
+# countries' guides - 13 to 47 MB each - inside Enigma2's process).
+_BREATHE_WORK_PLAYING = 0.01
+_BREATHE_REST_PLAYING = 0.04
+# "A stream plays": the proxy was asked for one within this many
+# seconds (the player comes back to /vavoo every ~10 s, bouquet
+# channels watched outside the plugin too), or the plugin started one.
+STREAM_WINDOW = 30
+_stream_seen = [0.0]
+
+
+def note_stream():
+    """A stream is playing right now (the proxy's /vavoo and /file, the
+    plugin's preview and player): heavy loops give way for a while -
+    see _Breather and stream_playing()."""
+    _stream_seen[0] = time()
+
+
+def stream_playing(window=STREAM_WINDOW, now=None):
+    """True while a stream plays: note_stream() within `window`
+    seconds."""
+    now = time() if now is None else now
+    return now - _stream_seen[0] < window
 
 
 class _Breather(object):
     """One per heavy loop: call tick() on every turn (cheap - the clock
-    is only read every 64th). Never rests on the GUI (main) thread."""
+    is only read every 64th). Never rests on the GUI (main) thread.
+    Rests more while a stream plays (stream_playing())."""
 
     __slots__ = ("since", "count", "active")
 
@@ -344,8 +378,12 @@ class _Breather(object):
         if self.count & 63:
             return
         now = time()
-        if now - self.since >= _BREATHE_WORK:
-            sleep(_BREATHE_REST)
+        if now - _stream_seen[0] < STREAM_WINDOW:
+            work, rest = _BREATHE_WORK_PLAYING, _BREATHE_REST_PLAYING
+        else:
+            work, rest = _BREATHE_WORK, _BREATHE_REST
+        if now - self.since >= work:
+            sleep(rest)
             self.since = time()
 
 
@@ -1580,6 +1618,71 @@ def memory_note():
     return ", ".join(parts)
 
 
+def thread_cpu(task_dir="/proc/self/task"):
+    """{thread id: (name, seconds of CPU so far)} for every thread of
+    this process (Enigma2's: the GUI, the proxy's "vv-http", the
+    plugin's "vv-guide" / "vv-catalog"... - name_this_thread()). {}
+    where /proc cannot be read. Cheap: one small file per thread."""
+    import os
+    try:
+        tick = float(os.sysconf("SC_CLK_TCK"))
+    except (AttributeError, ValueError, OSError):
+        tick = 100.0
+    out = {}
+    try:
+        tids = listdir(task_dir)
+    except OSError:
+        return out
+    for tid in tids:
+        try:
+            with open(join(task_dir, tid, "stat")) as f:
+                data = f.read()
+            end = data.rindex(")")
+            name = data[data.index("(") + 1:end]
+            fields = data[end + 2:].split()
+            # utime + stime: fields 14 and 15 of stat
+            out[tid] = (name, (int(fields[11]) + int(fields[12])) / tick)
+        except (IOError, OSError, ValueError, IndexError):
+            continue
+    return out
+
+
+def cpu_by_name(before, after):
+    """Seconds of CPU per thread name between two thread_cpu() samples
+    (a thread that started in between counts from 0), largest first:
+    [(name, seconds)]."""
+    used = {}
+    for tid, (name, seconds) in after.items():
+        prev = before.get(tid)
+        spent = seconds - prev[1] if prev is not None else seconds
+        if spent > 0:
+            used[name] = used.get(name, 0.0) + spent
+    return sorted(used.items(), key=lambda item: -item[1])
+
+
+def busy_text(used, least=0.05, most=5):
+    """ "vv-guide 1.2 s, enigma2 0.4 s" - the threads that used at least
+    `least` seconds, the `most` busiest."""
+    return ", ".join("{} {:.1f} s".format(name, seconds)
+                     for name, seconds in used[:most] if seconds >= least)
+
+
+def cpu_report(before, after, elapsed):
+    """The "[CPU]" line's text: "enigma2 14 % of a core (30 min) -
+    vv-guide 48.0 s, enigma2 200.0 s, vv-http 3.0 s" (what this process
+    spent between two thread_cpu() samples, `elapsed` seconds apart,
+    and who spent it). "" when there is nothing to say."""
+    if not after or elapsed <= 0:
+        return ""
+    used = cpu_by_name(before, after)
+    total = sum(seconds for _name, seconds in used)
+    busy = busy_text(used, least=0.5, most=6)
+    # (halves up on both Pythons: round() is "to even" on Python 3)
+    text = "{} % of a core ({} min)".format(
+        int(100.0 * total / elapsed + 0.5), int(elapsed / 60.0 + 0.5))
+    return text + (" - " + busy if busy else "")
+
+
 def download_picon_online(logo_url, cache_dir=None):
     """Download and cache a channel picon from its catalog-provided
     logo URL (geil.to's own picons, or Vavoo's - see vavoo_proxy.py's
@@ -2137,26 +2240,23 @@ class VavooEPGMatcher(object):
         # cross-thread ambiguity since it's never shared beyond this
         # one call's stack.
         pending_save = []
+        snapshot = None
         with self._cache_lock:
             result = self._find_match_locked(
                 channel_name, country_code, servicetype, channel_id,
                 allow_curated_promotion, curated_db, epg_guide_id,
                 feed_index, pending_save)
-        if pending_save:
-            # save_cache() writes the same CACHE_FILE a bouquet
-            # export's update_complete_cache() does - share
-            # export_lock (the same convention plugin.py's cache-
-            # format-fix call already follows) so the two writers
-            # can't interleave and corrupt/drop each other's write.
-            # Deliberately done here, AFTER self._cache_lock was
-            # already released above: taking export_lock while still
-            # holding _cache_lock would invert the lock order
-            # update_complete_cache() itself relies on (its caller
-            # holds export_lock first, then it takes _cache_lock
-            # internally) - acquiring them in the opposite order here
-            # could deadlock against a concurrent export.
-            with export_lock:
-                save_cache(self.cache)
+            if pending_save:
+                # (a copy: another thread may change the cache while
+                # it is written)
+                snapshot = dict(self.cache)
+        if snapshot is not None:
+            # save_cache() takes CACHE_FILE's own lock (_cache_file_lock),
+            # after self._cache_lock was released - never export_lock:
+            # a bouquet export holds that for its whole run and calls
+            # this inside it (the same thread asking a plain Lock again
+            # hung the export for good).
+            save_cache(snapshot)
         return result
 
     def _find_match_locked(
@@ -2343,7 +2443,13 @@ def load_cache():
 
 
 def save_cache(cache):
-    """Save cache to file with complete format validation"""
+    """Save cache to file with complete format validation (under
+    _cache_file_lock)."""
+    with _cache_file_lock:
+        return _save_cache_unlocked(cache)
+
+
+def _save_cache_unlocked(cache):
     try:
         required_fields = [
             'id',
@@ -2550,6 +2656,51 @@ def _load_curated_channel_db(country_code):
         return db
 
 
+def _merge_matched_into_cache_file(matcher, matched_channels, country_code):
+    """CACHE_FILE read, the matched channels put in, written back (the
+    caller holds _cache_file_lock). The new cache dict."""
+    complete_cache = {}
+    # Load existing cache
+    if exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                complete_cache = load(f)
+            print(
+                "[Cache] Loaded %d existing entries" %
+                len(complete_cache))
+        except Exception as e:
+            print("[Cache] Error loading cache: %s" % e)
+            complete_cache = {}
+
+    # Add matched channels (only these go to main cache)
+    for m in matched_channels:
+        key = matcher._normalize_key(m['name'], country_code)
+        complete_cache[key] = {
+            'id': m['feed_id'],
+            'sref': ensure_sref_trailing_colon(m['dvb_ref']),
+            'name': m['name'],
+            'country': country_code,
+            'matched': True,
+            # Carried over from find_match()'s return value so a
+            # future cache hit knows whether this entry already
+            # came from the curated DB (see
+            # _try_promote_to_curated()) without re-deriving it -
+            # defaults to 'live' for callers that don't pass it
+            # through (pre-existing entries/older code paths).
+            'source': m.get('source', 'live'),
+            'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
+        }
+        print("[Cache] Added matched: %s -> %s" % (key, m['feed_id']))
+
+    # Save main cache
+    complete_cache = _prune_cache_if_needed(complete_cache)
+    temp_file = CACHE_FILE + ".tmp"
+    with open(temp_file, 'w') as f:
+        dump(complete_cache, f, indent=4, sort_keys=True)
+    rename(temp_file, CACHE_FILE)
+    return complete_cache
+
+
 def update_complete_cache(
         matched_channels,
         unmatched_channels,
@@ -2572,45 +2723,14 @@ def update_complete_cache(
     try:
         matcher = get_epg_matcher()
         complete_cache = {}
-
-        # Load existing cache
-        if exists(CACHE_FILE):
-            try:
-                with open(CACHE_FILE, 'r') as f:
-                    complete_cache = load(f)
-                print(
-                    "[Cache] Loaded %d existing entries" %
-                    len(complete_cache))
-            except Exception as e:
-                print("[Cache] Error loading cache: %s" % e)
-                complete_cache = {}
-
-        # Add matched channels (only these go to main cache)
-        for m in matched_channels:
-            key = matcher._normalize_key(m['name'], country_code)
-            complete_cache[key] = {
-                'id': m['feed_id'],
-                'sref': ensure_sref_trailing_colon(m['dvb_ref']),
-                'name': m['name'],
-                'country': country_code,
-                'matched': True,
-                # Carried over from find_match()'s return value so a
-                # future cache hit knows whether this entry already
-                # came from the curated DB (see
-                # _try_promote_to_curated()) without re-deriving it -
-                # defaults to 'live' for callers that don't pass it
-                # through (pre-existing entries/older code paths).
-                'source': m.get('source', 'live'),
-                'timestamp': strftime('%Y-%m-%d %H:%M:%S', localtime())
-            }
-            print("[Cache] Added matched: %s -> %s" % (key, m['feed_id']))
-
-        # Save main cache
-        complete_cache = _prune_cache_if_needed(complete_cache)
-        temp_file = CACHE_FILE + ".tmp"
-        with open(temp_file, 'w') as f:
-            dump(complete_cache, f, indent=4, sort_keys=True)
-        rename(temp_file, CACHE_FILE)
+        # (the file's read-modify-write under its own lock - the caller
+        # holds export_lock, which nothing in here asks for again)
+        _cache_file_lock.acquire()
+        try:
+            complete_cache = _merge_matched_into_cache_file(
+                matcher, matched_channels, country_code)
+        finally:
+            _cache_file_lock.release()
 
         # Update matcher with new cache - under the same lock find_match()
         # holds around its own cache/normalized_index/new_matches use,
@@ -3980,21 +4100,135 @@ def _build_epg_channels_xml(unique):
     alias table can still be in their escaped form - un-escaping first
     makes the result the same either way instead of escaping them
     twice."""
-    xml_lines = ['<?xml version="1.0" encoding="utf-8"?>', '<channels>']
+    # (u'' templates: on Python 2 a byte-string template's .format()
+    # raised on a name with an accent - a favourite keeps its own name)
+    xml_lines = [u'<?xml version="1.0" encoding="utf-8"?>', u'<channels>']
     for dvb_ref, (epg_id, ch_name) in unique.items():
         comment = ensure_str(ch_name, errors='ignore')
-        while '--' in comment:
-            comment = comment.replace('--', '- -')
+        while u'--' in comment:
+            comment = comment.replace(u'--', u'- -')
         xml_lines.append(
-            '  <channel id="{}">{}</channel><!-- {} -->'.format(
+            u'  <channel id="{}">{}</channel><!-- {} -->'.format(
                 html_escape(html_unescape(epg_id)),
                 html_escape(dvb_ref),
                 comment))
-    xml_lines.append('</channels>')
-    return '\n'.join(xml_lines)
+    xml_lines.append(u'</channels>')
+    return u'\n'.join(xml_lines)
 
 
-def write_epg_mapping_file(epg_entries, country_code):
+# EPGImport's folder: the channels files (vavoo_<cc>.channels.xml) and
+# vavoo.sources.xml. Read at call time (the tests point it elsewhere).
+EPGIMPORT_DIR = "/etc/epgimport"
+
+# One line of a channels file as _build_epg_channels_xml() writes it
+_EPG_CHANNEL_LINE_RE = compile(
+    r'<channel id="([^"]*)">([^<]*)</channel>(?:<!-- (.*?) -->)?')
+
+
+def _epg_channels_filename(country_code):
+    if country_code:
+        return "vavoo_{}.channels.xml".format(country_code.lower())
+    return "vavoo.channels.xml"
+
+
+def _bouquet_service_refs(bouquet_dir=None):
+    """Every service reference the Vavoo bouquets on disk hold (a
+    country's, its categories', the favourites'), markers left out: a
+    channels file keeps an entry while some bouquet still plays it."""
+    folder = bouquet_dir or ENIGMA_PATH
+    refs = set()
+    try:
+        names = listdir(folder)
+    except Exception:
+        return refs
+    for name in names:
+        if not (name.startswith("userbouquet.vavoo_") and
+                (name.endswith(".tv") or name.endswith(".radio"))):
+            continue
+        try:
+            with io.open(join(folder, name), "r", encoding="utf-8",
+                         errors="ignore") as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith("#SERVICE "):
+                        ref = line[len("#SERVICE "):].strip()
+                        if ref and not ref.startswith("1:64:"):
+                            refs.add(ref)
+        except Exception as e:
+            print("[EPG] Cannot read {}: {}".format(name, e))
+    return refs
+
+
+def _read_epg_channels_file(path):
+    """{full service reference: (epg_id, channel_name)} of a channels
+    file this plugin wrote ({} when there is none)."""
+    entries = {}
+    if not exists(path):
+        return entries
+    try:
+        with io.open(path, "r", encoding="utf-8", errors="ignore") as f:
+            text = f.read()
+    except Exception as e:
+        print("[EPG] Cannot read {}: {}".format(path, e))
+        return entries
+    for epg_id, ref, name in _EPG_CHANNEL_LINE_RE.findall(text):
+        ref = html_unescape(ref).strip()
+        if ref:
+            entries[ref] = (html_unescape(epg_id), (name or u"").strip())
+    return entries
+
+
+def _write_epg_channels_file(path, unique):
+    """unique written as the channels file at path (atomic), or the
+    file deleted when nothing is left. True when it went well."""
+    with _epg_lock:
+        try:
+            if not unique:
+                if exists(path):
+                    remove(path)
+                return True
+            channels_xml = _build_epg_channels_xml(unique)
+            temp_path = path + ".tmp"
+            # UTF-8 text on both Pythons (a plain open() could not write
+            # a channel name with an accent on Python 2, nor on a box
+            # whose locale is ASCII)
+            with io.open(temp_path, 'w', encoding='utf-8') as f:
+                f.write(ensure_str(channels_xml, errors='ignore'))
+            rename(temp_path, path)
+            return True
+        except Exception as e:
+            print("[EPG] Error writing {}: {}".format(basename(path), e))
+            return False
+
+
+def prune_epg_mapping_file(country_code, bouquet_dir=None):
+    """A country's channels file keeps only the entries a Vavoo bouquet
+    still holds (deleted when none is left) - after a bouquet is
+    removed. The country's own bouquet gone, its favourites keep their
+    guide."""
+    path = join(EPGIMPORT_DIR, _epg_channels_filename(country_code))
+    entries = _read_epg_channels_file(path)
+    if not entries and not exists(path):
+        return 0
+    refs = _bouquet_service_refs(bouquet_dir)
+    kept = dict((ref, value) for ref, value in entries.items()
+                if ref in refs)
+    if len(kept) != len(entries) or not kept:
+        _write_epg_channels_file(path, kept)
+        print("[EPG] {}: {} of {} entries kept".format(
+            basename(path), len(kept), len(entries)))
+    return len(kept)
+
+
+def prune_epg_mapping_files(bouquet_dir=None):
+    """prune_epg_mapping_file() for every Vavoo channels file."""
+    for path in glob.glob(join(EPGIMPORT_DIR, "vavoo*.channels.xml")):
+        name = basename(path)[:-len(".channels.xml")]
+        code = name[len("vavoo_"):] if name.startswith("vavoo_") else ""
+        prune_epg_mapping_file(code, bouquet_dir)
+
+
+def write_epg_mapping_file(epg_entries, country_code, bouquet_dir=None):
     """
     Write the EPG mapping file for a specific country.
     epg_entries: list of tuples (epg_id, full_service_ref, channel_name),
@@ -4005,15 +4239,20 @@ def write_epg_mapping_file(epg_entries, country_code):
     through to a fake-recording probe that fails silently for it, so
     passing the bare tuple here means the channel gets dropped entirely
     during EPGImport's own channels.xml parse pass.
+
+    One file per country is shared by every bouquet that plays the
+    country's channels (the country's, its categories', the
+    favourites'): the entries already in it stay while a Vavoo bouquet
+    on disk (bouquet_dir, ENIGMA_PATH by default) still holds them -
+    the bouquet is always written before its mapping - so exporting the
+    favourites never takes the guide from the country's bouquet, nor
+    the other way round.
     """
-    epg_dir = "/etc/epgimport"
+    epg_dir = EPGIMPORT_DIR
     if not exists(epg_dir):
         makedirs(epg_dir)
 
-    if country_code:
-        filename = "vavoo_{}.channels.xml".format(country_code.lower())
-    else:
-        filename = "vavoo.channels.xml"
+    filename = _epg_channels_filename(country_code)
     channels_file = join(epg_dir, filename)
 
     # An id may still not be one this country's feed uses for
@@ -4061,21 +4300,20 @@ def write_epg_mapping_file(epg_entries, country_code):
         print("[EPG] No entries to write, skipping.")
         return None
 
-    channels_xml = _build_epg_channels_xml(unique)
+    # the other bouquets' entries of this country
+    refs = _bouquet_service_refs(bouquet_dir)
+    kept = 0
+    for ref, value in _read_epg_channels_file(channels_file).items():
+        if ref not in unique and ref in refs:
+            unique[ref] = value
+            kept += 1
 
-    with _epg_lock:
-        try:
-            temp_path = channels_file + ".tmp"
-            with open(temp_path, 'w') as f:  # 'encoding' arg removed for Py2 compatibility
-                f.write(channels_xml)
-            rename(temp_path, channels_file)
-            print(
-                "[EPG] Written {} entries to {}".format(
-                    len(unique), filename))
-            return filename
-        except Exception as e:
-            print("[EPG] Error writing {}: {}".format(filename, e))
-            return None
+    if _write_epg_channels_file(channels_file, unique):
+        print(
+            "[EPG] Written {} entries to {} ({} of other bouquets)".format(
+                len(unique), filename, kept))
+        return filename
+    return None
 
 
 def update_epg_sources():
@@ -4083,7 +4321,7 @@ def update_epg_sources():
     Scan /etc/epgimport for vavoo_*.channels.xml files and generate
     a master vavoo.sources.xml containing a source for each.
     """
-    epg_dir = "/etc/epgimport"
+    epg_dir = EPGIMPORT_DIR
     sources_file = join(epg_dir, "vavoo.sources.xml")
     pattern = join(epg_dir, "vavoo_*.channels.xml")
     files = glob.glob(pattern)
@@ -4168,7 +4406,7 @@ def ensure_vavoo_epg_sources_enabled():
         if not config.plugins.vavoo.epg_enabled.value:
             return
 
-        epg_dir = "/etc/epgimport"
+        epg_dir = EPGIMPORT_DIR
         pattern = join(epg_dir, "vavoo_*.channels.xml")
         files = glob.glob(pattern)
         if not files:
@@ -4199,6 +4437,17 @@ def ensure_vavoo_epg_sources_enabled():
 
 
 def fix_cache_format(
+        remove_duplicates=True,
+        remove_unmatched=False,
+        remove_invalid=False):
+    """_fix_cache_format_unlocked() under CACHE_FILE's own lock
+    (_cache_file_lock)."""
+    with _cache_file_lock:
+        return _fix_cache_format_unlocked(
+            remove_duplicates, remove_unmatched, remove_invalid)
+
+
+def _fix_cache_format_unlocked(
         remove_duplicates=True,
         remove_unmatched=False,
         remove_invalid=False):

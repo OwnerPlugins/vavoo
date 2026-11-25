@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/Belfagor2005/vavoo">
-    <img src="https://img.shields.io/badge/Version-1.91-blue.svg" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.92-blue.svg" alt="Version">
   </a>
 
   <a href="https://www.enigma2.net">
@@ -70,21 +70,22 @@ The Full HD skins of this version, drawn with sample channels.
 - **App-style Player** – In the themes, the app's info bar: logo or flag, channel number ("7/174"), name, programme now with a progress bar and the minutes left, the next programme, the source in use, the clock and date and one row of keys. BLUE opens the channel list over the video with a **mini guide** (now, the next three, the description), YELLOW the source, EPG the guide; type a channel number to go there; 0 (or RECALL) goes back to the previous channel
 - **Player Options** – MENU in the player: favourite, audio track, subtitles, stream source, aspect ratio, sleep timer (the box goes to standby), record, stream info (resolution, frame rate, codec, source), programme guide and IMDb/TMDB
 - **Recently Watched** – The last 20 channels you watched, in the main list; optionally start the plugin on the last one
-- **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered, also for exported bouquets
+- **Choose Your Source** – A channel available from several sources is shown as one row (setting "Group Sources"). Pick the source in the player (MENU → Source) by its own name (for example "SIC .b", "SIC HD .s"). The pick is remembered. Exported bouquets list every source as its own channel, under its own name
 - **Programme Guide** – As in the app: INFO (or EPG) in a channel list, Favourites or Recently watched, or MENU → "Programme guide" in the player, shows a grid of those channels with three hours across - a box per programme, the now line, what is on now in its own colour. Look back 3 hours or ahead to the end of the guide (about a day)
 - **Reminders** – OK on a programme still to come → "Remind me": at its start a window offers to watch it, also with the plugin closed
 - **Recordings** – As in the app: record the channel you watch (MENU → Record, or REC) until the programme's end, or set a recording in the guide. It goes on when you zap, close the plugin or put the box in standby, and the box wakes from deep standby for one set in the guide. Recordings go to Enigma2's movie folder (they show in the box's own movie list too) and play from the "Recordings" list
 - **Pause Live TV** – PAUSE in the player records the channel on the disk; PLAY goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)
 - **Now / Next Beside the List** – While you browse a country (or your Favourites), the area by the preview window shows what is on the highlighted channel now and what comes next, on your box's clock (in the themes, as the app writes it: "▶ 20:00  Jornal da Noite" / "» 21:30  Linha Aberta"). No export or EPGImport needed. The guides of your favourites' countries are loaded in the background shortly after the plugin opens, so they show at once
 - **Search** – As in the app: the words in any order, accents and case do not count, "1" finds "SPORT 1" but not "SPORT 11"; from 3 letters also the channels whose programme on now has the text. Inside a country (YELLOW in the channel list) or in every country at once (YELLOW in the main menu - each result shows its country). The results become the player's list
-- **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them. Put them in your own order (YELLOW Move) and in folders (BLUE Folder), as in the app. Kept in `/etc/enigma2`, so a plugin update keeps them
+- **Favourites** – GREEN adds or removes the highlighted channel while browsing; GREEN in the main menu, or the "★ Favourites" row at the top of it, opens them. Put them in your own order (YELLOW Move) and in folders (BLUE Folder), as in the app; they show under a title per country (Portugal, then its channels, then Italy...). Kept in `/etc/enigma2`, so a plugin update keeps them
 - **Parental Control** – A 4-digit PIN for adult channels, chosen countries and (optionally) the settings; once entered, all is open for 15 minutes
 - **Backup / Restore** – The settings, favourites (with folders and order), recently watched, sources and countries in one file on your disk
 - **Simple Settings** – Settings open with the 14 options most people change; "All settings ▶" at the end shows the rest
 - **Welcome** – On a new install, the first opening asks for the look, your countries and (if you want) a PIN for adult channels
 
 ### In your Enigma2 channel list
-- **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom
+- **Enigma2 Bouquet Export** – Export a country's channels straight into your channel list, at the top or the bottom, as "Vavoo ★ Portugal" (a category: "Vavoo ★ Italy ➾ Sport") - every source of a channel ("SIC .b", "SIC .c", "SIC .d") as its own channel
+- **Favourites Bouquet** – Your favourites as one bouquet, "Vavoo ★ Favourites": a title per country with its channels under it, kept the same as the Favourites list
 - **Scheduled Updates** – Re-match EPG and refresh the exported bouquets at an interval or at a fixed time of day
 - **EPG Integration** – Electronic Program Guide for supported channels, in the plugin and through EPGImport: epgshare01's daily files, the GitHub copy as a fallback
 - **M3U Playlist Generation** – Create standard M3U playlist files for external players
@@ -210,11 +211,11 @@ Every word typed has to be at the start of a word of the name, or (3 letters or 
 |-----|--------|
 | OK | Preview window, then full screen (as in the channel list). On a folder row: open the folder. While moving: Done |
 | GREEN | Remove Fav (the next channel takes its place) |
-| YELLOW | Move / Done: move the highlighted channel - UP / DOWN one place, LEFT / RIGHT or CH± a page, a number to that place; OK, YELLOW or EXIT finish (saved once, at the end) |
+| YELLOW | Move / Done: move the highlighted channel - UP / DOWN one place, LEFT / RIGHT or CH± a page, a number to that place, within its country; OK, YELLOW or EXIT finish (saved once, at the end) |
 | BLUE | Folder: on a channel, "Folder for X" (the folders, No folder, New folder…); on a folder row, Rename folder (another folder's name merges the two) / Remove folder (its channels stay favourites) |
-| 1-9 | Go to that row |
+| 1-9 | Go to that channel |
 | 0 | The channel watched last |
-| MENU | Settings, Show Log |
+| MENU | Settings, Move this country (UP / DOWN move the highlighted channel's whole country; OK, YELLOW or EXIT finish), Export favourites as a bouquet (once exported: Update the favourites bouquet, Remove the favourites bouquet), Show Log |
 | INFO / EPG | The programme guide of these channels (on folder rows: version and number of channels) |
 | PLAY / REC / STOP | Full screen / record the highlighted channel / stop the preview window |
 | TEXT / PVR | Search / Recordings |
@@ -222,6 +223,8 @@ Every word typed has to be at the start of a word of the name, or (3 letters or 
 | RED / EXIT / BACK | Back |
 
 Once a favourite is in a folder, the Favourites open on "All channels (n)", the folders A-Z and "No folder (n)". A folder with no channels left is gone. Moving inside a folder only swaps that folder's channels.
+
+With "Favourites by country" (on), the channels show under a title per country - its flag and name - in the order of each country's first favourite; UP / DOWN step over the titles, the numbers count channels only, and the player zaps through the channels in that order.
 
 ### Recently watched
 | Key | Action |
@@ -358,6 +361,7 @@ Press **MENU** → **Settings** in the main menu, the channel list or Favourites
 | **Pause Live TV** | PAUSE in the player records the channel on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours). Off: PAUSE only pauses | Yes | ✓ |
 | **Now/Next in channel list** | Shows the current and the next programme of the highlighted channel beside the channel list and in Favourites. The country's programme guide is downloaded when you open a country (about 1.5 MB for Portugal, up to about 9 MB for the largest countries) and reused for 6 hours. Switch it off on a slow connection or a weak box | Yes | ✓ |
 | **Group Sources** | The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row | Yes |  |
+| **Favourites by country** | The favourites under a title per country, as in the favourites bouquet. Off: one list in your order | Yes |  |
 | **Channel Logos** | The channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), the country's flag in the player, and no logo is downloaded | No | ✓ |
 | **Sub-categories** | A country whose channels come in categories lists "All channels", the categories and "General" first | Yes |  |
 | **Scheduled EPG/Bouquet Update:** | Periodically re-matches EPG and refreshes the bouquets of your exported countries in the background | Off |  |
@@ -390,6 +394,8 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - **GREEN** in the main menu, the **"★ Favourites"** row, or Settings → **"View Favourites"** opens them, in your order (new ones at the end): YELLOW moves one, BLUE puts it in a folder (see the keys above)
 - They are kept in `/etc/enigma2/vavoo_favourites.json`, which a plugin update does not touch. Older versions kept them in the plugin folder, which every update deletes: the plugin, `installer.sh` and the ipk's `preinst` move that file (and the list of exported bouquets) to `/etc/enigma2` once, in the order you added them
 - A favourite whose channel got a new id in the catalog is found again by its name the next time you open its country
+- **Favourites by country** (Settings → All settings, on): a title per country with its channels under it; MENU → "Move this country" changes the countries' order. Off: one list in your order, as before
+- **The favourites bouquet**: MENU in the Favourites → "Export favourites as a bouquet" puts "Vavoo ★ Favourites" in your Enigma2 channel list (at the top or the bottom, as the country bouquets): a marker per country (a title line that does not play) and its channels under it, in the Favourites list's order. It follows the list by itself (added, removed, moved, a folder, a restore: written again 10 s later) and the scheduled update keeps it. With a PIN set, the channels that ask for it (a locked country, adult channels) are left out - the channel list plays them without one. MENU → "Remove the favourites bouquet" takes it out again
 
 ### Themes
 - **Prism**, **Halo** and **Orbit** are the Android app's own themes, measure for measure: the same layout, backgrounds, fonts (Lexend, Manrope, Sora, Oxanium - SIL Open Font License, in `fonts/`), rounded panels, colour keys, preview frame and selection bar
@@ -409,7 +415,8 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - Channels that exist from several sources (Vavoo's ".b" / ".c" / ".s" variants and the like) appear once in the list
 - While such a channel is playing, press **MENU → Source**: the menu lists every source by its channel name, "✓" on the one in use and "✗" on one that failed a moment ago; the bar's status line shows the source in use
 - Settings → **"Group Sources"** off shows every source as its own row instead
-- Pick another one if a source buffers or keeps stopping. The choice is remembered for that channel, also in exported bouquets
+- Pick another one if a source buffers or keeps stopping. The choice is remembered for that channel
+- Exported bouquets (and the .m3u files) list every source as its own channel, under its catalog name ("SIC .b", "SIC .c", "SIC .d"), whatever "Group Sources" says: a bouquet has no source menu. Bouquets exported by earlier versions have one entry per channel; they still work, and become one per source the next time they are exported or updated
 
 ## 🎯 Benefits
 - ✅ **No 10-minute blocks** – Proxy handles authentication tokens
@@ -484,17 +491,20 @@ The local proxy has no on/off switch: every channel list and stream goes through
 - **Grouped sources**: several catalog entries for the same channel
   (Vavoo's own `.b`/`.c`/`.s`-style suffix, Geil's `(N)` already
   normalized to match it) are shown as a single row in `/channels`
-  (and so in the plugin's channel list, search, favourites, and
-  exported bouquets - all of which read `/channels`), named without
-  the suffix, same idea as the companion Android app's "group
-  sources" option. The proxy picks one source and stays on it. When
+  (and so in the plugin's channel list, search and favourites), named
+  without the suffix, same idea as the companion Android app's "group
+  sources" option. Exported bouquets and .m3u files ask
+  `/channels?...&grouped=0`: every source its own entry, under its
+  catalog name. The proxy picks one source and stays on it. When
   the plugin's player reports that the stream ended, the same source
   is retried once with a fresh address; a second failure within a
   minute moves on to the next source. In the player, **MENU → Source** opens
   a "Choose Stream Source" menu to pick one yourself - each source is
   listed under its own catalog name (e.g. "SIC .b", "SIC HD .s"), the
   pick is remembered (`/etc/enigma2/vavoo_source_prefs.json`) and also
-  applies to that channel in exported bouquets. This can't recover a source
+  applies to a grouped entry left in a bouquet exported by an earlier
+  version.
+  This can't recover a source
   that resolved fine but is slow/buffering - pick another one for that.
 - **Token Monitor**: Background thread that checks token age every 60 seconds
 - **Active Stream Tracking**: Notifies proxy when streams start/end for better resource management
@@ -562,13 +572,17 @@ The proxy provides these endpoints:
 ### Bouquet Export
 - Path: Plugin menu → Select country → GREEN button
 - Creates bouquets with proxy URLs: `http://127.0.0.1:4323/vavoo?channel=CHANNEL_ID`
-- Channels are matched to their country's EPG feed (see "EPG Integration" above)
-- EPG mapping files are automatically generated for each country
+- Named "Vavoo ★ <country>" in the channel list ("Vavoo ★ Portugal", a category "Vavoo ★ Italy ➾ Sport"), like the favourites bouquet; the file names stay `userbouquet.vavoo_<country>.tv`. Bouquets exported by earlier versions get the name the next time the plugin opens
+- Every source of a channel is its own entry, under its catalog name ("SIC .b", "SIC .c", "SIC .d")
+- Channels are matched to their country's EPG feed (see "EPG Integration" above); every source of a channel gets its guide
+- EPG mapping files are automatically generated for each country - one per country, shared by every bouquet that plays its channels (the country's, its categories', the favourites'): exporting one never takes the guide from another, and removing one only takes its own entries
 - Supports both flat bouquets and hierarchical categories
+- The favourites bouquet (`userbouquet.vavoo_favourites.tv`): Favourites → MENU → "Export favourites as a bouquet", see "Favourites" above
 
 ### M3U Export
 - Path: Config Menu → "Generate .m3u files" (press OK)
 - Downloads playlist from proxy and saves as `vavoo_[country]_playlist.m3u`
+- Every source of a channel is its own entry, as in the bouquets
 - Supports single country or all countries export
 
 ### EPG Files
@@ -697,6 +711,7 @@ The plugin also keeps an eye on the box's memory, whether it is open or not. Eve
 |---------|----------|
 | "No channels found" | Check the internet connection; press TEXT in the main menu to refresh the proxy, or restart the plugin |
 | The main list has no countries, only "No channels: Vavoo: HTTP 500 ..." (status line "✗ No channels") | The catalog source does not answer. With Settings → Catalog/Stream Source on "Vavoo/Kool only" or "Geil only", OK on that row opens the settings: choose **Auto**. On Auto both services failed: OK reloads the list |
+| Channels stutter or freeze, the box feels slow | While a stream plays the plugin's background work (reading a country's programme guide, 13 to 47 MB) gives way to it, and guides are not loaded ahead. To see what loads the box: `grep "\[PERF\]\|\[CPU\]" /tmp/vavoo.log` - "[CPU]" every 30 minutes says how much of a core Enigma2 used and in which threads (vv-guide, vv-http, vv-catalog...), "[PERF] GUI held up" when the menus were stuck and who was busy. To compare, try Settings → Look: Classic and Settings → "Now/Next in channel list": No |
 | The main list stays on "Proxy not ready" while the port answers | Another copy of the plugin held the port; since 1.91 the plugin takes it over by itself. `grep "Second copy\|held by another copy" /tmp/vavoo.log` shows what happened |
 | "Could not load channels - proxy not responding" | The proxy did not answer after three tries: wait for the proxy status to show OK, then open the country again |
 | Bouquets don't open | Ensure proxy is running (check with curl) |

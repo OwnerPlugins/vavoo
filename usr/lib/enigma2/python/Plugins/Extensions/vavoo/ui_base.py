@@ -559,6 +559,8 @@ cfg.playlist_key = ConfigText(default="")
 # The app's list settings: several sources of one channel in one row;
 # a country's catalog categories ("Italy ➾ Sport") as rows first.
 cfg.group_sources = ConfigYesNo(default=True)
+# The favourites under a title per country (as the favourites bouquet).
+cfg.fav_by_country = ConfigYesNo(default=True)
 # The channels' logos in the lists and the player (the app's "Channel
 # Logos", off): off, a theme shows each channel's initials on a tile of
 # its own colour, and no logo is downloaded.
@@ -1677,6 +1679,9 @@ class _NowPlaying(object):
         self.sref = sref
         self._failures = []
         self.halted = False
+        # heavy background work gives way from now on (the proxy keeps
+        # it up on every playlist refresh) - vUtils.stream_playing()
+        vUtils.note_stream()
         remember_recent(self.channel)
         return True
 
@@ -1700,6 +1705,7 @@ class _NowPlaying(object):
         """The full-screen player opens on `url`: True when the preview
         is playing exactly that - the player then carries on with it
         (and its count) instead of starting it again."""
+        vUtils.note_stream()
         if self.preview_plays(url):
             self.owner = self.PLAYER
             return True
@@ -1709,6 +1715,7 @@ class _NowPlaying(object):
     def player_give_back(self, channel, sref):
         """The player closes and leaves its stream playing for the
         preview window (its count goes with it)."""
+        vUtils.note_stream()
         self.owner = self.PREVIEW
         self.channel = dict(channel)
         self.sref = sref
@@ -1981,12 +1988,25 @@ def _no_answer(*args, **kwargs):
     return None
 
 
+def favourites_in_view_order(entries):
+    """The favourites in the order the Favourites list shows them: by
+    country ("Favourites by country"), else the user's."""
+    if not cfg.fav_by_country.value:
+        return list(entries)
+    out = []
+    for _country, members in vavoo_store.favourites_by_country(entries):
+        out.extend(members)
+    return out
+
+
 def favourite_channels():
-    """The favourites as the guide takes its channels."""
+    """The favourites as the guide takes its channels (the Favourites
+    list's order)."""
     return [{"name": e.get("name"), "url": e.get("url"),
              "logo": e.get("logo"), "country_name": e.get("country_name"),
              "country_code": e.get("country_code")}
-            for e in (vUtils.load_favourites() or []) if e.get("url")]
+            for e in favourites_in_view_order(vUtils.load_favourites() or [])
+            if e.get("url")]
 
 
 def show_keys(session, rows, title=None):

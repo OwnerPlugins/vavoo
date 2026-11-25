@@ -115,6 +115,8 @@ def load_plugin():
         # /etc/enigma2)
         module.vavoo_proxy.CATALOG_FILE = os.path.join(
             DATA, "vavoo_catalog.json.gz")
+        # (EPGImport's files too: never /etc/epgimport)
+        module.vUtils.EPGIMPORT_DIR = os.path.join(DATA, "epgimport")
     return plugin
 
 

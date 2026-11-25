@@ -302,7 +302,8 @@ on `127.0.0.1:4323`. It:
   and only moves on after repeated failure reports.
 - `/channels` is `VavooProxy.channel_rows(country, grouped)` (also
   called in-process: Search all, sub-categories); `&grouped=0` is
-  Group Sources off. `country_counts(grouped)` follows it.
+  Group Sources off, and what every export asks for (bouquets,
+  .m3u files - below). `country_counts(grouped)` follows it.
 - Serves `/channels`, `/catalog`, `/countries`, `/status`, `/health`,
   `/refresh_token`, `/group_sources`, `/epg/<country>.xml` (the
   country's guide: `_serve_epg()`, see "EPG sources" below), `/file`,
@@ -407,7 +408,47 @@ per-category/hierarchical) that reference the proxy, matches each
 channel to its country's EPG feed (`find_match()`, below) for the
 EPGImport channels file, and can reorganize bouquet position
 (top/bottom of channel list). The match result's `feed_id` key is the
-channel's id in the country's EPG feed.
+channel's id in the country's EPG feed. Every source of a channel is
+its own entry, under its catalog name ("SIC .b", "SIC .c", "SIC .d"):
+`get_channels_from_proxy()` (both exports, manual and scheduled) and
+the settings' M3U `get_channels_for_country()` ask `/channels` with
+`&grouped=0`, whatever `cfg.group_sources` says (a bouquet has no
+source menu); old bouquets' `grp:` entries still resolve.
+`channel_alias.normalize_channel_name()` strips any source tag (the
+proxy's `_GROUP_SUFFIX_RE` rule, plus `.c`/`.s`/`.b` with no space) so
+each source finds the alias (`tests/test_export_sources.py`).
+Their `#NAME` is `bouquet_title(name)` = `BOUQUET_TITLE_PREFIX`
+"Vavoo ★ " + the country / category (as the favourites', "Vavoo ★
+Favourites"), written as text; the file names stay from `name`.
+`retitle_vavoo_bouquets()` (plugin.py's `retitle_bouquets_in_background()`
+from `main()`, thread "vv-retitle", under `export_lock` when free) gives
+the bouquets exported before their prefix - only the `#NAME` line.
+- The favourites bouquet (`FAVOURITES_BOUQUET` =
+  `userbouquet.vavoo_favourites.tv`, "Vavoo ★ Favourites"):
+  `favourites_bouquet_lines()` - a marker (`#SERVICE
+  1:64:<n>:0:0:0:0:0:0:0::<country>`) per country of
+  `vavoo_store.favourites_by_country()`, its channels as a country
+  bouquet writes them (`unique_fallback_sref()` of the id + the proxy
+  address: the bouquet needs no matching), the channels that ask for
+  the PIN (`is_channel_locked()`) left out. `export_favourites_sync()`
+  (under `export_lock`) writes it, registers it, puts
+  `Favourites||favourites|time` in the bouquet list (the scheduled
+  update's `FAVOURITES_EXPORT` branch) and matches its guide per
+  country; `remove_favourites_bouquet()`. plugin.py's
+  `export_favourites_bouquet()` (thread "vv-favbouquet", Favourites →
+  MENU) and the follow: `vavoo_store.on_favourites_changed()` →
+  `_favourites_changed()` → written again `FAVOURITES_FOLLOW_DELAY`
+  10 s after the last change, when exported.
+- A country's EPG channels file (`vavoo_<cc>.channels.xml` under
+  `vUtils.EPGIMPORT_DIR`, never a literal path) is shared by every
+  bouquet that plays its channels: `write_epg_mapping_file(...,
+  bouquet_dir)` keeps the entries already there that a Vavoo bouquet
+  on disk still holds (`_bouquet_service_refs()`; the bouquet is
+  written before its mapping), `remove_bouquets_by_name(name)` calls
+  `prune_epg_mapping_file(cc)` (only the entries no bouquet holds go;
+  the file goes when empty) - exporting the favourites never takes a
+  country bouquet's guide, nor the other way round
+  (`tests/test_fav_countries.py`).
 
 **EPG sources (`vUtils.py`, `vavoo_proxy.py`'s `_serve_epg()`)** — as
 the Android app (`Epg.kt`): a country's programmes come from its daily
@@ -457,6 +498,17 @@ spawned by watching TV) — its `cache`/`normalized_index`/`new_matches`
 mutations are guarded by `self._cache_lock` (an `RLock`), taken by
 `find_match()` and by every external mutator
 (`update_complete_cache()`, `clean_cache_and_unmatched()`).
+`CACHE_FILE`'s read-modify-write has its own `_cache_file_lock`
+(`save_cache()`, `update_complete_cache()` →
+`_merge_matched_into_cache_file()`, `fix_cache_format()`);
+`find_match()` saves a copy of the cache taken under `_cache_lock`,
+after releasing it. `export_lock` (a plain `Lock` in `__init__.py`) is
+the exporter's: the scheduled update (`AutoStartTimer`) and a manual
+export hold it for the whole run, and nothing that runs inside an
+export asks for it again - `find_match()` did, to save the cache, and
+a box's scheduled update hung for good at the first cached channel the
+feed no longer had (every export after it refused until a reboot;
+`tests/test_export_lock.py`).
 
 **Curated EPG channel database** — a pre-solved matching path for
 names that match the feed poorly (first made for Spain, Poland,
@@ -504,11 +556,27 @@ the real files (measured, see the comment block above
   three countries at most (`_EPG_GUIDE_KEEP`), one download at a time
   per country.
 - Heavy loops in background threads (the guide parse, the matcher's
-  feed-name scan, the proxy's guide streaming) call `_Breather().tick()` every turn:
+  feed-name scan, the proxy's guide streaming, `_install_catalog()`,
+  `country_counts()`) call `_Breather().tick()` every turn:
   after 50 ms of work they rest 25 ms, never on the main thread. A
-  new heavy loop does the same. Every plugin thread gets a system
+  new heavy loop does the same. While a stream plays they give way
+  far more - 10 ms of work, 40 ms of rest (`_BREATHE_*_PLAYING`): a
+  box's channels stuttered and its menus dragged after 1.90 (the 1.89
+  had no guide inside the plugin). "A stream plays" =
+  `vUtils.stream_playing()`: a `note_stream()` within `STREAM_WINDOW`
+  30 s, from the proxy's `/vavoo` and `/file` (the player is back
+  every ~10 s, bouquet channels outside the plugin too) and from
+  `NOW_PLAYING` (`preview_play()`, `player_take()`,
+  `player_give_back()`). Then the guides are not loaded ahead
+  (`MainVavoo._preload_go_on()`), and the player bar fetches a guide
+  that is not in memory only once the channel has played
+  `Playstream2.BAR_EPG_WAIT` 10 s (`_bar_epg()` / `_bar_epg_due()`,
+  the country meanwhile; zapping through starts no download) - what
+  the user asks for (the OK overlay, the guide) is fetched at once.
+  Every plugin thread gets a system
   name through `named(target, "vv-...")` / `vavoo_record.
-  name_this_thread()` (seen in `top -H`), and `find_match()` logs any
+  name_this_thread()` (seen in `top -H`; the proxy's request threads
+  are "vv-http"), and `find_match()` logs any
   lookup over 1 s ("[EPG] slow match").
   `lookup_programmes()` / `peek_programmes()` give a channel's
   programmes between two times (`EpgGuide.between()`).
@@ -547,8 +615,16 @@ Parental / Backup / Monogram / SearchText, all under `ENIGMA_PATH`
   favourite is its address (`/vavoo?channel=<id>`);
   `repair_favourites()` re-finds one by name when a country's list
   loads; `reorder_favourites()` keeps the places of the favourites it
-  is given (a folder's move swaps only that folder's channels). The
-  plugin folder is deleted by every update (installer.sh,
+  is given (a folder's move swaps only that folder's channels).
+  `favourites_by_country(entries)` = `[(country, [entry])]` (countries
+  by their first favourite, "" last) is the order of the Favourites
+  list with `cfg.fav_by_country` (on: a title row per country,
+  `VavooFavourites._row_entry` maps rows to `favourite_entries`, UP /
+  DOWN step over the titles, the player gets `_channel_rows` alone, a
+  move stays in its country and MENU → Move this country moves a
+  whole one) and of the favourites bouquet; `favourite_channels()`
+  follows it. `on_favourites_changed(fn)`: called after each write
+  (it only schedules). The plugin folder is deleted by every update (installer.sh,
   CONTROL/preinst): never keep user data there - `migrate_old_files()`
   (and both installers) move the old `vavoo_favourites.json` /
   `Favorite.txt` (now `vavoo_bouquet_list.txt`) out once; the old dict
@@ -713,7 +789,14 @@ records and timeshifts only DVB, so the plugin does it itself:
   `main()` runs; the guide's load line carries `memory_note()`.
 - `MEMORY_WATCH` (`_MemoryWatch`, ticked by `_ReminderService.tick()`,
   so it runs while the plugin is closed too) reads `/proc/meminfo` once
-  a minute and logs "[MEM] " + `memory_note()` every 30 minutes. Below
+  a minute and logs "[MEM] " + `memory_note()` every 30 minutes, with
+  "[CPU] 14 % of a core (30 min) - vv-guide 48.0 s, enigma2 200.0 s"
+  beside it (`cpu_note()`: `vUtils.thread_cpu()` - `/proc/self/task/*/
+  stat`, name and CPU seconds per thread - `cpu_by_name()`,
+  `cpu_report()`). `LAG_WATCH` (`_LagWatch`, a 1 s eTimer started by
+  `_ReminderService.start()`) logs "[PERF] GUI held up 1.8 s - busy:
+  vv-guide 1.2 s, ..." when a tick comes `LAG_LATE` 1 s late, at most
+  once a minute. Below
   `MEMORY_LOW_KB` (100 MB available), at most every 10 minutes, it
   appends `vUtils.memory_report()` (memory, Shmem, Slab, the top 8
   processes by RSS from `/proc/<pid>/status`) to
@@ -953,7 +1036,8 @@ Needs `six` and `requests`; the recording tests need `ffmpeg` /
   tests start it themselves - `test_proxy_start.py`, on a free port),
   no write to the plugin's skin (`add_skin_back` replaced;
   `REAL_ADD_SKIN_BACK` for `test_audit`), the saved catalog in the
-  temp folder. `run_tests.py` fails when the tests leave any file of
+  temp folder, `vUtils.EPGIMPORT_DIR` there too (never
+  /etc/epgimport). `run_tests.py` fails when the tests leave any file of
   the checkout changed. Tests end with `e2env.exit_now()` (no Python
   shutdown: daemon threads writing to stdout made it crash now and
   then).

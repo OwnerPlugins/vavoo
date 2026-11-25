@@ -41,6 +41,7 @@ from . import (
 
 from . import vavoo_record
 from .vUtils import (
+    _Breather,
     _starting_lock,
     EPG_DAILY_FAIL_BACKOFF,
     EPG_DAILY_STALE_BACKOFF,
@@ -54,6 +55,7 @@ from .vUtils import (
     is_proxy_running,
     make_print,
     mark_epg_daily_unusable,
+    note_stream,
     remove_parentheses,
     strip_control_chars,
     trace_error,
@@ -151,6 +153,13 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     # are silently dropped by the kernel and only retried by the
     # client seconds later.
     request_queue_size = 64
+
+    def process_request_thread(self, request, client_address):
+        # (the system shows the request threads as "vv-http": the
+        # "[CPU]" / "[PERF]" lines tell them from the GUI)
+        vavoo_record.name_this_thread("vv-http")
+        return ThreadingMixIn.process_request_thread(
+            self, request, client_address)
 
 
 """
@@ -1763,7 +1772,10 @@ class VavooProxy(object):
         by_country = {}
         groups = {}
         countries = set()
+        # (a background thread: it gives way while a stream plays)
+        breather = _Breather()
         for channel in channels:
+            breather.tick()
             channel_id = channel.get("id")
             if channel_id:
                 by_id[channel_id] = channel
@@ -2697,10 +2709,13 @@ class VavooProxy(object):
         if cached is not None and cached[0] is by_country:
             return cached[1]
         counts = {}
+        # (a background thread: it gives way while a stream plays)
+        breather = _Breather()
         for country, channels in by_country.items():
             keys = set()
             standalone = 0
             for channel in channels:
+                breather.tick()
                 key = _group_key(channel.get("name", ""))
                 if key:
                     keys.add(key)
@@ -3045,6 +3060,9 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                 return
 
             if parsed_path.path == '/vavoo':
+                # a stream plays (the player is back every ~10 s): the
+                # plugin's heavy loops give way (vUtils.stream_playing())
+                note_stream()
                 channel_id = query_params.get('channel', [None])[0]
                 if not channel_id:
                     self.send_error(400, "Missing channel parameter")
@@ -3351,6 +3369,7 @@ class VavooHTTPHandler(BaseHTTPRequestHandler):
                     return
 
             elif parsed_path.path == '/file':
+                note_stream()
                 self._serve_file(p, query_params)
 
             elif parsed_path.path == '/shutdown':

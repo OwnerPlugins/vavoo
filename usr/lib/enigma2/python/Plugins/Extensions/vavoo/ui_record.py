@@ -124,6 +124,9 @@ class _MemoryWatch(object):
         self.checked_at = 0
         self.trend_at = 0
         self.reported_at = 0
+        # (when, vUtils.thread_cpu()) at the last "[MEM]" line: the
+        # "[CPU]" line beside it says what the process spent since
+        self.cpu_sample = None
 
     def tick(self, now=None):
         now = time.time() if now is None else now
@@ -133,6 +136,7 @@ class _MemoryWatch(object):
         if now - self.trend_at >= MEMORY_TREND_EVERY:
             self.trend_at = now
             print("[MEM] " + vUtils.memory_note())
+            self.cpu_note(now)
         available = vUtils.read_meminfo().get("MemAvailable")
         if available is None or available >= MEMORY_LOW_KB:
             return
@@ -159,8 +163,74 @@ class _MemoryWatch(object):
             vUtils.trim_picon_cache(max_bytes=4 * 1024 * 1024)
         print("[MEM] Released {} guides, {} icons".format(guides, icons))
 
+    def cpu_note(self, now, sample=None):
+        """The "[CPU] 14 % of a core (30 min) - vv-guide 48.0 s, ..."
+        line: what Enigma2's process spent since the last one, and in
+        which threads (a box got sluggish and its channels stuttered;
+        this says whether the plugin's work was it)."""
+        sample = vUtils.thread_cpu() if sample is None else sample
+        if self.cpu_sample is not None:
+            text = vUtils.cpu_report(
+                self.cpu_sample[1], sample, now - self.cpu_sample[0])
+            if text:
+                print("[CPU] " + text)
+        self.cpu_sample = (now, sample)
+
 
 MEMORY_WATCH = _MemoryWatch()
+
+
+# A one-second eTimer that fires this much late means the GUI thread
+# was held up that long (a menu that froze, a key that took seconds):
+# "[PERF] GUI held up 1.8 s - busy: vv-guide 1.2 s, enigma2 0.6 s",
+# at most one line a LAG_LOG_EVERY.
+LAG_TICK_MS = 1000
+LAG_LATE = 1.0
+LAG_LOG_EVERY = 60
+
+
+class _LagWatch(object):
+    """Started with the reminder service (session start, the plugin
+    opened), so it runs with the plugin closed too. Each tick takes a
+    sample of the threads' CPU (vUtils.thread_cpu(): one small file per
+    thread); a late tick names who used the CPU meanwhile."""
+
+    def __init__(self):
+        self.timer = None
+        self.last = None
+        self.sample = None
+        self.logged_at = 0
+
+    def start(self):
+        if self.timer is None:
+            self.timer = eTimer()
+            try:
+                self.timer.callback.append(self.tick)
+            except Exception:
+                self.timer.timeout.connect(self.tick)
+        if not self.timer.isActive():
+            self.last = None
+            self.timer.start(LAG_TICK_MS, False)
+
+    def tick(self, now=None, sample=None):
+        """True when it logged a "[PERF]" line."""
+        now = time.time() if now is None else now
+        sample = vUtils.thread_cpu() if sample is None else sample
+        last, before = self.last, self.sample
+        self.last, self.sample = now, sample
+        if last is None:
+            return False
+        late = now - last - LAG_TICK_MS / 1000.0
+        if late < LAG_LATE or now - self.logged_at < LAG_LOG_EVERY:
+            return False
+        self.logged_at = now
+        busy = vUtils.busy_text(vUtils.cpu_by_name(before or {}, sample))
+        print("[PERF] GUI held up {:.1f} s{}".format(
+            late, " - busy: " + busy if busy else ""))
+        return True
+
+
+LAG_WATCH = _LagWatch()
 
 
 # ---------------------------------------------------------------------

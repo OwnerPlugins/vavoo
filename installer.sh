@@ -4,14 +4,17 @@
 #  Log: /tmp/vavoo_install.log  (copia anche in /home/root/ a fine run)
 # =====================================================================
 
-version='1.91'
-changelog="- No more empty list when the catalog source does not answer (Vavoo/Kool
-  only with vavoo.to down): kool.to is tried too, and the saved list (or
-  Geil's) is used meanwhile - the status line says why
-- The main list says why it has no channels; OK there opens the settings
-- The plugin takes the proxy back when another copy of it held the port
-  (the list stayed on Proxy not ready)
-- Installer: the compile check works on every image (no false NON compila)"
+version='1.92'
+changelog="- Exported bouquets: every source of a channel (.b, .c, .d) as its own
+  channel; every Vavoo bouquet named Vavoo, a star and the country, as
+  the favourites one
+- Favourites by country: a title per country in the Favourites list
+  (MENU - Move this country), and the favourites as one bouquet with a
+  title per country, kept the same as the list
+- The scheduled bouquet update no longer hangs until a reboot
+- Smoother playback: the plugin's background work gives way while a
+  channel plays
+- Python 2 fixes (bouquets, EPG files with accents)"
 
 LOGFILE=/tmp/vavoo_install.log
 

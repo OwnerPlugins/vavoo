@@ -73,7 +73,10 @@ for minute in range(1, 30):
 check(len(logged) == n and not reports,
       "plenty free: nothing more for 30 minutes, no report")
 w.tick(t0 + 1800)
-check(len(logged) == n + 1, "after 30 minutes: the next [MEM] line")
+check(len(logged) == n + 2 and logged[-2].startswith("[MEM] ") and
+      logged[-1].startswith("[CPU] ") and "% of a core (30 min)" in logged[-1],
+      "after 30 minutes: the next [MEM] line, and [CPU] beside it %r" %
+      logged[-1:])
 path = plugin.memory_log_file()
 check(path == os.path.join(TMP, "vavoo_memory.log")
       and not os.path.exists(path), "no report file while all is well")
