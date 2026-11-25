@@ -497,6 +497,10 @@ msgstr "Keluar dan buka kembali plugin untuk melihat latar belakang baru."
 msgid "Export failed: {}"
 msgstr "Ekspor gagal: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- Karangan bunga pedesaan"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Ekspor dimulai. Buket akan segera tersedia."
 
@@ -529,6 +533,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "Favorit"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "Favorit"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "Ditemukan: {} saluran"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "Favorit"
 
 #, fuzzy
@@ -753,6 +769,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "Silakan coba saluran lain."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "Silakan coba saluran lain."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- Karangan bunga pedesaan"
+
 msgid "Movie Services Reference"
 msgstr "Referensi Layanan Film"
 
@@ -760,6 +784,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -870,6 +897,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "Tidak ada yang perlu dihapus: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "Tidak ada yang perlu dihapus: {}"
 
@@ -953,6 +984,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1214,6 +1248,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Hapus buket yang diekspor untuk negara/kategori ini?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- Karangan bunga pedesaan"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "Ekspor gagal: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- Karangan bunga pedesaan"
 
@@ -1450,6 +1492,12 @@ msgstr "Saluran ini tidak dapat diputar"
 msgid "The favourites"
 msgstr "Favorit"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "papan ketik"
@@ -1522,6 +1570,10 @@ msgstr "Tidak ada item yang tersedia"
 #, fuzzy
 msgid "Update now?"
 msgstr "Mulai pembaruan EPG sekarang?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "Ditambahkan ke favorit: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1668,6 +1720,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "PIN Kontrol Orang Tua"
 
 msgid "{} min"
 msgstr ""

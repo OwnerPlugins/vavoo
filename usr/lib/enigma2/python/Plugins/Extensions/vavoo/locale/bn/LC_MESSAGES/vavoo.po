@@ -497,6 +497,10 @@ msgstr "প্রস্থান করুন এবং নতুন পটভ�
 msgid "Export failed: {}"
 msgstr "রপ্তানি ব্যর্থ হয়েছে: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- দেশের তোড়া"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "রপ্তানি শুরু হয়েছে। তোড়া শীঘ্রই পাওয়া যাবে."
 
@@ -529,6 +533,18 @@ msgid "Fav"
 msgstr "পছন্দ"
 
 msgid "Favourites"
+msgstr "প্রিয়"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "প্রিয়"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "পাওয়া গেছে: {} চ্যানেল"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "প্রিয়"
 
 #, fuzzy
@@ -753,6 +769,14 @@ msgstr "ওই জায়গায় নিয়ে যান"
 msgid "Move the channel"
 msgstr "অন্য চ্যানেল চেষ্টা করুন."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "দেশ দেখান/লুকান"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- দেশের তোড়া"
+
 msgid "Movie Services Reference"
 msgstr "মুভি সেবা রেফারেন্স"
 
@@ -760,6 +784,10 @@ msgid "Movie folder ({})"
 msgstr "মুভি ফোল্ডার ({})"
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr "সরানো হচ্ছে {}: ▲▼, ◄► একটি পৃষ্ঠা, একটি সংখ্যা; শেষ করতে ঠিক আছে"
+
+#, fuzzy
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr "সরানো হচ্ছে {}: ▲▼, ◄► একটি পৃষ্ঠা, একটি সংখ্যা; শেষ করতে ঠিক আছে"
 
 msgid "Network (%s) - other devices on the LAN"
@@ -870,6 +898,10 @@ msgstr "এখন নয়: একটি রেকর্ডিং চলছে"
 msgid "Nothing is playing in the window"
 msgstr "জানালায় কিছুই বাজছে না"
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "এর জন্য অপসারণ করার কিছু নেই: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "এর জন্য অপসারণ করার কিছু নেই: {}"
 
@@ -954,6 +986,9 @@ msgstr "অপশন"
 
 msgid "Orbit - teal cockpit"
 msgstr "কক্ষপথ - টিল ককপিট"
+
+msgid "Other"
+msgstr ""
 
 msgid "PIN removed"
 msgstr "পিন সরানো হয়েছে"
@@ -1214,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "এই দেশ/বিভাগের জন্য রপ্তানি করা তোড়া সরাবেন?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- দেশের তোড়া"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "রপ্তানি ব্যর্থ হয়েছে: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- দেশের তোড়া"
 
@@ -1450,6 +1493,12 @@ msgstr "এই চ্যানেল চালানো যাবে না"
 msgid "The favourites"
 msgstr "প্রিয়"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "কীবোর্ড"
@@ -1522,6 +1571,10 @@ msgstr "কোন আইটেম উপলব্ধ"
 #, fuzzy
 msgid "Update now?"
 msgstr "এখন ইপিজি আপডেট শুরু করবেন?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "ফেভারিটে যোগ করা হয়েছে: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1668,6 +1721,10 @@ msgstr "{} পাওয়া গেছে"
 
 msgid "{} free"
 msgstr "{} বিনামূল্যে"
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "অভিভাবকীয় নিয়ন্ত্রণ পিন"
 
 msgid "{} min"
 msgstr "{} মিনিট"

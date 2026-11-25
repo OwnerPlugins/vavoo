@@ -498,6 +498,10 @@ msgstr "새 배경을 보려면 플러그인을 종료했다가 다시 엽니다
 msgid "Export failed: {}"
 msgstr "내보내기 실패: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- 컨트리 부케"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "내보내기가 시작되었습니다. 꽃다발은 곧 준비될 예정입니다."
 
@@ -530,6 +534,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "즐겨찾기"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "즐겨찾기"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "발견됨: {}개 채널"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "즐겨찾기"
 
 #, fuzzy
@@ -754,6 +770,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "다른 채널을 사용해 보세요."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "다른 채널을 사용해 보세요."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- 컨트리 부케"
+
 msgid "Movie Services Reference"
 msgstr "영화 서비스 참조"
 
@@ -761,6 +785,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -871,6 +898,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "제거할 항목 없음: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "제거할 항목 없음: {}"
 
@@ -954,6 +985,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1215,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "이 국가/카테고리에 대해 내보낸 꽃다발을 삭제하시겠습니까?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- 컨트리 부케"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "내보내기 실패: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- 컨트리 부케"
 
@@ -1451,6 +1493,12 @@ msgstr "이 채널을 재생할 수 없습니다"
 msgid "The favourites"
 msgstr "즐겨찾기"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "건반"
@@ -1523,6 +1571,10 @@ msgstr "사용 가능한 항목이 없습니다."
 #, fuzzy
 msgid "Update now?"
 msgstr "지금 EPG 업데이트를 시작하시겠습니까?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "즐겨찾기에 추가됨: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1669,6 +1721,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "자녀 보호 PIN"
 
 msgid "{} min"
 msgstr ""

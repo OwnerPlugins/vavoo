@@ -498,6 +498,10 @@ msgstr "プラグインを終了して再度開くと、新しい背景が表示
 msgid "Export failed: {}"
 msgstr "エクスポートに失敗しました: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- カントリーブーケ"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Export started.ブーケは近日入荷予定です。"
 
@@ -530,6 +534,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "お気に入り"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "お気に入り"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "見つかりました: {} チャンネル"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "お気に入り"
 
 #, fuzzy
@@ -754,6 +770,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "別のチャンネルをお試しください。"
 
+#, fuzzy
+msgid "Move the country"
+msgstr "別のチャンネルをお試しください。"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- カントリーブーケ"
+
 msgid "Movie Services Reference"
 msgstr "映画サービスのリファレンス"
 
@@ -761,6 +785,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -871,6 +898,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "削除するものはありません: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "削除するものはありません: {}"
 
@@ -954,6 +985,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1215,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "この国/カテゴリにエクスポートされた花束を削除しますか?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- カントリーブーケ"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "エクスポートに失敗しました: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- カントリーブーケ"
 
@@ -1451,6 +1493,12 @@ msgstr "このチャンネルは再生できません"
 msgid "The favourites"
 msgstr "お気に入り"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "キーボード"
@@ -1523,6 +1571,10 @@ msgstr "利用可能なアイテムはありません"
 #, fuzzy
 msgid "Update now?"
 msgstr "今すぐ EPG アップデートを開始しますか?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "お気に入りに追加されました: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1669,6 +1721,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "ペアレンタルコントロールPIN"
 
 msgid "{} min"
 msgstr ""

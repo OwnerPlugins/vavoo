@@ -504,6 +504,10 @@ msgstr "Saia e reabra o plugin para ver o novo plano de fundo."
 msgid "Export failed: {}"
 msgstr "Falha na exportação: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- Buquês campestres"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "A exportação foi iniciada. O buquê estará disponível em breve."
 
@@ -536,6 +540,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "Favoritos"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "Favoritos"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "Encontrado: {} canais"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "Favoritos"
 
 #, fuzzy
@@ -760,6 +776,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "Por favor, tente outro canal."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "Por favor, tente outro canal."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- Buquês campestres"
+
 msgid "Movie Services Reference"
 msgstr "Referência de serviços de filmes"
 
@@ -767,6 +791,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -878,6 +905,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "Nada para remover: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "Nada para remover: {}"
 
@@ -961,6 +992,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1222,6 +1256,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Remover o buquê exportado para este país/categoria?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- Buquês campestres"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "Falha na exportação: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- Buquês campestres"
 
@@ -1460,6 +1502,12 @@ msgstr "Este canal não pode ser reproduzido"
 msgid "The favourites"
 msgstr "Favoritos"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "Teclado"
@@ -1532,6 +1580,10 @@ msgstr "Nenhum item disponível"
 #, fuzzy
 msgid "Update now?"
 msgstr "Atualizar"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "Adicionado aos favoritos: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1679,6 +1731,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "PIN de controle parental"
 
 msgid "{} min"
 msgstr ""

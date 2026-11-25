@@ -497,6 +497,10 @@ msgstr "नई पृष्ठभूमि देखने के लिए प�
 msgid "Export failed: {}"
 msgstr "निर्यात विफल: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- देशी गुलदस्ते"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "निर्यात शुरू हुआ. गुलदस्ता शीघ्र ही उपलब्ध होगा."
 
@@ -529,6 +533,18 @@ msgid "Fav"
 msgstr "पसंदीदा"
 
 msgid "Favourites"
+msgstr "पसंदीदा"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "पसंदीदा"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "मिला: {} चैनल"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "पसंदीदा"
 
 #, fuzzy
@@ -753,6 +769,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "कृपया कोई अन्य चैनल आज़माएँ."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "कृपया कोई अन्य चैनल आज़माएँ."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- देशी गुलदस्ते"
+
 msgid "Movie Services Reference"
 msgstr "मूवी सेवाएँ संदर्भ"
 
@@ -760,6 +784,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -870,6 +897,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "हटाने के लिए कुछ भी नहीं: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "हटाने के लिए कुछ भी नहीं: {}"
 
@@ -953,6 +984,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1214,6 +1248,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "इस देश/श्रेणी के लिए निर्यातित गुलदस्ता हटाएं?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- देशी गुलदस्ते"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "निर्यात विफल: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- देशी गुलदस्ते"
 
@@ -1450,6 +1492,12 @@ msgstr "यह चैनल नहीं चलाया जा सकता"
 msgid "The favourites"
 msgstr "पसंदीदा"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "कीबोर्ड"
@@ -1522,6 +1570,10 @@ msgstr "कोई आइटम उपलब्ध नहीं है"
 #, fuzzy
 msgid "Update now?"
 msgstr "अभी ईपीजी अपडेट शुरू करें?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "पसंदीदा में जोड़ा गया: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1668,6 +1720,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "अभिभावकीय नियंत्रण पिन"
 
 msgid "{} min"
 msgstr ""

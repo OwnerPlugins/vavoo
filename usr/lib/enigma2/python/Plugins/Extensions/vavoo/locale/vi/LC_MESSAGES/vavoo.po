@@ -498,6 +498,10 @@ msgstr "Thoát và mở lại plugin để xem nền mới."
 msgid "Export failed: {}"
 msgstr "Xuất không thành công: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- Bó hoa đồng quê"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Xuất khẩu bắt đầu. Bó hoa sẽ sớm có mặt."
 
@@ -530,6 +534,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "Yêu thích"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "Yêu thích"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "Đã tìm thấy: {} kênh"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "Yêu thích"
 
 #, fuzzy
@@ -754,6 +770,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "Vui lòng thử kênh khác."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "Vui lòng thử kênh khác."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- Bó hoa đồng quê"
+
 msgid "Movie Services Reference"
 msgstr "Tham khảo dịch vụ phim"
 
@@ -761,6 +785,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -871,6 +898,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "Không có gì cần xóa đối với: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "Không có gì cần xóa đối với: {}"
 
@@ -954,6 +985,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1215,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Xóa bó hoa đã xuất cho quốc gia/danh mục này?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- Bó hoa đồng quê"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "Xuất không thành công: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- Bó hoa đồng quê"
 
@@ -1451,6 +1493,12 @@ msgstr "Kênh này không thể phát được"
 msgid "The favourites"
 msgstr "Yêu thích"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "Bàn phím"
@@ -1523,6 +1571,10 @@ msgstr "Không có mặt hàng nào"
 #, fuzzy
 msgid "Update now?"
 msgstr "Bắt đầu cập nhật EPG ngay bây giờ?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "Đã thêm vào mục yêu thích: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1669,6 +1721,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "Mã PIN kiểm soát của phụ huynh"
 
 msgid "{} min"
 msgstr ""

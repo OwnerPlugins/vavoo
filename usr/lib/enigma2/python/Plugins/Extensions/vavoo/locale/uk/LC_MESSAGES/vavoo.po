@@ -498,6 +498,10 @@ msgstr "Вийдіть і знову відкрийте плагін, щоб п�
 msgid "Export failed: {}"
 msgstr "Помилка експорту: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- Сільські букети"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Експорт розпочато. Букет буде в наявності незабаром."
 
@@ -530,6 +534,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "Вибране"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "Вибране"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "Знайдено каналів: {}"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "Вибране"
 
 #, fuzzy
@@ -754,6 +770,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "Спробуйте інший канал."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "Спробуйте інший канал."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- Сільські букети"
+
 msgid "Movie Services Reference"
 msgstr "Довідник кінослужб"
 
@@ -761,6 +785,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -871,6 +898,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "Немає нічого для видалення для: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "Немає нічого для видалення для: {}"
 
@@ -954,6 +985,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1215,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Видалити експортований букет для цієї країни/категорії?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- Сільські букети"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "Помилка експорту: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- Сільські букети"
 
@@ -1451,6 +1493,12 @@ msgstr "Цей канал не можна відтворити"
 msgid "The favourites"
 msgstr "Вибране"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "Клавіатура"
@@ -1523,6 +1571,10 @@ msgstr "Немає доступних товарів"
 #, fuzzy
 msgid "Update now?"
 msgstr "Почати оновлення EPG зараз?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "Додано до вибраного: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1669,6 +1721,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "PIN-код батьківського контролю"
 
 msgid "{} min"
 msgstr ""

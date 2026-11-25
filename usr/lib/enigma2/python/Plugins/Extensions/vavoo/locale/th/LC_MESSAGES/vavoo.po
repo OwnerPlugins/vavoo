@@ -497,6 +497,10 @@ msgstr "ออกและเปิดปลั๊กอินอีกครั
 msgid "Export failed: {}"
 msgstr "การส่งออกล้มเหลว: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- ช่อดอกไม้ประเทศ"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "การส่งออกเริ่มต้นขึ้น ช่อดอกไม้จะมีจำหน่ายเร็วๆ นี้"
 
@@ -529,6 +533,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "รายการโปรด"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "รายการโปรด"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "พบ: {} ช่อง"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "รายการโปรด"
 
 #, fuzzy
@@ -753,6 +769,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "โปรดลองช่องอื่น"
 
+#, fuzzy
+msgid "Move the country"
+msgstr "โปรดลองช่องอื่น"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- ช่อดอกไม้ประเทศ"
+
 msgid "Movie Services Reference"
 msgstr "การอ้างอิงบริการภาพยนตร์"
 
@@ -760,6 +784,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -870,6 +897,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "ไม่มีสิ่งใดที่จะลบสำหรับ: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "ไม่มีสิ่งใดที่จะลบสำหรับ: {}"
 
@@ -953,6 +984,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1214,6 +1248,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "ลบช่อดอกไม้ที่ส่งออกสำหรับประเทศ/หมวดหมู่นี้ใช่ไหม"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- ช่อดอกไม้ประเทศ"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "การส่งออกล้มเหลว: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- ช่อดอกไม้ประเทศ"
 
@@ -1450,6 +1492,12 @@ msgstr "ช่องนี้ไม่สามารถเล่นได้"
 msgid "The favourites"
 msgstr "รายการโปรด"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "คีย์บอร์ด"
@@ -1522,6 +1570,10 @@ msgstr "ไม่มีรายการที่มีอยู่"
 #, fuzzy
 msgid "Update now?"
 msgstr "เริ่มอัพเดต EPG ตอนนี้เลย?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "เพิ่มในรายการโปรด: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1668,6 +1720,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "PIN การควบคุมโดยผู้ปกครอง"
 
 msgid "{} min"
 msgstr ""

@@ -497,6 +497,10 @@ msgstr "برای دیدن پس‌زمینه جدید از افزونه خارج 
 msgid "Export failed: {}"
 msgstr "صادر نشد: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- دسته گل های کشور"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "صادرات آغاز شد. دسته گل به زودی در دسترس خواهد بود."
 
@@ -529,6 +533,18 @@ msgid "Fav"
 msgstr "مورد علاقه"
 
 msgid "Favourites"
+msgstr "موارد دلخواه"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "موارد دلخواه"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "پیدا شد: {} کانال"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "موارد دلخواه"
 
 #, fuzzy
@@ -753,6 +769,14 @@ msgstr "آن را به آن مکان منتقل کنید"
 msgid "Move the channel"
 msgstr "لطفا کانال دیگری را امتحان کنید."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "نمایش / پنهان کردن کشور"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- دسته گل های کشور"
+
 msgid "Movie Services Reference"
 msgstr "مرجع خدمات فیلم"
 
@@ -760,6 +784,10 @@ msgid "Movie folder ({})"
 msgstr "پوشه فیلم ({})"
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr "جابجایی {}: ▲▼، ◄► یک صفحه، یک عدد. باشه تا تموم بشه"
+
+#, fuzzy
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr "جابجایی {}: ▲▼، ◄► یک صفحه، یک عدد. باشه تا تموم بشه"
 
 msgid "Network (%s) - other devices on the LAN"
@@ -870,6 +898,10 @@ msgstr "اکنون نه: یک ضبط در حال اجرا است"
 msgid "Nothing is playing in the window"
 msgstr "هیچ چیز در پنجره پخش نمی شود"
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "چیزی برای حذف وجود ندارد: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "چیزی برای حذف وجود ندارد: {}"
 
@@ -954,6 +986,9 @@ msgstr "گزینه ها"
 
 msgid "Orbit - teal cockpit"
 msgstr "مدار - کابین خلبان سبز رنگ"
+
+msgid "Other"
+msgstr ""
 
 msgid "PIN removed"
 msgstr "پین حذف شد"
@@ -1214,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "دسته گل صادر شده برای این کشور/رده حذف شود؟"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- دسته گل های کشور"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "صادر نشد: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- دسته گل های کشور"
 
@@ -1450,6 +1493,12 @@ msgstr "این کانال قابل پخش نیست"
 msgid "The favourites"
 msgstr "موارد دلخواه"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "صفحه کلید"
@@ -1522,6 +1571,10 @@ msgstr "هیچ موردی در دسترس نیست"
 #, fuzzy
 msgid "Update now?"
 msgstr "به‌روزرسانی EPG اکنون شروع شود؟"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "به موارد دلخواه اضافه شد: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1668,6 +1721,10 @@ msgstr "{} پیدا شد"
 
 msgid "{} free"
 msgstr "{} رایگان"
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "پین کنترل والدین"
 
 msgid "{} min"
 msgstr "{} دقیقه"

@@ -506,6 +506,10 @@ msgstr "退出并重新打开插件即可看到新的背景。"
 msgid "Export failed: {}"
 msgstr "导出失败：{}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- 乡村花束"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "出口开始。花束即将上市。"
 
@@ -538,6 +542,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "收藏夹"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "收藏夹"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "找到：{} 个频道"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "收藏夹"
 
 #, fuzzy
@@ -762,6 +778,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "请尝试其他频道。"
 
+#, fuzzy
+msgid "Move the country"
+msgstr "请尝试其他频道。"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- 乡村花束"
+
 msgid "Movie Services Reference"
 msgstr "电影服务参考"
 
@@ -769,6 +793,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -881,6 +908,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "没有要删除的内容：{}"
+
 msgid "Nothing to remove for: {}"
 msgstr "没有要删除的内容：{}"
 
@@ -964,6 +995,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1225,6 +1259,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "删除该国家/类别的导出花束？"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- 乡村花束"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "导出失败：{}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- 乡村花束"
 
@@ -1463,6 +1505,12 @@ msgstr "该频道无法播放"
 msgid "The favourites"
 msgstr "收藏夹"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "键盘"
@@ -1535,6 +1583,10 @@ msgstr "没有可用的项目"
 #, fuzzy
 msgid "Update now?"
 msgstr "现在开始EPG更新吗？"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "添加到收藏夹：{}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1683,6 +1735,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "家长控制 PIN 码"
 
 msgid "{} min"
 msgstr ""

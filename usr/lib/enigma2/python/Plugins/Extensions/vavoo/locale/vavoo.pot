@@ -465,6 +465,9 @@ msgstr ""
 msgid "Export failed: {}"
 msgstr ""
 
+msgid "Export favourites as a bouquet"
+msgstr ""
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr ""
 
@@ -496,6 +499,15 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr ""
+
+msgid "Favourites bouquet removed"
+msgstr ""
+
+msgid "Favourites bouquet: {} channels"
+msgstr ""
+
+msgid "Favourites by country"
 msgstr ""
 
 msgid "Favourites cleared"
@@ -711,6 +723,12 @@ msgstr ""
 msgid "Move the channel"
 msgstr ""
 
+msgid "Move the country"
+msgstr ""
+
+msgid "Move this country"
+msgstr ""
+
 msgid "Movie Services Reference"
 msgstr ""
 
@@ -718,6 +736,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -819,6 +840,9 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+msgid "Nothing to remove"
+msgstr ""
+
 msgid "Nothing to remove for: {}"
 msgstr ""
 
@@ -898,6 +922,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1140,6 +1167,12 @@ msgstr ""
 msgid "Remove the exported bouquet for this country/category?"
 msgstr ""
 
+msgid "Remove the favourites bouquet"
+msgstr ""
+
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr ""
+
 msgid "Remove this country's bouquet"
 msgstr ""
 
@@ -1362,6 +1395,12 @@ msgstr ""
 msgid "The favourites"
 msgstr ""
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 msgid "The keyboard"
 msgstr ""
 
@@ -1429,6 +1468,9 @@ msgid "Update Available"
 msgstr ""
 
 msgid "Update now?"
+msgstr ""
+
+msgid "Update the favourites bouquet"
 msgstr ""
 
 msgid "Updating Vavoo Stream Live..."
@@ -1567,6 +1609,9 @@ msgid "{} found"
 msgstr ""
 
 msgid "{} free"
+msgstr ""
+
+msgid "{} left out (Parental Control)"
 msgstr ""
 
 msgid "{} min"

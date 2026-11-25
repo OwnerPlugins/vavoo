@@ -502,6 +502,10 @@ msgstr "Yeni arka planı görmek için eklentiden çıkın ve yeniden açın."
 msgid "Export failed: {}"
 msgstr "Dışa aktarma başarısız: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- Ülke buketleri"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Dışa aktarma başladı. Buket kısa sürede hazır olacak."
 
@@ -534,6 +538,18 @@ msgid "Fav"
 msgstr ""
 
 msgid "Favourites"
+msgstr "Favoriler"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "Favoriler"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "Bulunan: {} kanal"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "Favoriler"
 
 #, fuzzy
@@ -758,6 +774,14 @@ msgstr ""
 msgid "Move the channel"
 msgstr "Lütfen başka bir kanal deneyin."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "Lütfen başka bir kanal deneyin."
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- Ülke buketleri"
+
 msgid "Movie Services Reference"
 msgstr "Film Servis Referansı"
 
@@ -765,6 +789,9 @@ msgid "Movie folder ({})"
 msgstr ""
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr ""
+
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr ""
 
 msgid "Network (%s) - other devices on the LAN"
@@ -875,6 +902,10 @@ msgstr ""
 msgid "Nothing is playing in the window"
 msgstr ""
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "Şunun için kaldırılacak bir şey yok: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "Şunun için kaldırılacak bir şey yok: {}"
 
@@ -958,6 +989,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Orbit - teal cockpit"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "PIN removed"
@@ -1219,6 +1253,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Bu ülke/kategori için dışa aktarılan buket kaldırılsın mı?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- Ülke buketleri"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "Dışa aktarma başarısız: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- Ülke buketleri"
 
@@ -1455,6 +1497,12 @@ msgstr "Bu kanal oynatılamıyor"
 msgid "The favourites"
 msgstr "Favoriler"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "Klavye"
@@ -1527,6 +1575,10 @@ msgstr "Öğe mevcut değil"
 #, fuzzy
 msgid "Update now?"
 msgstr "EPG güncellemesi şimdi başlatılsın mı?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "Favorilere eklendi: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1673,6 +1725,10 @@ msgstr ""
 
 msgid "{} free"
 msgstr ""
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "Ebeveyn Kontrolü PIN'i"
 
 msgid "{} min"
 msgstr ""

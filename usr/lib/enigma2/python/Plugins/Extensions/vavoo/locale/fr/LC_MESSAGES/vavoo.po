@@ -515,6 +515,10 @@ msgstr "Quittez et rouvrez le plugin pour voir le nouvel arrière-plan."
 msgid "Export failed: {}"
 msgstr "Échec de l'exportation : %s"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- Bouquets par pays"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "Exportation démarrée. Le bouquet sera disponible sous peu."
 
@@ -547,6 +551,18 @@ msgid "Fav"
 msgstr "Favoris"
 
 msgid "Favourites"
+msgstr "Favoris"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "Favoris"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "Trouvé : {} chaînes"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "Favoris"
 
 #, fuzzy
@@ -772,6 +788,14 @@ msgstr "Déplacez-le à cet endroit"
 msgid "Move the channel"
 msgstr "Veuillez essayer une autre chaîne."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "Afficher/masquer le pays"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- Bouquets par pays"
+
 msgid "Movie Services Reference"
 msgstr "Référence des services cinématographiques"
 
@@ -779,6 +803,10 @@ msgid "Movie folder ({})"
 msgstr "Dossier de film ({})"
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr "Déplacement {} : ▲▼, ◄► une page, un numéro ; OK pour finir"
+
+#, fuzzy
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr "Déplacement {} : ▲▼, ◄► une page, un numéro ; OK pour finir"
 
 msgid "Network (%s) - other devices on the LAN"
@@ -889,6 +917,10 @@ msgstr "Pas maintenant : un enregistrement est en cours"
 msgid "Nothing is playing in the window"
 msgstr "Rien ne joue dans la fenêtre"
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "Rien à supprimer pour : {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "Rien à supprimer pour : {}"
 
@@ -973,6 +1005,9 @@ msgstr "Possibilités"
 
 msgid "Orbit - teal cockpit"
 msgstr "Orbite - cockpit bleu sarcelle"
+
+msgid "Other"
+msgstr ""
 
 msgid "PIN removed"
 msgstr ""
@@ -1233,6 +1268,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "Supprimer le bouquet exporté pour ce pays/catégorie ?"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- Bouquets par pays"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "Échec de l'exportation : %s"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- Bouquets par pays"
 
@@ -1471,6 +1514,12 @@ msgstr "Cette chaîne ne peut pas être diffusée"
 msgid "The favourites"
 msgstr "Favoris"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "Clavier"
@@ -1544,6 +1593,10 @@ msgstr "Aucun article disponible"
 #, fuzzy
 msgid "Update now?"
 msgstr "Démarrer la mise à jour de l'EPG maintenant ?"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "Ajouté aux favoris : {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1692,6 +1745,10 @@ msgstr "{} trouvé"
 
 msgid "{} free"
 msgstr "{} gratuit"
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "Code PIN du contrôle parental"
 
 msgid "{} min"
 msgstr "{} minutes"

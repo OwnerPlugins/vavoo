@@ -497,6 +497,10 @@ msgstr "اخرج من المكوّن الإضافي وأعد فتحه لرؤية
 msgid "Export failed: {}"
 msgstr "فشل التصدير: {}"
 
+#, fuzzy
+msgid "Export favourites as a bouquet"
+msgstr "- باقات الدول"
+
 msgid "Export started. Bouquet will be available shortly."
 msgstr "بدأ التصدير. ستكون الباقة متاحة قريبا."
 
@@ -529,6 +533,18 @@ msgid "Fav"
 msgstr "مفضل"
 
 msgid "Favourites"
+msgstr "المفضلة"
+
+#, fuzzy
+msgid "Favourites bouquet removed"
+msgstr "المفضلة"
+
+#, fuzzy
+msgid "Favourites bouquet: {} channels"
+msgstr "تم العثور: {} قناة"
+
+#, fuzzy
+msgid "Favourites by country"
 msgstr "المفضلة"
 
 #, fuzzy
@@ -753,6 +769,14 @@ msgstr "نقله إلى ذلك المكان"
 msgid "Move the channel"
 msgstr "الرجاء تجربة قناة أخرى."
 
+#, fuzzy
+msgid "Move the country"
+msgstr "إظهار/إخفاء البلد"
+
+#, fuzzy
+msgid "Move this country"
+msgstr "- باقات الدول"
+
 msgid "Movie Services Reference"
 msgstr "مرجع خدمات الأفلام"
 
@@ -760,6 +784,10 @@ msgid "Movie folder ({})"
 msgstr "مجلد الفيلم ({})"
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
+msgstr "متحرك {}: ▲▼، ◄► صفحة، رقم؛ موافق على الانتهاء"
+
+#, fuzzy
+msgid "Moving {}: ▲▼; OK to finish"
 msgstr "متحرك {}: ▲▼، ◄► صفحة، رقم؛ موافق على الانتهاء"
 
 msgid "Network (%s) - other devices on the LAN"
@@ -870,6 +898,10 @@ msgstr "ليس الآن: التسجيل قيد التشغيل"
 msgid "Nothing is playing in the window"
 msgstr "لا يوجد شيء يلعب في النافذة"
 
+#, fuzzy
+msgid "Nothing to remove"
+msgstr "لا يوجد شيء يمكن إزالته من أجل: {}"
+
 msgid "Nothing to remove for: {}"
 msgstr "لا يوجد شيء يمكن إزالته من أجل: {}"
 
@@ -954,6 +986,9 @@ msgstr "خيارات"
 
 msgid "Orbit - teal cockpit"
 msgstr "المدار - قمرة القيادة باللون الأزرق المخضر"
+
+msgid "Other"
+msgstr ""
 
 msgid "PIN removed"
 msgstr "تمت إزالة رقم التعريف الشخصي"
@@ -1214,6 +1249,14 @@ msgid "Remove the exported bouquet for this country/category?"
 msgstr "هل تريد إزالة الباقة المصدرة لهذه الدولة/الفئة؟"
 
 #, fuzzy
+msgid "Remove the favourites bouquet"
+msgstr "- باقات الدول"
+
+#, fuzzy
+msgid "Remove the favourites bouquet from the channel list?"
+msgstr "فشل التصدير: {}"
+
+#, fuzzy
 msgid "Remove this country's bouquet"
 msgstr "- باقات الدول"
 
@@ -1450,6 +1493,12 @@ msgstr "لا يمكن تشغيل هذه القناة"
 msgid "The favourites"
 msgstr "المفضلة"
 
+msgid "The favourites bouquet could not be written"
+msgstr ""
+
+msgid "The favourites under a title per country, as in the favourites bouquet. Off: one list in your order."
+msgstr ""
+
 #, fuzzy
 msgid "The keyboard"
 msgstr "لوحة المفاتيح"
@@ -1522,6 +1571,10 @@ msgstr "لا توجد عناصر متاحة"
 #, fuzzy
 msgid "Update now?"
 msgstr "بدء تحديث EPG الآن؟"
+
+#, fuzzy
+msgid "Update the favourites bouquet"
+msgstr "تمت الإضافة إلى المفضلة: {}"
 
 #, fuzzy
 msgid "Updating Vavoo Stream Live..."
@@ -1668,6 +1721,10 @@ msgstr "{} وجد"
 
 msgid "{} free"
 msgstr "{} حر"
+
+#, fuzzy
+msgid "{} left out (Parental Control)"
+msgstr "رقم التعريف الشخصي للرقابة الأبوية"
 
 msgid "{} min"
 msgstr "{} دقيقة"
