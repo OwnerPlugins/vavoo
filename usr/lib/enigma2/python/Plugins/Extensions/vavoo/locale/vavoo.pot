@@ -759,6 +759,9 @@ msgstr ""
 msgid "No changelog provided."
 msgstr ""
 
+msgid "No channels"
+msgstr ""
+
 msgid "No channels found"
 msgstr ""
 
@@ -766,6 +769,9 @@ msgid "No channels found for: %s"
 msgstr ""
 
 msgid "No channels watched yet"
+msgstr ""
+
+msgid "No channels: {}"
 msgstr ""
 
 msgid "No favourites"
@@ -850,6 +856,12 @@ msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guid
 msgstr ""
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
+msgstr ""
+
+msgid "OK: Reload List"
+msgstr ""
+
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
 msgstr ""
 
 msgid "Off"
@@ -1482,7 +1494,7 @@ msgstr ""
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr ""
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr ""
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1563,6 +1575,9 @@ msgstr ""
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr ""
+
 msgid "{} of {} countries shown"
 msgstr ""
 
@@ -1579,6 +1594,9 @@ msgid "★ Favourites"
 msgstr ""
 
 msgid "✗ Error"
+msgstr ""
+
+msgid "✗ No channels"
 msgstr ""
 
 msgid "✗ Proxy Error"

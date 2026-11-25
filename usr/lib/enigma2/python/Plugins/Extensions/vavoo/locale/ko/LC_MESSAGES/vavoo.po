@@ -806,6 +806,10 @@ msgstr "채널을 찾을 수 없습니다"
 msgid "No changelog provided."
 msgstr "채널을 찾을 수 없습니다"
 
+#, fuzzy
+msgid "No channels"
+msgstr "발견됨: {}개 채널"
+
 msgid "No channels found"
 msgstr "채널을 찾을 수 없습니다"
 
@@ -814,6 +818,10 @@ msgstr "%s에 대한 채널을 찾을 수 없습니다."
 
 #, fuzzy
 msgid "No channels watched yet"
+msgstr "채널을 찾을 수 없습니다"
+
+#, fuzzy
+msgid "No channels: {}"
 msgstr "채널을 찾을 수 없습니다"
 
 #, fuzzy
@@ -903,6 +911,14 @@ msgstr ""
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
 msgstr ""
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "부케를 다시 로드하세요"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "카탈로그/스트림 소스"
 
 msgid "Off"
 msgstr ""
@@ -1574,7 +1590,8 @@ msgstr ""
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr ""
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "채널과 스트림을 로드할 서비스입니다. Auto는 먼저 Geil을 시도하고 사용할 수 없는 경우 Vavoo로 대체합니다. 다른 두 가지 옵션은 정확히 하나의 소스에 고정합니다. 저장 시 적용됩니다(프록시가 실행 중인 경우 다시 시작)."
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1659,6 +1676,9 @@ msgstr ""
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr ""
+
 msgid "{} of {} countries shown"
 msgstr ""
 
@@ -1677,6 +1697,10 @@ msgstr "즐겨찾기"
 
 msgid "✗ Error"
 msgstr "✗ 오류"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "발견됨: {}개 채널"
 
 msgid "✗ Proxy Error"
 msgstr "✗ 프록시 오류"

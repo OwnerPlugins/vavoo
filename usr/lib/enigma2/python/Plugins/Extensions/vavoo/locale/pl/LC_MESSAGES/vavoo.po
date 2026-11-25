@@ -820,6 +820,10 @@ msgstr "Nie znaleziono kanałów"
 msgid "No changelog provided."
 msgstr "Nie znaleziono kanałów"
 
+#, fuzzy
+msgid "No channels"
+msgstr "Znaleziono: {} kanałów"
+
 msgid "No channels found"
 msgstr "Nie znaleziono kanałów"
 
@@ -828,6 +832,10 @@ msgstr "Nie znaleziono kanałów dla: %s"
 
 #, fuzzy
 msgid "No channels watched yet"
+msgstr "Nie znaleziono kanałów"
+
+#, fuzzy
+msgid "No channels: {}"
 msgstr "Nie znaleziono kanałów"
 
 #, fuzzy
@@ -917,6 +925,14 @@ msgstr ""
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
 msgstr ""
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "Przeładuj pakiet"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "Katalog/źródło strumienia"
 
 msgid "Off"
 msgstr ""
@@ -1589,7 +1605,8 @@ msgstr ""
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr ""
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "Z której usługi należy ładować kanały i strumienie. Auto najpierw wypróbowuje Geil, a jeśli jest niedostępny, wraca do Vavoo; pozostałe dwie opcje przypinają go dokładnie do tego jednego źródła. Działa po zapisaniu (restartuje serwer proxy, jeśli działa)."
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1674,6 +1691,9 @@ msgstr ""
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr ""
+
 msgid "{} of {} countries shown"
 msgstr ""
 
@@ -1692,6 +1712,10 @@ msgstr "Ulubione"
 
 msgid "✗ Error"
 msgstr "✗ Błąd"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "Znaleziono: {} kanałów"
 
 msgid "✗ Proxy Error"
 msgstr "✗ Błąd serwera proxy"

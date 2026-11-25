@@ -805,6 +805,10 @@ msgstr "কোনো চ্যানেল পাওয়া যায়নি
 msgid "No changelog provided."
 msgstr "কোনো চ্যানেল পাওয়া যায়নি"
 
+#, fuzzy
+msgid "No channels"
+msgstr "পাওয়া গেছে: {} চ্যানেল"
+
 msgid "No channels found"
 msgstr "কোনো চ্যানেল পাওয়া যায়নি"
 
@@ -813,6 +817,10 @@ msgstr "এর জন্য কোনো চ্যানেল পাওয়�
 
 #, fuzzy
 msgid "No channels watched yet"
+msgstr "কোনো চ্যানেল পাওয়া যায়নি"
+
+#, fuzzy
+msgid "No channels: {}"
 msgstr "কোনো চ্যানেল পাওয়া যায়নি"
 
 #, fuzzy
@@ -902,6 +910,14 @@ msgstr "ওকে বার · CH± জ্যাপ · সবুজ পছন্
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
 msgstr "ঠিক আছে তালিকার পাশের ছোট উইন্ডোতে চ্যানেলটি চালায়; ঠিক আছে আবার এটিতে পূর্ণ পর্দা খোলে (নীল সরাসরি পূর্ণ পর্দায় যায়)। বন্ধ: ঠিক আছে একবারে পূর্ণ স্ক্রীন খোলে।"
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "বুকেট পুনরায় লোড করুন"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "ক্যাটালগ/স্ট্রিম সোর্স"
 
 msgid "Off"
 msgstr "বন্ধ"
@@ -1573,7 +1589,8 @@ msgstr "স্বাগতম! প্রধান তালিকার জন�
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr "যেখানে রেকর্ডিং যায়: Enigma2 এর মুভি ফোল্ডার, বা অন্য ডিস্ক। তারা বক্সের নিজস্ব সিনেমা তালিকায়ও দেখায়।"
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "কোন পরিষেবা থেকে চ্যানেল এবং স্ট্রিম লোড করতে হবে। অটো প্রথমে Geil চেষ্টা করে এবং এটি অনুপলব্ধ হলে Vavoo ফিরে পড়ে; অন্য দুটি বিকল্প এটিকে ঠিক সেই একটি উৎসে পিন করে। সংরক্ষণের উপর প্রভাব ফেলে (যদি এটি চলমান থাকে তবে প্রক্সিটি পুনরায় চালু করে)।"
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1658,6 +1675,9 @@ msgstr "{} মিনিট"
 msgid "{} min left"
 msgstr "{} মিনিট বাকি"
 
+msgid "{} not answering"
+msgstr "{} উত্তর দিচ্ছে না"
+
 msgid "{} of {} countries shown"
 msgstr "{} দেশের মধ্যে {}টি দেখানো হয়েছে৷"
 
@@ -1676,6 +1696,10 @@ msgstr "প্রিয়"
 
 msgid "✗ Error"
 msgstr "✗ ত্রুটি"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "পাওয়া গেছে: {} চ্যানেল"
 
 msgid "✗ Proxy Error"
 msgstr "✗ প্রক্সি ত্রুটি৷"

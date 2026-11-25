@@ -805,6 +805,10 @@ msgstr "ไม่พบช่อง"
 msgid "No changelog provided."
 msgstr "ไม่พบช่อง"
 
+#, fuzzy
+msgid "No channels"
+msgstr "พบ: {} ช่อง"
+
 msgid "No channels found"
 msgstr "ไม่พบช่อง"
 
@@ -813,6 +817,10 @@ msgstr "ไม่พบช่องสำหรับ: %s"
 
 #, fuzzy
 msgid "No channels watched yet"
+msgstr "ไม่พบช่อง"
+
+#, fuzzy
+msgid "No channels: {}"
 msgstr "ไม่พบช่อง"
 
 #, fuzzy
@@ -902,6 +910,14 @@ msgstr ""
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
 msgstr ""
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "โหลดช่อดอกไม้อีกครั้ง"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "แค็ตตาล็อก/แหล่งที่มาของสตรีม"
 
 msgid "Off"
 msgstr ""
@@ -1573,7 +1589,8 @@ msgstr ""
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
 msgstr ""
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "บริการใดที่จะโหลดช่องและสตรีม Auto ลองใช้ Geil ก่อนแล้วจึงกลับไปหา Vavoo หากไม่พร้อมใช้งาน อีกสองตัวเลือกปักหมุดไว้กับแหล่งเดียว มีผลเมื่อบันทึก (รีสตาร์ทพร็อกซีหากทำงานอยู่)"
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
@@ -1658,6 +1675,9 @@ msgstr ""
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr ""
+
 msgid "{} of {} countries shown"
 msgstr ""
 
@@ -1676,6 +1696,10 @@ msgstr "รายการโปรด"
 
 msgid "✗ Error"
 msgstr "✗ เกิดข้อผิดพลาด"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "พบ: {} ช่อง"
 
 msgid "✗ Proxy Error"
 msgstr "✗ ข้อผิดพลาดเกี่ยวกับพร็อกซี"

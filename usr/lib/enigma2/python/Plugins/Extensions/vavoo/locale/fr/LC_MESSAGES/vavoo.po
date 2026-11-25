@@ -29,7 +29,7 @@ msgid "(current)"
 msgstr "(actuel)"
 
 msgid "(token expiring)"
-msgstr ""
+msgstr "(jeton expirant)"
 
 msgid "(you have v{})"
 msgstr "(vous avez v{})"
@@ -104,51 +104,51 @@ msgid "- {} entries updated"
 msgstr "- {} entrées mises à jour"
 
 msgid "0-9: the PIN  ·  ◄ delete  ·  EXIT cancel"
-msgstr ""
+msgstr "0-9 : le code PIN · ◄ supprimer · SORTIR annuler"
 
 msgid "10 seconds back / on"
-msgstr ""
+msgstr "10 secondes de retour / marche"
 
 msgid "10 seconds back / on (paused)"
-msgstr ""
+msgstr "10 secondes de retour/marche (en pause)"
 
 msgid "12 hours"
-msgstr ""
+msgstr "12 heures"
 
 msgid "24 hours"
-msgstr ""
+msgstr "24 heures"
 
 msgid "30 seconds back / on"
-msgstr ""
+msgstr "30 secondes de retour/allumage"
 
 msgid "30 seconds back / on (paused)"
-msgstr ""
+msgstr "30 secondes de retour/marche (en pause)"
 
 msgid "? Proxy Unknown"
 msgstr "? Proxy inconnu"
 
 msgid "A 4-digit PIN for adult channels, chosen countries and (optionally) the settings. Once entered, all is open for 15 minutes or until the plugin is left."
-msgstr ""
+msgstr "Un code PIN à 4 chiffres pour les chaînes adultes, les pays choisis et (éventuellement) les paramètres. Une fois entré, tout est ouvert pendant 15 minutes ou jusqu'à ce que le plugin soit quitté."
 
 msgid "A country whose channels come in categories (Sport, News...) lists them first: All channels, the categories, General."
-msgstr ""
+msgstr "Un pays dont les chaînes sont classées en catégories (Sport, News...) les liste en premier : Toutes les chaînes, les catégories, Général."
 
 msgid "A programme to come: remind / record / watch"
-msgstr ""
+msgstr "Un programme à venir : rappeler / enregistrer / regarder"
 
 #, fuzzy
 msgid "A space"
 msgstr "Espace"
 
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #, fuzzy
 msgid "Add / remove favourite"
 msgstr "Ajouté aux favoris : {}"
 
 msgid "Add Fav"
-msgstr ""
+msgstr "Ajouter un favori"
 
 #, fuzzy
 msgid "Add to favourites"
@@ -169,7 +169,7 @@ msgid "All countries (%d)"
 msgstr "Tous les pays (%d)"
 
 msgid "All settings ({} more)"
-msgstr ""
+msgstr "Tous les paramètres ({} plus)"
 
 msgid "An export for another country is already in progress. Please wait."
 msgstr "Une exportation pour un autre pays est déjà en cours. Veuillez patienter."
@@ -178,22 +178,22 @@ msgid "An export is in progress. Please wait before fixing the cache."
 msgstr "Une exportation est en cours. Veuillez patienter avant de réparer le cache."
 
 msgid "An hour back / on"
-msgstr ""
+msgstr "Une heure en arrière/en marche"
 
 msgid "Anonymous startup/heartbeat ping only (session id, version, timestamp - no personal data). Disable to opt out."
 msgstr "Ping de démarrage/pulsation anonyme uniquement (identifiant de session, version, horodatage - aucune donnée personnelle). Désactivez pour vous désinscrire."
 
 msgid "Aspect ratio"
-msgstr ""
+msgstr "Rapport hauteur/largeur"
 
 msgid "At an interval hours or fixed time"
 msgstr "À intervalles d'heures ou à heure fixe"
 
 msgid "Audio track"
-msgstr ""
+msgstr "Piste audio"
 
 msgid "Audio track / subtitles"
-msgstr ""
+msgstr "Piste audio / sous-titres"
 
 msgid "Author:"
 msgstr "Auteur :"
@@ -202,23 +202,23 @@ msgid "Auto"
 msgstr ""
 
 msgid "BLUE"
-msgstr ""
+msgstr "BLEU"
 
 msgid "BLUE / PLAY"
-msgstr ""
+msgstr "BLEU / JOUER"
 
 #, fuzzy
 msgid "Back"
 msgstr "Retour arrière"
 
 msgid "Back (paused: to live first)"
-msgstr ""
+msgstr "Retour (en pause : vivre en premier)"
 
 msgid "Back (without saving)"
-msgstr ""
+msgstr "Retour (sans sauvegarder)"
 
 msgid "Back to the settings most people change."
-msgstr ""
+msgstr "Revenons aux paramètres que la plupart des gens modifient."
 
 #, fuzzy
 msgid "Background"
@@ -228,7 +228,7 @@ msgid "Backspace"
 msgstr "Retour arrière"
 
 msgid "Backup Settings & Favourites"
-msgstr ""
+msgstr "Paramètres de sauvegarde et favoris"
 
 msgid "Bottom"
 msgstr "Bas"
@@ -262,10 +262,10 @@ msgid "Cache is already in correct format. No changes needed."
 msgstr "Le cache est déjà au format correct. Aucun changement nécessaire."
 
 msgid "Can't record (not enough free space?)"
-msgstr ""
+msgstr "Impossible d'enregistrer (pas assez d'espace libre ?)"
 
 msgid "Can't record: no disk (HDD / USB) found"
-msgstr ""
+msgstr "Impossible d'enregistrer : aucun disque (HDD / USB) trouvé"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -296,10 +296,10 @@ msgid "Change it"
 msgstr "Chaînes : %d"
 
 msgid "Change the PIN"
-msgstr ""
+msgstr "Changer le code PIN"
 
 msgid "Change the setting / lock the country"
-msgstr ""
+msgstr "Modifier le paramètre / verrouiller le pays"
 
 #, fuzzy
 msgid "Changelog:"
@@ -309,7 +309,7 @@ msgid "Changelog: ({}/{}, use up/down)"
 msgstr "Journal des modifications : ({}/{}, utilisez haut/bas)"
 
 msgid "Changes not saved: GREEN saves, press again to leave without saving"
-msgstr ""
+msgstr "Modifications non enregistrées : VERT enregistre, appuyez à nouveau pour quitter sans enregistrer"
 
 #, fuzzy
 msgid "Channel"
@@ -320,32 +320,32 @@ msgid "Channel Logos"
 msgstr "Chaînes : %d"
 
 msgid "Channel list updated: {} channels"
-msgstr ""
+msgstr "Liste des chaînes mise à jour : {} chaînes"
 
 msgid "Channels: %d"
 msgstr "Chaînes : %d"
 
 msgid "Check it"
-msgstr ""
+msgstr "Vérifiez-le"
 
 msgid "Checking proxy..."
 msgstr "Vérification du proxy..."
 
 msgid "Choose a backup: its settings and favourites replace the ones here."
-msgstr ""
+msgstr "Choisissez une sauvegarde : ses paramètres et favoris remplacent ceux ici."
 
 #, fuzzy
 msgid "Choose countries"
 msgstr "Pays"
 
 msgid "Classic"
-msgstr ""
+msgstr "Classique"
 
 msgid "Classic - the original look"
-msgstr ""
+msgstr "Classique - le look original"
 
 msgid "Classic's background (Oktus or Kiddac). Takes effect when the plugin is opened again."
-msgstr ""
+msgstr "Fond de classique (Oktus ou Kiddac). Prend effet lorsque le plugin est à nouveau ouvert."
 
 #, fuzzy
 msgid "Clear"
@@ -359,19 +359,19 @@ msgid "Clear Favourites"
 msgstr "Favoris"
 
 msgid "Clear recently watched"
-msgstr ""
+msgstr "Effacer récemment regardé"
 
 msgid "Clock Format"
-msgstr ""
+msgstr "Format de l'horloge"
 
 msgid "Clock in the top-right corner and programme times. Not used by Classic's own clock."
-msgstr ""
+msgstr "Horloge dans le coin supérieur droit et horaires des programmes. Non utilisé par la propre horloge de Classic."
 
 msgid "Close"
 msgstr "Fermer"
 
 msgid "Close the player"
-msgstr ""
+msgstr "Fermer le lecteur"
 
 msgid "Configuration saved successfully!"
 msgstr "Configuration enregistrée avec succès !"
@@ -417,19 +417,19 @@ msgid "Debug logging"
 msgstr "Journalisation du débogage"
 
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 msgid "Delete (press twice)"
-msgstr ""
+msgstr "Supprimer (appuyez deux fois)"
 
 msgid "Delete a digit"
 msgstr ""
 
 msgid "Delete a letter"
-msgstr ""
+msgstr "Supprimer une lettre"
 
 msgid "Deleted"
-msgstr ""
+msgstr "Supprimé"
 
 msgid "Do you want to export this bouquet?"
 msgstr "Voulez-vous exporter ce bouquet ?"
@@ -439,7 +439,7 @@ msgid "Do you want to fix the cache format?"
 msgstr "Voulez-vous exporter ce bouquet ?"
 
 msgid "Done"
-msgstr ""
+msgstr "Fait"
 
 #, fuzzy
 msgid "EPG import already running"
@@ -467,13 +467,13 @@ msgid "EPGImport plugin not found: {}"
 msgstr "Plugin EPGImport introuvable : {}"
 
 msgid "EXIT"
-msgstr ""
+msgstr "SORTIE"
 
 msgid "EXIT / BACK"
-msgstr ""
+msgstr "SORTIE / RETOUR"
 
 msgid "Earlier"
-msgstr ""
+msgstr "Plus tôt"
 
 msgid "Enable Vavoo EPG"
 msgstr "Activer l'EPG Vavoo"
@@ -482,7 +482,7 @@ msgid "Enter text to search..."
 msgstr "Entrez le texte à rechercher..."
 
 msgid "Enter the PIN"
-msgstr ""
+msgstr "Entrez le code PIN"
 
 #, fuzzy
 msgid "Error"
@@ -523,16 +523,16 @@ msgid "Export this country as a bouquet"
 msgstr "- Bouquets par pays"
 
 msgid "Factory reset"
-msgstr ""
+msgstr "Réinitialisation d'usine"
 
 msgid "Factory reset done"
-msgstr ""
+msgstr "Réinitialisation d'usine effectuée"
 
 msgid "Factory reset done - starting again"
-msgstr ""
+msgstr "Réinitialisation d'usine effectuée - recommencer"
 
 msgid "Factory reset..."
-msgstr ""
+msgstr "Réinitialisation d'usine..."
 
 msgid "Failed to refresh proxy token"
 msgstr "Échec de l'actualisation du jeton du proxy"
@@ -544,7 +544,7 @@ msgid "Failed: %(failed)d"
 msgstr "Échec : %(failed)d"
 
 msgid "Fav"
-msgstr ""
+msgstr "Favoris"
 
 msgid "Favourites"
 msgstr "Favoris"
@@ -554,7 +554,7 @@ msgid "Favourites cleared"
 msgstr "Favoris"
 
 msgid "Fewer settings"
-msgstr ""
+msgstr "Moins de paramètres"
 
 #, fuzzy
 msgid "Fix EPG cache"
@@ -564,19 +564,19 @@ msgid "Fixing cache format..."
 msgstr "Correction du format du cache..."
 
 msgid "Folder"
-msgstr ""
+msgstr "Dossier"
 
 msgid "Folder for {}"
-msgstr ""
+msgstr "Dossier pour {}"
 
 msgid "Folder name (e.g. Sport)"
-msgstr ""
+msgstr "Nom du dossier (par exemple Sport)"
 
 msgid "Folder renamed to {}"
-msgstr ""
+msgstr "Dossier renommé en {}"
 
 msgid "Folder {} removed - its channels stay in the favourites"
-msgstr ""
+msgstr "Dossier {} supprimé - ses chaînes restent dans les favoris"
 
 msgid "Force proxy refresh?"
 msgstr "Forcer l'actualisation du proxy ?"
@@ -585,28 +585,28 @@ msgid "Found: {} channels"
 msgstr "Trouvé : {} chaînes"
 
 msgid "Full Screen"
-msgstr ""
+msgstr "Plein écran"
 
 msgid "Full screen"
-msgstr ""
+msgstr "Plein écran"
 
 msgid "GREEN"
-msgstr ""
+msgstr "VERT"
 
 msgid "GREEN / FAV"
-msgstr ""
+msgstr "VERT / PRÉFÉRÉ"
 
 msgid "GREEN / PLAY"
-msgstr ""
+msgstr "VERT / JOUER"
 
 msgid "GREEN / TEXT"
-msgstr ""
+msgstr "VERT / TEXTE"
 
 msgid "Geil only"
 msgstr "Geil seulement"
 
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 msgid "Generate .m3u file for:"
 msgstr "Générer un fichier .m3u pour :"
@@ -628,34 +628,34 @@ msgid "Go to that channel"
 msgstr "Erreur lors du démarrage de la chaîne"
 
 msgid "Go to that row"
-msgstr ""
+msgstr "Allez à cette ligne"
 
 msgid "Group Sources"
-msgstr ""
+msgstr "Sources de groupe"
 
 msgid "Guide"
 msgstr ""
 
 msgid "Halo - frosted glass"
-msgstr ""
+msgstr "Halo - verre dépoli"
 
 msgid "Hide all"
-msgstr ""
+msgstr "Tout cacher"
 
 msgid "Hide the countries you never watch from the main list and from search."
-msgstr ""
+msgstr "Masquez les pays que vous ne regardez jamais de la liste principale et de la recherche."
 
 msgid "How often to re-match EPG and refresh bouquets, counting from now."
 msgstr "À quelle fréquence réassocier l'EPG et rafraîchir les bouquets, à partir de maintenant."
 
 msgid "IMDb / TMDB"
-msgstr ""
+msgstr "IMDb/TMDB"
 
 msgid "If set, the live playlist at /playlist.m3u requires ?key=<this value> - leave empty for no key. URL: http://%s:%d/playlist.m3u"
 msgstr "Si elle est définie, la liste de lecture en direct sur /playlist.m3u nécessite ?key=<this value> - laissez vide pour aucune clé. URL : http://%s:%d/playlist.m3u"
 
 msgid "Import EPG now"
-msgstr ""
+msgstr "Importer l'EPG maintenant"
 
 msgid "Important Notes:"
 msgstr "Notes importantes :"
@@ -664,41 +664,41 @@ msgid "Increase if proxy takes long due to VPN or slow connection."
 msgstr "Augmentez si le proxy prend du temps en raison d'un VPN ou d'une connexion lente."
 
 msgid "Keep at least one country"
-msgstr ""
+msgstr "Conserver au moins un pays"
 
 msgid "Keyboard"
 msgstr "Clavier"
 
 msgid "Keys"
-msgstr ""
+msgstr "Clés"
 
 msgid "LEFT"
-msgstr ""
+msgstr "GAUCHE"
 
 msgid "LEFT / RIGHT"
-msgstr ""
+msgstr "GAUCHE / DROITE"
 
 msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · EXIT: close"
-msgstr ""
+msgstr "GAUCHE / DROITE 10 s · JAUNE / BLEU 30 s · SORTIE : fermer"
 
 msgid "LEFT / RIGHT 10 s · YELLOW / BLUE 30 s · OK pause · MENU options · EXIT close"
-msgstr ""
+msgstr "GAUCHE / DROITE 10 s · JAUNE / BLEU 30 s · OK pause · Options MENU · SORTIE fermer"
 
 msgid "LEFT / RIGHT move · EXIT: live"
-msgstr ""
+msgstr "Déplacement GAUCHE / DROITE · SORTIE : en direct"
 
 msgid "Large"
-msgstr ""
+msgstr "Grand"
 
 msgid "Large: bigger lists, names and programme lines, easier to read from the sofa. Normal: smaller, more rows. Not used by Classic."
-msgstr ""
+msgstr "Grand : listes, noms et lignes de programme plus grands, plus faciles à lire depuis le canapé. Normal : plus petit, plus de lignes. Non utilisé par Classic."
 
 #, fuzzy
 msgid "Last channel update: %s"
 msgstr "Aucune chaîne trouvée pour : %s"
 
 msgid "Later"
-msgstr ""
+msgstr "Plus tard"
 
 #, fuzzy
 msgid "Licences"
@@ -714,10 +714,10 @@ msgid "Link in Main Menu"
 msgstr "Lien dans le menu principal"
 
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 msgid "Live"
-msgstr ""
+msgstr "En direct"
 
 #, fuzzy
 msgid "Loading EPG..."
@@ -728,14 +728,14 @@ msgid "Loading channels..."
 msgstr "Mise à jour de l'EPG..."
 
 msgid "Loading programme guide..."
-msgstr ""
+msgstr "Chargement du guide des programmes..."
 
 #, fuzzy
 msgid "Loading..."
 msgstr "Mise à jour de l'EPG..."
 
 msgid "Loading…"
-msgstr ""
+msgstr "Chargement…"
 
 msgid "Local only (127.0.0.1) - this device only"
 msgstr "Local uniquement (127.0.0.1) - cet appareil uniquement"
@@ -745,7 +745,7 @@ msgid "Lock adult channels"
 msgstr "(%d chaînes) ?"
 
 msgid "Lock the settings"
-msgstr ""
+msgstr "Verrouiller les paramètres"
 
 msgid "Locked"
 msgstr ""
@@ -763,10 +763,10 @@ msgid "Menu"
 msgstr ""
 
 msgid "Move"
-msgstr ""
+msgstr "Se déplacer"
 
 msgid "Move it to that place"
-msgstr ""
+msgstr "Déplacez-le à cet endroit"
 
 #, fuzzy
 msgid "Move the channel"
@@ -776,32 +776,32 @@ msgid "Movie Services Reference"
 msgstr "Référence des services cinématographiques"
 
 msgid "Movie folder ({})"
-msgstr ""
+msgstr "Dossier de film ({})"
 
 msgid "Moving {}: ▲▼, ◄► a page, a number; OK to finish"
-msgstr ""
+msgstr "Déplacement {} : ▲▼, ◄► une page, un numéro ; OK pour finir"
 
 msgid "Network (%s) - other devices on the LAN"
 msgstr "Réseau (%s) - autres périphériques sur le réseau local"
 
 msgid "New PIN (4 digits)"
-msgstr ""
+msgstr "Nouveau code PIN (4 chiffres)"
 
 msgid "New folder…"
-msgstr ""
+msgstr "Nouveau dossier…"
 
 #, fuzzy
 msgid "New version available: v{}"
 msgstr "Aucun article disponible"
 
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 msgid "Next / previous channel"
-msgstr ""
+msgstr "Chaîne suivante/précédente"
 
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 msgid "No IMDb/TMDB plugin found"
 msgstr "Aucun plug-in IMDb/TMDB trouvé"
@@ -810,7 +810,7 @@ msgid "No Internet connection detected. Please check your network."
 msgstr "Aucune connexion Internet détectée. Veuillez vérifier votre réseau."
 
 msgid "No PIN yet: nothing is locked until one is set."
-msgstr ""
+msgstr "Pas encore de code PIN : rien n'est verrouillé jusqu'à ce qu'un code soit défini."
 
 #, fuzzy
 msgid "No active EPG sources found in EPGImport. Please enable the Vavoo source in EPGImport settings."
@@ -824,6 +824,10 @@ msgstr "Aucune chaîne trouvée"
 msgid "No changelog provided."
 msgstr "Aucune chaîne trouvée"
 
+#, fuzzy
+msgid "No channels"
+msgstr "Trouvé : {} chaînes"
+
 msgid "No channels found"
 msgstr "Aucune chaîne trouvée"
 
@@ -835,6 +839,10 @@ msgid "No channels watched yet"
 msgstr "Aucune chaîne trouvée"
 
 #, fuzzy
+msgid "No channels: {}"
+msgstr "Aucune chaîne trouvée"
+
+#, fuzzy
 msgid "No favourites"
 msgstr "Pas encore de favoris"
 
@@ -842,10 +850,10 @@ msgid "No favourites yet"
 msgstr "Pas encore de favoris"
 
 msgid "No favourites yet. Open a country and press GREEN on a channel."
-msgstr ""
+msgstr "Pas encore de favoris. Ouvrez un pays et appuyez sur VERT sur une chaîne."
 
 msgid "No folder"
-msgstr ""
+msgstr "Aucun dossier"
 
 msgid "No items available"
 msgstr "Aucun article disponible"
@@ -858,7 +866,7 @@ msgid "No programme information"
 msgstr "Aucune information sur le programme disponible"
 
 msgid "No programme to record here"
-msgstr ""
+msgstr "Aucun programme à enregistrer ici"
 
 msgid "No selection"
 msgstr "Aucune sélection"
@@ -867,35 +875,35 @@ msgid "No valid channels for: %s"
 msgstr "Aucune chaîne valide pour : %s"
 
 msgid "Non-commercial use only, with attribution; changes shared under the same licence."
-msgstr ""
+msgstr "Utilisation non commerciale uniquement, avec attribution ; modifications partagées sous la même licence."
 
 msgid "Normal"
-msgstr ""
+msgstr "Normale"
 
 msgid "Not available on this receiver"
-msgstr ""
+msgstr "Non disponible sur ce récepteur"
 
 msgid "Not now: a recording is running"
-msgstr ""
+msgstr "Pas maintenant : un enregistrement est en cours"
 
 msgid "Nothing is playing in the window"
-msgstr ""
+msgstr "Rien ne joue dans la fenêtre"
 
 msgid "Nothing to remove for: {}"
 msgstr "Rien à supprimer pour : {}"
 
 msgid "Nothing watched yet"
-msgstr ""
+msgstr "Rien n'a encore été regardé"
 
 msgid "Nothing yet: record from the player's options, or set a recording in the guide."
-msgstr ""
+msgstr "Rien pour l'instant : enregistrez depuis les options du lecteur, ou paramétrez un enregistrement dans le guide."
 
 #, fuzzy
 msgid "Now"
 msgstr "Maintenant %s"
 
 msgid "Now, the programme's actions"
-msgstr ""
+msgstr "Désormais, les actions du programme"
 
 #, fuzzy
 msgid "Now/Next in channel list"
@@ -905,31 +913,39 @@ msgid "OK"
 msgstr "D'ACCORD"
 
 msgid "OK / GREEN / PAUSE / PLAY"
-msgstr ""
+msgstr "OK / VERT / PAUSE / LECTURE"
 
 msgid "OK / LEFT / RIGHT"
-msgstr ""
+msgstr "OK / GAUCHE / DROITE"
 
 msgid "OK / RED / EXIT"
-msgstr ""
+msgstr "OK / ROUGE / SORTIE"
 
 msgid "OK / YELLOW"
-msgstr ""
+msgstr "OK / JAUNE"
 
 msgid "OK bar · CH± zap · GREEN fav · YELLOW source · BLUE list · EPG guide · MENU options · HELP keys"
-msgstr ""
+msgstr "Barre OK · CH± zap · Favoris VERT · Source JAUNE · Liste BLEUE · Guide EPG · Options du MENU · Touches AIDE"
 
 msgid "OK plays the channel in the small window beside the list; OK again on it opens full screen (BLUE goes straight to full screen). Off: OK opens full screen at once."
-msgstr ""
+msgstr "OK lit la chaîne dans la petite fenêtre à côté de la liste ; OK encore une fois, il s'ouvre en plein écran (le BLEU passe directement en plein écran). Désactivé : OK ouvre immédiatement le plein écran."
+
+#, fuzzy
+msgid "OK: Reload List"
+msgstr "Recharger le bouquet"
+
+#, fuzzy
+msgid "OK: Settings (Catalog/Stream Source: Auto)"
+msgstr "Catalogue/Source de flux"
 
 msgid "Off"
-msgstr ""
+msgstr "Désactivé"
 
 msgid "On the last row: all settings / fewer"
-msgstr ""
+msgstr "Sur la dernière ligne : tous les paramètres / moins"
 
 msgid "On {} - watch it?"
-msgstr ""
+msgstr "Le {} – le regarder ?"
 
 msgid "Only one source available for this channel"
 msgstr "Une seule source disponible pour cette chaîne"
@@ -938,43 +954,43 @@ msgid "Only one specific country"
 msgstr "Un seul pays spécifique"
 
 msgid "Open (a row that opens a list or does something)"
-msgstr ""
+msgstr "Ouvrir (une ligne qui ouvre une liste ou fait quelque chose)"
 
 msgid "Open the category"
-msgstr ""
+msgstr "Ouvrir la catégorie"
 
 msgid "Open the country / list"
-msgstr ""
+msgstr "Ouvrir le pays/la liste"
 
 msgid "Open the folder"
-msgstr ""
+msgstr "Ouvrez le dossier"
 
 msgid "Open the last watched channel when the plugin starts."
-msgstr ""
+msgstr "Ouvrez la dernière chaîne regardée au démarrage du plugin."
 
 msgid "Options"
-msgstr ""
+msgstr "Possibilités"
 
 msgid "Orbit - teal cockpit"
-msgstr ""
+msgstr "Orbite - cockpit bleu sarcelle"
 
 msgid "PIN removed"
 msgstr ""
 
 msgid "PIN saved"
-msgstr ""
+msgstr "Code PIN enregistré"
 
 msgid "PIN set · {} countries locked"
-msgstr ""
+msgstr "Code PIN défini · {} pays verrouillés"
 
 msgid "PIN set: adult channels are locked"
-msgstr ""
+msgstr "Code PIN défini : les chaînes pour adultes sont verrouillées"
 
 msgid "PVR / FILE"
-msgstr ""
+msgstr "Enregistreur vidéo/fichier"
 
 msgid "Page up / down"
-msgstr ""
+msgstr "Page précédente/suivante"
 
 #, fuzzy
 msgid "Parental Control"
@@ -984,38 +1000,38 @@ msgid "Pause"
 msgstr ""
 
 msgid "Pause / play on"
-msgstr ""
+msgstr "Pause / lecture continue"
 
 msgid "Pause Live TV"
-msgstr ""
+msgstr "Suspendre la télévision en direct"
 
 msgid "Pause live / play on"
-msgstr ""
+msgstr "Mettre en pause le direct / continuer à jouer"
 
 msgid "Paused"
-msgstr ""
+msgstr "En pause"
 
 msgid "Periodically re-match EPG and refresh bouquets for your favorited countries in the background."
 msgstr "Ré-associez périodiquement l'EPG et actualisez les bouquets de vos pays préférés en arrière-plan."
 
 msgid "Picture: not known yet"
-msgstr ""
+msgstr "Photo : pas encore connu"
 
 msgid "Play"
-msgstr ""
+msgstr "Jouer"
 
 msgid "Play in the window (again: full screen)"
-msgstr ""
+msgstr "Jouer dans la fenêtre (encore une fois : plein écran)"
 
 #, fuzzy
 msgid "Play the channel"
 msgstr "Veuillez essayer une autre chaîne."
 
 msgid "Play the recording"
-msgstr ""
+msgstr "Lire l'enregistrement"
 
 msgid "Play the recording / cancel the timer"
-msgstr ""
+msgstr "Lire l'enregistrement / annuler la minuterie"
 
 msgid "Playlist Access Key (optional)"
 msgstr "Clé d'accès à la liste de lecture (facultatif)"
@@ -1028,25 +1044,25 @@ msgid "Press GREEN to type, YELLOW to delete"
 msgstr "Appuyez sur le bouton TEXT pour taper, BACKSPACE pour supprimer"
 
 msgid "Press again to confirm"
-msgstr ""
+msgstr "Appuyez à nouveau pour confirmer"
 
 msgid "Press again to delete"
-msgstr ""
+msgstr "Appuyez à nouveau pour supprimer"
 
 msgid "Preview Window"
-msgstr ""
+msgstr "Fenêtre d'aperçu"
 
 msgid "Prism - Vavoo's violet"
-msgstr ""
+msgstr "Prisme - Violette de Vavoo"
 
 msgid "Prism: Vavoo's violet. Halo: frosted glass over a blue aurora. Orbit: a teal cockpit display. Classic: the plugin's original skin, with its backgrounds. Takes effect when the plugin is opened again."
-msgstr ""
+msgstr "Prisme : violette de Vavoo. Halo : verre dépoli sur une aurore bleue. Orbite : un écran de cockpit bleu sarcelle. Classique : le skin original du plugin, avec ses arrière-plans. Prend effet lorsque le plugin est à nouveau ouvert."
 
 msgid "Programme"
 msgstr ""
 
 msgid "Programme guide"
-msgstr ""
+msgstr "Guide du programme"
 
 #, fuzzy
 msgid "Programme guide of the favourites"
@@ -1068,73 +1084,73 @@ msgid "Proxy token refreshed successfully"
 msgstr "Jeton du proxy actualisé avec succès"
 
 msgid "RED"
-msgstr ""
+msgstr "ROUGE"
 
 msgid "RED / EXIT"
-msgstr ""
+msgstr "ROUGE / SORTIE"
 
 msgid "RED / EXIT / BACK"
-msgstr ""
+msgstr "ROUGE / SORTIE / RETOUR"
 
 msgid "RED / REC"
-msgstr ""
+msgstr "ROUGE / ENR"
 
 msgid "RED / STOP / EXIT / BACK"
-msgstr ""
+msgstr "ROUGE / STOP / SORTIE / RETOUR"
 
 msgid "Really close without saving settings?"
 msgstr "Vraiment fermer sans enregistrer les paramètres ?"
 
 msgid "Recently watched"
-msgstr ""
+msgstr "Récemment regardé"
 
 msgid "Record"
-msgstr ""
+msgstr "Enregistrer"
 
 msgid "Record (again: stop)"
-msgstr ""
+msgstr "Enregistrer (encore : arrêter)"
 
 msgid "Record the highlighted channel (again: stop)"
-msgstr ""
+msgstr "Enregistrez la chaîne en surbrillance (encore une fois : stop)"
 
 msgid "Record the programme (again: cancel / stop)"
-msgstr ""
+msgstr "Enregistrer le programme (encore une fois : annuler/arrêter)"
 
 msgid "Recording needs ffmpeg"
-msgstr ""
+msgstr "L'enregistrement nécessite ffmpeg"
 
 msgid "Recording set: {}"
-msgstr ""
+msgstr "Ensemble d'enregistrement : {}"
 
 msgid "Recording stopped"
-msgstr ""
+msgstr "L'enregistrement s'est arrêté"
 
 msgid "Recording stopped early: {}"
-msgstr ""
+msgstr "L'enregistrement s'est arrêté prématurément : {}"
 
 msgid "Recording stopped: the disk could not be written (removed?)"
-msgstr ""
+msgstr "Enregistrement arrêté : le disque n'a pas pu être écrit (supprimé ?)"
 
 msgid "Recording stopped: the disk is nearly full"
-msgstr ""
+msgstr "Enregistrement arrêté : le disque est presque plein"
 
 msgid "Recording stopped: the disk's 4 GB file limit (FAT32)"
-msgstr ""
+msgstr "Enregistrement arrêté : limite de fichiers de 4 Go du disque (FAT32)"
 
 msgid "Recording: {}"
-msgstr ""
+msgstr "Enregistrement : {}"
 
 msgid "Recordings"
-msgstr ""
+msgstr "Enregistrements"
 
 msgid "Recordings folder"
-msgstr ""
+msgstr "Dossier des enregistrements"
 
 msgid "Recordings folder: {}"
-msgstr ""
+msgstr "Dossier des enregistrements : {}"
 
 msgid "Refresh token"
-msgstr ""
+msgstr "Jeton d'actualisation"
 
 #, fuzzy
 msgid "Reload List"
@@ -1160,17 +1176,17 @@ msgid "Reloading channel list..."
 msgstr "Retour à la liste des chaînes."
 
 msgid "Remind me"
-msgstr ""
+msgstr "Rappelle-moi"
 
 #, fuzzy
 msgid "Reminder set: {}"
 msgstr "Échec de l'exportation : %s"
 
 msgid "Reminders and recordings (●) set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
-msgstr ""
+msgstr "Rappels et enregistrements (•) définis dans le guide, ainsi que les enregistrements sur le disque. OK : lire (ou annuler un timer) - VERT : supprimer."
 
 msgid "Reminders and recordings set in the guide, and the recordings on the disk. OK: play (or cancel a timer) - GREEN: delete."
-msgstr ""
+msgstr "Rappels et enregistrements définis dans le guide, ainsi que les enregistrements sur le disque. OK : lire (ou annuler un timer) - VERT : supprimer."
 
 msgid "Remove ALL Vavoo bouquets?"
 msgstr "Supprimer TOUS les bouquets Vavoo ?"
@@ -1184,7 +1200,7 @@ msgid "Remove all Vavoo bouquets"
 msgstr "Supprimer TOUS les bouquets Vavoo ?"
 
 msgid "Remove all favourite channels (asks to confirm)."
-msgstr ""
+msgstr "Supprimez toutes les chaînes préférées (demande de confirmer)."
 
 #, fuzzy
 msgid "Remove all favourite channels?"
@@ -1211,7 +1227,7 @@ msgid "Remove from the list"
 msgstr "Échec de l'exportation : %s"
 
 msgid "Remove the PIN (unlock everything)"
-msgstr ""
+msgstr "Supprimez le code PIN (déverrouillez tout)"
 
 msgid "Remove the exported bouquet for this country/category?"
 msgstr "Supprimer le bouquet exporté pour ce pays/catégorie ?"
@@ -1232,19 +1248,19 @@ msgid "Removed from favourites: {}"
 msgstr "Échec de l'exportation : %s"
 
 msgid "Rename / delete the folder"
-msgstr ""
+msgstr "Renommer/supprimer le dossier"
 
 msgid "Rename folder"
 msgstr ""
 
 msgid "Restore from Backup"
-msgstr ""
+msgstr "Restaurer à partir d'une sauvegarde"
 
 msgid "Restored - the theme and text size change when the plugin is opened again"
-msgstr ""
+msgstr "Restauré - le thème et la taille du texte changent lorsque le plugin est à nouveau ouvert"
 
 msgid "Result"
-msgstr ""
+msgstr "Résultat"
 
 msgid "Returning to channel list."
 msgstr "Retour à la liste des chaînes."
@@ -1266,7 +1282,7 @@ msgid "Saved: {}"
 msgstr "Casse : {}"
 
 msgid "Saves the settings, the favourites (with folders and order), recently watched, the chosen sources and countries in /media/hdd, /media/usb or /media/mmc (else %s) - not parental control."
-msgstr ""
+msgstr "Enregistre les paramètres, les favoris (avec dossiers et ordre), récemment regardés, les sources et pays choisis dans /media/hdd, /media/usb ou /media/mmc (sinon %s) - pas de contrôle parental."
 
 #, fuzzy
 msgid "Schedule type:"
@@ -1277,10 +1293,10 @@ msgid "Scheduled EPG/Bouquet Update:"
 msgstr "Liste planifiée :"
 
 msgid "Scheduled recording not started: {}"
-msgstr ""
+msgstr "L'enregistrement programmé n'a pas démarré : {}"
 
 msgid "Scroll"
-msgstr ""
+msgstr "Rouleau"
 
 #, fuzzy
 msgid "Search"
@@ -1316,47 +1332,47 @@ msgid "Send Anonymous Statistics"
 msgstr "Envoyer des statistiques anonymes"
 
 msgid "Set a PIN"
-msgstr ""
+msgstr "Définir un code PIN"
 
 #, fuzzy
 msgid "Setting"
 msgstr "Redémarrer"
 
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 msgid "Settings and tools"
-msgstr ""
+msgstr "Paramètres et outils"
 
 msgid "Show / hide the bar"
-msgstr ""
+msgstr "Afficher/masquer la barre"
 
 msgid "Show / hide the country"
-msgstr ""
+msgstr "Afficher/masquer le pays"
 
 msgid "Show Counts"
-msgstr ""
+msgstr "Afficher les décomptes"
 
 msgid "Show Log"
-msgstr ""
+msgstr "Afficher le journal"
 
 msgid "Show Log (Ok to view)"
 msgstr "Afficher le journal (Ok pour afficher)"
 
 msgid "Show all"
-msgstr ""
+msgstr "Afficher tout"
 
 msgid "Show every setting: the channel sources, the proxy, EPG import, bouquets, playlists, the log..."
-msgstr ""
+msgstr "Afficher tous les paramètres : les sources des chaînes, le proxy, l'import EPG, les bouquets, les playlists, le log..."
 
 msgid "Show how many channels each country has, and how many favourites, in the main list."
-msgstr ""
+msgstr "Affichez le nombre de chaînes de chaque pays et le nombre de favoris dans la liste principale."
 
 msgid "Show the channels' logos in the lists and the player. Off: each channel's initials on a tile of its own colour (Classic: the Vavoo icon), and no logo is downloaded."
-msgstr ""
+msgstr "Afficher les logos des chaînes dans les listes et dans le lecteur. Off : les initiales de chaque chaîne sur une tuile de sa couleur (Classique : l'icône Vavoo), et aucun logo n'est téléchargé."
 
 msgid "Show the current and the next programme beside the channel list. The country's programme guide is downloaded when you open a country."
-msgstr ""
+msgstr "Afficher le programme actuel et le prochain à côté de la liste des chaînes. Le guide des programmes du pays est téléchargé lorsque vous ouvrez un pays."
 
 msgid "Show verbose DEBUG-level messages in vavoo.log (UI lifecycle, per-request detail). Takes effect immediately - leave off unless troubleshooting."
 msgstr "Afficher les messages détaillés au niveau du DEBUG dans vavoo.log (cycle de vie de l'interface utilisateur, détails par demande). Prend effet immédiatement - arrêtez-le sauf en cas de dépannage."
@@ -1365,16 +1381,16 @@ msgid "Showing all channels: {}"
 msgstr "Affichage de toutes les chaînes : {}"
 
 msgid "Sleep timer"
-msgstr ""
+msgstr "Minuterie de mise en veille"
 
 msgid "Sleep timer off"
-msgstr ""
+msgstr "Minuterie de mise en veille désactivée"
 
 msgid "Sleep timer: standby in 1 minute"
-msgstr ""
+msgstr "Minuterie de mise en veille : veille en 1 minute"
 
 msgid "Sleep timer: {} min"
-msgstr ""
+msgstr "Minuterie de mise en veille : {} minutes"
 
 msgid "Source"
 msgstr ""
@@ -1394,47 +1410,47 @@ msgid "Start with last channel"
 msgstr "Trouvé : {} chaînes"
 
 msgid "Starting now: {}"
-msgstr ""
+msgstr "À partir de maintenant : {}"
 
 #, fuzzy
 msgid "Starting the proxy..."
 msgstr "Attente du proxy..."
 
 msgid "Stop a recording that is running"
-msgstr ""
+msgstr "Arrêter un enregistrement en cours"
 
 msgid "Stop recording"
-msgstr ""
+msgstr "Arrêter l'enregistrement"
 
 msgid "Stop the window"
-msgstr ""
+msgstr "Arrêtez la fenêtre"
 
 msgid "Stream Info"
-msgstr ""
+msgstr "Informations sur le flux"
 
 msgid "Stream ended. Too many connection issues."
 msgstr "Flux terminé. Trop de problèmes de connexion."
 
 msgid "Sub-categories"
-msgstr ""
+msgstr "Sous-catégories"
 
 msgid "Subtitles"
-msgstr ""
+msgstr "Sous-titres"
 
 msgid "Technical Features:"
 msgstr "Caractéristiques techniques :"
 
 msgid "Text Size"
-msgstr ""
+msgstr "Taille du texte"
 
 msgid "That file is not a Vavoo Stream backup"
-msgstr ""
+msgstr "Ce fichier n'est pas une sauvegarde Vavoo Stream"
 
 msgid "The PIN"
-msgstr ""
+msgstr "Le code PIN"
 
 msgid "The backup could not be saved"
-msgstr ""
+msgstr "La sauvegarde n'a pas pu être enregistrée"
 
 #, fuzzy
 msgid "The channel before"
@@ -1445,7 +1461,7 @@ msgid "The channel list"
 msgstr "Retour à la liste des chaînes."
 
 msgid "The channel list is still loading..."
-msgstr ""
+msgstr "La liste des chaînes est toujours en cours de chargement..."
 
 #, fuzzy
 msgid "The channel watched last"
@@ -1460,31 +1476,31 @@ msgid "The keyboard"
 msgstr "Clavier"
 
 msgid "The plugin's licence and the fonts' (SIL OFL)."
-msgstr ""
+msgstr "La licence du plugin et des polices (SIL OFL)."
 
 msgid "The proxy restarts and downloads the list again. A channel playing now stops for a moment."
-msgstr ""
+msgstr "Le proxy redémarre et télécharge à nouveau la liste. Une chaîne en cours de lecture s'arrête maintenant pendant un moment."
 
 msgid "The same PIN again"
-msgstr ""
+msgstr "Encore le même code PIN"
 
 msgid "The sources of one channel (.b, .c, .s) in one row; MENU → Source in the player picks one. Off: every source in its own row."
-msgstr ""
+msgstr "Les sources d'un canal (.b, .c, .s) sur une ligne ; MENU → La source dans le lecteur en choisit une. Désactivé : chaque source dans sa propre ligne."
 
 msgid "The two PINs differ - not changed"
-msgstr ""
+msgstr "Les deux codes PIN diffèrent - pas modifiés"
 
 msgid "The window's channel: full screen / stop / record"
-msgstr ""
+msgstr "Le canal de la fenêtre : plein écran / stop / enregistrement"
 
 msgid "Theme"
-msgstr ""
+msgstr "Thème"
 
 msgid "This channel cannot be played"
 msgstr "Cette chaîne ne peut pas être diffusée"
 
 msgid "This recording is not running"
-msgstr ""
+msgstr "Cet enregistrement n'est pas en cours"
 
 msgid "This will refresh the authentication token."
 msgstr "Cela actualisera le jeton d'authentification."
@@ -1501,7 +1517,7 @@ msgid "Time to start EPG/bouquet update:"
 msgstr "Erreur lors du démarrage de la mise à jour de l'EPG : {}"
 
 msgid "Too many wrong PINs - try again in {} s"
-msgstr ""
+msgstr "Trop de codes PIN erronés : réessayez dans {} s"
 
 msgid "Top"
 msgstr "Haut"
@@ -1510,13 +1526,13 @@ msgid "Total channels: %(total_channels)d"
 msgstr "Nombre total de chaînes : %(total_channels)d"
 
 msgid "Type (as on a phone)"
-msgstr ""
+msgstr "Tapez (comme sur un téléphone)"
 
 msgid "UP / DOWN"
-msgstr ""
+msgstr "HAUT / BAS"
 
 msgid "UP / DOWN, CH+ / CH-"
-msgstr ""
+msgstr "HAUT / BAS, CH+ / CH-"
 
 msgid "UPPERCASE"
 msgstr "MAJUSCULES"
@@ -1547,7 +1563,7 @@ msgid "Vavoo Stream Live"
 msgstr "Vavoo Diffusion en direct - Informations"
 
 msgid "Vavoo Stream Live %s by Lululla & Qu4k3 - License CC BY-NC-SA 4.0."
-msgstr ""
+msgstr "Vavoo Stream Live %s par Lululla & Qu4k3 - Licence CC BY-NC-SA 4.0."
 
 msgid "Vavoo Stream Live - Information"
 msgstr "Vavoo Diffusion en direct - Informations"
@@ -1579,7 +1595,7 @@ msgid "View the last 200 lines of %s."
 msgstr "Afficher les 200 dernières lignes de %s."
 
 msgid "Watch"
-msgstr ""
+msgstr "Montre"
 
 #, fuzzy
 msgid "Watch the channel"
@@ -1589,37 +1605,38 @@ msgid "Welcome to Vavoo Proxy with EPG support"
 msgstr "Bienvenue sur Vavoo Proxy avec support EPG"
 
 msgid "Welcome! Choose a look"
-msgstr ""
+msgstr "Accueillir! Choisissez un look"
 
 msgid "Welcome! Choose the countries for the main list (OK shows or hides one), then GREEN saves. Settings → Choose countries changes it later."
-msgstr ""
+msgstr "Accueillir! Choisissez les pays pour la liste principale (OK en affiche ou en masque un), puis VERT enregistre. Paramètres → Choisir les pays le modifie plus tard."
 
 msgid "Where recordings go: Enigma2's movie folder, or another disk. They also show in the box's own movie list."
-msgstr ""
+msgstr "Où vont les enregistrements : le dossier de films d'Enigma2 ou un autre disque. Ils apparaissent également dans la liste de films de la boîte."
 
-msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source. Takes effect on save (restarts the proxy if it's running)."
+#, fuzzy
+msgid "Which service to load channels and streams from. Auto tries Geil first and falls back to Vavoo if it's unavailable; the other two options pin it to exactly that one source - while it gives no list, the saved one (or the other service's) is used meanwhile. Takes effect on save (restarts the proxy if it's running)."
 msgstr "À partir de quel service charger les chaînes et les flux. Auto essaie d'abord Geil et revient à Vavoo s'il n'est pas disponible ; les deux autres options l’épinglent exactement à cette seule source. Prend effet lors de la sauvegarde (redémarre le proxy s'il est en cours d'exécution)."
 
 msgid "While a channel is paused it is recorded on the disk: play goes on from where you paused, LEFT / RIGHT move back and forth, EXIT returns to live (up to 2 hours)."
-msgstr ""
+msgstr "Lorsqu'une chaîne est en pause, elle est enregistrée sur le disque : la lecture continue à l'endroit où vous avez fait la pause, les mouvements GAUCHE/DROITE vont et viennent, EXIT revient au direct (jusqu'à 2 heures)."
 
 msgid "Wrong PIN - try again"
-msgstr ""
+msgstr "Mauvais code PIN - réessayez"
 
 msgid "YELLOW"
-msgstr ""
+msgstr "JAUNE"
 
 msgid "YELLOW / BLUE"
-msgstr ""
+msgstr "JAUNE / BLEU"
 
 msgid "YELLOW / BLUE, << / >>"
-msgstr ""
+msgstr "JAUNE / BLEU, << / >>"
 
 msgid "YELLOW / TEXT"
-msgstr ""
+msgstr "JAUNE / TEXTE"
 
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #, fuzzy
 msgid "Yes, update now"
@@ -1642,22 +1659,22 @@ msgid "lowercase"
 msgstr "minuscules"
 
 msgid "not recorded (no disk) - PLAY returns to live"
-msgstr ""
+msgstr "non enregistré (pas de disque) - PLAY revient en direct"
 
 msgid "not recorded (no ffmpeg) - PLAY returns to live"
-msgstr ""
+msgstr "non enregistré (pas de ffmpeg) - PLAY revient en direct"
 
 msgid "not recorded (the stream could not be recorded) - PLAY returns to live"
-msgstr ""
+msgstr "non enregistré (le flux n'a pas pu être enregistré) - PLAY revient en direct"
 
 msgid "not recorded - PLAY returns to live"
-msgstr ""
+msgstr "non enregistré - PLAY revient en direct"
 
 msgid "press play to go on"
-msgstr ""
+msgstr "appuyez sur play pour continuer"
 
 msgid "recording - press play to go on"
-msgstr ""
+msgstr "enregistrement - appuyez sur play pour continuer"
 
 msgid "v{} -> v{}"
 msgstr ""
@@ -1671,25 +1688,28 @@ msgid "{} countries"
 msgstr "Tous les pays (%d)"
 
 msgid "{} found"
-msgstr ""
+msgstr "{} trouvé"
 
 msgid "{} free"
-msgstr ""
+msgstr "{} gratuit"
 
 msgid "{} min"
-msgstr ""
+msgstr "{} minutes"
 
 msgid "{} min left"
 msgstr ""
 
+msgid "{} not answering"
+msgstr "{} ne répond pas"
+
 msgid "{} of {} countries shown"
-msgstr ""
+msgstr "{} sur {} pays affichés"
 
 msgid "{} recordings · {} timers · {} free"
-msgstr ""
+msgstr "{} enregistrements · {} minuteries · {} gratuit"
 
 msgid "{} sources"
-msgstr ""
+msgstr "{} sources"
 
 msgid "● REC · {} min"
 msgstr ""
@@ -1700,6 +1720,10 @@ msgstr "Favoris"
 
 msgid "✗ Error"
 msgstr "✗ Erreur"
+
+#, fuzzy
+msgid "✗ No channels"
+msgstr "Trouvé : {} chaînes"
 
 msgid "✗ Proxy Error"
 msgstr "✗ Erreur de proxy"
