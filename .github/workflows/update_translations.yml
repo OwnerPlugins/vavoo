@@ -1,8 +1,5 @@
 name: Update Translations
-
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,23 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # with:
-          # persist-credentials: false
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install gettext (msgmerge, msgfmt)
         run: |
           sudo apt-get update
           sudo apt-get install -y gettext
-
       - name: Run translation updaters
         run: |
           for pyfile in $(find . -type f -name "update_translations.py"); do
@@ -34,13 +25,9 @@ jobs:
             echo "Running translation updater in $plugin_dir"
             cd "$plugin_dir"
             python3 update_translations.py
-            # Forza l'aggiunta dei file locale generati (ignora .gitignore)
-            if [ -d locale ]; then
-              git add -f locale/
-            fi
+            if [ -d locale ]; then git add -f locale/; fi
             cd - > /dev/null
           done
-
       - name: Commit and push changes
         run: |
           git config user.name "github-actions"
@@ -48,7 +35,6 @@ jobs:
           git add .
           if ! git diff --cached --quiet; then
             git commit -m "Update translations via workflow"
-                                                                                                                  
             git pull --rebase origin main
             git push origin main
           else
